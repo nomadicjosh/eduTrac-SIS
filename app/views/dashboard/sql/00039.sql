@@ -6,6 +6,10 @@ UPDATE assignment a
 SET a.courseSecID = b.courseSecID 
 WHERE a.courseSecID IS NULL;
 
+ALTER TABLE `assignment` DROP FOREIGN KEY assignment_ibfk_1;
+
+ALTER TABLE `assignment` DROP FOREIGN KEY assignment_ibfk_2;
+
 ALTER TABLE `attendance` ADD COLUMN `courseSecID` bigint(20) DEFAULT NULL AFTER `id`;
 
 UPDATE attendance a 
@@ -13,6 +17,10 @@ UPDATE attendance a
              ON a.courseSecCode = b.courseSecCode AND a.termCode = b.termCode
 SET a.courseSecID = b.courseSecID 
 WHERE a.courseSecID IS NULL;
+
+ALTER TABLE `attendance` DROP FOREIGN KEY attendance_ibfk_2;
+
+ALTER TABLE `attendance` DROP FOREIGN KEY attendance_ibfk_3;
 
 ALTER TABLE `gradebook` ADD COLUMN `courseSecID` bigint(20) DEFAULT NULL AFTER `gbID`;
 
@@ -22,8 +30,10 @@ UPDATE gradebook a
 SET a.courseSecID = b.courseSecID 
 WHERE a.courseSecID IS NULL;
 
-ALTER TABLE `institution_attended` CHANGE `GPA` `GPA` double(6,4) DEFAULT NULL;
+ALTER TABLE `gradebook` DROP FOREIGN KEY gradebook_ibfk_1;
 
-INSERT INTO `permission` VALUES('', 'access_gradebook', 'Access Gradebook');
+ALTER TABLE `gradebook` DROP FOREIGN KEY gradebook_ibfk_2;
+
+ALTER TABLE `institution_attended` CHANGE `GPA` `GPA` double(6,4) DEFAULT NULL;
 
 UPDATE `options_meta` SET meta_value = '00040' WHERE meta_key = 'dbversion';
