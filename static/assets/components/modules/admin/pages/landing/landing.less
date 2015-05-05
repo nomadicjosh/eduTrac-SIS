@@ -1,0 +1,30 @@
+#owl-landing {
+	padding-bottom: 10px;
+	.item {
+		position: relative;
+		display: block;
+		img {
+			.rounded();
+			border: none;
+			padding: 0;
+		}
+		&.item1 {
+			img {
+				position: absolute;
+				top: 0;
+				&#slide1-mbp { z-index: 2; }
+				&#slide1-ipad { z-index: 3; }
+				&#slide1-iphone { z-index: 3; }
+				&.slide1-ratio { z-index: 1; position: relative; }
+			}
+		}
+	}
+	&.owl-theme .owl-controls {
+		margin-top: 3px;
+		.owl-page span {
+			background: #fff;
+			width: 20px;
+			height: 20px;
+		}
+	}
+}

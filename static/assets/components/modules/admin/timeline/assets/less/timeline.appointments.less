@@ -1,0 +1,56 @@
+.timeline-appointments {
+	&.bg-primary-light {
+		> li {
+			border-left: 1px solid @primaryColor;
+		}
+	}
+	> li {
+		background: #fff;
+		margin-left: 90px;
+		border-left: 1px solid @contentBorder;
+		position: relative;
+		.time {
+			position: absolute;
+			left: -90px;
+			top: -10px;
+			width: 70px;
+			text-align: right;
+			color: #222;
+		}
+		.dot {
+			position: absolute;
+			left: -6px;
+			top: -6px;
+			background: #fff;
+			.rounded(50%, 50%, 50%, 50%);
+		}
+		.appointments {
+			min-height: 60px;
+			background: -webkit-linear-gradient(top,#f0f0f0 0%,white 5%) 0 0;
+			background: -moz-linear-gradient(top,#f0f0f0 0%,white 5%) 0 0;
+			background: linear-gradient(top,#f0f0f0 0%,white 5%) 0 0;
+			-webkit-background-size: 100% 30px;
+			-moz-background-size: 100% 30px;
+			-ms-background-size: 100% 30px;
+			background-size: 100% 30px;
+			ul li {
+				line-height: 30px;
+				padding: 0 10px;
+				.btn-group-xs {
+					margin-top: 4px;
+				}
+				.apt {
+					display: block;
+					line-height: 30px;
+				}
+			}
+		}
+		&:first-of-type {
+			padding-top: 30px;
+			.time {
+				top: 20px;
+			}
+			.dot { top: 24px; }
+		}
+	}
+}

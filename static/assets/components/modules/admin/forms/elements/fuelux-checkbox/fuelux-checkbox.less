@@ -1,0 +1,44 @@
+.checkbox-custom {
+	input[type=checkbox] {
+	/* IE cannot fire events if display none or visibility hidden */
+	position: relative;
+	left: -99999px;
+	}
+
+	i {
+		margin-left: -20px;
+		margin-right: 5px;
+		width: 16px;
+		height: 16px;
+		vertical-align: middle;
+		font-size: 1.333em;
+		color: #ddd;
+		display: inline-block;
+
+		&.checked {
+			margin-right: 4px;
+			color: @primaryColor;
+			margin-left: -19px;
+			&:before {
+				content: '\f046';
+			}
+		}
+
+		&.disabled {
+			/* disabled */
+			color: #eee;
+		}
+	}
+}
+
+.checkbox-single {
+	padding: 0;
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	margin: 0 5px;
+	.checkbox-custom {
+		width: 20px;
+		i { margin-left: 1px; }
+	}
+}

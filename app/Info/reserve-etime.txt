@@ -1,0 +1,12 @@
+<p>Set the default event end time.
+The format is HH:MM:TD, and is sensitive to 'Hour Display':</p>
+<ul>
+    <li>HH - hour  			: 01-12 or 00-23</li>
+    <li>MM - minute			: 00, 15, 30, 45</li>
+    <li>TD - time of day: AM/PM or ignored (if Hour Display = 24)</li>
+</ul>
+<p>If clock_base = 24, then the 3rd field is ignored:</p>
+<ul>
+    <li>Start Time = 0  - disables feature</li>
+    <li>End Time  = 0  - disables feature</li>
+</ul>

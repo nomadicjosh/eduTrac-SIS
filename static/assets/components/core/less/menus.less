@@ -1,0 +1,109 @@
+//
+// Menus
+// --------------------------------------------------
+
+// General
+// -------------------------
+
+.dropdown-menu { z-index: 100000; }
+
+// Sidebar menu
+// -------------------------
+
+#menu {
+	.appbrand {
+		font-weight: 700;
+		display: block;
+		text-decoration: none;
+		line-height: 10px;
+		padding: 10px;
+		text-align: center;
+		color: @menuAppbrand;
+	}
+	.profile {
+		display: block;
+		padding: 10px 0;
+		a {
+			display: inline-block;
+			width: 38px;
+			height: 38px;
+			.rounded(5px,5px,5px,5px);
+			img { .rounded(5px,5px,5px,5px); }
+		}
+	}
+	float: left;
+	position: absolute;
+	left: 0;
+	top: 0;
+	overflow: hidden;
+	height: 100%;
+	min-height: 100%;
+	background: @menuBg;
+	&.ui-state-disabled {
+		opacity: 1;
+		filter: Alpha(Opacity=100);
+	}
+}
+
+// Right menu
+// -------------------------
+
+body .menu-right {
+	#menu { left: auto; right: 0; z-index: 1000; }
+	&.fixed {
+		#content { .rounded(5px,0,0,0); }
+		.navbar.main, .navbar.main .wrapper { .rounded(5px,0,0,0); }
+	}
+}
+
+// Hidden menu
+// -------------------------
+
+.menu-hidden {
+	#menu { display: none !important; }
+	#content { margin: 0 !important; }
+	.navbar.main .btn-navbar { left: 0; border-left: none; }
+	.navbar.main .topnav {
+		&.tn1 { left: 37px; }
+	}
+	&.login, &.documentation {
+		.navbar.main .appbrand { 
+			display: inline-block;
+			border: none;
+			span { border: none; } 
+		}
+	}
+}
+
+// Email Menu
+//---------------------------
+
+.menubar {
+	background: none;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	> li {
+		display: inline-block;
+		> a {
+			text-decoration: none;
+			color: #878787;
+			height: 30px;
+			line-height: 30px;
+			padding: 0 10px;
+			display: block;
+			.badge {
+				margin-top: 6px;
+				margin-left: 7px;
+			}
+		}
+		&.active, &.open {
+			> a {
+				background: #ededed;
+				color: #3b3b3b;
+				font-weight: 600;
+			}
+		}
+	}
+}

@@ -1,0 +1,22 @@
+// Wells
+// -------------------------
+
+.well {
+	z-index: 1;
+	position: relative;
+	padding: 15px;
+	margin: 0 0 @spacing;
+	&.small { padding: 10px; }
+	.popover { 
+		z-index: 2;
+		font-size: 13px; 
+	}
+	box-shadow: 0 3px 0 0 @contentShadow1;
+	-moz-box-shadow: 0 3px 0 0 @contentShadow1;
+	-webkit-box-shadow: 0 3px 0 0 @contentShadow1;
+	.rounded(5px,5px,5px,5px);
+	background: @wellBg;
+	border-color: @contentBorder;
+	&.dark { background: rgba(0,0,0,.2); }
+	&.white { background: #fff; }
+}

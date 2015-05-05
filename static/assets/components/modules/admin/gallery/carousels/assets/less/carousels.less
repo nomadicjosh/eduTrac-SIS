@@ -1,0 +1,77 @@
+// Carousels
+// ------------------------- //
+
+.carousel {
+	margin-bottom: @spacing;
+	.carousel-control {
+		font-size: 45px;
+		&.right { text-align: center; }
+	}
+	.carousel-caption {
+		background: fade(#000, 50%);
+		left: 0;
+		right: 0;
+		bottom: 0;
+		h4 { color: #fff; text-shadow: none; font-weight: 600; }
+	}
+	.carousel-indicators {
+		bottom: 0;
+	}
+	&.carousel-1 {
+		height: 223px;
+		margin-bottom: 33px;
+		background: @widgetBgGray;
+		.rounded(5px, 5px, 5px, 5px);
+		.item {
+			height: 223px;
+			overflow: hidden;
+			img { min-height: 100%; .rounded(0, 5px, 5px, 0); }
+			.row {
+				margin: 0;
+				[class*="col-"]:last-of-type {
+					padding: 0;
+				}
+			}
+		}
+		.carousel-indicators {
+			top: auto;
+			bottom: -23px;
+			right: 0;
+			left: 0;
+			margin: 0;
+			width: auto;
+			text-align: right;
+			li {
+				background: lighten(@primaryColor, 20%);
+				&.active { background: @primaryColor; }
+			}
+		}
+		.carousel-caption {
+			height: 223px-30px;
+			background: @widgetBgGray;
+			top: 0;
+			left: 20px;
+			right: 10px;
+		}
+		.carousel-inner {
+			.rounded(5px, 5px, 5px, 5px);
+		}
+		.carousel-inner {
+			box-shadow: 0 3px 0 0 @contentShadow2;
+			-moz-box-shadow: 0 3px 0 0 @contentShadow2;
+			-webkit-box-shadow: 0 3px 0 0 @contentShadow2;
+			border: 1px solid @contentBorder;
+		}
+		.item {
+			.rounded(5px, 5px, 5px, 5px);
+			img { min-width: 100%; }
+		}
+		.carousel-caption {
+			background: fade(@widgetBgGray, 95%);
+			text-shadow: @bodyTextShadow;
+			p { color: @bodyText; }
+			h4 { font-size: 12pt; color: #000; font-weight: 600; }
+			a { text-decoration: underline; color: #000; }
+		}
+	}
+}

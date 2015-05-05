@@ -1,0 +1,4997 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: eduTrac\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-02 22:29-0500\n"
+"PO-Revision-Date: 2015-05-02 22:30-0500\n"
+"Last-Translator: Joshua Parker <josh@7mediaws.org>\n"
+"Language-Team: 7 Media Web Solutions, LLC <email@7mediaws.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _t\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: UNITED STATES\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+"X-Poedit-SearchPath-1: ../..\n"
+"X-Poedit-SearchPath-2: ../../..\n"
+
+#: ../../../hook-function.php:490
+msgid "Active Students"
+msgstr ""
+
+#: ../../../hook-function.php:520
+msgid "Active Courses"
+msgstr ""
+
+#: ../../../hook-function.php:550
+msgid "Active Programs"
+msgstr ""
+
+#: ../../../hook-function.php:702
+#: ../../../hook-function.php:736
+msgid "my"
+msgstr ""
+
+#: ../../../hook-function.php:718
+#: ../../../hook-function.php:720
+msgid "Powered by eduTrac ERP r"
+msgstr ""
+
+#: ../../../hook-function.php:775
+msgid "Administrative"
+msgstr ""
+
+#: ../../../hook-function.php:776
+msgid "Academic"
+msgstr ""
+
+#: ../../../hook-function.php:956
+msgid "LEC Lecture"
+msgstr ""
+
+#: ../../../hook-function.php:957
+msgid "LAB Lab"
+msgstr ""
+
+#: ../../../hook-function.php:958
+msgid "SEM Seminar"
+msgstr ""
+
+#: ../../../hook-function.php:959
+msgid "LL Lecture + Lab"
+msgstr ""
+
+#: ../../../hook-function.php:960
+msgid "LS Lecture + Seminar"
+msgstr ""
+
+#: ../../../hook-function.php:961
+msgid "SL Seminar + Lab"
+msgstr ""
+
+#: ../../../hook-function.php:962
+msgid "LLS Lecture + Lab + Seminar"
+msgstr ""
+
+#: ../../../hook-function.php:981
+msgid "A Add"
+msgstr ""
+
+#: ../../../hook-function.php:982
+msgid "N New"
+msgstr ""
+
+#: ../../../hook-function.php:983
+msgid "D Drop"
+msgstr ""
+
+#: ../../../hook-function.php:984
+#: ../../../hook-function.php:1006
+msgid "W Withdrawn"
+msgstr ""
+
+#: ../../../hook-function.php:985
+msgid "C Cancelled"
+msgstr ""
+
+#: ../../../hook-function.php:1004
+msgid "A Active"
+msgstr ""
+
+#: ../../../hook-function.php:1005
+msgid "P Potential"
+msgstr ""
+
+#: ../../../hook-function.php:1007
+msgid "C Changed Mind"
+msgstr ""
+
+#: ../../../hook-function.php:1008
+msgid "G Graduated"
+msgstr ""
+
+#: ../../../hook-function.php:1027
+msgid "I Institutional"
+msgstr ""
+
+#: ../../../hook-function.php:1028
+#: ../../../hook-function.php:1124
+msgid "TR Transfer"
+msgstr ""
+
+#: ../../../hook-function.php:1029
+msgid "AP Advanced Placement"
+msgstr ""
+
+#: ../../../hook-function.php:1030
+msgid "X Exempt"
+msgstr ""
+
+#: ../../../hook-function.php:1031
+msgid "T Test"
+msgstr ""
+
+#: ../../../hook-function.php:1050
+msgid "FR Freshman"
+msgstr ""
+
+#: ../../../hook-function.php:1051
+msgid "SO Sophomore"
+msgstr ""
+
+#: ../../../hook-function.php:1052
+msgid "JR Junior"
+msgstr ""
+
+#: ../../../hook-function.php:1053
+msgid "SR Senior"
+msgstr ""
+
+#: ../../../hook-function.php:1054
+msgid "UG Undergraduate Student"
+msgstr ""
+
+#: ../../../hook-function.php:1055
+msgid "GR Grad Student"
+msgstr ""
+
+#: ../../../hook-function.php:1056
+msgid "PhD PhD Student"
+msgstr ""
+
+#: ../../../hook-function.php:1123
+msgid "FF First Time Freshman"
+msgstr ""
+
+#: ../../../hook-function.php:1125
+msgid "RA Readmit"
+msgstr ""
+
+#: ../../../hook-function.php:1126
+msgid "NA Non-Applicable"
+msgstr ""
+
+#: ../../../hook-function.php:1145
+msgid "Asset"
+msgstr ""
+
+#: ../../../hook-function.php:1146
+msgid "Liability"
+msgstr ""
+
+#: ../../../hook-function.php:1147
+msgid "Equity"
+msgstr ""
+
+#: ../../../hook-function.php:1148
+msgid "Revenue"
+msgstr ""
+
+#: ../../../hook-function.php:1149
+msgid "Expense"
+msgstr ""
+
+#: ../../../hook-function.php:1169
+msgid "Success!"
+msgstr ""
+
+#: ../../../hook-function.php:1169
+msgid "The record was updated successfully."
+msgstr ""
+
+#: ../../../hook-function.php:1178
+msgid "Error!"
+msgstr ""
+
+#: ../../../hook-function.php:1178
+msgid "The system was unable to update the record in the database. Please try again. If the problem persists, contact your system administrator."
+msgstr ""
+
+#: ../../../installer-function.php:21
+msgid "Minimum PHP version required in order to run eduTrac ERP is PHP 5.4. Your PHP version: "
+msgstr ""
+
+#: ../../../installer-function.php:24
+msgid "Your PHP version is "
+msgstr ""
+
+#: ../../../installer-function.php:36
+msgid "Your memory limit is: "
+msgstr ""
+
+#: ../../../installer-function.php:39
+msgid "Your memory is too low to complete the installation. Minimal value is 64MB, and you have it set to "
+msgstr ""
+
+#: ../../../modules/booking.module.php:428
+msgid "Room Request: "
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:73
+msgid "You are here"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:74
+msgid "Dashboard"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:76
+msgid "Plugins"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:78
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:81
+msgid "eduTrac SMTP Settings"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:103
+msgid "From Email:"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:108
+msgid "From Name:"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:113
+msgid "Host:"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:118
+msgid "SMTP Secure:"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:130
+msgid "Port:"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:135
+msgid "SMTP Authentication:"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:141
+msgid "Username:"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:146
+msgid "Password:"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:160
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:205
+msgid "Submit"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:176
+msgid "Send Test Email"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:178
+msgid "To:"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:183
+msgid "Subject:"
+msgstr ""
+
+#: ../../../plugins/et-smtp/et-smtp.plugin.php:188
+msgid "Message:"
+msgstr ""
+
+#: ../../../routers/courses.router.php:60
+#: ../../../routers/courses.router.php:164
+msgid "Your institution has set a course registration limit. You are only allowed to register for <strong>"
+msgstr ""
+
+#: ../../../routers/courses.router.php:60
+#: ../../../routers/courses.router.php:164
+msgid " courses</strong> per term."
+msgstr ""
+
+#: ../../../routers/form.router.php:1111
+msgid "The system could not move the uploaded file. Please check with your system administrator."
+msgstr ""
+
+#: ../../../routers/form.router.php:1114
+msgid "Your image size is bigger than 4MB. Try to upload a smaller image."
+msgstr ""
+
+#: ../../../routers/form.router.php:1117
+msgid "Invalid file format. You must upload a jpeg, gif, png or bmp file."
+msgstr ""
+
+#: ../../../routers/form.router.php:1120
+msgid "You have to first select an image to upload."
+msgstr ""
+
+#: ../../../routers/form.router.php:1139
+msgid "myeduTrac :: "
+msgstr ""
+
+#: ../../../routers/form.router.php:1157
+msgid "Change of Address Request"
+msgstr ""
+
+#: ../../../routers/sql.router.php:153
+msgid "CSV to Email Attachment"
+msgstr ""
+
+#: ../../../routers/sql.router.php:153
+msgid "The attached report can be opened with OpenOffice.org Calc, Google Docs, Microsoft Excel, or Apple Numbers."
+msgstr ""
+
+#: ../../../src/Email.php:201
+msgid "Course Registration"
+msgstr ""
+
+#: ../../../src/Email.php:221
+#: ../../../src/Email.php:252
+msgid "myeduTrac::"
+msgstr ""
+
+#: ../../../src/Email.php:245
+msgid " Account Login Details"
+msgstr ""
+
+#: ../../../src/Email.php:277
+msgid "Application for Admissions"
+msgstr ""
+
+#: ../../../src/Messages.php:60
+msgid "200 - Success: Ok"
+msgstr ""
+
+#: ../../../src/Messages.php:61
+msgid "201 - Success: Created"
+msgstr ""
+
+#: ../../../src/Messages.php:62
+msgid "204 - Error: No Content"
+msgstr ""
+
+#: ../../../src/Messages.php:63
+msgid "409 - Error: Conflict"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:101
+msgid "Screens"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:107
+msgid "General Settings"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:108
+msgid "Registration Settings"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:109
+msgid "Email Settings"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:111
+msgid "Campuses"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:113
+msgid "Cron Jobs"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:114
+msgid "(MPRM) Manage Perm"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:115
+msgid "(MRLE) Manage Role"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:116
+msgid "Error Log"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:117
+msgid "Audit Trail"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:122
+#: ../../../views/_layouts/myet.php:155
+msgid "Forms"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:124
+msgid "(SEM) - Semester"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:125
+msgid "(TERM) - Term"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:126
+msgid "(AYR) - Academic Year"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:127
+msgid "(DEPT) - Department"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:128
+msgid "(SUBJ) - Subject"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:129
+msgid "(SLR) - Student Load Rules"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:130
+msgid "(DEG) - Degree"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:131
+msgid "(MAJR) - Major"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:132
+msgid "(MINR) - Minor"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:133
+msgid "(CCD) - CCD"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:134
+msgid "(SPEC) - Specialization"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:135
+msgid "(CIP) - CIP"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:136
+msgid "(RSTR) - Restriction Codes"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:137
+msgid "(LOC) - Location"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:138
+msgid "(BLDG) - Building"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:139
+msgid "(ROOM) - Room"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:140
+msgid "(SCH) - School"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:141
+msgid "(GRSC) - Grade Scale"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:145
+msgid "Importer"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:147
+msgid "Online Documentation"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:150
+msgid "Events Calendar"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:152
+msgid "Calendar"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:153
+msgid "Room Booking Form"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:154
+msgid "Manage Events"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:155
+msgid "Pending Requests"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:156
+msgid "Settings"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:161
+msgid "Human Resources"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:163
+msgid "Employees"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:164
+msgid "Pay Grades"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:165
+msgid "Job Titles"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:166
+#: ../../../views/_layouts/dashboard.php:170
+msgid "Timesheets"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:175
+msgid "SQL"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:177
+msgid "SQL Interface"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:178
+msgid "Create Query"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:179
+msgid "Queries"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:180
+msgid "CSV to Email Report"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:185
+msgid "Academics"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:188
+msgid "Academic Program"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:190
+msgid "(PROG) - Program"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:191
+msgid "(APRG) - New Program"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:196
+msgid "Course"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:198
+msgid "(CRSE) - Course"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:199
+msgid "(ACRS) - New Course"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:204
+msgid "Course Section"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:206
+msgid "(SECT) - Section"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:207
+msgid "(RGN) - Register"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:208
+msgid "(BRGN) - Batch Register"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:209
+msgid "(SROS) - Student Roster"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:210
+#: ../../../views/_layouts/myet.php:148
+msgid "Timetable"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:211
+msgid "Course Catalogs"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:212
+msgid "My Course Sections"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:217
+msgid "Transfers"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:219
+msgid "(EXTR) - External Course"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:220
+msgid "(ATCEQ) - New Transfer Eq."
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:221
+msgid "(TCEQ) - Transfer Course Eq."
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:222
+msgid "(TCRE) - Transfer Credit"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:229
+msgid "Institution"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:231
+msgid "(INST) - Institution"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:232
+msgid "(AINST) - New Institution"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:237
+msgid "Communication Mgmt"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:239
+msgid "Email Templates"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:240
+msgid "Add Email Template"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:241
+msgid "Schedule Email"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:242
+msgid "Email Queue"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:243
+msgid "Mail Merge"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:248
+msgid "NSLC"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:250
+msgid "(NSCP) Purge"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:251
+msgid "(NSCS) Setup"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:252
+msgid "(NSCX) Extraction"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:253
+msgid "(NSCE) Verification"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:254
+msgid "(NSCC) Correction"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:255
+msgid "(NSCT) NSLC File"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:261
+msgid "Person Management"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:264
+msgid "Person"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:266
+msgid "(NAE) Name &amp; Address"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:267
+msgid "(APER) Add Person"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:271
+msgid "(STAF) Staff"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:274
+#: ../../../views/_layouts/myet.php:146
+msgid "Student"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:276
+msgid "(SPRO) Student Profile"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:277
+msgid "Graduate Student(s)"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:278
+msgid "(TRAN) Transcript"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:285
+msgid "Application"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:287
+msgid "(APPL) Application"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:288
+msgid "Institution Attended"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:293
+msgid "Financials"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:296
+msgid "General Ledger"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:298
+msgid "Account Chart"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:299
+msgid "Journal Entries"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:304
+msgid "Student Accounts"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:306
+msgid "Billing Tables"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:307
+msgid "Search Bill"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:308
+msgid "Create Bill/Add Fees"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:309
+msgid "Batch Fees"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:310
+msgid "Add Payment"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:311
+msgid "Issue a Refund"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:315
+msgid "Paypal Gateway"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:324
+msgid "eduTrac Analytics"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:361
+#: ../../../views/_layouts/myet.php:163
+msgid "Profile"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:361
+msgid "edit"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:372
+#: ../../../views/_layouts/myet.php:119
+msgid "Switch Back to"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:376
+msgid "Lock Screen"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:380
+msgid "Sign Out"
+msgstr ""
+
+#: ../../../views/_layouts/dashboard.php:400
+msgid "&copy; 2013"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:85
+msgid "Get Help"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:89
+msgid "Sign in"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:91
+msgid "Apply"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:105
+#: ../../../views/admin/index.php:31
+msgid "Admin"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:111
+msgid "Howdy,"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:140
+msgid "Home"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:143
+msgid "My Menu"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:149
+msgid "My Bills"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:150
+msgid "Class Schedule"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:151
+msgid "Final Grades"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:157
+msgid "Change of Address Form"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:158
+msgid "Booking Request Form"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:159
+msgid "School Photo"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:162
+msgid "Applications"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:164
+msgid "Change Password"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:165
+msgid "Logout"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:171
+msgid "Info Pages"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:177
+msgid "News"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:180
+msgid "Quick Links"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:187
+msgid "Search Courses"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:189
+msgid "Cart"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:208
+msgid "Address"
+msgstr ""
+
+#: ../../../views/_layouts/myet.php:221
+msgid "Contact"
+msgstr ""
+
+#: ../../../views/admin/csseditor.php:54
+#: ../../../views/admin/index.php:46
+msgid "CSS Editor"
+msgstr ""
+
+#: ../../../views/admin/csseditor.php:58
+msgid "Save"
+msgstr ""
+
+#: ../../../views/admin/index.php:34
+#: ../../../views/admin/pages.php:41
+msgid "Manage Pages"
+msgstr ""
+
+#: ../../../views/admin/index.php:38
+msgid "Manage Links"
+msgstr ""
+
+#: ../../../views/admin/index.php:42
+msgid "Manage News"
+msgstr ""
+
+#: ../../../views/admin/index.php:49
+msgid "If you are having issues with results not updating after changes have been made, click the clear cache button below."
+msgstr ""
+
+#: ../../../views/admin/index.php:51
+msgid "Clear Cache"
+msgstr ""
+
+#: ../../../views/admin/links.php:31
+msgid "Manage Quick Links"
+msgstr ""
+
+#: ../../../views/admin/links.php:31
+#: ../../../views/admin/links.php:44
+msgid "Add Link"
+msgstr ""
+
+#: ../../../views/admin/links.php:49
+#: ../../../views/admin/links.php:149
+#: ../../../views/admin/news.php:59
+#: ../../../views/admin/news.php:160
+#: ../../../views/admin/pages.php:59
+#: ../../../views/admin/pages.php:166
+msgid "Indicates field is required."
+msgstr ""
+
+#: ../../../views/admin/links.php:53
+#: ../../../views/admin/links.php:97
+#: ../../../views/admin/links.php:153
+msgid "Link Title"
+msgstr ""
+
+#: ../../../views/admin/links.php:57
+#: ../../../views/admin/links.php:98
+#: ../../../views/admin/links.php:157
+msgid "Link Source"
+msgstr ""
+
+#: ../../../views/admin/links.php:61
+#: ../../../views/admin/links.php:99
+#: ../../../views/admin/links.php:161
+#: ../../../views/admin/news.php:71
+#: ../../../views/admin/news.php:108
+#: ../../../views/admin/news.php:172
+#: ../../../views/admin/pages.php:71
+#: ../../../views/admin/pages.php:114
+#: ../../../views/admin/pages.php:178
+msgid "Status"
+msgstr ""
+
+#: ../../../views/admin/links.php:64
+#: ../../../views/admin/links.php:164
+msgid "Active"
+msgstr ""
+
+#: ../../../views/admin/links.php:65
+#: ../../../views/admin/links.php:165
+msgid "Inactive"
+msgstr ""
+
+#: ../../../views/admin/links.php:69
+#: ../../../views/admin/links.php:169
+#: ../../../views/admin/pages.php:79
+#: ../../../views/admin/pages.php:186
+msgid "Sort"
+msgstr ""
+
+#: ../../../views/admin/links.php:79
+#: ../../../views/admin/links.php:179
+#: ../../../views/admin/links.php:206
+#: ../../../views/admin/news.php:86
+#: ../../../views/admin/news.php:187
+#: ../../../views/admin/news.php:214
+#: ../../../views/admin/pages.php:92
+#: ../../../views/admin/pages.php:197
+#: ../../../views/admin/pages.php:224
+msgid "Cancel"
+msgstr ""
+
+#: ../../../views/admin/links.php:100
+#: ../../../views/admin/links.php:114
+#: ../../../views/admin/news.php:109
+#: ../../../views/admin/news.php:125
+#: ../../../views/admin/pages.php:115
+#: ../../../views/admin/pages.php:131
+msgid "Actions"
+msgstr ""
+
+#: ../../../views/admin/links.php:117
+#: ../../../views/admin/news.php:128
+#: ../../../views/admin/pages.php:134
+msgid "Toggle Dropdown"
+msgstr ""
+
+#: ../../../views/admin/links.php:120
+#: ../../../views/admin/news.php:131
+#: ../../../views/admin/pages.php:137
+msgid "Edit"
+msgstr ""
+
+#: ../../../views/admin/links.php:121
+#: ../../../views/admin/links.php:205
+#: ../../../views/admin/news.php:132
+#: ../../../views/admin/news.php:213
+#: ../../../views/admin/pages.php:138
+#: ../../../views/admin/pages.php:223
+msgid "Delete"
+msgstr ""
+
+#: ../../../views/admin/links.php:200
+msgid "Are you sure you want to delete this quick link?"
+msgstr ""
+
+#: ../../../views/admin/news.php:41
+msgid "Manage News & Annoucements"
+msgstr ""
+
+#: ../../../views/admin/news.php:41
+msgid "Add News"
+msgstr ""
+
+#: ../../../views/admin/news.php:54
+msgid "Add News & Annoucement"
+msgstr ""
+
+#: ../../../views/admin/news.php:63
+#: ../../../views/admin/pages.php:63
+#: ../../../views/admin/pages.php:170
+msgid "Title"
+msgstr ""
+
+#: ../../../views/admin/news.php:67
+#: ../../../views/admin/news.php:168
+#: ../../../views/admin/pages.php:67
+#: ../../../views/admin/pages.php:174
+msgid "Details"
+msgstr ""
+
+#: ../../../views/admin/news.php:74
+#: ../../../views/admin/news.php:175
+#: ../../../views/admin/pages.php:74
+#: ../../../views/admin/pages.php:181
+msgid "Draft"
+msgstr ""
+
+#: ../../../views/admin/news.php:75
+#: ../../../views/admin/news.php:176
+#: ../../../views/admin/pages.php:75
+#: ../../../views/admin/pages.php:182
+msgid "Publish"
+msgstr ""
+
+#: ../../../views/admin/news.php:104
+#: ../../../views/admin/news.php:164
+msgid "News Title"
+msgstr ""
+
+#: ../../../views/admin/news.php:105
+#: ../../../views/admin/pages.php:111
+msgid "Author"
+msgstr ""
+
+#: ../../../views/admin/news.php:106
+#: ../../../views/admin/pages.php:112
+msgid "Created"
+msgstr ""
+
+#: ../../../views/admin/news.php:107
+#: ../../../views/admin/pages.php:113
+msgid "Last Modified"
+msgstr ""
+
+#: ../../../views/admin/news.php:208
+msgid "Are you sure you want to delete this news posting?"
+msgstr ""
+
+#: ../../../views/admin/pages.php:41
+#: ../../../views/admin/pages.php:54
+msgid "Add Page"
+msgstr ""
+
+#: ../../../views/admin/pages.php:110
+msgid "Page Title"
+msgstr ""
+
+#: ../../../views/admin/pages.php:218
+msgid "Are you sure you want to delete this page?"
+msgstr ""
+
+#: ../../../views/application/add-inst.php:30
+#: ../../../views/application/view-inst.php:30
+msgid "Search Institution"
+msgstr ""
+
+#: ../../../views/application/add-inst.php:32
+#: ../../../views/application/add-inst.php:35
+msgid "Add Institution"
+msgstr ""
+
+#: ../../../views/application/add-inst.php:62
+#: ../../../views/application/inst.php:65
+#: ../../../views/application/view-inst.php:62
+msgid "FICE/CEEB Code"
+msgstr ""
+
+#: ../../../views/application/add-inst.php:69
+#: ../../../views/application/view-inst.php:69
+msgid "Type"
+msgstr ""
+
+#: ../../../views/application/add-inst.php:73
+msgid "High School"
+msgstr ""
+
+#: ../../../views/application/add-inst.php:74
+msgid "College"
+msgstr ""
+
+#: ../../../views/application/add-inst.php:75
+msgid "University"
+msgstr ""
+
+#: ../../../views/application/add-inst.php:83
+#: ../../../views/application/inst.php:67
+#: ../../../views/application/view-inst.php:83
+msgid "Institution Name"
+msgstr ""
+
+#: ../../../views/application/add-inst.php:96
+#: ../../../views/application/view-inst.php:96
+msgid "City"
+msgstr ""
+
+#: ../../../views/application/add-inst.php:103
+#: ../../../views/application/view-inst.php:103
+msgid "State"
+msgstr ""
+
+#: ../../../views/application/add-inst.php:110
+#: ../../../views/application/view-inst.php:110
+msgid "Country"
+msgstr ""
+
+#: ../../../views/application/add.php:22
+#: ../../../views/application/index.php:27
+#: ../../../views/application/inst-attended.php:46
+#: ../../../views/application/view.php:33
+msgid "Search Application"
+msgstr ""
+
+#: ../../../views/application/add.php:24
+#: ../../../views/application/add.php:27
+msgid "Create Application"
+msgstr ""
+
+#: ../../../views/application/add.php:52
+#: ../../../views/application/index.php:58
+#: ../../../views/application/view.php:65
+msgid "Person ID"
+msgstr ""
+
+#: ../../../views/application/add.php:61
+#: ../../../views/application/view.php:74
+msgid "First/Mid/Last Name"
+msgstr ""
+
+#: ../../../views/application/add.php:76
+#: ../../../views/application/view.php:89
+msgid "Permanent Address"
+msgstr ""
+
+#: ../../../views/application/add.php:86
+#: ../../../views/application/view.php:99
+msgid "DOB"
+msgstr ""
+
+#: ../../../views/application/add.php:105
+#: ../../../views/application/view.php:118
+msgid "Age"
+msgstr ""
+
+#: ../../../views/application/add.php:118
+#: ../../../views/application/view.php:131
+msgid "Gender"
+msgstr ""
+
+#: ../../../views/application/add.php:127
+#: ../../../views/application/view.php:140
+msgid "Phone Number"
+msgstr ""
+
+#: ../../../views/application/add.php:136
+#: ../../../views/application/view.php:149
+msgid "Email Address"
+msgstr ""
+
+#: ../../../views/application/add.php:159
+#: ../../../views/application/view.php:172
+msgid "Application Date"
+msgstr ""
+
+#: ../../../views/application/add.php:183
+#: ../../../views/application/appls.php:37
+#: ../../../views/application/appls.php:68
+#: ../../../views/application/index.php:60
+#: ../../../views/application/view.php:200
+msgid "Start Term"
+msgstr ""
+
+#: ../../../views/application/add.php:195
+#: ../../../views/application/view.php:212
+msgid "Admit Status"
+msgstr ""
+
+#: ../../../views/application/add.php:212
+#: ../../../views/application/view.php:244
+msgid "PSAT Verbal/Math"
+msgstr ""
+
+#: ../../../views/application/add.php:224
+#: ../../../views/application/view.php:256
+msgid "SAT Verbal/Math"
+msgstr ""
+
+#: ../../../views/application/add.php:236
+#: ../../../views/application/view.php:268
+msgid "ACT English/Math"
+msgstr ""
+
+#: ../../../views/application/appls.php:24
+msgid "My Applications"
+msgstr ""
+
+#: ../../../views/application/appls.php:52
+#: ../../../views/application/index.php:85
+#: ../../../views/application/inst.php:88
+msgid "View"
+msgstr ""
+
+#: ../../../views/application/appls.php:76
+msgid "Admission Status"
+msgstr ""
+
+#: ../../../views/application/appls.php:80
+msgid "PSAT Verbal"
+msgstr ""
+
+#: ../../../views/application/appls.php:84
+msgid "PSAT Math"
+msgstr ""
+
+#: ../../../views/application/appls.php:88
+msgid "SAT Verbal"
+msgstr ""
+
+#: ../../../views/application/appls.php:92
+msgid "SAT Math"
+msgstr ""
+
+#: ../../../views/application/appls.php:96
+msgid "ACT English"
+msgstr ""
+
+#: ../../../views/application/appls.php:100
+msgid "ACT Math"
+msgstr ""
+
+#: ../../../views/application/appls.php:105
+msgid "Comments"
+msgstr ""
+
+#: ../../../views/application/index.php:59
+msgid "Name"
+msgstr ""
+
+#: ../../../views/application/index.php:87
+msgid "Create Student"
+msgstr ""
+
+#: ../../../views/application/index.php:113
+msgid "Application Search"
+msgstr ""
+
+#: ../../../views/application/index.php:123
+#: ../../../views/application/view.php:494
+msgid "Close"
+msgstr ""
+
+#: ../../../views/application/inst-attended.php:78
+msgid "Applicant ID"
+msgstr ""
+
+#: ../../../views/application/inst-attended.php:100
+msgid "Attend From Date"
+msgstr ""
+
+#: ../../../views/application/inst-attended.php:112
+msgid "Attend To Date"
+msgstr ""
+
+#: ../../../views/application/inst-attended.php:130
+#: ../../../views/application/view.php:351
+msgid "Major"
+msgstr ""
+
+#: ../../../views/application/inst-attended.php:139
+#: ../../../views/application/view.php:352
+msgid "GPA"
+msgstr ""
+
+#: ../../../views/application/inst-attended.php:148
+#: ../../../views/application/view.php:353
+msgid "Degree"
+msgstr ""
+
+#: ../../../views/application/inst-attended.php:157
+msgid "Conferral Date"
+msgstr ""
+
+#: ../../../views/application/inst.php:66
+msgid "Institution Type"
+msgstr ""
+
+#: ../../../views/application/view-inst.php:32
+#: ../../../views/application/view-inst.php:35
+msgid "View Institution"
+msgstr ""
+
+#: ../../../views/application/view-inst.php:73
+msgid "HS High School"
+msgstr ""
+
+#: ../../../views/application/view-inst.php:74
+msgid "COL College"
+msgstr ""
+
+#: ../../../views/application/view-inst.php:75
+msgid "UNIV University"
+msgstr ""
+
+#: ../../../views/application/view.php:35
+#: ../../../views/application/view.php:38
+msgid "View Application"
+msgstr ""
+
+#: ../../../views/application/view.php:221
+msgid "Application Status"
+msgstr ""
+
+#: ../../../views/application/view.php:225
+msgid "Pending"
+msgstr ""
+
+#: ../../../views/application/view.php:226
+msgid "Under Review"
+msgstr ""
+
+#: ../../../views/application/view.php:227
+msgid "Accepted"
+msgstr ""
+
+#: ../../../views/application/view.php:228
+msgid "Not Accepted"
+msgstr ""
+
+#: ../../../views/application/view.php:280
+#: ../../../views/application/view.php:297
+#: ../../../views/application/view.php:484
+msgid "Applicant Comments"
+msgstr ""
+
+#: ../../../views/application/view.php:286
+msgid "Staff Comments"
+msgstr ""
+
+#: ../../../views/application/view.php:316
+msgid "Internal Comments"
+msgstr ""
+
+#: ../../../views/application/view.php:349
+msgid "From Date"
+msgstr ""
+
+#: ../../../views/application/view.php:350
+msgid "To Date"
+msgstr ""
+
+#: ../../../views/application/view.php:354
+msgid "Grad Date"
+msgstr ""
+
+#: ../../../views/application/view.php:355
+msgid "Action"
+msgstr ""
+
+#: ../../../views/application/view.php:489
+msgid "These comments will be shown to the applicant in myeduTrac."
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:66
+#: ../../../views/calendar/booking-form.php:69
+msgid "Room / Event Booking Form"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:81
+msgid "It is recommended that you check the availability of a room before submitting the form. An email will be sent to the requestor confirming the booking of a room or event."
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:101
+#: ../../../views/calendar/events.php:54
+#: ../../../views/calendar/requests.php:55
+#: ../../../views/calendar/view-request.php:119
+msgid "Requestor"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:113
+#: ../../../views/calendar/request-form.php:92
+#: ../../../views/calendar/view-request.php:131
+msgid "Request Type"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:117
+#: ../../../views/calendar/request-form.php:95
+#: ../../../views/calendar/view-request.php:135
+msgid "Meeting"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:118
+#: ../../../views/calendar/request-form.php:96
+#: ../../../views/calendar/view-request.php:136
+msgid "Event"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:126
+#: ../../../views/calendar/events.php:52
+#: ../../../views/calendar/request-form.php:100
+#: ../../../views/calendar/requests.php:53
+#: ../../../views/calendar/setting.php:73
+#: ../../../views/calendar/setting.php:103
+#: ../../../views/calendar/view-request.php:144
+msgid "Category"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:138
+#: ../../../views/calendar/events.php:50
+#: ../../../views/calendar/request-form.php:107
+#: ../../../views/calendar/requests.php:51
+#: ../../../views/calendar/view-request.php:156
+msgid "Event Name"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:147
+#: ../../../views/calendar/request-form.php:111
+#: ../../../views/calendar/view-event.php:209
+#: ../../../views/calendar/view-request.php:165
+msgid "Description"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:156
+#: ../../../views/calendar/events.php:53
+#: ../../../views/calendar/request-form.php:115
+#: ../../../views/calendar/requests.php:54
+#: ../../../views/calendar/view-event.php:55
+#: ../../../views/calendar/view-event.php:109
+#: ../../../views/calendar/view-event.php:140
+#: ../../../views/calendar/view-request.php:174
+msgid "Room"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:174
+#: ../../../views/calendar/request-form.php:129
+#: ../../../views/calendar/view-request.php:192
+msgid "First Day"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:186
+#: ../../../views/calendar/request-form.php:122
+#: ../../../views/calendar/view-request.php:204
+msgid "Last Day"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:198
+#: ../../../views/calendar/request-form.php:143
+#: ../../../views/calendar/view-event.php:164
+#: ../../../views/calendar/view-request.php:216
+msgid "Start Time"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:210
+#: ../../../views/calendar/request-form.php:136
+#: ../../../views/calendar/view-event.php:188
+#: ../../../views/calendar/view-request.php:228
+msgid "End Time"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:222
+#: ../../../views/calendar/request-form.php:150
+#: ../../../views/calendar/view-request.php:240
+msgid "Repeat?"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:231
+#: ../../../views/calendar/request-form.php:156
+#: ../../../views/calendar/view-request.php:249
+msgid "Repeat Occurrence"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:234
+#: ../../../views/calendar/request-form.php:158
+#: ../../../views/calendar/view-request.php:252
+msgid "Every Day"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:237
+#: ../../../views/calendar/request-form.php:161
+#: ../../../views/calendar/view-request.php:255
+msgid "Weekly"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:240
+#: ../../../views/calendar/request-form.php:164
+#: ../../../views/calendar/view-request.php:258
+msgid "Biweekly"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:256
+#: ../../../views/calendar/request-form.php:172
+#: ../../../views/calendar/view-request.php:275
+msgid "Check Availability"
+msgstr ""
+
+#: ../../../views/calendar/booking-form.php:257
+#: ../../../views/calendar/view-request.php:276
+msgid "Book It"
+msgstr ""
+
+#: ../../../views/calendar/events.php:32
+#: ../../../views/calendar/events.php:35
+#: ../../../views/calendar/view-event.php:33
+msgid "Events List"
+msgstr ""
+
+#: ../../../views/calendar/events.php:51
+#: ../../../views/calendar/requests.php:52
+msgid "Event Type"
+msgstr ""
+
+#: ../../../views/calendar/events.php:55
+#: ../../../views/calendar/requests.php:56
+#: ../../../views/calendar/view-event.php:107
+msgid "Start Date/Time"
+msgstr ""
+
+#: ../../../views/calendar/index.php:95
+msgid "Month"
+msgstr ""
+
+#: ../../../views/calendar/index.php:96
+msgid "Week"
+msgstr ""
+
+#: ../../../views/calendar/index.php:97
+msgid "Day"
+msgstr ""
+
+#: ../../../views/calendar/index.php:98
+msgid "Today"
+msgstr ""
+
+#: ../../../views/calendar/request-form.php:64
+msgid "Room/Event Request Form"
+msgstr ""
+
+#: ../../../views/calendar/request-form.php:78
+msgid "It is recommended that you check the availability of your request before submitting the form. Once the form is submitted, an email will be sent to the room scheduler. If there are no issues, when the room scheduler approves your request, you will receive a confirmation email."
+msgstr ""
+
+#: ../../../views/calendar/request-form.php:173
+msgid "Send"
+msgstr ""
+
+#: ../../../views/calendar/requests.php:87
+msgid "Are you sure you want to delete this booking request?"
+msgstr ""
+
+#: ../../../views/calendar/setting.php:40
+#: ../../../views/calendar/setting.php:43
+msgid "Room Request Settings"
+msgstr ""
+
+#: ../../../views/calendar/setting.php:49
+msgid "If you would like to change the background colors, please refer to the <a href=\"http://www.colorpicker.com/\">online color picker</a>."
+msgstr ""
+
+#: ../../../views/calendar/setting.php:59
+msgid "Indicates field is required"
+msgstr ""
+
+#: ../../../views/calendar/setting.php:74
+#: ../../../views/calendar/setting.php:112
+msgid "Background Color"
+msgstr ""
+
+#: ../../../views/calendar/setting.php:96
+msgid "Edit Category"
+msgstr ""
+
+#: ../../../views/calendar/setting.php:151
+#: ../../../views/calendar/setting.php:200
+msgid "Room Request Email"
+msgstr ""
+
+#: ../../../views/calendar/setting.php:160
+msgid "Room Request Text"
+msgstr ""
+
+#: ../../../views/calendar/setting.php:171
+msgid "Room Booking Confirmation Text"
+msgstr ""
+
+#: ../../../views/calendar/setting.php:204
+msgid "This is the email where all room requests are sent."
+msgstr ""
+
+#: ../../../views/calendar/view-event.php:51
+#: ../../../views/calendar/view-event.php:106
+msgid "Meeting Day"
+msgstr ""
+
+#: ../../../views/calendar/view-event.php:52
+msgid "Time"
+msgstr ""
+
+#: ../../../views/calendar/view-event.php:53
+msgid "Event Title"
+msgstr ""
+
+#: ../../../views/calendar/view-event.php:54
+msgid "Event Description"
+msgstr ""
+
+#: ../../../views/calendar/view-event.php:81
+#: ../../../views/calendar/view-event.php:246
+msgid "Are you sure you want to delete this booking?"
+msgstr ""
+
+#: ../../../views/calendar/view-event.php:108
+msgid "End Date/Time"
+msgstr ""
+
+#: ../../../views/calendar/view-event.php:131
+msgid "Edit Event Meta"
+msgstr ""
+
+#: ../../../views/calendar/view-event.php:152
+msgid "Start Date"
+msgstr ""
+
+#: ../../../views/calendar/view-event.php:176
+msgid "End Date"
+msgstr ""
+
+#: ../../../views/calendar/view-request.php:99
+msgid "It is recommended that you check the availability of a room before submitting the form. If there are changes to the original request, you need to make the changes and click \"Update\" before processing the request."
+msgstr ""
+
+#: ../../../views/calendar/view-request.php:277
+msgid "Update"
+msgstr ""
+
+#: ../../../views/comm-mgmt/add.php:68
+#: ../../../views/comm-mgmt/add.php:128
+#: ../../../views/comm-mgmt/view.php:74
+#: ../../../views/comm-mgmt/view.php:142
+msgid "Placeholders"
+msgstr ""
+
+#: ../../../views/comm-mgmt/add.php:74
+#: ../../../views/comm-mgmt/index.php:40
+#: ../../../views/comm-mgmt/view.php:80
+msgid "Email Key"
+msgstr ""
+
+#: ../../../views/comm-mgmt/add.php:81
+#: ../../../views/comm-mgmt/view.php:87
+msgid "Email Name"
+msgstr ""
+
+#: ../../../views/comm-mgmt/add.php:89
+#: ../../../views/comm-mgmt/view.php:95
+msgid "Template"
+msgstr ""
+
+#: ../../../views/comm-mgmt/mailmerge.php:52
+#: ../../../views/comm-mgmt/schedule.php:101
+msgid "Saved Query"
+msgstr ""
+
+#: ../../../views/comm-mgmt/mailmerge.php:70
+msgid "Avery Label"
+msgstr ""
+
+#: ../../../views/comm-mgmt/queue.php:50
+#: ../../../views/course/add.php:75
+#: ../../../views/course/tcre.php:186
+#: ../../../views/course/view.php:75
+msgid "Subject"
+msgstr ""
+
+#: ../../../views/comm-mgmt/queue.php:51
+msgid "Query"
+msgstr ""
+
+#: ../../../views/comm-mgmt/queue.php:52
+msgid "Processed"
+msgstr ""
+
+#: ../../../views/comm-mgmt/queue.php:95
+msgid "Are you sure you want to delete this item from the queue?"
+msgstr ""
+
+#: ../../../views/comm-mgmt/schedule.php:62
+msgid "Email Subject"
+msgstr ""
+
+#: ../../../views/comm-mgmt/schedule.php:69
+msgid "From Name"
+msgstr ""
+
+#: ../../../views/comm-mgmt/schedule.php:76
+msgid "From Email"
+msgstr ""
+
+#: ../../../views/comm-mgmt/schedule.php:89
+msgid "Email Template"
+msgstr ""
+
+#: ../../../views/comm-mgmt/view.php:44
+#: ../../../views/comm-mgmt/view.php:47
+msgid "View Email Template"
+msgstr ""
+
+#: ../../../views/comm-mgmt/view.php:105
+#: ../../../views/course/vextr.php:200
+#: ../../../views/course/view.php:209
+msgid "Last Update"
+msgstr ""
+
+#: ../../../views/course/add.php:32
+#: ../../../views/course/addnl-info.php:34
+#: ../../../views/course/index.php:27
+#: ../../../views/course/view.php:32
+msgid "Search Course"
+msgstr ""
+
+#: ../../../views/course/add.php:34
+msgid "Create Course"
+msgstr ""
+
+#: ../../../views/course/add.php:37
+msgid "Add Course"
+msgstr ""
+
+#: ../../../views/course/add.php:63
+#: ../../../views/course/tcre.php:208
+#: ../../../views/course/view.php:63
+msgid "Department"
+msgstr ""
+
+#: ../../../views/course/add.php:87
+#: ../../../views/course/atceq.php:129
+#: ../../../views/course/view.php:96
+msgid "Course Level"
+msgstr ""
+
+#: ../../../views/course/add.php:96
+#: ../../../views/course/index.php:58
+#: ../../../views/course/tcre.php:168
+#: ../../../views/course/view.php:105
+msgid "Short Title"
+msgstr ""
+
+#: ../../../views/course/add.php:103
+#: ../../../views/course/tcre.php:177
+#: ../../../views/course/view.php:114
+msgid "Long Title"
+msgstr ""
+
+#: ../../../views/course/add.php:110
+#: ../../../views/course/view.php:87
+msgid "Course Number"
+msgstr ""
+
+#: ../../../views/course/add.php:123
+#: ../../../views/course/view.php:135
+msgid "Effective / End Date"
+msgstr ""
+
+#: ../../../views/course/add.php:142
+#: ../../../views/course/atceq.php:93
+#: ../../../views/course/atceq.php:128
+#: ../../../views/course/extr.php:191
+#: ../../../views/course/tcre.php:108
+#: ../../../views/course/vextr.php:115
+#: ../../../views/course/view.php:160
+msgid "Credits"
+msgstr ""
+
+#: ../../../views/course/add.php:149
+#: ../../../views/course/view.php:169
+msgid "Academic Level"
+msgstr ""
+
+#: ../../../views/course/add.php:158
+msgid "Status / Date"
+msgstr ""
+
+#: ../../../views/course/add.php:170
+#: ../../../views/course/extr.php:262
+#: ../../../views/course/vextr.php:186
+#: ../../../views/course/view.php:191
+msgid "Approval Person"
+msgstr ""
+
+#: ../../../views/course/add.php:177
+#: ../../../views/course/view.php:200
+msgid "Approval Date"
+msgstr ""
+
+#: ../../../views/course/add.php:194
+#: ../../../views/course/view.php:244
+msgid "Course Description"
+msgstr ""
+
+#: ../../../views/course/addnl-info.php:41
+msgid "Additional Course Info:"
+msgstr ""
+
+#: ../../../views/course/addnl-info.php:67
+msgid "Prerequisites"
+msgstr ""
+
+#: ../../../views/course/addnl-info.php:74
+msgid "Allow Audit"
+msgstr ""
+
+#: ../../../views/course/addnl-info.php:78
+#: ../../../views/course/addnl-info.php:91
+#: ../../../views/course/index.php:120
+#: ../../../views/course/view.php:282
+msgid "Yes"
+msgstr ""
+
+#: ../../../views/course/addnl-info.php:79
+#: ../../../views/course/addnl-info.php:92
+#: ../../../views/course/index.php:121
+#: ../../../views/course/view.php:283
+msgid "No"
+msgstr ""
+
+#: ../../../views/course/addnl-info.php:87
+msgid "Allow Waitlist"
+msgstr ""
+
+#: ../../../views/course/addnl-info.php:106
+msgid "Minimum Enrollment"
+msgstr ""
+
+#: ../../../views/course/addnl-info.php:113
+msgid "Seating Capacity"
+msgstr ""
+
+#: ../../../views/course/atceq.php:63
+#: ../../../views/course/atceq.php:66
+msgid "New Transfer Course Equivalency"
+msgstr ""
+
+#: ../../../views/course/atceq.php:91
+#: ../../../views/course/tcre.php:106
+msgid "Transfer Course"
+msgstr ""
+
+#: ../../../views/course/atceq.php:94
+msgid "Min Grade"
+msgstr ""
+
+#: ../../../views/course/atceq.php:126
+#: ../../../views/course/tceq.php:59
+#: ../../../views/course/tcre.php:107
+msgid "Equivalent Course"
+msgstr ""
+
+#: ../../../views/course/atceq.php:171
+msgid "Start / End Date"
+msgstr ""
+
+#: ../../../views/course/atceq.php:190
+#: ../../../views/course/tceq.php:62
+#: ../../../views/course/tcre.php:109
+msgid "Grade"
+msgstr ""
+
+#: ../../../views/course/atceq.php:205
+msgid "Comment"
+msgstr ""
+
+#: ../../../views/course/extr.php:33
+#: ../../../views/course/extr.php:36
+#: ../../../views/course/tceq.php:58
+msgid "External Course"
+msgstr ""
+
+#: ../../../views/course/extr.php:68
+#: ../../../views/course/extr.php:151
+#: ../../../views/course/vextr.php:76
+msgid "Course Name"
+msgstr ""
+
+#: ../../../views/course/extr.php:72
+#: ../../../views/course/index.php:60
+msgid "Effective Date"
+msgstr ""
+
+#: ../../../views/course/extr.php:198
+#: ../../../views/course/vextr.php:122
+msgid "Minimum Grade"
+msgstr ""
+
+#: ../../../views/course/extr.php:213
+#: ../../../views/course/vextr.php:131
+msgid "Term"
+msgstr ""
+
+#: ../../../views/course/extr.php:255
+#: ../../../views/course/vextr.php:179
+msgid "Status Date"
+msgstr ""
+
+#: ../../../views/course/extr.php:269
+#: ../../../views/course/vextr.php:193
+msgid "Add Date"
+msgstr ""
+
+#: ../../../views/course/index.php:24
+msgid "Courses"
+msgstr ""
+
+#: ../../../views/course/index.php:57
+msgid "Course Code"
+msgstr ""
+
+#: ../../../views/course/index.php:85
+#: ../../../views/course/view.php:253
+msgid "Clone"
+msgstr ""
+
+#: ../../../views/course/index.php:86
+msgid "A"
+msgstr ""
+
+#: ../../../views/course/index.php:87
+msgid "Create Section"
+msgstr ""
+
+#: ../../../views/course/index.php:115
+#: ../../../views/course/view.php:277
+msgid "Are you sure you want to create a copy of this course?"
+msgstr ""
+
+#: ../../../views/course/tceq.php:25
+#: ../../../views/course/tceq.php:28
+msgid "Search Transfer Course Equivalency"
+msgstr ""
+
+#: ../../../views/course/tcre.php:78
+#: ../../../views/course/tcre.php:81
+msgid "Transfer Credit"
+msgstr ""
+
+#: ../../../views/course/tcre.php:155
+msgid "CRSE ID/Name"
+msgstr ""
+
+#: ../../../views/course/tcre.php:195
+msgid "Acad Lvl/Crse Lvl"
+msgstr ""
+
+#: ../../../views/course/tcre.php:223
+#: ../../../views/course/view.php:123
+msgid "Credit Type"
+msgstr ""
+
+#: ../../../views/course/tcre.php:232
+msgid "Term/Rpt Term"
+msgstr ""
+
+#: ../../../views/course/tcre.php:248
+msgid "Att/Comp Cred"
+msgstr ""
+
+#: ../../../views/course/tcre.php:261
+msgid "Grade/Grd Pts"
+msgstr ""
+
+#: ../../../views/course/tcre.php:274
+msgid "Status Date/Time"
+msgstr ""
+
+#: ../../../views/course/tcre.php:287
+msgid "Student ID/Name"
+msgstr ""
+
+#: ../../../views/course/vextr.php:33
+msgid "Search / Add External Course"
+msgstr ""
+
+#: ../../../views/course/vextr.php:85
+msgid "Start/End Date"
+msgstr ""
+
+#: ../../../views/course/view.php:218
+msgid "Additional Info"
+msgstr ""
+
+#: ../../../views/course/vtceq.php:30
+#: ../../../views/course/vtceq.php:33
+msgid "View Transfer Course Equivalency"
+msgstr ""
+
+#: ../../../views/courses/cart.php:28
+msgid "Shopping Cart"
+msgstr ""
+
+#: ../../../views/courses/cart.php:47
+#: ../../../views/courses/index.php:83
+msgid "Meeting Day(s)"
+msgstr ""
+
+#: ../../../views/courses/cart.php:50
+#: ../../../views/courses/index.php:86
+msgid "Location"
+msgstr ""
+
+#: ../../../views/courses/cart.php:71
+msgid "Remove"
+msgstr ""
+
+#: ../../../views/courses/cart.php:73
+#: ../../../views/courses/cart.php:93
+msgid "Register"
+msgstr ""
+
+#: ../../../views/courses/index.php:63
+msgid "You have a hold on your account which is currently restricting you from registering for a course(s). Please contact the following office(s)/department(s) to inquire about the hold(s) on your account: "
+msgstr ""
+
+#: ../../../views/courses/index.php:87
+msgid "Info"
+msgstr ""
+
+#: ../../../views/courses/index.php:88
+msgid "Select"
+msgstr ""
+
+#: ../../../views/courses/index.php:114
+msgid "Section Info"
+msgstr ""
+
+#: ../../../views/courses/index.php:122
+msgid "Instructor:"
+msgstr ""
+
+#: ../../../views/courses/index.php:126
+msgid "Description:"
+msgstr ""
+
+#: ../../../views/courses/index.php:130
+msgid "Comment:"
+msgstr ""
+
+#: ../../../views/courses/index.php:134
+msgid "Course Fee:"
+msgstr ""
+
+#: ../../../views/courses/index.php:138
+msgid "Lab Fee:"
+msgstr ""
+
+#: ../../../views/courses/index.php:142
+msgid "Material Fee:"
+msgstr ""
+
+#: ../../../views/courses/index.php:181
+msgid "Add to Cart"
+msgstr ""
+
+#: ../../../views/cron/index.php:71
+#: ../../../views/cron/view.php:74
+msgid "Job Name"
+msgstr ""
+
+#: ../../../views/cron/index.php:72
+msgid "Last Fired"
+msgstr ""
+
+#: ../../../views/cron/index.php:73
+msgid "Next Execution"
+msgstr ""
+
+#: ../../../views/cron/index.php:74
+msgid "Interval"
+msgstr ""
+
+#: ../../../views/cron/index.php:114
+msgid "Push"
+msgstr ""
+
+#: ../../../views/cron/view.php:39
+#: ../../../views/cron/view.php:42
+msgid "View Cron Job"
+msgstr ""
+
+#: ../../../views/cron/view.php:67
+msgid "Script to Run"
+msgstr ""
+
+#: ../../../views/cron/view.php:81
+msgid "Minutes"
+msgstr ""
+
+#: ../../../views/cron/view.php:151
+msgid "Hourly"
+msgstr ""
+
+#: ../../../views/cron/view.php:185
+msgid "Daily"
+msgstr ""
+
+#: ../../../views/dashboard/index.php:50
+msgid "Students by Academic Program"
+msgstr ""
+
+#: ../../../views/dashboard/index.php:60
+msgid "Students"
+msgstr ""
+
+#: ../../../views/dashboard/index.php:84
+msgid "Gender by Academic Departments"
+msgstr ""
+
+#: ../../../views/dashboard/index.php:94
+msgid "Male"
+msgstr ""
+
+#: ../../../views/dashboard/index.php:95
+msgid "Female"
+msgstr ""
+
+#: ../../../views/dashboard/support.php:29
+#: ../../../views/dashboard/support.php:32
+msgid "Online Documenation"
+msgstr ""
+
+#: ../../../views/dashboard/support.php:41
+msgid "Your browser does not support iframes."
+msgstr ""
+
+#: ../../../views/error/404.php:30
+msgid "Ouch!"
+msgstr ""
+
+#: ../../../views/error/404.php:30
+msgid "404 error"
+msgstr ""
+
+#: ../../../views/error/404.php:35
+msgid "It seems the page you are looking for is not here anymore. The page might have moved to another address or just removed by our staff."
+msgstr ""
+
+#: ../../../views/error/404.php:43
+msgid "Is this a serious error?"
+msgstr ""
+
+#: ../../../views/error/404.php:43
+msgid "Let us know"
+msgstr ""
+
+#: ../../../views/error/audit.php:41
+msgid "Process"
+msgstr ""
+
+#: ../../../views/error/audit.php:42
+msgid "Record"
+msgstr ""
+
+#: ../../../views/error/audit.php:43
+msgid "Username"
+msgstr ""
+
+#: ../../../views/error/audit.php:44
+msgid "Action Date"
+msgstr ""
+
+#: ../../../views/error/audit.php:45
+msgid "Expire Date"
+msgstr ""
+
+#: ../../../views/error/logs.php:42
+msgid "Error Type"
+msgstr ""
+
+#: ../../../views/error/logs.php:43
+msgid "String"
+msgstr ""
+
+#: ../../../views/error/logs.php:44
+msgid "File"
+msgstr ""
+
+#: ../../../views/error/logs.php:45
+msgid "Line Number"
+msgstr ""
+
+#: ../../../views/error/screen-error.php:34
+msgid "The screen "
+msgstr ""
+
+#: ../../../views/error/screen-error.php:34
+msgid " does not exist. Please try your search again."
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:98
+#: ../../../views/financial/add-jentry.php:101
+msgid "Add Journal Entry"
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:115
+msgid "Entries"
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:116
+msgid "Add Entry"
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:137
+msgid "Date"
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:149
+msgid "Entry Title"
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:164
+msgid "Manual ID"
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:197
+msgid "Include -(minus) symbol before the credit amount."
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:202
+msgid "GL Account"
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:203
+msgid "Memo"
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:204
+#: ../../../views/financial/billing-table.php:67
+#: ../../../views/financial/billing-table.php:121
+#: ../../../views/financial/billing-table.php:173
+msgid "Amount"
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:234
+msgid "Debit: "
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:235
+msgid "Credit: "
+msgstr ""
+
+#: ../../../views/financial/add-jentry.php:236
+msgid "Balance:"
+msgstr ""
+
+#: ../../../views/financial/add-payment.php:72
+#: ../../../views/financial/batch.php:65
+msgid "Generate Bill/Add Fee"
+msgstr ""
+
+#: ../../../views/financial/add-payment.php:75
+#: ../../../views/financial/batch.php:68
+msgid "Issue Refund"
+msgstr ""
+
+#: ../../../views/financial/add-payment.php:89
+msgid "Student ID"
+msgstr ""
+
+#: ../../../views/financial/add-payment.php:130
+msgid "Payment"
+msgstr ""
+
+#: ../../../views/financial/add-payment.php:139
+msgid "Payment Type"
+msgstr ""
+
+#: ../../../views/financial/add-payment.php:151
+msgid "Check Number"
+msgstr ""
+
+#: ../../../views/financial/batch.php:82
+msgid "Population"
+msgstr ""
+
+#: ../../../views/financial/batch.php:86
+msgid "Program"
+msgstr ""
+
+#: ../../../views/financial/batch.php:165
+msgid "Fees"
+msgstr ""
+
+#: ../../../views/financial/billing-table.php:30
+#: ../../../views/financial/billing-table.php:33
+msgid "Billing Table"
+msgstr ""
+
+#: ../../../views/financial/create-bill.php:49
+#: ../../../views/financial/create-bill.php:52
+msgid "Create Bill"
+msgstr ""
+
+#: ../../../views/financial/create-bill.php:188
+msgid "Comments will only be posted when a bill is initially created. If you are adding a fee to an already existing bill and want to add a comment about the new addition, you can do so when viewing the student's bill. Unlike other system comments, these comments will be seen by students."
+msgstr ""
+
+#: ../../../views/financial/gl-accounts.php:30
+#: ../../../views/financial/gl-accounts.php:47
+#: ../../../views/financial/gl-filter.php:39
+#: ../../../views/financial/jentry-filter.php:39
+msgid "GL Accounts"
+msgstr ""
+
+#: ../../../views/financial/gl-accounts.php:34
+msgid "Chart of Accounts"
+msgstr ""
+
+#: ../../../views/financial/gl-accounts.php:49
+#: ../../../views/financial/gl-filter.php:41
+#: ../../../views/financial/gl-summary.php:25
+#: ../../../views/financial/gl-summary.php:36
+#: ../../../views/financial/jentry-filter.php:41
+msgid "General Ledger Summary"
+msgstr ""
+
+#: ../../../views/financial/gl-accounts.php:62
+msgid "Account Number"
+msgstr ""
+
+#: ../../../views/financial/gl-accounts.php:65
+#: ../../../views/financial/view-bill.php:209
+#: ../../../views/financial/view-jentry.php:115
+msgid "Balance"
+msgstr ""
+
+#: ../../../views/financial/gl-accounts.php:108
+#: ../../../views/financial/gl-accounts.php:167
+#: ../../../views/financial/view-jentry.php:85
+msgid "Account"
+msgstr ""
+
+#: ../../../views/financial/gl-accounts.php:114
+#: ../../../views/financial/gl-accounts.php:173
+msgid "Account #"
+msgstr ""
+
+#: ../../../views/financial/gl-accounts.php:123
+#: ../../../views/financial/gl-accounts.php:182
+msgid "Account Name"
+msgstr ""
+
+#: ../../../views/financial/gl-accounts.php:132
+#: ../../../views/financial/gl-accounts.php:191
+msgid "Account Type"
+msgstr ""
+
+#: ../../../views/financial/gl-filter.php:24
+#: ../../../views/financial/gl-filter.php:27
+msgid "Search General Ledger"
+msgstr ""
+
+#: ../../../views/financial/gl-filter.php:48
+#: ../../../views/financial/jentry-filter.php:48
+msgid "Select statement period"
+msgstr ""
+
+#: ../../../views/financial/gl-filter.php:61
+#: ../../../views/financial/jentry-filter.php:61
+msgid "From"
+msgstr ""
+
+#: ../../../views/financial/gl-filter.php:79
+#: ../../../views/financial/jentry-filter.php:79
+msgid "To"
+msgstr ""
+
+#: ../../../views/financial/gl-summary.php:44
+#: ../../../views/financial/jentries.php:44
+msgid "Today's Date"
+msgstr ""
+
+#: ../../../views/financial/gl-summary.php:49
+#: ../../../views/financial/jentries.php:49
+msgid "Statement Period"
+msgstr ""
+
+#: ../../../views/financial/gl-summary.php:60
+msgid "GL Number"
+msgstr ""
+
+#: ../../../views/financial/gl-summary.php:61
+msgid "Account Title"
+msgstr ""
+
+#: ../../../views/financial/gl-summary.php:63
+msgid "Opening"
+msgstr ""
+
+#: ../../../views/financial/gl-summary.php:64
+#: ../../../views/financial/view-jentry.php:107
+msgid "Debit"
+msgstr ""
+
+#: ../../../views/financial/gl-summary.php:65
+#: ../../../views/financial/view-bill.php:428
+#: ../../../views/financial/view-jentry.php:111
+msgid "Credit"
+msgstr ""
+
+#: ../../../views/financial/gl-summary.php:66
+msgid "Closing"
+msgstr ""
+
+#: ../../../views/financial/gl-summary.php:87
+msgid "Total"
+msgstr ""
+
+#: ../../../views/financial/gl-summary.php:97
+#: ../../../views/financial/jentries.php:91
+#: ../../../views/financial/view-jentry.php:121
+msgid "This computer generated statement does not need signature."
+msgstr ""
+
+#: ../../../views/financial/index.php:24
+msgid "Bill"
+msgstr ""
+
+#: ../../../views/financial/index.php:58
+msgid "Bill ID"
+msgstr ""
+
+#: ../../../views/financial/index.php:59
+msgid "Last Name"
+msgstr ""
+
+#: ../../../views/financial/index.php:60
+msgid "First Name"
+msgstr ""
+
+#: ../../../views/financial/index.php:108
+msgid "Bill Search"
+msgstr ""
+
+#: ../../../views/financial/issue-refund.php:128
+msgid "Refund Amount"
+msgstr ""
+
+#: ../../../views/financial/jentries.php:25
+msgid "General Journal Entries"
+msgstr ""
+
+#: ../../../views/financial/jentries.php:36
+msgid "Journal Entry Summary"
+msgstr ""
+
+#: ../../../views/financial/jentries.php:64
+#: ../../../views/financial/view-jentry.php:69
+msgid "Posted by"
+msgstr ""
+
+#: ../../../views/financial/jentries.php:84
+msgid "Total Amount"
+msgstr ""
+
+#: ../../../views/financial/jentry-filter.php:24
+#: ../../../views/financial/jentry-filter.php:27
+msgid "Search Journal Entries"
+msgstr ""
+
+#: ../../../views/financial/journal-entries.php:62
+msgid "Posted By"
+msgstr ""
+
+#: ../../../views/financial/paypal-ipn.php:110
+msgid "IPN Fraud Warning"
+msgstr ""
+
+#: ../../../views/financial/paypal-ipn.php:130
+msgid "Invalid IPN"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:24
+#: ../../../views/financial/paypal.php:27
+msgid "Paypal Settings"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:51
+msgid "Enable?"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:64
+msgid "Post Over SSL?"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:77
+#: ../../../views/financial/paypal.php:150
+msgid "Business Email"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:92
+msgid "Currency Code"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:96
+msgid "US Dollar"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:97
+msgid "Austrailian Dollar"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:98
+msgid "Euro"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:106
+msgid "Testing?"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:137
+msgid "IPN URL to enter into PayPal settings:"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:139
+msgid "There is no need to enable IPN in PayPal. eduTrac ERP will automatically let PayPal know to use the above URL."
+msgstr ""
+
+#: ../../../views/financial/paypal.php:155
+msgid "Set this to the email that is specified on your Paypal account. If you are in testing mode, make sure to set this to the email address in your Sandbox account."
+msgstr ""
+
+#: ../../../views/financial/paypal.php:174
+msgid "Sandbox Mode"
+msgstr ""
+
+#: ../../../views/financial/paypal.php:179
+msgid "If you are testing to make sure that the communication between your site and Paypal is working, set this to 'Yes' otherwise set it to 'No' for Live production."
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:41
+msgid "View Bill"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:73
+msgid "Phone:"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:74
+msgid "Email:"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:75
+msgid "Birth Date:"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:81
+msgid "Status:"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:82
+msgid "FERPA:"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:89
+msgid "Entry Date:"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:120
+msgid "Billing Date"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:155
+msgid "Are you sure you want to delete this fee?"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:172
+msgid "Course Fees"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:181
+msgid "Beginning Balance"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:190
+msgid "Ending Balance"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:199
+msgid "Current Balance"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:225
+#: ../../../views/financial/view-bill.php:256
+msgid "Student Comments"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:235
+#: ../../../views/financial/view-bill.php:269
+msgid "Comments for Students"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:299
+msgid "Comments for Internal Use"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:356
+msgid "Are you sure you want to delete this payment?"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:375
+#: ../../../views/financial/view-bill.php:385
+#: ../../../views/financial/view-bill.php:406
+msgid "Refund"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:410
+msgid "Are you sure you want to delete this refund?"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:464
+msgid "Family Educational Rights and Privacy Act (FERPA)"
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:469
+msgid ""
+"\"FERPA gives parents certain rights with respect to their children's education records. \n"
+"                    These rights transfer to the student when he or she reaches the age of 18 or attends a school beyond \n"
+"                    the high school level. Students to whom the rights have transferred are 'eligible students.'\""
+msgstr ""
+
+#: ../../../views/financial/view-bill.php:472
+msgid ""
+"If the FERPA restriction states \"Yes\", then the student has requested that none of their \n"
+"                    information be given out without their permission. To get a better understanding of FERPA, visit \n"
+"                    the U.S. DOE's website @ "
+msgstr ""
+
+#: ../../../views/financial/view-jentry.php:25
+#: ../../../views/financial/view-jentry.php:36
+msgid "General Journal Entry"
+msgstr ""
+
+#: ../../../views/financial/view-jentry.php:48
+msgid "Journal ID"
+msgstr ""
+
+#: ../../../views/form/acad-year.php:26
+#: ../../../views/form/acad-year.php:29
+#: ../../../views/form/acad-year.php:100
+msgid "Academic Year"
+msgstr ""
+
+#: ../../../views/form/acad-year.php:54
+#: ../../../views/form/acad-year.php:61
+msgid "Acad Year"
+msgstr ""
+
+#: ../../../views/form/acad-year.php:99
+msgid "Academic Year Code"
+msgstr ""
+
+#: ../../../views/form/address.php:46
+msgid "Address1"
+msgstr ""
+
+#: ../../../views/form/address.php:50
+msgid "Address2"
+msgstr ""
+
+#: ../../../views/form/address.php:65
+msgid "Zip"
+msgstr ""
+
+#: ../../../views/form/address.php:69
+msgid "Phone #"
+msgstr ""
+
+#: ../../../views/form/address.php:80
+msgid "Email"
+msgstr ""
+
+#: ../../../views/form/building.php:30
+#: ../../../views/form/building.php:33
+msgid "Building"
+msgstr ""
+
+#: ../../../views/form/building.php:60
+#: ../../../views/form/building.php:121
+msgid "Building Code"
+msgstr ""
+
+#: ../../../views/form/building.php:67
+#: ../../../views/form/building.php:122
+msgid "Building Name"
+msgstr ""
+
+#: ../../../views/form/ccd.php:31
+#: ../../../views/form/ccd.php:34
+#: ../../../views/form/import.php:89
+msgid "CCD"
+msgstr ""
+
+#: ../../../views/form/ccd.php:61
+#: ../../../views/form/ccd.php:106
+msgid "CCD Code"
+msgstr ""
+
+#: ../../../views/form/ccd.php:68
+#: ../../../views/form/ccd.php:107
+msgid "CCD Name"
+msgstr ""
+
+#: ../../../views/form/cip.php:30
+#: ../../../views/form/cip.php:33
+#: ../../../views/form/import.php:91
+msgid "CIP"
+msgstr ""
+
+#: ../../../views/form/cip.php:60
+#: ../../../views/form/cip.php:103
+msgid "CIP Code"
+msgstr ""
+
+#: ../../../views/form/cip.php:67
+#: ../../../views/form/cip.php:104
+msgid "CIP Name"
+msgstr ""
+
+#: ../../../views/form/degree.php:54
+#: ../../../views/form/degree.php:97
+msgid "Degree Code"
+msgstr ""
+
+#: ../../../views/form/degree.php:61
+#: ../../../views/form/degree.php:98
+msgid "Degree Name"
+msgstr ""
+
+#: ../../../views/form/department.php:54
+#: ../../../views/form/department.php:121
+msgid "Department Code"
+msgstr ""
+
+#: ../../../views/form/department.php:61
+msgid "Department Type"
+msgstr ""
+
+#: ../../../views/form/department.php:76
+#: ../../../views/form/department.php:122
+msgid "Department Name"
+msgstr ""
+
+#: ../../../views/form/department.php:83
+#: ../../../views/form/grade-scale.php:107
+msgid "Short Description"
+msgstr ""
+
+#: ../../../views/form/department.php:123
+msgid "Department Description"
+msgstr ""
+
+#: ../../../views/form/grade-scale.php:25
+#: ../../../views/form/grade-scale.php:33
+msgid "Grade Scale"
+msgstr ""
+
+#: ../../../views/form/grade-scale.php:67
+#: ../../../views/form/grade-scale.php:170
+msgid "Percent"
+msgstr ""
+
+#: ../../../views/form/grade-scale.php:74
+msgid "Points"
+msgstr ""
+
+#: ../../../views/form/grade-scale.php:81
+#: ../../../views/form/grade-scale.php:141
+msgid "Count in GPA"
+msgstr ""
+
+#: ../../../views/form/grade-scale.php:146
+msgid "Should this be applied and calculated in the GPA?"
+msgstr ""
+
+#: ../../../views/form/grade-scale.php:171
+msgid "Grade Points"
+msgstr ""
+
+#: ../../../views/form/import.php:30
+#: ../../../views/form/import.php:33
+msgid "Quick Importer"
+msgstr ""
+
+#: ../../../views/form/import.php:63
+#: ../../../views/form/photo.php:53
+msgid "Select file"
+msgstr ""
+
+#: ../../../views/form/import.php:63
+#: ../../../views/form/photo.php:53
+msgid "Change"
+msgstr ""
+
+#: ../../../views/form/import.php:71
+msgid "Database Table"
+msgstr ""
+
+#: ../../../views/form/import.php:75
+#: ../../../views/form/semester.php:31
+#: ../../../views/form/semester.php:34
+#: ../../../views/form/semester.php:80
+#: ../../../views/form/semester.php:162
+msgid "Semester"
+msgstr ""
+
+#: ../../../views/form/import.php:82
+msgid "Student Fee"
+msgstr ""
+
+#: ../../../views/form/import.php:85
+msgid "Credit Load"
+msgstr ""
+
+#: ../../../views/form/import.php:88
+#: ../../../views/form/minor.php:31
+#: ../../../views/form/minor.php:34
+msgid "Minor"
+msgstr ""
+
+#: ../../../views/form/import.php:90
+#: ../../../views/form/specialization.php:31
+#: ../../../views/form/specialization.php:34
+msgid "Specialization"
+msgstr ""
+
+#: ../../../views/form/import.php:95
+#: ../../../views/form/school.php:30
+#: ../../../views/form/school.php:33
+msgid "School"
+msgstr ""
+
+#: ../../../views/form/import.php:101
+msgid "Staff"
+msgstr ""
+
+#: ../../../views/form/import.php:102
+msgid "Staff Meta"
+msgstr ""
+
+#: ../../../views/form/import.php:107
+msgid "Student Acad Cred"
+msgstr ""
+
+#: ../../../views/form/import.php:108
+msgid "Student Acad Level"
+msgstr ""
+
+#: ../../../views/form/import.php:109
+msgid "Student Course Section"
+msgstr ""
+
+#: ../../../views/form/import.php:110
+msgid "Student Program"
+msgstr ""
+
+#: ../../../views/form/import.php:111
+msgid "Student Term"
+msgstr ""
+
+#: ../../../views/form/import.php:112
+msgid "Student Term GPA"
+msgstr ""
+
+#: ../../../views/form/import.php:113
+msgid "Student Term Load"
+msgstr ""
+
+#: ../../../views/form/location.php:60
+#: ../../../views/form/location.php:105
+msgid "Location Code"
+msgstr ""
+
+#: ../../../views/form/location.php:67
+#: ../../../views/form/location.php:106
+msgid "Location Name"
+msgstr ""
+
+#: ../../../views/form/major.php:61
+#: ../../../views/form/major.php:106
+msgid "Major Code"
+msgstr ""
+
+#: ../../../views/form/major.php:68
+#: ../../../views/form/major.php:107
+msgid "Major Name"
+msgstr ""
+
+#: ../../../views/form/minor.php:61
+#: ../../../views/form/minor.php:106
+msgid "Minor Code"
+msgstr ""
+
+#: ../../../views/form/minor.php:68
+#: ../../../views/form/minor.php:107
+msgid "Minor Name"
+msgstr ""
+
+#: ../../../views/form/photo.php:30
+msgid "Upload School Photo"
+msgstr ""
+
+#: ../../../views/form/photo.php:43
+msgid "If you decide later on that you'd rather use the Gravatar service instead of the photo you uploaded, click the photo to delete it."
+msgstr ""
+
+#: ../../../views/form/room.php:72
+msgid "Room Code"
+msgstr ""
+
+#: ../../../views/form/room.php:85
+#: ../../../views/form/room.php:131
+msgid "Room Number"
+msgstr ""
+
+#: ../../../views/form/rstr-code.php:30
+#: ../../../views/form/rstr-code.php:33
+msgid "Restriction Codes"
+msgstr ""
+
+#: ../../../views/form/rstr-code.php:60
+msgid "Code"
+msgstr ""
+
+#: ../../../views/form/rstr-code.php:115
+msgid "Restriction Code"
+msgstr ""
+
+#: ../../../views/form/school.php:60
+#: ../../../views/form/school.php:118
+msgid "School Code"
+msgstr ""
+
+#: ../../../views/form/school.php:67
+#: ../../../views/form/school.php:119
+msgid "School Name"
+msgstr ""
+
+#: ../../../views/form/semester.php:73
+msgid "Semester Code"
+msgstr ""
+
+#: ../../../views/form/specialization.php:61
+#: ../../../views/form/specialization.php:106
+msgid "Specialization Code"
+msgstr ""
+
+#: ../../../views/form/specialization.php:68
+#: ../../../views/form/specialization.php:107
+msgid "Specialization Name"
+msgstr ""
+
+#: ../../../views/form/student-load-rule.php:25
+#: ../../../views/form/student-load-rule.php:28
+msgid "Student Load Rules"
+msgstr ""
+
+#: ../../../views/form/student-load-rule.php:57
+msgid "Full Time"
+msgstr ""
+
+#: ../../../views/form/student-load-rule.php:58
+msgid "3/4 Time"
+msgstr ""
+
+#: ../../../views/form/student-load-rule.php:59
+msgid "Half Time"
+msgstr ""
+
+#: ../../../views/form/student-load-rule.php:60
+msgid "Less Than Half Time"
+msgstr ""
+
+#: ../../../views/form/student-load-rule.php:68
+#: ../../../views/form/student-load-rule.php:145
+msgid "Minimum Credits"
+msgstr ""
+
+#: ../../../views/form/student-load-rule.php:75
+#: ../../../views/form/student-load-rule.php:146
+msgid "Maximum Credits"
+msgstr ""
+
+#: ../../../views/form/student-load-rule.php:87
+#: ../../../views/form/student-load-rule.php:147
+#: ../../../views/form/student-load-rule.php:195
+msgid "Term(s)"
+msgstr ""
+
+#: ../../../views/form/student-load-rule.php:94
+#: ../../../views/form/student-load-rule.php:148
+#: ../../../views/form/student-load-rule.php:209
+msgid "Academic Level(s)"
+msgstr ""
+
+#: ../../../views/form/student-load-rule.php:198
+msgid "In this field, you will only enter your term designation without the two digit year separated by a backslash \"\\\" (i.e. FA\\FAM1\\SP)."
+msgstr ""
+
+#: ../../../views/form/student-load-rule.php:212
+msgid "Enter the academic level or levels that should be applied to this rule separated by a backslash \"\\\" (i.e. CE\\UG\\GR)"
+msgstr ""
+
+#: ../../../views/form/subject.php:54
+#: ../../../views/form/subject.php:99
+msgid "Subject Code"
+msgstr ""
+
+#: ../../../views/form/subject.php:61
+#: ../../../views/form/subject.php:100
+msgid "Subject Name"
+msgstr ""
+
+#: ../../../views/form/term.php:66
+msgid "Term Code"
+msgstr ""
+
+#: ../../../views/form/term.php:80
+msgid "Reporting Term"
+msgstr ""
+
+#: ../../../views/form/term.php:117
+msgid "Drop/Add End Date"
+msgstr ""
+
+#: ../../../views/form/view-acad-year.php:33
+#: ../../../views/form/view-acad-year.php:36
+msgid "View Academic Year"
+msgstr ""
+
+#: ../../../views/form/view-building.php:32
+msgid "View Building"
+msgstr ""
+
+#: ../../../views/form/view-building.php:35
+#: ../../../views/form/view-ccd.php:36
+#: ../../../views/form/view-cip.php:35
+#: ../../../views/form/view-location.php:35
+#: ../../../views/form/view-major.php:36
+#: ../../../views/form/view-minor.php:36
+#: ../../../views/form/view-room.php:35
+msgid "Viewing "
+msgstr ""
+
+#: ../../../views/form/view-ccd.php:33
+msgid "View CCD"
+msgstr ""
+
+#: ../../../views/form/view-cip.php:32
+msgid "View CIP"
+msgstr ""
+
+#: ../../../views/form/view-degree.php:33
+#: ../../../views/form/view-degree.php:36
+msgid "View Degree"
+msgstr ""
+
+#: ../../../views/form/view-department.php:33
+#: ../../../views/form/view-department.php:36
+msgid "View Department"
+msgstr ""
+
+#: ../../../views/form/view-grade-scale.php:30
+msgid "Grading Scale"
+msgstr ""
+
+#: ../../../views/form/view-grade-scale.php:32
+#: ../../../views/form/view-grade-scale.php:35
+msgid "Edit Grade"
+msgstr ""
+
+#: ../../../views/form/view-location.php:32
+msgid "View Location"
+msgstr ""
+
+#: ../../../views/form/view-major.php:33
+msgid "View Major"
+msgstr ""
+
+#: ../../../views/form/view-minor.php:33
+msgid "View Minor"
+msgstr ""
+
+#: ../../../views/form/view-room.php:32
+msgid "View Room"
+msgstr ""
+
+#: ../../../views/form/view-rstr-code.php:32
+#: ../../../views/form/view-rstr-code.php:35
+msgid "Edit Restriction Code"
+msgstr ""
+
+#: ../../../views/form/view-school.php:32
+#: ../../../views/form/view-school.php:35
+msgid "View School"
+msgstr ""
+
+#: ../../../views/form/view-semester.php:33
+#: ../../../views/form/view-semester.php:36
+msgid "View Semester"
+msgstr ""
+
+#: ../../../views/form/view-specialization.php:31
+msgid "Specialization List"
+msgstr ""
+
+#: ../../../views/form/view-specialization.php:33
+msgid "View Specialization"
+msgstr ""
+
+#: ../../../views/form/view-student-load-rule.php:33
+#: ../../../views/form/view-student-load-rule.php:36
+msgid "Edit Student Load Rule"
+msgstr ""
+
+#: ../../../views/form/view-subject.php:33
+msgid "View Subject"
+msgstr ""
+
+#: ../../../views/form/view-term.php:33
+#: ../../../views/form/view-term.php:36
+msgid "View Term"
+msgstr ""
+
+#: ../../../views/hr/add.php:30
+#: ../../../views/hr/index.php:28
+#: ../../../views/hr/positions.php:31
+#: ../../../views/hr/view.php:31
+msgid "Search Employee"
+msgstr ""
+
+#: ../../../views/hr/add.php:32
+#: ../../../views/hr/add.php:58
+#: ../../../views/hr/index.php:86
+#: ../../../views/hr/jobs.php:91
+#: ../../../views/hr/jobs.php:163
+#: ../../../views/hr/positions.php:50
+#: ../../../views/hr/view.php:59
+msgid "Add Position"
+msgstr ""
+
+#: ../../../views/hr/add.php:35
+#: ../../../views/hr/view.php:36
+msgid "ID#"
+msgstr ""
+
+#: ../../../views/hr/add.php:56
+#: ../../../views/hr/positions.php:48
+#: ../../../views/hr/view.php:57
+msgid "Staff Record"
+msgstr ""
+
+#: ../../../views/hr/add.php:57
+#: ../../../views/hr/index.php:88
+#: ../../../views/hr/positions.php:49
+#: ../../../views/hr/view.php:58
+msgid "View Positions"
+msgstr ""
+
+#: ../../../views/hr/add.php:72
+#: ../../../views/hr/positions.php:130
+#: ../../../views/hr/view.php:73
+msgid "Employment Type"
+msgstr ""
+
+#: ../../../views/hr/add.php:84
+#: ../../../views/hr/positions.php:142
+#: ../../../views/hr/view.php:85
+msgid "Staff Type"
+msgstr ""
+
+#: ../../../views/hr/add.php:88
+#: ../../../views/hr/positions.php:146
+#: ../../../views/hr/view.php:89
+msgid "Faculty"
+msgstr ""
+
+#: ../../../views/hr/add.php:97
+#: ../../../views/hr/positions.php:155
+#: ../../../views/hr/view.php:98
+msgid "Supervisor"
+msgstr ""
+
+#: ../../../views/hr/add.php:109
+#: ../../../views/hr/jobs.php:52
+#: ../../../views/hr/positions.php:64
+#: ../../../views/hr/positions.php:167
+#: ../../../views/hr/timesheets.php:42
+#: ../../../views/hr/view-timesheet.php:127
+#: ../../../views/hr/view.php:110
+msgid "Job Title"
+msgstr ""
+
+#: ../../../views/hr/add.php:127
+#: ../../../views/hr/positions.php:68
+#: ../../../views/hr/positions.php:179
+#: ../../../views/hr/view.php:218
+msgid "Hire Date"
+msgstr ""
+
+#: ../../../views/hr/add.php:163
+#: ../../../views/hr/view.php:280
+msgid "Approved By"
+msgstr ""
+
+#: ../../../views/hr/grades.php:53
+#: ../../../views/hr/grades.php:106
+#: ../../../views/hr/grades.php:162
+msgid "Starting Salary"
+msgstr ""
+
+#: ../../../views/hr/grades.php:54
+#: ../../../views/hr/grades.php:115
+#: ../../../views/hr/grades.php:171
+msgid "Ending Salary"
+msgstr ""
+
+#: ../../../views/hr/grades.php:90
+#: ../../../views/hr/grades.php:146
+msgid "Add Pay Grade"
+msgstr ""
+
+#: ../../../views/hr/index.php:25
+#: ../../../views/hr/timesheets.php:41
+msgid "Employee"
+msgstr ""
+
+#: ../../../views/hr/index.php:59
+msgid "ID"
+msgstr ""
+
+#: ../../../views/hr/index.php:62
+msgid "Phone"
+msgstr ""
+
+#: ../../../views/hr/index.php:115
+msgid "Employee Search"
+msgstr ""
+
+#: ../../../views/hr/jobs.php:51
+#: ../../../views/hr/jobs.php:100
+#: ../../../views/hr/jobs.php:172
+#: ../../../views/hr/positions.php:63
+msgid "Pay Grade"
+msgstr ""
+
+#: ../../../views/hr/jobs.php:53
+#: ../../../views/hr/jobs.php:121
+#: ../../../views/hr/jobs.php:193
+#: ../../../views/hr/positions.php:65
+#: ../../../views/hr/view.php:179
+msgid "Hourly Wage"
+msgstr ""
+
+#: ../../../views/hr/jobs.php:54
+#: ../../../views/hr/jobs.php:130
+#: ../../../views/hr/jobs.php:202
+msgid "Hours Per Week"
+msgstr ""
+
+#: ../../../views/hr/positions.php:33
+msgid "Positions"
+msgstr ""
+
+#: ../../../views/hr/positions.php:36
+msgid "Positions Past & Present for "
+msgstr ""
+
+#: ../../../views/hr/positions.php:66
+#: ../../../views/hr/view.php:197
+msgid "Weekly Hours"
+msgstr ""
+
+#: ../../../views/hr/positions.php:67
+#: ../../../views/hr/view.php:206
+msgid "Monthly Salary"
+msgstr ""
+
+#: ../../../views/hr/positions.php:89
+msgid "Not Set"
+msgstr ""
+
+#: ../../../views/hr/positions.php:118
+msgid "Edit Position"
+msgstr ""
+
+#: ../../../views/hr/timesheets.php:40
+#: ../../../views/hr/view-timesheet.php:52
+msgid "Work Week"
+msgstr ""
+
+#: ../../../views/hr/timesheets.php:43
+msgid "Hours"
+msgstr ""
+
+#: ../../../views/hr/timesheets.php:44
+msgid "Pay"
+msgstr ""
+
+#: ../../../views/hr/view-timesheet.php:32
+msgid "View Timesheet"
+msgstr ""
+
+#: ../../../views/hr/view-timesheet.php:35
+msgid "View Timesheet for "
+msgstr ""
+
+#: ../../../views/hr/view-timesheet.php:55
+msgid "Work Hours"
+msgstr ""
+
+#: ../../../views/hr/view-timesheet.php:56
+#: ../../../views/hr/view-timesheet.php:184
+msgid "Note"
+msgstr ""
+
+#: ../../../views/hr/view-timesheet.php:79
+msgid "Rejected"
+msgstr ""
+
+#: ../../../views/hr/view-timesheet.php:80
+msgid "Approved"
+msgstr ""
+
+#: ../../../views/hr/view-timesheet.php:120
+msgid "Timesheet Entry"
+msgstr ""
+
+#: ../../../views/hr/view-timesheet.php:136
+msgid "Work Week Start"
+msgstr ""
+
+#: ../../../views/hr/view-timesheet.php:148
+msgid "Work Day"
+msgstr ""
+
+#: ../../../views/hr/view.php:33
+msgid "View Employee"
+msgstr ""
+
+#: ../../../views/hr/view.php:134
+msgid "Office"
+msgstr ""
+
+#: ../../../views/hr/view.php:146
+msgid "Office Phone"
+msgstr ""
+
+#: ../../../views/hr/view.php:263
+msgid "I Inactive"
+msgstr ""
+
+#: ../../../views/index/index.php:43
+msgid "Welcome to myeduTrac"
+msgstr ""
+
+#: ../../../views/index/index.php:55
+msgid "News &amp; Announcements"
+msgstr ""
+
+#: ../../../views/index/index.php:64
+msgid "by"
+msgstr ""
+
+#: ../../../views/index/index.php:68
+msgid "read more"
+msgstr ""
+
+#: ../../../views/index/index.php:87
+msgid "Welcome Message"
+msgstr ""
+
+#: ../../../views/index/login.php:48
+msgid "Password"
+msgstr ""
+
+#: ../../../views/index/login.php:52
+msgid "Remember me"
+msgstr ""
+
+#: ../../../views/index/news.php:24
+msgid "News & Announcements"
+msgstr ""
+
+#: ../../../views/index/offline.php:27
+msgid "Offline"
+msgstr ""
+
+#: ../../../views/index/password.php:44
+msgid "Current Password"
+msgstr ""
+
+#: ../../../views/index/password.php:48
+msgid "New Password"
+msgstr ""
+
+#: ../../../views/index/profile.php:24
+msgid "My Profile"
+msgstr ""
+
+#: ../../../views/index/profile.php:42
+#: ../../../views/person/add.php:109
+msgid "Prefix"
+msgstr ""
+
+#: ../../../views/index/profile.php:54
+msgid "Middle Name"
+msgstr ""
+
+#: ../../../views/index/profile.php:66
+msgid "SSN"
+msgstr ""
+
+#: ../../../views/index/profile.php:70
+msgid "Veteran"
+msgstr ""
+
+#: ../../../views/index/profile.php:74
+msgid "Ethnicity"
+msgstr ""
+
+#: ../../../views/index/profile.php:78
+#: ../../../views/person/add.php:281
+msgid "Date of Birth"
+msgstr ""
+
+#: ../../../views/index/profile.php:86
+#: ../../../views/person/add.php:306
+msgid "Emergency Contact"
+msgstr ""
+
+#: ../../../views/index/profile.php:90
+msgid "Emergency Contact's Phone"
+msgstr ""
+
+#: ../../../views/index/spam.php:27
+msgid "Spam Registration"
+msgstr ""
+
+#: ../../../views/index/spam.php:29
+msgid "We don't allows spammers the ability to apply for admissions."
+msgstr ""
+
+#: ../../../views/index/view-news.php:35
+msgid "Last Update:"
+msgstr ""
+
+#: ../../../views/install/index.php:24
+msgid "eduTrac ERP Installer"
+msgstr ""
+
+#: ../../../views/install/index.php:43
+msgid "eduTrac ERP Installation Wizard"
+msgstr ""
+
+#: ../../../views/install/index.php:53
+msgid "Step 1 - Introduction"
+msgstr ""
+
+#: ../../../views/install/index.php:55
+msgid "Welcome to eduTrac ERP College Management System. Before getting started, we need some information on the database. You will need to know the following items before proceeding."
+msgstr ""
+
+#: ../../../views/install/index.php:58
+msgid "Database name"
+msgstr ""
+
+#: ../../../views/install/index.php:59
+msgid "Database username"
+msgstr ""
+
+#: ../../../views/install/index.php:60
+msgid "Database password"
+msgstr ""
+
+#: ../../../views/install/index.php:61
+msgid "Database host"
+msgstr ""
+
+#: ../../../views/install/index.php:64
+msgid "If for any reason this automatic file creation doesn't work, don't worry. All this does is fill in the database information to a configuration file. You may also simply open eduTrac/Config/contants-sample.php in a text editor, fill in your information, and save it as constants.php."
+msgstr ""
+
+#: ../../../views/install/index.php:66
+msgid "In all likelihood, these items were supplied to you by your Web Host. If you do not have this information, then you will need to contact them before you can continue. If you're all ready..."
+msgstr ""
+
+#: ../../../views/install/index.php:67
+#: ../../../views/install/index.php:96
+#: ../../../views/install/index.php:150
+msgid "Next Step"
+msgstr ""
+
+#: ../../../views/install/index.php:79
+msgid "Step 2 - Environment Test"
+msgstr ""
+
+#: ../../../views/install/index.php:81
+msgid "If your system fails any of the tests to the right, then you need to correct them, refresh your browser to make sure all have a green 'ok' or an orange 'warning' and then proceed with the install. If you proceed without correcting the errors, the install may fail and/or eduTrac may not function properly."
+msgstr ""
+
+#: ../../../views/install/index.php:100
+msgid "Legend"
+msgstr ""
+
+#: ../../../views/install/index.php:102
+msgid "ok"
+msgstr ""
+
+#: ../../../views/install/index.php:102
+msgid "All OK"
+msgstr ""
+
+#: ../../../views/install/index.php:103
+msgid "warning"
+msgstr ""
+
+#: ../../../views/install/index.php:103
+msgid "Not a deal breaker and is only a recommendation"
+msgstr ""
+
+#: ../../../views/install/index.php:104
+msgid "error"
+msgstr ""
+
+#: ../../../views/install/index.php:104
+msgid "eduTrac ERP requires this feature and can't work without it"
+msgstr ""
+
+#: ../../../views/install/index.php:119
+#: ../../../views/install/index.php:135
+msgid "Database Name"
+msgstr ""
+
+#: ../../../views/install/index.php:120
+msgid "The name of the database you want to run eduTrac ERP in."
+msgstr ""
+
+#: ../../../views/install/index.php:126
+msgid "Step 3 - Database Connection"
+msgstr ""
+
+#: ../../../views/install/index.php:128
+msgid "On the right, you should enter your database connection details. If you're not sure about these, contact your host."
+msgstr ""
+
+#: ../../../views/install/index.php:144
+msgid "Database Host"
+msgstr ""
+
+#: ../../../views/install/index.php:165
+msgid "Step 4 - Install Database Tables"
+msgstr ""
+
+#: ../../../views/install/index.php:167
+msgid "It will take at least 30 seconds to a minute to install the tables. So please be patient."
+msgstr ""
+
+#: ../../../views/install/index.php:174
+msgid "Install Tables"
+msgstr ""
+
+#: ../../../views/install/index.php:191
+msgid "Usernames can have only alphanumeric characters, spaces, underscores, hyphens, periods and the @ symbol."
+msgstr ""
+
+#: ../../../views/install/index.php:200
+msgid "A password will be automatically generated for you if you leave this blank."
+msgstr ""
+
+#: ../../../views/install/index.php:201
+msgid "Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! \" ? $ % ^ &amp; )."
+msgstr ""
+
+#: ../../../views/install/index.php:207
+msgid "Step 5 - Website Information/Admin Account"
+msgstr ""
+
+#: ../../../views/install/index.php:208
+msgid "Fill in the information to the right and you’ll be on your way to using the most advanced all-in-one college management system."
+msgstr ""
+
+#: ../../../views/install/index.php:220
+msgid "Site URL"
+msgstr ""
+
+#: ../../../views/install/index.php:235
+msgid "Your E-mail"
+msgstr ""
+
+#: ../../../views/install/index.php:241
+msgid "Create Admin"
+msgstr ""
+
+#: ../../../views/install/index.php:258
+msgid "eduTrac ERP has been installed. Click the button below in order to create the config file, flush the installer and be redirected to the login page."
+msgstr ""
+
+#: ../../../views/install/index.php:260
+msgid "Finish Installer"
+msgstr ""
+
+#: ../../../views/install/index.php:272
+msgid "Javascript is required in order to use this installer."
+msgstr ""
+
+#: ../../../views/install/index.php:273
+msgid "How to enable javascript"
+msgstr ""
+
+#: ../../../views/install/index.php:275
+msgid "Upgrade Browser"
+msgstr ""
+
+#: ../../../views/permission/add.php:31
+#: ../../../views/permission/index.php:30
+#: ../../../views/permission/view.php:31
+msgid "Manage Permissions"
+msgstr ""
+
+#: ../../../views/permission/add.php:33
+#: ../../../views/permission/add.php:36
+msgid "Add Permission"
+msgstr ""
+
+#: ../../../views/permission/add.php:70
+#: ../../../views/permission/index.php:44
+#: ../../../views/permission/view.php:70
+msgid "Key"
+msgstr ""
+
+#: ../../../views/permission/index.php:27
+msgid "Permissions"
+msgstr ""
+
+#: ../../../views/permission/index.php:80
+msgid "New Permision"
+msgstr ""
+
+#: ../../../views/permission/view.php:33
+#: ../../../views/permission/view.php:36
+msgid "View Permission"
+msgstr ""
+
+#: ../../../views/person/add.php:62
+#: ../../../views/person/add.php:65
+msgid "Name & Address"
+msgstr ""
+
+#: ../../../views/person/add.php:100
+#: ../../../views/person/add.php:353
+msgid "Person Type"
+msgstr ""
+
+#: ../../../views/person/add.php:113
+msgid "Ms."
+msgstr ""
+
+#: ../../../views/person/add.php:114
+msgid "Miss."
+msgstr ""
+
+#: ../../../views/person/add.php:115
+msgid "Mrs."
+msgstr ""
+
+#: ../../../views/person/add.php:116
+msgid "Mr."
+msgstr ""
+
+#: ../../../views/person/add.php:117
+msgid "Dr."
+msgstr ""
+
+#: ../../../views/person/add.php:143
+#: ../../../views/person/addr-form.php:83
+msgid "Middle Initial"
+msgstr ""
+
+#: ../../../views/person/add.php:191
+#: ../../../views/person/addr-form.php:131
+msgid "Zip Code"
+msgstr ""
+
+#: ../../../views/person/add.php:227
+msgid "Preferred Email"
+msgstr ""
+
+#: ../../../views/person/add.php:236
+msgid "Social Security #"
+msgstr ""
+
+#: ../../../views/person/add.php:245
+msgid "Veteran?"
+msgstr ""
+
+#: ../../../views/person/add.php:258
+msgid "Ethnicity?"
+msgstr ""
+
+#: ../../../views/person/add.php:262
+msgid "White, Non-Hispanic"
+msgstr ""
+
+#: ../../../views/person/add.php:263
+msgid "Black, Non-Hispanic"
+msgstr ""
+
+#: ../../../views/person/add.php:264
+msgid "Hispanic"
+msgstr ""
+
+#: ../../../views/person/add.php:265
+msgid "Native American"
+msgstr ""
+
+#: ../../../views/person/add.php:266
+msgid "Native Alaskan"
+msgstr ""
+
+#: ../../../views/person/add.php:267
+msgid "Pacific Islander"
+msgstr ""
+
+#: ../../../views/person/add.php:268
+msgid "Asian"
+msgstr ""
+
+#: ../../../views/person/add.php:269
+msgid "Indian"
+msgstr ""
+
+#: ../../../views/person/add.php:270
+msgid "Middle Eastern"
+msgstr ""
+
+#: ../../../views/person/add.php:271
+msgid "African"
+msgstr ""
+
+#: ../../../views/person/add.php:272
+msgid "Mixed Race"
+msgstr ""
+
+#: ../../../views/person/add.php:273
+msgid "Other"
+msgstr ""
+
+#: ../../../views/person/add.php:315
+msgid "Emergency Contact Phone"
+msgstr ""
+
+#: ../../../views/person/add.php:324
+msgid "Approved Date"
+msgstr ""
+
+#: ../../../views/person/addr-form.php:30
+msgid "Search Person"
+msgstr ""
+
+#: ../../../views/person/addr-form.php:34
+msgid "Address Summary"
+msgstr ""
+
+#: ../../../views/person/addr-form.php:36
+msgid "Edit Address"
+msgstr ""
+
+#: ../../../views/person/addr-form.php:39
+msgid "ID: "
+msgstr ""
+
+#: ../../../views/person/addr-form.php:158
+msgid "Address Type"
+msgstr ""
+
+#: ../../../views/person/addr-form.php:209
+msgid "Added By"
+msgstr ""
+
+#: ../../../views/person/addr-form.php:246
+#: ../../../views/person/addr-form.php:299
+msgid "Extension"
+msgstr ""
+
+#: ../../../views/person/addr-form.php:265
+#: ../../../views/person/addr-form.php:318
+msgid "Business"
+msgstr ""
+
+#: ../../../views/person/addr-form.php:266
+#: ../../../views/person/addr-form.php:319
+msgid "Cellular"
+msgstr ""
+
+#: ../../../views/person/addr-form.php:341
+msgid "Primary Email"
+msgstr ""
+
+#: ../../../views/person/addr-form.php:359
+msgid "Secondary Email"
+msgstr ""
+
+#: ../../../views/person/adsu.php:99
+msgid "Add"
+msgstr ""
+
+#: ../../../views/person/index.php:90
+msgid "Switch to User"
+msgstr ""
+
+#: ../../../views/person/index.php:94
+msgid "Create Staff Record"
+msgstr ""
+
+#: ../../../views/person/index.php:101
+#: ../../../views/person/role.php:56
+#: ../../../views/person/view.php:328
+msgid "Role"
+msgstr ""
+
+#: ../../../views/person/index.php:128
+msgid "Person Search"
+msgstr ""
+
+#: ../../../views/person/perms.php:34
+msgid "Manage Person Permissions"
+msgstr ""
+
+#: ../../../views/person/perms.php:56
+#: ../../../views/person/view.php:337
+#: ../../../views/role/add.php:67
+#: ../../../views/role/view.php:68
+msgid "Permission"
+msgstr ""
+
+#: ../../../views/person/perms.php:57
+#: ../../../views/role/add.php:68
+#: ../../../views/role/view.php:69
+msgid "Allow"
+msgstr ""
+
+#: ../../../views/person/role.php:34
+msgid "Manage Person Role"
+msgstr ""
+
+#: ../../../views/person/role.php:57
+msgid "Member"
+msgstr ""
+
+#: ../../../views/person/role.php:58
+msgid "Not Member"
+msgstr ""
+
+#: ../../../views/person/view.php:32
+msgid "View Person"
+msgstr ""
+
+#: ../../../views/person/view.php:35
+msgid "Person:"
+msgstr ""
+
+#: ../../../views/person/view.php:375
+msgid "Person Status"
+msgstr ""
+
+#: ../../../views/person/view.php:379
+msgid "If the person has a student or staff record, the status set here will be set on those records as well. Please note that setting the status to inactive will prohibit login."
+msgstr ""
+
+#: ../../../views/person/view.php:391
+msgid "Reset Password"
+msgstr ""
+
+#: ../../../views/plugins/index.php:41
+msgid "Plugin"
+msgstr ""
+
+#: ../../../views/program/add.php:30
+#: ../../../views/program/index.php:28
+#: ../../../views/program/view.php:30
+msgid "Search Program"
+msgstr ""
+
+#: ../../../views/program/add.php:32
+msgid "Create Program"
+msgstr ""
+
+#: ../../../views/program/add.php:35
+msgid "Add Academic Program"
+msgstr ""
+
+#: ../../../views/program/add.php:61
+#: ../../../views/program/index.php:58
+#: ../../../views/program/view.php:61
+msgid "Program Code"
+msgstr ""
+
+#: ../../../views/program/add.php:143
+#: ../../../views/program/view.php:143
+msgid "Effective Catalog Year"
+msgstr ""
+
+#: ../../../views/program/index.php:25
+msgid "Programs"
+msgstr ""
+
+#: ../../../views/program/index.php:59
+msgid "Program Title"
+msgstr ""
+
+#: ../../../views/program/view.php:32
+msgid "View Program"
+msgstr ""
+
+#: ../../../views/role/add.php:30
+#: ../../../views/role/index.php:25
+#: ../../../views/role/index.php:28
+#: ../../../views/role/view.php:31
+msgid "Manage Roles"
+msgstr ""
+
+#: ../../../views/role/add.php:32
+#: ../../../views/role/add.php:35
+msgid "Add Role"
+msgstr ""
+
+#: ../../../views/role/add.php:56
+#: ../../../views/role/view.php:57
+msgid "Role Name"
+msgstr ""
+
+#: ../../../views/role/index.php:80
+msgid "New Role"
+msgstr ""
+
+#: ../../../views/role/view.php:33
+#: ../../../views/role/view.php:36
+msgid "Edit Role"
+msgstr ""
+
+#: ../../../views/section/add-assignment.php:30
+msgid "Course Sections"
+msgstr ""
+
+#: ../../../views/section/add-assignment.php:32
+msgid "Add Assignment"
+msgstr ""
+
+#: ../../../views/section/add-assignment.php:61
+#: ../../../views/section/add-assignment.php:110
+msgid "Short Name"
+msgstr ""
+
+#: ../../../views/section/add-assignment.php:79
+msgid "Due Date"
+msgstr ""
+
+#: ../../../views/section/add-assignment.php:114
+msgid "Short Name should be no more than 6 characters. This is used as column heading on the gradebook. Once you have submitted the form, you will not be able to change this later."
+msgstr ""
+
+#: ../../../views/section/add.php:51
+msgid "Search Section"
+msgstr ""
+
+#: ../../../views/section/add.php:80
+msgid "Section"
+msgstr ""
+
+#: ../../../views/section/add.php:103
+msgid "Start / End"
+msgstr ""
+
+#: ../../../views/section/add.php:134
+msgid "Credits / CEU's"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:34
+msgid "View Section"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:59
+#: ../../../views/section/billing-info.php:53
+#: ../../../views/section/booking-info.php:91
+#: ../../../views/section/offering-info.php:34
+#: ../../../views/section/offering-info.php:59
+msgid "Offering Info"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:60
+#: ../../../views/section/billing-info.php:34
+#: ../../../views/section/billing-info.php:54
+#: ../../../views/section/booking-info.php:92
+#: ../../../views/section/offering-info.php:60
+msgid "Billing Info"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:62
+#: ../../../views/section/billing-info.php:56
+#: ../../../views/section/booking-info.php:94
+#: ../../../views/section/offering-info.php:62
+msgid "Booking Info"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:77
+#: ../../../views/section/catalog-pdf.php:54
+msgid "Instructor"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:89
+msgid "Section Type"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:93
+msgid "ONL Online"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:94
+msgid "HB Hybrid"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:95
+msgid "ONC On-Campus"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:103
+msgid "Instructor Method"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:118
+msgid "Contact Hours"
+msgstr ""
+
+#: ../../../views/section/addnl-info.php:127
+msgid "Instructor Load"
+msgstr ""
+
+#: ../../../views/section/assignments.php:32
+#: ../../../views/section/assignments.php:36
+#: ../../../views/section/courses.php:68
+#: ../../../views/section/export-grades.php:26
+#: ../../../views/section/grading.php:32
+msgid "Assignments"
+msgstr ""
+
+#: ../../../views/section/assignments.php:77
+msgid "Grading"
+msgstr ""
+
+#: ../../../views/section/assignments.php:78
+msgid "Export Grades"
+msgstr ""
+
+#: ../../../views/section/attendance.php:24
+#: ../../../views/section/attendance_report.php:24
+msgid "Attendance"
+msgstr ""
+
+#: ../../../views/section/attendance.php:27
+msgid "Attendance for "
+msgstr ""
+
+#: ../../../views/section/attendance.php:54
+msgid "Student Name"
+msgstr ""
+
+#: ../../../views/section/attendance.php:75
+msgid "Absent"
+msgstr ""
+
+#: ../../../views/section/attendance.php:76
+msgid "Present"
+msgstr ""
+
+#: ../../../views/section/attendance_report.php:26
+#: ../../../views/section/attendance_report.php:29
+msgid "Attendance Report"
+msgstr ""
+
+#: ../../../views/section/batch-register.php:45
+#: ../../../views/section/batch-register.php:48
+msgid "Batch Registration"
+msgstr ""
+
+#: ../../../views/section/batch-register.php:72
+msgid "Use the batch registration process if you need to register a group of students into a particular course section. This screen comes in handy when you need to create a saved query from a course section you need to cancel. The best way is to create your saved query by selecting the student id's in the old course section with an 'A' or 'N' status. Register them into the new course section and then cancel the old course section."
+msgstr ""
+
+#: ../../../views/section/billing-info.php:71
+msgid "Course Fee"
+msgstr ""
+
+#: ../../../views/section/billing-info.php:80
+msgid "Lab Fee"
+msgstr ""
+
+#: ../../../views/section/billing-info.php:89
+msgid "Course Materials Fee"
+msgstr ""
+
+#: ../../../views/section/booking-info.php:68
+msgid "Classroom Booking"
+msgstr ""
+
+#: ../../../views/section/booking-info.php:109
+msgid "Main Classroom"
+msgstr ""
+
+#: ../../../views/section/booking-info.php:118
+#: ../../../views/section/booking-info.php:130
+#: ../../../views/section/booking-info.php:280
+#: ../../../views/section/booking-info.php:332
+msgid "Classroom"
+msgstr ""
+
+#: ../../../views/section/booking-info.php:151
+msgid "Meeting Time"
+msgstr ""
+
+#: ../../../views/section/booking-info.php:160
+msgid "Term Dates"
+msgstr ""
+
+#: ../../../views/section/booking-info.php:162
+msgid "to"
+msgstr ""
+
+#: ../../../views/section/booking-info.php:305
+msgid "Are you sure you want to delete this classroom booking?"
+msgstr ""
+
+#: ../../../views/section/booking-info.php:469
+msgid "Are you sure you want to delete this entry?"
+msgstr ""
+
+#: ../../../views/section/catalog-pdf.php:56
+msgid "Days"
+msgstr ""
+
+#: ../../../views/section/catalog.php:41
+msgid "Term Name"
+msgstr ""
+
+#: ../../../views/section/catalog.php:63
+msgid "PDF Export"
+msgstr ""
+
+#: ../../../views/section/courses.php:65
+#: ../../../views/section/gradebook.php:26
+msgid "Gradebook"
+msgstr ""
+
+#: ../../../views/section/courses.php:71
+msgid "Email Students"
+msgstr ""
+
+#: ../../../views/section/courses.php:72
+msgid "Enter Final Grades"
+msgstr ""
+
+#: ../../../views/section/export-grades.php:28
+#: ../../../views/section/grading.php:34
+msgid "Grades"
+msgstr ""
+
+#: ../../../views/section/final-grade.php:32
+#: ../../../views/section/gradebook.php:51
+msgid "Final Grade"
+msgstr ""
+
+#: ../../../views/section/final-grade.php:35
+msgid "Final Grade for "
+msgstr ""
+
+#: ../../../views/section/gradebook.php:29
+msgid "Gradebook for "
+msgstr ""
+
+#: ../../../views/section/gradebook.php:52
+msgid "FG"
+msgstr ""
+
+#: ../../../views/section/index.php:24
+msgid "Sections"
+msgstr ""
+
+#: ../../../views/section/index.php:57
+msgid "Course Sec ID"
+msgstr ""
+
+#: ../../../views/section/index.php:58
+msgid "Section Code"
+msgstr ""
+
+#: ../../../views/section/offering-info.php:89
+msgid "Class Room"
+msgstr ""
+
+#: ../../../views/section/offering-info.php:101
+msgid "Meeting Days"
+msgstr ""
+
+#: ../../../views/section/offering-info.php:105
+msgid "Sunday"
+msgstr ""
+
+#: ../../../views/section/offering-info.php:109
+msgid "Monday"
+msgstr ""
+
+#: ../../../views/section/offering-info.php:113
+msgid "Tuesday"
+msgstr ""
+
+#: ../../../views/section/offering-info.php:117
+msgid "Wednesday"
+msgstr ""
+
+#: ../../../views/section/offering-info.php:121
+msgid "Thursday"
+msgstr ""
+
+#: ../../../views/section/offering-info.php:125
+msgid "Friday"
+msgstr ""
+
+#: ../../../views/section/offering-info.php:129
+msgid "Saturday"
+msgstr ""
+
+#: ../../../views/section/offering-info.php:167
+msgid "Register Online"
+msgstr ""
+
+#: ../../../views/section/progress.php:41
+#: ../../../views/section/progress.php:44
+msgid "Submit Progress Report"
+msgstr ""
+
+#: ../../../views/section/progress.php:87
+msgid "Course Title"
+msgstr ""
+
+#: ../../../views/section/progress.php:107
+msgid "Behavior"
+msgstr ""
+
+#: ../../../views/section/progress.php:135
+msgid "Notes"
+msgstr ""
+
+#: ../../../views/section/roster.php:81
+msgid "Acad Level"
+msgstr ""
+
+#: ../../../views/section/roster.php:82
+msgid "Acad Program"
+msgstr ""
+
+#: ../../../views/section/roster.php:83
+msgid "Acad Credit Status"
+msgstr ""
+
+#: ../../../views/section/section-fgrade.php:34
+msgid "Course Section Final Grades"
+msgstr ""
+
+#: ../../../views/section/section-fgrade.php:37
+msgid "Final Grades for "
+msgstr ""
+
+#: ../../../views/section/sros.php:45
+#: ../../../views/section/sros.php:48
+msgid "Student Roster"
+msgstr ""
+
+#: ../../../views/section/students.php:55
+msgid "Send Email"
+msgstr ""
+
+#: ../../../views/section/students.php:97
+msgid "Student Email"
+msgstr ""
+
+#: ../../../views/section/students.php:115
+#: ../../../views/section/students.php:186
+msgid "Message"
+msgstr ""
+
+#: ../../../views/section/students.php:124
+#: ../../../views/section/students.php:195
+msgid "File Upload"
+msgstr ""
+
+#: ../../../views/section/students.php:168
+msgid "Email Students in"
+msgstr ""
+
+#: ../../../views/section/view-assignment.php:34
+msgid "Assignment"
+msgstr ""
+
+#: ../../../views/setting/email.php:66
+#: ../../../views/setting/email.php:144
+msgid "System Email"
+msgstr ""
+
+#: ../../../views/setting/email.php:75
+#: ../../../views/setting/email.php:164
+msgid "Registrar's Email"
+msgstr ""
+
+#: ../../../views/setting/email.php:90
+#: ../../../views/setting/email.php:184
+msgid "Contact Email"
+msgstr ""
+
+#: ../../../views/setting/email.php:99
+#: ../../../views/setting/email.php:204
+msgid "Admissions Email"
+msgstr ""
+
+#: ../../../views/setting/email.php:117
+msgid "Change of Address Form Email Text"
+msgstr ""
+
+#: ../../../views/setting/email.php:148
+msgid "All system and error related emails will be sent to this email address."
+msgstr ""
+
+#: ../../../views/setting/email.php:168
+msgid "All course and course registration emails will be sent to this address."
+msgstr ""
+
+#: ../../../views/setting/email.php:188
+msgid "Emails via the myeduTrac portal (i.e. address changes) will be sent to this email address. This email address will show up in the contact details in the portal's footer as well."
+msgstr ""
+
+#: ../../../views/setting/email.php:208
+msgid "New applications submitted via the myeduTrac portal will be sent to this email adddress."
+msgstr ""
+
+#: ../../../views/setting/index.php:39
+#: ../../../views/setting/index.php:42
+msgid "System Settings"
+msgstr ""
+
+#: ../../../views/setting/index.php:75
+msgid "Enable SSL"
+msgstr ""
+
+#: ../../../views/setting/index.php:88
+msgid "Maintenance Mode"
+msgstr ""
+
+#: ../../../views/setting/index.php:101
+msgid "Enable Benchmark"
+msgstr ""
+
+#: ../../../views/setting/index.php:114
+#: ../../../views/setting/index.php:333
+msgid "Enable Cron Jobs"
+msgstr ""
+
+#: ../../../views/setting/index.php:127
+msgid "Enable Cron Log"
+msgstr ""
+
+#: ../../../views/setting/index.php:140
+msgid "myeT Mode"
+msgstr ""
+
+#: ../../../views/setting/index.php:144
+msgid "Online"
+msgstr ""
+
+#: ../../../views/setting/index.php:153
+msgid "Offline Message"
+msgstr ""
+
+#: ../../../views/setting/index.php:166
+#: ../../../views/setting/index.php:179
+#: ../../../views/setting/index.php:198
+msgid "Enabled"
+msgstr ""
+
+#: ../../../views/setting/index.php:167
+#: ../../../views/setting/index.php:180
+#: ../../../views/setting/index.php:199
+msgid "Disabled"
+msgstr ""
+
+#: ../../../views/setting/index.php:175
+#: ../../../views/setting/index.php:428
+msgid "Screen Caching"
+msgstr ""
+
+#: ../../../views/setting/index.php:194
+msgid "DB Caching"
+msgstr ""
+
+#: ../../../views/setting/index.php:207
+msgid "Timezone"
+msgstr ""
+
+#: ../../../views/setting/index.php:221
+msgid "Cookie TTL"
+msgstr ""
+
+#: ../../../views/setting/index.php:230
+msgid "Cookie Path"
+msgstr ""
+
+#: ../../../views/setting/index.php:239
+msgid "Curl"
+msgstr ""
+
+#: ../../../views/setting/index.php:243
+msgid "On"
+msgstr ""
+
+#: ../../../views/setting/index.php:244
+msgid "Off"
+msgstr ""
+
+#: ../../../views/setting/index.php:252
+#: ../../../views/setting/index.php:352
+msgid "Auth Token"
+msgstr ""
+
+#: ../../../views/setting/index.php:261
+msgid "Contact Phone"
+msgstr ""
+
+#: ../../../views/setting/index.php:270
+msgid "Help Desk"
+msgstr ""
+
+#: ../../../views/setting/index.php:288
+msgid "Mailing Address"
+msgstr ""
+
+#: ../../../views/setting/index.php:306
+msgid "Reset Password Text"
+msgstr ""
+
+#: ../../../views/setting/index.php:337
+msgid "This option should be set to 'No' until you have configured each"
+msgstr ""
+
+#: ../../../views/setting/index.php:337
+msgid "cron job"
+msgstr ""
+
+#: ../../../views/setting/index.php:337
+msgid "If this is set to 'Yes' before that, your error logs will be huge."
+msgstr ""
+
+#: ../../../views/setting/index.php:356
+msgid "If you plan to do development work using the RESTful API feature, then you will need an auth token."
+msgstr ""
+
+#: ../../../views/setting/index.php:356
+msgid "Click here"
+msgstr ""
+
+#: ../../../views/setting/index.php:356
+msgid "to generate an auth token for your account."
+msgstr ""
+
+#: ../../../views/setting/index.php:371
+msgid "myeduTrac Self Service"
+msgstr ""
+
+#: ../../../views/setting/index.php:375
+msgid "Use this option to place myeduTrac self service into maintenance mode."
+msgstr ""
+
+#: ../../../views/setting/index.php:390
+msgid "myeduTrac Offline Message"
+msgstr ""
+
+#: ../../../views/setting/index.php:394
+msgid "Type the message that should be shown to vistors when myeduTrac self service is in offline mode. Those who have an account can still log into the site. If the logged in user does not have dashboard access, they will be redirected back to the offline message."
+msgstr ""
+
+#: ../../../views/setting/index.php:409
+msgid "myeduTrac Application Form"
+msgstr ""
+
+#: ../../../views/setting/index.php:413
+msgid "Enable this option to allow access to the application for admissions form."
+msgstr ""
+
+#: ../../../views/setting/index.php:432
+msgid "Static screens that don't really change often can be cached to reduce page loading time. However, if you decide to disable this option, make sure to clear the screen cache."
+msgstr ""
+
+#: ../../../views/setting/index.php:447
+msgid "Database Caching"
+msgstr ""
+
+#: ../../../views/setting/index.php:451
+msgid "Along with screen caching, database caching helps with scalability, performance and greatly reduces overhead. However, if you decide to disable this option, make sure to clear the database cache."
+msgstr ""
+
+#: ../../../views/setting/index.php:470
+msgid "If you are using eduTrac Analytics, enter the base url where it is installed (i.e. http://example.com/ea/)."
+msgstr ""
+
+#: ../../../views/setting/registration.php:52
+msgid "Open Registration"
+msgstr ""
+
+#: ../../../views/setting/registration.php:65
+msgid "Current Term"
+msgstr ""
+
+#: ../../../views/setting/registration.php:77
+#: ../../../views/setting/registration.php:154
+msgid "# of Courses"
+msgstr ""
+
+#: ../../../views/setting/registration.php:86
+#: ../../../views/setting/registration.php:178
+msgid "Account Balance"
+msgstr ""
+
+#: ../../../views/setting/registration.php:101
+#: ../../../views/setting/registration.php:202
+msgid "Open Terms"
+msgstr ""
+
+#: ../../../views/setting/registration.php:110
+#: ../../../views/setting/registration.php:226
+msgid "Registration Term"
+msgstr ""
+
+#: ../../../views/setting/registration.php:122
+msgid "Instructions"
+msgstr ""
+
+#: ../../../views/setting/registration.php:159
+msgid "Set the number of courses a student is able to register into for any given term. There should only be one open term and it must match the registration term. Depending how long your course offering list is, this may not work 100%."
+msgstr ""
+
+#: ../../../views/setting/registration.php:183
+msgid "If a student's current balance minus the current term is greater than the `Account Balance`, then the student is not eligible to register for courses (i.e. -100). Set to 0 to disable."
+msgstr ""
+
+#: ../../../views/setting/registration.php:207
+msgid "Enter a comma delimited list of course terms that can be viewed on the course registration screen (i.e. \"13/FA\",\"14/SP\")."
+msgstr ""
+
+#: ../../../views/setting/registration.php:231
+msgid "If `Open Registration` is set to yes, then choose the term for which a student can register into courses."
+msgstr ""
+
+#: ../../../views/setting/registration.php:250
+msgid "Registration Instructions"
+msgstr ""
+
+#: ../../../views/setting/registration.php:255
+msgid "Enter any comments or instructions you would like to appear on the course registration page."
+msgstr ""
+
+#: ../../../views/sql/add-query.php:30
+#: ../../../views/sql/saved-queries.php:30
+msgid "Saved Queries"
+msgstr ""
+
+#: ../../../views/sql/add-query.php:32
+#: ../../../views/sql/add-query.php:35
+msgid "Create Save Query"
+msgstr ""
+
+#: ../../../views/sql/add-query.php:62
+msgid "Save Query Name"
+msgstr ""
+
+#: ../../../views/sql/add-query.php:80
+#: ../../../views/sql/add-query.php:127
+msgid "Auto Purge"
+msgstr ""
+
+#: ../../../views/sql/add-query.php:131
+msgid "If enabled, saved queries get purged every 30 days. If you use your saved query on a regular basis, you should set this option to no."
+msgstr ""
+
+#: ../../../views/sql/csv-email.php:60
+msgid "Recipient"
+msgstr ""
+
+#: ../../../views/sql/index.php:109
+msgid "Successly Executed - "
+msgstr ""
+
+#: ../../../views/sql/index.php:114
+msgid "Query is : "
+msgstr ""
+
+#: ../../../views/sql/saved-queries.php:48
+msgid "Saved Query Name"
+msgstr ""
+
+#: ../../../views/sql/saved-queries.php:49
+msgid "Creation Date"
+msgstr ""
+
+#: ../../../views/sql/saved-queries.php:76
+msgid "Are you sure you want to delete this saved query?"
+msgstr ""
+
+#: ../../../views/sql/view-query.php:33
+#: ../../../views/sql/view-query.php:36
+msgid "View Saved Query"
+msgstr ""
+
+#: ../../../views/staff/add.php:30
+#: ../../../views/staff/index.php:27
+#: ../../../views/staff/view.php:30
+msgid "Search Staff"
+msgstr ""
+
+#: ../../../views/staff/add.php:32
+#: ../../../views/staff/add.php:35
+msgid "Add Staff"
+msgstr ""
+
+#: ../../../views/staff/index.php:106
+msgid "Staff Search"
+msgstr ""
+
+#: ../../../views/staff/view.php:32
+msgid "View Staff"
+msgstr ""
+
+#: ../../../views/student/add.php:45
+#: ../../../views/student/index.php:27
+#: ../../../views/student/sacd.php:32
+#: ../../../views/student/shis.php:38
+#: ../../../views/student/stac.php:31
+msgid "Search Student"
+msgstr ""
+
+#: ../../../views/student/add.php:47
+#: ../../../views/student/add.php:50
+msgid "Add Student"
+msgstr ""
+
+#: ../../../views/student/add.php:131
+msgid "Prog Start Date"
+msgstr ""
+
+#: ../../../views/student/add.php:167
+msgid "Catalog Year"
+msgstr ""
+
+#: ../../../views/student/add.php:179
+msgid "Advisor"
+msgstr ""
+
+#: ../../../views/student/add.php:196
+msgid "H Hiatus"
+msgstr ""
+
+#: ../../../views/student/add.php:197
+msgid "L Leave of Absence"
+msgstr ""
+
+#: ../../../views/student/grades.php:22
+msgid "Grades for "
+msgstr ""
+
+#: ../../../views/student/graduation.php:80
+msgid "Graduation Date"
+msgstr ""
+
+#: ../../../views/student/index.php:82
+msgid "Academic Credits (STAC)"
+msgstr ""
+
+#: ../../../views/student/index.php:83
+msgid "Restriction (RSTR)"
+msgstr ""
+
+#: ../../../views/student/index.php:84
+msgid "Hiatus (SHIS)"
+msgstr ""
+
+#: ../../../views/student/index.php:109
+msgid "Student Search"
+msgstr ""
+
+#: ../../../views/student/sacd.php:34
+msgid "Academic Credits"
+msgstr ""
+
+#: ../../../views/student/sacd.php:36
+msgid "View Academic Credits (SACD)"
+msgstr ""
+
+#: ../../../views/student/sacd.php:114
+msgid "CRSE ID/Name/Sec"
+msgstr ""
+
+#: ../../../views/student/schedule.php:22
+msgid "Schedule"
+msgstr ""
+
+#: ../../../views/student/schedule.php:38
+msgid "Day(s) of the Week"
+msgstr ""
+
+#: ../../../views/student/shis.php:40
+#: ../../../views/student/shis.php:110
+#: ../../../views/student/stac.php:106
+msgid "Student Hiatus (SHIS)"
+msgstr ""
+
+#: ../../../views/student/shis.php:106
+#: ../../../views/student/stac.php:102
+msgid "Student Profile (SPRO)"
+msgstr ""
+
+#: ../../../views/student/shis.php:107
+#: ../../../views/student/stac.php:33
+#: ../../../views/student/stac.php:103
+msgid "Student Academic Credits (STAC)"
+msgstr ""
+
+#: ../../../views/student/shis.php:108
+#: ../../../views/student/stac.php:104
+msgid "Student Terms (STTR)"
+msgstr ""
+
+#: ../../../views/student/shis.php:109
+#: ../../../views/student/stac.php:105
+msgid "Student Restriction (STRC)"
+msgstr ""
+
+#: ../../../views/student/shis.php:124
+#: ../../../views/student/shis.php:270
+msgid "Hiatus"
+msgstr ""
+
+#: ../../../views/student/shis.php:141
+#: ../../../views/student/shis.php:274
+msgid "Withdrawal"
+msgstr ""
+
+#: ../../../views/student/shis.php:142
+#: ../../../views/student/shis.php:275
+msgid "Leave of Absence"
+msgstr ""
+
+#: ../../../views/student/shis.php:143
+#: ../../../views/student/shis.php:276
+msgid "Study Abroad"
+msgstr ""
+
+#: ../../../views/student/shis.php:144
+#: ../../../views/student/shis.php:277
+msgid "Illness"
+msgstr ""
+
+#: ../../../views/student/shis.php:145
+#: ../../../views/student/shis.php:278
+msgid "Dismissal"
+msgstr ""
+
+#: ../../../views/student/shis.php:215
+msgid "Are you sure you want to delete this student's hiatus status?"
+msgstr ""
+
+#: ../../../views/student/stac.php:123
+msgid "CEU's"
+msgstr ""
+
+#: ../../../views/student/stac.php:150
+msgid "View (SACD)"
+msgstr ""
+
+#: ../../../views/student/stac.php:192
+msgid "Are you sure you want to delete this student academic credit? There is no undoing this."
+msgstr ""
+
+#: ../../../views/student/strc.php:124
+#: ../../../views/student/strc.php:236
+msgid "Restriction"
+msgstr ""
+
+#: ../../../views/student/strc.php:125
+#: ../../../views/student/strc.php:246
+msgid "Severity"
+msgstr ""
+
+#: ../../../views/student/sttr.php:28
+msgid "Student Profile"
+msgstr ""
+
+#: ../../../views/student/sttr.php:30
+msgid "Student Terms Summary (STRS)"
+msgstr ""
+
+#: ../../../views/student/sttr.php:114
+msgid "Terms"
+msgstr ""
+
+#: ../../../views/student/sttr.php:115
+msgid "Att Creds"
+msgstr ""
+
+#: ../../../views/student/sttr.php:116
+msgid "Cmpl Creds"
+msgstr ""
+
+#: ../../../views/student/sttr.php:117
+msgid "Grade Pts"
+msgstr ""
+
+#: ../../../views/student/sttr.php:118
+msgid "Acad Load"
+msgstr ""
+
+#: ../../../views/student/terms.php:22
+msgid "Registered Terms"
+msgstr ""
+
+#: ../../../views/student/tran.php:30
+#: ../../../views/student/tran.php:33
+msgid "Transcript"
+msgstr ""
+
+#: ../../../views/student/tran.php:68
+msgid "Transcript Type"
+msgstr ""
+
+#: ../../../views/student/transcript.php:65
+msgid "Student ID: "
+msgstr ""
+
+#: ../../../views/student/transcript.php:67
+#: ../../../views/student/transcript.php:69
+msgid "Social Security #: "
+msgstr ""
+
+#: ../../../views/student/transcript.php:72
+#: ../../../views/student/transcript.php:74
+msgid "Graduation Date: "
+msgstr ""
+
+#: ../../../views/student/transcript.php:87
+msgid "Attempted Credits"
+msgstr ""
+
+#: ../../../views/student/transcript.php:88
+msgid "Completed Credits"
+msgstr ""
+
+#: ../../../views/student/transcript.php:110
+msgid "Transfer Cum. Totals"
+msgstr ""
+
+#: ../../../views/student/transcript.php:146
+msgid "Cum. Totals"
+msgstr ""
+
+#: ../../../views/student/transcript.php:204
+msgid "Transfer Credits"
+msgstr ""
+
+#: ../../../views/student/vbill.php:39
+msgid "Student ID#: "
+msgstr ""
+
+#: ../../../views/student/vbill.php:151
+msgid "Payment Date"
+msgstr ""
+
+#: ../../../views/student/vbill.php:190
+msgid "Refund Date"
+msgstr ""
+
+#: ../../../views/student/vbill.php:209
+msgid "Pay Bill"
+msgstr ""
+
+#: ../../../views/student/vbill.php:215
+msgid "Student Bill"
+msgstr ""
+
+#: ../../../views/student/vbill.php:224
+msgid "Pay Now"
+msgstr ""
+
+#: ../../../views/student/view.php:34
+msgid "(SPRO)"
+msgstr ""
+

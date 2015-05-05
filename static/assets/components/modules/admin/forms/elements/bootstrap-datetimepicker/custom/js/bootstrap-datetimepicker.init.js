@@ -1,0 +1,1 @@
+$('[id^="datetimepicker"]').datetimepicker();

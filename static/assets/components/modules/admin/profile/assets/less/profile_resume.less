@@ -1,0 +1,50 @@
+.resume-documents {
+	clear: both;
+	li {
+		float: left;
+		display: inline-block;
+		margin: 10px;
+		
+		background:lighten(#efefef,3%);
+		border:1px solid #efefef; 
+		a {
+			float: left;
+			display: inline;
+			color:#fff;
+			padding:10px;
+			color: lighten(@inverseColor,20%);
+			font-weight: bold;
+			text-align: center;
+			i {
+				clear: both;
+			font-size: 38px;
+			display: block;
+			line-height: 40px;
+			color: @primaryColor;
+			}
+			 span {
+				color:lighten(@inverseColor,30%);
+				display: block;
+				font-size: 12px;
+				font-weight: normal;
+			}
+		}
+		&:hover {background: #fff; 
+			a {
+				i{color: lighten(@inverseColor,50%);}
+				text-decoration: none;
+			}
+		}
+	}
+	
+}
+
+.timeline-activity {
+	.box-generic {
+		box-shadow: none;
+	} 
+	.timeline-top-info {
+		border-top-left-radius: 5px;
+		border-top-right-radius: 5px;
+	}
+}

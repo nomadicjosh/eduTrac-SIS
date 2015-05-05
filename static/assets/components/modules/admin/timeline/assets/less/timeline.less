@@ -1,0 +1,402 @@
+//
+// Timeline page
+// --------------------------------------------------
+
+.layout-timeline {
+	.innerAll { padding: 15px !important; }
+	border-top-color: #d2d1d0 !important;
+	border-top-width: 2px !important;
+	> [class*="span"] ~ [class*="span"] {
+		&:after {
+			width: 2px;
+			background: #d2d1d0;
+		}
+	}
+	.media {
+		margin: 0 0 @spacing;
+		.media-body {
+			padding: 10px 0 0;
+			line-height: 17px;
+			.author { font-size: 14px; }
+		}
+	}
+	.glyphicons.pencil {
+		position: absolute;
+		top: @spacing;
+		right: @spacing;
+		margin: 0;
+		padding: 0;
+		width: 20px;
+		height: 20px;
+		i:before {
+			top: 0;
+			right: 0;
+			font-size: 17px;
+			color: #cccccc;
+		}
+	}
+	ul.timeline {
+		list-style: none;
+		margin: 0;
+		padding: @spacing @spacing @spacing @spacing*2;
+		> li {
+			position: relative;
+			padding: 0 0 @spacing;
+			.date {
+				width: 50px;
+				padding: 5px 0;
+				text-align: center;
+				text-transform: uppercase;
+				font-weight: 600;
+				position: absolute;
+				left: -70px;
+				top: 0;
+				z-index: 2;
+				strong {
+					display: block;
+					line-height: 10px;
+					padding: 3px 0 0;
+				}
+			}
+			.type {
+				position: absolute;
+				text-transform: uppercase;
+				color: @bodyText;
+				font-weight: 600;
+				padding: 0 35px 0 0;
+				top: 15px;
+				width: 100px;
+				text-align: right;
+				left: -160px;
+				line-height: 24px;
+				z-index: 2;
+				i:before { left: auto; right: 0; color: #c6c6c5; }
+				.time { position: absolute; top: 24px; right: 0; color: #c6c6c5; }
+				&:after {
+					display: block;
+					content: "";
+					position: absolute;
+					right: -60px;
+					top: 12px;
+					width: 45px;
+					height: 2px;
+					background: #d2d1d0;
+				}
+				&:before {
+					display: block;
+					content: "";
+					position: absolute;
+					right: -20px;
+					top: 9px;
+					width: 8px;
+					height: 8px;
+					background: #d2d1d0;
+				}
+			}
+			.separator {
+				.type { top: 60px; }
+			}
+			.alert-gray {
+				background: #f8f8f8;
+				color: @bodyText;
+				.rounded();
+				border: none;
+				margin: 0;
+			}
+			p.glyphicons {
+				padding: 5px 0 5px 25px;
+				i:before { color: #dfdfdf; font-size: 17px; top: 5px; left: 0; }
+			}
+			.widget-body-gray {
+				.glyphicons i:before { color: @bodyText; }
+				a { color: #000; text-decoration: underline; }
+				strong { font-weight: 400; color: #000; }
+			}
+			&.active {
+				.type { 
+					color: @primaryColor; 
+					i:before { color: @primaryColor; }
+					&:before, &:after {
+						background: @primaryColor;
+					} 
+				}
+				&:before {
+					display: block;
+					position: absolute;
+					content: "";
+					top: 0;
+					bottom: 0;
+					left: -45px;
+					width: 2px;
+					z-index: 2;
+					background: @primaryColor;
+				}
+			}
+		}
+	}
+	&.layout-timeline-mirror {
+		padding-left: 8px;
+		ul.timeline {
+			> li:nth-child(odd){
+				left: -100%;
+				width: 100%;
+				margin-left: -90px;
+				.date {
+					left: auto;
+					right: -70px;
+				}
+				.type {
+					left: auto;
+					right: -160px;
+					text-align: left;
+					padding: 0 0 0 35px;
+					i:before {
+						left: 0;
+						right: auto;
+					}
+					.time {
+						left: 0;
+						right: auto;
+					}
+					&:before {
+						left: -18px;
+						right: auto;
+					}
+					&:after {
+						left: -60px;
+						right: auto;
+					}
+				}
+				&.active{
+					&:before {
+						left: auto;
+						right: -47px;
+					}
+				}
+			}
+		}
+	}
+}
+.nav-timeline {
+	> li {
+		margin: 0 0 5px;
+		> a {
+			background: #b3b3b3;
+			border: none;
+			margin: 0 !important;
+			font-weight: 600;
+			&.glyphicons {
+				padding: 8px 12px;
+				i:before { position: absolute; left: auto; right: 8px; top: 8px; color: #fff; }
+			} 
+		}
+		&.active {
+			> a {
+				background: @primaryColor;
+			}
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	.layout-timeline,
+	.layout-timeline.layout-timeline-mirror {
+		padding: 0;
+		ul.timeline {
+			padding: 0;
+			> li, > li:nth-child(odd) {
+				left: auto;
+				margin-left: 0;
+				width: auto;
+				.date {
+					position: relative;
+					left: auto;
+					display: block;
+					top: auto;
+					right: auto;
+				}
+				.type {
+					position: relative;
+					left: auto;
+					top: auto;
+					width: auto;
+					margin: 0 60px 10px 0;
+					right: auto;
+					padding: 0 35px 0 0;
+					i:before {
+						left: auto;
+						right: 0;
+					}
+					&:before, &:after { display: none; left: auto; }
+					.time { 
+						top: 0;
+						right: -40px; 
+						left: auto;
+					}
+				}
+				.separator .type { 
+					top: auto; 
+				}
+				&.active .separator .type { margin-bottom: 0; }
+			}
+		}
+	}
+}
+
+.timeline-activity {
+	position: relative;
+	display: block;
+	li {
+		padding:@spacing 0;
+		border-left: 1px solid #efefef;
+		margin-left: 35px;
+		position: relative;
+		
+		.box-generic { margin-bottom:0; padding: 0; 
+			&.row {
+					@media (min-width: 768px) {
+						> div[class*="col-sm"] { 
+						border-right:1px solid #efefef;
+						&:last-of-type { border:none;}
+						}
+					}
+					@media (max-width: 768px) {
+						div[class*="col-xs"] { 
+						border-bottom:1px solid #efefef;
+						&:last-of-type { border:none;}
+						}
+					}
+				
+			}
+		}
+
+		i.list-icon { 
+			position:absolute;
+			height:36px; 
+			width:36px; 
+			top:15px;
+			left:-18px;
+			font-size: 18px;
+			line-height:34px; 
+			.rounded(30px,30px,30px,30px);
+			text-align:center; 
+			
+			background-color:#fff; 
+			border:2px solid #dfdfdf;
+			color: #dfdfdf;
+		
+		}
+	 	&:hover, &.active:hover{ 
+	 		i.list-icon {
+	 		background-color:#fff;
+	 		border-color: @primaryColor;
+	 		color:@primaryColor; 
+	 		
+	 		}
+	 	}
+
+	 	&.active i.list-icon {
+	 		background-color: @primaryColor;
+	 		color:#fff; 
+	 		border:2px solid @primaryColor;
+	 		
+	 	}
+		
+	 	.caret {
+			position:absolute;
+			width: 8px;
+			height: 0;
+			top:10px;
+			left:28px;
+			margin-top:5px;
+			vertical-align: middle;
+			border-right: 8px solid #dfdfdf;
+			border-top: 8px solid transparent;
+			border-left: 0 dotted;
+			border-bottom: 8px solid transparent;
+			content: "";
+		}
+
+	 	.block {
+			position: relative;
+			padding: 0 20px 0 36px;
+			
+			&.block-inline { 
+				display:inline-block;
+				padding: 0 20px 0 36px;
+				& + .block-inline {
+					padding: 0 10px 0 0;
+				}
+			}
+			.icon-block {
+				height: 120px; 
+				line-height: 80px; 
+				padding:20px;
+				background: fade(@primaryColor,10%); 
+				border:1px solid fade(@primaryColor,20%); 
+				font-size: 70px;
+				color:@primaryColor;
+				.glyphicons {
+					position: relative;
+					display:inline-block;
+					padding: 0;
+					i:before {	
+						position:relative;
+						font-size: 70px;
+						color:@primaryColor;
+					}
+				}
+			}
+			.media {
+				&.active {
+					background: fade(@primaryColor,20%); 
+					border:1px solid fade(@primaryColor,20%); 
+					border-left:none;
+					border-right:none;
+					color:@inverseColor;
+					.timeline-bottom { color:@primaryColor; }
+				}
+			}
+			.content-filled {
+				padding:10px; 
+				background: lighten(#efefef, 3%);
+			}
+		}
+		.timeline-top-info  {
+			padding: @spacing;
+			a {
+				font-weight: bold;
+				&:hover { 
+					text-decoration:underline;
+					color:@inverseColor;
+				}
+			}
+		}
+		.timeline-top-info { i {color:#dfdfdf;}}
+		.timeline-bottom {  color:#c2c2c2; font-size: 12px;}
+		&:first-of-type { 
+			padding: @spacing*2 0 @spacing;
+		}
+	}
+	.media-icons a {
+		color:#c2c2c2;
+		font-size: 16px;
+		padding-right: 5px;
+		&:hover{ 
+			color:@infoColor;
+		}
+	}
+}
+
+.bg-primary-light .timeline-activity li {
+	&:hover {
+		i.list-icon {	
+ 		background-color: @primaryColor;
+ 		color:#fff; 
+ 		border:2px solid @primaryColor;
+ 		}
+		}
+	i.list-icon {  color:@primaryColor;
+	
+	}
+}

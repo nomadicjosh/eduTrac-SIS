@@ -1,0 +1,67 @@
+// Switch Buttons
+.has-switch {
+	vertical-align: middle;
+	border-color: #eaeaea;
+	// .rounded();
+
+	+ .has-switch {
+		margin-left: 10px;
+	}
+
+	// span.switch-left { .rounded(); }
+	span { #reset #gradient(); } 
+	label {
+		#reset #gradient();
+		background: #fff;
+		.box-shadow(0 0 5px 0 rgba(0,0,0,.3));
+		border: none;
+	}
+
+	// Borders
+	// &[data-on*="primary"] { border-color: @primaryColor; }
+	// &[data-on*="danger"] { border-color: @dangerColor; }
+	// &[data-on*="warning"] { border-color: @warningColor; }
+	// &[data-on*="success"] { border-color: @successColor; }
+	// &[data-on*="inverse"] { border-color: @inverseColor; }
+
+	label:hover, 
+	label:focus,
+	label:active,
+	label.active,
+	label.disabled,
+	label[disabled] {
+		background: #fff;
+	}
+
+	// Backgrounds
+	span.switch-primary { 
+		background: @primaryColor;
+		&:hover { background: lighten(@primaryColor, 10%); }
+	}
+	span.switch-danger { 
+		background: @dangerColor; 
+		&:hover { background: lighten(@dangerColor, 10%); }
+	}
+	span.switch-warning { 
+		background: @warningColor; 
+		&:hover { background: lighten(@warningColor, 10%); }
+	}
+	span.switch-success { 
+		background: @successColor; 
+		&:hover { background: lighten(@successColor, 10%); }
+	}
+	span.switch-inverse { 
+		background: @inverseColor; 
+		&:hover { background: lighten(@inverseColor, 10%); }
+	}
+	span.switch-default { 
+		background: #eaeaea; 
+		color: #444;
+		&:hover {
+			background: #fff;
+		}
+		&.switch-right {
+			background: #fff;
+		}
+	}
+}

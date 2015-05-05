@@ -1,0 +1,79 @@
+//
+// Progress bars
+// --------------------------------------------------
+
+.progress {
+	&.count-outside {
+		margin-left: 40px;
+		position: relative;
+		overflow: visible;
+		.count { position: absolute; width: 40px; left: -40px; top: 0; text-align: left; }
+		&:after {
+			display: block;
+			content: "";
+			border: 5px solid transparent;
+			border-right-color: #7a7a7a;
+			position: absolute;
+			left: -10px;
+			top: 50%;
+			margin-top: -5px;
+		}
+	}
+	background: #f0f0f0;
+	margin: 0 0 10px;
+	#reset .boxShadow();
+	.rounded();
+	&.progress-small {
+		height: 16px;
+		.progress-bar { font-size: 8px; line-height: 16px; &.right { text-indent: 2px; } }
+		&.count-outside .count { height: 16px; line-height: 16px; }
+		&.add-outside .add { height: 16px; line-height: 16px; }
+	}
+	&.progress-mini {
+		height: 10px; 
+		&.count-outside {
+			.count { height: 10px; line-height: 10px; }
+		}
+
+		&.add-outside .add { height: 10px; line-height: 10px; }
+		&.progress-primary.count-outside:after {border-right-color: @primaryColor;}
+	}
+
+	&.add-outside {
+		margin-right: 45px;
+		.add { position: absolute; width: 40px; right: -45px; top: 0; text-align: left; padding-left: 5px; } 
+	}
+	
+
+	&.count-outside-primary {
+		margin-left: 40px;
+		position: relative;
+		overflow: visible;
+		.count { position: absolute; width: 40px; left: -40px; top: 0; text-align: left; }
+		&:after {
+			display: block;
+			content: "";
+			border: 5px solid transparent;
+			border-right-color: @primaryColor;
+			position: absolute;
+			left: -10px;
+			top: 50%;
+			margin-top: -5px;
+		}
+	}
+	&.white { background: #fff; }
+	.progress-bar {
+		text-align: center;
+		.rounded();
+		background: #d8d8d8;
+		&.progress-bar-info { background: @infoColor; }
+		&.progress-bar-success { background: @successColor; }
+		&.progress-bar-warning { background: @warningColor; }
+		
+		&.progress-bar-primary { background: @primaryColor; 
+				
+		}
+		&.progress-bar-danger { background: @dangerColor; }
+		&.progress-bar-inverse { background: @inverseColor; }
+	}
+}

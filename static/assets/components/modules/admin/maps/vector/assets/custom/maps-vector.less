@@ -1,0 +1,62 @@
+.jvectormap-zoomin,
+.jvectormap-zoomout {
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+	background: @primaryColor;
+}
+.jvectormap-label {
+	z-index: 1;
+	border: 1px solid #fff;
+	.rounded(5px,5px,5px,5px);
+	background: @primaryColor;
+	padding: 3px 5px;
+}
+.jvm-legend-item {
+	width: 10px;
+	height: 10px;
+	margin-right: 5px;
+}
+#world-map-markers.fs {
+	position: absolute;
+	left: 0;
+	top: 50px;
+	right: 0;
+	bottom: 0;
+	.jvectormap-zoomin { top: 35px; left: 35px; }
+	.jvectormap-zoomout { top: 55px; left: 35px; }
+}
+#content.fs {
+	position: relative;
+	height: 100%;
+}
+#maps_fs_heading {
+	position: absolute;
+	top: 80px;
+	left: 85px;
+}
+#maps_fs_buttons {
+	position: absolute;
+	top: 80px;
+	right: 35px;
+}
+@media (max-width: 1199px) {
+	#world-map-markers.fs {
+		position: relative;
+		top: 0;
+	}
+}
+@media (max-width: 767px) {
+	#maps_fs_heading {
+		top: 180px;
+		left: 35px;
+	}
+	#maps_fs_buttons {
+		top: 180px;
+		right: 35px;
+	}
+	#world-map-markers.fs {
+		.jvectormap-zoomin { top: 30px; left: 15px; }
+		.jvectormap-zoomout { top: 50px; left: 15px; }
+	}
+}

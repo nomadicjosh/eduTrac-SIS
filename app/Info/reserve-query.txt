@@ -1,0 +1,3 @@
+Defines the number of days to return for each query in the "list" view.  This variable allows you to "throttle" 
+the number of events returned to minimize memory impact. If your calendar has a lot of events with long descriptions, you may 
+want to reduce the size of this parameter.

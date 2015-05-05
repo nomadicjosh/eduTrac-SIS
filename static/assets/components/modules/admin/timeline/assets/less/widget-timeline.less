@@ -1,0 +1,57 @@
+// Widget Timeline
+// -------------------------
+
+.widget-timeline {
+	.widget-body { 
+		padding: 15px;
+		position: relative; 
+		&:before { display: block; width: 1px; background: @contentBorder; top: 15px; bottom: 30px; left: 75px; content: ""; position: absolute; }
+	}
+	&:not(.widget) {
+		position: relative;
+		&:before { display: block; width: 1px; background: @contentBorder; top: 15px; bottom: 34px; left: 75px; content: ""; position: absolute; }
+	}
+	.view-all { margin-left: 35px; }
+	ul.list-timeline {
+		list-style: none;
+		margin: 0 0 15px;
+		padding: 0;
+		li {
+			&:last-child { margin: 0; }
+			display: block;
+			height: 35px;
+			line-height: 35px;
+			position: relative;
+			overflow: hidden;
+			background: @widgetBg;
+			border: 1px solid @contentBorder2;
+			margin: 0 0 10px;
+			padding: 0 10px;
+			span { 
+				display: block; 
+				height: 35px; line-height: 35px; float: left; position: relative; overflow: hidden;
+				&.ellipsis {
+					white-space:nowrap;
+		    		text-overflow:ellipsis; 
+		    		max-width:75%;
+				}
+				&.date { width: 40px; text-align: center; }
+			}
+			.activity-icon {
+				width: 30px;
+				height: 35px;
+				padding: 0;
+				margin: 0 10px;
+				display: inline-block;
+				text-align: center;
+				i {
+					height: 35px;
+					display: block;
+					position: relative;
+					background: #64625f; 
+				}
+				i:before { position: relative; top: 0; left: 0; color: #fff; font-size: 17px; line-height: 35px; }
+			}
+		}
+	}
+}

@@ -1,0 +1,1 @@
+Defines the 'From: address' of the sender.

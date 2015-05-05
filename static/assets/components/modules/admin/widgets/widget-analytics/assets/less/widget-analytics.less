@@ -1,0 +1,46 @@
+.widget.widget-analytics{
+	margin:0;
+	padding:0;
+		
+	.left {
+		display: inline-block;
+			width:45%;
+		
+		text-align: center;
+		strong  {
+			font-size: 12px;
+			color: lighten(@inverseColor,50%);
+
+		}
+	}
+	.right {
+		display: inline-block;
+		text-align: center;
+		float: right;
+		width:45%;
+		
+		i {
+			width:100%;
+			margin: 0 0 5px;
+			font-size: 18px;
+			
+		}
+		span {
+			font-weight: bold;
+		}
+	}
+	&.primary {
+		background: @primaryColor;
+		color:#fff;
+		h4 { color:#fff !important;
+		}
+		i, strong { color: lighten(@primaryColor,25%);}
+	}
+	&.info {
+		background: @infoColor;
+		color:#fff;
+		h4 { color:#fff;
+		}
+		i, strong { color: lighten(@infoColor,25%);}
+	}
+}

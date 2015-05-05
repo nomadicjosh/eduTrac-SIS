@@ -1,0 +1,52 @@
+.pricing-table {
+	text-align: center;
+	.caret {
+		position: relative;
+		display: inline-block;
+		top:-1px;
+		border-left: 15px solid transparent;
+	    border-right: 15px solid transparent;
+	    border-top: 25px solid transparent;
+	}
+	&.default {
+		.list-group { 
+			background: #fff;
+			color:#000;
+		}
+		h2 span { color: @secondaryColor; }
+		.caret { border-top-color: @defaultColor; }
+
+	}
+	&.primary {
+		.list-group { 
+			background: @secondaryColor;
+			color:#fff;
+			li {border-color: fade(#fff,30%);}
+		}
+		h2 {
+			color:#fff;
+			span { color: #fff; }
+		}
+		.caret { border-top-color: @secondaryColor; }
+	}
+
+	.list-group {
+		
+		.rounded(5px,5px,5px,5px);
+		font-size: 14px;
+		margin: 0;
+
+		li {
+			background:none;
+			h2 {
+				font-size: 24px;
+				span { display: block; font-size: 60px;}
+			}
+		}
+	}
+}
+
+
+
+
+

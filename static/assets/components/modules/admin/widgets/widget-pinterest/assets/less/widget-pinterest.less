@@ -1,0 +1,63 @@
+// Pinterest style widget
+// ---------------------------
+.widget-pinterest {
+	.rounded(5px, 5px, 0, 0);
+	h5 { font-weight: 700; }
+	.widget-body {
+		padding: 0;
+		border: none !important;
+		.description {
+		    -webkit-box-sizing:border-box;
+		    -moz-box-sizing:border-box;
+		    box-sizing:border-box;
+		    line-height:16px;
+		    padding: 20px;
+		    p:last-of-type { margin: 0; }
+		}
+		.thumb { 
+			padding: 0; 
+			border: none; 
+			.rounded(5px, 5px, 0, 0); 
+			img { 
+				width:100%;
+				.rounded(5px, 5px, 0, 0); 
+				padding: 0;
+				border: none;
+			} 
+		}
+	}
+}
+
+[data-toggle="gridalicious"] {
+	.widget-pinterest {
+		.rounded();
+		margin: 1px;
+		.widget-body {
+			position: relative;
+			overflow: hidden;
+			.thumb {
+				img { .rounded(); }
+			}
+			.description {
+				background: #fff;
+				position: absolute;
+				opacity: 0;
+				bottom: 0;
+			}
+		}
+		&:hover .widget-body {
+			.description {
+				opacity: 1
+			}
+		}
+		&.active .description { opacity: 1; }
+	}
+}
+
+.widget-pinterest.fixed-height {
+	.widget-body .thumb {
+		height: 250px;
+		display: block;
+		overflow: hidden;
+	}
+}

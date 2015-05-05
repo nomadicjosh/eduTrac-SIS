@@ -1,0 +1,40 @@
+.email {
+	
+	.list-group {margin:0;}
+	
+	.email-menu {
+	  	.list-group-item {
+	  		&:first-child { .rounded();}
+	  		&:last-child { .rounded();}
+	  		&:hover { background: #efefef}
+	  		&.active { background:@primaryColor; border: none;}
+	  	} 	
+	}
+
+	.email-item-list {
+	  	.list-group-item {
+	  		border:none;
+	  		border-bottom:1px solid #efefef;
+	  		margin:0; 
+	  		&.active {
+	  			background: #efefef;
+	  			color:@inverseColor;
+	  		}
+	  		.list-group-item-text {color: lighten(@inverseColor, 40%);}	
+	  	}
+	}
+
+	.email-content {
+		min-height: 30px;
+		padding:15px 0 5px 0;
+		margin-bottom: 15px;
+		border-bottom: 1px solid #efefef;
+		.from {
+			font-weight: bold;
+			span {font-weight: normal; font-size: 12px; font-style: italic;}
+		}
+		.action {position: absolute; display: inline-block; top:15px;right:15px;}
+	}
+
+}
+

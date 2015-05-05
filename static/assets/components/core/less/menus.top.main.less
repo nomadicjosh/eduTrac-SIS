@@ -1,0 +1,127 @@
+@navbarMainHeight: 50px;
+
+// Top navbar
+// -------------------------
+
+.navbar.main { 
+	margin: 0;
+	border: none;
+	.rounded();
+	.btn-navbar {
+		padding: 0 10px; 
+		margin: 0; 
+		float: left; 
+		display: block; 
+		border: none;
+		.rounded();
+		&.ui-state-disabled {
+			opacity: 1;
+			filter: Alpha(Opacity=100);
+		}
+	}
+	.topnav {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+}
+
+.submenu-show {
+    display: block;
+    margin-top: -35px !important;
+    position: absolute;
+    &.pull-left {
+    	left: auto !important;
+    	right: 100% !important;
+    }
+    &.pull-right {
+    	right: auto !important;
+    	left: 100% !important;
+    }
+}
+.submenu-hide {
+    display: none !important;
+    position: relative;
+    top: auto;
+    float: left;
+}
+
+// Colors Dropdown
+//---------------------------
+
+.topnav {
+	li.colors {
+		&:hover { padding-top:0px !important; }
+		ul {
+			margin-top:11px;
+			list-style: none;
+			> li {
+				padding: 5px 2px;	
+				float: left;
+				> a {
+					display: block;
+					width: 18px;
+					height: 18px;
+					border: 1px solid fade(#fff, 50%);
+				}
+				&.active {
+					> a {
+						border: 1px solid #fff;
+						-webkit-box-shadow: 0 0 0 1px #fff inset;
+						-moz-box-shadow: 0 0 0 1px #fff inset;
+						box-shadow: 0 0 0 1px #fff inset;
+					}
+				}
+				&.dropdown {
+					> a {
+						background: none;
+						.color {
+							width: 8px;
+							height: 8px;
+							display: inline-block;
+							float: left;
+							&.primary { background: @primaryColor; }
+							&.info { background: @infoColor; }
+							&.inverse { background: @inverseColor; }
+							&.success { background: @successColor; }
+							&.danger { background: @dangerColor; }
+						}
+					}
+					.dropdown-menu {
+						border-color: #dedede;
+						margin: 1px 0 0;
+						width: 160px;
+						padding: 10px;
+						li {
+							float: none;
+							border: none;
+							padding: 0;
+							a {
+								padding: 3px 3px 3px 5px;
+								font-size: 13px;
+								width: auto;
+								height: auto;
+								border: none;
+							}
+							&.active {
+								.color {
+									border: 1px solid #fff;
+									margin-bottom: 3px;
+								}
+							}
+						}
+						.color {
+							display: inline-block;
+							margin-right: 5px;
+							margin-bottom: 2px;
+							vertical-align: middle;
+							width: 10px;
+							height: 10px;
+							&.primary { background: @primaryColor; }
+						}
+					}
+				}
+			}
+		}
+	}
+}

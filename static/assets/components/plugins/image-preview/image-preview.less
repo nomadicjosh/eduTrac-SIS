@@ -1,0 +1,43 @@
+#image-preview {
+	position: absolute;
+	border: 1px solid #efefef;
+	background: #fff;
+	padding: 10px;
+	display: none;
+	color: #222;
+	overflow: hidden;
+	width: 140px;
+	z-index: 1006;
+	text-align: center;
+	h4 {
+		font-weight: 700;
+	}
+	img {
+		
+		display: inline-block;
+		width: 100px;
+
+		margin: 0 0 10px;
+	}
+	p {
+		font-size: 12px;
+		color: #666;
+		&:last-of-type {
+			margin-bottom: 0;
+		}
+	}
+}
+
+.opacity30 {
+
+	filter:alpha(opacity=30);
+
+	-moz-opacity:0.3;
+
+	-khtml-opacity: 0.3;
+
+	opacity: 0.3;
+
+	&:hover { opacity: 0.7;}
+
+}

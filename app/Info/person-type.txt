@@ -1,0 +1,4 @@
+When switching a person's person type, you need to be aware that they will need their <b>role</b> updated as well. You
+don't want to run into a situation in which you've switched a staff member over to student but they still have staff level permissions. 
+If the staff member is both staff and student, then you will need to add student level <b>permissions</b> to the staff member instead of changing 
+his or her role. If you don't have permission to make these changes, then contact your system administrator.

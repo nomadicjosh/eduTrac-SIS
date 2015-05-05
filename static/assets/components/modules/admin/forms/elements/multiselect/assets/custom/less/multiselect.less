@@ -1,0 +1,32 @@
+// Multiselect
+// -------------------------
+
+.ms-container {
+	margin: 0 auto @spacing;
+	width: 360px;
+	.ms-selectable li.ms-hover, 
+	.ms-selection li.ms-hover {
+		background: @primaryColor;
+	}
+	.ms-list {
+		-webkit-box-shadow: none;
+		-moz-box-shadow: none;
+		box-shadow: none;
+		border-color: #eaeaea;
+		-webkit-border-radius: 0;
+		-moz-border-radius: 0;
+		border-radius: 0;
+	}
+}
+.ms-container {
+	.custom-header {
+		height: 30px; 
+		line-height: 30px; 
+		background: #eaeaea;
+		padding: 0 @spacing;
+		font-weight: 600;
+		border: 1px solid @contentBorder;
+		&:not(.custom-footer) { border-bottom: none; }
+		&.custom-footer { border-top: none; } 
+	}
+}

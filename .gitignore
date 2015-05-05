@@ -1,0 +1,8 @@
+.DS_Store
+app/tmp/logs/*.txt
+*.db
+*.screen
+.*gz
+/nbproject/
+config.php
+static/photos/*.png

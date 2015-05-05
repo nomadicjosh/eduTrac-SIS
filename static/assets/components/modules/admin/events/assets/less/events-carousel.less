@@ -1,0 +1,82 @@
+.mark {
+ 	.text {
+    	position: absolute;
+		font-size: 13px;
+		font-weight: bold;
+		position: absolute;
+		top: 15px;
+		right:20px;
+		width:40px;
+		color:#fff;
+		z-index: 9999;
+	}
+	.caret {
+	 	border-top: 8px solid transparent;
+	    display: block;
+	    position: absolute;
+	    right: 20px;
+	    top: 10px;
+	    color:#fff;
+	    z-index: 9998;
+
+	    text-align: center;
+	    transform:rotate(180deg);
+		-ms-transform:rotate(180deg); /* IE 9 */
+		-webkit-transform:rotate(180deg); /* Safari and Chrome */
+	}
+	.caret-default {
+	    border-left: 20px solid @defaultColor;
+	    border-right: 20px solid @defaultColor;
+	    border-bottom: 30px solid @defaultColor;
+	    color:#ccc;
+    }
+	.caret-primary {
+	    border-left: 20px solid @primaryColor;
+	    border-right: 20px solid @primaryColor;
+	    border-bottom: 30px solid @primaryColor;
+    }
+	.caret-danger {
+	    border-left: 20px solid @dangerColor;
+	    border-right: 20px solid @dangerColor;
+	    border-bottom: 30px solid @dangerColor;
+    } 
+   	.caret-default {
+	    border-left: 20px solid @inverseColor;
+	    border-right: 20px solid @inverseColor;
+	    border-bottom: 30px solid @inverseColor;
+	    .text { color:#fff; }
+    }
+}
+
+#events-carousel {
+	.item {
+		border-bottom: 1px solid @contentBorder;
+	}
+	&.owl-theme .owl-controls .owl-page span {
+		background: @primaryColor;
+		width: 20px;
+		height: 20px;
+	}
+	&.owl-theme .owl-controls { margin-top: 3px; }
+	.widget-pinterest {
+		border: none;
+		margin: 0;
+		.widget-body .thumb {
+			display: block;
+			overflow: hidden;
+			img {
+				.rounded();
+				position: relative;
+				// top: -80px;
+			}
+		}
+		.mark {
+			position: absolute;
+			top: 0;
+			right: 15px;
+			.caret { position: relative; top: 0; right: 0; }
+			.text { top: 5px; text-align: center; right: 0; }
+		}
+		border: none;
+	}
+}

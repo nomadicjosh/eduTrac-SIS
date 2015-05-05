@@ -1,0 +1,4 @@
+Defines whether or not a bullets are displayed for each event.
+<ul>
+    <li>bullets = 0  - disables the feature</li>
+</ul>

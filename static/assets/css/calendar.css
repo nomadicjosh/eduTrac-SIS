@@ -1,0 +1,28 @@
+    .nube { 
+    position:absolute !important;
+    left:0px;
+    top:-100px !important;
+    border:1px solid #DCA;
+    background:#fffAF0;
+    padding:1em;
+    display: none;
+
+	max-width: 800px;
+	min-width: 180px;
+	
+	line-height: 12px;
+
+	direction: ltr;
+
+	box-shadow: none;
+    color:#111;
+    font-size:.99em;
+    margin-bottom:5px;
+    }
+    .nube:hover {
+    outline:none;
+    text-decoration:none;
+    }
+    .fc-event-skin {
+        cursor:pointer;
+    }

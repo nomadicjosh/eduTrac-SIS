@@ -1,0 +1,78 @@
+// jQueryUI
+// ------------------------- //
+
+.sliders-vertical span {
+	height: 120px;
+	float: left;
+	margin: 15px
+}
+.ui-slider-wrap {
+	display: block;
+	padding: 5px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) inset, 0 2px 2px rgba(0, 0, 0, 0.05) inset, 0 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) inset, 0 2px 2px rgba(0, 0, 0, 0.05) inset, 0 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) inset, 0 2px 2px rgba(0, 0, 0, 0.05) inset, 0 0 0 1px rgba(255, 255, 255, 0.9) inset, 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+	.rounded(10px,10px,10px,10px);
+	.ui-slider {
+		background: rgba(0,0,0,.1);
+		.bevelEmboss();
+		.rounded(10px,10px,10px,10px);
+	}
+	.ui-slider-horizontal {
+		height: 10px;
+		.ui-slider-handle { top: -5px; }
+	}
+	.ui-slider-vertical {
+		.ui-slider-handle { left: -4px; }
+	}
+	.ui-slider-handle {
+		.rounded(50%,50%,50%,50%);
+		background: #fff;
+		border-width: 3px;
+		border-style: solid;
+		border-color: rgba(0,0,0,.3);
+		width: 19px;
+		height: 19px;
+		box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+		-webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+		-moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+	}
+	.ui-slider-range {
+		.rounded(10px,10px,10px,10px);
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) inset, 0 2px 2px rgba(0, 0, 0, 0.05) inset;
+		-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) inset, 0 2px 2px rgba(0, 0, 0, 0.05) inset;
+		-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) inset, 0 2px 2px rgba(0, 0, 0, 0.05) inset;
+		background: rgba(0,0,0,.2);
+	}
+	.slider-primary {
+		.ui-slider-handle { border-color: @primaryColor; }
+		.ui-slider-range { background: @primaryColor; }
+	}
+	.slider-warning {
+		.ui-slider-handle { border-color: #FBB450; }
+		.ui-slider-range { background: #FBB450; }
+	}
+	.slider-success {
+		.ui-slider-handle { border-color: #609450; }
+		.ui-slider-range { background: #609450; }
+	}
+	.slider-inverse {
+		.ui-slider-handle { border-color: #3F4246; }
+		.ui-slider-range { background: #3F4246; }
+	}
+	.slider-info {
+		.ui-slider-handle { border-color: #93B9D8; }
+		.ui-slider-range { background: #93B9D8; }
+	}
+}
+.sliders-vertical {
+	position: relative;
+	margin: 0 auto;
+	display: inline-block;
+	.ui-slider-wrap { margin: 0 5px; }
+	.ui-slider { margin: 0; }
+}
+.vertical-range-slider {
+	.ui-slider-wrap { display: inline-block; margin: 0 auto; }
+	.slider { }
+}

@@ -1,0 +1,5 @@
+Defines whether the monthly calendar display starts on Sunday or Monday.
+<ul>
+    <li>'week_start' = 0   - start the week on Sunday.</li>
+    <li>'week_start' = 1   - start the week on Monday.</li>
+</ul>

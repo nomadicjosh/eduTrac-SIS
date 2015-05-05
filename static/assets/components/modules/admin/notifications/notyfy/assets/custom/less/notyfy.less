@@ -1,0 +1,64 @@
+// Notyfy
+// -------------------------
+
+.notyfy_wrapper {
+	border: none;
+	.rounded();
+	&.notyfy_alert { background: #ffffff; }
+	&.notyfy_error { background: @dangerColor; color: #fff; }
+	&.notyfy_success { background: @successColor; color: #fff; }
+	&.notyfy_warning { background: @warningColor; color: #fff; }
+	&.notyfy_information { background: @infoColor; color: #fff; }
+	&.notyfy_confirm { background: #ffffff; }
+	&.notyfy_primary {
+		background: @primaryColor;
+		border: none;
+		&, * { color: #fff; }
+	}
+	&.notyfy_default {
+		background: #fafafa;
+	}
+	&.notyfy_dark {
+		background: darken(#64625f, 10%);
+		&, * { color: #fff; }
+	}
+}
+
+// Notyfy TOP
+// -------------------------
+
+#notyfy_container_top {
+	top: 0;
+	left: 0;
+	width: 100%;
+	.notyfy_wrapper { .rounded(); }
+}
+
+// Notyfy CONTENT (eg. Dashboard)
+// -------------------------
+
+#content-notification {
+	.notyfy_wrapper {
+		border: none;
+		box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.5), inset 0 -8px 8px -8px rgba(0, 0, 0, 0.2);
+		-moz-box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.5), inset 0 -8px 8px -8px rgba(0, 0, 0, 0.2);
+		-webkit-box-shadow: inset 0 8px 8px -8px rgba(0, 0, 0, 0.5), inset 0 -8px 8px -8px rgba(0, 0, 0, 0.2);
+		.rounded();
+		p { margin: 0; }
+		.notyfy_message {
+			padding: 15px 10px;
+		}
+		&.notyfy_default {
+			background: #fafafa;
+		}
+		&.notyfy_dark {
+			background: darken(#64625f, 10%);
+		}
+		&.notyfy_primary {
+			background: @primaryColor;
+			box-shadow: inset 0 8px 8px -8px darken(@primaryColor, 45%), inset 0 -8px 8px -8px darken(@primaryColor, 20%);
+			-moz-box-shadow: inset 0 8px 8px -8px darken(@primaryColor, 45%), inset 0 -8px 8px -8px darken(@primaryColor, 20%);
+			-webkit-box-shadow: inset 0 8px 8px -8px darken(@primaryColor, 45%), inset 0 -8px 8px -8px darken(@primaryColor, 20%);
+		}
+	}
+}

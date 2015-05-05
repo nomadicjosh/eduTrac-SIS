@@ -1,0 +1,90 @@
+// Template options
+// -------------------------
+
+#template-options {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 10000000;
+	background: fade(#fff, 85%);
+	text-align: left;
+	&.in { overflow: visible; }
+	.close2 {
+		position: absolute; background: @inverseColor; color: #fff; font-weight: 600; height: 20px; top: 14px; right: 10px;
+		line-height: 20px; text-align: center; font-size: 10pt; padding: 0 10px;
+		cursor: pointer;
+	}
+	.wrapper {
+		position: relative;
+		height: 100%;
+		overflow: hidden;
+		overflow-y: scroll;
+	}
+	.form-control {
+		height: 30px;
+		line-height: 30px;
+	}
+  .bootstrap-select {
+    margin-bottom: 0;
+    width: 100%;
+    .btn {
+      font-weight: normal;
+      width: 100%;
+    }
+  }
+	.form-group {
+		margin-bottom: 3px;
+	}
+}
+
+// Choose Preview
+// -------------------------
+
+#choose-preview {
+    padding: 50px 0;
+    h2 {
+    	span.text-primary { font-size: 26pt; font-weight: bold; top: auto; }
+    	margin-left: 0;
+    }
+    .control-group { margin: 0 0 5px; }
+    select { color: #000; }
+    .heading-buttons { margin-bottom: 10px; }
+   	.box {
+   		padding: 10px;
+   		.options { display: none; }
+   		.actions a { 
+   			display: none;
+   			&.btn-active { display: inline-block; }
+   		}
+   		h3 { text-transform: uppercase; margin: 0 0 12px; }
+   		&.active {
+   			background: @widgetBg;
+			box-shadow: 0 3px 0 0 @contentShadow1;
+			-moz-box-shadow: 0 3px 0 0 @contentShadow1;
+			-webkit-box-shadow: 0 3px 0 0 @contentShadow1;
+			.rounded(5px,5px,5px,5px);
+			border: 1px solid @contentBorder;
+			padding: @spacing;
+   			.options { display: block; }
+   			h3 { color: #000; text-shadow: 0 1px 0 #fff; }
+   		} 
+   	}
+   	&.style-dark {
+   		.well {
+   			background: @widgetBg;
+   		}
+   		.box {
+   			&.active {
+   				background: @contentBg1;
+   				border-color: @contentBorder2;
+   				h3 {
+   					text-shadow: none;
+   					color: #fff;
+   				}
+   				hr { border-top-color: @contentBorder2; }
+   			}
+   		}
+   	}
+}

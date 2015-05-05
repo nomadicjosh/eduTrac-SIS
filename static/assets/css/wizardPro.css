@@ -1,0 +1,379 @@
+/*
+ * jQuery WizardPro Plugin
+ * Copyright (c) 2010 Philo Hermans
+ * http://www.philohermans.com
+ * http://codecanyon.net/user/Philo01
+ */
+ 
+
+	body{
+		/*font: 14px Calibri, Tahoma, Helvetica, Arial, sans-serif;*/
+		font-family: 'Open Sans', sans-serif;
+		font-size: .85em;
+		background: #f0f0f0;
+		color: #555555;
+	}
+	
+	#container{
+		width: 960px;
+		margin: 0 auto;
+	}
+	
+	.wizard-default-style{
+		width: 960px;
+		margin: 0 auto;
+	}
+	
+		/* Links */
+		a:link,
+		a:active,
+		a:visited{
+			color: #2d659b;
+			text-decoration:none;
+		}
+		
+			a:hover{
+				color: #f78f00;
+			}
+		
+		/* No Javascript */
+		.wizard-default-style .no_javascript{
+			text-align: center;
+			padding: 10px;
+		}
+	
+		.wizard-default-style.js ul.steps,
+		.wizard-default-style.js .step_content{
+			display:none;
+		}
+		
+		
+		/* Wizard steps */
+		.wizard-default-style ul.steps{
+			list-style-type: none;
+			margin:0;padding:0;
+			overflow:auto;
+			border-bottom: 1px solid #cdd6db;
+			background: #ebeced;
+			height: 34px;
+		}
+		
+			.wizard-default-style ul.steps li{
+				float:left;
+				font-weight:bold;
+				color: #555555;
+				background: #ebeced;
+				position:relative;
+				height: 34px;
+			}
+			
+				.wizard-default-style p{
+					margin: 8px 0 0 0;
+				}
+			
+				.wizard-default-style ul.steps li span{
+					background: url('../img/grey_arrow.png') no-repeat right;
+					width: 15px;
+					height: 34px;
+					position:absolute;
+					top: 0;
+					right: 0;
+				}
+			
+				.wizard-default-style ul.steps li.current{
+					color: #353535;
+					background: #FFF;
+				}
+				
+					.wizard-default-style ul.steps li.current span{
+						background: #eaebed  url('../img/white_arrow.png') no-repeat right;
+						z-index: 999;
+					}
+					
+				.wizard-default-style ul.steps li.completed span{
+					background-color:#FFF;
+					z-index: 999;
+				}
+		
+		/* Wizard step content */		
+		.wizard-default-style .step_content{
+			padding: 0px;
+			overflow:hidden;
+			position: relative;
+			clear: both;
+			background: #fafafa;
+		}
+		
+		.wizard-default-style .step_content{
+			-webkit-border-radius: 5px 5px 5px 5px;
+		    -moz-border-radius: 5px 5px 5px 5px;
+		    border-radius: 5px 5px 5px 5px;
+		    border: 1px solid #dbdbdb;
+		}
+		
+			.wizard-default-style .step_content .blockuser{
+				position: absolute;
+				left: 0;
+				top:0;
+				background: url('../img/blockbg.png');
+				width: 100% !important;
+			    height: 100%;
+				z-index: 999;
+				padding: 0;margin: 0;
+				display: none;
+			}
+			
+				.wizard-default-style .step_content .blockuser span{
+					background: url('../img/ajax-loader.gif') no-repeat;
+					height: 32px;
+					width: 32px;
+					position: absolute;
+					left: 48%;
+					top: 45%;
+				}
+			
+			/* Error Message */
+			.wizard-default-style .step_content .errormsg {
+				background: #ffeeee;
+				color: #9b3330;
+				padding: 5px;
+				margin-bottom: 10px;
+			}
+			
+			/* Help Text */
+			.wizard-default-style .step_content .helper{
+				position: absolute;
+				background: #f3f6fb;
+				top:0;
+				left: 0;
+				width: 310px;
+				border-right: 1px solid #cdd6db;
+				display: none;
+				height:800px;
+				min-height:500px;		
+			}
+			
+				.wizard-default-style .step_content .helper span.arrow{
+					background: url('../img/helper_arrow.png') no-repeat right;
+					display: block;
+					width: 15px;
+					height: 34px;
+					position: absolute;
+					right: -10px;
+					z-index: 888;
+				}
+			
+				.wizard-default-style .step_content .helper .text{
+					padding: 10px;
+					overflow: hidden;
+					min-width: 280px;
+				}
+			
+			/* One column wizard */
+			.wizard-default-style .step_content div.one_column{
+				padding: 10px;
+			}
+			
+			/* Two column wizard */
+			.wizard-default-style .step_content div.two_column div.column_one{
+				float:left;
+				width: 295px;
+				padding: 10px;
+			}
+			
+				.wizard-default-style .step_content div.two_column div.column_one p{
+					line-height: 20px;
+				}
+			
+			.wizard-default-style .step_content div.two_column div.column_two{
+				float:right;
+				width:610px;
+				padding: 10px;
+			}	
+			
+			.wizard-default-style .step_content a.show_helper{
+				color: #555555;
+				display: block;
+			}
+			
+				.wizard-default-style .step_content .show_helper span{
+					float: right;
+					margin-right: 10px;
+					color: #555555;
+				}
+				
+					.wizard-default-style .step_content .show_helper span:hover,
+					.wizard-default-style .step_content a.show_helper:hover span{
+						color: #555555;
+					}
+			
+			/* Form styling */
+			.wizard-default-style form.defaultRequest{
+			
+			}
+			
+				.wizard-default-style form.defaultRequest fieldset{
+						border: 0;
+				}		
+					
+					.wizard-default-style form.defaultRequest label {
+  						display: block;
+  						float: left;
+  						width: 190px;
+  						font-weight: bold;
+  						color: #555555;
+  						padding: 2px;
+					}
+					
+					.wizard-default-style form.defaultRequest label.error{
+						float: none;
+						margin-left: 190px;
+						padding-top: 8px;
+						color: #9b3330;
+						font-size: 11px;
+						background: url('../img/error.png') no-repeat 0 7px;
+						padding-left: 18px;
+					}
+					
+					
+					.wizard-default-style form.defaultRequest textarea{
+  						font-family: Calibri, Tahoma, Helvetica, Arial, sans-serif;
+  						font-size: 1em;
+  						color: #555555;
+  						padding: 2px;
+  						border: 1px solid;
+  						border-color: #888e98 #ced6db #ced6db #888e98;
+  						width: 354px;
+  						height: 174px;
+					}
+					
+						.wizard-default-style form.defaultRequest textarea.error{
+  							border: 1px solid;
+  					 		border-color: #993333 #cc6666 #cc6666 #993333;
+							background: #ffeeee;
+							color: #990000;
+						}
+						
+					
+					.wizard-default-style form.defaultRequest input[type="text"],
+					.wizard-default-style form.defaultRequest input[type="password"] {
+					  font-family: Calibri, Tahoma, Helvetica, Arial, sans-serif;
+					  font-size: 1em;
+					  border: 1px solid #cccccc;
+					  width: 164px;
+					  color: #727780;
+					  padding: 2px;
+					  height: 18px;
+					}
+					
+						.wizard-default-style form.defaultRequest input[type="checkbox"]{
+							padding: 2px 2px 2px 0;
+							margin: 2px 2px 2px 0;
+						}
+					
+						.wizard-default-style form.defaultRequest input[type="text"].error,
+						.wizard-default-style form.defaultRequest input[type="password"].error{
+							border: 1px solid;
+  					 		border-color: #990000;
+							background: #ffeeee;
+							color: #990000;
+						}
+			
+			/* Thanks to Filament Group (http://bit.ly/TIxFT) */	
+					
+			.wizard-default-style button { 
+				position: relative;
+				border: 0; 
+				padding: 0;
+				cursor: pointer;
+				overflow: visible; /* removes extra side padding in IE */
+			}
+			
+			.wizard-default-style button::-moz-focus-inner {
+				border: none;  /* overrides extra padding in Firefox */
+			}
+			
+			.wizard-default-style button span { 
+				position: relative;
+				display: block; 
+				white-space: nowrap;	
+			}
+			
+			@media screen and (-webkit-min-device-pixel-ratio:0) {
+				/* Safari and Google Chrome only - fix margins */
+				.wizard-default-style button span {
+					margin-top: -1px;
+				}
+			}
+				
+			.wizard-default-style button { 
+				padding: 0 16px 0 0; 
+				font-size:2em; 
+				text-align: center; 
+				background: transparent url(../img/submit_bg.png) no-repeat right -151px; 
+			}
+			
+			@-moz-document url-prefix() {
+				.wizard-default-style button {
+					padding: 0 14px 0 0;
+				}
+			}
+			
+			.wizard-default-style button span {
+				padding: 5px 5px 0 20px; 
+				height:24px; 
+				background: transparent url(../img/submit_bg.png) no-repeat left top; 
+				font-size: 12px;
+				text-shadow: 0 1px #FFF;
+				color: #6f6f6f;
+				cursor: pointer;
+				text-decoration: none;
+			}
+			
+			.wizard-default-style button:hover{ /* the redundant class is used to apply the hover state with a script */
+				background-position: right -102px; 
+			}
+				
+			.wizard-default-style button:hover span{
+				background-position: 0 -54px;
+				color:#5e5e5e;
+				text-shadow: 0 1px #FFF;
+			}
+			
+.input-block-level {
+  display: block;
+  width: 100%;
+  min-height: 25px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.legend ul {
+    margin: 8px 0;
+    padding: 0 0 0 33px;
+    list-style: square;
+  }
+  
+.ok span, .warning span, .error span {
+    font-weight: bolder;
+  }
+  
+  .ok span {
+    color: green;
+  }
+  
+  .warning span {
+    color: orange;
+  }
+  
+  .error span {
+    color: red;
+  }
+  span.details {
+    font-weight: normal;
+    font-size: 12px;
+    color: #999;
+    display: block;
+    padding: 5px;
+  }

@@ -1,0 +1,33 @@
+.radio-custom {
+	input[type=radio] {
+	/* IE cannot fire events if display none or visibility hidden */
+	position: relative;
+	left: -99999px;
+	}
+
+	i {
+		margin-left: -20px;
+		margin-right: 5px;
+		vertical-align: top;
+		margin-top: 1px;
+		width: 16px;
+		height: 16px;
+		font-size: 1.333em;
+		color: #ddd;
+		display: inline-block;
+
+		&.checked {
+			margin-right: 4px;
+			color: @primaryColor;
+			margin-left: -19px;
+			&:before {
+				content: '\f111';
+			}
+		}
+
+		&.disabled {
+			/* disabled */
+			color: #eee;
+		}
+	}
+}

@@ -1,0 +1,67 @@
+// Responsive Tables
+// -------------------------
+
+@media only screen and (max-width: 979px)
+{	
+	.table-responsive {
+		&.swipe-horizontal {
+			width: 100%; border-collapse: collapse; border-spacing: 0;
+			display: block; position: relative; width: 100%;
+			border-left: 1px solid #DDD;
+			th, td { 
+				display: block; margin: 0; vertical-align: top;
+				&:last-child { }
+			}
+			th { text-align: right; border-bottom: 0; border-left: 0; }
+			td { min-height: 1.25em; text-align: left; border-left: 0; border-right: 0; border-bottom: 0; border-top: 0; font-size: 13px; }
+			thead { 
+				display: block; float: left;
+				tr { display: block; } 
+			}
+			tbody {
+				display: block; width: auto; position: relative; overflow-x: auto; white-space: nowrap; word-spacing: 0; letter-spacing: 0; font-size: 0;
+				tr { display: inline-block; vertical-align: top; border-left: 1px solid #e5e5e5; } 
+			}
+		}
+		&.block {
+			/* Force table to not be like tables anymore */
+			table, thead, tbody, th, td, tr { 
+				display: block;
+			}
+
+			/* Hide table headers (but not display: none;, for accessibility) */
+			thead tr { 
+				position: absolute;
+				top: -9999px;
+				left: -9999px;
+			}
+
+			tr { border: 1px solid #e5e5e5; }
+		 	td { 
+				/* Behave  like a "row" */
+				border: none;
+				border-bottom: 1px solid #e5e5e5; 
+				position: relative;
+				padding-left: 50%; 
+				white-space: normal;
+				text-align:left;
+			}
+		 
+			td:before { 
+				/* Now like a table header */
+				position: absolute;
+				/* Top/left values mimic padding */
+				vertical-align: middle;
+				left: 6px;
+				width: 45%; 
+				padding-right: 10px; 
+				white-space: nowrap;
+				text-align:right;
+				font-weight: bold;
+			}
+		 
+			/* Label the data */
+			td:before { content: attr(data-title); }
+		}
+	}
+}

@@ -1,0 +1,23 @@
+@footerHeight: 40px;
+
+// Footer
+// -------------------------
+ 
+#footer {
+	font-weight: 600;
+	position: relative;
+	overflow: hidden;
+	z-index: 10000;
+	a:not(.btn) { color: @bodyText; }
+	border-bottom: 1px solid @contentBorder;
+	border-top: 1px solid @contentBorder;
+	.copy {
+		background: @widgetBgGray;
+		text-align: center;
+		padding: 0 10px;
+		font-size: 12px;
+		a { color: @bodyText; text-decoration: underline; }
+		height: 40px;
+		line-height: 40px;
+	}
+}

@@ -1,0 +1,186 @@
+/*!
+ *
+ *  Project:  GLYPHICONS HALFLINGS
+ *  Author:   Jan Kovarik - www.glyphicons.com
+ *  Twitter:  @jankovarik
+ *
+ */
+
+// IMPORT FONTS
+@font-face {
+  font-family: 'Glyphicons Filetypes Regular';
+  src: url('../fonts/glyphicons_filetypes/glyphicons-filetypes-regular.eot');
+  src: url('../fonts/glyphicons_filetypes/glyphicons-filetypes-regular.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/glyphicons_filetypes/glyphicons-filetypes-regular.woff') format('woff'),
+       url('../fonts/glyphicons_filetypes/glyphicons-filetypes-regular.ttf') format('truetype'),
+       url('../fonts/glyphicons_filetypes/glyphicons-filetypes-regular.svg#glyphicons_filetypesregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+// FONT ICONS
+.glyphicons-filetype{
+  display: inline-block;
+  position: relative;
+  padding-left:30px;
+  color: #1d1d1b;
+  text-decoration: none;
+  *display: inline;
+  *zoom: 1;
+  vertical-align:middle;
+
+  i:before{
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: inline-block;
+    // margin:0 5px 0 0;
+    font: 24px/1em 'Glyphicons Filetypes Regular';
+    font-style: normal;
+    font-weight: normal;
+    color: #1d1d1b;
+    *display: inline;
+    *zoom: 1;
+    // vertical-align:middle;
+    text-transform:none;
+    -webkit-font-smoothing: antialiased;
+  }
+  &.white{
+    i:before{
+      color: #fff;
+    }
+  }
+
+  &.txt{ i:before{ content:"\E001";} }
+  &.doc{ i:before{ content:"\E002";} }
+  &.rtf{ i:before{ content:"\E003";} }
+  &.log{ i:before{ content:"\E004";} }
+  &.tex{ i:before{ content:"\E005";} }
+  &.msg{ i:before{ content:"\E006";} }
+  &.text{ i:before{ content:"\E007";} }
+  &.wpd{ i:before{ content:"\E008";} }
+  &.wps{ i:before{ content:"\E009";} }
+  &.docx{ i:before{ content:"\E010";} }
+  &.page{ i:before{ content:"\E011";} }
+  &.csv{ i:before{ content:"\E012";} }
+  &.dat{ i:before{ content:"\E013";} }
+  &.tar{ i:before{ content:"\E014";} }
+  &.xml{ i:before{ content:"\E015";} }
+  &.vcf{ i:before{ content:"\E016";} }
+  &.pps{ i:before{ content:"\E017";} }
+  &.key{ i:before{ content:"\1F511";} }
+  &.ppt{ i:before{ content:"\E019";} }
+  &.pptx{ i:before{ content:"\E020";} }
+  &.sdf{ i:before{ content:"\E021";} }
+  &.gbr{ i:before{ content:"\E022";} }
+  &.ged{ i:before{ content:"\E023";} }
+  &.mp3{ i:before{ content:"\E024";} }
+  &.m4a{ i:before{ content:"\E025";} }
+  &.waw{ i:before{ content:"\E026";} }
+  &.wma{ i:before{ content:"\E027";} }
+  &.mpa{ i:before{ content:"\E028";} }
+  &.iff{ i:before{ content:"\E029";} }
+  &.aif{ i:before{ content:"\E030";} }
+  &.ra{ i:before{ content:"\E031";} }
+  &.mid{ i:before{ content:"\E032";} }
+  &.m3v{ i:before{ content:"\E033";} }
+  &.e_3gp{ i:before{ content:"\E034";} }
+  &.shf{ i:before{ content:"\E035";} }
+  &.avi{ i:before{ content:"\E036";} }
+  &.asx{ i:before{ content:"\E037";} }
+  &.mp4{ i:before{ content:"\E038";} }
+  &.e_3g2{ i:before{ content:"\E039";} }
+  &.mpg{ i:before{ content:"\E040";} }
+  &.asf{ i:before{ content:"\E041";} }
+  &.vob{ i:before{ content:"\E042";} }
+  &.wmv{ i:before{ content:"\E043";} }
+  &.mov{ i:before{ content:"\E044";} }
+  &.srt{ i:before{ content:"\E045";} }
+  &.m4v{ i:before{ content:"\E046";} }
+  &.flv{ i:before{ content:"\E047";} }
+  &.rm{ i:before{ content:"\E048";} }
+  &.png{ i:before{ content:"\E049";} }
+  &.psd{ i:before{ content:"\E050";} }
+  &.psp{ i:before{ content:"\E051";} }
+  &.jpg{ i:before{ content:"\E052";} }
+  &.tif{ i:before{ content:"\E053";} }
+  &.tiff{ i:before{ content:"\E054";} }
+  &.gif{ i:before{ content:"\E055";} }
+  &.bmp{ i:before{ content:"\E056";} }
+  &.tga{ i:before{ content:"\E057";} }
+  &.thm{ i:before{ content:"\E058";} }
+  &.yuv{ i:before{ content:"\E059";} }
+  &.dds{ i:before{ content:"\E060";} }
+  &.ai{ i:before{ content:"\E061";} }
+  &.eps{ i:before{ content:"\E062";} }
+  &.ps{ i:before{ content:"\E063";} }
+  &.svg{ i:before{ content:"\E064";} }
+  &.pdf{ i:before{ content:"\E065";} }
+  &.pct{ i:before{ content:"\E066";} }
+  &.indd{ i:before{ content:"\E067";} }
+  &.xlr{ i:before{ content:"\E068";} }
+  &.xls{ i:before{ content:"\E069";} }
+  &.xlsx{ i:before{ content:"\E070";} }
+  &.db{ i:before{ content:"\E071";} }
+  &.dbf{ i:before{ content:"\E072";} }
+  &.mdb{ i:before{ content:"\E073";} }
+  &.pdb{ i:before{ content:"\E074";} }
+  &.sql{ i:before{ content:"\E075";} }
+  &.aacd{ i:before{ content:"\E076";} }
+  &.app{ i:before{ content:"\E077";} }
+  &.exe{ i:before{ content:"\E078";} }
+  &.com{ i:before{ content:"\E079";} }
+  &.bat{ i:before{ content:"\E080";} }
+  &.apk{ i:before{ content:"\E081";} }
+  &.jar{ i:before{ content:"\E082";} }
+  &.hsf{ i:before{ content:"\E083";} }
+  &.pif{ i:before{ content:"\E084";} }
+  &.vb{ i:before{ content:"\E085";} }
+  &.cgi{ i:before{ content:"\E086";} }
+  &.css{ i:before{ content:"\E087";} }
+  &.js{ i:before{ content:"\E088";} }
+  &.php{ i:before{ content:"\E089";} }
+  &.xhtml{ i:before{ content:"\E090";} }
+  &.htm{ i:before{ content:"\E091";} }
+  &.html{ i:before{ content:"\E092";} }
+  &.asp{ i:before{ content:"\E093";} }
+  &.cer{ i:before{ content:"\E094";} }
+  &.jsp{ i:before{ content:"\E095";} }
+  &.cfm{ i:before{ content:"\E096";} }
+  &.aspx{ i:before{ content:"\E097";} }
+  &.rss{ i:before{ content:"\E098";} }
+  &.csr{ i:before{ content:"\E099";} }
+  &.less{ i:before{ content:"\003C";} }
+  &.otf{ i:before{ content:"\E101";} }
+  &.ttf{ i:before{ content:"\E102";} }
+  &.font{ i:before{ content:"\E103";} }
+  &.fnt{ i:before{ content:"\E104";} }
+  &.eot{ i:before{ content:"\E105";} }
+  &.woff{ i:before{ content:"\E106";} }
+  &.zip{ i:before{ content:"\E107";} }
+  &.zipx{ i:before{ content:"\E108";} }
+  &.rar{ i:before{ content:"\E109";} }
+  &.targ{ i:before{ content:"\E110";} }
+  &.sitx{ i:before{ content:"\E111";} }
+  &.deb{ i:before{ content:"\E112";} }
+  &.e_7z{ i:before{ content:"\E113";} }
+  &.pkg{ i:before{ content:"\E114";} }
+  &.rpm{ i:before{ content:"\E115";} }
+  &.cbr{ i:before{ content:"\E116";} }
+  &.gz{ i:before{ content:"\E117";} }
+  &.dmg{ i:before{ content:"\E118";} }
+  &.cue{ i:before{ content:"\E119";} }
+  &.bin{ i:before{ content:"\E120";} }
+  &.iso{ i:before{ content:"\E121";} }
+  &.hdf{ i:before{ content:"\E122";} }
+  &.vcd{ i:before{ content:"\E123";} }
+  &.bak{ i:before{ content:"\E124";} }
+  &.tmp{ i:before{ content:"\E125";} }
+  &.ics{ i:before{ content:"\E126";} }
+  &.msi{ i:before{ content:"\E127";} }
+  &.cfg{ i:before{ content:"\E128";} }
+  &.ini{ i:before{ content:"\E129";} }
+  &.prf{ i:before{ content:"\E130";} }
+
+
+}

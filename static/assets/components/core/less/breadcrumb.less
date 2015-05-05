@@ -1,0 +1,46 @@
+// Breadcrumb
+// -------------------------
+
+.breadcrumb {
+	height: 38px;
+	line-height: 39px;
+	padding: 0 @spacing;
+	.rounded();
+	margin: 0 0 @spacing;
+	background: none;
+	border-bottom: 1px solid @contentBorder;
+	box-shadow: 0 1px 0 0 #fff;
+	-moz-box-shadow: 0 1px 0 0 #fff;
+	-webkit-box-shadow: 0 1px 0 0 #fff;
+	color: #ababab;
+	font-size: 12px;
+	position: relative;
+	overflow: hidden;
+	& > li + li:before { display: none; }
+	li { 
+		text-shadow: @bodyTextShadow; 
+		line-height: 38px;
+		height: 38px;
+		a { 
+			color: #ababab; 
+			font-weight: 600; 
+			&.glyphicons {
+				color: #ababab;
+				padding: 0 0 0 25px;
+				i:before {
+					color: #ababab;
+					font-size: 14px;
+					top: 12px;
+					left: 3px;
+				}
+			}
+		}
+		&.divider { 
+			margin: 0 5px 0 7px;
+			width: 0;
+			border-left: 1px solid @contentBorder; 
+			border-right: 1px solid #fff;
+			vertical-align: top;
+		}
+	}
+}

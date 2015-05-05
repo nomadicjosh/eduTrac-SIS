@@ -1,0 +1,66 @@
+// jQRangeSliders
+// ------------------------- //
+
+.sliderContainer {
+	height: 35px;
+	margin-top: 50px;
+	width: 100%;
+	select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+		margin: 0;
+		padding: 2px 4px;
+	}
+	.ui-rangeSlider-withArrows .ui-rangeSlider-container { margin: 0 20px; }
+	.ui-rangeSlider-bar { background: @primaryColor; height: 30px; margin: 0; }
+	.ui-rangeSlider-withArrows .ui-rangeSlider-container, 
+	.ui-rangeSlider-noArrow .ui-rangeSlider-container,
+	.ui-rangeSlider-arrow,
+	.ui-rangeSlider-bar { .bevelEmboss(0,0); }
+	.ui-rangeSlider-container,
+	.ui-rangeSlider-arrow,
+	.ui-rangeSlider-label {
+		background: @widgetBgGray;
+		color: @bodyText;
+		font-size: 13px;
+	}
+	.ui-rangeSlider-container {
+		border-color: @contentBorder;
+	}
+	.ui-editRangeSlider .ui-rangeSlider-label { padding: 5px; }
+	.ui-rangeSlider-label-inner { border-top-color: @widgetBgGray; }
+	.ui-rangeSlider-arrow { border-color: @contentBorder; }
+	.ui-rangeSlider-rightArrow .ui-rangeSlider-arrow-inner { border-left-color: @primaryColor; margin-right: -4px; }
+	.ui-rangeSlider-leftArrow .ui-rangeSlider-arrow-inner { border-right-color: @primaryColor; margin-left: -4px; }
+	.ui-rangeSlider-arrow { width: 20px; }
+	.ui-rangeSlider .ui-ruler-scale { overflow: hidden; }
+	.ui-rangeSlider .ui-ruler-scale0 .ui-ruler-tick-inner { border-color: @contentBorder; }
+	.ui-rangeSlider .ui-ruler-scale0 .ui-ruler-tick-label { color: @bodyText; }
+	
+	.rangeslider-danger {
+		.ui-rangeSlider-bar { background: @dangerColor; }
+		.ui-rangeSlider-rightArrow .ui-rangeSlider-arrow-inner { border-left-color: @dangerColor; }
+		.ui-rangeSlider-leftArrow .ui-rangeSlider-arrow-inner { border-right-color: @dangerColor; }
+	}
+	.rangeslider-success {
+		.ui-rangeSlider-bar { background: @successColor; }
+		.ui-rangeSlider-rightArrow .ui-rangeSlider-arrow-inner { border-left-color: @successColor; }
+		.ui-rangeSlider-leftArrow .ui-rangeSlider-arrow-inner { border-right-color: @successColor; }
+	}
+	.rangeslider-warning {
+		.ui-rangeSlider-bar { background: @warningColor; }
+		.ui-rangeSlider-rightArrow .ui-rangeSlider-arrow-inner { border-left-color: @warningColor; }
+		.ui-rangeSlider-leftArrow .ui-rangeSlider-arrow-inner { border-right-color: @warningColor; }
+	}
+}
+.widget-body-gray {
+	.sliderContainer {
+		.ui-rangeSlider-label-inner { border-top-color: #cecece; }
+		.ui-rangeSlider-container,
+		.ui-rangeSlider-arrow,
+		.ui-rangeSlider-label { background: #cecece; color: #4d4d4d; font-weight: 600; }
+		.ui-rangeSlider:not(.rangeslider-success) {
+			.ui-rangeSlider-rightArrow .ui-rangeSlider-arrow-inner { border-left-color: #4d4d4d; }
+			.ui-rangeSlider-leftArrow .ui-rangeSlider-arrow-inner { border-right-color: #4d4d4d; }
+			.ui-rangeSlider-bar { background: #4d4d4d; }
+		}
+	}
+}

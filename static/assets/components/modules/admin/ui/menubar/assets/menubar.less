@@ -1,0 +1,54 @@
+// Buttons widget
+// -------------------------
+
+.menubar {
+	height: 30px;
+	position: relative;
+	overflow: hidden;
+	border: 1px solid @contentBorder;
+	background: @contentBg1;
+	margin: 0;
+	font-size: 9pt;
+	ul {
+		margin: 0;
+		padding: 0 5px;
+		list-style: none;
+		height: 30px;
+		li {
+			float: left;
+			display: block;
+			height: 30px;
+			line-height: 30px;
+			padding: 0 5px;
+			&.divider {
+				border-left: 1px solid @contentBorder2;
+				width: 0px;
+				padding: 0;
+				margin: 0 8px;
+			}
+			a {
+				color: @bodyText;
+				font-weight: 700;
+				font-size: 9pt;
+			}
+		}
+	}
+	&.links {
+		border: none;
+		background: none;
+		height: 25px;
+		padding: 0 0 5px;
+		ul {
+			padding: 0;
+			height: 25px;
+			li {
+				height: 25px;
+				line-height: 25px;
+				&:first-child { padding-left: 0; } 
+			}
+		}
+		&.primary {
+			ul li a { color: @primaryColor; }
+		}
+	}
+}

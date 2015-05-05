@@ -1,0 +1,92 @@
+// Stats widgets
+// -------------------------
+
+.widget-stats {
+	background: @widgetBg;
+	padding: @spacing 0;
+	margin: 0 0 @spacing;
+	height: 83px+(@spacing*2);
+	position: relative;
+	text-align: center;
+	display: block;
+	border: 1px solid @contentBorder;
+	text-shadow: @bodyTextShadow;
+	box-shadow: 0 3px 0 0 @contentShadow1;
+	-moz-box-shadow: 0 3px 0 0 @contentShadow1;
+	-webkit-box-shadow: 0 3px 0 0 @contentShadow1;
+	.rounded(5px,5px,5px,5px);
+	.count {
+		position: absolute; 
+		top: 0; 
+		left: 0; 
+		font-size: 13px; 
+		.rounded();
+	}
+	.label { font-weight: 600; padding: 4px; box-shadow: 0 0 0 1px rgba(0,0,0,.2) inset; }
+	span { display: inline-block; }
+	.txt { padding: 0; color: #cecece; }
+	.glyphicons {
+		padding: 0;
+		display: block;
+		i { display: block; }
+		i:before { color: #cecece; font-size: 30px; top: 0; left: 0; position: relative; }
+	}
+	&, &:hover, &:focus { text-decoration: none; }
+	&:hover { background: @contentGradient1; }
+	&.small {
+		padding: 5px 0;
+		.glyphicons {
+			padding: 12px 0 0;
+			i:before { font-size: 25px; }
+		}
+	}
+	&.widget-stats-1 {
+		padding: 8px 0;
+		height: 110px;
+		.glyphicons {
+			display: block;
+			height: 35px;
+			line-height: 35px;
+			padding-bottom: 5px;
+			.txt { display: inline-block; padding: 0 5px; line-height: 35px; }
+			i {
+				display: inline-block;
+				&:before { top: 5px; font-size: 25px; }
+			}
+		}
+		.count { position: relative; top: auto; right: auto; font-size: 60px; display: inline-block; font-weight: 700; padding: 0; line-height: 40px; }
+	}
+	&.widget-stats-2 {
+		.txt { font-size: 14px; }
+		.sparkline { margin: 0 0 5px; }
+		.count { position: relative; top: auto; right: auto; font-size: 60px; font-weight: 700; padding: 0 0 3px; display: block; line-height: 55px; }
+	}
+	&.widget-stats-gray {
+		&.widget-stats-1, &.widget-stats-2 {
+			&, .txt { color: #000; }
+		}
+	}
+	&.widget-stats-easy-pie {
+		.easy-pie { display: block; width: 50px; margin: -5px auto 0; }
+		&.txt-single {
+			.easy-pie { margin: 0 auto; }
+			.txt { padding: 7px 0 0; }
+		}
+	}
+	&.widget-stats-3 {
+		.sparkline { display: inline-block; }
+		.txt {
+			text-align: left;
+			vertical-align: middle;
+			padding: 13px 0 0 10px;
+		}
+		.count { padding: 0 0 5px; display: block; }
+	}
+	
+	&.widget-stats-gray {
+		background: @widgetBgGray;
+		box-shadow: 0 3px 0 0 @contentShadow2;
+		-moz-box-shadow: 0 3px 0 0 @contentShadow2;
+		-webkit-box-shadow: 0 3px 0 0 @contentShadow2;
+	}
+}

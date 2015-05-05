@@ -1,0 +1,96 @@
+// dashboard recent activity widget
+// -------------------------
+
+.widget-activity {
+	> .widget-body { padding: 0 @spacing; }
+	ul.list {
+		list-style: none;
+		margin: 0 -@spacing;
+		padding: 0;
+		li {
+			height: 39px;
+			line-height: 39px;
+			position: relative;
+			overflow: hidden;
+			border-bottom: 1px solid @contentBorder2;
+			padding: 0 @spacing;
+			.transition(background .5s ease);
+			&:hover, &.highlight {
+				background: @listActiveHoverBg;
+				box-shadow: @listActiveHoverBoxShadow;
+				-moz-box-shadow: @listActiveHoverBoxShadow;
+				-webkit-box-shadow: @listActiveHoverBoxShadow;
+				text-shadow: @bodyTextShadow;
+				cursor: pointer;
+				&:after {
+					content: "\e212";
+					display: block;
+					position: absolute;
+					right: @spacing;
+					top: 0;
+					height: 39px;
+					line-height: 39px;
+					font-family: "Glyphicons Regular";
+					font-size: 24px/1em;
+					color: #d5d5d5;
+				}
+				.activity-icon i:before { color: #505050; }
+			}
+			> span { 
+				display: block; 
+				height: 39px; line-height: 39px; float: left; position: relative; overflow: hidden;
+				&.ellipsis {
+					white-space:nowrap;
+		    		text-overflow:ellipsis; 
+		    		max-width:75%;
+				}
+				&.date { width: 40px; text-align: center; }
+			}
+			.activity-icon {
+				width: 30px;
+				height: 39px;
+				padding: 0;
+				margin: 0 10px;
+				display: inline-block;
+				text-align: center;
+				i {
+					height: 39px;
+					display: block;
+					position: relative; 
+				}
+				i:before { position: relative; top: 0; left: 0; color: #cbcbcb; font-size: 18px; line-height: 39px; }
+			}
+			&.double {
+				height: 45px; 
+				line-height: 45px;
+				> span {
+					height: 45px; 
+					line-height: 45px; 
+					&.ellipsis {
+						line-height: 15px;
+						padding: 7px 0 0;
+						font-weight: 600;
+						font-size: 11px;
+					}
+					.meta { 
+						display: block; 
+						line-height: 15px;
+						font-weight: 400;
+						color: #b7b7b7;
+						i:before { top: 1px; color: #b7b7b7; }
+						span { font-style: italic; } 
+					}
+				}
+				.activity-icon { margin-left: 0; height: 45px; i { height: 45px; &:before { line-height: 45px; } } }
+				&:hover, &.highlight {
+					&:after {
+						height: 45px;
+						line-height: 45px;
+					}
+				}
+			}
+			&:last-child { border: none; }
+		}
+	}
+	.view-all { position: absolute; top: @spacing+3; right: @spacing; }
+}

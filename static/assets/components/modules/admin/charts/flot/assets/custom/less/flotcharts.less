@@ -1,0 +1,64 @@
+#flotTip {
+	background: #f9f9f9;
+	border: 1px solid @contentBorder;
+	padding: 5px 10px;
+	.rounded(5px,5px,5px,5px);
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.yAxis .tickLabel:first-child,
+.yAxis .tickLabel:last-child { display: none; }
+.tickLabel {
+	font-weight: bold;
+	font-size: 12px;
+	color: #666;
+	padding: 7px;
+}
+.flotchart-holder {
+	margin: 30px 0 @spacing;
+	height: 200px;
+	padding: 0;
+	.label {
+		padding: 5px 10px;
+	}
+}
+#chart_lines_fill_nopoints_2 { height: 160px; }
+.legend {
+	table {
+		top: -30px !important;
+		left: 0 !important;
+		.rounded(5px,5px,5px,5px);
+		border-collapse: separate;
+		tr {
+			td {
+				padding: 5px;
+				background: #f9f9f9;
+				border: 1px solid @contentBorder;
+				border-left: none;
+				border-right: none;
+				&.legendLabel { padding-left: 0; color: #666; font-size: 12px; font-weight: bold; }
+				&.legendColorBox {
+					> div { 
+						border: none !important; 
+						> div { .rounded(5px,5px,5px,5px); }
+					}
+				}
+				&:first-of-type {
+					padding-left: 10px;
+					-webkit-border-radius: 5px 0 0 5px;
+					-moz-border-radius: 5px 0 0 5px;
+					border-radius: 5px 0 0 5px;
+					border-left: 1px solid @contentBorder;
+				}
+				&:last-of-type {
+					padding-right: 10px;
+					-webkit-border-radius: 0 5px 5px 0;
+					-moz-border-radius: 0 5px 5px 0;
+					border-radius: 0 5px 5px 0;
+					border-right: 1px solid @contentBorder;
+				}
+			}
+		}
+	}
+}

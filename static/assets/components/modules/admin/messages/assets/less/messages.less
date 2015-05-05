@@ -1,0 +1,110 @@
+//
+// Messages page
+// --------------------------------------------------
+
+.widget-messages {
+	input[type=text], 
+	input[type=password], 
+	select, textarea {
+		border-color: @contentBorder;
+	}
+	.widget-search {
+		.btn { .rounded(0,3px,3px,0); }
+		input[type=text], 
+		input[type=password] {
+			.rounded(3px,0,0,3px);
+			height: 24px !important;
+			line-height: 24px !important;
+			padding: 0 5px !important;
+		}
+	}
+	.row.row-merge > [class*="col"] ~ [class*="col"]:after { width: 1px !important; }
+	.detailsWrapper {
+		position: relative;
+		.load {
+			display: block;
+			background: #fafafa;
+			color: #444;
+			font-weight: 600;
+			line-height: 30px;
+			height: 40px;
+			text-align: center;
+			padding: 5px 0;
+			&.border-top {
+				border-top: 1px solid @contentBorder;
+			}
+		}
+		.thumb { padding: 3px; border-width: 1px; display: inline-block; }
+		.ajax-loading {
+			position: absolute;
+			text-align: center;
+			background: #fff;
+			background: rgba(255,255,255,.9);
+			left: 1px;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			z-index: 2;
+			i { top: 50%; left: 50%; position: absolute; margin-top: -26px; margin-left: -23px; }
+		}
+	}
+	[class*="col"].listWrapper {
+		height: 100%;
+		min-height: 500px;
+		position: relative;
+		overflow: hidden;
+		.results {
+			display: block;
+			background: fade(@primaryColor, 15%);
+			border: 1px solid fade(@primaryColor, 20%);
+			border-left: none;
+			border-right: none;
+			color: @primaryColor;
+			padding: 0 @spacing;
+			height: 23px;
+			line-height: 21px;
+			font-weight: 400;
+			font-size: 11px;
+			text-align: center;
+		}
+		ul.list {
+			margin: 0;
+			position: absolute;
+			top: 83px;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			
+			// smooth momentum scrolling on iOS
+			overflow-y: scroll;
+			-webkit-overflow-scrolling: touch;
+			
+			li {
+				position: relative;
+				border-bottom: 1px solid @contentBorder;
+				&:nth-child(odd) { 
+					background: #fafafa; 
+				}
+				cursor: pointer;
+				.thumb { 
+					padding: 0; 
+					border-color: #fff;
+					.box-shadow(0 0 1px 1px rgba(0,0,0,.1)); 
+					img { .rounded(4px,4px,4px,4px); }
+				}
+				.strong { line-height: 15px; display: block; }
+				i { color: #c8c8c8; }
+				&:after {
+					display: block;
+					content: "";
+					border: 5px solid transparent;
+					border-left-color: #c8c8c8;
+					position: absolute;
+					bottom: 10px;
+					right: 0;
+				}
+				&.active, &:hover { background: lighten(#e5e5e5, 5%); }
+			}
+		}
+	}
+}

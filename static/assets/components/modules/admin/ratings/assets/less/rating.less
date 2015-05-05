@@ -1,0 +1,23 @@
+// Star ratings
+// ---------------------------
+
+.rating {
+	unicode-bidi: bidi-override;
+	direction: rtl;
+	&.text-large { margin: 7px 0; }
+	span.star{
+		font-family:FontAwesome;
+		font-weight:normal;
+		font-style:normal;
+		display:inline-block;
+	}
+	span.star:before { content:"\f006"; padding-right:0; }
+	&:not(.read-only) 
+	{
+		span.star:hover { cursor:pointer; }
+		span.star:hover:before,
+		span.star:hover ~ span.star:before { content:"\f005"; color: @primaryColor; }
+	}
+	span.star.active:before,
+	span.star.active ~ span.star:before { content:"\f005"; color: @primaryColor; }
+}

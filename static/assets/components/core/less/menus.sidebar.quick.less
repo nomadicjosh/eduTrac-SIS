@@ -1,0 +1,97 @@
+// Sidebar Styles: Quick
+// -------------------------
+
+html.sidebar-quick {
+	#menu {
+		.appbrand { border-bottom: 1px solid @menuBorder1; }
+		.profile {
+			border-bottom: 1px solid @menuBorder1;
+			border-top: 1px solid @menuBorder2;
+			a {
+				border: 1px solid @menuBorder1;
+				&:hover { border-color: darken(@menuBorder1, 10%); }
+			}
+		}
+		width: @sidebarQuickWidth;
+		font-size: 11px;
+		.slim-scroll > ul, > ul {
+			list-style: none;
+			float: left;
+			margin: 0;
+			padding: 0;
+			display: block;
+			width: 100%;
+			border-top: 1px solid @menuBorder2;
+			> li { 
+				display: block;
+				border-bottom: 1px solid @menuBorder1;
+				box-shadow: 0 1px 0 0 @menuBorder2;
+				position: relative;
+				overflow: hidden;
+				padding: 0;
+				margin: 0;
+				a {
+					display: block;
+					width: auto;
+					padding: 10px;
+					margin: 0;
+					line-height: 10px;
+					text-decoration: none;
+					font-weight: 600;
+					color: @menuText;
+					text-align: center;
+					&.glyphicons {
+						padding: 10px 5px;
+						i {
+							display: block;
+							padding: 0 0 5px;
+							&:before {
+								display: block;
+								font-size: 17px;
+								color: @menuText;
+								top: auto;
+								left: auto;
+								position: relative;
+								text-align: center;
+							}
+						} 
+					}
+				}
+				&.glyphicons {
+					> a { 
+						padding: 10px 5px;
+						i {
+							display: block;
+							padding: 0 0 5px;
+							&:before {
+								display: block;
+								font-size: 17px;
+								color: @menuText;
+								top: auto;
+								left: auto;
+								position: relative;
+								text-align: center;
+							} 
+						}
+					}
+				}
+				&.active {
+					box-shadow: 0 1px 0 0 @menuBorder2;
+					border-top: 1px solid @menuBorder2; 
+					position: relative;
+					overflow: visible;
+					> a { 
+						background: @menuActiveBg;
+						color: @menuActiveText;
+					}
+					&.glyphicons a i:before { color: @menuActiveText; }
+					&:first-child { border-top: none; }
+				}
+				&:hover {
+					> a { color: @menuActiveText; }
+					&.glyphicons a i:before { color: @menuActiveText; }
+				}
+			}
+		}
+	}
+}

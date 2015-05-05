@@ -1,0 +1,227 @@
+.bottom-social {
+	line-height: 28px;
+	font-style: italic;
+	a {color:@primaryColor; margin-right: 7px}
+
+	.glyphiconaas, .glyphicons-social { 
+		&.conversation i:before { color:@primaryColor; }
+		font-size:12px;
+		padding: 0 0 0 25px;
+		i:before { color: #ccc; font-size: 17px; left: 0; top: 4px; } 
+	}
+}
+
+ul.social-comments {	
+	li {
+		.user-info { 
+			position:relative; 
+			display:block; 
+			margin:0;
+			abbr { position:relative;display:block; clear:both;font-size: 11px; }
+		}
+	}
+}
+
+.activity-line {
+	p { margin-top:8px; }
+	.border-top { border-top:1px solid #efefef;}
+	.icon {
+		.glyphicons {
+			height : 40px;
+			i:before { line-height: 40px; }
+		}
+	}
+	&.medium {
+		@activity-height: 80px;
+		.icon {
+			.glyphicons {
+				height : @activity-height;
+				i:before { line-height: @activity-height; }
+			}
+		}
+	}
+	&.large { 
+	  	@activity-height: 120px;
+	  	.icon {
+			.glyphicons {
+				height: @activity-height;
+				i:before {
+					line-height: @activity-height;
+				}
+			}
+		}
+	}
+	.color-widget .activity-action {
+		&.glyphicons {
+		 	i:before { color: fade(#fff, 30%); }
+			&:hover {i:before { color: #fff; } }
+		}
+	}
+	a.activity-action {
+		padding: 0;
+		&.glyphicons {
+			margin-right: 30px;
+			i:before {
+				font-size: 17px;
+				line-height: 40px;
+				color: darken(#fff, 15%);
+			}
+			&:hover { i:before { color: darken(#fff, 50%); } }
+		}
+	}
+
+	.primary { background-color: @primaryColor; }
+	.danger { background-color: @dangerColor; }
+	.color-widget {
+		.glyphicons-social { height:120px; padding: 36px; margin: 0;
+			&.social-big { 
+				i:before { color: fade(#fff, 30%); font-size: 70px; line-height: 120px; } 
+			}
+		}
+		&.primary {
+			background-color: @primaryColor; 
+			.darken { 
+				background-color: darken(@primaryColor, 10%);
+				.glyphicons {
+					i:before { color: darken(#fff, 100%);;}
+				}
+			}
+		}
+		&.danger {
+			background-color: @dangerColor; 
+			.darken { 
+				background-color: darken(@dangerColor, 10%);
+				.glyphicons {
+					i:before { color: fade(#fff, 50%);;}
+				}
+			}
+		}
+		&.success {
+			background-color: @successColor; 
+			.darken { 
+				background-color: darken(@successColor, 10%);
+			}
+		}
+		&.warning {
+			background-color: @warningColor; 
+			.darken { 
+				background-color: darken(@warningColor, 10%);
+			}
+		}
+		&.inverse {
+			background-color: @inverseColor; 
+			.darken { 
+				background-color: darken(@inverseColor, 10%);
+			}
+		}
+		&.dribble {
+			background-color: lighten(#ea4c89, 34%);
+			.glyphicons-social {
+				&.social-big { 
+					i:before { color: #ea4c89; } 
+				}
+			}
+			.darken { 
+				background-color: darken(#ea4c89, 10%);
+			}
+		}
+
+	 	.rounded (3px,3px,3px,3px);
+	 	color:#fff; 
+	 	a { color:#fff; font-weight: bold; }
+	}
+
+	&.inverse { background-color: @inverseColor; }
+	.icon {
+		position: relative;
+		display: inline-block;
+		.glyphicons {
+			padding-left: 30px;
+			padding-right: 10px;
+			i:before {
+				padding-left: 10px;
+				color:#fff;
+				font-size: 18px;
+			}
+		}
+		&.primary {background-color: @primaryColor;  }
+		&.danger {background-color: @dangerColor; }
+		&.success {background-color: @successColor; }
+		&.inverse {background-color: @inverseColor; }
+		&.warning {background-color: @warningColor; }
+		.rounded (3px,0,0,3px);
+	}
+	span { padding-left: 10px; }
+
+	.activity-author {
+		float:left;
+		img { .rounded(5px,5px,5px,5px);}
+		margin:0 10px 10px 10px;
+	}
+	.activity-status {
+		 position:relative; 
+		font-size: 14px;		
+		padding: 15px 0 0;
+		position: relative;
+		span { 
+			position:relative; 
+			float:left; 
+			width:80%;  
+			margin-top:3px;
+			padding-left: 20px; 
+			font-size: 12px;
+			&.glyphicons i:before { padding: 0; font-size: 16px; color:#ccc; }
+		}
+	}
+	.activity-content {
+		background: #efefef;
+		clear:both;
+		padding: 10px;
+	}
+	.activity-comments {
+		margin-top:-8px;
+		p.comment {
+			font-size: 13px; 
+			border:1px solid #efefef;
+			background: lighten(#efefef, 3%);
+			padding:5px 10px 5px 40px; 
+			color:#797979;
+			.rounded(3px,3px,3px,3px);
+		}	
+		abbr { font-size: 11px; font-style: italic; color:#797979; display: block;}
+	}
+}
+.share { 
+	margin: 5px;
+ 	.form-control {  
+ 		width:100%; 
+ 		border: none; 
+ 		box-shadow: none; 
+ 		border-bottom:1px solid #efefef;
+ 		.rounded(0px, 0px, 3px, 3px);
+ 	}
+	.share-buttons {
+		position: relative; 
+		display: inline;
+		height: 38px; 
+		margin:0; 
+		padding:0;
+		.glyphicons, .glyphicons-social {
+			height: 38px;
+			width:40px;
+			padding: 13px;
+			margin:0;
+			i:before { 
+				font-size: 18px; 
+				line-height: 40px; 
+				color:#ccc; 
+				padding-left: 10px; 
+				margin:0;
+			}
+			&:hover { 
+				i:before { color:@primaryColor; }
+			}
+		}
+	}
+	.btn-primary { margin:8px 3px; }
+}

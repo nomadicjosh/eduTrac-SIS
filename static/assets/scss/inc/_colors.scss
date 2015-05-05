@@ -1,0 +1,26 @@
+/*
+00 -Text color
+------------------------------------------------------------*/
+@for $i from 0 to length($colors-name) {
+    .color-#{unquote(nth($colors-name, $i+1))} {
+        color: unquote(nth($colors-code, $i+1));
+    }
+}
+/*
+00 - Background Color
+------------------------------------------------------------*/
+@for $i from 0 to length($colors-name) {
+    .bg-#{unquote(nth($colors-name, $i+1))} {
+        background-color: unquote(nth($colors-code, $i+1)) !important;
+        color: unquote(nth($colors-text-code, $i+1)) !important;
+    }
+    .bg-#{unquote(nth($colors-name, $i+1))}-lighten {
+
+        background-color: lighten(unquote(nth($colors-code, $i+1)),5%) !important;
+        color: unquote(nth($colors-text-code, $i+1)) !important;
+    }
+    .bg-#{unquote(nth($colors-name, $i+1))}-darken {
+        background-color: darken(unquote(nth($colors-code, $i+1)),5%) !important;
+        color: unquote(nth($colors-text-code, $i+1)) !important;
+    }
+}

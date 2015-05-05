@@ -1,0 +1,8 @@
+You can search a person by using one of the following formats/criteria:
+<ul>
+    <li>FirstName LastName</li>
+    <li>LastName FirstName</li>
+    <li>LastName, FirstName</li>
+    <li>PersonID</li>
+    <li>Username</li>
+</ul>

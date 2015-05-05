@@ -1,0 +1,4 @@
+Defines whether to send an eMail whenever an event is added or updated.
+<ul>
+    <li>enable_reserve_email = 0  - disables feature</li>
+</ul>

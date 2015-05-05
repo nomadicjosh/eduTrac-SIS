@@ -1,0 +1,23 @@
+// Gritter
+// -------------------------
+
+#gritter-notice-wrapper { z-index: 99999; }
+.gritter-item-wrapper {
+	.gritter-item { 
+		p { 
+			margin: 0 0 10px; 
+			&:last-child { margin: 0; } 
+		}
+	}
+	&.gritter-primary {
+		.gritter-top { display: none; }
+		.gritter-bottom { display: none; }
+		.gritter-item {
+			background: fade(@primaryColor, 90%);
+			padding: 10px 10px 15px;
+			.rounded(10px, 10px, 10px, 10px);
+			color: #fff;
+			a { color: #fff; text-decoration: underline; }
+		}
+	}
+}

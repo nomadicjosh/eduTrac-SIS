@@ -1,0 +1,54 @@
+// Chat widgets
+// -------------------------
+
+.widget-chat {
+	.media {
+		position: relative;
+		min-height: 80px;
+		.media-object {
+			position: relative;
+		}
+		.thumb { padding: 0; }
+		small { 
+			color: #cccccc;
+			&:before, &:after { content: ""; }
+			&.author { position: absolute; left: 0; width: 50px; top: 60px; text-align: center; display: block; }
+			&.date { display: block; border-bottom: 1px solid @contentBorder; margin: 0 0 5px; padding: 0 0 3px; text-align: right; width: 100%; } 
+		}
+		&.right { 
+			small {
+				&.author { left: auto; right: 0; }
+				&.date { text-align: left; }
+			}	
+		}
+		.media-body {
+			.rounded(2px, 2px, 2px, 2px);
+			padding: 0;
+			blockquote {
+				padding: 0;
+				width: 100%;
+				p:last-child { margin: 0; }
+			}
+		}
+		&:last-of-type { padding-bottom: 10px; }
+	}
+	.chat-controls {
+		position: absolute;
+		height: 34px + (@spacing*2);
+		padding: @spacing 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		border: 1px solid @contentBorder;
+		border-top: none;
+		.rounded(0, 0, 5px, 5px);
+		background: #fff;
+		.row {
+			.col-md-2 { padding-left: 0; }
+			.col-md-10 { padding-right: 0; }
+		}
+	}
+	.widget-body { padding-bottom: 0; }
+	&.widget-heading-simple > .widget-body { .rounded(5px, 5px, 0, 0); }
+	padding-bottom: 64px !important;
+}

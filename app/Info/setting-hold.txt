@@ -1,0 +1,1 @@
+This path should be above your public root directory so that it is not available to the prying eyes of the public. Also make sure to include a trailing slash "/" at the end of the path.

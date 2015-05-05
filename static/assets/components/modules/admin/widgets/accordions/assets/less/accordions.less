@@ -1,0 +1,83 @@
+//
+// Accordions
+// --------------------------------------------------
+
+// Accordion
+// ------------------------- //
+
+.accordion {
+	margin: 0 0 10px;
+	position: relative;
+	.panel { 
+		border-color: @contentBorder; .rounded();
+		box-shadow: 0 3px 0 0 @contentShadow1;
+		-moz-box-shadow: 0 3px 0 0 @contentShadow1;
+		-webkit-box-shadow: 0 3px 0 0 @contentShadow1;
+		.rounded(5px,5px,5px,5px); 
+	}
+	.panel-body { font-size: 13px; background: @widgetBg; .rounded(0,0,5px,5px); border-color: @contentBorder; }
+	.panel-heading {
+		padding: 6px 15px;
+		#gradient > .vertical(@contentGradient1, @contentGradient2);
+		.panel-title { 
+			color: @bodyText;
+			text-decoration: none; 
+			line-height: 22px;
+		}
+	}
+	
+	&.accordion-2 {
+		border: 1px solid @contentBorder;
+		.panel-heading {
+			border-bottom: 1px solid @contentBorder;
+			background: @widgetBg;
+			.glyphicons {
+				padding: 0;
+				height: 24px;
+				line-height: 24px;
+				i {
+					width: 30px;
+					display: block;
+					float: left;
+					height: 24px;
+					line-height: 24px;
+					&:before {
+						font-size: 20px;
+						color: #cccccc;
+						top: auto;
+						left: auto;
+						width: 30px;
+						height: 24px;
+						line-height: 24px;
+						position: relative;
+						text-align: center;
+					}
+				}
+			}
+		}
+		.panel {
+			border: none;
+			margin: 0;
+			.rounded();
+			.panel-body {
+				.rounded();
+			}
+			.panel-collapse.in { 
+				.panel-body {
+					border-bottom: 1px solid @contentBorder;
+				}
+			}
+		}
+		.accordion-inner { 
+			border: none;
+			padding: 15px;
+			.rounded();
+		}
+	}
+	
+	&.accordion-gray {
+		.panel-heading {
+			background: @widgetBgGray;
+		}
+	}
+}

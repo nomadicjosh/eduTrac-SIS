@@ -1,0 +1,9 @@
+Below are placeholders which you can use in your email templates. They will only be replaced if you've chosen these fields in your saved query.
+
+<ul>
+    <li><font color="red">#uname#</font> - Username</li>
+    <li><font color="red">#fname#</font> - First Name</li>
+    <li><font color="red">#lname#</font> - Last Name</li>
+    <li><font color="red">#personID#</font> - personID</li>
+    <li><font color="red">#email#</font> - Email</li>
+</ul>

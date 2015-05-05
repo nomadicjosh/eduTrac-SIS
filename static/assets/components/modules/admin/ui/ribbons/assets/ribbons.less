@@ -1,0 +1,64 @@
+// Ribbons
+// -------------------------
+
+.ribbon-wrapper {
+	width: 85px;
+	height: 88px;
+	overflow: hidden;
+	position: absolute;
+	top: -3px;
+	right: -3px;
+	.ribbon {
+		display: block;
+		font-family: Arial, sans-serif;
+		font-size: 15px;
+		font-weight: 600;
+		color: #fff;
+		text-align: center;
+		-webkit-transform: rotate(45deg);
+		-moz-transform: rotate(45deg);
+		-ms-transform: rotate(45deg);
+		-o-transform: rotate(45deg);
+		position: relative;
+		padding: 7px 0;
+		left: -5px;
+		top: 15px;
+		width: 120px;
+		line-height: 20px;
+		background-color: #797979;
+		-webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+		-moz-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+		box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+		&:before, &:after { 
+			content:  "";
+			border-top: 2px solid #797979;
+			border-left: 2px solid transparent;
+			border-right: 2px solid transparent;
+			position: absolute;
+			bottom: -2px;
+		}
+		&:before { left: 0; bottom: -1px; }
+		&:after { right: 0; }
+		&.primary { background-color: @primaryColor; }
+		&.success { background-color: @successColor; }
+		&.warning { background-color: @warningColor; }
+		&.danger { background-color: @dangerColor; }
+		&.default { 
+			background-color: #e5e5e5;
+			color: #595959;
+			&:before, &:after { 
+				border-top: 2px solid #ccc;
+			} 
+		}
+	}
+	&.small {
+		width: 65px;
+		height: 68px;
+		.ribbon { 
+			width: 90px; padding: 0; font-size: 13px;
+			&:before {
+				bottom: -2px;
+			}
+		}
+	}
+}

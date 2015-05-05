@@ -1,0 +1,45 @@
+@maleColor: @infoColor;
+@femaleColor: #D67FB0;
+
+.easy-pie-gender {
+	.value {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 27%;
+		p { margin: 0; &.sublead { font-size: 18px; font-weight: 300; } }
+		.male { color: @maleColor; }
+		.female { color: @femaleColor; }
+	}
+}
+
+#chart_gender {
+	height: 100px;
+	width: 100%;
+}
+#chart_metrics {
+	height: 400px;
+	width: 100%;
+}
+#metrics {
+	table {
+		width: 100%;
+		tr:hover td { background: #fafafa; }
+		td {
+			padding: @spacing;
+			border-bottom: 1px solid @contentBorder;
+			cursor: pointer;
+			&.legendColorBox {
+				width: 10px;
+				> div { width: 14px; margin: 0 auto; }
+			}
+			&.legendLabel { padding-left: 0; }
+			&.legendSelect { width: 10px; }
+		}
+	}
+}
+
+.text-female { color: @femaleColor; }
+.text-female-light { color: lighten(@femaleColor, 20%); }
+.text-male { color: @maleColor; }
+.text-male-light { color: lighten(@maleColor, 20%); }
