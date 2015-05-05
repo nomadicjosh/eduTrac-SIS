@@ -1210,7 +1210,7 @@ function upgradeSQL($file, $delimiter = ';')
         $file = fopen($file, 'r');
 
         if (is_resource($file) === true) {
-            $query = array();
+            $query = [];
 
             while (feof($file) === false) {
                 $query[] = fgets($file);
@@ -1232,12 +1232,12 @@ function upgradeSQL($file, $delimiter = ';')
                 }
 
                 if (is_string($query) === true) {
-                    $query = array();
+                    $query = [];
                 }
             }
 
             fclose($file);
-            redirect(url('/') . 'upgrade/');
+            redirect(url('/dashboard/upgrade/'));
         }
     }
 }
@@ -1250,7 +1250,7 @@ function redirect_upgrade_db()
         if (RELEASE_TAG == getCurrentRelease()) {
             if ($app->hook->get_option('dbversion') < upgradeDB()) {
                 if (basename($_SERVER["REQUEST_URI"]) != "upgrade") {
-                    redirect(url('/') . 'upgrade/');
+                    redirect(url('/dashboard/upgrade/'));
                 }
             }
         }
@@ -1306,7 +1306,9 @@ function et_set_password($password, $person_id)
 {
     $app = \Liten\Liten::getInstance();
     $hash = et_hash_password($password);
-    DB::inst()->update("person", array('password' => $hash), array('personID', $person_id));
+    $q = $app->db->person();
+    $q->password = $hash;
+    $q->where('personID = ?', $person_id)->update();
 }
 
 function et_hash_cookie($cookie)
