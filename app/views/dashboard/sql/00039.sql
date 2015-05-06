@@ -36,4 +36,6 @@ ALTER TABLE `gradebook` DROP FOREIGN KEY gradebook_ibfk_2;
 
 ALTER TABLE `institution_attended` CHANGE `GPA` `GPA` double(6,4) DEFAULT NULL;
 
+INSERT INTO `options_meta` VALUES('', 'system_timezone', 'America/New_York');
+
 UPDATE `options_meta` SET meta_value = '00040' WHERE meta_key = 'dbversion';

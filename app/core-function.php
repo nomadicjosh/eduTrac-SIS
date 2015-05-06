@@ -19,6 +19,10 @@ define('RELEASE_TAG', '5.0');
 
 $app = \Liten\Liten::getInstance();
 
+function _t($msgid) {
+    return gettext($msgid);
+}
+
 function getPathInfo($relative)
 {
     $app = \Liten\Liten::getInstance();

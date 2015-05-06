@@ -22,19 +22,19 @@ if (APP_ENV == 'DEV') {
     set_error_handler('logError', E_ALL & ~E_NOTICE);
 }
 
-require_once( APP_PATH . 'src/Gettext/gettext.inc');
-
 define('LOCALE_DIR', APP_PATH . 'lang');
 $encoding = 'UTF-8';
 $app = \Liten\Liten::getInstance();
 if (file_exists(BASE_PATH . 'config.php')) {
     $locale = ($app->hook->get_option('et_core_locale') !== null) ? $app->hook->get_option('et_core_locale') : 'en_US';
+} else {
+    $locale = 'en_US';
 }
 
 // gettext setup
-T_setlocale(LC_MESSAGES, $locale);
+setlocale(LC_MESSAGES, $locale);
 // Set the text domain as 'messages'
 $domain = 'eduTrac';
-T_bindtextdomain($domain, LOCALE_DIR);
-T_bind_textdomain_codeset($domain, $encoding);
-T_textdomain($domain);
+bindtextdomain($domain, LOCALE_DIR);
+bind_textdomain_codeset($domain, $encoding);
+textdomain($domain);
