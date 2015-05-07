@@ -146,7 +146,7 @@ $app->group('/v1', function() use ($app, $orm, $logger, $dbcache) {
     });
 
     if (in_array($http = strtoupper($_SERVER['REQUEST_METHOD']), ['POST', 'PUT']) === true) {
-        if (preg_match('~^\x78[\x01\x5E\x9C\xDA]~', $data = file_get_contents('php://input')) > 0) {
+        if (preg_match('~^\x78[\x01\x5E\x9C\xDA]~', $data = _file_get_contents('php://input')) > 0) {
             $data = gzuncompress($data);
         }
         if ((array_key_exists('CONTENT_TYPE', $_SERVER) === true) && (empty($data) !== true)) {

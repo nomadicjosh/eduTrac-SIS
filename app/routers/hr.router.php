@@ -117,17 +117,13 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
             ->where('staff.staffID = ?', $id)->_and_()
             ->where('b.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id);
 
-        $q = $dbcache->getCache("staff-$id");
-        if (empty($q)) {
-            $q = $empl->find(function($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-            $dbcache->writeCache("staff-$id", $q);
-        }
+        $q = $empl->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it

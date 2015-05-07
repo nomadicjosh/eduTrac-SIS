@@ -98,7 +98,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        $json = file_get_contents($json_url . 'course/courseID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/');
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {
@@ -182,7 +182,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->get('/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'course/courseID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/');
         $decode = json_decode($json, true);
 
         /**

@@ -63,7 +63,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 exit();
             }
             /* Retrieve the dropAddEndDate from the registration term. */
-            $json_term = file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/');
+            $json_term = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/');
             $daDate = json_decode($json_term, true);
             $deleteDate = date('Y-m-d', strtotime($daDate[0]['dropAddEndDate'] . ' + 1 days'));
 

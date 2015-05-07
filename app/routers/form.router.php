@@ -82,7 +82,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
     $app->get('/view-semester/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
 
-        $json = file_get_contents($json_url . 'semester/semesterID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'semester/semesterID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -182,7 +182,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
         }
     });
     $app->get('/view-term/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'term/termID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'term/termID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -279,7 +279,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-acad-year/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'acad_year/acadYearID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'acad_year/acadYearID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -376,7 +376,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-department/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'department/deptID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'department/deptID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -473,7 +473,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-subject/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'subject/subjectID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'subject/subjectID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -570,7 +570,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-student-load-rule/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'student_load_rule/slrID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'student_load_rule/slrID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -667,7 +667,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-degree/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'degree/degreeID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'degree/degreeID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -764,7 +764,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-major/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'major/majorID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'major/majorID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -861,7 +861,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-minor/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'minor/minorID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'minor/minorID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -958,7 +958,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-ccd/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'ccd/ccdID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'ccd/ccdID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -1055,7 +1055,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-specialization/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'specialization/specID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'specialization/specID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -1152,7 +1152,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-cip/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'cip/cipID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'cip/cipID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -1252,7 +1252,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-rstr-code/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'restriction_code/rstrCodeID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'restriction_code/rstrCodeID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -1349,7 +1349,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-location/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'location/locationID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'location/locationID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -1446,7 +1446,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-building/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'building/buildingID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'building/buildingID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -1547,7 +1547,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-room/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'room/roomID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'room/roomID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -1648,7 +1648,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-school/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'school/schoolID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'school/schoolID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
@@ -1745,7 +1745,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->get('/view-grade-scale/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'grade_scale/ID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'grade_scale/ID/' . $id . '/');
         $decode = json_decode($json, true);
 
         /**
