@@ -78,7 +78,7 @@ tinymce.init({
 
 	<!-- Modal -->
 	<div class="modal fade" id="welcome">
-		<form class="form-horizontal margin-none" action="<?=url('/');?>meessage/" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal margin-none" action="<?=url('/');?>message/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->

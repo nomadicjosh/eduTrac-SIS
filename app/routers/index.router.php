@@ -469,6 +469,23 @@ $app->post('/role/editRole/', function () use($app, $flashNow) {
     redirect($app->req->server['HTTP_REFERER']);
 });
 
+$app->post('/message/', function () use($app, $logger) {
+    $options = ['myet_welcome_message'];
+    
+    foreach ($options as $option_name) {
+            if (!isset($_POST[$option_name]))
+                continue;
+            $value = $_POST[$option_name];
+            $app->hook->{'update_option'}($option_name, $value);
+        }
+        // Update more options here
+        $app->hook->{'do_action'}('update_options');
+        /* Write to logs */
+        $logger->setLog('Update', 'myeduTrac', 'Welcome Message', get_persondata('uname'));
+
+    redirect($app->req->server['HTTP_REFERER']);
+});
+
 /**
  * Before route check.
  */
