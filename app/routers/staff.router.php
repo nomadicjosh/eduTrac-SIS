@@ -95,7 +95,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
 
-        $json = file_get_contents($json_url . 'staff/staffID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'staff/staffID/' . $id . '/');
         $decode = json_decode($json, true);
 
         $addr = $app->db->address()
@@ -164,10 +164,10 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
 
     $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $dbcache, $logger, $flashNow) {
 
-        $json_p = file_get_contents($json_url . 'person/personID/' . $id . '/');
+        $json_p = _file_get_contents($json_url . 'person/personID/' . $id . '/');
         $p_decode = json_decode($json_p, true);
 
-        $json_s = file_get_contents($json_url . 'staff/staffID/' . $id . '/');
+        $json_s = _file_get_contents($json_url . 'staff/staffID/' . $id . '/');
         $s_decode = json_decode($json_s, true);
 
         if ($app->req->isPost()) {

@@ -246,7 +246,7 @@ $app->match('GET|POST', '/permission/', function () use($app) {
 });
 
 $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url) {
-    $json = file_get_contents($json_url . 'permission/ID/' . $id . '/');
+    $json = _file_get_contents($json_url . 'permission/ID/' . $id . '/');
     $decode = json_decode($json, true);
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
@@ -363,7 +363,7 @@ $app->match('GET|POST', '/role/', function () use($app) {
 });
 
 $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
-    $json = file_get_contents($json_url . 'role/ID/' . $id . '/');
+    $json = _file_get_contents($json_url . 'role/ID/' . $id . '/');
     $decode = json_decode($json, true);
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];

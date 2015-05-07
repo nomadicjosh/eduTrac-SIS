@@ -78,7 +78,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'person/personID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/');
         $decode = json_decode($json, true);
 
         $addr = $app->db->address()
@@ -292,7 +292,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/addr-form/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = file_get_contents($json_url . 'person/personID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/');
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {
@@ -378,10 +378,10 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/addr/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
 
-        $json_a = file_get_contents($json_url . 'address/addressID/' . $id . '/');
+        $json_a = _file_get_contents($json_url . 'address/addressID/' . $id . '/');
         $a_decode = json_decode($json_a, true);
 
-        $json_p = file_get_contents($json_url . 'person/personID/' . $a_decode[0]['personID'] . '/');
+        $json_p = _file_get_contents($json_url . 'person/personID/' . $a_decode[0]['personID'] . '/');
         $p_decode = json_decode($json_p, true);
 
         /**
@@ -434,7 +434,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = file_get_contents($json_url . 'person/personID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/');
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {
@@ -507,7 +507,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/perms/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = file_get_contents($json_url . 'person/personID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/');
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {

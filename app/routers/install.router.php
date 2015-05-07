@@ -70,7 +70,7 @@ $app->match('GET|POST', '/install/installData/', function () use($app) {
 
         $_SESSION['error_message'] = [];
         if ($connect) {
-            $q = file_get_contents(APP_PATH . 'views/install/data/install.sql');
+            $q = _file_get_contents(APP_PATH . 'views/install/data/install.sql');
             $connect->exec($q);
             redirect(url('/install/?step=5'));
         } else {
@@ -229,7 +229,7 @@ $app->match('GET|POST', '/install/finishInstall/', function () use($app) {
         	copy(BASE_PATH . 'config.sample.php',BASE_PATH . 'config.php');
         }
         $file = BASE_PATH . 'config.php';
-        $config = file_get_contents($file);
+        $config = _file_get_contents($file);
         
         $config = str_replace('{product}', 'eduTrac SIS', $config);
         $config = str_replace('{company}', '7 Media', $config);

@@ -430,7 +430,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
 
     $app->get('/inst/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
 
-        $json = file_get_contents($json_url . 'institution/institutionID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'institution/institutionID/' . (int) $id . '/');
         $inst = json_decode($json, true);
 
         $app->view->display('application/view-inst', [
@@ -456,7 +456,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             'components/modules/admin/forms/elements/bootstrap-timepicker/assets/custom/js/bootstrap-timepicker.init.js?v=v2.1.0'
         ];
 
-        $json_a = file_get_contents($json_url . 'application/personID/' . (int) get_persondata('personID') . '/');
+        $json_a = _file_get_contents($json_url . 'application/personID/' . (int) get_persondata('personID') . '/');
         $appl = json_decode($json_a, true);
 
         $app->view->display('application/appls', [
@@ -469,7 +469,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->post('/applicantLookup/', function() use($json_url) {
-        $json_a = file_get_contents($json_url . 'person/personID/' . (int) $_POST['personID'] . '/');
+        $json_a = _file_get_contents($json_url . 'person/personID/' . (int) $_POST['personID'] . '/');
         $appl = json_decode($json_a, true);
 
         $json = [ 'input#person' => $appl[0]['lname'] . ', ' . $appl[0]['fname']];

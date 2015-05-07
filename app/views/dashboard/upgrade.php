@@ -52,7 +52,7 @@ $file = BASE_PATH . 'app/views/dashboard/sql/'.$app->hook->{'get_option'}('dbver
                     <?php } ?>
                     
                     <?php
-                        if($app->req->_get('upgradeDB') == 1) {
+                        if(isset($_POST['upgradeDB']) && $_POST['upgradeDB'] == 1) {
                             upgradeSQL($file);
                         }
                     ?>
