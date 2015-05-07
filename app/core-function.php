@@ -15,7 +15,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 define('CURRENT_RELEASE', '5.0');
-define('RELEASE_TAG', '5.0');
+define('RELEASE_TAG', '5.0.1');
 
 $app = \Liten\Liten::getInstance();
 
@@ -32,6 +32,23 @@ function getPathInfo($relative)
     } else {
         return $app->req->server['REQUEST_URI'];
     }
+}
+
+/**
+ * Custom function to use curl or use file_get_contents
+ * if curl is not available.
+ */
+function _file_get_contents($url) {
+    if (!function_exists('curl_init')){ 
+        return file_get_contents($url);
+    }
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    $output = curl_exec($ch);
+    curl_close($ch);
+    return $output;
 }
 
 /**

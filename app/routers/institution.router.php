@@ -112,7 +112,7 @@ $app->group('/institution', function () use($app, $css, $js, $json_url, $logger,
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = file_get_contents($json_url . 'institution/institutionID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'institution/institutionID/' . (int) $id . '/');
         $decode = json_decode($json, true);
 
         /**

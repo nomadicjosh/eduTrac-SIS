@@ -80,7 +80,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        $json = file_get_contents($json_url . 'acad_program/acadProgID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'acad_program/acadProgID/' . $id . '/');
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {

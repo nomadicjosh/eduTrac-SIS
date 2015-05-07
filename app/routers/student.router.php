@@ -97,7 +97,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
 
         $spro = $app->db->student()->where('stuID', $id)->findOne();
-        $json = file_get_contents($json_url . 'application/personID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'application/personID/' . (int) $id . '/');
         $admit = json_decode($json, true);
 
         $prog = $app->db->query("SELECT 
@@ -451,7 +451,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = file_get_contents($json_url . 'student/stuID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/');
         $decode = json_decode($json, true);
 
         $shis = $app->db->query("SELECT 
@@ -558,7 +558,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = file_get_contents($json_url . 'student/stuID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/');
         $decode = json_decode($json, true);
 
         $strc = $app->db->query("SELECT 
@@ -636,10 +636,10 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/sacd/(\d+)/', function ($id) use($app, $css, $js, $json_url, $dbcache) {
 
-        $json = file_get_contents($json_url . 'stu_acad_cred/stuAcadCredID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'stu_acad_cred/stuAcadCredID/' . (int) $id . '/');
         $decode = json_decode($json, true);
 
-        $rterm = file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/');
+        $rterm = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/');
         $term = json_decode($rterm, true);
 
         $date = date("Y-m-d");
@@ -884,7 +884,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/add-prog/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         if ($app->req->isPost()) {
-            $json = file_get_contents($json_url . 'acad_program/acadProgCode/' . $_POST['acadProgCode'] . '/');
+            $json = _file_get_contents($json_url . 'acad_program/acadProgCode/' . $_POST['acadProgCode'] . '/');
             $decode = json_decode($json, true);
 
             $level = $app->db->stu_acad_level()
