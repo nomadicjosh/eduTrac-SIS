@@ -43,7 +43,7 @@ $app->match('GET|POST', '/setting/', function () use($app, $logger) {
             'enable_cron_log', 'wwo_key', 'location', 'autodetect_location', 'edutrac_analytics_url',
             'autodetect_type', 'degree_units', 'wind_units', 'curl', 'auth_token', 'help_desk', 'reset_password_text',
             'contact_phone', 'mailing_address', 'enable_myet_portal', 'enable_myet_appl_form', 'screen_caching', 'db_caching',
-            'system_timezone'
+            'system_timezone','et_core_locale'
         ];
 
         foreach ($options as $option_name) {
@@ -56,6 +56,7 @@ $app->match('GET|POST', '/setting/', function () use($app, $logger) {
         $app->hook->{'do_action'}('update_options');
         /* Write to logs */
         $logger->setLog('Update', 'Settings', 'System Settings', get_persondata('uname'));
+        redirect($app->req->server['HTTP_REFERER']);
     }
 
     $app->view->display('setting/index', [

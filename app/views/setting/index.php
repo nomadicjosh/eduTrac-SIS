@@ -182,6 +182,19 @@ tinymce.init({
                             </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'DB Caching' );?> <a href="#dbcache" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <div class="col-md-8">
+                                <select name="db_caching" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                	<option value="">&nbsp;</option>
+                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'db_caching' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
+                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'db_caching' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
 						
 					</div>
 					<!-- // Column END -->
@@ -191,12 +204,13 @@ tinymce.init({
 						
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'DB Caching' );?> <a href="#dbcache" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Language' );?></label>
                             <div class="col-md-8">
-                                <select name="db_caching" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                <select name="et_core_locale" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                 	<option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'db_caching' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
-                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'db_caching' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
+                                    <option value="en_US"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'en_US', false ); ?>><?=_t( "English" );?></option>
+                                    <option value="es_ES"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'es_ES', false ); ?>><?=_t( "Spanish" );?></option>
+                                    <option value="pt_BR"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'pt_BR', false ); ?>><?=_t( "Portuguese" );?></option>
                                 </select>
                             </div>
                         </div>

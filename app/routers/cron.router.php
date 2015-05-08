@@ -428,9 +428,11 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer) {
             system($command);
         }
         $files = glob(APP_PATH . '_HOLD_' . DS . "*.gz");
-        foreach ($files as $file) {
-            if (is_file($file) && time() - filemtime($file) >= 20 * 24 * 3600) { // 20 days
-                unlink($file);
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                if (is_file($file) && time() - filemtime($file) >= 20 * 24 * 3600) { // 20 days
+                    unlink($file);
+                }
             }
         }
     });

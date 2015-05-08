@@ -84,7 +84,23 @@ if (file_exists(BASE_PATH . 'config.php')) {
 }
 
 /**
- * Step 6: Run the Liten application
+ * Step 6: Autoload Dropins
+ *
+ * Dropins can be plugins and / or routers that
+ * should be autoloaded. This is useful when you want to
+ * add your own customized screens without needing to touch
+ * the core.
+ */
+$dropins = glob(APP_PATH . 'dropins' . DS . '*.php');
+if (is_array($dropins)) {
+    foreach ($dropins as $dropin) {
+        if (file_exists($dropin))
+            include($dropin);
+    }
+}
+
+/**
+ * Step 7: Run the Liten application
  *
  * This method should be called last. This executes the Liten application
  * and returns the HTTP response to the HTTP client.

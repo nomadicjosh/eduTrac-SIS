@@ -42,7 +42,7 @@ tinymce.init({
 						<div class="col-md-12">
 							<h5 class="strong"><?=_t( 'Welcome to myeduTrac' );?></h5>
 							<div class="separator bottom"></div>
-							<?=the_myet_welcome_message();?>
+							<?=_escape(the_myet_welcome_message());?>
 							<p<?=ae('edit_myet_welcome_message');?> class="margin-none strong">
 								<a href="#welcome" data-toggle="modal" class="glyphicons single edit"><i></i><?=_t( 'Edit' );?></a>
 							</p>
@@ -61,10 +61,10 @@ tinymce.init({
 					<div class="widget widget-heading-simple widget-body-white">
 						<div class="widget-body">
 							<h5 class="strong text-uppercase"><?=_h($v['news_title']);?></h5>
-							<span class="glyphicons single regular user"><i></i> <?=_t( 'by');?> <?=getUserValue($v['addedBy'],'uname');?></span>
+							<span class="glyphicons single regular user"><i></i> <?=_t( 'by');?> <?=getUserValue(_h($v['addedBy']),'uname');?></span>
 							<span class="glyphicons single regular calendar"><i></i> <?=date('D, M d, o',strtotime(_h($v['addDate'])));?></span>
 							<div class="separator bottom"></div>
-							<?=safe_truncate($v['news_content'],125,' . . .');?>
+							<?=_escape(safe_truncate($v['news_content'],125,' . . .'));?>
 							<p class="margin-none strong"><a href="<?=url('/');?>news/<?=_h($v['news_slug']);?>/"><?=_t( 'read more' );?></a></p>
 						</div>
 					</div>
@@ -92,7 +92,7 @@ tinymce.init({
 					<!-- Group -->
 		            <div class="form-group">
 		                <div class="col-md-12">
-		                    <textarea name="myet_welcome_message" class="form-control" rows="5"><?=_h($app->hook->{'get_option'}('myet_welcome_message'));?></textarea>
+		                    <textarea name="myet_welcome_message" class="form-control" rows="5"><?=_escape($app->hook->{'get_option'}('myet_welcome_message'));?></textarea>
 		                </div>
 		            </div>
 		            <!-- // Group END -->
