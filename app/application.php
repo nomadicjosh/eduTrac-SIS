@@ -30,6 +30,7 @@ if (file_exists(BASE_PATH . 'config.php')) {
 } else {
     $locale = 'en_US';
 }
+putenv('LC_MESSAGES='.$locale);
 
 // gettext setup
 setlocale(LC_MESSAGES, $locale);
