@@ -44,7 +44,7 @@ class Cookies
     {
         $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
     }
-    
+
     /**
      * Generates a random token which is then hashed.
      * 
@@ -72,16 +72,10 @@ class Cookies
     public function set($key, $value, $expires = null)
     {
         return setcookie(
-            $key,
-            $value,
-            ($expires == null ? time() + $this->_app->config('cookies.lifetime') : time() + $expires),
-            $this->_app->config('cookies.path'),
-            $this->_app->config('cookies.domain'),
-            $this->_app->config('cookies.secure'),
-            $this->_app->config('cookies.httponly')
+            $key, $value, ($expires == null ? time() + $this->_app->config('cookies.lifetime') : time() + $expires), $this->_app->config('cookies.path'), $this->_app->config('cookies.domain'), $this->_app->config('cookies.secure'), $this->_app->config('cookies.httponly')
         );
     }
-    
+
     /**
      * Retrieves a regular cookie if it is set.
      *
@@ -108,32 +102,25 @@ class Cookies
     {
         $token = $this->token();
         $value = $this->buildCookie($token, $expires);
-        
+
         file_put_contents(
-            $this->_app->config('cookies.savepath').'cookies.'.$token,
-            $this->_app->hook->maybe_serialize( 
-                        [
-                            $key => $data,
-                            'exp' => ($expires == null ? time() + $this->_app->config('cookies.lifetime') : time() + $expires)
-                        ]
-                    )
+            $this->_app->config('cookies.savepath') . 'cookies.' . $token, $this->_app->hook->maybe_serialize(
+                [
+                    $key => $data,
+                    'exp' => ($expires == null ? time() + $this->_app->config('cookies.lifetime') : time() + $expires)
+                ]
+            )
         );
-        
+
         return setcookie(
-            $key,
-            $value,
-            ($expires == null ? time() + $this->_app->config('cookies.lifetime') : time() + $expires),
-            $this->_app->config('cookies.path'),
-            $this->_app->config('cookies.domain'),
-            $this->_app->config('cookies.secure'),
-            $this->_app->config('cookies.httponly')
+            $key, $value, ($expires == null ? time() + $this->_app->config('cookies.lifetime') : time() + $expires), $this->_app->config('cookies.path'), $this->_app->config('cookies.domain'), $this->_app->config('cookies.secure'), $this->_app->config('cookies.httponly')
         );
     }
-    
+
     public function getSecureCookie($key)
     {
-        $file = $this->_app->config('cookies.savepath').'cookies.'.$this->getCookieVars($key,'data');
-        if(file_exists($file)) {
+        $file = $this->_app->config('cookies.savepath') . 'cookies.' . $this->getCookieVars($key, 'data');
+        if (file_exists($file)) {
             $data = $this->_app->hook->maybe_unserialize(file_get_contents($file));
             return $data[$key];
         }
@@ -150,13 +137,7 @@ class Cookies
     public function remove($key)
     {
         return setcookie(
-            $key,
-            '',
-            time() - (432000 + $this->_app->config('cookies.lifetime')),
-            $this->_app->config('cookies.path'),
-            $this->_app->config('cookies.domain'),
-            $this->_app->config('cookies.secure'),
-            $this->_app->config('cookies.httponly')
+            $key, '', time() - (432000 + $this->_app->config('cookies.lifetime')), $this->_app->config('cookies.path'), $this->_app->config('cookies.domain'), $this->_app->config('cookies.secure'), $this->_app->config('cookies.httponly')
         );
     }
 
@@ -207,20 +188,22 @@ class Cookies
      */
     public function verifySecureCookie($key)
     {
-        $cookieFile = glob($this->_app->config('cookies.savepath').'cookies.*');
-        foreach($cookieFile as $file) {
-            if(file_exists($file)) {
-                $exp = $this->_app->hook->maybe_unserialize(file_get_contents($file));
+        $cookieFile = glob($this->_app->config('cookies.savepath') . 'cookies.*');
+        if (is_array($cookieFile)) {
+            foreach ($cookieFile as $file) {
+                if (file_exists($file)) {
+                    $exp = $this->_app->hook->maybe_unserialize(file_get_contents($file));
+                }
             }
         }
         /**
          * If the cookie exists and it is expired, delete it
          * from the server side.
          */
-        if(file_exists($file) && $exp['exp'] < time()) {
+        if (file_exists($file) && $exp['exp'] < time()) {
             unlink($file);
         }
-        
+
         if ($this->getCookieVars($key, 'exp') === null || $this->getCookieVars($key, 'exp') < time()) {
             // The cookie has expired
             return false;
