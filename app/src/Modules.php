@@ -112,9 +112,11 @@ class Modules
     public function load_installed_modules($modules_dir = '')
     {
         $modules = glob(APP_PATH . 'modules' . DS . '*.module.php');
-        foreach ($modules as $module) {
-            if (file_exists($module)) {
-                require_once($module);
+        if (is_array($modules)) {
+            foreach ($modules as $module) {
+                if (file_exists($module)) {
+                    require_once($module);
+                }
             }
         }
     }
