@@ -125,8 +125,7 @@ CREATE TABLE IF NOT EXISTS `assignment` (
   `addedBy` bigint(20) NOT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`assignID`),
-  KEY `courseSecCode` (`courseSecCode`),
-  KEY `termCode` (`termCode`)
+  KEY `courseSecID` (`courseSecID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `attendance` (
@@ -137,9 +136,8 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   `date` date DEFAULT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `attendance_index` (`courseSecCode`,`stuID`,`date`,`termCode`),
-  KEY `stuID` (`stuID`),
-  KEY `termCode` (`termCode`)
+  UNIQUE KEY `attendance_index` (`courseSecID`,`stuID`,`date`),
+  KEY `stuID` (`stuID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bill` (
@@ -1069,9 +1067,8 @@ CREATE TABLE IF NOT EXISTS `gradebook` (
   `addedBy` bigint(20) NOT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`gbID`),
-  UNIQUE KEY `gradebook_unique_grade` (`assignID`,`courseSecCode`,`facID`,`stuID`),
-  KEY `courseSecCode` (`courseSecCode`),
-  KEY `termCode` (`termCode`)
+  UNIQUE KEY `gradebook_unique_grade` (`assignID`,`courseSecID`,`facID`,`stuID`),
+  KEY `courseSecID` (`courseSecID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `grade_scale` (
@@ -2623,7 +2620,7 @@ ALTER TABLE `assignment` ADD FOREIGN KEY (`courseSecID`) REFERENCES `course_sec`
 
 ALTER TABLE `attendance` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
-ALTER TABLE `attendance` ADD FOREIGN KEY (`ourseSecID`) REFERENCES `course_sec` (`ourseSecID`) ON UPDATE CASCADE;
+ALTER TABLE `attendance` ADD FOREIGN KEY (`courseSecID`) REFERENCES `course_sec` (`courseSecID`) ON UPDATE CASCADE;
 
 ALTER TABLE `bill` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
@@ -2685,7 +2682,7 @@ ALTER TABLE `external_course` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`
 
 ALTER TABLE `gl_transaction` ADD FOREIGN KEY (`jeID`) REFERENCES `gl_journal_entry` (`jeID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE `gradebook` ADD FOREIGN KEY (`ourseSecID`) REFERENCES `course_sec` (`ourseSecID`) ON UPDATE CASCADE;
+ALTER TABLE `gradebook` ADD FOREIGN KEY (`courseSecID`) REFERENCES `course_sec` (`courseSecID`) ON UPDATE CASCADE;
 
 ALTER TABLE `hiatus` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
