@@ -15,7 +15,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 define('CURRENT_RELEASE', '5.0');
-define('RELEASE_TAG', '5.0.2');
+define('RELEASE_TAG', '5.0.3');
 
 $app = \Liten\Liten::getInstance();
 
@@ -41,16 +41,36 @@ function getPathInfo($relative)
  */
 function _file_get_contents($url)
 {
-    if (!function_exists('curl_init')) {
-        return file_get_contents($url);
+    $context = stream_context_create(array(
+        'http' => array(
+            'timeout' => 360.0
+        )
+    ));
+    $result = file_get_contents($url);
+    if ($result) {
+        return $result;
+    } else {
+        $handle = fopen($url, "r", false, $context);
+        $contents = stream_get_contents($handle);
+        fclose($handle);
+        if ($contents) {
+            return $contents;
+        } else if (!function_exists('curl_init')) {
+            return false;
+        } else {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 360);
+            $output = curl_exec($ch);
+            curl_close($ch);
+            if ($output) {
+                return $output;
+            } else {
+                return false;
+            }
+        }
     }
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    $output = curl_exec($ch);
-    curl_close($ch);
-    return $output;
 }
 
 /**
@@ -1228,11 +1248,11 @@ function upgradeSQL($file, $delimiter = ';')
                         echo '<p><font color="green">SUCCESS:</font> ' . $query . '</p>' . "\n";
                     }
 
-                    while (ob_get_level() > 0) {
+                    /*while (ob_get_level() > 0) {
                         ob_end_flush();
                     }
 
-                    flush();
+                    flush();*/
                 }
 
                 if (is_string($query) === true) {
