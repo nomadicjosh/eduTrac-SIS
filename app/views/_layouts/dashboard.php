@@ -115,6 +115,7 @@
                                         <li<?= hl('roles', 'access_role_screen'); ?>><a href="<?= url('/'); ?>role/<?= bm(); ?>"> <?= _t('(MRLE) Manage Role'); ?></a></li>
                                         <li<?= hl('errorlogs', 'access_error_log_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= url('/'); ?>error/logs/<?= bm(); ?>"> <?= _t('Error Log'); ?></a></li>
                                         <li<?= hl('audit_trail', 'access_audit_trail_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= url('/'); ?>audit-trail/<?= bm(); ?>"> <?= _t('Audit Trail'); ?></a></li>
+                                        <li<?= hl('general_settings'); ?>><a href="<?= url('/'); ?>dashboard/update/<?= bm(); ?>"> <?= _t('Automatic Update'); ?></a></li>
                                     </ul>
                                 </li>
                                 

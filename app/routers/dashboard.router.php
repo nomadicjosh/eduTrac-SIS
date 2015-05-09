@@ -121,6 +121,22 @@ $app->get('/dashboard/support/', function () use($app) {
 /**
  * Before route check.
  */
+$app->before('GET|POST', '/dashboard/update/', function() {
+    if (!hasPermission('edit_settings')) {
+        redirect(url('/dashboard/'));
+    }
+});
+
+$app->match('GET|POST', '/dashboard/update/', function () use($app) {
+    $app->view->display('dashboard/update', [
+        'title' => 'Automatic Update'
+        ]
+    );
+});
+
+/**
+ * Before route check.
+ */
 $app->before('GET|POST', '/dashboard/upgrade/', function() {
     if (!hasPermission('edit_settings')) {
         redirect(url('/dashboard/'));
