@@ -26,7 +26,8 @@ $js = [
     'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
     'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js'
+    'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js',
+    'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
 ];
 
 $app->group('/plugins', function() use ($app, $css, $js) {
@@ -54,6 +55,49 @@ $app->group('/plugins', function() use ($app, $css, $js) {
     $app->match('GET|POST', '/options/', function() use($app, $css, $js) {
         $app->view->display('plugins/options', [
             'title' => 'Plugin Options',
+            'cssArray' => $css,
+            'jsArray' => $js
+            ]
+        );
+    });
+
+    $app->match('GET|POST', '/install/', function () use($app, $css, $js) {
+
+        if ($app->req->isPost()) {
+            $name = explode(".", $_FILES["plugin_zip"]["name"]);
+            $accepted_types = [ 'application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/x-compressed'];
+
+            foreach ($accepted_types as $mime_type) {
+                if ($mime_type == $type) {
+                    $okay = true;
+                    break;
+                }
+            }
+
+            $dir = substr($_FILES["plugin_zip"]["name"], 0, -15);
+            $continue = strtolower($name[1]) == 'zip' ? true : false;
+
+            if (!$continue) {
+                $app->flash('error_message', 'The file you are trying to upload is not the accepted file type. Please try again.');
+            }
+            $target_path = APP_PATH . 'plugins' . DS . $_FILES["plugin_zip"]["name"];
+            if(move_uploaded_file($_FILES["plugin_zip"]["tmp_name"], $target_path)) {
+                $zip = new \ZipArchive();
+                $x = $zip->open($target_path);
+                if ($x === true) {
+                    $zip->extractTo(APP_PATH . 'plugins' . DS . $dir);
+                    $zip->close();
+                    unlink($target_path);
+                }
+                $app->flash('success_message', 'Your plugin was uploaded and installed properly.');
+            } else {
+                $app->flash('error_message', 'There was a problem uploading your plugin. Please try again or check the plugin package.');
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
+
+        $app->view->display('plugins/install', [
+            'title' => 'Install Plugins',
             'cssArray' => $css,
             'jsArray' => $js
             ]
