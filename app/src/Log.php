@@ -11,7 +11,6 @@ if (!defined('BASE_PATH'))
  * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @license     http://www.edutracerp.com/general/edutrac-erp-commercial-license/ Commercial License
  * @link        http://www.7mediaws.org/
  * @since       3.0.0
  * @package     eduTrac
@@ -67,10 +66,13 @@ class Log
      */
     public function purgeErrLog()
     {
-        foreach (glob(APP_PATH . 'tmp/logs/*.txt') as $file) {
-            $filelastmodified = filemtime($file);
-            if ((time() - $filelastmodified) > 30 * 24 * 3600 && is_file($file)) {
-                unlink($file);
+        $logs = glob(APP_PATH . 'tmp/logs/*.txt');
+        if (is_array($logs)) {
+            foreach ($logs as $log) {
+                $filelastmodified = filemtime($log);
+                if ((time() - $filelastmodified) > 30 * 24 * 3600 && is_file($log)) {
+                    unlink($log);
+                }
             }
         }
     }

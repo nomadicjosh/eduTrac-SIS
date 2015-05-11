@@ -15,7 +15,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 define('CURRENT_RELEASE', '5.0');
-define('RELEASE_TAG', '5.0.3');
+define('RELEASE_TAG', '5.0.4');
 
 $app = \Liten\Liten::getInstance();
 
@@ -165,7 +165,7 @@ function ml($func)
 function bm()
 {
     $app = \Liten\Liten::getInstance();
-    if ($app->hook->get_option('enable_benchmark') == 1) {
+    if ($app->hook->{'get_option'}('enable_benchmark') == 1) {
         return '?php-benchmark-test=1&display-data=1';
     }
 }
@@ -270,7 +270,7 @@ function facID_dropdown($facID = NULL)
 function payment_type_dropdown($typeID = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    $pay = $app->db->query('SELECT * FROM payment_type');
+    $pay = $app->db->payment_type();
     $q = $pay->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -622,7 +622,7 @@ function rolePerm($id)
     foreach ($q1 as $v) {
         $a[] = $v;
     }
-    $sql = $app->db->query("SELECT * FROM permission");
+    $sql = $app->db->permission();
     $q2 = $sql->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -695,7 +695,7 @@ function personPerm($id)
         $array2[] = $r2;
     }
     $perm = $app->hook->{'maybe_unserialize'}($r2['permission']);
-    $permission = $app->db->query("SELECT * FROM permission");
+    $permission = $app->db->permission();
     $sql = $permission->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -1229,8 +1229,10 @@ function upgradeSQL($file, $delimiter = ';')
 {
     $app = \Liten\Liten::getInstance();
     set_time_limit(0);
+    
+    $contents = _file_get_contents($file);
 
-    if (is_file($file) === true) {
+    if (strlen($contents) !== 0) {
         $file = fopen($file, 'r');
 
         if (is_resource($file) === true) {
@@ -1271,9 +1273,9 @@ function redirect_upgrade_db()
     $app = \Liten\Liten::getInstance();
     $acl = new \app\src\ACL(get_persondata('personID'));
     if ($acl->userHasRole(8)) {
-        if (RELEASE_TAG == getCurrentRelease()) {
-            if ($app->hook->get_option('dbversion') < upgradeDB()) {
-                if (basename($_SERVER["REQUEST_URI"]) != "upgrade") {
+        if (RELEASE_TAG == \app\src\ReleaseAPI::inst()->init('RELEASE_TAG')) {
+            if ($app->hook->get_option('dbversion') < \app\src\ReleaseAPI::inst()->init('DB_VERSION')) {
+                if (basename($app->req->server["REQUEST_URI"]) != "upgrade") {
                     redirect(url('/dashboard/upgrade/'));
                 }
             }
@@ -1283,7 +1285,7 @@ function redirect_upgrade_db()
 
 function head_release_meta()
 {
-    echo "<meta name='generator' content='eduTrac ERP " . CURRENT_RELEASE . "'>\n";
+    echo "<meta name='generator' content='eduTrac SIS " . CURRENT_RELEASE . "'>\n";
 }
 
 function foot_release()

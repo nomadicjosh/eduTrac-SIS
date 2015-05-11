@@ -91,7 +91,8 @@
                         <li<?= ae('access_plugin_screen'); ?> class="dropdown dd-1">
                             <a href="" data-toggle="dropdown" class="glyphicons electrical_plug"><i></i><?= _t('Plugins'); ?> <span class="caret"></span></a>
                             <ul class="dropdown-menu pull-left">
-                                <li<?= ae('access_plugin_screen'); ?>><a href="<?= url('/'); ?>plugins/<?= bm(); ?>" class="glyphicons cogwheel"><i></i><?= _t('Plugins'); ?></a></li>
+                                <li<?= ae('access_plugin_admin_page'); ?>><a href="<?= url('/'); ?>plugins/install/<?= bm(); ?>" class="glyphicons upload"><i></i><?= _t('Install Plugins'); ?></a></li>
+                                <li<?= ae('access_plugin_screen'); ?>><a href="<?= url('/'); ?>plugins/<?= bm(); ?>" class="glyphicons cogwheels"><i></i><?= _t('Plugins'); ?></a></li>
                                 <?php $app->hook->list_plugin_admin_pages(url('/plugins/options/')); ?>
                                 <?php //$app->hook->list_plugin_parent_pages(url('/admin/options/')); ?>
                                 <!-- // Components Submenu Regular Items END -->
