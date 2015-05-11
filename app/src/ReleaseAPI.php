@@ -11,36 +11,71 @@ if (!defined('BASE_PATH'))
  * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @license     http://www.edutracerp.com/general/edutrac-erp-commercial-license/ Commercial License
  * @link        http://www.7mediaws.org/
  * @since       4.5.3
- * @package     eduTrac ERP
+ * @package     eduTrac
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 class ReleaseAPI
 {
 
-    private $_url = 'http://7mws.s3.amazonaws.com/';
-    private $_json_url = '';
+    protected $_url = 'http://edutrac.s3.amazonaws.com/';
+    protected $_json_url;
+    protected $_app;
 
-    public function __construct()
+    /**
+     * 
+     * @var Singleton
+     */
+    protected static $instance;
+
+    public function __construct(\Liten\Liten $liten = null)
     {
-        // Create the stream context
-        $context = stream_context_create([
-            'http' => [
-                'timeout' => 2      // Timeout in seconds
-            ]
-        ]);
+        $this->_json_url = _file_get_contents($this->_url . 'release.json');
+        $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
+    }
 
-        $this->_json_url = file_get_contents($this->_url . 'erp-release.json', false, $context);
+    public static function inst()
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
     public function init($value)
     {
         $json = json_decode($this->_json_url, true);
-
-        foreach ($json as $k => $v) {
+        
+        foreach ($json as $v) {
             return $v[$value];
         }
+    }
+
+    public function currentRelease()
+    {
+        return $this->init('CURRENT_RELEASE');
+    }
+
+    public static function releaseTag()
+    {
+        return $this->init('RELEASE_TAG');
+    }
+
+    public static function dbVersion()
+    {
+        return $this->init('DB_VERSION');
+    }
+
+    public static function getNotice()
+    {
+        $notice = $this->_url . $this->init('UPGRADE_NOTICE') . DS . 'notice.txt';
+        return $notice;
+    }
+
+    public static function getSchema()
+    {
+        $sql = $this->_url . $this->init('UPGRADE_SQL') . DS . $this->_app->hook->{'get_option'}('dbversion') . '.sql';
+        return $sql;
     }
 }

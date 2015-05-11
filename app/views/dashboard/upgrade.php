@@ -15,7 +15,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$file = BASE_PATH . 'app/views/dashboard/sql/'.$app->hook->{'get_option'}('dbversion').'.sql';
 ?>
 
 <div class="innerLR errorView">
@@ -28,7 +27,7 @@ $file = BASE_PATH . 'app/views/dashboard/sql/'.$app->hook->{'get_option'}('dbver
 				<!-- Row -->
 				<div class="row">
 
-                    <?php if($app->hook->{'get_option'}('dbversion') < upgradeDB()) { ?>
+                    <?php if($app->hook->{'get_option'}('dbversion') < \app\src\ReleaseAPI::inst()->init('DB_VERSION')) { ?>
 					<!-- Alert -->
 					<div class="alert alert-primary center">
 						<strong><?=_t( 'Warning!' );?></strong> <?=_t( 'Hey admin, your database is out of date and currently at version ') . $app->hook->{'get_option'}('dbversion') . _t('. Click the button below to upgrade your database. When the upgrade is complete,'). '<a href="'.url('/dashboard/').'"><font color="orange">'._t( 'click here').'</font></a>'. _t( 'to return to the dashboard. If you are behind on a few versions, you may be redirected to this page again until the system is fully up to date.' );?>
@@ -53,7 +52,7 @@ $file = BASE_PATH . 'app/views/dashboard/sql/'.$app->hook->{'get_option'}('dbver
                     
                     <?php
                         if(isset($_POST['upgradeDB']) && $_POST['upgradeDB'] == 1) {
-                            upgradeSQL($file);
+                            upgradeSQL(\app\src\ReleaseAPI::inst()->getSchema());
                         }
                     ?>
 			

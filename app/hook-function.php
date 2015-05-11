@@ -21,14 +21,14 @@ $app = \Liten\Liten::getInstance();
  *
  * @since 1.0.0
  */
-$app->hook->load_activated_plugins(APP_PATH . 'plugins/');
+$app->hook->{'load_activated_plugins'}(APP_PATH . 'plugins/');
 
 /**
  * Includes and loads all available modules.
  *
  * @since 5.0
  */
-$app->module->load_installed_modules(APP_PATH . 'modules/');
+$app->module->{'load_installed_modules'}(APP_PATH . 'modules/');
 
 /**
  * An action called to add the plugin's link
@@ -37,7 +37,7 @@ $app->module->load_installed_modules(APP_PATH . 'modules/');
  * @since 1.0.0
  * @uses do_action() Calls 'admin_menu' hook.
  */
-$app->hook->do_action('admin_menu');
+$app->hook->{'do_action'}('admin_menu');
 
 /**
  * An action called to add custom page links
@@ -46,7 +46,7 @@ $app->hook->do_action('admin_menu');
  * @since 4.2.0
  * @uses do_action() Calls 'custom_plugin_page' hook.
  */
-$app->hook->do_action('custom_plugin_page');
+$app->hook->{'do_action'}('custom_plugin_page');
 
 /**
  * An action called to create db tables needed
@@ -55,7 +55,7 @@ $app->hook->do_action('custom_plugin_page');
  * @since 4.2.0
  * @uses do_action() Calls 'create_db_table' hook.
  */
-$app->hook->do_action('create_db_table');
+$app->hook->{'do_action'}('create_db_table');
 
 /**
  * An action called to add component/companion pages
@@ -65,7 +65,7 @@ $app->hook->do_action('create_db_table');
  * @since 4.2.1
  * @uses do_action() Calls 'component_menu' hook.
  */
-$app->hook->do_action('component_menu');
+$app->hook->{'do_action'}('component_menu');
 
 $parsecode_tags = array();
 
@@ -433,43 +433,43 @@ function parsecode_unautop($pee)
 function init()
 {
     $app = \Liten\Liten::getInstance();
-    $app->hook->do_action('init');
+    $app->hook->{'do_action'}('init');
 }
 
 function admin_head()
 {
     $app = \Liten\Liten::getInstance();
-    $app->hook->do_action('admin_head');
+    $app->hook->{'do_action'}('admin_head');
 }
 
 function myet_head()
 {
     $app = \Liten\Liten::getInstance();
-    $app->hook->do_action('myet_head');
+    $app->hook->{'do_action'}('myet_head');
 }
 
 function footer()
 {
     $app = \Liten\Liten::getInstance();
-    $app->hook->do_action('footer');
+    $app->hook->{'do_action'}('footer');
 }
 
 function release()
 {
     $app = \Liten\Liten::getInstance();
-    $app->hook->do_action('release');
+    $app->hook->{'do_action'}('release');
 }
 
 function dashboard_top_widgets()
 {
     $app = \Liten\Liten::getInstance();
-    $app->hook->do_action('dashboard_top_widgets');
+    $app->hook->{'do_action'}('dashboard_top_widgets');
 }
 
 function dashboard_right_widgets()
 {
     $app = \Liten\Liten::getInstance();
-    $app->hook->do_action('dashboard_right_widgets');
+    $app->hook->{'do_action'}('dashboard_right_widgets');
 }
 
 /**
@@ -499,7 +499,7 @@ function dashboard_student_count()
     $stuCount .= '<span class="count">' . $r['count'] . '</span>';
     $stuCount .= '</a>';
     $stuCount .= '</div>';
-    echo $app->hook->apply_filter('dashboard_student_count', $stuCount);
+    echo $app->hook->{'apply_filter'}('dashboard_student_count', $stuCount);
 }
 
 /**
@@ -529,7 +529,7 @@ function dashboard_course_count()
     $crseCount .= '<span class="count">' . $r['count'] . '</span>';
     $crseCount .= '</a>';
     $crseCount .= '</div>';
-    echo $app->hook->apply_filter('dashboard_course_count', $crseCount);
+    echo $app->hook->{'apply_filter'}('dashboard_course_count', $crseCount);
 }
 
 /**
@@ -559,52 +559,27 @@ function dashboard_acadProg_count()
     $progCount .= '<span class="count">' . $r['COUNT(acadProgID)'] . '</span>';
     $progCount .= '</a>';
     $progCount .= '</div>';
-    echo $app->hook->apply_filter('dashboard_acadProg_count', $progCount);
-}
-
-function getCurrentRelease()
-{
-    $app = \Liten\Liten::getInstance();
-    $releaseAPI = new \app\src\ReleaseAPI();
-    //$time = getCoreCheckTime();
-    $release = $releaseAPI->init('RELEASE_TAG');
-    return $app->hook->apply_filter('get_current_release', $release);
-}
-
-function upgradeDB()
-{
-    $app = \Liten\Liten::getInstance();
-    $releaseAPI = new \app\src\ReleaseAPI();
-    //$time = getCoreCheckTime();
-    $upgrade = $releaseAPI->init('DB_VERSION');
-    return $app->hook->apply_filter('upgrade_db', $upgrade);
+    echo $app->hook->{'apply_filter'}('dashboard_acadProg_count', $progCount);
 }
 
 /**
  * Shows update message when a new release of 
- * eduTrac ERP is available.
+ * eduTrac SIS is available.
  *
  * @since 4.0.0
  */
 function show_update_message()
 {
     $app = \Liten\Liten::getInstance();
-    $releaseAPI = new \app\src\ReleaseAPI();
-    // Create the stream context
-    $context = stream_context_create([
-        'http' => [
-            'timeout' => 2      // Timeout in seconds
-        ]
-    ]);
     $acl = new \app\src\ACL(get_persondata('personID'));
     if ($acl->userHasRole(8)) {
-        if (RELEASE_TAG < getCurrentRelease()) {
+        if (RELEASE_TAG < \app\src\ReleaseAPI::inst()->currentRelease()) {
             $alert = '<div class="alerts alerts-warn center">';
-            $alert .= file_get_contents($releaseAPI->init('API_BASE_URL') . $releaseAPI->init('UPGRADE_NOTICE'), false, $context);
+            $alert .= _file_get_contents(\app\src\ReleaseAPI::inst()->getNotice());
             $alert .= '</div>';
         }
     }
-    return $app->hook->apply_filter('update_message', $alert);
+    return $app->hook->{'apply_filter'}('update_message', $alert);
 }
 
 /**
@@ -619,7 +594,7 @@ function get_base_url()
 {
     $app = \Liten\Liten::getInstance();
     $url = url('/');
-    return $app->hook->apply_filter('base_url', $url);
+    return $app->hook->{'apply_filter'}('base_url', $url);
 }
 
 /**
@@ -636,7 +611,7 @@ function get_javascript_directory_uri()
     $directory = 'static/assets/components';
     $javascript_root_uri = get_base_url();
     $javascript_dir_uri = "$javascript_root_uri$directory/";
-    return $app->hook->apply_filter('javascript_directory_uri', $javascript_dir_uri, $javascript_root_uri, $directory);
+    return $app->hook->{'apply_filter'}('javascript_directory_uri', $javascript_dir_uri, $javascript_root_uri, $directory);
 }
 
 /**
@@ -653,7 +628,7 @@ function get_less_directory_uri()
     $directory = 'static/assets/less';
     $less_root_uri = get_base_url();
     $less_dir_uri = "$less_root_uri$directory/";
-    return $app->hook->apply_filter('less_directory_uri', $less_dir_uri, $less_root_uri, $directory);
+    return $app->hook->{'apply_filter'}('less_directory_uri', $less_dir_uri, $less_root_uri, $directory);
 }
 
 /**
@@ -670,7 +645,7 @@ function get_css_directory_uri()
     $directory = 'static/assets/css';
     $css_root_uri = get_base_url();
     $css_dir_uri = "$css_root_uri$directory/";
-    return $app->hook->apply_filter('css_directory_uri', $css_dir_uri, $css_root_uri, $directory);
+    return $app->hook->{'apply_filter'}('css_directory_uri', $css_dir_uri, $css_root_uri, $directory);
 }
 
 /**
@@ -692,7 +667,7 @@ function et_parse_str($string, &$array)
      * @since 4.2.0
      * @param array $array The array populated with variables.
      */
-    $array = $app->hook->apply_filter('et_parse_str', $array);
+    $array = $app->hook->{'apply_filter'}('et_parse_str', $array);
 }
 
 /**
@@ -707,7 +682,7 @@ function get_met_title()
 {
     $app = \Liten\Liten::getInstance();
     $title = '<em>' . _t('my') . '</em>' . ( 'eduTrac' );
-    return $app->hook->apply_filter('met_title', $title);
+    return $app->hook->{'apply_filter'}('met_title', $title);
 }
 
 /**
@@ -722,11 +697,11 @@ function get_met_footer_release()
 {
     $app = \Liten\Liten::getInstance();
     if (CURRENT_RELEASE != RELEASE_TAG) {
-        $release = _t('Powered by eduTrac ERP r') . CURRENT_RELEASE . ' (t' . RELEASE_TAG . ')';
+        $release = _t('Powered by eduTrac SIS r') . CURRENT_RELEASE . ' (t' . RELEASE_TAG . ')';
     } else {
-        $release = _t('Powered by eduTrac ERP r') . CURRENT_RELEASE;
+        $release = _t('Powered by eduTrac SIS r') . CURRENT_RELEASE;
     }
-    return $app->hook->apply_filter('met_footer_release', $release);
+    return $app->hook->{'apply_filter'}('met_footer_release', $release);
 }
 
 /**
@@ -741,7 +716,7 @@ function get_met_footer_title()
 {
     $app = \Liten\Liten::getInstance();
     $title = '<em>' . _t('my') . '</em>' . ( 'eduTrac' );
-    return $app->hook->apply_filter('met_footer_title', $title);
+    return $app->hook->{'apply_filter'}('met_footer_title', $title);
 }
 
 /**
@@ -762,7 +737,7 @@ function address_type_select($typeCode = NULL)
             <option value="H"' . selected($typeCode, 'H', false) . '>Home/Mailing</option>
             <option value="P"' . selected($typeCode, 'P', false) . '>Permanent</option>
             </select>';
-    return $app->hook->apply_filter('address_type', $select, $typeCode);
+    return $app->hook->{'apply_filter'}('address_type', $select, $typeCode);
 }
 
 /**
@@ -782,7 +757,7 @@ function dept_type_select($typeCode = NULL)
             <option value="ADMIN"' . selected($typeCode, 'ADMIN', false) . '>' . _t('Administrative') . '</option>
             <option value="ACAD"' . selected($typeCode, 'ACAD', false) . '>' . _t('Academic') . '</option>
             </select>';
-    return $app->hook->apply_filter('dept_type', $select, $typeCode);
+    return $app->hook->{'apply_filter'}('dept_type', $select, $typeCode);
 }
 
 /**
@@ -802,7 +777,7 @@ function address_status_select($status = NULL)
 	    	<option value="C"' . selected($status, 'C', false) . '>Current</option>
 			<option value="I"' . selected($status, 'I', false) . '>Inactive</option>
 		    </select>';
-    return $app->hook->apply_filter('address_status', $select, $status);
+    return $app->hook->{'apply_filter'}('address_status', $select, $status);
 }
 
 /**
@@ -825,7 +800,7 @@ function acad_level_select($levelCode = null, $readonly = null, $required = '')
             <option value="GR"' . selected($levelCode, 'GR', false) . '>GR Graduate</option>
             <option value="PhD"' . selected($levelCode, 'PhD', false) . '>PhD Doctorate</option>
             </select>';
-    return $app->hook->apply_filter('acad_level', $select, $levelCode);
+    return $app->hook->{'apply_filter'}('acad_level', $select, $levelCode);
 }
 
 /**
@@ -848,7 +823,7 @@ function fee_acad_level_select($levelCode = null)
             <option value="GR"' . selected($levelCode, 'GR', false) . '>GR Graduate</option>
             <option value="PhD"' . selected($levelCode, 'PhD', false) . '>PhD Doctorate</option>
             </select>';
-    return $app->hook->apply_filter('fee_acad_level', $select, $levelCode);
+    return $app->hook->{'apply_filter'}('fee_acad_level', $select, $levelCode);
 }
 
 /**
@@ -870,7 +845,7 @@ function status_select($status = NULL)
     			<option value="P"' . selected($status, 'P', false) . '>P Pending</option>
     			<option value="O"' . selected($status, 'O', false) . '>O Obsolete</option>
 		        </select>';
-    return $app->hook->apply_filter('status', $select, $status);
+    return $app->hook->{'apply_filter'}('status', $select, $status);
 }
 
 /**
@@ -893,7 +868,7 @@ function course_sec_status_select($status = NULL)
     			<option' . dopt('cancel_course_sec') . ' value="C"' . selected($status, 'C', false) . '>C Cancel</option>
     			<option value="O"' . selected($status, 'O', false) . '>O Obsolete</option>
 		        </select>';
-    return $app->hook->apply_filter('status', $select, $status);
+    return $app->hook->{'apply_filter'}('status', $select, $status);
 }
 
 /**
@@ -916,7 +891,7 @@ function person_type_select($type = NULL)
                 <option value="APL"' . selected($type, 'APL', false) . '>APL Applicant</option>
                 <option value="STU"' . selected($type, 'STU', false) . '>STU Student</option>
                 </select>';
-    return $app->hook->apply_filter('person_type', $select, $type);
+    return $app->hook->{'apply_filter'}('person_type', $select, $type);
 }
 
 /**
@@ -943,7 +918,7 @@ function course_level_select($levelCode = NULL, $readonly = null)
 			<option value="800"' . selected($levelCode, '800', false) . '>800 Course Level</option>
 			<option value="900"' . selected($levelCode, '900', false) . '>900 Course Level</option>
 		    </select>';
-    return $app->hook->apply_filter('course_level', $select, $levelCode);
+    return $app->hook->{'apply_filter'}('course_level', $select, $levelCode);
 }
 
 /**
@@ -968,7 +943,7 @@ function instructor_method($method = NULL)
                 <option value="SL"' . selected($method, 'SL', false) . '>' . _t('SL Seminar + Lab') . '</option>
                 <option value="LLS"' . selected($method, 'LLS', false) . '>' . _t('LLS Lecture + Lab + Seminar') . '</option>
                 </select>';
-    return $app->hook->apply_filter('instructor_method', $select, $method);
+    return $app->hook->{'apply_filter'}('instructor_method', $select, $method);
 }
 
 /**
@@ -991,7 +966,7 @@ function stu_course_sec_status_select($status = NULL)
                 <option value="W"' . selected($status, 'W', false) . '>' . _t('W Withdrawn') . '</option>
                 <option value="C"' . selected($status, 'C', false) . '>' . _t('C Cancelled') . '</option>
                 </select>';
-    return $app->hook->apply_filter('course_sec_status', $select, $status);
+    return $app->hook->{'apply_filter'}('course_sec_status', $select, $status);
 }
 
 /**
@@ -1014,7 +989,7 @@ function stu_prog_status_select($status = NULL)
                 <option value="C"' . selected($status, 'C', false) . '>' . _t('C Changed Mind') . '</option>
                 <option value="G"' . selected($status, 'G', false) . '>' . _t('G Graduated') . '</option>
                 </select>';
-    return $app->hook->apply_filter('stu_prog_status', $select, $status);
+    return $app->hook->{'apply_filter'}('stu_prog_status', $select, $status);
 }
 
 /**
@@ -1037,7 +1012,7 @@ function credit_type($type = NULL)
                 <option value="X"' . selected($status, 'X', false) . '>' . _t('X Exempt') . '</option>
                 <option value="T"' . selected($status, 'T', false) . '>' . _t('T Test') . '</option>
                 </select>';
-    return $app->hook->apply_filter('course_sec_status', $select, $status);
+    return $app->hook->{'apply_filter'}('course_sec_status', $select, $status);
 }
 
 /**
@@ -1062,7 +1037,7 @@ function class_year($year = NULL)
                 <option value="GR"' . selected($year, 'GR', false) . '>' . _t('GR Grad Student') . '</option>
                 <option value="PhD"' . selected($year, 'PhD', false) . '>' . _t('PhD PhD Student') . '</option>
                 </select>';
-    return $app->hook->apply_filter('class_year', $select, $year);
+    return $app->hook->{'apply_filter'}('class_year', $select, $year);
 }
 
 /**
@@ -1091,7 +1066,7 @@ function grading_scale($grade = NULL)
         $select .= '<option value="' . _h($r['grade']) . '"' . selected($grade, _h($r['grade']), false) . '>' . _h($r['grade']) . '</option>' . "\n";
     }
     $select .= '</select>';
-    return $app->hook->apply_filter('grading_scale', $select, $grade);
+    return $app->hook->{'apply_filter'}('grading_scale', $select, $grade);
 }
 
 function grades($id, $aID)
@@ -1110,7 +1085,7 @@ function grades($id, $aID)
         $array[] = $r;
     }
     $select = grading_scale(_h($r['grade']));
-    return $app->hook->apply_filter('grades', $select);
+    return $app->hook->{'apply_filter'}('grades', $select);
 }
 
 /**
@@ -1132,7 +1107,7 @@ function admit_status_select($status = NULL)
                 <option value="RA"' . selected($status, 'RA', false) . '>' . _t('RA Readmit') . '</option>
                 <option value="NA"' . selected($status, 'NA', false) . '>' . _t('NA Non-Applicable') . '</option>
                 </select>';
-    return $app->hook->apply_filter('admit_status', $select, $status);
+    return $app->hook->{'apply_filter'}('admit_status', $select, $status);
 }
 
 /**
@@ -1155,7 +1130,7 @@ function general_ledger_type_select($type = NULL)
                 <option value="' . _t('Revenue') . '"' . selected($type, _t('Revenue'), false) . '>' . _t('Revenue') . '</option>
                 <option value="' . _t('Expense') . '"' . selected($type, _t('Expense'), false) . '>' . _t('Expense') . '</option>
                 </select>';
-    return $app->hook->apply_filter('general_ledger_type', $select, $type);
+    return $app->hook->{'apply_filter'}('general_ledger_type', $select, $type);
 }
 
 function get_user_avatar($email, $s = 80, $class = '', $d = 'mm', $r = 'g', $img = false)
@@ -1166,7 +1141,7 @@ function get_user_avatar($email, $s = 80, $class = '', $d = 'mm', $r = 'g', $img
     $url .= "?s=200&d=$d&r=$r";
     $avatarsize = getimagesize($url);
     $avatar = '<img src="' . $url . '" ' . imgResize($avatarsize[1], $avatarsize[1], $s) . ' class="' . $class . '" />';
-    return $app->hook->apply_filter('user_avatar', $avatar, $email, $s, $class, $d, $r, $img);
+    return $app->hook->{'apply_filter'}('user_avatar', $avatar, $email, $s, $class, $d, $r, $img);
 }
 
 function success_update()
@@ -1175,7 +1150,7 @@ function success_update()
     $message = '<div class="alert alert-success">';
     $message .= '<strong>' . _t('Success!') . '</strong> ' . _t('The record was updated successfully.');
     $message .= '</div>';
-    return $app->hook->apply_filter('success_update', $message);
+    return $app->hook->{'apply_filter'}('success_update', $message);
 }
 
 function error_update()
@@ -1184,7 +1159,7 @@ function error_update()
     $message = '<div class="alert alert-danger">';
     $message .= '<strong>' . _t('Error!') . '</strong> ' . _t('The system was unable to update the record in the database. Please try again. If the problem persists, contact your system administrator.');
     $message .= '</div>';
-    return $app->hook->apply_filter('error_update', $message);
+    return $app->hook->{'apply_filter'}('error_update', $message);
 }
 
 function nocache_headers()
@@ -1198,22 +1173,22 @@ function nocache_headers()
     foreach ($headers as $k => $v) {
         header("{$k}: {$v}");
     }
-    return $app->hook->apply_filter('nocache_headers', $headers);
+    return $app->hook->{'apply_filter'}('nocache_headers', $headers);
 }
-$app->hook->add_action('admin_head', 'head_release_meta', 5);
-$app->hook->add_action('myet_head', 'head_release_meta', 5);
-$app->hook->add_action('release', 'foot_release', 5);
-$app->hook->add_action('dashboard_top_widgets', 'dashboard_student_count', 5);
-$app->hook->add_action('dashboard_top_widgets', 'dashboard_course_count', 5);
-$app->hook->add_action('dashboard_top_widgets', 'dashboard_acadProg_count', 5);
-$app->hook->add_action('dashboard_right_widgets', 'dashboard_clock', 5);
-$app->hook->add_action('dashboard_right_widgets', 'dashboard_weather', 5);
-$app->hook->add_filter('the_custom_page_content', 'et_autop');
-$app->hook->add_filter('the_custom_page_content', 'parsecode_unautop');
-$app->hook->add_filter('the_custom_page_content', 'do_parsecode', 5);
-$app->hook->add_filter('the_myet_page_content', 'et_autop');
-$app->hook->add_filter('the_myet_page_content', 'parsecode_unautop');
-$app->hook->add_filter('the_myet_page_content', 'do_parsecode', 5);
-$app->hook->add_filter('the_myet_welcome_message', 'et_autop');
-$app->hook->add_filter('the_myet_welcome_message', 'parsecode_unautop');
-$app->hook->add_filter('the_myet_welcome_message', 'do_parsecode', 5);
+$app->hook->{'add_action'}('admin_head', 'head_release_meta', 5);
+$app->hook->{'add_action'}('myet_head', 'head_release_meta', 5);
+$app->hook->{'add_action'}('release', 'foot_release', 5);
+$app->hook->{'add_action'}('dashboard_top_widgets', 'dashboard_student_count', 5);
+$app->hook->{'add_action'}('dashboard_top_widgets', 'dashboard_course_count', 5);
+$app->hook->{'add_action'}('dashboard_top_widgets', 'dashboard_acadProg_count', 5);
+$app->hook->{'add_action'}('dashboard_right_widgets', 'dashboard_clock', 5);
+$app->hook->{'add_action'}('dashboard_right_widgets', 'dashboard_weather', 5);
+$app->hook->{'add_filter'}('the_custom_page_content', 'et_autop');
+$app->hook->{'add_filter'}('the_custom_page_content', 'parsecode_unautop');
+$app->hook->{'add_filter'}('the_custom_page_content', 'do_parsecode', 5);
+$app->hook->{'add_filter'}('the_myet_page_content', 'et_autop');
+$app->hook->{'add_filter'}('the_myet_page_content', 'parsecode_unautop');
+$app->hook->{'add_filter'}('the_myet_page_content', 'do_parsecode', 5);
+$app->hook->{'add_filter'}('the_myet_welcome_message', 'et_autop');
+$app->hook->{'add_filter'}('the_myet_welcome_message', 'parsecode_unautop');
+$app->hook->{'add_filter'}('the_myet_welcome_message', 'do_parsecode', 5);
