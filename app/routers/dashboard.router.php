@@ -5,7 +5,7 @@ if (!defined('BASE_PATH'))
 /**
  * Before route check.
  */
-$app->before('GET|POST', '/dashboard.*', function() {
+$app->before('GET|POST', '/dashboard(.*)', function() {
     if (!hasPermission('access_dashboard')) {
         redirect(url('/'));
     }
@@ -20,7 +20,7 @@ $app->before('GET|POST', '/dashboard.*', function() {
     }
 });
 
-$json_url = url('/v1/');
+$json_url = url('/connect/');
 
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();

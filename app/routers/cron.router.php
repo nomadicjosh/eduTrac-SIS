@@ -2,7 +2,7 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
-$json_url = url('/v1/');
+$json_url = url('/connect/');
 
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
@@ -13,7 +13,7 @@ $emailer = new \app\src\PHPMailer;
  * Before route checks to make sure the logged in user
  * us allowed to manage options/settings.
  */
-$app->before('GET', '/cron.*', function() {
+$app->before('GET', '/cron(.*)', function() {
     if (!hasPermission('access_cronjob_screen')) {
         redirect(url('/dashboard/'));
     }

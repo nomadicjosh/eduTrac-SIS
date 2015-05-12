@@ -2,6 +2,25 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
+/**
+ * Before route checks to make sure the logged in user
+ * us allowed to manage options/settings.
+ */
+$app->before('GET|POST', '/program(.*)', function() {
+    if (!isUserLoggedIn()) {
+        redirect(url('/login/'));
+    }
+
+    /**
+     * If user is logged in and the lockscreen cookie is set, 
+     * redirect user to the lock screen until he/she enters 
+     * his/her password to gain access.
+     */
+    if (isset($_COOKIE['SCREENLOCK'])) {
+        redirect(url('/lock/'));
+    }
+});
+
 $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
 $js = [
     'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
@@ -16,32 +35,13 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/connect/');
 
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
 $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-
-    /**
-     * Before route checks to make sure the logged in user
-     * us allowed to manage options/settings.
-     */
-    $app->before('GET|POST', '/.*', function() {
-        if (!hasPermission('access_acad_prog_screen')) {
-            redirect(url('/dashboard/'));
-        }
-
-        /**
-         * If user is logged in and the lockscreen cookie is set, 
-         * redirect user to the lock screen until he/she enters 
-         * his/her password to gain access.
-         */
-        if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
-        }
-    });
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {

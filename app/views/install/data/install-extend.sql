@@ -2854,7 +2854,7 @@ ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`courseID`) REFERENCES `cours
 
 ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
                   
-INSERT INTO `options_meta` VALUES(1, 'dbversion', '00039');
+INSERT INTO `options_meta` VALUES(1, 'dbversion', '00042');
         
 INSERT INTO `options_meta` VALUES(2, 'system_email', '{email}');
         
@@ -2876,13 +2876,13 @@ INSERT INTO `options_meta` VALUES(10, 'current_term_code', '');
         
 INSERT INTO `options_meta` VALUES(11, 'open_registration', '1');
         
-INSERT INTO `options_meta` VALUES(12, 'help_desk', 'http://www.edutracerp.com/');
+INSERT INTO `options_meta` VALUES(12, 'help_desk', 'http://www.edutracsis.com/');
         
 INSERT INTO `options_meta` VALUES(13, 'enable_cron_jobs', 0);
         
 INSERT INTO `options_meta` VALUES(14, 'reset_password_text', '<b>eduTrac Password Reset</b><br>Password &amp; Login Information<br><br>You or someone else requested a new password to the eduTrac online system. If you did not request this change, please contact the administrator as soon as possible @ #adminemail#.&nbsp; To log into the eduTrac system, please visit #url# and login with your username and password.<br><br>FULL NAME:&nbsp; #fname# #lname#<br>USERNAME:&nbsp; #uname#<br>PASSWORD:&nbsp; #password#<br><br>If you need further assistance, please read the documentation at #helpdesk#.<br><br>KEEP THIS IN A SAFE AND SECURE LOCATION.<br><br>Thank You,<br>eduTrac Web Team<br>');
         
-INSERT INTO `options_meta` VALUES(15, 'auth_token', '');
+INSERT INTO `options_meta` VALUES(15, 'api_key', '');
 
 INSERT INTO `options_meta` VALUES(16, 'room_request_email', 'request@myschool.edu');
 

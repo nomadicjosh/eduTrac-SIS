@@ -19,7 +19,7 @@ $js = [
     'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/connect/');
 
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
