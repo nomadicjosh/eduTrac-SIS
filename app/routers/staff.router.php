@@ -36,7 +36,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/connect/');
+$json_url = url('/v1/');
 
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();

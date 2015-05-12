@@ -37,7 +37,7 @@ $js = [
     'components/modules/admin/forms/elements/bootstrap-maxlength/custom/js/custom.js'
 ];
 
-$json_url = url('/connect/');
+$json_url = url('/v1/');
 
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();
