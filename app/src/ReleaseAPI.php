@@ -57,23 +57,23 @@ class ReleaseAPI
         return $this->init('CURRENT_RELEASE');
     }
 
-    public static function releaseTag()
+    public function releaseTag()
     {
         return $this->init('RELEASE_TAG');
     }
 
-    public static function dbVersion()
+    public function dbVersion()
     {
         return $this->init('DB_VERSION');
     }
 
-    public static function getNotice()
+    public function getNotice()
     {
         $notice = $this->_url . $this->init('UPGRADE_NOTICE') . DS . 'notice.txt';
         return $notice;
     }
 
-    public static function getSchema()
+    public function getSchema()
     {
         $sql = $this->_url . $this->init('UPGRADE_SQL') . DS . $this->_app->hook->{'get_option'}('dbversion') . '.sql';
         return $sql;
