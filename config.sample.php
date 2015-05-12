@@ -29,7 +29,8 @@ if (count($domain_parts) == 3) {
     }
 }
 
-//defined( 'MULTICAMPUS' )                	or define( 'MULTICAMPUS', true );
+defined('MULTICAMPUS') or define('MULTICAMPUS', false);
+
 /* Begin choose database based on subdomain and type of installation. */
 if ($subdomain != '' && MULTICAMPUS === true) {
     defined('DB_HOST') or define('DB_HOST', '{hostname}');

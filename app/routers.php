@@ -80,11 +80,6 @@ elseif (strpos(getPathInfo('/hr'), "/hr") === 0)
     }
 }
 
-elseif (strpos(getPathInfo('/inst'), "/inst") === 0)
-{
-    require($app->config('routers_dir') . 'institution.router.php');
-}
-
 elseif (strpos(getPathInfo('/nae'), "/nae") === 0)
 {
     require($app->config('routers_dir') . 'person.router.php');
