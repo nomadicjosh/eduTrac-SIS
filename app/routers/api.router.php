@@ -7,7 +7,7 @@ if (!defined('BASE_PATH'))
  * Before router middleware checks for a valid
  * api key.
  */
-$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/api.*', function() use ($app) {
+$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/api(.*)', function() use ($app) {
     if ($app->req->_get('key') !== $app->hook->{'get_option'}('api_key') || $app->hook->{'get_option'}('api_key') === null) {
         $app->res->_format('json', 401);
         exit();
