@@ -2,7 +2,7 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
-$json_url = url('/connect/');
+$json_url = url('/v1/');
 
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
