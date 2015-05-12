@@ -5,17 +5,17 @@ if (!defined('BASE_PATH'))
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
 
-/**
+$app->group('/connect', function() use ($app, $orm, $logger, $dbcache) {
+    
+    /**
  * Before router middleware checks to see
  * if the user is logged in.
  */
-$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/v1.*', function() use ($app) {
+$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/(.*)', function() {
     if (!isUserLoggedIn()) {
         redirect(url('/login/'));
     }
 });
-
-$app->group('/v1', function() use ($app, $orm, $logger, $dbcache) {
 
     /**
      * Will result in /v1/ which is the root

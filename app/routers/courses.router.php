@@ -5,7 +5,7 @@ if (!defined('BASE_PATH'))
 /**
  * Before router check.
  */
-$app->before('GET|POST', '/courses.*', function() use($app) {
+$app->before('GET|POST', '/courses(.*)', function() use($app) {
 
     if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
         redirect(url('/offline/'));
@@ -26,7 +26,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/connect/');
 
 $logger = new \app\src\Log();
 $email = new \app\src\Email();

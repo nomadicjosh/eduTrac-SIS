@@ -2,6 +2,16 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
+$app->before('GET|POST', '/sql/', function() {
+    if (!hasPermission('access_sql_interface_screen')) {
+        redirect(url('/') . 'dashboard/');
+    }
+
+    if (isset($_COOKIE['SCREENLOCK'])) {
+        redirect(url('/') . 'lock/');
+    }
+});
+
 $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
 $js = [
     'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
@@ -17,16 +27,6 @@ $js = [
 ];
 
 $app->group('/sql', function() use ($app, $css, $js) {
-
-    $app->before('GET|POST', '/sql/', function() {
-        if (!hasPermission('access_sql_interface_screen')) {
-            redirect(url('/') . 'dashboard/');
-        }
-
-        if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/') . 'lock/');
-        }
-    });
 
     $app->match('GET|POST', '/', function() use($app, $css, $js) {
         $app->view->display('sql/index', [
