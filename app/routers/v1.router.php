@@ -7,7 +7,7 @@ if (!defined('BASE_PATH'))
  * server connection.
  */
 $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/v1(.*)', function() use($app) {
-    if ($app->req->server['REMOTE_ADDR'] !== $app->req->server['SERVER_ADDR'] || !isUserLoggedIn()) {
+    if ($app->req->server['REMOTE_ADDR'] !== $app->req->server['SERVER_ADDR'] ) {
         redirect(url('/'));
         exit();
     }
