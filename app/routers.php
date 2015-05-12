@@ -65,6 +65,10 @@ elseif (strpos(getPathInfo('/form'), "/form") === 0)
     if(file_exists($app->config('routers_dir') . 'booking.router.php')) {
         require($app->config('routers_dir') . 'booking.router.php');
     }
+    
+    if(file_exists($app->config('routers_dir') . 'myet.router.php')) {
+        require($app->config('routers_dir') . 'myet.router.php');
+    }
 }
 
 elseif (strpos(getPathInfo('/hr'), "/hr") === 0)
@@ -74,11 +78,6 @@ elseif (strpos(getPathInfo('/hr'), "/hr") === 0)
     if(file_exists($app->config('routers_dir') . 'timesheet.router.php')) {
         require($app->config('routers_dir') . 'timesheet.router.php');
     }
-}
-
-elseif (strpos(getPathInfo('/inst'), "/inst") === 0)
-{
-    require($app->config('routers_dir') . 'institution.router.php');
 }
 
 elseif (strpos(getPathInfo('/nae'), "/nae") === 0)
@@ -169,7 +168,7 @@ elseif (strpos(getPathInfo('/stu'), "/stu") === 0)
     }
 }
 
-elseif (strpos(getPathInfo('/v1'), "/v1") === 0)
+elseif (strpos(getPathInfo('/connect'), "/connect") === 0)
 {
     require($app->config('routers_dir') . 'v1.router.php');
 }

@@ -19,7 +19,7 @@ $js = [
     'components/modules/admin/forms/elements/multiselect/assets/custom/js/multiselect.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/connect/');
 
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
@@ -368,7 +368,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
     /**
      * Before router check.
      */
-    $app->before('GET|POST', '/inst.*', function() {
+    $app->before('GET|POST', '/inst(.*)', function() {
         if (!hasPermission('access_application_screen')) {
             redirect(url('/dashboard/'));
         }

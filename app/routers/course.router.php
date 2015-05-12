@@ -6,7 +6,7 @@ if (!defined('BASE_PATH'))
  * Before route checks to make sure the logged in user
  * us allowed to manage options/settings.
  */
-$app->before('GET|POST', '/crse.*', function() {
+$app->before('GET|POST', '/crse(.*)', function() {
     if (!isUserLoggedIn()) {
         redirect(url('/login/'));
     }
@@ -37,7 +37,7 @@ $js = [
     'components/modules/admin/forms/elements/bootstrap-maxlength/custom/js/custom.js'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/connect/');
 
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();

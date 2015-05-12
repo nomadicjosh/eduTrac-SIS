@@ -2071,9 +2071,9 @@ INSERT INTO `screen` VALUES(39, 'SPRO', 'Student Profile', 'stu/');
 
 INSERT INTO `screen` VALUES(40, 'FAC', 'Faculty Profile', 'faculty/');
 
-INSERT INTO `screen` VALUES(41, 'INST', 'Institution', 'inst/');
+INSERT INTO `screen` VALUES(41, 'INST', 'Institution', 'appl/inst/');
 
-INSERT INTO `screen` VALUES(42, 'AINST', 'New Institution', 'inst/add/');
+INSERT INTO `screen` VALUES(42, 'AINST', 'New Institution', 'appl/inst/add/');
 
 INSERT INTO `screen` VALUES(43, 'APPL', 'Application', 'appl/');
 

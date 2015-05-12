@@ -116,7 +116,7 @@ $app->match('GET|POST', '/install/createAdmin/', function () use($app) {
 
             $sql[] = "INSERT INTO `staff_meta` VALUES(1, 'FT', 1, 00000001, 00000001, 'STA', '2011-02-01', '2011-02-01', NULL, '" . $now . "', 00000001, '" . $now . "');";
 
-            $sql[] = "INSERT INTO `options_meta` VALUES(1, 'dbversion', '00039');";
+            $sql[] = "INSERT INTO `options_meta` VALUES(1, 'dbversion', '00042');";
 
             $sql[] = "INSERT INTO `options_meta` VALUES(2, 'system_email', '" . Session::get('email') . "');";
 
@@ -138,13 +138,13 @@ $app->match('GET|POST', '/install/createAdmin/', function () use($app) {
 
             $sql[] = "INSERT INTO `options_meta` VALUES(11, 'open_registration', '1');";
 
-            $sql[] = "INSERT INTO `options_meta` VALUES(12, 'help_desk', 'http://www.edutracerp.com/');";
+            $sql[] = "INSERT INTO `options_meta` VALUES(12, 'help_desk', 'http://www.edutracsis.com/');";
 
             $sql[] = "INSERT INTO `options_meta` VALUES(13, 'enable_cron_jobs', 0);";
 
             $sql[] = "INSERT INTO `options_meta` VALUES(14, 'reset_password_text', '<b>eduTrac Password Reset</b><br>Password &amp; Login Information<br><br>You or someone else requested a new password to the eduTrac online system. If you did not request this change, please contact the administrator as soon as possible @ #adminemail#.&nbsp; To log into the eduTrac system, please visit #url# and login with your username and password.<br><br>FULL NAME:&nbsp; #fname# #lname#<br>USERNAME:&nbsp; #uname#<br>PASSWORD:&nbsp; #password#<br><br>If you need further assistance, please read the documentation at #helpdesk#.<br><br>KEEP THIS IN A SAFE AND SECURE LOCATION.<br><br>Thank You,<br>eduTrac Web Team<br>');";
 
-            $sql[] = "INSERT INTO `options_meta` VALUES(15, 'auth_token', '');";
+            $sql[] = "INSERT INTO `options_meta` VALUES(15, 'api_key', '');";
 
             $sql[] = "INSERT INTO `options_meta` VALUES(16, 'room_request_email', 'request@myschool.edu');";
 

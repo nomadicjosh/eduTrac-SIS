@@ -6,7 +6,7 @@ if (!defined('BASE_PATH'))
  * Before router middleware checks to see
  * if the user is logged in.
  */
-$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff.*', function() use ($app) {
+$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff(.*)', function() use ($app) {
     if (!isUserLoggedIn()) {
         redirect(url('/login/'));
     }
@@ -36,7 +36,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/connect/');
 
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();
@@ -87,7 +87,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
     /**
      * Before route middleware check.
      */
-    $app->before('GET|POST', '/(\d+)/', function($id) use ($app) {
+    $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('create_staff_record')) {
             redirect(url('/dashboard/'));
         }

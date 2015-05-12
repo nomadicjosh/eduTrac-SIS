@@ -5,7 +5,7 @@ if (!defined('BASE_PATH'))
 /**
  * Before route check.
  */
-$app->before('GET|POST', '/sect.*', function() {
+$app->before('GET|POST', '/sect(.*)', function() {
     /**
      * If user is logged in and the lockscreen cookie is set, 
      * redirect user to the lock screen until he/she enters 
@@ -35,7 +35,7 @@ $js = [
     'components/modules/admin/forms/elements/bootstrap-maxlength/custom/js/custom.js'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/connect/');
 
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();

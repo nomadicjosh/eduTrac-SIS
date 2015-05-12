@@ -6,7 +6,7 @@ if (!defined('BASE_PATH'))
  * Before router middleware checks to see
  * if the user is logged in.
  */
-$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/hr.*', function() {
+$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/hr(.*)', function() {
     if (!hasPermission('access_human_resources')) {
         redirect(url('/') . 'dashboard/');
     }
@@ -34,7 +34,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/connect/');
 
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();
