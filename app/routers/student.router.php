@@ -639,13 +639,13 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         $json = _file_get_contents($json_url . 'stu_acad_cred/stuAcadCredID/' . (int) $id . '/');
         $decode = json_decode($json, true);
 
-        $rterm = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/');
-        $term = json_decode($rterm, true);
-
         $date = date("Y-m-d");
         $time = date("h:m A");
 
         if ($app->req->isPost()) {
+            $rterm = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/');
+            $term = json_decode($rterm, true);
+
             $sacd = $app->db->stu_acad_cred();
             $sacd->courseID = $_POST['courseID'];
             $sacd->courseSecID = $_POST['courseSecID'];
@@ -1064,7 +1064,9 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             ->where('a.acadLevelCode = ?', $level)->_and_()
             ->where('b.addressStatus = "C"')->_and_()
             ->where('b.addressType = "P"')->_and_()
-            ->where('e.acadLevelCode = ?', $level);
+            ->where('e.acadLevelCode = ?', $level)->_and_()
+            ->where('d.currStatus = "A"')->_or_()
+            ->where('d.currStatus = "G"');
         $info = $tranInfo->find(function($data) {
             $array = [];
             foreach ($data as $d) {
@@ -1082,7 +1084,8 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     WHERE stuID = ? 
                     AND acadLevelCode = ? 
                     AND creditType = 'I' 
-                    GROUP BY courseSecCode,termCode,acadLevelCode", [$id, $level]);
+                    GROUP BY courseSecCode,termCode,acadLevelCode
+                    ORDER BY endDate ASC", [$id, $level]);
         $course = $tranCourse->find(function($data) {
             $array = [];
             foreach ($data as $d) {
