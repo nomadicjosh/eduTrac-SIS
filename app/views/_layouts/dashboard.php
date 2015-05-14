@@ -120,7 +120,13 @@
                                     </ul>
                                 </li>
                                 
-                                <li<?= hl('settings', 'edit_settings'); ?>><a href="<?= url('/'); ?>dashboard/modules/<?= bm(); ?>" class="glyphicons package"><i></i><?= _t('System Modules'); ?></a></li>
+                                <li<?= ae('access_plugin_screen'); ?> class="dropdown submenu">
+                                    <a href="" data-toggle="dropdown" class="dropdown-toggle glyphicons package"><i></i><?= _t('System Modules'); ?> <span class="caret"></span></a>
+                                    <ul class="dropdown-menu submenu-show submenu-hide pull-right">
+                                        <li<?= ae('access_plugin_admin_page'); ?>><a href="<?= url('/'); ?>dashboard/modules/<?= bm(); ?>"><?= _t('Modules'); ?></a></li>
+                                        <li<?= ae('access_plugin_screen'); ?>><a href="<?= url('/'); ?>dashboard/install-module/<?= bm(); ?>"><?= _t('Install Modules'); ?></a></li>
+                                    </ul>
+                                </li>
 
                                 <li<?= hl('forms', 'access_forms'); ?> class="dropdown submenu">
                                     <a data-toggle="dropdown" class="dropdown-toggle glyphicons notes_2"><i></i><?= _t('Forms'); ?></a>
