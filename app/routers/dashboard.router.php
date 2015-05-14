@@ -151,7 +151,7 @@ $app->match('GET|POST', '/dashboard/upgrade/', function () use($app) {
  * Before route check.
  */
 $app->before('GET|POST', '/dashboard/modules/', function() {
-    if (!hasPermission('edit_settings')) {
+    if (!hasPermission('access_plugin_screen')) {
         redirect(url('/dashboard/'));
     }
 });
@@ -176,6 +176,66 @@ $app->get('/dashboard/modules/', function () use($app) {
 
     $app->view->display('dashboard/modules', [
         'title' => 'System Modules',
+        'cssArray' => $css,
+        'jsArray' => $js
+        ]
+    );
+});
+
+/**
+ * Before route check.
+ */
+$app->before('GET|POST', '/dashboard/install-module/', function() {
+    if (!hasPermission('access_plugin_admin_page')) {
+        redirect(url('/dashboard/'));
+    }
+});
+
+$app->match('GET|POST', '/dashboard/install-module/', function () use($app) {
+
+    $css = [ 'css/admin/module.admin.page.form_elements.min.css'];
+    $js = [
+        'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
+        'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
+        'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
+        'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
+        'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
+    ];
+
+    if ($app->req->isPost()) {
+        $name = explode(".", $_FILES["module_zip"]["name"]);
+        $accepted_types = [ 'application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/x-compressed'];
+
+        foreach ($accepted_types as $mime_type) {
+            if ($mime_type == $type) {
+                $okay = true;
+                break;
+            }
+        }
+
+        $continue = strtolower($name[1]) == 'zip' ? true : false;
+
+        if (!$continue) {
+            $app->flash('error_message', _t('The file you are trying to upload is not the accepted file type. Please try again.'));
+        }
+        $target_path = BASE_PATH . $_FILES["module_zip"]["name"];
+        if (move_uploaded_file($_FILES["module_zip"]["tmp_name"], $target_path)) {
+            $zip = new \ZipArchive();
+            $x = $zip->open($target_path);
+            if ($x === true) {
+                $zip->extractTo(BASE_PATH);
+                $zip->close();
+                unlink($target_path);
+            }
+            $app->flash('success_message', _t('The module was uploaded and installed properly.'));
+        } else {
+            $app->flash('error_message', _t('There was a problem uploading the module. Please try again or check the module package.'));
+        }
+        redirect($app->req->server['HTTP_REFERER']);
+    }
+
+    $app->view->display('dashboard/install-module', [
+        'title' => 'Install Modules',
         'cssArray' => $css,
         'jsArray' => $js
         ]
