@@ -30,7 +30,7 @@ $message = new \app\src\Messages;
 <div class="innerLR">
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/subject/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>form/subject/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">

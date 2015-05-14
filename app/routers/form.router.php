@@ -24,7 +24,7 @@ $js = [
     'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
 ];
 
-$app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
+$app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
 
     /**
      * Before route check.
@@ -435,7 +435,22 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $flashNow) {
         }
     });
 
-    $app->get('/subject/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/subject/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+            $subj = $app->db->subject();
+            $subj->subjectCode = $_POST['subjectCode'];
+            $subj->subjectName = $_POST['subjectName'];
+            if($subj->save()) {
+                $ID = $subj->lastInsertId();
+                $app->hook->{'do_action'}( 'create_subject_code', _trim($_POST['subjectCode']), $_POST['subjectName'] );
+                $app->flash( 'success_message', $flashNow->notice(200) );
+                $logger->setLog('New Record', 'Subject', $_POST['subjectName'] . ' (' . _trim($_POST['subjectCode']) . ')', get_persondata('uname'));
+                redirect( url('/form/view-subject/') . $ID . '/' );
+            } else {
+                $app->flash( 'error_message', $flashNow->notice(409) );
+                redirect($app->req->server['HTTP_REFERER']);
+            }
+        }
         $subj = $app->db->subject()->whereNot('subjectCode', 'NULL')->orderBy('subjectCode');
         $q = $subj->find(function($data) {
             $array = [];

@@ -11,7 +11,6 @@ $app->before('GET|POST', '/plugins.*', function() {
     }
 });
 
-
 $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
 $js = [
     'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
@@ -61,6 +60,15 @@ $app->group('/plugins', function() use ($app, $css, $js) {
         );
     });
 
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/install/', function() {
+        if (!hasPermission('access_plugin_admin_page')) {
+            redirect(url('/dashboard/'));
+        }
+    });
+
     $app->match('GET|POST', '/install/', function () use($app, $css, $js) {
 
         if ($app->req->isPost()) {
@@ -78,10 +86,10 @@ $app->group('/plugins', function() use ($app, $css, $js) {
             $continue = strtolower($name[1]) == 'zip' ? true : false;
 
             if (!$continue) {
-                $app->flash('error_message', 'The file you are trying to upload is not the accepted file type. Please try again.');
+                $app->flash('error_message', _t('The file you are trying to upload is not the accepted file type. Please try again.'));
             }
             $target_path = APP_PATH . 'plugins' . DS . $_FILES["plugin_zip"]["name"];
-            if(move_uploaded_file($_FILES["plugin_zip"]["tmp_name"], $target_path)) {
+            if (move_uploaded_file($_FILES["plugin_zip"]["tmp_name"], $target_path)) {
                 $zip = new \ZipArchive();
                 $x = $zip->open($target_path);
                 if ($x === true) {
@@ -89,9 +97,9 @@ $app->group('/plugins', function() use ($app, $css, $js) {
                     $zip->close();
                     unlink($target_path);
                 }
-                $app->flash('success_message', 'Your plugin was uploaded and installed properly.');
+                $app->flash('success_message', _t('Your plugin was uploaded and installed properly.'));
             } else {
-                $app->flash('error_message', 'There was a problem uploading your plugin. Please try again or check the plugin package.');
+                $app->flash('error_message', _t('There was a problem uploading your plugin. Please try again or check the plugin package.'));
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
