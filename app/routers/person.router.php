@@ -42,7 +42,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         if ($app->req->isPost()) {
             $post = $_POST['nae'];
             $search = $app->db->person()
-                ->select('personID,fname,lname,uname')
+                ->select('personID,fname,lname,uname,email')
                 ->whereLike('CONCAT(person.fname," ",person.lname)', "%$post%")->_or_()
                 ->whereLike('CONCAT(person.lname," ",person.fname)', "%$post%")->_or_()
                 ->whereLike('CONCAT(person.lname,", ",person.fname)', "%$post%")->_or_()

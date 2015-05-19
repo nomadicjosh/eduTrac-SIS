@@ -51,7 +51,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             $post = $_POST['appl'];
             $appl = $app->db->application()
                 ->setTableAlias('a')
-                ->select('a.applID,a.personID,b.termName,c.fname,c.lname,c.uname')
+                ->select('a.applID,a.personID,b.termName,c.fname,c.lname,c.uname,c.email')
                 ->_join('term', 'a.startTerm = b.termCode', 'b')
                 ->_join('person', 'a.personID = c.personID', 'c')
                 ->whereLike('CONCAT(c.fname," ",c.lname)', "%$post%")->_or_()

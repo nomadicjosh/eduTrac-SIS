@@ -87,7 +87,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Status / Date' );?></label>
                             <div class="col-md-4">
-                                <?=status_select(_h($prog[0]['currStatus']));?>
+                                <?=status_select(_h($prog[0]['currStatus']), 'disabled');?>
                             </div>
                             
                             <div class="col-md-4">
@@ -118,7 +118,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Department' );?></label>
                             <div class="col-md-8">
-                                <select name="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apio();?>>
+                                <select name="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apid();?>>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('department','deptCode <> "NULL"','deptCode','deptCode','deptName',_h($prog[0]['deptCode']));?>
                                 </select>
@@ -130,7 +130,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'School' );?></label>
                             <div class="col-md-8">
-                                <select name="schoolCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apio();?>>
+                                <select name="schoolCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apid();?>>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('school','schoolCode <> "NULL"','schoolCode','schoolCode','schoolName',_h($prog[0]['schoolCode']));?>
                                 </select>
@@ -142,7 +142,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Effective Catalog Year' );?></label>
                             <div class="col-md-8">
-                                <select name="acadYearCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apio();?> required>
+                                <select name="acadYearCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apid();?> required>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('acad_year','acadYearCode <> "NULL"','acadYearCode','acadYearCode','acadYearDesc',_h($prog[0]['acadYearCode']));?>
                                 </select>
@@ -179,7 +179,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Degree' );?></label>
                             <div class="col-md-8">
-                                <select name="degreeCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apio();?> required>
+                                <select name="degreeCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apid();?> required>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('degree','degreeCode <> "NULL"','degreeCode','degreeCode','degreeName',_h($prog[0]['degreeCode']));?>
                                 </select>
@@ -191,7 +191,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'CCD' );?></label>
                             <div class="col-md-8">
-                                <select name="ccdCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apio();?>>
+                                <select name="ccdCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apid();?>>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('ccd','ccdCode <> "NULL"','ccdCode','ccdCode','ccdName',_h($prog[0]['ccdCode']));?>
                                 </select>
@@ -203,7 +203,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Major' );?></label>
                             <div class="col-md-8">
-                                <select name="majorCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apio();?>>
+                                <select name="majorCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apid();?>>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('major','majorCode <> "NULL"','majorCode','majorCode','majorName',_h($prog[0]['majorCode']));?>
                                 </select>
@@ -215,7 +215,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Minor' );?></label>
                             <div class="col-md-8">
-                                <select name="minorCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apio();?>>
+                                <select name="minorCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apid();?>>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('minor','minorCode <> "NULL"','minorCode','minorCode','minorName',_h($prog[0]['minorCode']));?>
                                 </select>
@@ -227,7 +227,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Specialization' );?></label>
                             <div class="col-md-8">
-                                <select name="specCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apio();?>>
+                                <select name="specCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apid();?>>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('specialization', 'specCode <> "NULL"', 'specCode', 'specCode', 'specName',_h($prog[0]['specCode'])); ?>
                                 </select>
@@ -239,7 +239,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($prog[0]['acadLevelCode']),null,'required');?>
+                                <?=acad_level_select(_h($prog[0]['acadLevelCode']),' disabled ','required');?>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -248,7 +248,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'CIP' );?></label>
                             <div class="col-md-8">
-                                <select name="cipCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apio();?>>
+                                <select name="cipCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apid();?>>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('cip','cipCode <> "NULL"','cipCode','cipCode','cipName',_h($prog[0]['cipCode']));?>
                                 </select>
@@ -260,7 +260,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Location' );?></label>
                             <div class="col-md-8">
-                                <select name="locationCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apio();?>>
+                                <select name="locationCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=apid();?>>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('location','locationCode <> "NULL"','locationCode','locationCode','locationName',_h($prog[0]['locationCode']));?>
                                 </select>

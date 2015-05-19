@@ -9,25 +9,6 @@ $dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 $emailer = new \app\src\PHPMailer;
 
-/**
- * Before route checks to make sure the logged in user
- * us allowed to manage options/settings.
- */
-$app->before('GET', '/cron(.*)', function() {
-    if (!hasPermission('access_cronjob_screen')) {
-        redirect(url('/dashboard/'));
-    }
-
-    /**
-     * If user is logged in and the lockscreen cookie is set, 
-     * redirect user to the lock screen until he/she enters 
-     * his/her password to gain access.
-     */
-    if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(url('/lock/'));
-    }
-});
-
 $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
 $js = [
     'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
@@ -43,6 +24,25 @@ $js = [
 ];
 
 $app->group('/cron', function() use($app, $css, $js, $logger, $emailer) {
+
+    /**
+     * Before route checks to make sure the logged in user
+     * us allowed to manage options/settings.
+     */
+    $app->before('GET', '/', function() {
+        if (!hasPermission('access_cronjob_screen')) {
+            redirect(url('/dashboard/'));
+        }
+
+        /**
+         * If user is logged in and the lockscreen cookie is set, 
+         * redirect user to the lock screen until he/she enters 
+         * his/her password to gain access.
+         */
+        if (isset($_COOKIE['SCREENLOCK'])) {
+            redirect(url('/lock/'));
+        }
+    });
 
     $app->get('/', function () use($app, $css, $js) {
 
@@ -62,6 +62,25 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer) {
             'cronjob' => $q
             ]
         );
+    });
+
+    /**
+     * Before route checks to make sure the logged in user
+     * us allowed to manage options/settings.
+     */
+    $app->before('GET|POST', '/(\d+)/', function() {
+        if (!hasPermission('access_cronjob_screen')) {
+            redirect(url('/dashboard/'));
+        }
+
+        /**
+         * If user is logged in and the lockscreen cookie is set, 
+         * redirect user to the lock screen until he/she enters 
+         * his/her password to gain access.
+         */
+        if (isset($_COOKIE['SCREENLOCK'])) {
+            redirect(url('/lock/'));
+        }
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js) {
@@ -252,7 +271,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer) {
                     return $array;
                 });
                 foreach ($q as $v) {
-                    $body = $r['body'];
+                    $body = _escape($r['body']);
                     $body = str_replace('#uname#', _h($v['uname']), $body);
                     $body = str_replace('#email#', _h($v['email']), $body);
                     $body = str_replace('#fname#', _h($v['fname']), $body);

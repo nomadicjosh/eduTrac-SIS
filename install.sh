@@ -22,19 +22,19 @@ read INST_NAME
 echo -n "Institution Contact Email: "
 read SYS_EMAIL
 
-echo -n "eduTrac ERP Admin First Name: "
+echo -n "eduTrac SIS Admin First Name: "
 read ADMIN_FNAME
 
-echo -n "eduTrac ERP Admin Last Name: "
+echo -n "eduTrac SIS Admin Last Name: "
 read ADMIN_LNAME
 
-echo -n "eduTrac ERP Admin Email: "
+echo -n "eduTrac SIS Admin Email: "
 read ADMIN_EMAIL
 
-echo -n "eduTrac ERP Admin Username: "
+echo -n "eduTrac SIS Admin Username: "
 read ADMIN_USER
 
-echo -n "eduTrac ERP URL (i.e. example.com): "
+echo -n "eduTrac SIS URL (i.e. example.com): "
 read URL
 
 echo
@@ -104,7 +104,7 @@ echo
 rm -rf install-extend.sql
 
 echo
-echo "Finished installing eduTrac ERP"
+echo "Finished installing eduTrac SIS"
 echo
 
 echo "+=================================================+"

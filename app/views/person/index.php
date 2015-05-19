@@ -55,6 +55,7 @@ $app->view->block('dashboard');
 				<!-- Table heading -->
 				<thead>
 					<tr>
+						<th class="text-center"><?=_t( 'Image' );?></th>
 						<th class="text-center"><?=_t( 'ID' );?></th>
 						<th class="text-center"><?=_t( 'Last Name' );?></th>
 						<th class="text-center"><?=_t( 'First Name' );?></th>
@@ -67,12 +68,13 @@ $app->view->block('dashboard');
 				<tbody>
 				<?php if($search != '') : foreach($search as $k => $v) { ?>
                 <?php
-                $staff = file_get_contents(url('/v1/') . 'staff/staffID/' . _h($v['personID']) . '/');
+                $staff = _file_get_contents(url('/v1/') . 'staff/staffID/' . _h($v['personID']) . '/');
                 $s_decode = json_decode($staff,true);
-                $appl = file_get_contents(url('/v1/') . 'application/personID/' . _h($v['personID']) . '/');
+                $appl = _file_get_contents(url('/v1/') . 'application/personID/' . _h($v['personID']) . '/');
                 $a_decode = json_decode($appl,true);
                 ?>
                 <tr class="gradeX">
+                	<td class="text-center"><?=getSchoolPhoto(_h($v['personID']), _h($v['email']), 48, 'avatar-frame');?></td>
                     <td class="text-center"><?=_h($v['personID']);?></td>
                     <td class="text-center"><?=_h($v['lname']);?></td>
                     <td class="text-center"><?=_h($v['fname']);?></td>
