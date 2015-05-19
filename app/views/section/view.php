@@ -104,7 +104,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Term' );?></label>
 							<div class="col-md-8">
-								<select name="termCode" id="term" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csio();?> required>
+								<select name="termCode" id="term" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csid();?> required>
 									<option value="">&nbsp;</option>
                             		<?php table_dropdown('term', 'termCode <> "NULL"', 'termCode', 'termCode', 'termName',_h($sect[0]['termCode'])); ?>
                             	</select>
@@ -135,7 +135,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Department' );?></label>
                             <div class="col-md-8">
-                                <select name="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csio();?> required>
+                                <select name="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csid();?> required>
                                     <option value="">&nbsp;</option>
                                     <?php table_dropdown('department', 'deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName', _h($sect[0]['deptCode'])); ?>
                                 </select>
@@ -160,7 +160,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Level' );?></label>
                             <div class="col-md-8">
-                                <?=course_level_select(_h($sect[0]['courseLevelCode']));?>
+                                <?=course_level_select(_h($sect[0]['courseLevelCode']), ' disabled');?>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -169,7 +169,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($sect[0]['acadLevelCode']),null,'required');?>
+                                <?=acad_level_select(_h($sect[0]['acadLevelCode']),' disabled ','required');?>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -178,7 +178,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Short Title' );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="secShortTitle" class="form-control" value="<?=_h($sect[0]['secShortTitle']);?>" maxlength="25" required/>
+                                <input type="text" name="secShortTitle"<?=csio();?> class="form-control" value="<?=_h($sect[0]['secShortTitle']);?>" maxlength="25" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -193,7 +193,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Location' );?></label>
                             <div class="col-md-8">
-                                <select name="locationCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csio();?> required>
+                                <select name="locationCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csid();?> required>
                                     <option value="">&nbsp;</option>
                                     <?php table_dropdown('location', 'locationCode <> "NULL"', 'locationCode', 'locationCode', 'locationName', _h($sect[0]['locationCode'])); ?>
                                 </select>
@@ -205,7 +205,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Status / Date' );?></label>
                             <div class="col-md-4">
-                                <?=course_sec_status_select(_h($sect[0]['currStatus']));?>
+                                <?=course_sec_status_select(_h($sect[0]['currStatus']), ' disabled');?>
                             </div>
                             
                             <div class="col-md-4">
@@ -246,7 +246,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Comments' );?></label>
                             <div class="col-md-8">
-                                <textarea class="form-control" name="comment" rows="3" data-height="auto"><?=_h($sect[0]['comment']);?></textarea>
+                                <textarea class="form-control" name="comment"<?=csio();?> rows="3" data-height="auto"><?=_h($sect[0]['comment']);?></textarea>
                             </div>
                         </div>
                         <!-- // Group END -->

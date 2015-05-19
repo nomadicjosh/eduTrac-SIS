@@ -17,6 +17,8 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$staffInfo = new \app\src\Staff;
+$staffInfo->Load_from_key(_h($positions[0]['staffID']));
 ?>
 
 <script type="text/javascript">
@@ -33,8 +35,57 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	<li><?=_t( 'Positions' );?></li>
 </ul>
 
-<h3><?=_t( 'Positions Past & Present for ' );?><?=get_name(_h($positions[0]['staffID']));?></h3>
 <div class="innerLR">
+
+	<!-- List Widget -->
+    <div class="relativeWrap">
+        <div class="widget">
+            <div class="widget-head">
+                <h4 class="heading glyphicons user"><i></i><?=get_name(_h($staffInfo->getStaffID()));?></h4>
+                <a href="<?=url('/');?>staff/<?=_h($staffInfo->getStaffID());?>/" class="heading pull-right"><?=_h($staffInfo->getStaffID());?></a>
+            </div>
+            <div class="widget-body">
+                <!-- 3 Column Grid / One Third -->
+                <div class="row">
+                    
+                    <!-- One Third Column -->
+                    <div class="col-md-1">
+                        <?=getSchoolPhoto($staffInfo->getStaffID(), $staffInfo->getEmail(), '90');?>
+                    </div>
+                    <!-- // One Third Column END -->
+    
+                    <!-- One Third Column -->
+                    <div class="col-md-3">
+                        <p><?=_h($staffInfo->getAddress1());?> <?=_h($staffInfo->getAddress2());?></p>
+                        <p><?=_h($staffInfo->getCity());?> <?=_h($staffInfo->getState());?> <?=_h($staffInfo->getZip());?></p>
+                        <p><strong><?=_t( 'Phone:' );?></strong> <?=_h($staffInfo->getPhone1());?></p>
+                    </div>
+                    <!-- // One Third Column END -->
+                    
+                    <!-- One Third Column -->
+                    <div class="col-md-4">
+                    	<p><strong><?=_t( 'Title:' );?></strong> <?=_h($staffInfo->getTitle());?></p>
+                    	<p><strong><?=_t( 'Dept:' );?></strong> <?=_h($staffInfo->getDeptName());?></p>
+                    	<p><strong><?=_t( 'Office:' );?></strong> <?=_h($staffInfo->getOfficeCode());?></p>
+                    </div>
+                    <!-- // One Third Column END -->
+                    
+                    <!-- One Third Column -->
+                    <div class="col-md-3">
+                        <p><strong><?=_t( 'Office Phone:' );?></strong> <?=_h($staffInfo->getOfficePhone());?></p>
+                        <p><strong><?=_t( 'Email:' );?></strong> <a href="mailto:<?=_h($staffInfo->getEmail());?>"><?=_h($staffInfo->getEmail());?></a></p>
+                        <p><strong><?=_t( 'Status:' );?></strong> <?=_h($staffInfo->getStaffStatus());?></p>
+                    </div>
+                    <!-- // One Third Column END -->
+                    
+                </div>
+                <!-- // 3 Column Grid / One Third END -->
+            </div>
+        </div>
+    </div>
+    <!-- // List Widget END -->
+    
+    <div class="separator line bottom"></div>
 	
 	<?=$message->flashMessage();?>
 

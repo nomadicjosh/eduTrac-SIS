@@ -106,8 +106,8 @@
                                     <a data-toggle="dropdown" class="dropdown-toggle glyphicons settings"><i></i><?= _t('Administrative'); ?></a>
                                     <ul class="dropdown-menu submenu-show submenu-hide pull-right">
                                         <li<?= hl('general_settings'); ?>><a href="<?= url('/'); ?>setting/<?= bm(); ?>"> <?= _t('General Settings'); ?></a></li>
-                                        <li<?= hl('general_settings'); ?>><a href="<?= url('/'); ?>registration/<?= bm(); ?>"> <?= _t('Registration Settings'); ?></a></li>
-                                        <li<?= hl('general_settings'); ?>><a href="<?= url('/'); ?>email/<?= bm(); ?>"> <?= _t('Email Settings'); ?></a></li>
+                                        <li<?= hl('registration_settings'); ?>><a href="<?= url('/'); ?>registration/<?= bm(); ?>"> <?= _t('Registration Settings'); ?></a></li>
+                                        <li<?= hl('email_settings'); ?>><a href="<?= url('/'); ?>email/<?= bm(); ?>"> <?= _t('Email Settings'); ?></a></li>
                                         <?php if (defined('MULTICAMPUS') && MULTICAMPUS == true) : ?>
                                         <li<?= \app\src\Campus::menu(); ?><?= ml('campus_module'); ?>><a href="<?= url('/'); ?>campus/<?= bm(); ?>"> <?= _t('Campuses'); ?></a></li>
                                         <?php endif; ?>
@@ -116,15 +116,15 @@
                                         <li<?= hl('roles', 'access_role_screen'); ?>><a href="<?= url('/'); ?>role/<?= bm(); ?>"> <?= _t('(MRLE) Manage Role'); ?></a></li>
                                         <li<?= hl('errorlogs', 'access_error_log_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= url('/'); ?>error/logs/<?= bm(); ?>"> <?= _t('Error Log'); ?></a></li>
                                         <li<?= hl('audit_trail', 'access_audit_trail_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= url('/'); ?>audit-trail/<?= bm(); ?>"> <?= _t('Audit Trail'); ?></a></li>
-                                        <li<?= hl('general_settings'); ?>><a href="<?= url('/'); ?>dashboard/update/<?= bm(); ?>"> <?= _t('Automatic Update'); ?></a></li>
+                                        <li<?= hl('automatic_update', 'edit_settings'); ?>><a href="<?= url('/'); ?>dashboard/update/<?= bm(); ?>"> <?= _t('Automatic Update'); ?></a></li>
                                     </ul>
                                 </li>
                                 
                                 <li<?= ae('access_plugin_screen'); ?> class="dropdown submenu">
                                     <a href="" data-toggle="dropdown" class="dropdown-toggle glyphicons package"><i></i><?= _t('System Modules'); ?> <span class="caret"></span></a>
                                     <ul class="dropdown-menu submenu-show submenu-hide pull-right">
-                                        <li<?= ae('access_plugin_admin_page'); ?>><a href="<?= url('/'); ?>dashboard/modules/<?= bm(); ?>"><?= _t('Modules'); ?></a></li>
-                                        <li<?= ae('access_plugin_screen'); ?>><a href="<?= url('/'); ?>dashboard/install-module/<?= bm(); ?>"><?= _t('Install Modules'); ?></a></li>
+                                        <li<?= ae('access_plugin_screen'); ?>><a href="<?= url('/'); ?>dashboard/modules/<?= bm(); ?>"><?= _t('Modules'); ?></a></li>
+                                        <li<?= ae('access_plugin_admin_page'); ?>><a href="<?= url('/'); ?>dashboard/install-module/<?= bm(); ?>"><?= _t('Install Modules'); ?></a></li>
                                     </ul>
                                 </li>
 

@@ -55,6 +55,7 @@ $app->view->block('dashboard');
 				<!-- Table heading -->
 				<thead>
 					<tr>
+						<th class="text-center"><?=_t( 'Image' );?></th>
 						<th class="text-center"><?=_t( 'Person ID' );?></th>
 						<th class="text-center"><?=_t( 'Name' );?></th>
                         <th class="text-center"><?=_t( 'Start Term' );?></th>
@@ -67,10 +68,11 @@ $app->view->block('dashboard');
 				<tbody>
 				<?php if($search != '') : foreach($search as $k => $v) { ?>
                 <?php
-                    $json = file_get_contents(url('/v1/') . 'student/stuID/' . _h($v['personID']) . '/');
+                    $json = _file_get_contents(url('/v1/') . 'student/stuID/' . _h($v['personID']) . '/');
                     $decode = json_decode($json, true);
                 ?>
                 <tr class="gradeX">
+                	<td class="text-center"><?=getSchoolPhoto(_h($v['personID']), _h($v['email']), 48, 'avatar-frame');?></td>
                     <td class="text-center"><?=_h($v['personID']);?></td>
                     <td class="text-center"><?=get_name(_h($v['personID']));?></td>
                     <td class="text-center"><?=_h($v['termName']);?></td>

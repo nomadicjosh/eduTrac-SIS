@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eduTrac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-14 12:58-0500\n"
-"PO-Revision-Date: 2015-05-14 12:58-0500\n"
+"POT-Creation-Date: 2015-05-19 11:58-0500\n"
+"PO-Revision-Date: 2015-05-19 11:58-0500\n"
 "Last-Translator: Joshua Parker <josh@7mediaws.org>\n"
 "Language-Team: 7 Media Web Solutions, LLC <email@7mediaws.org>\n"
 "MIME-Version: 1.0\n"
@@ -350,27 +350,27 @@ msgstr "Hubo un problema al subir el módulo. Por favor, inténtelo de nuevo o c
 msgid "Unable to establish a database connection."
 msgstr "No se puede establecer una conexión de base de datos."
 
-#: ../../../routers/myet.router.php:508
+#: ../../../routers/myet.router.php:512
 msgid "The system could not move the uploaded file. Please check with your system administrator."
 msgstr "El sistema no pudo mover el archivo subido . Por favor, consulte con el administrador del sistema."
 
-#: ../../../routers/myet.router.php:511
+#: ../../../routers/myet.router.php:515
 msgid "Your image size is bigger than 4MB. Try to upload a smaller image."
 msgstr "Su tamaño de la imagen es más grande que 4 MB . Trate de subir una imagen más pequeña."
 
-#: ../../../routers/myet.router.php:514
+#: ../../../routers/myet.router.php:518
 msgid "Invalid file format. You must upload a jpeg, gif, png or bmp file."
 msgstr "Formato de archivo no válido . Usted debe cargar un archivo jpeg , gif, png o bmp."
 
-#: ../../../routers/myet.router.php:517
+#: ../../../routers/myet.router.php:521
 msgid "You have to first select an image to upload."
 msgstr "Usted tiene que seleccionar primero una imagen para subir."
 
-#: ../../../routers/myet.router.php:536
+#: ../../../routers/myet.router.php:540
 msgid "myeduTrac :: "
 msgstr ""
 
-#: ../../../routers/myet.router.php:554
+#: ../../../routers/myet.router.php:558
 msgid "Change of Address Request"
 msgstr "Cambio de Solicitud Dirección"
 
@@ -1055,7 +1055,6 @@ msgstr ""
 #: ../../../views/application/add-inst.php:48
 #: ../../../views/application/add.php:41
 #: ../../../views/application/inst-attended.php:64
-#: ../../../views/application/view-inst.php:48
 msgid "Indicates field is required."
 msgstr "Se requiere Indica campo."
 
@@ -1114,7 +1113,6 @@ msgstr "Ordenar"
 #: ../../../views/application/add.php:262
 #: ../../../views/application/appls.php:114
 #: ../../../views/application/inst-attended.php:176
-#: ../../../views/application/view-inst.php:131
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -1125,8 +1123,8 @@ msgstr "Cancelar"
 #: ../../../views/admin/pages.php:115
 #: ../../../views/admin/pages.php:131
 #: ../../../views/application/appls.php:39
-#: ../../../views/application/index.php:61
-#: ../../../views/application/index.php:79
+#: ../../../views/application/index.php:62
+#: ../../../views/application/index.php:81
 #: ../../../views/application/inst.php:68
 #: ../../../views/application/inst.php:82
 msgid "Actions"
@@ -1135,7 +1133,7 @@ msgstr "Acciones"
 #: ../../../views/admin/links.php:117
 #: ../../../views/admin/news.php:128
 #: ../../../views/admin/pages.php:134
-#: ../../../views/application/index.php:82
+#: ../../../views/application/index.php:84
 #: ../../../views/application/inst.php:85
 msgid "Toggle Dropdown"
 msgstr ""
@@ -1236,7 +1234,6 @@ msgid "Are you sure you want to delete this page?"
 msgstr "¿Seguro que quieres borrar esta página?"
 
 #: ../../../views/application/add-inst.php:30
-#: ../../../views/application/view-inst.php:30
 msgid "Search Institution"
 msgstr ""
 
@@ -1247,12 +1244,10 @@ msgstr ""
 
 #: ../../../views/application/add-inst.php:62
 #: ../../../views/application/inst.php:65
-#: ../../../views/application/view-inst.php:62
 msgid "FICE/CEEB Code"
 msgstr ""
 
 #: ../../../views/application/add-inst.php:69
-#: ../../../views/application/view-inst.php:69
 msgid "Type"
 msgstr ""
 
@@ -1270,22 +1265,18 @@ msgstr "Universidad"
 
 #: ../../../views/application/add-inst.php:83
 #: ../../../views/application/inst.php:67
-#: ../../../views/application/view-inst.php:83
 msgid "Institution Name"
 msgstr ""
 
 #: ../../../views/application/add-inst.php:96
-#: ../../../views/application/view-inst.php:96
 msgid "City"
 msgstr "Ciudad"
 
 #: ../../../views/application/add-inst.php:103
-#: ../../../views/application/view-inst.php:103
 msgid "State"
 msgstr "Estado"
 
 #: ../../../views/application/add-inst.php:110
-#: ../../../views/application/view-inst.php:110
 msgid "Country"
 msgstr "País"
 
@@ -1301,7 +1292,7 @@ msgid "Create Application"
 msgstr ""
 
 #: ../../../views/application/add.php:55
-#: ../../../views/application/index.php:58
+#: ../../../views/application/index.php:59
 msgid "Person ID"
 msgstr ""
 
@@ -1340,7 +1331,7 @@ msgstr ""
 #: ../../../views/application/add.php:186
 #: ../../../views/application/appls.php:37
 #: ../../../views/application/appls.php:68
-#: ../../../views/application/index.php:60
+#: ../../../views/application/index.php:61
 msgid "Start Term"
 msgstr ""
 
@@ -1365,7 +1356,7 @@ msgid "My Applications"
 msgstr ""
 
 #: ../../../views/application/appls.php:52
-#: ../../../views/application/index.php:85
+#: ../../../views/application/index.php:87
 #: ../../../views/application/inst.php:88
 msgid "View"
 msgstr "Vista"
@@ -1402,19 +1393,23 @@ msgstr ""
 msgid "Comments"
 msgstr "Comentarios"
 
-#: ../../../views/application/index.php:59
+#: ../../../views/application/index.php:58
+msgid "Image"
+msgstr ""
+
+#: ../../../views/application/index.php:60
 msgid "Name"
 msgstr "Nombre"
 
-#: ../../../views/application/index.php:87
+#: ../../../views/application/index.php:89
 msgid "Create Student"
 msgstr ""
 
-#: ../../../views/application/index.php:113
+#: ../../../views/application/index.php:115
 msgid "Application Search"
 msgstr ""
 
-#: ../../../views/application/index.php:123
+#: ../../../views/application/index.php:125
 msgid "Close"
 msgstr "Cerca"
 
@@ -1725,7 +1720,6 @@ msgstr ""
 #: ../../../views/comm-mgmt/add.php:54
 #: ../../../views/comm-mgmt/mailmerge.php:38
 #: ../../../views/comm-mgmt/schedule.php:48
-#: ../../../views/comm-mgmt/view.php:60
 msgid "Indicates field is required"
 msgstr "Indica es obligatorio Campo"
 
@@ -1803,24 +1797,19 @@ msgstr "Actualización"
 
 #: ../../../views/comm-mgmt/add.php:68
 #: ../../../views/comm-mgmt/add.php:128
-#: ../../../views/comm-mgmt/view.php:74
-#: ../../../views/comm-mgmt/view.php:142
 msgid "Placeholders"
 msgstr ""
 
 #: ../../../views/comm-mgmt/add.php:74
 #: ../../../views/comm-mgmt/index.php:40
-#: ../../../views/comm-mgmt/view.php:80
 msgid "Email Key"
 msgstr ""
 
 #: ../../../views/comm-mgmt/add.php:81
-#: ../../../views/comm-mgmt/view.php:87
 msgid "Email Name"
 msgstr ""
 
 #: ../../../views/comm-mgmt/add.php:89
-#: ../../../views/comm-mgmt/view.php:95
 msgid "Template"
 msgstr ""
 
@@ -1871,6 +1860,8 @@ msgid "View Email Template"
 msgstr ""
 
 #: ../../../views/comm-mgmt/view.php:105
+#: ../../../views/course/vextr.php:200
+#: ../../../views/course/view.php:209
 msgid "Last Update"
 msgstr ""
 
@@ -2592,7 +2583,6 @@ msgstr ""
 
 #: ../../../views/financial/gl-accounts.php:30
 #: ../../../views/financial/gl-accounts.php:47
-#: ../../../views/financial/gl-filter.php:39
 msgid "GL Accounts"
 msgstr ""
 
@@ -2601,7 +2591,6 @@ msgid "Chart of Accounts"
 msgstr ""
 
 #: ../../../views/financial/gl-accounts.php:49
-#: ../../../views/financial/gl-filter.php:41
 msgid "General Ledger Summary"
 msgstr ""
 
@@ -2639,14 +2628,17 @@ msgid "Search General Ledger"
 msgstr ""
 
 #: ../../../views/financial/gl-filter.php:48
+#: ../../../views/financial/jentry-filter.php:48
 msgid "Select statement period"
 msgstr ""
 
 #: ../../../views/financial/gl-filter.php:61
+#: ../../../views/financial/jentry-filter.php:61
 msgid "From"
 msgstr "Desde"
 
 #: ../../../views/financial/gl-filter.php:79
+#: ../../../views/financial/jentry-filter.php:79
 msgid "To"
 msgstr "a"
 
@@ -3074,8 +3066,6 @@ msgstr ""
 #: ../../../views/form/semester.php:34
 #: ../../../views/form/semester.php:80
 #: ../../../views/form/semester.php:162
-#: ../../../views/form/term.php:54
-#: ../../../views/form/term.php:172
 msgid "Semester"
 msgstr "Semestre"
 
@@ -3398,84 +3388,111 @@ msgstr ""
 msgid "View Term"
 msgstr ""
 
-#: ../../../views/hr/add.php:30
+#: ../../../views/hr/add.php:32
 #: ../../../views/hr/index.php:28
-#: ../../../views/hr/positions.php:31
-#: ../../../views/hr/view.php:31
+#: ../../../views/hr/positions.php:33
+#: ../../../views/hr/view.php:33
 msgid "Search Employee"
 msgstr ""
 
-#: ../../../views/hr/add.php:32
-#: ../../../views/hr/add.php:58
-#: ../../../views/hr/index.php:86
+#: ../../../views/hr/add.php:34
+#: ../../../views/hr/add.php:109
+#: ../../../views/hr/index.php:88
 #: ../../../views/hr/jobs.php:91
 #: ../../../views/hr/jobs.php:163
-#: ../../../views/hr/positions.php:50
-#: ../../../views/hr/view.php:59
+#: ../../../views/hr/positions.php:101
+#: ../../../views/hr/view.php:110
 msgid "Add Position"
 msgstr ""
 
-#: ../../../views/hr/add.php:35
-#: ../../../views/hr/view.php:36
-msgid "ID#"
-msgstr ""
+#: ../../../views/hr/add.php:66
+#: ../../../views/hr/positions.php:67
+#: ../../../views/hr/view-timesheet.php:66
+#: ../../../views/hr/view.php:67
+#, fuzzy
+msgid "Title:"
+msgstr "Título"
 
-#: ../../../views/hr/add.php:56
-#: ../../../views/hr/positions.php:48
-#: ../../../views/hr/view.php:57
+#: ../../../views/hr/add.php:67
+#: ../../../views/hr/positions.php:68
+#: ../../../views/hr/view-timesheet.php:67
+#: ../../../views/hr/view.php:68
+#, fuzzy
+msgid "Dept:"
+msgstr "Débito"
+
+#: ../../../views/hr/add.php:68
+#: ../../../views/hr/positions.php:69
+#: ../../../views/hr/view-timesheet.php:68
+#: ../../../views/hr/view.php:69
+#, fuzzy
+msgid "Office:"
+msgstr "Oficina"
+
+#: ../../../views/hr/add.php:74
+#: ../../../views/hr/positions.php:75
+#: ../../../views/hr/view-timesheet.php:74
+#: ../../../views/hr/view.php:75
+#, fuzzy
+msgid "Office Phone:"
+msgstr "Teléfono:"
+
+#: ../../../views/hr/add.php:107
+#: ../../../views/hr/positions.php:99
+#: ../../../views/hr/view.php:108
 msgid "Staff Record"
 msgstr ""
 
-#: ../../../views/hr/add.php:57
-#: ../../../views/hr/index.php:88
-#: ../../../views/hr/positions.php:49
-#: ../../../views/hr/view.php:58
+#: ../../../views/hr/add.php:108
+#: ../../../views/hr/index.php:90
+#: ../../../views/hr/positions.php:100
+#: ../../../views/hr/view.php:109
 msgid "View Positions"
 msgstr ""
 
-#: ../../../views/hr/add.php:72
-#: ../../../views/hr/positions.php:130
-#: ../../../views/hr/view.php:73
+#: ../../../views/hr/add.php:123
+#: ../../../views/hr/positions.php:181
+#: ../../../views/hr/view.php:124
 msgid "Employment Type"
 msgstr ""
 
-#: ../../../views/hr/add.php:84
-#: ../../../views/hr/positions.php:142
-#: ../../../views/hr/view.php:85
+#: ../../../views/hr/add.php:135
+#: ../../../views/hr/positions.php:193
+#: ../../../views/hr/view.php:136
 msgid "Staff Type"
 msgstr ""
 
-#: ../../../views/hr/add.php:88
-#: ../../../views/hr/positions.php:146
-#: ../../../views/hr/view.php:89
+#: ../../../views/hr/add.php:139
+#: ../../../views/hr/positions.php:197
+#: ../../../views/hr/view.php:140
 msgid "Faculty"
 msgstr "Facultad"
 
-#: ../../../views/hr/add.php:97
-#: ../../../views/hr/positions.php:155
-#: ../../../views/hr/view.php:98
+#: ../../../views/hr/add.php:148
+#: ../../../views/hr/positions.php:206
+#: ../../../views/hr/view.php:149
 msgid "Supervisor"
 msgstr ""
 
-#: ../../../views/hr/add.php:109
+#: ../../../views/hr/add.php:160
 #: ../../../views/hr/jobs.php:52
-#: ../../../views/hr/positions.php:64
-#: ../../../views/hr/positions.php:167
+#: ../../../views/hr/positions.php:115
+#: ../../../views/hr/positions.php:218
 #: ../../../views/hr/timesheets.php:42
-#: ../../../views/hr/view-timesheet.php:127
-#: ../../../views/hr/view.php:110
+#: ../../../views/hr/view-timesheet.php:178
+#: ../../../views/hr/view.php:161
 msgid "Job Title"
 msgstr ""
 
-#: ../../../views/hr/add.php:127
-#: ../../../views/hr/positions.php:68
-#: ../../../views/hr/positions.php:179
-#: ../../../views/hr/view.php:218
+#: ../../../views/hr/add.php:178
+#: ../../../views/hr/positions.php:119
+#: ../../../views/hr/positions.php:230
+#: ../../../views/hr/view.php:269
 msgid "Hire Date"
 msgstr ""
 
-#: ../../../views/hr/add.php:163
-#: ../../../views/hr/view.php:280
+#: ../../../views/hr/add.php:214
+#: ../../../views/hr/view.php:331
 msgid "Approved By"
 msgstr ""
 
@@ -3501,30 +3518,30 @@ msgstr ""
 msgid "Employee"
 msgstr "Empleado"
 
-#: ../../../views/hr/index.php:59
+#: ../../../views/hr/index.php:60
 msgid "ID"
 msgstr ""
 
-#: ../../../views/hr/index.php:62
+#: ../../../views/hr/index.php:63
 msgid "Phone"
 msgstr "Teléfono"
 
-#: ../../../views/hr/index.php:115
+#: ../../../views/hr/index.php:117
 msgid "Employee Search"
 msgstr ""
 
 #: ../../../views/hr/jobs.php:51
 #: ../../../views/hr/jobs.php:100
 #: ../../../views/hr/jobs.php:172
-#: ../../../views/hr/positions.php:63
+#: ../../../views/hr/positions.php:114
 msgid "Pay Grade"
 msgstr ""
 
 #: ../../../views/hr/jobs.php:53
 #: ../../../views/hr/jobs.php:121
 #: ../../../views/hr/jobs.php:193
-#: ../../../views/hr/positions.php:65
-#: ../../../views/hr/view.php:179
+#: ../../../views/hr/positions.php:116
+#: ../../../views/hr/view.php:230
 msgid "Hourly Wage"
 msgstr ""
 
@@ -3534,34 +3551,30 @@ msgstr ""
 msgid "Hours Per Week"
 msgstr ""
 
-#: ../../../views/hr/positions.php:33
+#: ../../../views/hr/positions.php:35
 msgid "Positions"
 msgstr ""
 
-#: ../../../views/hr/positions.php:36
-msgid "Positions Past & Present for "
-msgstr ""
-
-#: ../../../views/hr/positions.php:66
-#: ../../../views/hr/view.php:197
+#: ../../../views/hr/positions.php:117
+#: ../../../views/hr/view.php:248
 msgid "Weekly Hours"
 msgstr ""
 
-#: ../../../views/hr/positions.php:67
-#: ../../../views/hr/view.php:206
+#: ../../../views/hr/positions.php:118
+#: ../../../views/hr/view.php:257
 msgid "Monthly Salary"
 msgstr ""
 
-#: ../../../views/hr/positions.php:89
+#: ../../../views/hr/positions.php:140
 msgid "Not Set"
 msgstr ""
 
-#: ../../../views/hr/positions.php:118
+#: ../../../views/hr/positions.php:169
 msgid "Edit Position"
 msgstr ""
 
 #: ../../../views/hr/timesheets.php:40
-#: ../../../views/hr/view-timesheet.php:52
+#: ../../../views/hr/view-timesheet.php:103
 msgid "Work Week"
 msgstr ""
 
@@ -3573,56 +3586,52 @@ msgstr "Horas"
 msgid "Pay"
 msgstr ""
 
-#: ../../../views/hr/view-timesheet.php:32
+#: ../../../views/hr/view-timesheet.php:34
 msgid "View Timesheet"
 msgstr ""
 
-#: ../../../views/hr/view-timesheet.php:35
-msgid "View Timesheet for "
-msgstr ""
-
-#: ../../../views/hr/view-timesheet.php:55
+#: ../../../views/hr/view-timesheet.php:106
 msgid "Work Hours"
 msgstr ""
 
-#: ../../../views/hr/view-timesheet.php:56
-#: ../../../views/hr/view-timesheet.php:184
+#: ../../../views/hr/view-timesheet.php:107
+#: ../../../views/hr/view-timesheet.php:235
 msgid "Note"
 msgstr "Nota"
 
-#: ../../../views/hr/view-timesheet.php:79
+#: ../../../views/hr/view-timesheet.php:130
 msgid "Rejected"
 msgstr "Rechazado"
 
-#: ../../../views/hr/view-timesheet.php:80
+#: ../../../views/hr/view-timesheet.php:131
 msgid "Approved"
 msgstr "Aprobado"
 
-#: ../../../views/hr/view-timesheet.php:120
+#: ../../../views/hr/view-timesheet.php:171
 msgid "Timesheet Entry"
 msgstr ""
 
-#: ../../../views/hr/view-timesheet.php:136
+#: ../../../views/hr/view-timesheet.php:187
 msgid "Work Week Start"
 msgstr ""
 
-#: ../../../views/hr/view-timesheet.php:148
+#: ../../../views/hr/view-timesheet.php:199
 msgid "Work Day"
 msgstr ""
 
-#: ../../../views/hr/view.php:33
+#: ../../../views/hr/view.php:35
 msgid "View Employee"
 msgstr ""
 
-#: ../../../views/hr/view.php:134
+#: ../../../views/hr/view.php:185
 msgid "Office"
 msgstr "Oficina"
 
-#: ../../../views/hr/view.php:146
+#: ../../../views/hr/view.php:197
 msgid "Office Phone"
 msgstr ""
 
-#: ../../../views/hr/view.php:263
+#: ../../../views/hr/view.php:314
 msgid "I Inactive"
 msgstr ""
 
@@ -3785,7 +3794,6 @@ msgstr ""
 
 #: ../../../views/index/profile.php:78
 #: ../../../views/person/add.php:281
-#: ../../../views/person/view.php:245
 msgid "Date of Birth"
 msgstr ""
 
@@ -3982,7 +3990,7 @@ msgid "Key"
 msgstr ""
 
 #: ../../../views/permission/index.php:27
-#: ../../../views/person/index.php:103
+#: ../../../views/person/index.php:105
 msgid "Permissions"
 msgstr ""
 
@@ -4002,40 +4010,32 @@ msgstr ""
 
 #: ../../../views/person/add.php:100
 #: ../../../views/person/add.php:353
-#: ../../../views/person/view.php:70
-#: ../../../views/person/view.php:357
 msgid "Person Type"
 msgstr ""
 
 #: ../../../views/person/add.php:191
 #: ../../../views/person/addr-form.php:131
 #: ../../../views/person/addr.php:131
-#: ../../../views/person/view.php:158
 msgid "Zip Code"
 msgstr ""
 
 #: ../../../views/person/add.php:227
-#: ../../../views/person/view.php:185
 msgid "Preferred Email"
 msgstr ""
 
 #: ../../../views/person/add.php:236
-#: ../../../views/person/view.php:200
 msgid "Social Security #"
 msgstr ""
 
 #: ../../../views/person/add.php:245
-#: ../../../views/person/view.php:209
 msgid "Veteran?"
 msgstr ""
 
 #: ../../../views/person/add.php:258
-#: ../../../views/person/view.php:222
 msgid "Ethnicity?"
 msgstr "Etnia?"
 
 #: ../../../views/person/add.php:324
-#: ../../../views/person/view.php:301
 msgid "Approved Date"
 msgstr ""
 
@@ -4045,7 +4045,6 @@ msgstr ""
 #: ../../../views/person/index.php:27
 #: ../../../views/person/perms.php:30
 #: ../../../views/person/role.php:30
-#: ../../../views/person/view.php:30
 msgid "Search Person"
 msgstr ""
 
@@ -4110,21 +4109,20 @@ msgstr ""
 msgid "Add"
 msgstr "Añadir"
 
-#: ../../../views/person/index.php:90
+#: ../../../views/person/index.php:92
 msgid "Switch to User"
 msgstr ""
 
-#: ../../../views/person/index.php:94
+#: ../../../views/person/index.php:96
 msgid "Create Staff Record"
 msgstr ""
 
-#: ../../../views/person/index.php:101
+#: ../../../views/person/index.php:103
 #: ../../../views/person/role.php:56
-#: ../../../views/person/view.php:328
 msgid "Role"
 msgstr "Papel"
 
-#: ../../../views/person/index.php:128
+#: ../../../views/person/index.php:130
 msgid "Person Search"
 msgstr ""
 
@@ -4132,8 +4130,12 @@ msgstr ""
 msgid "Manage Person Permissions"
 msgstr ""
 
+#: ../../../views/person/perms.php:37
+#: ../../../views/person/role.php:37
+msgid "ID#"
+msgstr ""
+
 #: ../../../views/person/perms.php:56
-#: ../../../views/person/view.php:337
 msgid "Permission"
 msgstr ""
 
@@ -4579,16 +4581,16 @@ msgid "Student Email"
 msgstr ""
 
 #: ../../../views/section/students.php:115
-#: ../../../views/section/students.php:186
+#: ../../../views/section/students.php:194
 msgid "Message"
 msgstr "Mensaje"
 
 #: ../../../views/section/students.php:124
-#: ../../../views/section/students.php:195
+#: ../../../views/section/students.php:203
 msgid "File Upload"
 msgstr ""
 
-#: ../../../views/section/students.php:168
+#: ../../../views/section/students.php:176
 msgid "Email Students in"
 msgstr ""
 
@@ -4654,7 +4656,7 @@ msgid "Enable Benchmark"
 msgstr ""
 
 #: ../../../views/setting/index.php:114
-#: ../../../views/setting/index.php:347
+#: ../../../views/setting/index.php:348
 msgid "Enable Cron Jobs"
 msgstr ""
 
@@ -4687,7 +4689,7 @@ msgid "Disabled"
 msgstr "Discapacitado"
 
 #: ../../../views/setting/index.php:175
-#: ../../../views/setting/index.php:442
+#: ../../../views/setting/index.php:443
 msgid "Screen Caching"
 msgstr ""
 
@@ -4704,115 +4706,119 @@ msgid "English"
 msgstr "Inglés"
 
 #: ../../../views/setting/index.php:212
-msgid "Spanish"
-msgstr "Español"
+msgid "French"
+msgstr "Francés"
 
 #: ../../../views/setting/index.php:213
 msgid "Portuguese"
 msgstr "Portugués"
 
-#: ../../../views/setting/index.php:221
+#: ../../../views/setting/index.php:214
+msgid "Spanish"
+msgstr "Español"
+
+#: ../../../views/setting/index.php:222
 msgid "Timezone"
 msgstr "Zona Horaria"
 
-#: ../../../views/setting/index.php:235
+#: ../../../views/setting/index.php:236
 msgid "Cookie TTL"
 msgstr ""
 
-#: ../../../views/setting/index.php:244
+#: ../../../views/setting/index.php:245
 msgid "Cookie Path"
 msgstr ""
 
-#: ../../../views/setting/index.php:253
+#: ../../../views/setting/index.php:254
 msgid "Curl"
 msgstr ""
 
-#: ../../../views/setting/index.php:257
+#: ../../../views/setting/index.php:258
 msgid "On"
 msgstr "En"
 
-#: ../../../views/setting/index.php:258
+#: ../../../views/setting/index.php:259
 msgid "Off"
 msgstr "Apagado"
 
-#: ../../../views/setting/index.php:266
-#: ../../../views/setting/index.php:366
+#: ../../../views/setting/index.php:267
+#: ../../../views/setting/index.php:367
 msgid "Auth Token"
 msgstr ""
 
-#: ../../../views/setting/index.php:275
+#: ../../../views/setting/index.php:276
 msgid "Contact Phone"
 msgstr ""
 
-#: ../../../views/setting/index.php:284
+#: ../../../views/setting/index.php:285
 msgid "Help Desk"
 msgstr ""
 
-#: ../../../views/setting/index.php:302
+#: ../../../views/setting/index.php:303
 msgid "Mailing Address"
 msgstr ""
 
-#: ../../../views/setting/index.php:320
+#: ../../../views/setting/index.php:321
 msgid "Reset Password Text"
 msgstr ""
 
-#: ../../../views/setting/index.php:351
+#: ../../../views/setting/index.php:352
 msgid "This option should be set to 'No' until you have configured each"
 msgstr ""
 
-#: ../../../views/setting/index.php:351
+#: ../../../views/setting/index.php:352
 msgid "cron job"
 msgstr ""
 
-#: ../../../views/setting/index.php:351
+#: ../../../views/setting/index.php:352
 msgid "If this is set to 'Yes' before that, your error logs will be huge."
 msgstr ""
 
-#: ../../../views/setting/index.php:370
+#: ../../../views/setting/index.php:371
 msgid "If you plan to do development work using the RESTful API feature, then you will need an api key."
 msgstr "Si va a hacer el trabajo de desarrollo mediante la función de API REST, entonces necesitará una clave de API."
 
-#: ../../../views/setting/index.php:370
+#: ../../../views/setting/index.php:371
 msgid "to generate an api key for your account."
 msgstr ""
 
-#: ../../../views/setting/index.php:385
+#: ../../../views/setting/index.php:386
 msgid "myeduTrac Self Service"
 msgstr ""
 
-#: ../../../views/setting/index.php:389
+#: ../../../views/setting/index.php:390
 msgid "Use this option to place myeduTrac self service into maintenance mode."
 msgstr "Utilice esta opción para colocar autoservicio myeduTrac en modo de mantenimiento."
 
-#: ../../../views/setting/index.php:404
+#: ../../../views/setting/index.php:405
 msgid "myeduTrac Offline Message"
 msgstr "myeduTrac Desconectado Mensaje"
 
-#: ../../../views/setting/index.php:408
+#: ../../../views/setting/index.php:409
 msgid "Type the message that should be shown to vistors when myeduTrac self service is in offline mode. Those who have an account can still log into the site. If the logged in user does not have dashboard access, they will be redirected back to the offline message."
 msgstr "Escriba el mensaje que se debe mostrar a visitantes lo que autoservicio myeduTrac está en modo fuera de línea. Los que tienen una cuenta todavía se puede iniciar sesión en el sitio. Si el usuario conectado no tiene acceso salpicadero, será redirigido de nuevo a el mensaje fuera de línea."
 
-#: ../../../views/setting/index.php:423
+#: ../../../views/setting/index.php:424
 msgid "myeduTrac Application Form"
 msgstr "myeduTrac Formulario de Solicitud"
 
-#: ../../../views/setting/index.php:427
+#: ../../../views/setting/index.php:428
 msgid "Enable this option to allow access to the application for admissions form."
 msgstr "Active esta opción para permitir el acceso a la solicitud de formulario de admisión."
 
-#: ../../../views/setting/index.php:446
+#: ../../../views/setting/index.php:447
 msgid "Static screens that don't really change often can be cached to reduce page loading time. However, if you decide to disable this option, make sure to clear the screen cache."
 msgstr "Pantallas estáticas que en realidad no cambian a menudo se pueden almacenar en caché para reducir el tiempo de carga la página . Sin embargo, si decide desactivar esta opción, asegúrese de borrar la caché de pantalla."
 
-#: ../../../views/setting/index.php:461
+#: ../../../views/setting/index.php:462
 msgid "Database Caching"
 msgstr ""
 
-#: ../../../views/setting/index.php:465
+#: ../../../views/setting/index.php:466
 msgid "Along with screen caching, database caching helps with scalability, performance and greatly reduces overhead. However, if you decide to disable this option, make sure to clear the database cache."
 msgstr "Junto con el almacenamiento en caché de la pantalla, el almacenamiento en caché de base de datos ayuda a la escalabilidad, el rendimiento y reduce los gastos generales. Sin embargo, si decide desactivar esta opción, asegúrese de borrar la caché de base de datos."
 
-#: ../../../views/setting/index.php:484
+#: ../../../views/setting/index.php:485
 msgid "If you are using eduTrac Analytics, enter the base url where it is installed (i.e. http://example.com/ea/)."
 msgstr "Si está utilizando eduTrac Analytics, introduzca la URL base donde está instalado (es decir http://example.com/ea/ ) ."
 
@@ -4939,11 +4945,11 @@ msgstr ""
 msgid "Add Staff"
 msgstr ""
 
-#: ../../../views/staff/index.php:106
+#: ../../../views/staff/index.php:108
 msgid "Staff Search"
 msgstr ""
 
-#: ../../../views/staff/view.php:32
+#: ../../../views/staff/view.php:34
 msgid "View Staff"
 msgstr ""
 
@@ -4953,7 +4959,6 @@ msgstr ""
 #: ../../../views/student/sacd.php:32
 #: ../../../views/student/sacp.php:35
 #: ../../../views/student/shis.php:38
-#: ../../../views/student/stac.php:31
 msgid "Search Student"
 msgstr ""
 
@@ -5004,19 +5009,19 @@ msgstr ""
 msgid "Graduation Date"
 msgstr ""
 
-#: ../../../views/student/index.php:82
+#: ../../../views/student/index.php:84
 msgid "Academic Credits (STAC)"
 msgstr ""
 
-#: ../../../views/student/index.php:83
+#: ../../../views/student/index.php:85
 msgid "Restriction (RSTR)"
 msgstr ""
 
-#: ../../../views/student/index.php:84
+#: ../../../views/student/index.php:86
 msgid "Hiatus (SHIS)"
 msgstr ""
 
-#: ../../../views/student/index.php:109
+#: ../../../views/student/index.php:111
 msgid "Student Search"
 msgstr ""
 
@@ -5074,28 +5079,22 @@ msgstr ""
 
 #: ../../../views/student/shis.php:40
 #: ../../../views/student/shis.php:110
-#: ../../../views/student/stac.php:106
 msgid "Student Hiatus (SHIS)"
 msgstr ""
 
 #: ../../../views/student/shis.php:106
-#: ../../../views/student/stac.php:102
 msgid "Student Profile (SPRO)"
 msgstr ""
 
 #: ../../../views/student/shis.php:107
-#: ../../../views/student/stac.php:33
-#: ../../../views/student/stac.php:103
 msgid "Student Academic Credits (STAC)"
 msgstr ""
 
 #: ../../../views/student/shis.php:108
-#: ../../../views/student/stac.php:104
 msgid "Student Terms (STTR)"
 msgstr ""
 
 #: ../../../views/student/shis.php:109
-#: ../../../views/student/stac.php:105
 msgid "Student Restriction (STRC)"
 msgstr ""
 

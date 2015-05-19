@@ -227,7 +227,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      * Before route checks to make sure the logged in user
      * us allowed to manage options/settings.
      */
-    $app->before('GET|POST', '/add.*', function() {
+    $app->before('GET|POST', '/add/', function() {
         if (!hasPermission('add_course')) {
             redirect(url('/dashboard/'));
         }

@@ -835,10 +835,10 @@ function fee_acad_level_select($levelCode = null)
  * @param string $status
  * @return string Returns the record key if selected is true.
  */
-function status_select($status = NULL)
+function status_select($status = NULL, $readonly = '')
 {
     $app = \Liten\Liten::getInstance();
-    $select = '<select name="currStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+    $select = '<select name="currStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"'.$readonly.' required>
     			<option value="">&nbsp;</option>
     	    	<option value="A"' . selected($status, 'A', false) . '>A Active</option>
     	    	<option value="I"' . selected($status, 'I', false) . '>I Inactive</option>
@@ -857,10 +857,10 @@ function status_select($status = NULL)
  * @param string $status
  * @return string Returns the record key if selected is true.
  */
-function course_sec_status_select($status = NULL)
+function course_sec_status_select($status = NULL, $readonly = '')
 {
     $app = \Liten\Liten::getInstance();
-    $select = '<select name="currStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+    $select = '<select name="currStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required' . $readonly . '>
     			<option value="">&nbsp;</option>
     	    	<option' . dopt('activate_course_sec') . ' value="A"' . selected($status, 'A', false) . '>A Active</option>
     	    	<option value="I"' . selected($status, 'I', false) . '>I Inactive</option>
@@ -955,10 +955,10 @@ function instructor_method($method = NULL)
  * @param string $status
  * @return string Returns the record status if selected is true.
  */
-function stu_course_sec_status_select($status = NULL)
+function stu_course_sec_status_select($status = NULL, $readonly = '')
 {
     $app = \Liten\Liten::getInstance();
-    $select = '<select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+    $select = '<select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required' . $readonly . '>
                 <option value="">&nbsp;</option>
                 <option value="A"' . selected($status, 'A', false) . '>' . _t('A Add') . '</option>
                 <option value="N"' . selected($status, 'N', false) . '>' . _t('N New') . '</option>

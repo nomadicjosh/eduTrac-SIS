@@ -48,7 +48,7 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
         if ($app->req->isPost()) {
             $staff = $_POST['employee'];
             $hr = $app->db->staff()
-                ->select('staff.staffID,staff.office_phone,c.deptName')
+                ->select('staff.staffID,staff.office_phone,b.email,c.deptName')
                 ->_join('person', 'staff.staffID = b.personID', 'b')
                 ->_join('department', 'staff.deptCode = c.deptCode', 'c')
                 ->whereLike('CONCAT(b.fname," ",b.lname)', "%$staff%")->_or_()

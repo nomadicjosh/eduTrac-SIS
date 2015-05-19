@@ -500,7 +500,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         }
 
         $grade = $app->db->course_sec()
-            ->select('course_sec.courseSecID,course_sec.secShortTitle,course_sec.minCredit,course_sec.courseSection')
+            ->select('course_sec.courseSecID,course_sec.secShortTitle,course_sec.minCredit,course_sec.courseSection,course_sec.facID')
             ->select('b.stuID,b.courseSecCode,b.courseSection,b.termCode,b.grade')
             ->_join('stu_acad_cred', 'course_sec.courseSecID = b.courseSecID', 'b')
             ->where('courseSecID = ?', $id);
