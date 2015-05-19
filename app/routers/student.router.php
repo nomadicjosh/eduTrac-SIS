@@ -51,7 +51,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
         $spro = $app->db->student()
             ->setTableAlias('a')
-            ->select('a.stuID,b.lname,b.fname')
+            ->select('a.stuID,b.lname,b.fname,b.email')
             ->_join('person', 'a.stuID = b.personID', 'b')
             ->whereLike('CONCAT(b.fname," ",b.lname)', "%$post%")->_or_()
             ->whereLike('CONCAT(b.lname," ",b.fname)', "%$post%")->_or_()
@@ -855,7 +855,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          */ else {
 
             $app->view->display('student/sacp', [
-                'title' => get_name($id),
+                'title' => get_name($q[0]['stuID']),
                 'cssArray' => $css,
                 'jsArray' => $js,
                 'sacp' => $q

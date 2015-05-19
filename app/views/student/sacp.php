@@ -46,7 +46,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
         <div class="widget">
             <div class="widget-head">
                 <h4 class="heading glyphicons user"><i></i><?=get_name(_h($stuInfo->getStuID()));?></h4>
-                <a href="<?=url('/');?>student/view/<?=_h($stuInfo->getStuID());?>/" class="heading pull-right"><?=_h($stuInfo->getStuID());?></a>
+                <a href="<?=url('/');?>stu/<?=_h($stuInfo->getStuID());?>/" class="heading pull-right"><?=_h($stuInfo->getStuID());?></a>
             </div>
             <div class="widget-body">
                 <!-- 3 Column Grid / One Third -->
@@ -204,7 +204,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         </div>
                         <!-- // Group END -->
 					    
-					    <?php if(_h($sacp[0]['currStatus']) == 'G') { ?>
+					    <?php if(_h($sacp[0]['currStatus']) == 'G' || _h($sacp[0]['graduationDate']) > '0000-00-00') { ?>
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Graduation Date' );?></label>

@@ -60,7 +60,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
             $post = $_POST['staff'];
             $search = $app->db->staff()
                 ->setTableAlias('a')
-                ->select('a.staffID,b.lname,b.fname')
+                ->select('a.staffID,b.lname,b.fname,b.email')
                 ->_join('person', 'a.staffID = b.personID', 'b')
                 ->whereLike('CONCAT(b.fname," ",b.lname)', "%$post%")->_or_()
                 ->whereLike('CONCAT(b.lname," ",b.fname)', "%$post%")->_or_()
@@ -88,7 +88,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
      * Before route middleware check.
      */
     $app->before('GET|POST', '/(\d+)/', function() {
-        if (!hasPermission('create_staff_record')) {
+        if (!hasPermission('access_staff_screen')) {
             redirect(url('/dashboard/'));
         }
     });

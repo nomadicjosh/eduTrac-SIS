@@ -162,6 +162,16 @@ function csids()
 }
 
 /**
+ * Course Sec disable select dropdowns.
+ */
+function csid()
+{
+    if (hasRestriction('course_sec_inquiry_only')) {
+        return ' disabled';
+    }
+}
+
+/**
  * Academic Program Inquiry only.
  */
 function apio()
@@ -178,6 +188,16 @@ function apids()
 {
     if (hasRestriction('acad_prog_inquiry_only')) {
         return ' style="display:none !important;"';
+    }
+}
+
+/**
+ * Academic Program disable select dropdowns.
+ */
+function apid()
+{
+    if (hasRestriction('acad_prog_inquiry_only')) {
+        return ' disabled';
     }
 }
 

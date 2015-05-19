@@ -55,6 +55,7 @@ $app->view->block('dashboard');
 				<!-- Table heading -->
 				<thead>
 					<tr>
+						<th class="text-center"><?=_t( 'Image' );?></th>
 						<th class="text-center"><?=_t( 'ID' );?></th>
 						<th class="text-center"><?=_t( 'Last Name' );?></th>
 						<th class="text-center"><?=_t( 'First Name' );?></th>
@@ -67,6 +68,7 @@ $app->view->block('dashboard');
 				<tbody>
 				<?php if($search != '') : foreach($search as $k => $v) { ?>
                 <tr class="gradeX">
+                	<td class="text-center"><?=getSchoolPhoto(_h($v['staffID']), _h($v['email']), 48, 'avatar-frame');?></td>
                     <td class="text-center"><?=_h($v['staffID']);?></td>
                     <td class="text-center"><?=_h($v['lname']);?></td>
                     <td class="text-center"><?=_h($v['fname']);?></td>

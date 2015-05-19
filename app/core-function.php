@@ -15,7 +15,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 define('CURRENT_RELEASE', '5.0');
-define('RELEASE_TAG', '5.0.6');
+define('RELEASE_TAG', '5.0.7');
 
 $app = \Liten\Liten::getInstance();
 
@@ -1164,7 +1164,7 @@ function prerequisite($stuID, $courseSecID)
  * 
  * @since 4.5
  */
-function getSchoolPhoto($id, $email, $s)
+function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
 {
     $app = \Liten\Liten::getInstance();
     $photo = $app->db->query('SELECT photo FROM person WHERE personID = ? AND photo <> "" AND photo <> "NULL"', [$id]);
@@ -1182,12 +1182,12 @@ function getSchoolPhoto($id, $email, $s)
     $photosize = getimagesize($url);
     if (count($q) > 0) {
         if (getPathInfo('/form/photo/') === '/form/photo/') {
-            $avatar = '<a href="' . url('/') . 'form/deleteSchoolPhoto/"><img src="' . url('/') . 'static/photos/' . $photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="thumb" /></a>';
+            $avatar = '<a href="' . url('/') . 'form/deleteSchoolPhoto/"><img src="' . url('/') . 'static/photos/' . $photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="'.$class.'" /></a>';
         } else {
-            $avatar = '<img src="' . url('/') . 'static/photos/' . $photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="thumb" />';
+            $avatar = '<img src="' . url('/') . 'static/photos/' . $photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="'.$class.'" />';
         }
     } else {
-        $avatar = get_user_avatar($email, $s, 'thumb');
+        $avatar = get_user_avatar($email, $s, $class);
     }
     return $avatar;
 }

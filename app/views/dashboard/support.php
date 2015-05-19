@@ -37,7 +37,7 @@ $app->view->block('dashboard');
 		
 		<div class="widget-body">
 			
-			<iframe src="http://www.edutracerp.com/" width="100%" height="900" marginwidth="0" marginheight="0" frameborder="0">
+			<iframe src="http://www.edutracsis.com/" width="100%" height="900" marginwidth="0" marginheight="0" frameborder="0">
 			  <p><?=_t( 'Your browser does not support iframes.' );?></p>
 			</iframe>
 			

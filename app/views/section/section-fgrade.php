@@ -88,11 +88,12 @@ $message = new \app\src\Messages;
     			
 			<!-- Form actions -->
 			<div class="form-actions">
+				<?php if($grade[0]['facID'] == get_persondata('personID')) : ?>
 			    <?php if($grade[0]['stuID'] != '') : ?>
 			    <input type="hidden" name="attCredit" value="<?=_h($grade[0]['minCredit']);?>" />
 			    <input type="hidden" name="courseSecID" value="<?=_h($grade[0]['courseSecID']);?>" />
 				<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Submit' );?></button>
-                <?php endif; ?>
+                <?php endif; endif; ?>
 				<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>sect/<?=_h($grade[0]['courseSecID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 			</div>
 			<!-- // Form actions END -->
