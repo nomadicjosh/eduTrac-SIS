@@ -19,7 +19,7 @@ $js = [
     'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/api/');
 
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
@@ -37,7 +37,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         }
     });
 
-    $app->match('GET|POST', '/', function () use($app, $css, $js) {
+    $app->match('GET|POST', '/', function () use($app, $css, $js, $json_url) {
 
         if ($app->req->isPost()) {
             $post = $_POST['nae'];
@@ -57,13 +57,19 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 }
                 return $array;
             });
+            $staff = _file_get_contents($json_url . 'staff/staffID/' . $q[0]['personID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
+            $s_decode = json_decode($staff,true);
+            $appl = _file_get_contents($json_url . 'application/personID/' . $q[0]['personID']. '/?key=' . $app->hook->{'get_option'}('api_key'));
+            $a_decode = json_decode($appl,true);
         }
 
         $app->view->display('person/index', [
             'title' => 'Name and Address',
             'cssArray' => $css,
             'jsArray' => $js,
-            'search' => $q
+            'search' => $q,
+            'staff' => $s_decode,
+            'appl' => $a_decode
             ]
         );
     });
@@ -77,8 +83,23 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/');
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$nae = $app->db->person();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$nae->$k = $v;
+    		}
+    		$nae->where('personID = ?', $id);
+    		if($nae->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Person (NAE)', get_name($id), get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+        
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         $addr = $app->db->address()
@@ -292,7 +313,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/addr-form/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {
@@ -378,10 +399,10 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/addr/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
 
-        $json_a = _file_get_contents($json_url . 'address/addressID/' . $id . '/');
+        $json_a = _file_get_contents($json_url . 'address/addressID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $a_decode = json_decode($json_a, true);
 
-        $json_p = _file_get_contents($json_url . 'person/personID/' . $a_decode[0]['personID'] . '/');
+        $json_p = _file_get_contents($json_url . 'person/personID/' . $a_decode[0]['personID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $p_decode = json_decode($json_p, true);
 
         /**
@@ -434,7 +455,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {
@@ -507,7 +528,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/perms/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {
@@ -617,6 +638,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         $from = $app->hook->{'get_option'}('institution_name');
         $fromEmail = $app->hook->{'get_option'}('system_email');
         $url = url('/');
+        $host = $app->req->server['HTTP_HOST'];
         $helpDesk = $app->hook->{'get_option'}('help_desk');
         $body = $app->hook->{'get_option'}('reset_password_text');
         $body = str_replace('#url#', $url, $body);

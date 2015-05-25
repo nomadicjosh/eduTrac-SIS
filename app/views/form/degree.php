@@ -7,7 +7,6 @@
  * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @license     http://www.edutracerp.com/general/edutrac-erp-commercial-license/ Commercial License
  * @link        http://www.7mediaws.org/
  * @since       3.0.0
  * @package     eduTrac
@@ -30,7 +29,7 @@ $message = new \app\src\Messages;
 <div class="innerLR">
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/degree/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>form/degree/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -115,7 +114,7 @@ $message = new \app\src\Messages;
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/');?>form/view-degree/<?=_h($value['degreeID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=url('/');?>form/degree/<?=_h($value['degreeID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
                                 <?php $app->hook->{'do_action'}('search_degree_action'); ?>
                             </ul>
                         </div>

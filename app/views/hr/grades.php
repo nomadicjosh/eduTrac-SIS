@@ -7,7 +7,6 @@
  * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @license     http://edutrac.7mediaws.org/general/edutrac_erp_commercial_license/ Commercial License
  * @link        http://www.7mediaws.org/
  * @since       3.0.2
  * @package     eduTrac
@@ -81,7 +80,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	
 	<!-- Modal -->
 	<div class="modal fade" id="grades">
-		<form class="form-horizontal margin-none" action="<?=url('/');?>v1/pay_grade/" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal margin-none" action="<?=url('/');?>hr/grades/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->
@@ -137,7 +136,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <?php if($grades != '') : foreach($grades as $k => $v) { ?>
 	<!-- Modal -->
 	<div class="modal fade" id="editPayGrade<?=_h($v['ID']);?>">
-		<form class="form-horizontal margin-none" action="<?=url('/');?>v1/pay_grade/ID/<?=_h($v['ID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal margin-none" action="<?=url('/');?>hr/grades/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->
@@ -178,6 +177,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 				<!-- // Modal body END -->
 				<!-- Modal footer -->
 				<div class="modal-footer">
+                    <input type="hidden" name="ID" value="<?=_h($v['ID']);?>" />
         			<button type="submit" class="btn btn-default"><?=_t( 'Update' );?></button>
 					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a>
 				</div>

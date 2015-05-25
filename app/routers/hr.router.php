@@ -34,14 +34,11 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/v1/');
-
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();
 $dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
-// GET route
 $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
@@ -162,7 +159,35 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
         }
     });
 
-    $app->get('/grades/', function () use($app, $css, $js) {
+    $app->match('GET|POST', '/grades/', function () use($app, $css, $js, $logger, $flashNow) {
+
+        if ($app->req->isPost()) {
+            if (isset($_POST['addDate'])) {
+                $pg = $app->db->pay_grade();
+                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                    $pg->$k = $v;
+                }
+                if ($pg->save()) {
+                    $app->flash('success_message', $flashNow->notice(200));
+                    $logger->setLog('New Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
+                } else {
+                    $app->flash('error_message', $flashNow->notice(409));
+                }
+            } else {
+                $pg = $app->db->pay_grade();
+                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                    $pg->$k = $v;
+                }
+                $pg->where('ID = ?', _filter_input_int(INPUT_POST, 'ID'));
+                if ($pg->update()) {
+                    $app->flash('success_message', $flashNow->notice(200));
+                    $logger->setLog('Update Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
+                } else {
+                    $app->flash('error_message', $flashNow->notice(409));
+                }
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
 
         $pg = $app->db->pay_grade();
         $q = $pg->find(function($data) {
@@ -182,7 +207,35 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
         );
     });
 
-    $app->get('/jobs/', function () use($app, $css, $js) {
+    $app->match('GET|POST', '/jobs/', function () use($app, $css, $js, $logger, $flashNow) {
+
+        if ($app->req->isPost()) {
+            if (isset($_POST['addDate'])) {
+                $job = $app->db->job();
+                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                    $job->$k = $v;
+                }
+                if ($job->save()) {
+                    $app->flash('success_message', $flashNow->notice(200));
+                    $logger->setLog('New Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
+                } else {
+                    $app->flash('error_message', $flashNow->notice(409));
+                }
+            } else {
+                $job = $app->db->job();
+                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                    $job->$k = $v;
+                }
+                $job->where('ID = ?', _filter_input_int(INPUT_POST, 'ID'));
+                if ($job->update()) {
+                    $app->flash('success_message', $flashNow->notice(200));
+                    $logger->setLog('Update Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
+                } else {
+                    $app->flash('error_message', $flashNow->notice(409));
+                }
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
 
         $jobs = $app->db->job()->select('job.*,b.grade')->_join('pay_grade', 'job.pay_grade = b.ID', 'b');
         $q = $jobs->find(function($data) {
@@ -202,7 +255,21 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
         );
     });
 
-    $app->get('/add/(\d+)/', function ($id) use($app, $css, $js) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if ($app->req->isPost()) {
+            $position = $app->db->staff_meta();
+            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                $position->$k = $v;
+            }
+            if ($position->save()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Job Position', get_name($id), get_persondata('uname'));
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
+
         $staff = $app->db->staff()->where('staffID = ?', $id);
         $q = $staff->find(function($data) {
             $array = [];
@@ -248,7 +315,22 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
         }
     });
 
-    $app->get('/positions/(\d+)/', function ($id) use($app, $css, $js) {
+    $app->match('GET|POST', '/positions/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+
+        if ($app->req->isPost()) {
+            $position = $app->db->staff_meta();
+            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                $position->$k = $v;
+            }
+            $position->where('sMetaID = ?', _filter_input_int(INPUT_POST, 'sMetaID'));
+            if ($position->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Job Position', get_name($id), get_persondata('uname'));
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
 
         $jobs = $app->db->staff_meta()
             ->select('staff_meta.*,b.title,b.hourly_wage')

@@ -41,7 +41,7 @@ $app->match('GET|POST', '/setting/', function () use($app, $logger) {
         $options = [ 'enable_ssl', 'institution_name', 'cookieexpire', 'cookiepath', 'myet_offline_message',
             'maintenance_mode', 'enable_benchmark', 'nav_collapse', 'enable_cron_jobs',
             'enable_cron_log', 'wwo_key', 'location', 'autodetect_location', 'edutrac_analytics_url',
-            'autodetect_type', 'degree_units', 'wind_units', 'curl', 'auth_token', 'help_desk', 'reset_password_text',
+            'autodetect_type', 'degree_units', 'wind_units', 'curl', 'api_key', 'help_desk', 'reset_password_text',
             'contact_phone', 'mailing_address', 'enable_myet_portal', 'enable_myet_appl_form', 'screen_caching', 'db_caching',
             'system_timezone','et_core_locale'
         ];

@@ -253,7 +253,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	
 	<!-- Modal -->
 	<div class="modal fade" id="md-ajax">
-		<form class="form-horizontal" data-collabel="3" data-alignlabel="left" action="<?=url('/');?>v1/hiatus/" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal" data-collabel="3" data-alignlabel="left" action="<?=url('/');?>stu/shis/<?=_h($stu[0]['stuID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 	

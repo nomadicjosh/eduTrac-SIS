@@ -2,11 +2,7 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
-$json_url = url('/v1/');
-
 $logger = new \app\src\Log();
-$cache = new \app\src\Cache();
-$dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
 $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
@@ -24,7 +20,7 @@ $js = [
     'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
 ];
 
-$app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
+$app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashNow) {
 
     /**
      * Before route check.
@@ -44,7 +40,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/semester/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/semester/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$sem = $app->db->semester();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$sem->$k = $v;
+    		}
+    		if($sem->save()) {
+    			$ID = $sem->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Semester', _filter_input_string(INPUT_POST, 'semName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'semCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/semester/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect($app->req->server['HTTP_REFERER']);
+    		}
+    	}
+        
         $sem = $app->db->semester()->whereNot('semCode', 'NULL')->orderBy('acadYearCode', 'DESC');
         $q = $sem->find(function($data) {
             $array = [];
@@ -66,7 +78,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-semester/(\d+)/', function() {
+    $app->before('GET|POST', '/semester/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -80,16 +92,35 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
             redirect(url('/lock/'));
         }
     });
-    $app->get('/view-semester/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-
-        $json = _file_get_contents($json_url . 'semester/semesterID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/semester/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$sem = $app->db->semester();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$sem->$k = $v;
+    		}
+    		$sem->where('semesterID = ?', $id);
+    		if($sem->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Semester', _filter_input_string(INPUT_POST, 'semName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'semCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+        $sem = $app->db->semester()->where('semesterID = ?', $id);
+        $q = $sem->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -97,13 +128,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['semesterID']) <= 0) {
+         */ elseif (count($q[0]['semesterID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -117,7 +148,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Semester',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'semester' => $decode
+                'semester' => $q
                 ]
             );
         }
@@ -141,7 +172,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/term/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/term/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$term = $app->db->term();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$term->$k = $v;
+    		}
+    		if($term->save()) {
+    			$ID = $term->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Term', _filter_input_string(INPUT_POST, 'termName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'termCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/term/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect($app->req->server['HTTP_REFERER']);
+    		}
+    	}
+        
         $term = $app->db->term()
             ->select('term.*,semester.semName')
             ->_join('semester', 'term.semCode = semester.semCode')
@@ -167,7 +214,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-term/(\d+)/', function() {
+    $app->before('GET|POST', '/term/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -181,15 +228,35 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
             redirect(url('/lock/'));
         }
     });
-    $app->get('/view-term/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'term/termID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/term/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$term = $app->db->term();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$term->$k = $v;
+    		}
+    		$term->where('termID = ?', $id);
+    		if($term->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Term', _filter_input_string(INPUT_POST, 'termName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'termCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+        $term = $app->db->term()->where('termID = ?', $id);
+        $q = $term->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -197,13 +264,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['termID']) <= 0) {
+         */ elseif (count($q[0]['termID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -217,7 +284,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Term',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'term' => $decode
+                'term' => $q
                 ]
             );
         }
@@ -241,7 +308,22 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/acad-year/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/acad-year/', function () use($app, $css, $js, $logger, $flashNow) {
+    	if($app->req->isPost()) {
+    		$year = $app->db->acad_year();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$year->$k = $v;
+    		}
+    		if($year->save()) {
+    			$ID = $year->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Academic Year', _filter_input_string(INPUT_POST,'acadYearDesc'), get_persondata('uname'));
+                redirect( url('/form/acad-year/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+                redirect( $app->req->server['HTTP_REFERER'] );
+    		}
+    	}
         $ay = $app->db->acad_year()->whereNot('acadYearCode', 'NULL')->orderBy('acadYearCode', 'DESC');
         $q = $ay->find(function($data) {
             $array = [];
@@ -263,7 +345,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-acad-year/(\d+)/', function() {
+    $app->before('GET|POST', '/acad-year/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -278,15 +360,35 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-acad-year/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'acad_year/acadYearID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/acad-year/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    	if($app->req->isPost()) {
+    		$year = $app->db->acad_year();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$year->$k = $v;
+    		}
+    		$year->where('acadYearID = ?', $id);
+    		if($year->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Academic Year', _filter_input_string(INPUT_POST, 'acadYearDesc'), get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+        $ay = $app->db->acad_year()->where('acadYearID = ?', $id);
+        $q = $ay->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -294,13 +396,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['acadYearID']) <= 0) {
+         */ elseif (count($q[0]['acadYearID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -314,7 +416,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Acad Year',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'acadYear' => $decode
+                'acadYear' => $q
                 ]
             );
         }
@@ -338,7 +440,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/department/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/department/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$dept = $app->db->department();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$dept->$k = $v;
+    		}
+    		if($dept->save()) {
+    			$ID = $dept->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Department', _filter_input_string(INPUT_POST, 'deptName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'deptCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/department/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect( $app->req->server['HTTP_REFERER'] );
+    		}
+    	}
+        
         $dept = $app->db->department()->whereNot('deptCode', 'NULL')->orderBy('deptCode');
         $q = $dept->find(function($data) {
             $array = [];
@@ -360,7 +478,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-department/(\d+)/', function() {
+    $app->before('GET|POST', '/department/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -375,15 +493,35 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-department/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'department/deptID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/department/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$dept = $app->db->department();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$dept->$k = $v;
+    		}
+    		$dept->where('deptID = ?', $id);
+    		if($dept->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Department', _filter_input_string(INPUT_POST, 'deptName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'deptCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+        $dept = $app->db->department()->where('deptID = ?', $id);
+        $q = $dept->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -391,13 +529,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['deptID']) <= 0) {
+         */ elseif (count($q[0]['deptID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -411,7 +549,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Department',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'dept' => $decode
+                'dept' => $q
                 ]
             );
         }
@@ -438,14 +576,14 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     $app->match('GET|POST', '/subject/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
             $subj = $app->db->subject();
-            $subj->subjectCode = $_POST['subjectCode'];
-            $subj->subjectName = $_POST['subjectName'];
+            $subj->subjectCode = _filter_input_string(INPUT_POST, 'subjectCode');
+            $subj->subjectName = _filter_input_string(INPUT_POST, 'subjectName');
             if($subj->save()) {
                 $ID = $subj->lastInsertId();
-                $app->hook->{'do_action'}( 'create_subject_code', _trim($_POST['subjectCode']), $_POST['subjectName'] );
+                $app->hook->{'do_action'}( 'create_subject_code', _trim(_filter_input_string(INPUT_POST, 'subjectCode')), _filter_input_string(INPUT_POST, 'subjectName') );
                 $app->flash( 'success_message', $flashNow->notice(200) );
-                $logger->setLog('New Record', 'Subject', $_POST['subjectName'] . ' (' . _trim($_POST['subjectCode']) . ')', get_persondata('uname'));
-                redirect( url('/form/view-subject/') . $ID . '/' );
+                $logger->setLog('New Record', 'Subject', _filter_input_string(INPUT_POST, 'subjectName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'subjectCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/subject/') . $ID . '/' );
             } else {
                 $app->flash( 'error_message', $flashNow->notice(409) );
                 redirect($app->req->server['HTTP_REFERER']);
@@ -472,7 +610,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-subject/(\d+)/', function() {
+    $app->before('GET|POST', '/subject/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -487,15 +625,35 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-subject/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'subject/subjectID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/subject/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$subj = $app->db->subject();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$subj->$k = $v;
+    		}
+    		$subj->where('subjectID = ?', $id);
+    		if($subj->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Subject', _filter_input_string(INPUT_POST,'subjectName') . ' (' . _trim(_filter_input_string(INPUT_POST,'subjectCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+        $subj = $app->db->subject()->where('subjectID = ?', $id);
+        $q = $subj->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -503,13 +661,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['subjectID']) <= 0) {
+         */ elseif (count($q[0]['subjectID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -523,7 +681,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Subject',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'subj' => $decode
+                'subj' => $q
                 ]
             );
         }
@@ -547,7 +705,22 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/student-load-rule/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/student-load-rule/', function () use($app, $css, $js, $flashNow) {
+        if($app->req->isPost()) {
+    		$slr = $app->db->student_load_rule();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$slr->$k = $v;
+    		}
+    		if($slr->save()) {
+    			$ID = $slr->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                redirect( url('/form/student-load-rule/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect( $app->req->server['HTTP_REFERER'] );
+    		}
+    	}
+        
         $slr = $app->db->student_load_rule()->orderBy('min_cred', 'DESC');
         $q = $slr->find(function($data) {
             $array = [];
@@ -569,7 +742,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-student-load-rule/(\d+)/', function() {
+    $app->before('GET|POST', '/student-load-rule/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -584,15 +757,34 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-student-load-rule/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'student_load_rule/slrID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/student-load-rule/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
+        if($app->req->isPost()) {
+    		$slr = $app->db->student_load_rule();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$slr->$k = $v;
+    		}
+    		$slr->where('slrID = ?', $id);
+    		if($slr->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+        $slr = $app->db->student_load_rule()->where('slrID = ?', $id);
+        $q = $slr->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -600,13 +792,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['slrID']) <= 0) {
+         */ elseif (count($q[0]['slrID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -620,7 +812,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Student Load Rule',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'slr' => $decode
+                'slr' => $q
                 ]
             );
         }
@@ -644,7 +836,22 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/degree/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/degree/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$degree = $app->db->degree();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$degree->$k = $v;
+    		}
+    		if($degree->save()) {
+    			$ID = $degree->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Degree', _filter_input_string(INPUT_POST, 'degreeName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'degreeCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/degree/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect( $app->req->server['HTTP_REFERER'] );
+    		}
+    	}
         $degree = $app->db->degree()->whereNot('degreeCode', 'NULL')->orderBy('degreeCode');
         $q = $degree->find(function($data) {
             $array = [];
@@ -666,7 +873,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-degree/(\d+)/', function() {
+    $app->before('GET|POST', '/degree/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -681,15 +888,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-degree/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'degree/degreeID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/degree/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$degree = $app->db->degree();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$degree->$k = $v;
+    		}
+            $degree->where('degreeID = ?', $id);
+    		if($degree->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Degree', _filter_input_string(INPUT_POST, 'degreeName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'degreeCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+            redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+        
+        $degree = $app->db->degree()->where('degreeID = ?', $id);
+        $q = $degree->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -697,13 +925,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['degreeID']) <= 0) {
+         */ elseif (count($q[0]['degreeID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -717,7 +945,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Degree',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'degree' => $decode
+                'degree' => $q
                 ]
             );
         }
@@ -741,7 +969,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/major/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/major/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$major = $app->db->major();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$major->$k = $v;
+    		}
+    		if($major->save()) {
+    			$ID = $major->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Major', _filter_input_string(INPUT_POST, 'majorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'majorCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/major/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect( $app->req->server['HTTP_REFERER'] );
+    		}
+    	}
+        
         $major = $app->db->major()->whereNot('majorCode', 'NULL')->orderBy('majorCode');
         $q = $major->find(function($data) {
             $array = [];
@@ -763,7 +1007,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-major/(\d+)/', function() {
+    $app->before('GET|POST', '/major/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -778,15 +1022,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-major/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'major/majorID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/major/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$major = $app->db->major();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$major->$k = $v;
+    		}
+            $major->where('majorID = ?', $id);
+    		if($major->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Major', _filter_input_string(INPUT_POST, 'majorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'majorCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+            redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+        
+        $major = $app->db->major()->where('majorID = ?', $id);
+        $q = $major->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -794,13 +1059,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['majorID']) <= 0) {
+         */ elseif (count($q[0]['majorID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -814,7 +1079,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Major',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'major' => $decode
+                'major' => $q
                 ]
             );
         }
@@ -838,7 +1103,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/minor/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/minor/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$minor = $app->db->minor();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$minor->$k = $v;
+    		}
+    		if($minor->save()) {
+    			$ID = $minor->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Minor', _filter_input_string(INPUT_POST, 'minorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'minorCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/minor/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect( $app->req->server['HTTP_REFERER'] );
+    		}
+    	}
+        
         $minor = $app->db->minor()->whereNot('minorCode', 'NULL')->orderBy('minorCode');
         $q = $minor->find(function($data) {
             $array = [];
@@ -860,7 +1141,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-minor/(\d+)/', function() {
+    $app->before('GET|POST', '/minor/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -875,15 +1156,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-minor/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'minor/minorID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/minor/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$minor = $app->db->minor();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$minor->$k = $v;
+    		}
+            $minor->where('minorID = ?', $id);
+    		if($minor->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Minor', _filter_input_string(INPUT_POST, 'minorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'minorCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+            redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+        
+        $minor = $app->db->minor()->where('minorID = ?', $id);
+        $q = $minor->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -891,13 +1193,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['minorID']) <= 0) {
+         */ elseif (count($q[0]['minorID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -911,7 +1213,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Minor',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'minor' => $decode
+                'minor' => $q
                 ]
             );
         }
@@ -935,7 +1237,22 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/ccd/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/ccd/', function () use($app, $css, $js, $logger, $flashNow) {
+    	if($app->req->isPost()) {
+    		$ccd = $app->db->ccd();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$ccd->$k = $v;
+    		}
+    		if($ccd->save()) {
+    			$ID = $ccd->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'CCD', _filter_input_string(INPUT_POST, 'ccdName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'ccdCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/ccd/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect( $app->req->server['HTTP_REFERER'] );
+    		}
+    	}
         $ccd = $app->db->ccd()->whereNot('ccdCode', 'NULL')->orderBy('ccdCode');
         $q = $ccd->find(function($data) {
             $array = [];
@@ -957,7 +1274,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-ccd/(\d+)/', function() {
+    $app->before('GET|POST', '/ccd/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -972,15 +1289,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-ccd/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'ccd/ccdID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/ccd/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$ccd = $app->db->ccd();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$ccd->$k = $v;
+    		}
+    		$ccd->where('ccdID = ?', $id);
+    		if($ccd->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'CCD', _filter_input_string(INPUT_POST, 'ccdName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'ccdCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+    	
+    	$ccd = $app->db->ccd()->where('ccdID = ?', $id);
+        $q = $ccd->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -988,13 +1326,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['ccdID']) <= 0) {
+         */ elseif (count($q[0]['ccdID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1008,7 +1346,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View CCD',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'ccd' => $decode
+                'ccd' => $q
                 ]
             );
         }
@@ -1032,7 +1370,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/specialization/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/specialization/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$spec = $app->db->specialization();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$spec->$k = $v;
+    		}
+    		if($spec->save()) {
+    			$ID = $spec->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Specialization', _filter_input_string(INPUT_POST, 'specName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'specCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/specialization/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect( $app->req->server['HTTP_REFERER'] );
+    		}
+    	}
+        
         $spec = $app->db->specialization()->whereNot('specCode', 'NULL')->orderBy('specCode');
         $q = $spec->find(function($data) {
             $array = [];
@@ -1054,7 +1408,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-specialization/(\d+)/', function() {
+    $app->before('GET|POST', '/specialization/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -1069,15 +1423,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-specialization/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'specialization/specID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/specialization/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$spec = $app->db->specialization();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$spec->$k = $v;
+    		}
+    		$spec->where('specID = ?', $id);
+    		if($spec->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Specialization', _filter_input_string(INPUT_POST, 'specName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'specCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+    	
+    	$spec = $app->db->specialization()->where('specID = ?', $id);
+        $q = $spec->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1085,13 +1460,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['specID']) <= 0) {
+         */ elseif (count($q[0]['specID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1105,7 +1480,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Specialization',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'spec' => $decode
+                'spec' => $q
                 ]
             );
         }
@@ -1129,7 +1504,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/cip/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/cip/', function () use($app, $css, $js, $logger, $flashNow) {
+    	if($app->req->isPost()) {
+    		$cip = $app->db->cip();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$cip->$k = $v;
+    		}
+    		if($cip->save()) {
+    			$ID = $cip->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'CIP', _filter_input_string(INPUT_POST, 'cipName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'cipCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/cip/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect($app->req->server['HTTP_REFERER']);
+    		}
+    	}
+    	
         $cip = $app->db->cip()->whereNot('cipCode', 'NULL')->orderBy('cipCode');
         $q = $cip->find(function($data) {
             $array = [];
@@ -1151,7 +1542,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-cip/(\d+)/', function() {
+    $app->before('GET|POST', '/cip/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -1166,15 +1557,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-cip/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'cip/cipID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/cip/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$cip = $app->db->cip();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$cip->$k = $v;
+    		}
+    		$cip->where('cipID = ?', $id);
+    		if($cip->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'CIP', _filter_input_string(INPUT_POST, 'cipName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'cipCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+    	
+    	$cip = $app->db->cip()->where('cipID = ?', $id);
+        $q = $cip->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1182,13 +1594,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['cipID']) <= 0) {
+         */ elseif (count($q[0]['cipID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1202,7 +1614,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View CIP',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'cip' => $decode
+                'cip' => $q
                 ]
             );
         }
@@ -1226,7 +1638,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/rstr-code/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/rstr-code/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$rstr = $app->db->restriction_code();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$rstr->$k = $v;
+    		}
+    		if($rstr->save()) {
+    			$ID = $rstr->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Restriction Code', _filter_input_string(INPUT_POST, 'rstrCode'), get_persondata('uname'));
+                redirect( url('/form/rstr-code/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect($app->req->server['HTTP_REFERER']);
+    		}
+    	}
+        
         $rstr = $app->db->restriction_code()
             ->select('restriction_code.*,department.deptName')
             ->_join('department', 'restriction_code.deptCode = department.deptCode')
@@ -1251,7 +1679,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-rstr-code/(\d+)/', function() {
+    $app->before('GET|POST', '/rstr-code/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -1266,15 +1694,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-rstr-code/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'restriction_code/rstrCodeID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/rstr-code/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$rstr = $app->db->restriction_code();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$rstr->$k = $v;
+    		}
+    		$rstr->where('rstrCodeID = ?', $id);
+    		if($rstr->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Restriction Code', _filter_input_string(INPUT_POST, 'rstrCode'), get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+    	
+    	$rstr = $app->db->restriction_code()->where('rstrCodeID = ?', $id);
+        $q = $rstr->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1282,13 +1731,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['rstrCodeID']) <= 0) {
+         */ elseif (count($q[0]['rstrCodeID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1302,7 +1751,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Restriction Code',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'rstr' => $decode
+                'rstr' => $q
                 ]
             );
         }
@@ -1326,7 +1775,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/location/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/location/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$loc = $app->db->location();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$loc->$k = $v;
+    		}
+    		if($loc->save()) {
+    			$ID = $loc->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Location', _filter_input_string(INPUT_POST, 'locationCode') . ' (' . _trim(_filter_input_string(INPUT_POST, 'locationCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/location/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect($app->req->server['HTTP_REFERER']);
+    		}
+    	}
+        
         $location = $app->db->location()->whereNot('locationCode', 'NULL')->orderBy('locationCode');
         $q = $location->find(function($data) {
             $array = [];
@@ -1348,7 +1813,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-location/(\d+)/', function() {
+    $app->before('GET|POST', '/location/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -1363,15 +1828,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-location/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'location/locationID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/location/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$loc = $app->db->location();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$loc->$k = $v;
+    		}
+    		$loc->where('locationID = ?', $id);
+    		if($loc->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Location Code', _filter_input_string(INPUT_POST, 'locationCode') . ' (' . _trim(_filter_input_string(INPUT_POST, 'locationCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+    	
+    	$loc = $app->db->location()->where('locationID = ?', $id);
+        $q = $loc->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1379,13 +1865,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['locationID']) <= 0) {
+         */ elseif (count($q[0]['locationID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1399,7 +1885,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Location',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'location' => $decode
+                'location' => $q
                 ]
             );
         }
@@ -1423,7 +1909,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/building/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/building/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$build = $app->db->building();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$build->$k = $v;
+    		}
+    		if($build->save()) {
+    			$ID = $build->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Building', _filter_input_string(INPUT_POST, 'buildingName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'buildingCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/building/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect($app->req->server['HTTP_REFERER']);
+    		}
+    	}
+        
         $build = $app->db->building()->whereNot('buildingCode', 'NULL')->orderBy('buildingCode');
         $q = $build->find(function($data) {
             $array = [];
@@ -1445,7 +1947,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-building/(\d+)/', function() {
+    $app->before('GET|POST', '/building/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -1460,15 +1962,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-building/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'building/buildingID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/building/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$build = $app->db->building();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$build->$k = $v;
+    		}
+    		$build->where('buildingID = ?', $id);
+    		if($build->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Building', _filter_input_string(INPUT_POST, 'buildingName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'buildingCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+    	
+    	$build = $app->db->building()->where('buildingID = ?', $id);
+        $q = $build->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1476,13 +1999,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['buildingID']) <= 0) {
+         */ elseif (count($q[0]['buildingID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1496,7 +2019,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Building',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'build' => $decode
+                'build' => $q
                 ]
             );
         }
@@ -1520,7 +2043,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/room/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/room/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$room = $app->db->room();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$room->$k = $v;
+    		}
+    		if($room->save()) {
+    			$ID = $room->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Room', _filter_input_string(INPUT_POST, 'roomCode'), get_persondata('uname'));
+                redirect( url('/form/room/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect($app->req->server['HTTP_REFERER']);
+    		}
+    	}
+        
         $room = $app->db->room()
             ->select('room.*,building.buildingName')
             ->_join('building', 'room.buildingCode = building.buildingCode')
@@ -1546,7 +2085,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-room/(\d+)/', function() {
+    $app->before('GET|POST', '/room/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -1561,15 +2100,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-room/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'room/roomID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/room/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$room = $app->db->room();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$room->$k = $v;
+    		}
+    		$room->where('roomID = ?', $id);
+    		if($room->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Room', _filter_input_string(INPUT_POST, 'roomCode'), get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+    	
+    	$room = $app->db->room()->where('roomID = ?', $id);
+        $q = $room->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1577,13 +2137,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['roomID']) <= 0) {
+         */ elseif (count($q[0]['roomID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1597,7 +2157,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Room',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'room' => $decode
+                'room' => $q
                 ]
             );
         }
@@ -1621,7 +2181,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/school/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/school/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$school = $app->db->school();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$school->$k = $v;
+    		}
+    		if($school->save()) {
+    			$ID = $school->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'School', _filter_input_string(INPUT_POST, 'schoolName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'schoolCode')) . ')', get_persondata('uname'));
+                redirect( url('/form/school/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect($app->req->server['HTTP_REFERER']);
+    		}
+    	}
+        
         $sch = $app->db->school()
             ->select('school.*,building.buildingName')
             ->_join('building', 'school.buildingCode = building.buildingCode')
@@ -1647,7 +2223,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-school/(\d+)/', function() {
+    $app->before('GET|POST', '/school/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -1662,15 +2238,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-school/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'school/schoolID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/school/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$school = $app->db->school();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$school->$k = $v;
+    		}
+    		$school->where('schoolID = ?', $id);
+    		if($school->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'School', _filter_input_string(INPUT_POST, 'schoolName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'schoolCode')) . ')', get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+    	
+    	$school = $app->db->school()->where('schoolID = ?', $id);
+        $q = $school->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1678,13 +2275,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['schoolID']) <= 0) {
+         */ elseif (count($q[0]['schoolID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1698,7 +2295,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View School',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'school' => $decode
+                'school' => $q
                 ]
             );
         }
@@ -1722,7 +2319,23 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/grade-scale/', function () use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/grade-scale/', function () use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$gs = $app->db->grade_scale();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$gs->$k = $v;
+    		}
+    		if($gs->save()) {
+    			$ID = $gs->lastInsertId();
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('New Record', 'Grade Scale', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
+                redirect( url('/form/grade-scale/') . $ID . '/' );
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    			redirect($app->req->server['HTTP_REFERER']);
+    		}
+    	}
+        
         $scale = $app->db->grade_scale()->orderBy('grade');
         $q = $scale->find(function($data) {
             $array = [];
@@ -1744,7 +2357,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/view-grade-scale/(\d+)/', function() {
+    $app->before('GET|POST', '/grade-scale/(\d+)/', function() {
         if (!hasPermission('access_forms')) {
             redirect(url('/dashboard/'));
         }
@@ -1759,15 +2372,36 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/view-grade-scale/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'grade_scale/ID/' . $id . '/');
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/grade-scale/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$gs = $app->db->grade_scale();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$gs->$k = $v;
+    		}
+    		$gs->where('ID = ?', $id);
+    		if($gs->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Grade Scale', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+    	
+    	$gs = $app->db->grade_scale()->where('ID = ?', $id);
+        $q = $gs->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($q == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1775,13 +2409,13 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($q) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['ID']) <= 0) {
+         */ elseif (count($q[0]['ID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1795,7 +2429,7 @@ $app->group('/form', function() use ($app, $css, $js, $json_url, $logger, $flash
                 'title' => 'View Grade Scale',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'scale' => $decode
+                'scale' => $q
                 ]
             );
         }

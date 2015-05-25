@@ -38,7 +38,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	<?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/room/roomID/<?=_h($room[0]['roomID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>form/room/<?=_h($room[0]['roomID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -106,7 +106,6 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 				
 				<!-- Form actions -->
 				<div class="form-actions">
-					<input name="roomID" type="hidden" value="<?=_h($room[0]['roomID']);?>" />
 					<button type="submit"<?=gids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
 					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>form/room/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>

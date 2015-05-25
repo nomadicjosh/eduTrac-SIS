@@ -26,7 +26,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/api/');
 
 $logger = new \app\src\Log();
 $email = new \app\src\Email();
@@ -63,7 +63,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 exit();
             }
             /* Retrieve the dropAddEndDate from the registration term. */
-            $json_term = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/');
+            $json_term = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
             $daDate = json_decode($json_term, true);
             $deleteDate = date('Y-m-d', strtotime($daDate[0]['dropAddEndDate'] . ' + 1 days'));
 

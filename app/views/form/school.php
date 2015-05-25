@@ -36,7 +36,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/school/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>form/school/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -138,7 +138,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/');?>form/view-school/<?=_h($value['schoolID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=url('/');?>form/school/<?=_h($value['schoolID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
                                 <?php $app->hook->{'do_action'}('search_school_action'); ?>
                             </ul>
                         </div>

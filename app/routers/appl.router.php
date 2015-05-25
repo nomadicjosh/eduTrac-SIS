@@ -19,7 +19,7 @@ $js = [
     'components/modules/admin/forms/elements/multiselect/assets/custom/js/multiselect.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/api/');
 
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
@@ -45,7 +45,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         }
     });
 
-    $app->match('GET|POST', '/', function () use($app, $css, $js) {
+    $app->match('GET|POST', '/', function () use($app, $css, $js, $json_url) {
 
         if ($app->req->isPost()) {
             $post = $_POST['appl'];
@@ -68,13 +68,16 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 }
                 return $array;
             });
+            $json = _file_get_contents($json_url . 'student/stuID/' . $q[0]['personID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
+            $decode = json_decode($json, true);
         }
 
         $app->view->display('application/index', [
             'title' => 'Application Search',
             'cssArray' => $css,
             'jsArray' => $js,
-            'search' => $q
+            'search' => $q,
+            'appl' => $decode
             ]
         );
     });
@@ -428,9 +431,23 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         );
     });
 
-    $app->get('/inst/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/inst/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$inst = $app->db->institution();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$inst->$k = $v;
+    		}
+    		$inst->where('institutionID = ?', $id);
+    		if($inst->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Institution', _filter_input_string(INPUT_POST, 'instName'), get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
 
-        $json = _file_get_contents($json_url . 'institution/institutionID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'institution/institutionID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $inst = json_decode($json, true);
 
         $app->view->display('application/view-inst', [
@@ -456,7 +473,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             'components/modules/admin/forms/elements/bootstrap-timepicker/assets/custom/js/bootstrap-timepicker.init.js?v=v2.1.0'
         ];
 
-        $json_a = _file_get_contents($json_url . 'application/personID/' . (int) get_persondata('personID') . '/');
+        $json_a = _file_get_contents($json_url . 'application/personID/' . (int) get_persondata('personID') . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $appl = json_decode($json_a, true);
 
         $app->view->display('application/appls', [
@@ -469,7 +486,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->post('/applicantLookup/', function() use($json_url) {
-        $json_a = _file_get_contents($json_url . 'person/personID/' . (int) $_POST['personID'] . '/');
+        $json_a = _file_get_contents($json_url . 'person/personID/' . (int) $_POST['personID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $appl = json_decode($json_a, true);
 
         $json = [ 'input#person' => $appl[0]['lname'] . ', ' . $appl[0]['fname']];

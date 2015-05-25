@@ -35,7 +35,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/api/');
 
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
@@ -80,7 +80,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        $json = _file_get_contents($json_url . 'acad_program/acadProgID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'acad_program/acadProgID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {
@@ -174,7 +174,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
         }
     });
 
-    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $logger, $dbcache, $flashNow) {
 
         if ($app->req->isPost()) {
             $prog = $app->db->acad_program();

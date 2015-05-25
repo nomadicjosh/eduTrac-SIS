@@ -7,7 +7,6 @@
  * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @license     http://edutrac.7mediaws.org/general/edutrac_erp_commercial_license/ Commercial License
  * @link        http://www.7mediaws.org/
  * @since       3.0.0
  * @package     eduTrac
@@ -37,7 +36,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/specialization/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>form/specialization/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -124,7 +123,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/');?>form/view-specialization/<?=_h($value['specID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=url('/');?>form/specialization/<?=_h($value['specID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
                                 <?php $app->hook->{'do_action'}('search_specialization_action'); ?>
                             </ul>
                         </div>

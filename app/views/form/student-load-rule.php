@@ -7,7 +7,6 @@
  * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @license     http://www.edutracerp.com/general/edutrac-erp-commercial-license/ Commercial License
  * @link        http://www.7mediaws.org/
  * @since       4.0.7
  * @package     eduTrac
@@ -29,7 +28,7 @@ $app->view->block('dashboard');
 <div class="innerLR">
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/student_load_rule/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>form/student-load-rule/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -170,7 +169,7 @@ $app->view->block('dashboard');
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' );?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/'); ?>form/view-student-load-rule/<?=_h($value['slrID']); ?>/<?=bm();?>"><?=_t( 'View' );?></a></li>
+                                <li><a href="<?=url('/'); ?>form/student-load-rule/<?=_h($value['slrID']); ?>/<?=bm();?>"><?=_t( 'View' );?></a></li>
                             </ul>
                         </div>
                     </td>

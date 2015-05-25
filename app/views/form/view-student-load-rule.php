@@ -7,7 +7,6 @@
  * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @license     http://www.edutracerp.com/general/edutrac-erp-commercial-license/ Commercial License
  * @link        http://www.7mediaws.org/
  * @since       4.0.7
  * @package     eduTrac
@@ -39,7 +38,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	<?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/student_load_rule/slrID/<?=_h($slr[0]['slrID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>form/student-load-rule/<?=_h($slr[0]['slrID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -128,7 +127,6 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 				
 				<!-- Form actions -->
 				<div class="form-actions">
-					<input type="hidden" name="slrID" value="<?=_h($slr[0]['slrID']);?>" />
 					<button type="submit"<?=gids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
 					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>form/student-load-rule/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>

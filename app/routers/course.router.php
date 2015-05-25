@@ -37,7 +37,7 @@ $js = [
     'components/modules/admin/forms/elements/bootstrap-maxlength/custom/js/custom.js'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/api/');
 
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();
@@ -98,7 +98,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {
@@ -182,7 +182,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->get('/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         /**

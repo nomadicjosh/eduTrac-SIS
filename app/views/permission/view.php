@@ -39,7 +39,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/permission/ID/<?=_h($perm[0]['ID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>permission/<?=_h($perm[0]['ID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -82,7 +82,6 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				
 				<!-- Form actions -->
 				<div class="form-actions">
-					<input type="hidden" name="ID" value="<?=_h($perm[0]['ID']);?>" />
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
 					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>permission/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>

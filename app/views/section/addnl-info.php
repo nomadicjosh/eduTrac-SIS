@@ -40,7 +40,7 @@ $message = new \app\src\Messages;
 	<?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/course_sec/courseSecID/<?=_h($addnl[0]['courseSecID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>sect/addnl/<?=_h($addnl[0]['courseSecID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">

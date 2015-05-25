@@ -453,3 +453,15 @@ if (!function_exists('hash_equals')) {
 		}
 	
 	}
+    
+    function _filter_input_int($_globals, $variable_name = '') {
+        return filter_input(strtoupper($_globals), $variable_name, FILTER_SANITIZE_NUMBER_INT);
+    }
+    
+    function _filter_input_string($_globals, $variable_name = '') {
+        return filter_input(strtoupper($_globals), $variable_name, FILTER_SANITIZE_STRING);
+    }
+    
+    function _filter_input_array($_globals, $args = FILTER_SANITIZE_STRING, $bool = true) {
+        return filter_input_array(strtoupper($_globals), $args, $bool);
+    }

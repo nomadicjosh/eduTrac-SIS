@@ -30,7 +30,7 @@ $message = new \app\src\Messages;
 <div class="innerLR">
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/department/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>form/department/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -141,7 +141,7 @@ $message = new \app\src\Messages;
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/');?>form/view-department/<?=_h($value['deptID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=url('/');?>form/department/<?=_h($value['deptID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
                                 <?php $app->hook->{'do_action'}('search_department_action'); ?>
                             </ul>
                         </div>

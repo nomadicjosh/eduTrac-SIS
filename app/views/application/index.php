@@ -67,10 +67,6 @@ $app->view->block('dashboard');
 				<!-- Table body -->
 				<tbody>
 				<?php if($search != '') : foreach($search as $k => $v) { ?>
-                <?php
-                    $json = _file_get_contents(url('/v1/') . 'student/stuID/' . _h($v['personID']) . '/');
-                    $decode = json_decode($json, true);
-                ?>
                 <tr class="gradeX">
                 	<td class="text-center"><?=getSchoolPhoto(_h($v['personID']), _h($v['email']), 48, 'avatar-frame');?></td>
                     <td class="text-center"><?=_h($v['personID']);?></td>
@@ -85,7 +81,7 @@ $app->view->block('dashboard');
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
                                 <li><a href="<?=url('/');?>appl/<?=_h($v['applID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
-                                <?php if($decode[0]['stuID'] == NULL) { ?>
+                                <?php if($appl[0]['stuID'] == NULL) { ?>
                                 <li><a href="<?=url('/');?>stu/add/<?=_h($v['personID']);?>/<?=bm();?>"><?=_t( 'Create Student' ); ?></a></li>
                                 <?php } ?>
                             </ul>
