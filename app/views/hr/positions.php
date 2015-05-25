@@ -159,7 +159,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	
 	<?php if($positions != '') : foreach($positions as $k => $v) { ?>
     <div class="modal fade" id="position<?=_h($v['sMetaID']);?>">
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/staff_meta/sMetaID/<?=_h($v['sMetaID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>hr/positions/<?=_h($v['staffID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				
@@ -268,6 +268,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 		            </div>
 	            </div>
 		        <div class="modal-footer">
+                    <input name="sMetaID" type="hidden" value="<?=$v['sMetaID'];?>" />
 		            <button type="submit" class="btn btn-default"><?=_t( 'Update' );?></button>
 		            <button data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></button>
 		        </div>

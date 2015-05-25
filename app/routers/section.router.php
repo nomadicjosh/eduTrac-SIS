@@ -35,7 +35,7 @@ $js = [
     'components/modules/admin/forms/elements/bootstrap-maxlength/custom/js/custom.js'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/api/');
 
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();
@@ -97,7 +97,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         $date = date("Y-m-d");
@@ -244,7 +244,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {
@@ -344,7 +344,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->get('/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         /**
@@ -395,7 +395,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {
@@ -564,13 +564,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         $time = date("h:i A");
 
         if ($app->req->isPost()) {
-            $json_sect = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $_POST['courseSecID'] . '/');
+            $json_sect = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $_POST['courseSecID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
             $sect = json_decode($json_sect, true);
 
-            $json_crse = _file_get_contents($json_url . 'course/courseID/' . (int) $sect[0]['courseID'] . '/');
+            $json_crse = _file_get_contents($json_url . 'course/courseID/' . (int) $sect[0]['courseID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
             $crse = json_decode($json_crse, true);
 
-            $json_term = _file_get_contents($json_url . 'term/termCode/' . $sect[0]['termCode'] . '/');
+            $json_term = _file_get_contents($json_url . 'term/termCode/' . $sect[0]['termCode'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
             $term = json_decode($json_term, true);
 
             $stcs = $app->db->stu_course_sec();
@@ -839,10 +839,10 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->post('/stuLookup/', function() use($json_url) {
-        $json_stu = _file_get_contents($json_url . 'student/stuID/' . (int) $_POST['stuID'] . '/');
+        $json_stu = _file_get_contents($json_url . 'student/stuID/' . (int) $_POST['stuID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $stu = json_decode($json_stu, true);
 
-        $json_per = _file_get_contents($json_url . 'person/personID/' . (int) $stu[0]['stuID'] . '/');
+        $json_per = _file_get_contents($json_url . 'person/personID/' . (int) $stu[0]['stuID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $per = json_decode($json_per, true);
 
         $json = [ 'input#stuName' => $per[0]['lname'] . ', ' . $per[0]['fname']];
@@ -851,10 +851,10 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->post('/stuLookup/', function() use($json_url) {
-        $json_stu = _file_get_contents($json_url . 'student/stuID/' . (int) $_POST['stuID'] . '/');
+        $json_stu = _file_get_contents($json_url . 'student/stuID/' . (int) $_POST['stuID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $stu = json_decode($json_stu, true);
 
-        $json_per = _file_get_contents($json_url . 'person/personID/' . (int) $stu[0]['stuID'] . '/');
+        $json_per = _file_get_contents($json_url . 'person/personID/' . (int) $stu[0]['stuID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $per = json_decode($json_per, true);
 
         $json = [ 'input#stuName' => $per[0]['lname'] . ', ' . $per[0]['fname']];

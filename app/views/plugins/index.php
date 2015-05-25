@@ -64,9 +64,9 @@ $plugins_header = $app->hook->get_plugins_header(APP_PATH . 'plugins/');
         			echo ' | <a href="' .$plugin['PluginURI'].'">Visit plugin site</a></td>';
         			
                         if($app->hook->{'is_plugin_activated'}($plugin['filename']) == true) {
-        					echo '<td class="text-center"><a href="'.url('/').'plugins/deactivate/'.urlencode($plugin['filename']).'" title="Deactivate" class="btn btn-default"><i class="fa fa-minus"></i></a></td>';
+        					echo '<td class="text-center"><a href="'.url('/').'plugins/deactivate/?id='.urlencode($plugin['filename']).'" title="Deactivate" class="btn btn-default"><i class="fa fa-minus"></i></a></td>';
         				} else {
-        					echo '<td class="text-center"><a href="'.url('/').'plugins/activate/'.urlencode($plugin['filename']).'" title="Activate" class="btn btn-default"><i class="fa fa-plus"></i></a></td>';
+        					echo '<td class="text-center"><a href="'.url('/').'plugins/activate/?id='.urlencode($plugin['filename']).'" title="Activate" class="btn btn-default"><i class="fa fa-plus"></i></a></td>';
         				}
         				
         				echo '</tr>';

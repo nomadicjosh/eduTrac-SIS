@@ -20,8 +20,6 @@ $app->before('GET|POST', '/dashboard(.*)', function() {
     }
 });
 
-$json_url = url('/v1/');
-
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();
 $dbcache = new \app\src\DBCache();

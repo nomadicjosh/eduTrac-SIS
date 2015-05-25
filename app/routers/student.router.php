@@ -19,7 +19,7 @@ $js = [
     'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/api/');
 
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
@@ -94,10 +94,24 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        if ($app->req->isPost()) {
+            $spro = $app->db->student();
+            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                $spro->$k = $v;
+            }
+            $spro->where('stuID = ?', $id);
+            if ($spro->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Student Profile (SPRO)', get_name($id), get_persondata('uname'));
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
 
         $spro = $app->db->student()->where('stuID', $id)->findOne();
-        $json = _file_get_contents($json_url . 'application/personID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'application/personID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $admit = json_decode($json, true);
 
         $prog = $app->db->query("SELECT 
@@ -430,28 +444,41 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
     $app->match('GET|POST', '/shis/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
 
         if ($app->req->isPost()) {
-            $size = count($_POST['shisID']);
-            $i = 0;
-            while ($i < $size) {
+            if (isset($_POST['shisID'])) {
+                $size = count($_POST['shisID']);
+                $i = 0;
+                while ($i < $size) {
+                    $shis = $app->db->hiatus();
+                    $shis->shisCode = $_POST['shisCode'][$i];
+                    $shis->startDate = $_POST['startDate'][$i];
+                    $shis->endDate = $_POST['endDate'][$i];
+                    $shis->comment = $_POST['comment'][$i];
+                    $shis->where('stuID = ?', $id)->_and_()->where('shisID = ?', $_POST['shisID'][$i]);
+                    if ($shis->update()) {
+                        $dbcache->clearCache("hiatus-" . $_POST['shisID'][$i]);
+                        $app->flash('success_message', $flashNow->notice(200));
+                        $logger->setLog('Update Record', 'Student Hiatus', get_name($id), get_persondata('uname'));
+                    } else {
+                        $app->flash('error_message', $flashNow->notice(409));
+                    }
+                    ++$i;
+                }
+            } else {
                 $shis = $app->db->hiatus();
-                $shis->shisCode = $_POST['shisCode'][$i];
-                $shis->startDate = $_POST['startDate'][$i];
-                $shis->endDate = $_POST['endDate'][$i];
-                $shis->comment = $_POST['comment'][$i];
-                $shis->where('stuID = ?', $id)->_and_()->where('shisID = ?', $_POST['shisID'][$i]);
-                if ($shis->update()) {
-                    $dbcache->clearCache("hiatus-" . $_POST['shisID'][$i]);
+                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                    $shis->$k = $v;
+                }
+                if ($shis->save()) {
                     $app->flash('success_message', $flashNow->notice(200));
-                    $logger->setLog('Update Record', 'Student Hiatus', get_name($id), get_persondata('uname'));
+                    $logger->setLog('New Record', 'Student Hiatus (SHIS)', get_name($id), get_persondata('uname'));
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                 }
-                ++$i;
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         $shis = $app->db->query("SELECT 
@@ -536,29 +563,42 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
     $app->match('GET|POST', '/strc/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
 
         if ($app->req->isPost()) {
-            $size = count($_POST['rstrID']);
-            $i = 0;
-            while ($i < $size) {
+            if (isset($_POST['rstrID'])) {
+                $size = count($_POST['rstrID']);
+                $i = 0;
+                while ($i < $size) {
+                    $strc = $app->db->restriction();
+                    $strc->rstrCode = $_POST['rstrCode'][$i];
+                    $strc->severity = $_POST['severity'][$i];
+                    $strc->startDate = $_POST['startDate'][$i];
+                    $strc->endDate = $_POST['endDate'][$i];
+                    $strc->comment = $_POST['comment'][$i];
+                    $strc->where('stuID = ?', $id)->_and_()->where('rstrID = ?', $_POST['rstrID'][$i]);
+                    if ($strc->update()) {
+                        $dbcache->clearCache("restriction-" . $_POST['rstrID'][$i]);
+                        $app->flash('success_message', $flashNow->notice(200));
+                        $logger->setLog('Update Record', 'Student Restriction', get_name($id), get_persondata('uname'));
+                    } else {
+                        $app->flash('error_message', $flashNow->notice(409));
+                    }
+                    ++$i;
+                }
+            } else {
                 $strc = $app->db->restriction();
-                $strc->rstrCode = $_POST['rstrCode'][$i];
-                $strc->severity = $_POST['severity'][$i];
-                $strc->startDate = $_POST['startDate'][$i];
-                $strc->endDate = $_POST['endDate'][$i];
-                $strc->comment = $_POST['comment'][$i];
-                $strc->where('stuID = ?', $id)->_and_()->where('rstrID = ?', $_POST['rstrID'][$i]);
-                if ($strc->update()) {
-                    $dbcache->clearCache("restriction-" . $_POST['rstrID'][$i]);
+                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                    $strc->$k = $v;
+                }
+                if ($strc->save()) {
                     $app->flash('success_message', $flashNow->notice(200));
-                    $logger->setLog('Update Record', 'Student Restriction', get_name($id), get_persondata('uname'));
+                    $logger->setLog('New Record', 'Student Restriction (STRC)', get_name($id), get_persondata('uname'));
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                 }
-                ++$i;
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/');
+        $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         $strc = $app->db->query("SELECT 
@@ -636,14 +676,14 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/sacd/(\d+)/', function ($id) use($app, $css, $js, $json_url, $dbcache) {
 
-        $json = _file_get_contents($json_url . 'stu_acad_cred/stuAcadCredID/' . (int) $id . '/');
+        $json = _file_get_contents($json_url . 'stu_acad_cred/stuAcadCredID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         $date = date("Y-m-d");
         $time = date("h:m A");
 
         if ($app->req->isPost()) {
-            $rterm = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/');
+            $rterm = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
             $term = json_decode($rterm, true);
 
             $sacd = $app->db->stu_acad_cred();
@@ -807,7 +847,21 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         }
     });
 
-    $app->get('/sacp/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/sacp/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        if ($app->req->isPost()) {
+            $sacp = $app->db->stu_program();
+            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                $sacp->$k = $v;
+            }
+            $sacp->where('stuProgID = ?', $id);
+            if ($sacp->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Student Acad Program (SACP)', get_name($id), get_persondata('uname'));
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
         $sacp = $app->db->acad_program()
             ->setTableAlias('a')
             ->select('a.acadProgCode,a.schoolCode,a.acadLevelCode,b.stuProgID')
@@ -884,7 +938,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/add-prog/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         if ($app->req->isPost()) {
-            $json = _file_get_contents($json_url . 'acad_program/acadProgCode/' . $_POST['acadProgCode'] . '/');
+            $json = _file_get_contents($json_url . 'acad_program/acadProgCode/' . $_POST['acadProgCode'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
             $decode = json_decode($json, true);
 
             $level = $app->db->stu_acad_level()

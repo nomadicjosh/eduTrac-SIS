@@ -36,7 +36,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/grade_scale/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>form/grade-scale/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -184,7 +184,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                     <td class="text-center"><?=_h($value['points']);?></td>
                     <td class="text-center"><?=_bool(_h($value['status']));?></td>
                     <td class="center">
-                        <a href="<?=url('/'); ?>form/view-grade-scale/<?=_h($value['ID']); ?>/<?=bm();?>" title="View" class="btn btn-default"><i class="fa fa-eye"></i></a>
+                        <a href="<?=url('/'); ?>form/grade-scale/<?=_h($value['ID']); ?>/<?=bm();?>" title="View" class="btn btn-default"><i class="fa fa-eye"></i></a>
                     </td>
                 </tr>
                 <?php } endif; ?>

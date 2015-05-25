@@ -36,7 +36,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/restriction_code/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>form/rstr-code/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -135,7 +135,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' );?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/');?>form/view-rstr-code/<?=_h($value['rstrCodeID']);?>/<?=bm();?>"><?=_t( 'View' );?></a></li>
+                                <li><a href="<?=url('/');?>form/rstr-code/<?=_h($value['rstrCodeID']);?>/<?=bm();?>"><?=_t( 'View' );?></a></li>
                             </ul>
                         </div>
                     </td>
