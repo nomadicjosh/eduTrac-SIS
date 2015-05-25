@@ -7,7 +7,6 @@
  * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @license     http://www.edutracerp.com/general/edutrac-erp-commercial-license/ Commercial License
  * @link        http://www.7mediaws.org/
  * @since       3.0.0
  * @package     eduTrac
@@ -209,8 +208,9 @@ tinymce.init({
                                 <select name="et_core_locale" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                 	<option value="">&nbsp;</option>
                                     <option value="en_US"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'en_US', false ); ?>><?=_t( "English" );?></option>
-                                    <option value="es_ES"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'es_ES', false ); ?>><?=_t( "Spanish" );?></option>
+                                    <option value="fr_FR"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'fr_FR', false ); ?>><?=_t( "French" );?></option>
                                     <option value="pt_BR"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'pt_BR', false ); ?>><?=_t( "Portuguese" );?></option>
+                                    <option value="es_ES"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'es_ES', false ); ?>><?=_t( "Spanish" );?></option>
                                 </select>
                             </div>
                         </div>
@@ -263,9 +263,9 @@ tinymce.init({
                         
                         <!-- Group -->
     					<div class="form-group">
-							<label class="col-md-3 control-label"><?=_t( 'Auth Token' );?> <a href="#token" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'API Key' );?> <a href="#apikey" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
-								<input type="text" name="auth_token" value="<?=_h($app->hook->{'get_option'}('auth_token'));?>" class="form-control" />
+                                <input type="text" name="api_key" value="<?=_h($app->hook->{'get_option'}('api_key'));?>" class="form-control" required/>
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -356,18 +356,18 @@ tinymce.init({
 	        </div>
       	</div>
     </div>
-    <div class="modal fade" id="token">
+    <div class="modal fade" id="apikey">
     	<div class="modal-dialog">
 			<div class="modal-content">
 	
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Auth Token' );?></h3>
+					<h3 class="modal-title"><?=_t( 'API Key' );?></h3>
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t("If you plan to do development work using the RESTful API feature, then you will need an api key.");?> <a href="http://www.edutracerp.com/auth-token/1.1/"><?=_t('Click here');?></a> <?=_t("to generate an api key for your account.");?></p>
+		            <p><?=_t("Some screens in eduTrac rely on the internal REST API, so you will need and API Key.");?> <a href="http://www.edutracsis.com/api-key/1.1/"><?=_t('Click here');?></a> <?=_t("to generate an api key for your account.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>

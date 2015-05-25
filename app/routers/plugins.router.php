@@ -41,13 +41,13 @@ $app->group('/plugins', function() use ($app, $css, $js) {
         );
     });
 
-    $app->get('/activate/([^/]+)/', function($plugin) use($app) {
-        $app->hook->{'activate_plugin'}($plugin);
+    $app->get('/activate/', function() use($app) {
+        $app->hook->{'activate_plugin'}($_GET['id']);
         redirect($app->req->server['HTTP_REFERER']);
     });
 
-    $app->get('/deactivate/([^/]+)/', function($plugin) use($app) {
-        $app->hook->{'deactivate_plugin'}($plugin);
+    $app->get('/deactivate/', function() use($app) {
+        $app->hook->{'deactivate_plugin'}($_GET['id']);
         redirect($app->req->server['HTTP_REFERER']);
     });
 

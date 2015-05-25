@@ -36,7 +36,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/v1/');
+$json_url = url('/api/');
 
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();
@@ -93,9 +93,23 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-
-        $json = _file_get_contents($json_url . 'staff/staffID/' . $id . '/');
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        if($app->req->isPost()) {
+    		$staff = $app->db->staff();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$staff->$k = $v;
+    		}
+    		$staff->where('staffID = ?', $id);
+    		if($staff->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Staff', get_name($id), get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+    		redirect( $app->req->server['HTTP_REFERER'] );
+    	}
+        
+        $json = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
         $addr = $app->db->address()
@@ -164,10 +178,10 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
 
     $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $dbcache, $logger, $flashNow) {
 
-        $json_p = _file_get_contents($json_url . 'person/personID/' . $id . '/');
+        $json_p = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $p_decode = json_decode($json_p, true);
 
-        $json_s = _file_get_contents($json_url . 'staff/staffID/' . $id . '/');
+        $json_s = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $s_decode = json_decode($json_s, true);
 
         if ($app->req->isPost()) {

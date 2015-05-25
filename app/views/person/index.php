@@ -67,12 +67,6 @@ $app->view->block('dashboard');
 				<!-- Table body -->
 				<tbody>
 				<?php if($search != '') : foreach($search as $k => $v) { ?>
-                <?php
-                $staff = _file_get_contents(url('/v1/') . 'staff/staffID/' . _h($v['personID']) . '/');
-                $s_decode = json_decode($staff,true);
-                $appl = _file_get_contents(url('/v1/') . 'application/personID/' . _h($v['personID']) . '/');
-                $a_decode = json_decode($appl,true);
-                ?>
                 <tr class="gradeX">
                 	<td class="text-center"><?=getSchoolPhoto(_h($v['personID']), _h($v['email']), 48, 'avatar-frame');?></td>
                     <td class="text-center"><?=_h($v['personID']);?></td>
@@ -92,11 +86,11 @@ $app->view->block('dashboard');
                                 <li<?=ae('login_as_user');?>><a href="<?=url('/');?>switchUserTo/<?=_h($v['personID']);?>/"><?=_t( 'Switch to User' );?></a></li>
                                 <?php endif; ?>
                                 
-                                <?php if(empty($s_decode[0]['staffID'])) : ?>
+                                <?php if($staff[0]['staffID'] <= 0) : ?>
                                 <li<?=ae('create_staff_record');?>><a href="<?=url('/');?>staff/add/<?=_h($v['personID']);?>/<?=bm();?>"><?=_t( 'Create Staff Record' );?></a></li>
                                 <?php endif; ?>
                                 
-                                <?php if(empty($a_decode[0]['personID'])) : ?>
+                                <?php if($appl[0]['personID'] <= 0) : ?>
                                 <li<?=hl('applications','access_application_screen');?>><a href="<?=url('/');?>appl/add/<?=_h($v['personID']);?>/<?=bm();?>"><?=_t( 'Create Application' );?></a></li>
                                 <?php endif; ?>
                                 

@@ -168,11 +168,6 @@ elseif (strpos(getPathInfo('/stu'), "/stu") === 0)
     }
 }
 
-elseif (strpos(getPathInfo('/v1'), "/v1") === 0)
-{
-    require($app->config('routers_dir') . 'v1.router.php');
-}
-
 elseif (strpos(getPathInfo('/error'), "/error") === 0)
 {
     require($app->config('routers_dir') . 'error.router.php');

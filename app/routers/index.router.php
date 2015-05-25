@@ -2,7 +2,7 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
-$json_url = url('/v1/');
+$json_url = url('/api/');
 $hasher = new \app\src\PasswordHash(8, FALSE);
 
 $logger = new \app\src\Log();
@@ -65,7 +65,7 @@ $app->before('GET|POST', '/login/', function() {
     }
 });
 
-$app->match('GET|POST', '/login/', function () use($app, $hasher) {
+$app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
 
     if ($app->req->isPost()) {
         $person = $app->db->person()->select('personID,uname,password')
@@ -86,7 +86,7 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher) {
          * Checks if the submitted username exists in
          * the database.
          */
-        if ($app->req->_post('uname') !== $r['uname']) {
+        if ($app->req->_post('uname') !== _h($r['uname'])) {
             $app->flash('error_message', 'The username does not exist. Please try again.');
             redirect(url('/login/'));
             return;
@@ -97,11 +97,12 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher) {
          */
         if ($hasher->checkPassword($app->req->_post('password'), $r['password'])) {
             if (isset($_POST['rememberme'])) {
-                $app->cookies->setSecureCookie('ET_COOKNAME', $r['personID'], ($app->hook->{'get_option'}('cookieexpire') !== '') ? $app->hook->{'get_option'}('cookieexpire') : $app->config('cookie.lifetime'));
+                $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), ($app->hook->{'get_option'}('cookieexpire') !== '') ? $app->hook->{'get_option'}('cookieexpire') : $app->config('cookie.lifetime'));
                 $app->cookies->setSecureCookie('ET_REMEMBER', 'rememberme', ($app->hook->{'get_option'}('cookieexpire') !== '') ? $app->hook->{'get_option'}('cookieexpire') : $app->config('cookie.lifetime'));
             } else {
-                $app->cookies->setSecureCookie('ET_COOKNAME', $r['personID'], ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
+                $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
             }
+            $logger->setLog('Authentication', 'Login', get_name($r['personID']), _h($r['uname']));
             redirect(url('/'));
         } else {
             $app->flash('error_message', 'The password you entered was incorrect.');
@@ -245,8 +246,23 @@ $app->match('GET|POST', '/permission/', function () use($app) {
     );
 });
 
-$app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url) {
-    $json = _file_get_contents($json_url . 'permission/ID/' . $id . '/');
+$app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url, $logger, $flashNow) {
+    if ($app->req->isPost()) {
+        $perm = $app->db->permission();
+        foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+            $perm->$k = $v;
+        }
+        $perm->where('ID = ?', $id);
+        if ($perm->update()) {
+            $app->flash('success_message', $flashNow->notice(200));
+            $logger->setLog('Update Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
+        } else {
+            $app->flash('error_message', $flashNow->notice(409));
+        }
+        redirect($app->req->server['HTTP_REFERER']);
+    }
+
+    $json = _file_get_contents($json_url . 'permission/ID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
     $decode = json_decode($json, true);
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
@@ -363,7 +379,7 @@ $app->match('GET|POST', '/role/', function () use($app) {
 });
 
 $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
-    $json = _file_get_contents($json_url . 'role/ID/' . $id . '/');
+    $json = _file_get_contents($json_url . 'role/ID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
     $decode = json_decode($json, true);
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
@@ -471,17 +487,17 @@ $app->post('/role/editRole/', function () use($app, $flashNow) {
 
 $app->post('/message/', function () use($app, $logger) {
     $options = ['myet_welcome_message'];
-    
+
     foreach ($options as $option_name) {
-            if (!isset($_POST[$option_name]))
-                continue;
-            $value = $_POST[$option_name];
-            $app->hook->{'update_option'}($option_name, $value);
-        }
-        // Update more options here
-        $app->hook->{'do_action'}('update_options');
-        /* Write to logs */
-        $logger->setLog('Update', 'myeduTrac', 'Welcome Message', get_persondata('uname'));
+        if (!isset($_POST[$option_name]))
+            continue;
+        $value = $_POST[$option_name];
+        $app->hook->{'update_option'}($option_name, $value);
+    }
+    // Update more options here
+    $app->hook->{'do_action'}('update_options');
+    /* Write to logs */
+    $logger->setLog('Update', 'myeduTrac', 'Welcome Message', get_persondata('uname'));
 
     redirect($app->req->server['HTTP_REFERER']);
 });
@@ -581,7 +597,9 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
     redirect(url('/dashboard/'));
 });
 
-$app->get('/logout/', function () use($app) {
+$app->get('/logout/', function () use($app, $logger) {
+
+    $logger->setLog('Authentication', 'Logout', get_name(get_persondata('personID')), get_persondata('uname'));
 
     $vars1 = [];
     parse_str($app->cookies->get('ET_COOKNAME'), $vars1);

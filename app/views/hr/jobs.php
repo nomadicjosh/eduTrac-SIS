@@ -82,7 +82,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	
 	<!-- Modal -->
 	<div class="modal fade" id="job">
-		<form class="form-horizontal margin-none" action="<?=url('/');?>v1/job/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
+		<form class="form-horizontal margin-none" action="<?=url('/');?>hr/jobs/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->
@@ -154,7 +154,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <?php if($jobs != '') : foreach($jobs as $k => $v) { ?>
 	<!-- Modal -->
 	<div class="modal fade" id="editJob<?=_h($v['ID']);?>">
-		<form class="form-horizontal margin-none" action="<?=url('/');?>v1/job/ID/<?=_h($v['ID']);?>/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
+		<form class="form-horizontal margin-none" action="<?=url('/');?>hr/jobs/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->
@@ -211,6 +211,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 				<!-- // Modal body END -->
 				<!-- Modal footer -->
 				<div class="modal-footer">
+                    <input type="hidden" name="ID" value="<?=_h($v['ID']);?>" />
         			<button type="submit" class="btn btn-default"><?=_t( 'Update' );?></button>
 					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a>
 				</div>

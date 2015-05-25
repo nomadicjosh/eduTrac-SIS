@@ -32,13 +32,13 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	<li><?=_t( 'View Institution' );?></li>
 </ul>
 
-<h3><?=_t( 'View Institution' );?></h3>
+<h3><?=_h($inst[0]['instName']);?></h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>v1/institution/institutionID/<?=_h($inst[0]['institutionID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>appl/inst/<?=_h($inst[0]['institutionID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -127,6 +127,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 				
 				<!-- Form actions -->
 				<div class="form-actions">
+                    <input name="institutionID" type="hidden" value="<?=_h($inst[0]['institutionID']);?>" />
 					<button type="submit"<?=gids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Submit' );?></button>
                     <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>appl/inst/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
