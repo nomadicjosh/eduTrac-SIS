@@ -160,7 +160,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Level' );?></label>
                             <div class="col-md-8">
-                                <?=course_level_select(_h($sect[0]['courseLevelCode']), ' disabled');?>
+                                <?=course_level_select(_h($sect[0]['courseLevelCode']), csid());?>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -169,7 +169,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($sect[0]['acadLevelCode']),' disabled ','required');?>
+                                <?=acad_level_select(_h($sect[0]['acadLevelCode']), csid().' ','required');?>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -205,7 +205,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Status / Date' );?></label>
                             <div class="col-md-4">
-                                <?=course_sec_status_select(_h($sect[0]['currStatus']), ' disabled');?>
+                                <?=course_sec_status_select(_h($sect[0]['currStatus']), csid());?>
                             </div>
                             
                             <div class="col-md-4">

@@ -87,7 +87,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Status / Date' );?></label>
                             <div class="col-md-4">
-                                <?=status_select(_h($prog[0]['currStatus']), 'disabled');?>
+                                <?=status_select(_h($prog[0]['currStatus']), csid());?>
                             </div>
                             
                             <div class="col-md-4">
@@ -239,7 +239,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($prog[0]['acadLevelCode']),' disabled ','required');?>
+                                <?=acad_level_select(_h($prog[0]['acadLevelCode']),csid().' ','required');?>
                             </div>
                         </div>
                         <!-- // Group END -->
