@@ -15,7 +15,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 define('CURRENT_RELEASE', '5.0');
-define('RELEASE_TAG', '5.0.7');
+define('RELEASE_TAG', '5.0.8');
 
 $app = \Liten\Liten::getInstance();
 
