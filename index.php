@@ -10,6 +10,7 @@ defined('APP_ENV') or define('APP_ENV', 'PROD');
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 defined('BASE_PATH') or define('BASE_PATH', __DIR__ . DS);
 defined('APP_PATH') or define('APP_PATH', BASE_PATH . 'app' . DS);
+defined('CACHE_PATH') or define('CACHE_PATH', APP_PATH . 'tmp/cache' . DS);
 
 /**
  * Step 1: Require the Bootstrap

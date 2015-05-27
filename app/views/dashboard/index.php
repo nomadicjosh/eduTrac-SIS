@@ -38,7 +38,58 @@ $app->view->block('dashboard');
 	<?php dashboard_top_widgets();?>
 
 	<div class="row">
-		<div class="col-md-12 tablet-column-reset">
+        
+        <div class="col-md-4 tablet-column-reset">
+	
+			<div class="row">
+				<div class="col-md-12">
+					<?php
+                    $cache = new \app\src\Cache('rss');
+                    if(!$cache->setCache()) :
+                    ?>
+					<!-- Website Traffic Chart -->
+					<div class="widget widget-body-white" data-toggle="collapse-widget">
+						<div class="widget-head">
+							<h4 class="heading glyphicons imac"><i></i><?=_t( 'Latest eduTrac SIS Updates' );?></h4>
+						</div>
+						<div class="widget-body">
+						
+							<!-- Simple Chart -->
+							<div class="widget-chart bg-lightseagreen">
+								<?php  $rss1 = new \DOMDocument();
+                                $rss1->load('http://feeds.feedburner.com/eduTracSIS');
+                                $feed = array();
+                                foreach ($rss1->getElementsByTagName('item') as $node) {
+                                $item = array (
+                                'title' => $node->getElementsByTagName('title')->item(0)->nodeValue,
+                                'desc' => $node->getElementsByTagName('description')->item(0)->nodeValue,
+                                'link' => $node->getElementsByTagName('link')->item(0)->nodeValue,
+                                'date' => $node->getElementsByTagName('pubDate')->item(0)->nodeValue,
+                                );
+                                array_push($feed, $item);
+                                }
+                                $limit = 3;
+                                for($x=0;$x<$limit;$x++) {
+                                $title = str_replace(' & ', ' &amp; ', $feed[$x]['title']);
+                                $link = $feed[$x]['link'];
+                                $description = $feed[$x]['desc'];
+                                $date = date('l F d, Y', strtotime($feed[$x]['date']));
+                                echo '<p><strong><a href="'.$link.'" title="'.$title.'">'.$title.'</a></strong><br />';
+                                echo '<small><em>Posted on '.$date.'</em></small></p>';
+                                echo '<p>'.$description.'</p>';
+                                } ?>
+							</div>
+						</div>
+					</div>
+					<!-- // Website Traffic Chart END -->
+                    <?php endif; echo $cache->getCache(); ?>
+
+				</div>
+                
+			</div>
+		</div>
+        
+		<div class="col-md-8 tablet-column-reset">
 	
 			<div class="row">
 				<div class="col-md-12">
