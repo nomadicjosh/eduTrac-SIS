@@ -55,7 +55,18 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<h4 class="heading"><font color="red">*</font> <?=_t( 'Indicates field is required' );?></h4>
 			</div>
 			<!-- // Widget heading END -->
-			
+            <?php if(function_exists('savedquery_module')) : ?>
+            <!-- Tabs Heading -->
+            <div class="tabsbar">
+                <ul>
+                    <li class="glyphicons database_lock active"><a href="<?=url('/');?>sql/" data-toggle="tab"><i></i> <?=_t( 'SQL Interface' );?></a></li>
+                    <li class="glyphicons disk_save"><a href="<?=url('/');?>sql/saved-queries/add/"><i></i> <?=_t( 'Create Saved Query' );?></a></li>
+                    <li class="glyphicons disk_saved tab-stacked"><a href="<?=url('/');?>sql/saved-queries/"><i></i> <?=_t( 'Saved Queries' );?></a></li>
+                    <li class="glyphicons send tab-stacked"><a href="<?=url('/');?>sql/saved-queries/csv-email/"><i></i> <span><?=_t( 'CSV to Email' );?></span></a></li>
+                </ul>
+            </div>
+            <!-- // Tabs Heading END -->
+			<?php endif; ?>
 			<div class="widget-body">
 			
 				<!-- Row -->
