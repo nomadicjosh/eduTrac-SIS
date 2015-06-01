@@ -434,7 +434,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
     $app->match('GET|POST', '/inst/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$inst = $app->db->institution();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$inst->$k = $v;
     		}
     		$inst->where('institutionID = ?', $id);

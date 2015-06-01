@@ -88,7 +88,8 @@
 							<ul>
 								<li><a href="<?=get_base_url();?>login/" class="glyphicons unlock"><i></i> <?=_t( 'Sign in' );?></a></li>
 								<?php if(_h($app->hook->{'get_option'}('enable_myet_appl_form')) == 1) : ?>
-								<li<?= ml('myet_module'); ?>><a href="<?=get_base_url();?>online-app/" class="glyphicons user_add"><i></i> <?=_t( 'Apply' );?></a></li>
+                                <?php $app->hook->{'do_action'}('apply_online'); ?>
+								<li<?= ml('myet_module'); ?><?= hl('apply_online'); ?>><a href="<?=get_base_url();?>online-app/" class="glyphicons user_add"><i></i> <?=_t( 'Apply' );?></a></li>
 								<?php endif; ?>
 							</ul>
 						</li>

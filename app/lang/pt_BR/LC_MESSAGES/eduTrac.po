@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eduTrac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-24 20:45-0500\n"
-"PO-Revision-Date: 2015-05-24 20:45-0500\n"
+"POT-Creation-Date: 2015-06-01 07:56-0500\n"
+"PO-Revision-Date: 2015-06-01 07:56-0500\n"
 "Last-Translator: Joshua Parker <josh@7mediaws.org>\n"
 "Language-Team: 7 Media Web Solutions, LLC <email@7mediaws.org>\n"
 "MIME-Version: 1.0\n"
@@ -382,11 +382,11 @@ msgstr "Seu plugin foi carregado e instalado corretamente."
 msgid "There was a problem uploading your plugin. Please try again or check the plugin package."
 msgstr "Houve um problema upload do seu plugin. Por favor, tente novamente ou verificar o pacote plugin."
 
-#: ../../../routers/savedquery.router.php:171
+#: ../../../routers/savedquery.router.php:174
 msgid "CSV to Email Attachment"
 msgstr "CSV para e-mail anexos"
 
-#: ../../../routers/savedquery.router.php:171
+#: ../../../routers/savedquery.router.php:174
 msgid "The attached report can be opened with OpenOffice.org Calc, Google Docs, Microsoft Excel, or Apple Numbers."
 msgstr "O relatório anexo pode ser aberto com o OpenOffice.org Calc, Google Docs, Microsoft Excel, ou Números da Apple."
 
@@ -484,7 +484,7 @@ msgid "Install Modules"
 msgstr "Instalação dos módulos"
 
 #: ../../../views/_layouts/dashboard.php:132
-#: ../../../views/_layouts/myet.php:155
+#: ../../../views/_layouts/myet.php:156
 msgid "Forms"
 msgstr "Formulários"
 
@@ -685,7 +685,7 @@ msgid "(SROS) - Student Roster"
 msgstr ""
 
 #: ../../../views/_layouts/dashboard.php:220
-#: ../../../views/_layouts/myet.php:148
+#: ../../../views/_layouts/myet.php:149
 msgid "Timetable"
 msgstr ""
 
@@ -805,7 +805,7 @@ msgid "(STAF) Staff"
 msgstr "(STAF) Pessoal"
 
 #: ../../../views/_layouts/dashboard.php:284
-#: ../../../views/_layouts/myet.php:146
+#: ../../../views/_layouts/myet.php:147
 msgid "Student"
 msgstr "Estudante"
 
@@ -889,7 +889,7 @@ msgid "eduTrac Analytics"
 msgstr ""
 
 #: ../../../views/_layouts/dashboard.php:371
-#: ../../../views/_layouts/myet.php:163
+#: ../../../views/_layouts/myet.php:164
 msgid "Profile"
 msgstr ""
 
@@ -898,7 +898,7 @@ msgid "edit"
 msgstr "Editar"
 
 #: ../../../views/_layouts/dashboard.php:382
-#: ../../../views/_layouts/myet.php:119
+#: ../../../views/_layouts/myet.php:120
 msgid "Switch Back to"
 msgstr "Alterne de volta para"
 
@@ -922,88 +922,88 @@ msgstr ""
 msgid "Sign in"
 msgstr ""
 
-#: ../../../views/_layouts/myet.php:91
+#: ../../../views/_layouts/myet.php:92
 msgid "Apply"
 msgstr "Aplicar"
 
-#: ../../../views/_layouts/myet.php:105
+#: ../../../views/_layouts/myet.php:106
 #: ../../../views/admin/index.php:31
 msgid "Admin"
 msgstr ""
 
-#: ../../../views/_layouts/myet.php:111
+#: ../../../views/_layouts/myet.php:112
 msgid "Howdy,"
 msgstr ""
 
-#: ../../../views/_layouts/myet.php:140
+#: ../../../views/_layouts/myet.php:141
 msgid "Home"
 msgstr "Casa"
 
-#: ../../../views/_layouts/myet.php:143
+#: ../../../views/_layouts/myet.php:144
 msgid "My Menu"
 msgstr ""
 
-#: ../../../views/_layouts/myet.php:149
+#: ../../../views/_layouts/myet.php:150
 msgid "My Bills"
 msgstr ""
 
-#: ../../../views/_layouts/myet.php:150
+#: ../../../views/_layouts/myet.php:151
 msgid "Class Schedule"
 msgstr ""
 
-#: ../../../views/_layouts/myet.php:151
+#: ../../../views/_layouts/myet.php:152
 msgid "Final Grades"
 msgstr ""
 
-#: ../../../views/_layouts/myet.php:157
+#: ../../../views/_layouts/myet.php:158
 msgid "Change of Address Form"
 msgstr "Mudança de Endereço Form"
 
-#: ../../../views/_layouts/myet.php:158
+#: ../../../views/_layouts/myet.php:159
 msgid "Booking Request Form"
 msgstr ""
 
-#: ../../../views/_layouts/myet.php:159
+#: ../../../views/_layouts/myet.php:160
 msgid "School Photo"
 msgstr "Escola Photo"
 
-#: ../../../views/_layouts/myet.php:162
+#: ../../../views/_layouts/myet.php:163
 msgid "Applications"
 msgstr "Aplicações"
 
-#: ../../../views/_layouts/myet.php:164
+#: ../../../views/_layouts/myet.php:165
 msgid "Change Password"
 msgstr ""
 
-#: ../../../views/_layouts/myet.php:165
+#: ../../../views/_layouts/myet.php:166
 msgid "Logout"
 msgstr "Sair"
 
-#: ../../../views/_layouts/myet.php:172
+#: ../../../views/_layouts/myet.php:173
 msgid "Info Pages"
 msgstr ""
 
-#: ../../../views/_layouts/myet.php:178
+#: ../../../views/_layouts/myet.php:179
 msgid "News"
 msgstr "Notícia"
 
-#: ../../../views/_layouts/myet.php:181
+#: ../../../views/_layouts/myet.php:182
 msgid "Quick Links"
 msgstr ""
 
-#: ../../../views/_layouts/myet.php:189
+#: ../../../views/_layouts/myet.php:190
 msgid "Search Courses"
 msgstr "Busca de cursos"
 
-#: ../../../views/_layouts/myet.php:191
+#: ../../../views/_layouts/myet.php:192
 msgid "Cart"
 msgstr "Caçamba"
 
-#: ../../../views/_layouts/myet.php:210
+#: ../../../views/_layouts/myet.php:211
 msgid "Address"
 msgstr "Residência"
 
-#: ../../../views/_layouts/myet.php:223
+#: ../../../views/_layouts/myet.php:224
 msgid "Contact"
 msgstr "Contato"
 
@@ -2278,23 +2278,27 @@ msgstr "Por hora"
 msgid "Daily"
 msgstr "Diariamente"
 
-#: ../../../views/dashboard/index.php:49
+#: ../../../views/dashboard/index.php:53
+msgid "Latest eduTrac SIS Updates"
+msgstr ""
+
+#: ../../../views/dashboard/index.php:100
 msgid "Students by Academic Program"
 msgstr "Estudantes por Programa Acadêmico"
 
-#: ../../../views/dashboard/index.php:59
+#: ../../../views/dashboard/index.php:110
 msgid "Students"
 msgstr "Alunos"
 
-#: ../../../views/dashboard/index.php:83
+#: ../../../views/dashboard/index.php:134
 msgid "Gender by Academic Departments"
 msgstr ""
 
-#: ../../../views/dashboard/index.php:93
+#: ../../../views/dashboard/index.php:144
 msgid "Male"
 msgstr "Masculino"
 
-#: ../../../views/dashboard/index.php:94
+#: ../../../views/dashboard/index.php:145
 msgid "Female"
 msgstr "Ffeminino"
 
@@ -4904,8 +4908,13 @@ msgid "Enter any comments or instructions you would like to appear on the course
 msgstr "Digite comentários ou instruções que você gostaria de aparecer na página de inscrição do curso."
 
 #: ../../../views/sql/add-query.php:30
+#: ../../../views/sql/add-query.php:57
+#: ../../../views/sql/csv-email.php:55
+#: ../../../views/sql/index.php:91
 #: ../../../views/sql/saved-queries.php:30
+#: ../../../views/sql/saved-queries.php:46
 #: ../../../views/sql/view-query.php:30
+#: ../../../views/sql/view-query.php:57
 msgid "Saved Queries"
 msgstr ""
 
@@ -4914,44 +4923,66 @@ msgstr ""
 msgid "Create Save Query"
 msgstr ""
 
-#: ../../../views/sql/add-query.php:62
-#: ../../../views/sql/view-query.php:62
+#: ../../../views/sql/add-query.php:56
+#: ../../../views/sql/csv-email.php:54
+#: ../../../views/sql/index.php:90
+#: ../../../views/sql/saved-queries.php:45
+#: ../../../views/sql/view-query.php:56
+#, fuzzy
+msgid "Create Saved Query"
+msgstr "Criar Staff Registro"
+
+#: ../../../views/sql/add-query.php:58
+#: ../../../views/sql/csv-email.php:56
+#: ../../../views/sql/index.php:92
+#: ../../../views/sql/saved-queries.php:47
+#: ../../../views/sql/view-query.php:58
+#, fuzzy
+msgid "CSV to Email"
+msgstr "CSV para e-mail anexos"
+
+#: ../../../views/sql/add-query.php:73
+#: ../../../views/sql/view-query.php:74
 msgid "Save Query Name"
 msgstr ""
 
-#: ../../../views/sql/add-query.php:80
-#: ../../../views/sql/add-query.php:127
-#: ../../../views/sql/view-query.php:80
-#: ../../../views/sql/view-query.php:125
+#: ../../../views/sql/add-query.php:91
+#: ../../../views/sql/add-query.php:138
+#: ../../../views/sql/view-query.php:92
+#: ../../../views/sql/view-query.php:137
 msgid "Auto Purge"
 msgstr ""
 
-#: ../../../views/sql/add-query.php:131
-#: ../../../views/sql/view-query.php:129
+#: ../../../views/sql/add-query.php:142
+#: ../../../views/sql/view-query.php:141
 msgid "If enabled, saved queries get purged every 30 days. If you use your saved query on a regular basis, you should set this option to no."
 msgstr "Se ativado, consultas salvas se purgado a cada 30 dias. Se você usar sua consulta salva em uma base regular, você deve definir esta opção para nenhum."
 
-#: ../../../views/sql/csv-email.php:60
+#: ../../../views/sql/csv-email.php:72
 msgid "Recipient"
 msgstr ""
 
-#: ../../../views/sql/index.php:118
+#: ../../../views/sql/index.php:67
+msgid "Choose a saved query from the drop down list or enter a custom query."
+msgstr ""
+
+#: ../../../views/sql/index.php:168
 msgid "Successly Executed - "
 msgstr ""
 
-#: ../../../views/sql/index.php:123
+#: ../../../views/sql/index.php:173
 msgid "Query is : "
 msgstr ""
 
-#: ../../../views/sql/saved-queries.php:48
+#: ../../../views/sql/saved-queries.php:60
 msgid "Saved Query Name"
 msgstr ""
 
-#: ../../../views/sql/saved-queries.php:49
+#: ../../../views/sql/saved-queries.php:61
 msgid "Creation Date"
 msgstr ""
 
-#: ../../../views/sql/saved-queries.php:76
+#: ../../../views/sql/saved-queries.php:88
 msgid "Are you sure you want to delete this saved query?"
 msgstr "Tem certeza de que deseja excluir esta consulta salva?"
 
