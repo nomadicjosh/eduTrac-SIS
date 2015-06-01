@@ -18,7 +18,6 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
 $logger = new \app\src\Log;
-$uname = get_persondata('uname');
 
 $pdo = new \PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
 
@@ -28,6 +27,22 @@ $qtext = str_replace("\\","",$qtext);
 ?>
 
 <script type="text/javascript">
+jQuery(document).ready(function() {
+    jQuery('#qID').live('change', function(event) {
+        $.ajax({
+            type    : 'POST',
+            url     : '<?=url('/');?>sql/saved-queries/getSavedQuery/',
+            dataType: 'json',
+            data    : $('#validateSubmitForm').serialize(),
+            cache: false,
+            success: function( data ) {
+                   for(var id in data) {        
+                          $(id).val( data[id] );
+                   }
+            }
+        });
+    });
+});
 $(".panel").show();
 setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
@@ -43,7 +58,19 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
-	
+    <?php if(function_exists('savedquery_module')) : ?>
+    <div class="tab-pane" id="search-users">
+        <div class="widget widget-heading-simple widget-body-white margin-none">
+            <div class="widget-body">
+
+                <div class="alerts alerts-info center">
+                    <p><?=_t("Choose a saved query from the drop down list or enter a custom query.");?></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+	<?php endif; ?>
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>sql/" id="validateSubmitForm" method="post">
 		
@@ -74,7 +101,19 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 					
 					<!-- Column -->
 					<div class="col-md-6">
-					
+                        <?php if(function_exists('savedquery_module')) : ?>
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="term"><?=_t( 'Saved Query' );?></label>
+                            <div class="col-md-8">
+                                <select name="qID" id="qID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                                    <option value="">&nbsp;</option>
+                                    <?php userQuery(); ?>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        <?php endif; ?>
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label" for="term"><font color="red">*</font> <?=_t( 'Query' );?></label>
@@ -123,7 +162,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				
 					$qtext2 = str_replace("\\", " ", $qtext);
                     /* Write to activity log table. */
-                    $logger->setLog("Query", "SQL Interface", $qtext2, $uname );
+                    $logger->setLog("Query", "SQL Interface", $qtext2, get_persondata('uname') );
 				
 						if($result = $pdo->query("$qtext2"))
 							echo _t( "Successly Executed - " );
@@ -132,7 +171,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 								table does not exist or the query is malformed.</font><br><br>";
 				
 						echo _t( "Query is : " );
-						echo("<font color=blue>"._h($qtext2)."</font>\n");
+						echo("<font color=blue>"._escape($qtext2)."</font>\n");
 						
 						echo "<table class=\"dynamicTable tableTools table table-striped table-bordered table-condensed table-white\">
 						<thead>
