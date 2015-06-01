@@ -164,7 +164,7 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
         if ($app->req->isPost()) {
             if (isset($_POST['addDate'])) {
                 $pg = $app->db->pay_grade();
-                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                foreach ($_POST as $k => $v) {
                     $pg->$k = $v;
                 }
                 if ($pg->save()) {
@@ -175,7 +175,7 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
                 }
             } else {
                 $pg = $app->db->pay_grade();
-                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                foreach ($_POST as $k => $v) {
                     $pg->$k = $v;
                 }
                 $pg->where('ID = ?', _filter_input_int(INPUT_POST, 'ID'));
@@ -212,7 +212,7 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
         if ($app->req->isPost()) {
             if (isset($_POST['addDate'])) {
                 $job = $app->db->job();
-                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                foreach ($_POST as $k => $v) {
                     $job->$k = $v;
                 }
                 if ($job->save()) {
@@ -223,7 +223,7 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
                 }
             } else {
                 $job = $app->db->job();
-                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                foreach ($_POST as $k => $v) {
                     $job->$k = $v;
                 }
                 $job->where('ID = ?', _filter_input_int(INPUT_POST, 'ID'));
@@ -258,7 +258,7 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
     $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if ($app->req->isPost()) {
             $position = $app->db->staff_meta();
-            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+            foreach ($_POST as $k => $v) {
                 $position->$k = $v;
             }
             if ($position->save()) {
@@ -319,7 +319,7 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
 
         if ($app->req->isPost()) {
             $position = $app->db->staff_meta();
-            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+            foreach ($_POST as $k => $v) {
                 $position->$k = $v;
             }
             $position->where('sMetaID = ?', _filter_input_int(INPUT_POST, 'sMetaID'));
