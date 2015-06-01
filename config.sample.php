@@ -45,7 +45,9 @@ if ($subdomain != '' && MULTICAMPUS === true) {
 }
 
 $app->inst->singleton('db', function () {
-    $pdo = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
+    $pdo = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS, [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"]);
+    $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+    $pdo->query('SET CHARACTER SET utf8');
     return new \Liten\Orm($pdo);
 });
 $orm = $app->inst->db;
