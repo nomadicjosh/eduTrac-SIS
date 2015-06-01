@@ -170,18 +170,18 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                     $q->statusDate = $date;
                     $q->where('courseSecID = ?', $id);
                 }
+            }
 
-                if ($sect->update() || $q->update()) {
-                    /** Delete db cache if the data was updated successfully */
-                    $dbcache->clearCache("course_sec-$id");
-                    $dbcache->clearCache("crseCatalog");
-                    $dbcache->clearCache("$term-catalog");
-                    $logger->setLog('Update Record', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $decode[0]['courseSecCode'] . ')', get_persondata('uname'));
-                    $app->flash('success_message', $flashNow->notice(200));
-                } else {
-                    $logger->setLog('Update Error', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $decode[0]['courseSecCode'] . ')', get_persondata('uname'));
-                    $app->flash('error_message', $flashNow->notice(409));
-                }
+            if ($sect->update() || $q->update()) {
+                /** Delete db cache if the data was updated successfully */
+                $dbcache->clearCache("course_sec-$id");
+                $dbcache->clearCache("crseCatalog");
+                $dbcache->clearCache("$term-catalog");
+                $logger->setLog('Update Record', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $decode[0]['courseSecCode'] . ')', get_persondata('uname'));
+                $app->flash('success_message', $flashNow->notice(200));
+            } else {
+                $logger->setLog('Update Error', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $decode[0]['courseSecCode'] . ')', get_persondata('uname'));
+                $app->flash('error_message', $flashNow->notice(409));
             }
             redirect(url('/sect/') . $id . '/');
         }
@@ -343,9 +343,23 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         }
     });
 
-    $app->get('/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
+        
+        if($app->req->isPost()) {
+    		$sect = $app->db->course_sec();
+    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    			$sect->$k = $v;
+    		}
+    		if($sect->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Course Section', $decode[0]['courseSection'], get_persondata('uname'));
+    		} else {
+    			$app->flash('error_message', $flashNow->notice(409));
+    		}
+            redirect($app->req->server['HTTP_REFERER']);
+    	}
 
         /**
          * If the database table doesn't exist, then it
