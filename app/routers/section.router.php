@@ -352,6 +352,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
     			$sect->$k = $v;
     		}
+            $sect->where('courseSecID = ?', $id);
     		if($sect->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Course Section', $decode[0]['courseSection'], get_persondata('uname'));
@@ -926,7 +927,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         // Get parameters from Array
         $term = !empty($_GET['term']) ? $_GET['term'] : '';
         $sect = $app->db->course_sec()
-            ->select('course_sec.courseSecID,course_sec.courseSecCode,course_sec.termCode')
+            ->select('DISTINCT course_sec.courseSecID,course_sec.courseSecCode,course_sec.termCode')
             ->_join('stu_course_sec', 'course_sec.courseSecID = b.courseSecID', 'b')
             ->where('course_sec.termCode = ?', $term)->_and_()
             ->where('course_sec.currStatus = "A"')->_and_()

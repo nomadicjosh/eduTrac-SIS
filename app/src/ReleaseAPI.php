@@ -69,7 +69,7 @@ class ReleaseAPI
 
     public function getNotice()
     {
-        $notice = $this->_url . $this->init('UPGRADE_NOTICE') . DS . 'notice.txt';
+        $notice = $this->_url . $this->init('UPGRADE_NOTICE');
         return $notice;
     }
 

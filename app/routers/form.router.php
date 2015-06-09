@@ -43,7 +43,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/semester/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$sem = $app->db->semester();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$sem->$k = $v;
     		}
     		if($sem->save()) {
@@ -95,7 +95,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/semester/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$sem = $app->db->semester();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$sem->$k = $v;
     		}
     		$sem->where('semesterID = ?', $id);
@@ -175,7 +175,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/term/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$term = $app->db->term();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$term->$k = $v;
     		}
     		if($term->save()) {
@@ -231,7 +231,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/term/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$term = $app->db->term();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$term->$k = $v;
     		}
     		$term->where('termID = ?', $id);
@@ -311,7 +311,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/acad-year/', function () use($app, $css, $js, $logger, $flashNow) {
     	if($app->req->isPost()) {
     		$year = $app->db->acad_year();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$year->$k = $v;
     		}
     		if($year->save()) {
@@ -363,7 +363,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/acad-year/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
     	if($app->req->isPost()) {
     		$year = $app->db->acad_year();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$year->$k = $v;
     		}
     		$year->where('acadYearID = ?', $id);
@@ -443,7 +443,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/department/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$dept = $app->db->department();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$dept->$k = $v;
     		}
     		if($dept->save()) {
@@ -496,7 +496,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/department/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$dept = $app->db->department();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$dept->$k = $v;
     		}
     		$dept->where('deptID = ?', $id);
@@ -628,7 +628,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/subject/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$subj = $app->db->subject();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$subj->$k = $v;
     		}
     		$subj->where('subjectID = ?', $id);
@@ -708,7 +708,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/student-load-rule/', function () use($app, $css, $js, $flashNow) {
         if($app->req->isPost()) {
     		$slr = $app->db->student_load_rule();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$slr->$k = $v;
     		}
     		if($slr->save()) {
@@ -760,7 +760,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/student-load-rule/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if($app->req->isPost()) {
     		$slr = $app->db->student_load_rule();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$slr->$k = $v;
     		}
     		$slr->where('slrID = ?', $id);
@@ -839,7 +839,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/degree/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$degree = $app->db->degree();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$degree->$k = $v;
     		}
     		if($degree->save()) {
@@ -891,7 +891,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/degree/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$degree = $app->db->degree();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$degree->$k = $v;
     		}
             $degree->where('degreeID = ?', $id);
@@ -972,7 +972,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/major/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$major = $app->db->major();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$major->$k = $v;
     		}
     		if($major->save()) {
@@ -1025,7 +1025,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/major/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$major = $app->db->major();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$major->$k = $v;
     		}
             $major->where('majorID = ?', $id);
@@ -1106,7 +1106,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/minor/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$minor = $app->db->minor();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$minor->$k = $v;
     		}
     		if($minor->save()) {
@@ -1159,7 +1159,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/minor/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$minor = $app->db->minor();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$minor->$k = $v;
     		}
             $minor->where('minorID = ?', $id);
@@ -1240,7 +1240,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/ccd/', function () use($app, $css, $js, $logger, $flashNow) {
     	if($app->req->isPost()) {
     		$ccd = $app->db->ccd();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$ccd->$k = $v;
     		}
     		if($ccd->save()) {
@@ -1292,7 +1292,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/ccd/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$ccd = $app->db->ccd();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$ccd->$k = $v;
     		}
     		$ccd->where('ccdID = ?', $id);
@@ -1373,7 +1373,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/specialization/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$spec = $app->db->specialization();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$spec->$k = $v;
     		}
     		if($spec->save()) {
@@ -1426,7 +1426,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/specialization/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$spec = $app->db->specialization();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$spec->$k = $v;
     		}
     		$spec->where('specID = ?', $id);
@@ -1507,7 +1507,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/cip/', function () use($app, $css, $js, $logger, $flashNow) {
     	if($app->req->isPost()) {
     		$cip = $app->db->cip();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$cip->$k = $v;
     		}
     		if($cip->save()) {
@@ -1560,7 +1560,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/cip/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$cip = $app->db->cip();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$cip->$k = $v;
     		}
     		$cip->where('cipID = ?', $id);
@@ -1641,7 +1641,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/rstr-code/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$rstr = $app->db->restriction_code();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$rstr->$k = $v;
     		}
     		if($rstr->save()) {
@@ -1697,7 +1697,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/rstr-code/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$rstr = $app->db->restriction_code();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$rstr->$k = $v;
     		}
     		$rstr->where('rstrCodeID = ?', $id);
@@ -1778,7 +1778,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/location/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$loc = $app->db->location();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$loc->$k = $v;
     		}
     		if($loc->save()) {
@@ -1831,7 +1831,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/location/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$loc = $app->db->location();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$loc->$k = $v;
     		}
     		$loc->where('locationID = ?', $id);
@@ -1912,7 +1912,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/building/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$build = $app->db->building();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$build->$k = $v;
     		}
     		if($build->save()) {
@@ -1965,7 +1965,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/building/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$build = $app->db->building();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$build->$k = $v;
     		}
     		$build->where('buildingID = ?', $id);
@@ -2046,7 +2046,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/room/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$room = $app->db->room();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$room->$k = $v;
     		}
     		if($room->save()) {
@@ -2103,7 +2103,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/room/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$room = $app->db->room();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$room->$k = $v;
     		}
     		$room->where('roomID = ?', $id);
@@ -2184,7 +2184,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/school/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$school = $app->db->school();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$school->$k = $v;
     		}
     		if($school->save()) {
@@ -2241,7 +2241,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/school/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$school = $app->db->school();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$school->$k = $v;
     		}
     		$school->where('schoolID = ?', $id);
@@ -2322,7 +2322,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/grade-scale/', function () use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$gs = $app->db->grade_scale();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$gs->$k = $v;
     		}
     		if($gs->save()) {
@@ -2375,7 +2375,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
     $app->match('GET|POST', '/grade-scale/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if($app->req->isPost()) {
     		$gs = $app->db->grade_scale();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
+    		foreach($_POST as $k => $v) {
     			$gs->$k = $v;
     		}
     		$gs->where('ID = ?', $id);

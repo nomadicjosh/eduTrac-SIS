@@ -11,6 +11,7 @@ defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 defined('BASE_PATH') or define('BASE_PATH', __DIR__ . DS);
 defined('APP_PATH') or define('APP_PATH', BASE_PATH . 'app' . DS);
 defined('CACHE_PATH') or define('CACHE_PATH', APP_PATH . 'tmp/cache' . DS);
+defined('K_PATH_IMAGES') or define ('K_PATH_IMAGES', BASE_PATH . 'static/images/');
 
 /**
  * Step 1: Require the Bootstrap
@@ -28,7 +29,7 @@ require( BASE_PATH . 'Liten' . DS . 'Bootstrap.php');
  * your Liten application by passing an associative array
  * of setting names and values into the application constructor.
  */
-$app = new \Liten\Liten();
+$app = new \Liten\Liten( ['cookies.lifetime' => '86400'] );
 
 /**
  * Step 3: Include database config file
