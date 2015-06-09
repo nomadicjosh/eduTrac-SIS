@@ -184,20 +184,20 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
-        
-        if($app->req->isPost()) {
-    		$crse = $app->db->course();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
-    			$crse->$k = $v;
-    		}
-    		if($crse->update()) {
+
+        if ($app->req->isPost()) {
+            $crse = $app->db->course();
+            foreach ($_POST as $k => $v) {
+                $crse->$k = $v;
+            }
+            if ($crse->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Course', $decode[0]['courseCode'], get_persondata('uname'));
-    		} else {
-    			$app->flash('error_message', $flashNow->notice(409));
-    		}
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
             redirect($app->req->server['HTTP_REFERER']);
-    	}
+        }
 
         /**
          * If the database table doesn't exist, then it
