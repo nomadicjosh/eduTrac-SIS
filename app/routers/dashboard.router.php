@@ -25,7 +25,7 @@ $cache = new \app\src\Cache();
 $dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
-$app->get('/dashboard', function () use($app, $orm) {
+$app->get('/dashboard', function () use($app) {
 
     $css = [ 'css/admin/module.admin.page.index.min.css'];
 
@@ -41,7 +41,7 @@ $app->get('/dashboard', function () use($app, $orm) {
         'components/modules/admin/charts/flot/custom/js/custom-flot.js'
     ];
 
-    $stuProg = $orm->stu_program()
+    $stuProg = $app->db->stu_program()
         ->select('COUNT(stu_program.stuProgID) as ProgCount,stu_program.acadProgCode')
         ->_join('acad_program', 'stu_program.acadProgCode = b.acadProgCode', 'b')
         ->where('stu_program.currStatus <> "G"')
@@ -57,7 +57,7 @@ $app->get('/dashboard', function () use($app, $orm) {
         return $array;
     });
 
-    $stuDept = $orm->person()
+    $stuDept = $app->db->person()
         ->select('SUM(person.gender="M") AS Male,SUM(person.gender="F") AS Female,d.deptCode')
         ->_join('stu_program', 'person.personID = b.stuID', 'b')
         ->_join('acad_program', 'b.acadProgCode = c.acadProgCode', 'c')

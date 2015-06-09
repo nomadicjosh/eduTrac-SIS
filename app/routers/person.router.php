@@ -58,9 +58,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 return $array;
             });
             $staff = _file_get_contents($json_url . 'staff/staffID/' . $q[0]['personID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
-            $s_decode = json_decode($staff,true);
-            $appl = _file_get_contents($json_url . 'application/personID/' . $q[0]['personID']. '/?key=' . $app->hook->{'get_option'}('api_key'));
-            $a_decode = json_decode($appl,true);
+            $s_decode = json_decode($staff, true);
+            $appl = _file_get_contents($json_url . 'application/personID/' . $q[0]['personID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
+            $a_decode = json_decode($appl, true);
         }
 
         $app->view->display('person/index', [
@@ -84,21 +84,21 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        if($app->req->isPost()) {
-    		$nae = $app->db->person();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
-    			$nae->$k = $v;
-    		}
-    		$nae->where('personID = ?', $id);
-    		if($nae->update()) {
+        if ($app->req->isPost()) {
+            $nae = $app->db->person();
+            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                $nae->$k = $v;
+            }
+            $nae->where('personID = ?', $id);
+            if ($nae->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Person (NAE)', get_name($id), get_persondata('uname'));
-    		} else {
-    			$app->flash('error_message', $flashNow->notice(409));
-    		}
-    		redirect( $app->req->server['HTTP_REFERER'] );
-    	}
-        
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
+
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
 
@@ -341,7 +341,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
             if ($addr->save()) {
                 $ID = $addr->lastInsertId();
-                $logger->setLog('New Record', 'Address', get_name($id), get_persondata('uname'));
+                $logger->setLog('New Record', 'Address', get_name($decode[0]['personID']), get_persondata('uname'));
                 $app->flash('success_message', $flashNow->notice(200));
                 redirect(url('/nae/addr/') . $ID . '/');
             } else {
@@ -397,13 +397,28 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         }
     });
 
-    $app->match('GET|POST', '/addr/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/addr/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
         $json_a = _file_get_contents($json_url . 'address/addressID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $a_decode = json_decode($json_a, true);
 
         $json_p = _file_get_contents($json_url . 'person/personID/' . $a_decode[0]['personID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $p_decode = json_decode($json_p, true);
+
+        if ($app->req->isPost()) {
+            $addr = $app->db->address();
+            foreach ($_POST as $k => $v) {
+                $addr->$k = $v;
+            }
+            $addr->where('addressID = ?', $id);
+            if ($addr->update()) {
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Address', get_name($a_decode[0]['personID']), get_persondata('uname'));
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
 
         /**
          * If the database table doesn't exist, then it
