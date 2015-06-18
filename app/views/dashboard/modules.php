@@ -33,7 +33,7 @@ $modules_header = $app->module->{'get_modules_header'}(APP_PATH . 'modules/');
             <div class="widget-body">
 
                 <div class="alerts alerts-info center">
-                    <p><?=_t("Modules can extend the functionality of eduTrac SIS. There are several modules and plugins available in our ");?> <a href="http://www.edutracerp.com/client/cart/"><strong><?=_t( 'Marketplace' );?></strong></a>.</p>
+                    <p><?=_t("Modules can extend the functionality of eduTrac SIS. There are several modules available in our ");?> <a href="http://www.edutracsis.com/client/cart/index/index?c=8"><strong><?=_t( 'Marketplace' );?></strong></a>.</p>
                 </div>
 
             </div>
