@@ -853,19 +853,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         echo json_encode($json);
     });
 
-    $app->post('/stuLookup/', function() use($json_url) {
-        $json_stu = _file_get_contents($json_url . 'student/stuID/' . (int) $_POST['stuID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
-        $stu = json_decode($json_stu, true);
-
-        $json_per = _file_get_contents($json_url . 'person/personID/' . (int) $stu[0]['stuID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
-        $per = json_decode($json_per, true);
-
-        $json = [ 'input#stuName' => $per[0]['lname'] . ', ' . $per[0]['fname']];
-
-        echo json_encode($json);
-    });
-
-    $app->post('/stuLookup/', function() use($json_url) {
+    $app->post('/stuLookup/', function() use($app, $json_url) {
         $json_stu = _file_get_contents($json_url . 'student/stuID/' . (int) $_POST['stuID'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $stu = json_decode($json_stu, true);
 
