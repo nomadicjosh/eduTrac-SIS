@@ -2,6 +2,16 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
+$app = \Liten\Liten::getInstance();
+
+/**
+ * Creates a directory with proper permissions to store
+ * cookies and delete cookies on the server.
+ */
+if (!file_exists('/tmp/' . $app->req->server['SERVER_NAME'] . '/')) {
+    mkdir('/tmp/' . $app->req->server['SERVER_NAME'] . '/', 0777, true);
+}
+
 /**
  * Error log setting
  */
@@ -24,7 +34,6 @@ if (APP_ENV == 'DEV') {
 
 define('LOCALE_DIR', APP_PATH . 'lang');
 $encoding = 'UTF-8';
-$app = \Liten\Liten::getInstance();
 if (file_exists(BASE_PATH . 'config.php')) {
     $locale = ($app->hook->get_option('et_core_locale') !== null) ? $app->hook->get_option('et_core_locale') : 'en_US';
 } else {
