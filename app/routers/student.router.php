@@ -22,10 +22,11 @@ $js = [
 $json_url = url('/api/');
 
 $logger = new \app\src\Log();
+$email = new \app\src\Email();
 $dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
-$app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+$app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow, $email) {
 
     /**
      * Before route check.
@@ -194,9 +195,20 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
 
         if ($app->req->isPost()) {
+            $nae = $app->db->person()->where('personID = ?', $id)->findOne();
+            if ($nae->ssn > 0) {
+                $pass = str_replace('-', '', $nae->ssn);
+            } elseif ($nae->dob != '0000-00-00') {
+                $pass = str_replace('-', '', $nae->dob);
+            } else {
+                $pass = 'myaccount';
+            }
+            $degree = $app->db->acad_program()->where('acadProgCode = ?', _trim($_POST['acadProgCode']))->findOne();
+            $appl = $app->db->application()->where('personID = ?', $id)->findOne();
+            
             $student = $app->db->student();
             $student->stuID = $id;
             $student->status = $_POST['status'];
@@ -221,6 +233,33 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $al->addDate = $app->db->NOW();
 
             if ($student->save() && $sacp->save() && $al->save()) {
+                if ($app->hook->{'get_option'}('send_acceptance_email') == 1) {
+                    $host = strtolower($_SERVER['SERVER_NAME']);
+                    $site = _t('myeduTrac :: ') . $app->hook->{'get_option'}('institution_name');
+                    $message = $app->hook->{'get_option'}('student_acceptance_letter');
+                    $message = str_replace('#uname#', $nae->uname, $message);
+                    $message = str_replace('#fname#', $nae->fname, $message);
+                    $message = str_replace('#lname#', $nae->lname, $message);
+                    $message = str_replace('#name#', get_name($id), $message);
+                    $message = str_replace('#id#', $id, $message);
+                    $message = str_replace('#email#', $nae->email, $message);
+                    $message = str_replace('#sacp#', _trim($_POST['acadProgCode']), $message);
+                    $message = str_replace('#acadlevel#', _trim($_POST['acadLevelCode']), $message);
+                    $message = str_replace('#degree#', $degree->degreeCode, $message);
+                    $message = str_replace('#startterm#', $appl->startTerm, $message);
+                    $message = str_replace('#adminemail#', $app->hook->{'get_option'}('system_email'), $message);
+                    $message = str_replace('#url#', url('/'), $message);
+                    $message = str_replace('#helpdesk#', $app->hook->{'get_option'}('help_desk'), $message);
+                    $message = str_replace('#currentterm#', $app->hook->{'get_option'}('current_term_code'), $message);
+                    $message = str_replace('#instname#', $app->hook->{'get_option'}('institution_name'), $message);
+                    $message = str_replace('#mailaddr#', $app->hook->{'get_option'}('mailing_address'), $message);
+
+                    $headers = "From: $site <auto-reply@$host>\r\n";
+                    $headers .= "X-Mailer: PHP/" . phpversion();
+                    $headers .= "MIME-Version: 1.0" . "\r\n";
+                    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+                    $email->et_mail($app->hook->{'get_option'}('admissions_email'), _t("Student Acceptance Letter"), $message, $headers);
+                }
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Student', get_name($id), get_persondata('uname'));
                 redirect(url('/') . 'stu/' . $id . '/' . bm());
@@ -1236,7 +1275,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * the results in a html format.
          */ else {
 
-            $app->view->display('student/templates/transcript/'.$template.'.template', [
+            $app->view->display('student/templates/transcript/' . $template . '.template', [
                 'title' => 'Print Transcript',
                 'cssArray' => $css,
                 'jsArray' => $js,

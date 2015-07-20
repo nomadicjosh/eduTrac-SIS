@@ -42,14 +42,15 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         if ($app->req->isPost()) {
             $post = $_POST['nae'];
             $search = $app->db->person()
-                ->select('personID,fname,lname,uname,email')
+                ->select('personID,altID,fname,lname,uname,email')
                 ->whereLike('CONCAT(person.fname," ",person.lname)', "%$post%")->_or_()
                 ->whereLike('CONCAT(person.lname," ",person.fname)', "%$post%")->_or_()
                 ->whereLike('CONCAT(person.lname,", ",person.fname)', "%$post%")->_or_()
                 ->whereLike('person.fname', "%$post%")->_or_()
                 ->whereLike('person.lname', "%$post%")->_or_()
                 ->whereLike('person.uname', "%$post%")->_or_()
-                ->whereLike('person.personID', "%$post%");
+                ->whereLike('person.personID', "%$post%")->_or_()
+                ->whereLike('person.altID', "%$post%");
             $q = $search->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -180,6 +181,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
             $nae = $app->db->person();
             $nae->uname = $_POST['uname'];
+            $nae->altID = $_POST['altID'];
             $nae->personType = $_POST['personType'];
             $nae->prefix = $_POST['prefix'];
             $nae->fname = $_POST['fname'];
@@ -656,11 +658,14 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         $host = $app->req->server['HTTP_HOST'];
         $helpDesk = $app->hook->{'get_option'}('help_desk');
         $body = $app->hook->{'get_option'}('reset_password_text');
+        $body = str_replace('#instname#', $app->hook->{'get_option'}('institution_name'), $body);
+        $body = str_replace('#mailaddr#', $app->hook->{'get_option'}('mailing_address'), $body);
         $body = str_replace('#url#', $url, $body);
         $body = str_replace('#helpdesk#', $helpDesk, $body);
         $body = str_replace('#adminemail#', $fromEmail, $body);
         $body = str_replace('#uname#', _h($r1['uname']), $body);
         $body = str_replace('#email#', _h($r1['email']), $body);
+        $body = str_replace('#name#', _h($r1['lname']) . ', ' . _h($r1['fname']), $body);
         $body = str_replace('#fname#', _h($r1['fname']), $body);
         $body = str_replace('#lname#', _h($r1['lname']), $body);
         $body = str_replace('#password#', $pass, $body);
