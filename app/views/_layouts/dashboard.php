@@ -449,10 +449,6 @@
 
             ?>
 
-<?php if ($app->hook->get_option('enable_cron_jobs') == 1) { ?>
-    <img src="<?= url('/'); ?>cron/fireCron/?image=1" width="1px" height="1px" style="border:0;" />
-<?php } ?>
-
 <?php footer(); ?>
     </body>
 </html>
