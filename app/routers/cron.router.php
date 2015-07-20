@@ -2,6 +2,25 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
+$cronDir = '/tmp/' . str_replace('.','_',$_SERVER['SERVER_NAME']) . '/cron/'; 
+
+function getCronjobs() {
+    return unserialize(base64_decode(substr(file_get_contents($cronDir. 'cronjobs.dat.php'),7,-2)));
+}
+
+function saveCronjobs($data) {
+    if (!file_put_contents($cronDir . 'cronjobs.dat.php', '<' . '?php /*' . base64_encode(serialize($data)) . '*/')) {
+		error_log('cannot write to cronjobs database file, please check file rights');
+	}
+}
+
+function saveLogs($text) {
+    if (!file_put_contents($cronDir . 'logs/cronjobs.log', 
+        date('Y-m-d H:i:s') . ' - ' . $text . PHP_EOL . file_get_contents($cronDir . 'logs/cronjobs.log'))) {
+        error_log('cannot write to cronjobs log file, please check rights');
+	}
+}
+
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
