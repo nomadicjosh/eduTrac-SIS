@@ -56,7 +56,7 @@ class Log
      */
     public function purgeLog()
     {
-        $this->_app->db->query("DELETE FROM activity_log WHERE expires_at <= ?", date('Y-m-d H:i:s', time()));
+        $this->_app->db->query("DELETE FROM activity_log WHERE expires_at <= ?", [ date('Y-m-d H:i:s', time()) ]);
     }
 
     /**
