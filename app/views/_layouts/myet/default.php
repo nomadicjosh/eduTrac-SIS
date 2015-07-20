@@ -1,4 +1,10 @@
-<?php $app = \Liten\Liten::getInstance(); ?>
+<?php 
+/*
+Template Name: Default
+Template Slug: default
+*/
+
+$app = \Liten\Liten::getInstance(); ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="front ie lt-ie9 lt-ie8 lt-ie7 fluid top-full"> <![endif]-->
 <!--[if IE 7]>    <html class="front ie lt-ie9 lt-ie8 fluid top-full sticky-top"> <![endif]-->

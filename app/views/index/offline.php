@@ -13,7 +13,11 @@
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet');
+if($app->hook->{'get_option'}('myet_theme') === null) {
+    $app->view->extend('_layouts/myet/default');
+} else {
+    $app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_theme'));
+}
 $app->view->block('myet');
 if($app->hook->{'get_option'}('enable_myet_portal') == 1) {
     redirect(url('/'));
