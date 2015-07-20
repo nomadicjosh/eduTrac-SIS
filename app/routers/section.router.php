@@ -655,7 +655,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     $app->match('GET|POST', '/sros/', function () use($app, $css, $js, $logger, $flashNow) {
 
         if ($app->req->isPost()) {
-            redirect(url('/sect/sros/') . $_POST['sectionID'] . '/');
+            redirect(url('/sect/sros/') . $_POST['sectionID'] . '/' . $_POST['template'] . '/');
         }
 
         $app->view->display('section/sros', [
@@ -666,7 +666,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         );
     });
 
-    $app->get('/sros/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->get('/sros/(\d+)/(\w+)/', function ($id, $template) use($app, $css, $js, $logger, $flashNow) {
 
         $sros = $app->db->query("SELECT 
 						a.stuID,a.courseSecCode,a.termCode,a.courseCredits,
@@ -735,7 +735,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * the results in a html format.
          */ else {
 
-            $app->view->display('section/roster', [
+            $app->view->display('section/templates/roster/'.$template.'.template', [
                 'cssArray' => $css,
                 'jsArray' => $js,
                 'sros' => $q,

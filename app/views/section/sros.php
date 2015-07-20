@@ -16,6 +16,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$templates_header = get_templates_header(APP_PATH . 'views/section/templates/roster/');
 ?>
 
 <script type="text/javascript">
@@ -67,7 +68,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Row -->
 				<div class="row">
 					<!-- Column -->
-					<div class="col-md-6">
+					<div class="col-md-4">
 						
 						<!-- Group -->
                         <div class="form-group">
@@ -82,17 +83,37 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 					<!-- // Column END -->
                     
                     <!-- Column -->
-					<div class="col-md-6">
+					<div class="col-md-4">
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Section' );?></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Section' );?></label>
                             <div class="col-md-8">
                                 <select id="section" name="sectionID" class="form-control" required></select>
                                 <span id="message" style="color:red; display:hidden;"></span>
                             </div>
                         </div>
                         <!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+                    
+                    <!-- Column -->
+					<div class="col-md-4">
+						
+						<!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Template' );?></label>
+							<div class="col-md-8">
+						        <select name="template" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+									<option value="">&nbsp;</option>
+                            		<?php foreach($templates_header as $template) { ?>
+                                    <option value="<?=$template['Slug'];?>"><?=$template['Name'];?></option>
+                                    <?php } ?>
+                            	</select>
+							</div>
+						</div>
+						<!-- // Group END -->
 						
 					</div>
 					<!-- // Column END -->
