@@ -1,6 +1,11 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
+/*
+Template Name: Default
+Template Slug: default
+*/
+
 /**
- * Transcript View
+ * Default Transcript View
  *  
  * PHP 5.4+
  *
@@ -26,8 +31,8 @@ $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetHeaderData('', '', _h($stuInfo[0]['Level']) . ' Transcript', '', '', '');
 
 // set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+$pdf->setHeaderFont([ PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN ]);
+$pdf->setFooterFont([ PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA ]);
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);

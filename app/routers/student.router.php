@@ -733,6 +733,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     ->where('stuID = ?', $_POST['stuID'])->_and_()
                     ->where('courseSecID = ?', $_POST['courseSecID'])
                     ->delete();
+                $q = $app->db->stu_acct_fee()->where('stuID = ?', $_POST['stuID'])->_and_()->where('description = ?', $decode[0]['courseSection'])->delete();
                 $q = $app->db->stu_acad_cred()->where('stuAcadCredID = ?', $id)->delete();
                 redirect(url('/') . 'stu/stac/' . $_POST['stuID'] . '/' . bm());
                 exit();
@@ -747,6 +748,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     ->where('stuID = ?', $_POST['stuID'])->_and_()
                     ->where('courseSecID = ?', $_POST['courseSecID'])
                     ->delete();
+                $q = $app->db->stu_acct_fee()->where('stuID = ?', $_POST['stuID'])->_and_()->where('description = ?', $decode[0]['courseSection'])->delete();
                 $q = $app->db->stu_acad_cred()->where('stuAcadCredID = ?', $id)->delete();
                 redirect(url('/') . 'stu/stac/' . $_POST['stuID'] . '/' . bm());
                 exit();
@@ -1085,7 +1087,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/tran/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {
-            redirect(url('/stu/tran/') . $_POST['studentID'] . '/' . $_POST['acadLevelCode'] . '/');
+            redirect(url('/stu/tran/') . $_POST['stuID'] . '/' . $_POST['acadLevelCode'] . '/' . $_POST['template'] . '/');
         }
 
         $app->view->display('student/tran', [
@@ -1096,11 +1098,13 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         );
     });
 
-    $app->get('/tran/(\d+)/(\w+)/', function ($id, $level) use($app, $css, $js, $flashNow) {
+    $app->get('/tran/(\d+)/(\w+)/(\w+)/', function ($id, $level, $template) use($app, $css, $js, $flashNow) {
 
         $tranInfo = $app->db->stu_acad_cred()
             ->setTableAlias('a')
-            ->select('CASE a.acadLevelCode WHEN "UG" THEN "Undergraduate" WHEN "GR" THEN "Graduate" WHEN "Phd" THEN "Doctorate" ELSE "Continuing Education" END AS "Level"')
+            ->select('CASE a.acadLevelCode WHEN "UG" THEN "Undergraduate" WHEN "GR" THEN "Graduate" '
+                . 'WHEN "Phd" THEN "Doctorate" WHEN "CE" THEN "Continuing Education" WHEN "CTF" THEN "Certificate" '
+                . 'WHEN "DIP" THEN "Diploma" WHEN "PR" THEN "Professional" ELSE "Non-Degree" END AS "Level"')
             ->select('a.stuID,b.address1,b.address2,b.city,b.state')
             ->select('b.zip,c.ssn,c.dob,d.graduationDate,f.degreeCode')
             ->select('f.degreeName,g.majorCode,g.majorName,h.minorCode')
@@ -1119,8 +1123,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             ->where('b.addressStatus = "C"')->_and_()
             ->where('b.addressType = "P"')->_and_()
             ->where('e.acadLevelCode = ?', $level)->_and_()
-            ->where('d.currStatus = "A"')->_or_()
-            ->where('d.currStatus = "G"');
+            ->where('(d.currStatus = "A" OR d.currStatus = "G")');
         $info = $tranInfo->find(function($data) {
             $array = [];
             foreach ($data as $d) {
@@ -1233,7 +1236,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * the results in a html format.
          */ else {
 
-            $app->view->display('student/transcript', [
+            $app->view->display('student/templates/transcript/'.$template.'.template', [
                 'title' => 'Print Transcript',
                 'cssArray' => $css,
                 'jsArray' => $js,
