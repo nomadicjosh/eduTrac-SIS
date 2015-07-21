@@ -47,11 +47,12 @@ tinymce.init({
             icon: false,
             menu: [
                 {text: 'Username', onclick: function() {editor.insertContent('#uname#');}},
+                {text: 'Person ID', onclick: function() {editor.insertContent('#id#');}},
+                {text: 'Alternate ID', onclick: function() {editor.insertContent('#altID#');}},
                 {text: 'Password', onclick: function() {editor.insertContent('#password#');}},
                 {text: 'Full Name', onclick: function() {editor.insertContent('#name#');}},
                 {text: 'First Name', onclick: function() {editor.insertContent('#fname#');}},
                 {text: 'Last Name', onclick: function() {editor.insertContent('#lname#');}},
-                {text: 'Person ID', onclick: function() {editor.insertContent('#id#');}},
                 {text: 'Address 1', onclick: function() {editor.insertContent('#address1#');}},
                 {text: 'Address 2', onclick: function() {editor.insertContent('#address2#');}},
                 {text: 'City', onclick: function() {editor.insertContent('#city#');}},
@@ -161,6 +162,13 @@ tinymce.init({
                         <td class="text-center"><?=_t( 'This email template is used when applicant has been accepted and moved to stu.' );?></td>
                         <td class="text-center">
                             <a href="#applLetter" data-toggle="modal" class="btn btn-primary"><i class="fa fa-pencil"></i></a>
+                        </td>
+                    </tr>
+                    <tr class="gradeX">
+                        <td class="text-center"><?=_t( 'Login Details' );?></td>
+                        <td class="text-center"><?=_t( 'This email template is used when a new person record is created and the "Send username & password to user" is checked.' );?></td>
+                        <td class="text-center">
+                            <a href="#login" data-toggle="modal" class="btn btn-primary"><i class="fa fa-pencil"></i></a>
                         </td>
                     </tr>
                     </tbody>
@@ -273,6 +281,28 @@ tinymce.init({
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
                     <textarea id="applLetter" class="col-md-8 form-control" name="student_acceptance_letter" rows="10"><?=_h($app->hook->{'get_option'}('student_acceptance_letter'));?></textarea>
+		        </div>
+		        <div class="modal-footer">
+                    <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
+		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
+		        </div>
+                </form>
+	       	</div>
+      	</div>
+    </div>
+        
+    <div class="modal fade" id="login">
+		<div class="modal-dialog modal-fullscreen">
+			<div class="modal-content">
+                <form class="form-horizontal margin-none" action="<?=url('/');?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
+				<!-- Modal heading -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title"><?=_t( 'User Login Details' );?></h3>
+				</div>
+				<!-- // Modal heading END -->
+		        <div class="modal-body">
+                    <textarea id="login" class="col-md-8 form-control" name="person_login_details" rows="10"><?=_h($app->hook->{'get_option'}('person_login_details'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>

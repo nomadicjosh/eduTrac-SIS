@@ -212,7 +212,7 @@ $app->match('GET|POST', '/templates/', function () use($app, $logger) {
     ];
 
     if ($app->req->isPost()) {
-        $options = [ 'coa_form_text','reset_password_text','room_request_text','room_booking_confirmation_text','student_acceptance_letter'];
+        $options = [ 'coa_form_text','reset_password_text','room_request_text','room_booking_confirmation_text','student_acceptance_letter','person_login_details'];
 
         foreach ($options as $option_name) {
             if (!isset($_POST[$option_name]))
