@@ -108,10 +108,11 @@
                                         <li<?= hl('general_settings'); ?>><a href="<?= url('/'); ?>setting/<?= bm(); ?>"> <?= _t('General Settings'); ?></a></li>
                                         <li<?= hl('registration_settings'); ?>><a href="<?= url('/'); ?>registration/<?= bm(); ?>"> <?= _t('Registration Settings'); ?></a></li>
                                         <li<?= hl('email_settings'); ?>><a href="<?= url('/'); ?>email/<?= bm(); ?>"> <?= _t('Email Settings'); ?></a></li>
+                                        <li<?= hl('email_settings'); ?>><a href="<?= url('/'); ?>templates/<?= bm(); ?>"> <?= _t('Email Templates'); ?></a></li>
                                         <?php if (defined('MULTICAMPUS') && MULTICAMPUS == true) : ?>
                                         <li<?= \app\src\Campus::menu(); ?><?= ml('campus_module'); ?>><a href="<?= url('/'); ?>campus/<?= bm(); ?>"> <?= _t('Campuses'); ?></a></li>
                                         <?php endif; ?>
-                                        <li<?= hl('cron_jobs'); ?>><a href="<?= url('/'); ?>cron/<?= bm(); ?>"> <?= _t('Cron Jobs'); ?></a></li>
+                                        <li<?= hl('cron_jobs'); ?>><a href="<?= url('/'); ?>cron/<?= bm(); ?>"> <?= _t('Cronjob Handler'); ?></a></li>
                                         <li<?= hl('permissions', 'access_permission_screen'); ?>><a href="<?= url('/'); ?>permission/<?= bm(); ?>"> <?= _t('(MPRM) Manage Perm'); ?></a></li>
                                         <li<?= hl('roles', 'access_role_screen'); ?>><a href="<?= url('/'); ?>role/<?= bm(); ?>"> <?= _t('(MRLE) Manage Role'); ?></a></li>
                                         <li<?= hl('errorlogs', 'access_error_log_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= url('/'); ?>error/logs/<?= bm(); ?>"> <?= _t('Error Log'); ?></a></li>
