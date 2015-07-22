@@ -15,7 +15,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 define('CURRENT_RELEASE', '5.0');
-define('RELEASE_TAG', '5.0.12');
+define('RELEASE_TAG', '5.0.13');
 
 $app = \Liten\Liten::getInstance();
 
@@ -1178,9 +1178,9 @@ function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
     if (count($q) > 0) {
         $photosize = getimagesize(url('/') . 'static/photos/' . $q[0]['photo']);
         if (getPathInfo('/form/photo/') === '/form/photo/') {
-            $avatar = '<a href="' . url('/') . 'form/deleteSchoolPhoto/"><img src="' . url('/') . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="'.$class.'" /></a>';
+            $avatar = '<a href="' . url('/') . 'form/deleteSchoolPhoto/"><img src="' . url('/') . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
         } else {
-            $avatar = '<img src="' . url('/') . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="'.$class.'" />';
+            $avatar = '<img src="' . url('/') . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
         }
     } else {
         $avatar = get_user_avatar($email, $s, $class);
@@ -1225,7 +1225,7 @@ function upgradeSQL($file, $delimiter = ';')
 {
     $app = \Liten\Liten::getInstance();
     set_time_limit(0);
-    
+
     $contents = _file_get_contents($file);
 
     if (strlen($contents) !== 0) {
@@ -1246,11 +1246,11 @@ function upgradeSQL($file, $delimiter = ';')
                         echo '<p><font color="green">SUCCESS:</font> ' . $query . '</p>' . "\n";
                     }
 
-                    /*while (ob_get_level() > 0) {
-                        ob_end_flush();
-                    }
+                    /* while (ob_get_level() > 0) {
+                      ob_end_flush();
+                      }
 
-                    flush();*/
+                      flush(); */
                 }
 
                 if (is_string($query) === true) {
@@ -1586,6 +1586,92 @@ function convertCourseSec($sect)
         $section = $r['courseSecCode'];
     }
     return $section;
+}
+
+/**
+ * Returns the template header information
+ *
+ * @since 5.0.13
+ * @param string (optional) $template_dir loads templates from specified folder
+ * @return mixed
+ *
+ */
+function get_templates_header($template_dir = '')
+{
+    $templates_header = [];
+    if ($handle = opendir($template_dir)) {
+
+        while ($file = readdir($handle)) {
+            if (is_file($template_dir . $file)) {
+                if (strpos($template_dir . $file, '.template.php')) {
+                    $fp = fopen($template_dir . $file, 'r');
+                    // Pull only the first 8kiB of the file in.
+                    $template_data = fread($fp, 8192);
+                    fclose($fp);
+
+                    preg_match('|Template Name:(.*)$|mi', $template_data, $name);
+                    preg_match('|Template Slug:(.*)$|mi', $template_data, $template_slug);
+
+                    foreach (array('name', 'template_slug') as $field) {
+                        if (!empty(${$field}))
+                            ${$field} = trim(${$field} [1]);
+                        else
+                            ${$field} = '';
+                    }
+                    $template_data = array('filename' => $file, 'Name' => $name, 'Title' => $name, 'Slug' => $template_slug);
+                    $templates_header[] = $template_data;
+                }
+            } else if ((is_dir($template_dir . $file)) && ($file != '.') && ($file != '..')) {
+                get_templates_header($template_dir . $file . '/');
+            }
+        }
+
+        closedir($handle);
+    }
+    return $templates_header;
+}
+
+/**
+ * Returns the layout header information
+ *
+ * @since 5.0.13
+ * @param string (optional) $layout_dir loads layouts from specified folder
+ * @return mixed
+ *
+ */
+function get_layouts_header($layout_dir = '')
+{
+    $layouts_header = [];
+    if ($handle = opendir($layout_dir)) {
+
+        while ($file = readdir($handle)) {
+            if (is_file($layout_dir . $file)) {
+                if (strpos($layout_dir . $file, '.layout.php')) {
+                    $fp = fopen($layout_dir . $file, 'r');
+                    // Pull only the first 8kiB of the file in.
+                    $layout_data = fread($fp, 8192);
+                    fclose($fp);
+
+                    preg_match('|Layout Name:(.*)$|mi', $layout_data, $name);
+                    preg_match('|Layout Slug:(.*)$|mi', $layout_data, $layout_slug);
+
+                    foreach (array('name', 'layout_slug') as $field) {
+                        if (!empty(${$field}))
+                            ${$field} = trim(${$field} [1]);
+                        else
+                            ${$field} = '';
+                    }
+                    $layout_data = array('filename' => $file, 'Name' => $name, 'Title' => $name, 'Slug' => $layout_slug);
+                    $layouts_header[] = $layout_data;
+                }
+            } else if ((is_dir($layout_dir . $file)) && ($file != '.') && ($file != '..')) {
+                get_layouts_header($layout_dir . $file . '/');
+            }
+        }
+
+        closedir($handle);
+    }
+    return $layouts_header;
 }
 
 /**
