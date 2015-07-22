@@ -247,7 +247,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     $email->et_mail($_POST['email'], _t("myeduTrac Login Details"), $message, $headers);
                 }
                 if ($addr->save()) {
-                    $logger->setLog('New Record', 'Name and Address', get_name($nae->lastInsertId()), get_persondata('uname'));
+                    $logger->setLog('New Record', 'Name and Address', get_name($ID), get_persondata('uname'));
                     $app->flash('success_message', $flashNow->notice(200));
                     redirect(url('/nae/') . $ID . '/');
                 } else {
