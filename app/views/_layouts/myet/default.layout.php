@@ -1,7 +1,7 @@
 <?php 
 /*
-Template Name: Default
-Template Slug: default
+Layout Name: Default
+Layout Slug: default
 */
 
 $app = \Liten\Liten::getInstance(); ?>

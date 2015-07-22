@@ -39,7 +39,7 @@ $app->match('GET|POST', '/setting/', function () use($app, $logger) {
 
     if ($app->req->isPost()) {
         $options = [ 
-            'institution_name', 'cookieexpire', 'cookiepath', 'myet_offline_message',
+            'institution_name', 'cookieexpire', 'cookiepath', 'myet_layout', 'myet_offline_message',
             'enable_benchmark', 'edutrac_analytics_url', 'curl', 'api_key', 'help_desk',
             'contact_phone', 'mailing_address', 'enable_myet_portal', 'enable_myet_appl_form', 'screen_caching', 'db_caching',
             'system_timezone','et_core_locale','send_acceptance_email'

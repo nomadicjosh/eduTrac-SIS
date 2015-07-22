@@ -15,6 +15,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
 ?>
 
 <ul class="breadcrumb">
@@ -67,6 +68,20 @@ $app->view->block('dashboard');
                             </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myeT Layout' );?> <a href="#myetLayout" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+							<div class="col-md-8">
+						        <select name="myet_layout" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+									<option value="">&nbsp;</option>
+                            		<?php foreach($layouts_header as $layout) { ?>
+                                    <option value="<?=$layout['Slug'];?>"<?=selected( _h($app->hook->{'get_option'}( 'myet_layout' )), $layout['Slug'], false ); ?>><?=$layout['Name'];?></option>
+                                    <?php } ?>
+                            	</select>
+							</div>
+						</div>
+						<!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
@@ -275,6 +290,25 @@ $app->view->block('dashboard');
 	</form>
 	<!-- // Form END -->
     
+    <div class="modal fade" id="myetLayout">
+    	<div class="modal-dialog">
+			<div class="modal-content">
+	
+				<!-- Modal heading -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title"><?=_t( 'myeduTrac Layout' );?></h3>
+				</div>
+				<!-- // Modal heading END -->
+		        <div class="modal-body">
+		            <p><?=_t("You can create your own layout for myeduTrac self service portal. Make a duplicate of the default layout (/app/views/_layouts/myet/default.php), modify it and add your own css styling.");?></p>
+		        </div>
+		        <div class="modal-footer">
+		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
+		        </div>
+	        </div>
+      	</div>
+    </div>
     <div class="modal fade" id="apikey">
     	<div class="modal-dialog">
 			<div class="modal-content">

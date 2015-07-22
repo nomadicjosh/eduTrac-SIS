@@ -13,10 +13,10 @@
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 $app = \Liten\Liten::getInstance();
-if($app->hook->{'get_option'}('myet_theme') === null) {
-    $app->view->extend('_layouts/myet/default');
+if($app->hook->{'get_option'}('myet_layout') === null) {
+    $app->view->extend('_layouts/myet/default.layout');
 } else {
-    $app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_theme'));
+    $app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_layout') . '.layout');
 }
 $app->view->block('myet');
 $message = new \app\src\Messages();
