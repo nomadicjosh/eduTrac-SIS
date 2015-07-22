@@ -98,11 +98,13 @@ if (file_exists(BASE_PATH . 'config.php')) {
  * add your own customized screens without needing to touch
  * the core.
  */
-$dropins = glob(APP_PATH . 'dropins' . DS . '*.php');
-if (is_array($dropins)) {
-    foreach ($dropins as $dropin) {
-        if (file_exists($dropin))
-            include($dropin);
+if (file_exists(BASE_PATH . 'config.php')) {
+    $dropins = glob(APP_PATH . 'dropins' . DS . '*.php');
+    if (is_array($dropins)) {
+        foreach ($dropins as $dropin) {
+            if (file_exists($dropin))
+                include($dropin);
+        }
     }
 }
 
