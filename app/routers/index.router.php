@@ -68,8 +68,12 @@ $app->before('GET|POST', '/login/', function() {
 $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
 
     if ($app->req->isPost()) {
-        $person = $app->db->person()->select('personID,uname,password')
-            ->where('person.uname = ?', $app->req->_post('uname'));
+        $person = $app->db->person()
+            ->select('person.personID,person.uname,person.password')
+            ->_join('staff','person.personID = staff.staffID')
+            ->_join('student','person.personID = student.stuID')
+            ->where('person.uname = ?', $app->req->_post('uname'))->_and_()
+            ->where('(staff.status = "A" OR student.status = "A")');
         $q = $person->find(function($data) {
             $array = [];
             foreach ($data as $d) {
@@ -80,6 +84,12 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
         $a = [];
         foreach ($q as $r) {
             $a[] = $r;
+        }
+        
+        if(count($q) <= 0) {
+            $app->flash('error_message', 'Your account is deactivated.');
+            redirect($app->req->server['HTTP_REFERER']);
+            exit();
         }
 
         /**
@@ -96,13 +106,16 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
          * Checks if the password is correct.
          */
         if ($hasher->checkPassword($app->req->_post('password'), $r['password'])) {
+            $ll = $app->db->person();
+            $ll->LastLogin = $ll->NOW();
+            $ll->where('personID = ?', _h($r['personID']))->update();
             if (isset($_POST['rememberme'])) {
                 $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), ($app->hook->{'get_option'}('cookieexpire') !== '') ? $app->hook->{'get_option'}('cookieexpire') : $app->config('cookie.lifetime'));
                 $app->cookies->setSecureCookie('ET_REMEMBER', 'rememberme', ($app->hook->{'get_option'}('cookieexpire') !== '') ? $app->hook->{'get_option'}('cookieexpire') : $app->config('cookie.lifetime'));
             } else {
                 $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
             }
-            $logger->setLog('Authentication', 'Login', get_name($r['personID']), _h($r['uname']));
+            $logger->setLog('Authentication', 'Login', get_name(_h($r['personID'])), _h($r['uname']));
             redirect(url('/'));
         } else {
             $app->flash('error_message', 'The password you entered was incorrect.');
