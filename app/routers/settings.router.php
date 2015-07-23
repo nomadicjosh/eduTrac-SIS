@@ -38,11 +38,11 @@ $app->match('GET|POST', '/setting/', function () use($app, $logger) {
     ];
 
     if ($app->req->isPost()) {
-        $options = [ 
+        $options = [
             'institution_name', 'cookieexpire', 'cookiepath', 'myet_layout', 'myet_offline_message',
             'enable_benchmark', 'edutrac_analytics_url', 'curl', 'api_key', 'help_desk',
             'contact_phone', 'mailing_address', 'enable_myet_portal', 'enable_myet_appl_form', 'screen_caching', 'db_caching',
-            'system_timezone','et_core_locale','send_acceptance_email'
+            'system_timezone', 'et_core_locale', 'send_acceptance_email'
         ];
 
         foreach ($options as $option_name) {
@@ -212,7 +212,10 @@ $app->match('GET|POST', '/templates/', function () use($app, $logger) {
     ];
 
     if ($app->req->isPost()) {
-        $options = [ 'coa_form_text','reset_password_text','room_request_text','room_booking_confirmation_text','student_acceptance_letter','person_login_details'];
+        $options = [
+            'coa_form_text', 'reset_password_text', 'room_request_text', 'room_booking_confirmation_text',
+            'student_acceptance_letter', 'person_login_details', 'update_username'
+        ];
 
         foreach ($options as $option_name) {
             if (!isset($_POST[$option_name]))

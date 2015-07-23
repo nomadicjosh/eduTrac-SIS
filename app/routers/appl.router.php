@@ -22,10 +22,11 @@ $js = [
 $json_url = url('/api/');
 
 $logger = new \app\src\Log();
+$email = new \app\src\Email();
 $dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
-$app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+$app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow, $email) {
 
     /**
      * Before router check.
@@ -95,7 +96,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
 
         $appl = $app->db->application()
             ->setTableAlias('a')
-            ->select('a.*,b.fname,b.mname,b.lname,b.dob')
+            ->select('a.*,b.fname,b.mname,b.lname,b.dob,b.uname')
             ->select('b.email,b.gender')
             ->_join('person', 'a.personID = b.personID', 'b')
             ->where('a.applID = ?', $id);
@@ -179,7 +180,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         }
     });
 
-    $app->post('/editAppl/(\d+)/', function ($id) use($app, $logger, $flashNow) {
+    $app->post('/editAppl/(\d+)/', function ($id) use($app, $logger, $flashNow, $email) {
         $appl = $app->db->application();
         $appl->acadProgCode = $_POST['acadProgCode'];
         $appl->startTerm = $_POST['startTerm'];
@@ -202,6 +203,47 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             $logger->setLog('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));
         } else {
             $app->flash('error_message', $flashNow->notice(409));
+        }
+
+        $person = $app->db->person()->select('uname')->where('personID = ?', $_POST['personID']);
+        $q = $person->find(function($data) {
+            $array = [];
+            foreach($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        $uname = $app->db->person();
+        $uname->uname = $_POST['uname'];
+        $uname->where('personID = ?', $_POST['personID']);
+        if ($q[0]['uname'] !== $_POST['uname']) {
+            if ($uname->update()) {
+                $host = strtolower($_SERVER['SERVER_NAME']);
+                $site = $app->hook->{'get_option'}('institution_name');
+                
+                $message = $app->hook->{'get_option'}('update_username');
+                $message = str_replace('#uname#', getUserValue($_POST['personID'], 'uname'), $message);
+                $message = str_replace('#fname#', getUserValue($_POST['personID'], 'fname'), $message);
+                $message = str_replace('#lname#', getUserValue($_POST['personID'], 'lname'), $message);
+                $message = str_replace('#name#', get_name($_POST['personID']), $message);
+                $message = str_replace('#id#', $_POST['personID'], $message);
+                $message = str_replace('#altID#', getUserValue($_POST['personID'], 'altID'), $message);
+                $message = str_replace('#url#', url('/'), $message);
+                $message = str_replace('#helpdesk#', $app->hook->{'get_option'}('help_desk'), $message);
+                $message = str_replace('#instname#', $app->hook->{'get_option'}('institution_name'), $message);
+                $message = str_replace('#mailaddr#', $app->hook->{'get_option'}('mailing_address'), $message);
+                
+                $headers = "From: $site <dont-reply@$host>\r\n";
+                $headers .= "X-Mailer: PHP/" . phpversion();
+                $headers .= "MIME-Version: 1.0" . "\r\n";
+                $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+                $email->et_mail(getUserValue($_POST['personID'], 'email'), _t("myeduTrac Username Change"), $message, $headers);
+                    
+                $app->flash('success_message', $flashNow->notice(200));
+                $logger->setLog('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
         }
 
         $size = count($_POST['fice_ceeb']);
@@ -432,20 +474,20 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->match('GET|POST', '/inst/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        if($app->req->isPost()) {
-    		$inst = $app->db->institution();
-    		foreach($_POST as $k => $v) {
-    			$inst->$k = $v;
-    		}
-    		$inst->where('institutionID = ?', $id);
-    		if($inst->update()) {
+        if ($app->req->isPost()) {
+            $inst = $app->db->institution();
+            foreach ($_POST as $k => $v) {
+                $inst->$k = $v;
+            }
+            $inst->where('institutionID = ?', $id);
+            if ($inst->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Institution', _filter_input_string(INPUT_POST, 'instName'), get_persondata('uname'));
-    		} else {
-    			$app->flash('error_message', $flashNow->notice(409));
-    		}
-    		redirect( $app->req->server['HTTP_REFERER'] );
-    	}
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
 
         $json = _file_get_contents($json_url . 'institution/institutionID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $inst = json_decode($json, true);

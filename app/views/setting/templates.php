@@ -171,6 +171,13 @@ tinymce.init({
                             <a href="#login" data-toggle="modal" class="btn btn-primary"><i class="fa fa-pencil"></i></a>
                         </td>
                     </tr>
+                    <tr class="gradeX">
+                        <td class="text-center"><?=_t( 'Update Username' );?></td>
+                        <td class="text-center"><?=_t( 'This email template is used when the username on the application form has been updated.' );?></td>
+                        <td class="text-center">
+                            <a href="#uname" data-toggle="modal" class="btn btn-primary"><i class="fa fa-pencil"></i></a>
+                        </td>
+                    </tr>
                     </tbody>
                     <!-- // Table body END -->
 
@@ -202,7 +209,6 @@ tinymce.init({
 	       	</div>
       	</div>
     </div>
-    
     <div class="modal fade" id="password">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
@@ -224,7 +230,6 @@ tinymce.init({
 	       	</div>
       	</div>
     </div>
-        
     <div class="modal fade" id="rrt">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
@@ -246,7 +251,6 @@ tinymce.init({
 	       	</div>
       	</div>
     </div>
-        
     <div class="modal fade" id="rconfirm">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
@@ -268,7 +272,6 @@ tinymce.init({
 	       	</div>
       	</div>
     </div>
-        
     <div class="modal fade" id="applLetter">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
@@ -290,7 +293,6 @@ tinymce.init({
 	       	</div>
       	</div>
     </div>
-        
     <div class="modal fade" id="login">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
@@ -303,6 +305,27 @@ tinymce.init({
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
                     <textarea id="login" class="col-md-8 form-control" name="person_login_details" rows="10"><?=_h($app->hook->{'get_option'}('person_login_details'));?></textarea>
+		        </div>
+		        <div class="modal-footer">
+                    <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
+		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
+		        </div>
+                </form>
+	       	</div>
+      	</div>
+    </div>
+    <div class="modal fade" id="uname">
+		<div class="modal-dialog modal-fullscreen">
+			<div class="modal-content">
+                <form class="form-horizontal margin-none" action="<?=url('/');?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
+				<!-- Modal heading -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title"><?=_t( 'Update Username' );?></h3>
+				</div>
+				<!-- // Modal heading END -->
+		        <div class="modal-body">
+                    <textarea id="uname" class="col-md-8 form-control" name="update_username" rows="10"><?=_h($app->hook->{'get_option'}('update_username'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
