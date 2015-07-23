@@ -185,9 +185,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'State' );?></label>
+                            <label class="col-md-3 control-label"><?=_t( 'State' );?></label>
                             <div class="col-md-8">
-                                <select name="state" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                <select name="state" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
                                     <?php table_dropdown('state',null,'code','code','name',(isset($_POST['state'])) ? $_POST['state'] : ''); ?>
                                 </select>
@@ -197,9 +197,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Zip Code' );?></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Zip Code' );?></label>
                             <div class="col-md-8">
-                                <input class="form-control" type="text" name="zip" value="<?=(isset($_POST['zip'])) ? $_POST['zip'] : '';?>" required/>
+                                <input class="form-control" type="text" name="zip" value="<?=(isset($_POST['zip'])) ? $_POST['zip'] : '';?>" />
                             </div>
                         </div>
                         <!-- // Group END -->

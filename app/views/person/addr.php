@@ -64,7 +64,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'First Name' );?></label>
 							<div class="col-md-8">
-								<input type="text" readonly class="form-control" value="<?=_h($nae[0]['fname']);?>" required />
+								<input type="text" readonly class="form-control" value="<?=_h($nae[0]['fname']);?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -73,7 +73,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Last Name' );?></label>
                             <div class="col-md-8">
-                                <input type="text" readonly class="form-control" value="<?=_h($nae[0]['lname']);?>" required />
+                                <input type="text" readonly class="form-control" value="<?=_h($nae[0]['lname']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -89,9 +89,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><?=_t( 'Address1' );?></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Address1' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="address1"<?=aio();?> class="form-control" value="<?=_h($addr[0]['address1']);?>" required />
+								<input type="text" name="address1"<?=aio();?> class="form-control" value="<?=_h($addr[0]['address1']);?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -107,7 +107,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'City' );?></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'City' );?></label>
                             <div class="col-md-8">
                                 <input type="text" name="city"<?=aio();?> class="form-control" value="<?=_h($addr[0]['city']);?>" required />
                             </div>
@@ -118,7 +118,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'State' );?></label>
                             <div class="col-md-8">
-                                <select name="state" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                <select name="state" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
                                     <?php table_dropdown('state',null,'code','code','name',_h($addr[0]['state'])); ?>
                                 </select>
@@ -130,7 +130,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Zip Code' );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="zip"<?=aio();?> class="form-control" value="<?=_h($addr[0]['zip']);?>" required />
+                                <input type="text" name="zip"<?=aio();?> class="form-control" value="<?=_h($addr[0]['zip']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -155,7 +155,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Address Type' );?></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Address Type' );?></label>
                             <div class="col-md-8">
                                 <?=address_type_select(_h($addr[0]['addressType']));?>
                             </div>
@@ -164,7 +164,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 					
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Start Date' );?></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Start Date' );?></label>
                             <div class="col-md-8">
                                 <div class="input-group date col-md-8" id="datepicker6">
                                     <input class="form-control" name="startDate"<?=aio();?> type="text" value="<?=_h($addr[0]['startDate']);?>" required/>
@@ -192,7 +192,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Status' );?></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Status' );?></label>
                             <div class="col-md-8">
                                <?=address_status_select(_h($addr[0]['addressStatus']));?>
                             </div>
