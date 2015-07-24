@@ -64,6 +64,13 @@ $message = new \app\src\Messages;
                             </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+                            <label class="col-md-3 control-label" for="deptName"><font color="red">*</font> <?=_t( 'Department Name' );?></label>
+							<div class="col-md-8"><input class="form-control" id="deptName" name="deptName" type="text" required /></div>
+						</div>
+						<!-- // Group END -->
 						
 					</div>
 					<!-- // Column END -->
@@ -73,8 +80,15 @@ $message = new \app\src\Messages;
 						
 						<!-- Group -->
 						<div class="form-group">
-                            <label class="col-md-3 control-label" for="deptName"><font color="red">*</font> <?=_t( 'Department Name' );?></label>
-							<div class="col-md-8"><input class="form-control" id="deptName" name="deptName" type="text" required /></div>
+                            <label class="col-md-3 control-label"><?=_t( 'Department Email' );?></label>
+							<div class="col-md-8"><input class="form-control" name="deptEmail" type="email" /></div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Department Phone #' );?></label>
+							<div class="col-md-8"><input class="form-control" name="deptPhone" type="text" /></div>
 						</div>
 						<!-- // Group END -->
 						
@@ -118,9 +132,11 @@ $message = new \app\src\Messages;
                 <!-- Table heading -->
                 <thead>
                     <tr>
-                        <th class="text-center"><?=_t( 'Department Code' );?></th>
-                        <th class="text-center"><?=_t( 'Department Name' );?></th>
-                        <th class="text-center"><?=_t( 'Department Description' );?></th>
+                        <th class="text-center"><?=_t( 'Code' );?></th>
+                        <th class="text-center"><?=_t( 'Name' );?></th>
+                        <th class="text-center"><?=_t( 'Email' );?></th>
+                        <th class="text-center"><?=_t( 'Phone' );?></th>
+                        <th class="text-center"><?=_t( 'Description' );?></th>
                         <th class="text-center"><?=_t( 'Actions' );?></th>
                     </tr>
                 </thead>
@@ -132,6 +148,8 @@ $message = new \app\src\Messages;
                 <tr class="gradeX">
                     <td class="text-center"><?=_h($value['deptCode']);?></td>
                     <td class="text-center"><?=_h($value['deptName']);?></td>
+                    <td class="text-center"><?=_h($value['deptEmail']);?></td>
+                    <td class="text-center"><?=_h($value['deptPhone']);?></td>
                     <td class="text-center"><?=_h($value['deptDesc']);?></td>
                     <td class="text-center">
                     	<div class="btn-group dropup">

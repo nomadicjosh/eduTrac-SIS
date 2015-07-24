@@ -72,6 +72,13 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+                            <label class="col-md-3 control-label" for="deptName"><font color="red">*</font> <?=_t( 'Department Name' );?></label>
+							<div class="col-md-8"><input class="form-control" id="deptName"<?=gio();?> name="deptName" type="text" value="<?=_h($dept[0]['deptName']);?>" required /></div>
+						</div>
+						<!-- // Group END -->
 						
 					</div>
 					<!-- // Column END -->
@@ -81,8 +88,15 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 						
 						<!-- Group -->
 						<div class="form-group">
-                            <label class="col-md-3 control-label" for="deptName"><font color="red">*</font> <?=_t( 'Department Name' );?></label>
-							<div class="col-md-8"><input class="form-control" id="deptName"<?=gio();?> name="deptName" type="text" value="<?=_h($dept[0]['deptName']);?>" required /></div>
+                            <label class="col-md-3 control-label"><?=_t( 'Department Email' );?></label>
+							<div class="col-md-8"><input class="form-control"<?=gio();?> name="deptEmail" type="text" value="<?=_h($dept[0]['deptEmail']);?>" /></div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Department Phone #' );?></label>
+							<div class="col-md-8"><input class="form-control"<?=gio();?> name="deptPhone" type="text" value="<?=_h($dept[0]['deptPhone']);?>" /></div>
 						</div>
 						<!-- // Group END -->
 						
