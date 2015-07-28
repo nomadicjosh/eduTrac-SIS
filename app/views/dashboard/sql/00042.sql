@@ -81,6 +81,10 @@ ALTER TABLE `stu_acct_tuition` MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `stu_acct_tuition` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
 
+ALTER TABLE `department` ADD COLUMN `deptEmail` VARCHAR(180) NOT NULL AFTER `deptName`;
+
+ALTER TABLE `department` ADD COLUMN `deptPhone` VARCHAR(20) NOT NULL AFTER `deptEmail`;
+
 ALTER TABLE `person` ADD COLUMN `altID` VARCHAR(255) DEFAULT NULL AFTER `personID`;
 
 ALTER TABLE `person` ADD COLUMN `LastLogin` datetime NOT NULL AFTER `approvedBy`;
