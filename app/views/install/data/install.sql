@@ -836,7 +836,7 @@ CREATE TABLE IF NOT EXISTS `department` (
   UNIQUE KEY `deptCode` (`deptCode`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `department` VALUES(1, 'NULL', 'NULL', 'Null', 'Default', '2014-02-26 21:19:27');
+INSERT INTO `department` VALUES(1, 'NULL', 'NULL', 'Null', '', '', 'Default', '2014-02-26 21:19:27');
 
 CREATE TABLE IF NOT EXISTS `email_hold` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
