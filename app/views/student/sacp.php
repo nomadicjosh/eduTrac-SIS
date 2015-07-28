@@ -294,7 +294,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				
 				<!-- Form actions -->
 				<div class="form-actions">
-				    <input type="hidden" name="stuProgID" value="<?=_h($sacp[0]['stuProgID']);?>" />
+				    <input type="hidden" name="stuID" value="<?=_h($sacp[0]['stuID']);?>" />
 					<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
 					<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" onclick="window.location='<?=url('/');?>stu/add-prog/<?=_h($sacp[0]['stuID']);?>/<?=bm();?>'"><i></i><?=_t( 'Add' );?></button>
 					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>stu/<?=_h($sacp[0]['stuID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>

@@ -591,8 +591,6 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
             }
-            error_log(var_export($_POST['permission'], true));
-            error_log(var_export(serialize($_POST['permission']), true));
         }
 
         /**
@@ -716,4 +714,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         }
         redirect($app->req->server['HTTP_REFERER']);
     });
+});
+
+$app->setError(function() use($app) {
+
+    $app->view->display('error/404', ['title' => '404 Error']);
 });

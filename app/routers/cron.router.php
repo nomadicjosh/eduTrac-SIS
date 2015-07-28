@@ -52,13 +52,13 @@ foreach ($regions as $name => $mask) {
 
 function getCronjobs()
 {
-    $cronDir = '/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/cron/';
+    $cronDir = cronDir() . 'cron/';
     return unserialize(base64_decode(substr(file_get_contents($cronDir . 'cronjobs.dat.php'), 7, -2)));
 }
 
 function saveCronjobs($data)
 {
-    $cronDir = '/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/cron/';
+    $cronDir = cronDir() . 'cron/';
     if (!file_put_contents($cronDir . 'cronjobs.dat.php', '<' . '?php /*' . base64_encode(serialize($data)) . '*/')) {
         error_log('cannot write to cronjobs database file, please check file rights');
     }
@@ -66,7 +66,7 @@ function saveCronjobs($data)
 
 function saveLogs($text)
 {
-    $cronDir = '/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/cron/';
+    $cronDir = cronDir() . 'cron/';
     if (!file_put_contents($cronDir . 'logs/cronjobs.log', date('Y-m-d H:i:s') . ' - ' . $text . PHP_EOL . file_get_contents($cronDir . 'logs/cronjobs.log'))) {
         error_log('cannot write to cronjobs log file, please check rights');
     }
@@ -75,7 +75,7 @@ function saveLogs($text)
 function updateCronjobs($id = '')
 {
     $app = \Liten\Liten::getInstance();
-    $cronDir = '/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/cron/';
+    $cronDir = cronDir() . 'cron/';
     if (file_put_contents($cronDir . 'cronjobs.dat.php', '<' . '?php /*' . base64_encode(serialize($_SESSION['cronjobs'])) . '*/')) {
         $app->flash('success_message', _t('Database saved.'));
 
@@ -102,8 +102,8 @@ function updateCronjobs($id = '')
     }
     exit;
 }
-if (file_exists('/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/cron/' . 'cronjobs.dat.php')) {
-    $data = unserialize(base64_decode(substr(file_get_contents('/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/cron/' . 'cronjobs.dat.php'), 7, -2)));
+if (file_exists(cronDir() . 'cron/' . 'cronjobs.dat.php')) {
+    $data = unserialize(base64_decode(substr(file_get_contents(cronDir() . 'cron/' . 'cronjobs.dat.php'), 7, -2)));
     if (is_array($data)) {
         $_SESSION['cronjobs'] = $data;
     }
@@ -154,7 +154,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {
-            $cronDir = '/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/cron/';
+            $cronDir = cronDir() . 'cron/';
             // remove from session
             foreach ($_POST['cronjobs'] as $k => $v) {
                 // get log files, if exists;
@@ -179,20 +179,10 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             updateCronjobs();
         }
 
-        $cron = $app->db->cronjob();
-        $q = $cron->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
         $app->view->display('cron/index', [
             'title' => 'Cronjob Handlers',
             'cssArray' => $css,
-            'jsArray' => $js,
-            'cronjob' => $q
+            'jsArray' => $js
             ]
         );
     });
@@ -213,78 +203,6 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
             redirect(url('/lock/'));
-        }
-    });
-
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js) {
-
-        $cron = $app->db->cronjob()->where('id = ?', $id);
-        $q = $cron->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        if ($app->req->isPost()) {
-            if ($_POST['minutes'] > 0)
-                $time_interval = $_POST['minutes'] * 60;
-            elseif ($_POST['hours'] > 0)
-                $time_interval = $_POST['hours'] * 3600;
-            elseif ($_POST['days'] > 0)
-                $time_interval = $_POST['days'] * 86400;
-            else
-                $time_interval = $_POST['weeks'] * 604800;
-
-            $_POST['time_last_fired'] = ($_POST['time_last_fired']) ? $_POST['time_last_fired'] : time();
-            $fire_time = $_POST['time_last_fired'] + $time_interval;
-
-            $cron = $app->db->cronjob();
-            $cron->name = $app->req->_post('name');
-            $cron->scriptpath = $app->req->_post('scriptpath');
-            $cron->time_interval = $time_interval;
-            $cron->fire_time = $fire_time;
-            $cron->run_only_once = $app->req->_post('run_only_once');
-            $cron->where('id = ?', $app->req->_post('id'))->update();
-            redirect($app->req->server['HTTP_REFERER']);
-        }
-
-        /**
-         * If the database table doesn't exist, then it
-         * is false and a 404 should be sent.
-         */
-        if ($q == false) {
-
-            $app->view->display('error/404', ['title' => '404 Error']);
-        }
-        /**
-         * If the query is legit, but there
-         * is no data in the table, then 404
-         * will be shown.
-         */ elseif (empty($q) == true) {
-
-            $app->view->display('error/404', ['title' => '404 Error']);
-        }
-        /**
-         * If data is zero, 404 not found.
-         */ elseif (count($q) <= 0) {
-
-            $app->view->display('error/404', ['title' => '404 Error']);
-        }
-        /**
-         * If we get to this point, the all is well
-         * and it is ok to process the query and print
-         * the results in a html format.
-         */ else {
-
-            $app->view->display('cron/view', [
-                'title' => 'Cronjobs',
-                'cssArray' => $css,
-                'jsArray' => $js,
-                'cronjob' => $q
-                ]
-            );
         }
     });
 
@@ -407,7 +325,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
     $app->match('GET|POST', '/log/', function () use($app) {
         if ($app->req->isPost()) {
             $app->flash('success_message', _t('Cronjob log cleaned.'));
-            file_put_contents('/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/cron/cronjobs.log', '');
+            file_put_contents(cronDir() . 'cron/cronjobs.log', '');
 
             redirect($app->req->server['HTTP_REFERER']);
         }
@@ -416,7 +334,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
     });
 
     $app->get('/cronjob/', function () use($app, $email) {
-        $cronDir = '/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/cron/';
+        $cronDir = cronDir() . 'cron/';
         if (file_exists($cronDir . 'cronjobs.dat.php')) {
             $cronjobs = getCronjobs();
 
@@ -861,4 +779,9 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             }
         }
     });
+});
+
+$app->setError(function() use($app) {
+
+    $app->view->display('error/404', ['title' => '404 Error']);
 });

@@ -146,7 +146,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'City' );?></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'City' );?></label>
                             <div class="col-md-5">
                                 <input class="form-control" type="text" readonly value="<?=_h($addr[0]['city']);?>" required />
                             </div>
@@ -157,7 +157,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'State' );?></label>
                             <div class="col-md-2">
-                                <input class="form-control" type="text" readonly value="<?=_h($addr[0]['state']);?>" required />
+                                <input class="form-control" type="text" readonly value="<?=_h($addr[0]['state']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -166,7 +166,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Zip Code' );?></label>
                             <div class="col-md-6">
-                                <input class="form-control" type="text" readonly value="<?=_h($addr[0]['zip']);?>" required />
+                                <input class="form-control" type="text" readonly value="<?=_h($addr[0]['zip']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->

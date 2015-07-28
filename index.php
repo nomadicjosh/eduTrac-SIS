@@ -32,7 +32,7 @@ require( BASE_PATH . 'Liten' . DS . 'Bootstrap.php');
 $app = new \Liten\Liten(
     [
     'cookies.lifetime' => '86400',
-    'cookies.savepath' => '/tmp/' . $app->req->server['SERVER_NAME'] . '/'
+    'cookies.savepath' => '/tmp/' . str_replace('.','_',$app->req->server['SERVER_NAME'] . '/')
     ]
 );
 

@@ -112,10 +112,11 @@
                                         <?php if (defined('MULTICAMPUS') && MULTICAMPUS == true) : ?>
                                         <li<?= \app\src\Campus::menu(); ?><?= ml('campus_module'); ?>><a href="<?= url('/'); ?>campus/<?= bm(); ?>"> <?= _t('Campuses'); ?></a></li>
                                         <?php endif; ?>
+                                        <li<?= hl('importer', 'import_data'); ?><?= ml('import_module'); ?> class=""><a href="<?= url('/'); ?>form/import/<?= bm(); ?>"><?= _t('Importer'); ?></a></li>
                                         <li<?= hl('cron_jobs'); ?>><a href="<?= url('/'); ?>cron/<?= bm(); ?>"> <?= _t('Cronjob Handler'); ?></a></li>
                                         <li<?= hl('permissions', 'access_permission_screen'); ?>><a href="<?= url('/'); ?>permission/<?= bm(); ?>"> <?= _t('(MPRM) Manage Perm'); ?></a></li>
                                         <li<?= hl('roles', 'access_role_screen'); ?>><a href="<?= url('/'); ?>role/<?= bm(); ?>"> <?= _t('(MRLE) Manage Role'); ?></a></li>
-                                        <li<?= hl('errorlogs', 'access_error_log_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= url('/'); ?>error/logs/<?= bm(); ?>"> <?= _t('Error Log'); ?></a></li>
+                                        <li<?= hl('errorlogs', 'access_error_log_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= url('/'); ?>err/logs/<?= bm(); ?>"> <?= _t('Error Log'); ?></a></li>
                                         <li<?= hl('audit_trail', 'access_audit_trail_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= url('/'); ?>audit-trail/<?= bm(); ?>"> <?= _t('Audit Trail'); ?></a></li>
                                         <li<?= hl('automatic_update', 'edit_settings'); ?>><a href="<?= url('/'); ?>dashboard/update/<?= bm(); ?>"> <?= _t('Automatic Update'); ?></a></li>
                                     </ul>
@@ -152,8 +153,6 @@
                                         <li class=""><a href="<?= url('/'); ?>form/grade-scale/<?= bm(); ?>"><?= _t('(GRSC) - Grade Scale'); ?></a></li>
                                     </ul>
                                 </li>
-
-                                <li<?= hl('importer', 'import_data'); ?><?= ml('import_module'); ?> class=""><a href="<?= url('/'); ?>form/import/<?= bm(); ?>" class="glyphicons file_import"><i></i><?= _t('Importer'); ?></a></li>
 
                                 <li><a href="<?= url('/'); ?>dashboard/support/<?= bm(); ?>" class="glyphicons life_preserver"><i></i><?= _t('Online Documentation'); ?></a></li>
 
@@ -320,6 +319,7 @@
                                                 <li class=""><a href="<?= url('/'); ?>financial/batch/<?= bm(); ?>"><?= _t('Batch Fees'); ?></a></li>
                                                 <li class=""><a href="<?= url('/'); ?>financial/add-payment/<?= bm(); ?>"><?= _t('Add Payment'); ?></a></li>
                                                 <li class=""><a href="<?= url('/'); ?>financial/issue-refund/<?= bm(); ?>"><?= _t('Issue a Refund'); ?></a></li>
+                                                <li class=""><a href="<?= url('/'); ?>financial/payment-plan/<?= bm(); ?>"><?= _t('Payment Plan'); ?></a></li>
                                             </ul>
                                         </li>
 

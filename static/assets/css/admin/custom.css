@@ -10,3 +10,11 @@ body>.container-fluid.fixed #custom-footer{-webkit-border-radius:0 0 5px 5px;-mo
 	border-radius: 50%; /* Opera 10.5, IE 9 */
 	-moz-border-radius: 50%;
 	}
+
+.modal-fullscreen {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+}

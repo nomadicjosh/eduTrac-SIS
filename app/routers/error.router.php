@@ -11,7 +11,7 @@ $app->get('404', function () use($app) {
  * Before route checks to make sure the logged in user
  * us allowed to manage options/settings.
  */
-$app->before('GET', '/error/screen-error.*', function() use($app) {
+$app->before('GET', '/err/screen-error.*', function() use($app) {
     if (!hasPermission('access_dashboard')) {
         redirect(url('/'));
     }
@@ -30,6 +30,6 @@ $app->before('GET', '/error/screen-error.*', function() use($app) {
     }
 });
 
-$app->get('/error/screen-error/', function () use($app) {
+$app->get('/err/screen-error/', function () use($app) {
     $app->view->display('error/screen-error');
 });

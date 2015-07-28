@@ -546,3 +546,8 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         redirect($app->req->server['HTTP_REFERER']);
     });
 });
+
+$app->setError(function() use($app) {
+
+    $app->view->display('error/404', ['title' => '404 Error']);
+});

@@ -346,21 +346,21 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
-        
-        if($app->req->isPost()) {
-    		$sect = $app->db->course_sec();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
-    			$sect->$k = $v;
-    		}
+
+        if ($app->req->isPost()) {
+            $sect = $app->db->course_sec();
+            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                $sect->$k = $v;
+            }
             $sect->where('courseSecID = ?', $id);
-    		if($sect->update()) {
+            if ($sect->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Course Section', $decode[0]['courseSection'], get_persondata('uname'));
-    		} else {
-    			$app->flash('error_message', $flashNow->notice(409));
-    		}
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
             redirect($app->req->server['HTTP_REFERER']);
-    	}
+        }
 
         /**
          * If the database table doesn't exist, then it
@@ -597,6 +597,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $stcs->courseCredits = $sect[0]['minCredit'];
             $stcs->ceu = $sect[0]['ceu'];
             $stcs->status = 'A';
+            $stcs->regDate = $app->db->NOW();
+            $stcs->regTime = date("h:i A");
             $stcs->statusDate = $app->db->NOW();
             $stcs->statusTime = $time;
             $stcs->addedBy = get_persondata('personID');
@@ -627,6 +629,12 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $stac->addDate = $app->db->NOW();
 
             if ($stcs->save() && $stac->save()) {
+                if (function_exists('financial_module')) {
+                    /**
+                     * Generate bill and/or add fees.
+                     */
+                    generate_stu_bill($sect[0]['termCode'], $_POST['stuID'], $sect[0]['courseSecID']);
+                }
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course Registration Via Staff', get_name($_POST['stuID']) . ' - ' . $sect[0]['secShortTitle'], get_persondata('uname'));
             } else {
@@ -735,7 +743,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * the results in a html format.
          */ else {
 
-            $app->view->display('section/templates/roster/'.$template.'.template', [
+            $app->view->display('section/templates/roster/' . $template . '.template', [
                 'cssArray' => $css,
                 'jsArray' => $js,
                 'sros' => $q,
@@ -938,4 +946,9 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         $response = isset($_GET['callback']) ? $_GET['callback'] . "(" . $data . ")" : $data;
         echo($response);
     });
+});
+
+$app->setError(function() use($app) {
+
+    $app->view->display('error/404', ['title' => '404 Error']);
 });

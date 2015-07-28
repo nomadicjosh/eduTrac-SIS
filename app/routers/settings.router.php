@@ -236,3 +236,8 @@ $app->match('GET|POST', '/templates/', function () use($app, $logger) {
         ]
     );
 });
+
+$app->setError(function() use($app) {
+
+    $app->view->display('error/404', ['title' => '404 Error']);
+});

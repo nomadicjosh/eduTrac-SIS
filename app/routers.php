@@ -137,6 +137,11 @@ elseif (strpos(getPathInfo('/registration'), "/registration") === 0)
     require($app->config('routers_dir') . 'settings.router.php');
 }
 
+elseif (strpos(getPathInfo('/templates'), "/templates") === 0)
+{
+    require($app->config('routers_dir') . 'settings.router.php');
+}
+
 elseif (strpos(getPathInfo('/sql'), "/sql") === 0)
 {
     require($app->config('routers_dir') . 'sql.router.php');
@@ -168,7 +173,7 @@ elseif (strpos(getPathInfo('/stu'), "/stu") === 0)
     }
 }
 
-elseif (strpos(getPathInfo('/error'), "/error") === 0)
+elseif (strpos(getPathInfo('/err'), "/err") === 0)
 {
     require($app->config('routers_dir') . 'error.router.php');
     

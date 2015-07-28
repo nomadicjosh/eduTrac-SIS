@@ -8,7 +8,7 @@
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
  * @link        http://www.7mediaws.org/
- * @since       5.0.13
+ * @since       6.0.00
  * @package     eduTrac
  * @author      Joshua Parker <josh@7mediaws.org>
  */

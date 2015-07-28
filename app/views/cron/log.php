@@ -8,7 +8,7 @@
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
  * @link        http://www.7mediaws.org/
- * @since       5.0.13
+ * @since       6.0.00
  * @package     eduTrac
  * @author      Joshua Parker <josh@7mediaws.org>
  */
@@ -16,7 +16,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
-$cronlog = '/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/cron/cronjobs.log';
+$cronlog = cronDir() . 'cron/cronjobs.log';
 ?>
 
 <script type="text/javascript">

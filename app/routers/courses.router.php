@@ -217,6 +217,8 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 $stcs->termCode = $sql[0]['termCode'];
                 $stcs->courseCredits = $sql[0]['minCredit'];
                 $stcs->status = 'N';
+                $stcs->regDate = $app->db->NOW();
+                $stcs->regTime = date("h:i A");
                 $stcs->statusDate = $app->db->NOW();
                 $stcs->statusTime = date("h:i A");
                 $stcs->addedBy = get_persondata('personID');
@@ -259,6 +261,13 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                         ->where('stuID = ?', get_persondata('personID'))->_and_()
                         ->where('courseSecID = ?', $_POST['courseSecID'][$r])
                         ->delete();
+
+                    if (function_exists('financial_module')) {
+                        /**
+                         * Generate bill and/or add fees.
+                         */
+                        generate_stu_bill($sql[0]['termCode'], get_persondata('personID'), $_POST['courseSecID'][$r]);
+                    }
                 }
             }
             ++$r;
@@ -287,4 +296,9 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
         }
         redirect($app->req->server['HTTP_REFERER']);
     });
+});
+
+$app->setError(function() use($app) {
+
+    $app->view->display('error/404', ['title' => '404 Error']);
 });

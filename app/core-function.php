@@ -14,8 +14,8 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac
  * @author      Joshua Parker <josh@7mediaws.org>
  */
-define('CURRENT_RELEASE', '5.0');
-define('RELEASE_TAG', '5.0.13');
+define('CURRENT_RELEASE', '6.0.00');
+define('RELEASE_TAG', '6.0.00');
 
 $app = \Liten\Liten::getInstance();
 
@@ -1591,7 +1591,7 @@ function convertCourseSec($sect)
 /**
  * Returns the template header information
  *
- * @since 5.0.13
+ * @since 6.0.00
  * @param string (optional) $template_dir loads templates from specified folder
  * @return mixed
  *
@@ -1634,7 +1634,7 @@ function get_templates_header($template_dir = '')
 /**
  * Returns the layout header information
  *
- * @since 5.0.13
+ * @since 6.0.00
  * @param string (optional) $layout_dir loads layouts from specified folder
  * @return mixed
  *
@@ -1672,6 +1672,114 @@ function get_layouts_header($layout_dir = '')
         closedir($handle);
     }
     return $layouts_header;
+}
+
+/**
+ * Custom function to query any eduTrac SIS
+ * database table.
+ * 
+ * @since 6.0.00
+ * @param string $table
+ * @param mixed $field
+ * @param mixed $where
+ * @return mixed
+ */
+function qt($table, $field, $where = null) {
+    $app = \Liten\Liten::getInstance();
+    $query = $app->db->$table();
+    if($where !== null) {
+        $query->where($where);
+    }
+    $result = $query->find(function($data) {
+        $array = [];
+        foreach ($data as $d) {
+            $array[] = $d;
+        }
+        return $array;
+    });
+    foreach ($result as $r) {
+        return $r[$field];
+    }
+}
+
+/**
+ * Shows a button to navigate to the previous terms
+ * student account bill.
+ * 
+ * @since 6.0.00
+ * @param int $id
+ * @param int $stuID
+ * @return int
+ */
+function prev_stu_acct_record($id, $stuID) {
+    $app = \Liten\Liten::getInstance();
+    $query = $app->db->stu_acct_bill()
+        ->setTableAlias('sab')
+        ->select('sab.billID')
+        ->where('sab.stuID = ?', $stuID)->_and_()
+        ->where('sab.ID < ?', $id)
+        ->orderBy('sab.ID')
+        ->limit(1);
+    $result = $query->find(function($data) {
+        $array = [];
+        foreach ($data as $d) {
+            $array[] = $d;
+        }
+        return $array;
+    });
+    foreach ($result as $r) {
+        return $r['billID'];
+    }
+}
+
+/**
+ * Shows a button to navigate to the next terms
+ * student account bill.
+ * 
+ * @since 6.0.00
+ * @param int $id
+ * @param int $stuID
+ * @return int
+ */
+function next_stu_acct_record($id, $stuID) {
+    $app = \Liten\Liten::getInstance();
+    $query = $app->db->stu_acct_bill()
+        ->setTableAlias('sab')
+        ->select('sab.billID')
+        ->where('sab.stuID = ?', $stuID)->_and_()
+        ->where('sab.ID > ?', $id)
+        ->orderBy('sab.ID')
+        ->limit(1);
+    $result = $query->find(function($data) {
+        $array = [];
+        foreach ($data as $d) {
+            $array[] = $d;
+        }
+        return $array;
+    });
+    foreach ($result as $r) {
+        return $r['billID'];
+    }
+}
+
+/**
+ * Returns the directory based on subdomain.
+ * 
+ * @return mixed
+ */
+function cronDir()
+{
+    $subdomain = '';
+    $domain_parts = explode('.', $_SERVER['SERVER_NAME']);
+    if (count($domain_parts) == 3) {
+        $subdomain = $domain_parts[0];
+
+        if ($subdomain == '') {
+            $subdomain = 'www';
+        }
+    }
+    
+    return APP_PATH . 'views/cron/' . $subdomain . '/';
 }
 
 /**
