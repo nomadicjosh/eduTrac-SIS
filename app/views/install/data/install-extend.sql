@@ -142,20 +142,6 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   KEY `stuID` (`stuID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `bill` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `stuID` bigint(20) NOT NULL,
-  `termCode` varchar(11) NOT NULL,
-  `postedBy` bigint(20) NOT NULL,
-  `stu_comments` text NOT NULL,
-  `staff_comments` text NOT NULL,
-  `dateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`),
-  KEY `stuID` (`stuID`),
-  KEY `termCode` (`termCode`),
-  KEY `postedBy` (`postedBy`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `billing_table` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(180) NOT NULL,
@@ -827,28 +813,6 @@ CREATE TABLE IF NOT EXISTS `course_sec` (
   KEY `courseCode` (`courseCode`),
   KEY `courseID` (`courseID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `cronjob` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `scriptpath` varchar(255) DEFAULT NULL,
-  `name` varchar(128) DEFAULT NULL,
-  `time_interval` int(11) DEFAULT NULL,
-  `fire_time` int(11) NOT NULL DEFAULT '0',
-  `time_last_fired` int(11) DEFAULT NULL,
-  `run_only_once` tinyint(1) NOT NULL DEFAULT '0',
-  `currently_running` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `fire_time` (`fire_time`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `cronlog` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date_added` int(11) DEFAULT NULL,
-  `script` varchar(128) DEFAULT NULL,
-  `output` text,
-  `execution_time` varchar(60) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `degree` (
   `degreeID` int(11) NOT NULL AUTO_INCREMENT,
@@ -1584,6 +1548,7 @@ INSERT INTO `permission` VALUES(00000000000000000246, 'access_ea', 'Access eduTr
 
 CREATE TABLE IF NOT EXISTS `person` (
   `personID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `altID` varchar(255) DEFAULT NULL,
   `uname` varchar(80) NOT NULL,
   `prefix` varchar(6) NOT NULL,
   `personType` varchar(3) NOT NULL,
@@ -1604,6 +1569,7 @@ CREATE TABLE IF NOT EXISTS `person` (
   `auth_token` varchar(255) DEFAULT NULL,
   `approvedDate` datetime NOT NULL,
   `approvedBy` bigint(20) NOT NULL,
+  `LastLogin` datetime NOT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`personID`),
   UNIQUE KEY `uname` (`uname`),
@@ -2326,21 +2292,6 @@ CREATE TABLE IF NOT EXISTS `student` (
   KEY `status` (`status`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `student_fee` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `stuID` bigint(20) NOT NULL,
-  `termCode` varchar(11) NOT NULL,
-  `billID` bigint(20) NOT NULL,
-  `feeID` int(11) NOT NULL,
-  `postedBy` bigint(20) NOT NULL,
-  `dateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `student_fee_index` (`stuID`,`billID`,`feeID`),
-  KEY `billID` (`billID`),
-  KEY `feeID` (`feeID`),
-  KEY `postedBy` (`postedBy`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `student_load_rule` (
   `slrID` int(11) NOT NULL AUTO_INCREMENT,
   `status` varchar(1) NOT NULL,
@@ -2415,16 +2366,70 @@ CREATE TABLE IF NOT EXISTS `stu_acad_level` (
   KEY `acadProgCode` (`acadProgCode`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `stu_comment` (
-  `commentID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `stu_acct_bill` (
+`ID` bigint(20) NOT NULL,
+  `billID` varchar(11) NOT NULL,
   `stuID` bigint(20) NOT NULL,
-  `comment` text NOT NULL,
+  `termCode` varchar(11) NOT NULL,
+  `authCode` varchar(23) NOT NULL,
+  `stu_comments` text NOT NULL,
+  `staff_comments` text NOT NULL,
+  `postedBy` bigint(20) NOT NULL,
+  `billTimeStamp` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `stu_acct_bill` ADD PRIMARY KEY (`ID`), ADD UNIQUE KEY `billID` (`billID`), ADD KEY `stuID` (`stuID`), ADD KEY `termCode` (`termCode`), ADD KEY `postedBy` (`postedBy`);
+
+ALTER TABLE `stu_acct_bill` MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE IF NOT EXISTS `stu_acct_fee` (
+`ID` bigint(20) NOT NULL,
+  `billID` varchar(11) NOT NULL,
+  `stuID` bigint(20) NOT NULL,
+  `termCode` varchar(11) NOT NULL,
+  `type` varchar(11) NOT NULL,
+  `description` varchar(125) NOT NULL,
+  `amount` double(6,2) NOT NULL,
+  `feeTimeStamp` datetime NOT NULL,
+  `postedBy` bigint(20) NOT NULL,
+  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `stu_acct_fee` ADD PRIMARY KEY (`ID`), ADD KEY `billID` (`billID`), ADD KEY `stuID` (`stuID`), ADD KEY `termCode` (`termCode`), ADD KEY `postedBy` (`postedBy`);
+
+ALTER TABLE `stu_acct_fee` MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE IF NOT EXISTS `stu_acct_pp` (
+`ID` bigint(20) NOT NULL,
+  `stuID` bigint(20) NOT NULL,
+  `termCode` varchar(11) NOT NULL,
+  `payFrequency` enum('1','7','14','30','365') NOT NULL,
+  `amount` double(6,2) NOT NULL,
+  `startDate` date NOT NULL,
+  `endDate` date NOT NULL,
+  `comments` text NOT NULL,
   `addDate` date NOT NULL,
   `addedBy` bigint(20) NOT NULL,
-  PRIMARY KEY (`commentID`),
-  KEY `stuID` (`stuID`),
-  KEY `addedBy` (`addedBy`)
+  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `stu_acct_pp` ADD PRIMARY KEY (`ID`);
+
+ALTER TABLE `stu_acct_pp` MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE IF NOT EXISTS `stu_acct_tuition` (
+`ID` bigint(20) NOT NULL,
+  `stuID` bigint(20) NOT NULL,
+  `termCode` varchar(11) NOT NULL,
+  `total` double(6,2) NOT NULL,
+  `postedBy` bigint(20) NOT NULL,
+  `tuitionTimeStamp` datetime NOT NULL,
+  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `stu_acct_tuition` ADD PRIMARY KEY (`ID`), ADD KEY `termCode` (`termCode`);
+
+ALTER TABLE `stu_acct_tuition` MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT;
 
 CREATE TABLE IF NOT EXISTS `stu_course_sec` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -2435,6 +2440,8 @@ CREATE TABLE IF NOT EXISTS `stu_course_sec` (
   `termCode` varchar(11) NOT NULL,
   `courseCredits` double(4,1) NOT NULL DEFAULT '0.0',
   `ceu` double(4,1) NOT NULL DEFAULT '0.0',
+  `regDate` date DEFAULT NULL,
+  `regTime` varchar(10) DEFAULT NULL,
   `status` enum('A','N','D','W','C') NOT NULL DEFAULT 'A',
   `statusDate` date NOT NULL,
   `statusTime` varchar(10) NOT NULL,
@@ -2458,7 +2465,7 @@ CREATE TABLE IF NOT EXISTS `stu_program` (
   `acadProgCode` varchar(20) NOT NULL,
   `currStatus` varchar(1) NOT NULL,
   `eligible_to_graduate` enum('1','0') NOT NULL DEFAULT '0',
-  `antGradDate` varchar(5) NOT NULL,
+  `antGradDate` varchar(8) NOT NULL,
   `graduationDate` date NOT NULL,
   `statusDate` date NOT NULL,
   `startDate` date NOT NULL,
@@ -2634,12 +2641,6 @@ ALTER TABLE `attendance` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`
 
 ALTER TABLE `attendance` ADD FOREIGN KEY (`courseSecID`) REFERENCES `course_sec` (`courseSecID`) ON UPDATE CASCADE;
 
-ALTER TABLE `bill` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
-
-ALTER TABLE `bill` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
-
-ALTER TABLE `bill` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
-
 ALTER TABLE `building` ADD FOREIGN KEY (`locationCode`) REFERENCES `location` (`locationCode`) ON UPDATE CASCADE;
 
 ALTER TABLE `course` ADD FOREIGN KEY (`subjectCode`) REFERENCES `subject` (`subjectCode`) ON UPDATE CASCADE;
@@ -2786,6 +2787,32 @@ ALTER TABLE `stu_acad_cred` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`pe
 
 ALTER TABLE `stu_acad_level` ADD FOREIGN KEY (`acadProgCode`) REFERENCES `acad_program` (`acadProgCode`) ON UPDATE CASCADE;
 
+ALTER TABLE `stu_acct_bill` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_bill` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_bill` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`billID`) REFERENCES `stu_acct_bill` (`billID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_pp` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_pp` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_pp` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_tuition` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_tuition` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_tuition` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+
 ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`courseSecID`) REFERENCES `course_sec` (`courseSecID`) ON UPDATE CASCADE;
@@ -2797,16 +2824,6 @@ ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`courseSection`) REFERENCES `cours
 ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
-
-ALTER TABLE `student_fee` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
-
-ALTER TABLE `student_fee` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
-
-ALTER TABLE `student_fee` ADD FOREIGN KEY (`billID`) REFERENCES `bill` (`ID`) ON UPDATE CASCADE;
-
-ALTER TABLE `student_fee` ADD FOREIGN KEY (`feeID`) REFERENCES `billing_table` (`ID`) ON UPDATE CASCADE;
-
-ALTER TABLE `student_fee` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_program` ADD FOREIGN KEY (`acadProgCode`) REFERENCES `acad_program` (`acadProgCode`) ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -2827,10 +2844,6 @@ ALTER TABLE `stu_term_gpa` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`term
 ALTER TABLE `stu_term_load` ADD FOREIGN KEY (`stuID`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_term_load` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE ON DELETE RESTRICT;
-
-ALTER TABLE `stu_comment` ADD FOREIGN KEY (`stuID`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
-
-ALTER TABLE `stu_comment` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`stuID`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
@@ -2854,7 +2867,7 @@ ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`courseID`) REFERENCES `cours
 
 ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
                   
-INSERT INTO `options_meta` VALUES(1, 'dbversion', '00042');
+INSERT INTO `options_meta` VALUES(1, 'dbversion', '00043');
         
 INSERT INTO `options_meta` VALUES(2, 'system_email', '{email}');
         
@@ -2870,80 +2883,58 @@ INSERT INTO `options_meta` VALUES(7, 'enable_benchmark', '0');
         
 INSERT INTO `options_meta` VALUES(8, 'maintenance_mode', '0');
         
-INSERT INTO `options_meta` VALUES(9, 'enable_cron_log', '0');
+INSERT INTO `options_meta` VALUES(9, 'current_term_code', '');
         
-INSERT INTO `options_meta` VALUES(10, 'current_term_code', '');
+INSERT INTO `options_meta` VALUES(10, 'open_registration', '1');
         
-INSERT INTO `options_meta` VALUES(11, 'open_registration', '1');
+INSERT INTO `options_meta` VALUES(11, 'help_desk', 'http://www.edutracsis.com/');
         
-INSERT INTO `options_meta` VALUES(12, 'help_desk', 'http://www.edutracsis.com/');
+INSERT INTO `options_meta` VALUES(12, 'reset_password_text', '<b>eduTrac Password Reset</b><br>Password &amp; Login Information<br><br>You or someone else requested a new password to the eduTrac online system. If you did not request this change, please contact the administrator as soon as possible @ #adminemail#.&nbsp; To log into the eduTrac system, please visit #url# and login with your username and password.<br><br>FULL NAME:&nbsp; #fname# #lname#<br>USERNAME:&nbsp; #uname#<br>PASSWORD:&nbsp; #password#<br><br>If you need further assistance, please read the documentation at #helpdesk#.<br><br>KEEP THIS IN A SAFE AND SECURE LOCATION.<br><br>Thank You,<br>eduTrac Web Team<br>');
         
-INSERT INTO `options_meta` VALUES(13, 'enable_cron_jobs', 0);
-        
-INSERT INTO `options_meta` VALUES(14, 'reset_password_text', '<b>eduTrac Password Reset</b><br>Password &amp; Login Information<br><br>You or someone else requested a new password to the eduTrac online system. If you did not request this change, please contact the administrator as soon as possible @ #adminemail#.&nbsp; To log into the eduTrac system, please visit #url# and login with your username and password.<br><br>FULL NAME:&nbsp; #fname# #lname#<br>USERNAME:&nbsp; #uname#<br>PASSWORD:&nbsp; #password#<br><br>If you need further assistance, please read the documentation at #helpdesk#.<br><br>KEEP THIS IN A SAFE AND SECURE LOCATION.<br><br>Thank You,<br>eduTrac Web Team<br>');
-        
-INSERT INTO `options_meta` VALUES(15, 'api_key', '');
+INSERT INTO `options_meta` VALUES(13, 'api_key', '');
 
-INSERT INTO `options_meta` VALUES(16, 'room_request_email', 'request@myschool.edu');
+INSERT INTO `options_meta` VALUES(14, 'room_request_email', 'request@myschool.edu');
 
-INSERT INTO `options_meta` VALUES(17, 'room_request_text', '<p>&nbsp;</p>\r\n<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#F4F3F4">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 15px;"><center>\r\n<table width="550" cellspacing="0" cellpadding="0" align="center" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td align="left">\r\n<div style="border: solid 1px #d9d9d9;">\r\n<table id="header" style="line-height: 1.6; font-size: 12px; font-family: Helvetica, Arial, sans-serif; border: solid 1px #FFFFFF; color: #444;" border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td style="color: #ffffff;" colspan="2" valign="bottom" height="30">.</td>\r\n</tr>\r\n<tr>\r\n<td style="line-height: 32px; padding-left: 30px;" valign="baseline"><span style="font-size: 32px;">eduTrac ERP</span></td>\r\n<td style="padding-right: 30px;" align="right" valign="baseline"><span style="font-size: 14px; color: #777777;">Room/Event Reservation Request</span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id="content" style="margin-top: 15px; margin-right: 30px; margin-left: 30px; color: #444; line-height: 1.6; font-size: 12px; font-family: Arial, sans-serif;" border="0" width="490" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td style="border-top: solid 1px #d9d9d9;" colspan="2">\r\n<div style="padding: 15px 0;">Below are the details of a new room request.</div>\r\n<div style="padding: 15px 0;"><strong>Name:</strong> #name#<br /><br /><strong>Email:</strong> #email#<br /><br /><strong>Event Title:</strong> #title#<br /><strong>Description:</strong> #description#<br /><strong>Request Type:</strong> #request_type#<br /><strong>Category:</strong> #category#<br /><strong>Room#:</strong> #room#<br /><strong>Start Date:</strong> #firstday#<br /><strong>End Date:</strong> #lastday#<br /><strong>Start Time:</strong> #sTime#<br /><strong>End Time:</strong> #eTime#<br /><strong>Repeat?:</strong> #repeat#<br /><strong>Occurrence:</strong> #occurrence#<br /><br /><br />\r\n<h3>Legend</h3>\r\n<ul>\r\n<li>Repeat - 1 means yes it is an event that is repeated</li>\r\n<li>Occurrence - 1 = repeats everyday, 7 = repeats weekly, 14 = repeats biweekly</li>\r\n</ul>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id="footer" style="line-height: 1.5; font-size: 12px; font-family: Arial, sans-serif; margin-right: 30px; margin-left: 30px;" border="0" width="490" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr style="font-size: 11px; color: #999999;">\r\n<td style="border-top: solid 1px #d9d9d9;" colspan="2">\r\n<div style="padding-top: 15px; padding-bottom: 1px;">Powered by eduTrac ERP</div>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="color: #ffffff;" colspan="2" height="15">.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</center></td>\r\n</tr>\r\n</tbody>\r\n</table>');
+INSERT INTO `options_meta` VALUES(15, 'room_request_text', '<p>&nbsp;</p>\r\n<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#F4F3F4">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 15px;"><center>\r\n<table width="550" cellspacing="0" cellpadding="0" align="center" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td align="left">\r\n<div style="border: solid 1px #d9d9d9;">\r\n<table id="header" style="line-height: 1.6; font-size: 12px; font-family: Helvetica, Arial, sans-serif; border: solid 1px #FFFFFF; color: #444;" border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td style="color: #ffffff;" colspan="2" valign="bottom" height="30">.</td>\r\n</tr>\r\n<tr>\r\n<td style="line-height: 32px; padding-left: 30px;" valign="baseline"><span style="font-size: 32px;">eduTrac SIS</span></td>\r\n<td style="padding-right: 30px;" align="right" valign="baseline"><span style="font-size: 14px; color: #777777;">Room/Event Reservation Request</span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id="content" style="margin-top: 15px; margin-right: 30px; margin-left: 30px; color: #444; line-height: 1.6; font-size: 12px; font-family: Arial, sans-serif;" border="0" width="490" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td style="border-top: solid 1px #d9d9d9;" colspan="2">\r\n<div style="padding: 15px 0;">Below are the details of a new room request.</div>\r\n<div style="padding: 15px 0;"><strong>Name:</strong> #name#<br /><br /><strong>Email:</strong> #email#<br /><br /><strong>Event Title:</strong> #title#<br /><strong>Description:</strong> #description#<br /><strong>Request Type:</strong> #request_type#<br /><strong>Category:</strong> #category#<br /><strong>Room#:</strong> #room#<br /><strong>Start Date:</strong> #firstday#<br /><strong>End Date:</strong> #lastday#<br /><strong>Start Time:</strong> #sTime#<br /><strong>End Time:</strong> #eTime#<br /><strong>Repeat?:</strong> #repeat#<br /><strong>Occurrence:</strong> #occurrence#<br /><br /><br />\r\n<h3>Legend</h3>\r\n<ul>\r\n<li>Repeat - 1 means yes it is an event that is repeated</li>\r\n<li>Occurrence - 1 = repeats everyday, 7 = repeats weekly, 14 = repeats biweekly</li>\r\n</ul>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id="footer" style="line-height: 1.5; font-size: 12px; font-family: Arial, sans-serif; margin-right: 30px; margin-left: 30px;" border="0" width="490" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr style="font-size: 11px; color: #999999;">\r\n<td style="border-top: solid 1px #d9d9d9;" colspan="2">\r\n<div style="padding-top: 15px; padding-bottom: 1px;">Powered by eduTrac SIS</div>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="color: #ffffff;" colspan="2" height="15">.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</center></td>\r\n</tr>\r\n</tbody>\r\n</table>');
 
-INSERT INTO `options_meta` VALUES(18, 'room_booking_confirmation_text', '<p>&nbsp;</p>\r\n<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#F4F3F4">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 15px;"><center>\r\n<table width="550" cellspacing="0" cellpadding="0" align="center" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td align="left">\r\n<div style="border: solid 1px #d9d9d9;">\r\n<table id="header" style="line-height: 1.6; font-size: 12px; font-family: Helvetica, Arial, sans-serif; border: solid 1px #FFFFFF; color: #444;" border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td style="color: #ffffff;" colspan="2" valign="bottom" height="30">.</td>\r\n</tr>\r\n<tr>\r\n<td style="line-height: 32px; padding-left: 30px;" valign="baseline"><span style="font-size: 32px;">eduTrac ERP</span></td>\r\n<td style="padding-right: 30px;" align="right" valign="baseline"><span style="font-size: 14px; color: #777777;">Room/Event&nbsp;Booking&nbsp;Confirmation</span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id="content" style="margin-top: 15px; margin-right: 30px; margin-left: 30px; color: #444; line-height: 1.6; font-size: 12px; font-family: Arial, sans-serif;" border="0" width="490" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td style="border-top: solid 1px #d9d9d9;" colspan="2">\r\n<div style="padding: 15px 0;">Your room request or event request entitled <strong>#title#</strong> has been booked. If you have any questions or concerns, please email our office at <a href="mailto:request@bdci.edu">request@bdci.edu</a></div>\r\n<div style="padding: 15px 0;">Sincerely,<br />Room Scheduler</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id="footer" style="line-height: 1.5; font-size: 12px; font-family: Arial, sans-serif; margin-right: 30px; margin-left: 30px;" border="0" width="490" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr style="font-size: 11px; color: #999999;">\r\n<td style="border-top: solid 1px #d9d9d9;" colspan="2">\r\n<div style="padding-top: 15px; padding-bottom: 1px;">Powered by eduTrac ERP</div>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="color: #ffffff;" colspan="2" height="15">.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</center></td>\r\n</tr>\r\n</tbody>\r\n</table>');
+INSERT INTO `options_meta` VALUES(16, 'room_booking_confirmation_text', '<p>&nbsp;</p>\r\n<table border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#F4F3F4">\r\n<tbody>\r\n<tr>\r\n<td style="padding: 15px;"><center>\r\n<table width="550" cellspacing="0" cellpadding="0" align="center" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td align="left">\r\n<div style="border: solid 1px #d9d9d9;">\r\n<table id="header" style="line-height: 1.6; font-size: 12px; font-family: Helvetica, Arial, sans-serif; border: solid 1px #FFFFFF; color: #444;" border="0" width="100%" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td style="color: #ffffff;" colspan="2" valign="bottom" height="30">.</td>\r\n</tr>\r\n<tr>\r\n<td style="line-height: 32px; padding-left: 30px;" valign="baseline"><span style="font-size: 32px;">eduTrac SIS</span></td>\r\n<td style="padding-right: 30px;" align="right" valign="baseline"><span style="font-size: 14px; color: #777777;">Room/Event&nbsp;Booking&nbsp;Confirmation</span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id="content" style="margin-top: 15px; margin-right: 30px; margin-left: 30px; color: #444; line-height: 1.6; font-size: 12px; font-family: Arial, sans-serif;" border="0" width="490" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr>\r\n<td style="border-top: solid 1px #d9d9d9;" colspan="2">\r\n<div style="padding: 15px 0;">Your room request or event request entitled <strong>#title#</strong> has been booked. If you have any questions or concerns, please email our office at <a href="mailto:request@bdci.edu">request@bdci.edu</a></div>\r\n<div style="padding: 15px 0;">Sincerely,<br />Room Scheduler</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id="footer" style="line-height: 1.5; font-size: 12px; font-family: Arial, sans-serif; margin-right: 30px; margin-left: 30px;" border="0" width="490" cellspacing="0" cellpadding="0" bgcolor="#ffffff">\r\n<tbody>\r\n<tr style="font-size: 11px; color: #999999;">\r\n<td style="border-top: solid 1px #d9d9d9;" colspan="2">\r\n<div style="padding-top: 15px; padding-bottom: 1px;">Powered by eduTrac SIS</div>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style="color: #ffffff;" colspan="2" height="15">.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</center></td>\r\n</tr>\r\n</tbody>\r\n</table>');
 
-INSERT INTO `options_meta` VALUES(19, 'myet_welcome_message', '<p>Welcome to the <em>my</em>eduTrac campus portal. The <em>my</em>eduTrac campus portal&nbsp;is your personalized campus web site at Eastbound University.</p>\r\n<p>If you are a prospective student who is interested in applying to the college, checkout the <a href="pages/?pg=admissions">admissions</a>&nbsp;page for more information.</p>');
+INSERT INTO `options_meta` VALUES(17, 'myet_welcome_message', '<p>Welcome to the <em>my</em>eduTrac campus portal. The <em>my</em>eduTrac campus portal&nbsp;is your personalized campus web site at Eastbound University.</p>\r\n<p>If you are a prospective student who is interested in applying to the college, checkout the <a href="pages/?pg=admissions">admissions</a>&nbsp;page for more information.</p>');
 
-INSERT INTO `options_meta` VALUES(20, 'contact_phone', '888.888.8888');
+INSERT INTO `options_meta` VALUES(18, 'contact_phone', '888.888.8888');
 
-INSERT INTO `options_meta` VALUES(21, 'contact_email', 'contact@colegio.edu');
+INSERT INTO `options_meta` VALUES(19, 'contact_email', 'contact@colegio.edu');
 
-INSERT INTO `options_meta` VALUES(22, 'mailing_address', '10 Eliot Street, Suite 2\r\nSomerville, MA 02140');
+INSERT INTO `options_meta` VALUES(20, 'mailing_address', '10 Eliot Street, Suite 2\r\nSomerville, MA 02140');
 
-INSERT INTO `options_meta` VALUES(23, 'enable_myet_portal', '0');
+INSERT INTO `options_meta` VALUES(21, 'enable_myet_portal', '0');
 
-INSERT INTO `options_meta` VALUES(24, 'screen_caching', '1');
+INSERT INTO `options_meta` VALUES(22, 'screen_caching', '1');
 
-INSERT INTO `options_meta` VALUES(25, 'db_caching', '1');
+INSERT INTO `options_meta` VALUES(23, 'db_caching', '1');
 
-INSERT INTO `options_meta` VALUES(26, 'admissions_email', 'admissions@colegio.edu');
+INSERT INTO `options_meta` VALUES(24, 'admissions_email', 'admissions@colegio.edu');
 
-INSERT INTO `options_meta` VALUES(27, 'coa_form_text', '<p>Dear Admin,</p>\r\n<p>#name# has submitted a change of address. Please see below for details.</p>\r\n<p><strong>ID:</strong> #id#</p>\r\n<p><strong>Address1:</strong> #address1#</p>\r\n<p><strong>Address2:</strong> #address2#</p>\r\n<p><strong>City:</strong> #city#</p>\r\n<p><strong>State:</strong> #state#</p>\r\n<p><strong>Zip:</strong> #zip#</p>\r\n<p><strong>Country:</strong> #country#</p>\r\n<p><strong>Phone:</strong> #phone#</p>\r\n<p><strong>Email:</strong> #email#</p>\r\n<p>&nbsp;</p>\r\n<p>----<br /><em>This is a system generated email.</em></p>');
+INSERT INTO `options_meta` VALUES(25, 'coa_form_text', '<p>Dear Admin,</p>\r\n<p>#name# has submitted a change of address. Please see below for details.</p>\r\n<p><strong>ID:</strong> #id#</p>\r\n<p><strong>Address1:</strong> #address1#</p>\r\n<p><strong>Address2:</strong> #address2#</p>\r\n<p><strong>City:</strong> #city#</p>\r\n<p><strong>State:</strong> #state#</p>\r\n<p><strong>Zip:</strong> #zip#</p>\r\n<p><strong>Country:</strong> #country#</p>\r\n<p><strong>Phone:</strong> #phone#</p>\r\n<p><strong>Email:</strong> #email#</p>\r\n<p>&nbsp;</p>\r\n<p>----<br /><em>This is a system generated email.</em></p>');
 
-INSERT INTO `options_meta` VALUES(28, 'enable_myet_appl_form', '0');
+INSERT INTO `options_meta` VALUES(26, 'enable_myet_appl_form', '0');
 
-INSERT INTO `options_meta` VALUES(29, 'myet_offline_message', 'Please excuse the dust. We are giving the portal a new facelift. Please try back again in an hour.\r\n\r\nSincerely,\r\nIT Department');
+INSERT INTO `options_meta` VALUES(27, 'myet_offline_message', 'Please excuse the dust. We are giving the portal a new facelift. Please try back again in an hour.\r\n\r\nSincerely,\r\nIT Department');
 
-INSERT INTO `options_meta` VALUES(30, 'curl', '1');
+INSERT INTO `options_meta` VALUES(28, 'curl', '1');
 
-INSERT INTO `options_meta` VALUES(31, 'system_timezone', 'America/New_York');
+INSERT INTO `options_meta` VALUES(29, 'system_timezone', 'America/New_York');
 
-INSERT INTO `cronjob` VALUES(1, 'http://{url}/cron/activityLog/', 'Purge Activity Log', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(2, 'http://{url}/cron/runStuTerms/', 'Create Student Terms Record', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(3, 'http://{url}/cron/runStuLoad/', 'Create Student Load Record', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(4, 'http://{url}/cron/updateStuTerms/', 'Update Student Terms', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(5, 'http://{url}/cron/updateStuLoad/', 'Update Student Load', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(6, 'http://{url}/cron/runEmailHold/', 'Process Email Hold Table', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(7, 'http://{url}/cron/runEmailQueue/', 'Process Email Queue', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(8, 'http://{url}/cron/purgeEmailHold/', 'Purge Email Hold', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(9, 'http://{url}/cron/purgeEmailQueue/', 'Purge Email Queue', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(10, 'http://{url}/cron/runGraduation/', 'Process Graduation', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(11, 'http://{url}/cron/runTermGPA/', 'Create Student Term GPA Record', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(12, 'http://{url}/cron/updateTermGPA/', 'Update Term GPA', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(13, 'http://{url}/cron/purgeErrorLog/', 'Purge Error Log', NULL, 0, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(14, 'http://{url}/cron/purgeSavedQuery/', 'Purge Saved Queries', 86400, 1380595419, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(15, 'http://{url}/cron/purgeCronLogs/', 'Purge Cron Logs', 86400, 1380595404, 0, 0, 0);
-        
-INSERT INTO `cronjob` VALUES(16, 'http://{url}/cron/runDBBackup/', 'Backup Database', NULL, 0, 0, 0, 0);
+INSERT INTO `options_meta` VALUES(30, 'number_of_courses', '3');
+
+INSERT INTO `options_meta` VALUES(31, 'account_balance', '');
+
+INSERT INTO `options_meta` VALUES(32, 'reg_instructions', '');
+
+INSERT INTO `options_meta` VALUES(33, 'et_core_locale', 'en_US');
+
+INSERT INTO `options_meta` VALUES(34, 'send_acceptance_email', '0');
+
+INSERT INTO `options_meta` VALUES(35, 'person_login_details', '<p>Dear #fname#:</p>\r\n<p>An account has just been created for you. Below are your login details.</p>\r\n<p>Username: #uname#</p>\r\n<p>Password: #password#</p>\r\n<p>ID: #id#</p>\r\n<p>Alternate ID:&nbsp;#altID#</p>\r\n<p>You may log into your account at the url below:</p>\r\n<p><a href="#url#">#url#</a></p>');
+
+INSERT INTO `options_meta` VALUES(36, 'myet_layout', 'default');

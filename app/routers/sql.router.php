@@ -37,3 +37,8 @@ $app->group('/sql', function() use ($app, $css, $js) {
         );
     });
 });
+
+$app->setError(function() use($app) {
+
+    $app->view->display('error/404', ['title' => '404 Error']);
+});

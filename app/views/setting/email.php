@@ -18,20 +18,6 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 ?>
 
-<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
-<script type="text/javascript">
-tinymce.init({
-	selector: "textarea",
-	plugins: [
-		"advlist autolink lists link image charmap print preview anchor",
-		"searchreplace visualblocks code fullscreen",
-		"insertdatetime media table contextmenu paste"
-	],
-	toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
-	autosave_ask_before_unload: false
-});
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
 	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
@@ -78,6 +64,15 @@ tinymce.init({
                             </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Room Request Email" );?> <a href="#request" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <div class="col-md-8">
+                                <input type="text" name="room_request_email" value="<?=_h($app->hook->{'get_option'}('room_request_email'));?>" class="form-control" required/> 
+                            </div>
+                        </div>
+                        <!-- // Group END -->
 						
 					</div>
 					<!-- // Column END -->
@@ -111,15 +106,6 @@ tinymce.init({
 				<hr class="separator" />
 				
 				<div class="separator line bottom"></div>
-								
-				<!-- Group -->
-				<div class="form-group row">
-					<label class="col-md-3 control-label"><?=_t( 'Change of Address Form Email Text' );?></label>
-					<div class="col-md-8">
-						<textarea id="mustHaveId" class="col-md-8 form-control" name="coa_form_text" rows="10"><?=_h($app->hook->{'get_option'}('coa_form_text'));?></textarea>
-					</div>
-				</div>
-				<!-- // Group END -->
 				
 				<!-- Form actions -->
 				<div class="form-actions">
@@ -166,6 +152,26 @@ tinymce.init({
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
 		            <p><?=_t( "All course and course registration emails will be sent to this address." );?></p>
+		        </div>
+		        <div class="modal-footer">
+		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
+		        </div>
+	        </div>
+      	</div>
+    </div>
+    
+    <div class="modal fade" id="request">
+    	<div class="modal-dialog">
+			<div class="modal-content">
+	
+				<!-- Modal heading -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title"><?=_t( 'Room Request Email' );?></h3>
+				</div>
+				<!-- // Modal heading END -->
+		        <div class="modal-body">
+		            <p><?=_t("This is the email where all room requests are sent.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>

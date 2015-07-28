@@ -16,9 +16,26 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$templates_header = get_templates_header(APP_PATH . 'views/student/templates/transcript/');
 ?>
 
 <script type="text/javascript">
+    jQuery(document).ready(function() {
+    jQuery('#stuID').live('change', function(event) {
+        $.ajax({
+            type    : 'POST',
+            url     : '<?=url('/');?>sect/stuLookup/',
+            dataType: 'json',
+            data    : $('#validateSubmitForm').serialize(),
+            cache: false,
+            success: function( data ) {
+                   for(var id in data) {        
+                          $(id).val( data[id] );
+                   }
+            }
+        });
+    });
+});
 $(".panel").show();
 setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
@@ -52,22 +69,49 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Row -->
 				<div class="row">
 					<!-- Column -->
-					<div class="col-md-6">
+					<div class="col-md-4">
 						
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Student ID' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="studentID" id="studentID" class="form-control" required />
+								<input type="text" name="stuID" id="stuID" class="form-control" required />
+                                <input type="text" id="stuName" readonly="readonly" class="form-control text-center" />
 							</div>
 						</div>
 						<!-- // Group END -->
 						
+					</div>
+					<!-- // Column END -->
+                    
+                    <!-- Column -->
+					<div class="col-md-4">
+						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Transcript Type' );?></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Tran Type' );?></label>
 							<div class="col-md-8">
 						        <?=acad_level_select(null,null,'required');?>
+							</div>
+						</div>
+						<!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+                    
+                    <!-- Column -->
+					<div class="col-md-4">
+						
+						<!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Template' );?></label>
+							<div class="col-md-8">
+						        <select name="template" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+									<option value="">&nbsp;</option>
+                            		<?php foreach($templates_header as $template) { ?>
+                                    <option value="<?=$template['Slug'];?>"><?=$template['Name'];?></option>
+                                    <?php } ?>
+                            	</select>
 							</div>
 						</div>
 						<!-- // Group END -->

@@ -152,6 +152,15 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         	</div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Username' );?></label>
+                            <div class="col-md-8">
+                            	<input class="form-control" name="uname" type="text" value="<?=_h($appl[0]['uname']);?>" />
+                        	</div>
+                        </div>
+                        <!-- // Group END -->
 						
 					</div>
 					<!-- // Column END -->

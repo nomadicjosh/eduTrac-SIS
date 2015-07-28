@@ -7,7 +7,6 @@
  * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @license     http://edutrac.7mediaws.org/general/edutrac_erp_commercial_license/ Commercial License
  * @link        http://www.7mediaws.org/
  * @since       3.0.0
  * @package     eduTrac
@@ -18,7 +17,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
-$antGradDate = "05/".date("y",strtotime("+4 years"));
+$antGradDate = date("05/d/y",strtotime("+4 years"));
 ?>
 
 <script type="text/javascript">

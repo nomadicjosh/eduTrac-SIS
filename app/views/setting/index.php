@@ -15,21 +15,8 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
 ?>
-
-<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
-<script type="text/javascript">
-tinymce.init({
-	selector: "textarea.password",
-	plugins: [
-		"advlist autolink lists link image charmap print preview anchor",
-		"searchreplace visualblocks code fullscreen",
-		"insertdatetime media table contextmenu paste"
-	],
-	toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
-	autosave_ask_before_unload: false
-});
-</script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
@@ -68,32 +55,6 @@ tinymce.init({
 							</div>
 						</div>
 						<!-- // Group END -->
-						
-						<!-- Group -->
-						<div class="form-group">
-							<label class="col-md-3 control-label"><?=_t( 'Enable SSL' );?></label>
-							<div class="col-md-8">
-								<select name="enable_ssl" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" disabled="disabled">
-                            		<option value="">&nbsp;</option>
-                            		<option value="1"<?=selected( _h($app->hook->{'get_option'}( 'enable_ssl' )), '1', false ); ?>><?=_t( "Yes" );?></option>
-                            		<option value="0"<?=selected( _h($app->hook->{'get_option'}( 'enable_ssl' )), '0', false ); ?>><?=_t( "No" );?></option>
-                            	</select>
-							</div>
-						</div>
-						<!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Maintenance Mode' );?></label>
-                            <div class="col-md-8">
-                                <select name="maintenance_mode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" disabled="disabled">
-                                    <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'maintenance_mode' )), '1', false ); ?>><?=_t( "Yes" );?></option>
-                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'maintenance_mode' )), '0', false ); ?>><?=_t( "No" );?></option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
@@ -109,30 +70,18 @@ tinymce.init({
                         <!-- // Group END -->
                         
                         <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Enable Cron Jobs' );?> <a href="#myModalECJ" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
-                            <div class="col-md-8">
-                                <select name="enable_cron_jobs" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
-                                    <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'enable_cron_jobs' )), '1', false ); ?>><?=_t( "Yes" );?></option>
-                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'enable_cron_jobs' )), '0', false ); ?>><?=_t( "No" );?></option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Enable Cron Log' );?></label>
-                            <div class="col-md-8">
-                                <select name="enable_cron_log" class="selectpicker form-control" disabled data-style="btn-info" data-size="10" data-live-search="true">
-                                    <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'enable_cron_log' )), '1', false ); ?>><?=_t( "Yes" );?></option>
-                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'enable_cron_log' )), '0', false ); ?>><?=_t( "No" );?></option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myeT Layout' );?> <a href="#myetLayout" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+							<div class="col-md-8">
+						        <select name="myet_layout" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+									<option value="">&nbsp;</option>
+                            		<?php foreach($layouts_header as $layout) { ?>
+                                    <option value="<?=$layout['Slug'];?>"<?=selected( _h($app->hook->{'get_option'}( 'myet_layout' )), $layout['Slug'], false ); ?>><?=$layout['Name'];?></option>
+                                    <?php } ?>
+                            	</select>
+							</div>
+						</div>
+						<!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
@@ -171,6 +120,19 @@ tinymce.init({
                         
                         <!-- Group -->
                         <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Applicant Email' );?> <a href="#applicant" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <div class="col-md-8">
+                                <select name="send_acceptance_email" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                	<option value="">&nbsp;</option>
+                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'send_acceptance_email' )), '1', false ); ?>><?=_t( "Yes" );?></option>
+                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'send_acceptance_email' )), '0', false ); ?>><?=_t( "No" );?></option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Screen Caching' );?> <a href="#scache" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <select name="screen_caching" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
@@ -194,14 +156,8 @@ tinymce.init({
                             </div>
                         </div>
                         <!-- // Group END -->
-						
-					</div>
-					<!-- // Column END -->
-					
-					<!-- Column -->
-					<div class="col-md-6">
-						
-						<!-- Group -->
+                        
+                        <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Language' );?></label>
                             <div class="col-md-8">
@@ -215,6 +171,12 @@ tinymce.init({
                             </div>
                         </div>
                         <!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+					
+					<!-- Column -->
+					<div class="col-md-6">
                         
                         <!-- Group -->
                         <div class="form-group">
@@ -314,15 +276,6 @@ tinymce.init({
 				<hr class="separator" />
 				
 				<div class="separator line bottom"></div>
-								
-				<!-- Group -->
-				<div class="form-group row">
-					<label class="col-md-3 control-label"><?=_t( 'Reset Password Text' );?></label>
-					<div class="col-md-8">
-						<textarea id="mustHaveId" class="col-md-8 form-control password" name="reset_password_text" rows="20"><?=_h($app->hook->{'get_option'}('reset_password_text'));?></textarea>
-					</div>
-				</div>
-				<!-- // Group END -->
 				
 				<!-- Form actions -->
 				<div class="form-actions">
@@ -336,19 +289,19 @@ tinymce.init({
 		
 	</form>
 	<!-- // Form END -->
-	
-    <div class="modal fade" id="myModalECJ">
+    
+    <div class="modal fade" id="myetLayout">
     	<div class="modal-dialog">
 			<div class="modal-content">
 	
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Enable Cron Jobs' );?></h3>
+					<h3 class="modal-title"><?=_t( 'myeduTrac Layout' );?></h3>
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t("This option should be set to 'No' until you have configured each");?> <a href="<?=url('/');?>cron/"><?=_t('cron job');?></a>. <?=_t("If this is set to 'Yes' before that, your error logs will be huge.");?></p>
+		            <p><?=_t("You can create your own layout for myeduTrac self service portal. Make a duplicate of the default layout (/app/views/_layouts/myet/default.php), modify it and add your own css styling.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
@@ -425,6 +378,25 @@ tinymce.init({
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
 		            <p><?=_t("Enable this option to allow access to the application for admissions form.");?></p>
+		        </div>
+		        <div class="modal-footer">
+		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
+		        </div>
+	        </div>
+      	</div>
+    </div>
+    <div class="modal fade" id="applicant">
+    	<div class="modal-dialog">
+			<div class="modal-content">
+	
+				<!-- Modal heading -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title"><?=_t( 'Send Applicant Email' );?></h3>
+				</div>
+				<!-- // Modal heading END -->
+		        <div class="modal-body">
+		            <p><?=_t("Set this to 'Yes' if an acceptance letter email should be sent when applicant is moved to stu. Make sure to add a customized acceptance letter template on the email template's screen.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>

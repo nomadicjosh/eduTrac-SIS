@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * View Cronjob Handler View
+ * New Cronjob Handler View
  *  
  * PHP 5.4+
  *
@@ -34,6 +34,8 @@ $options = [30        => '30 seconds',
                  604800    => 'Week', 
                  209600    => '2 weeks', 
                  2629743   => 'Month'];
+session_start();
+session_regenerate_id();
 ?>
 
 <script type="text/javascript">
@@ -45,16 +47,16 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<li><?=_t( 'You are here' );?></li>
 	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><?=_t( 'View Cronjob Handler' );?></li>
+	<li><?=_t( 'New Cronjob Handler' );?></li>
 </ul>
 
-<h3><?=_t( 'View Cronjob Handler' );?></h3>
+<h3><?=_t( 'New Cronjob Handler' );?></h3>
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>cron/view/<?=$id;?>" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>cron/new/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -62,8 +64,8 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons dashboard active"><a href="<?=url('/');?>cron/<?=bm();?>"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
-                    <li class="glyphicons star"><a href="<?=url('/');?>cron/new/<?=bm();?>"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
+                    <li class="glyphicons dashboard"><a href="<?=url('/');?>cron/<?=bm();?>"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
+                    <li class="glyphicons star active"><a href="<?=url('/');?>cron/new/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
                     <li class="glyphicons list tab-stacked"><a href="<?=url('/');?>cron/log/<?=bm();?>"><i></i> <?=_t( 'Log' );?></a></li>
                     <li class="glyphicons wrench tab-stacked"><a href="<?=url('/');?>cron/setting/<?=bm();?>"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
                     <!-- <li class="glyphicons circle_question_mark tab-stacked"><a href="<?=url('/');?>cron/about/<?=bm();?>"><i></i> <span><?=_t( 'About' );?></span></a></li> -->
@@ -88,7 +90,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Cronjob URL' );?></label>
 							<div class="col-md-8">
-								<input type="text" id="cronjobpassword" name="url" class="form-control" value="<?=$data['url'];?>" required/>
+								<input type="text" id="cronjobpassword" name="url" class="form-control" required/>
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -97,16 +99,16 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( "Save Log" );?> <a href="#slog" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="checkbox" id="timeout" name="savelog" <?=($data['savelog'] == 1) ? " checked='checked'" : '';?> />
+                                <input type="checkbox" id="savelog" name="savelog"/>
                             </div>
                         </div>
                         <!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( "MailLog" );?> <a href="#mlog" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( "Mail Log" );?> <a href="#mlog" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="checkbox" id="timeout" name="maillog" <?=($data['maillog'] == 1) ? " checked='checked'" : '';?> />
+                                <input type="checkbox" id="maillog" name="maillog"/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -119,9 +121,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( "MailLog Email" );?> <a href="#mlogEmail" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( "Mail Log Email" );?> <a href="#mlogEmail" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="text" id="timeout" name="maillogaddress" value="<?=$data['maillogaddress'];?>" class="form-control"/>
+                                <input type="text" id="maillogaddress" name="maillogaddress" class="form-control"/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -134,7 +136,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                                     <option value="">&nbsp;</option>
                                     <?php 
                                     foreach ($options as $each => $key) {
-                                        $s = ($data['each'] == $each) ? ' selected="selected"' : '';
+                                        $s = (isset($_POST['each']) && $_POST['each'] == $each) ? ' selected="selected"' : '';
                                     ?>
                                     <option value="<?=$each;?>"<?=$s;?>><?=$key; ?></option>
                                     <?php } ?>
@@ -149,7 +151,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                                         for ($y = 0; $y < 4; $y++) {
                                             $time = ((strlen($x) == 1) ? '0' . $x : $x) . ':' . (($y == 0) ? '00' : ($y * 15));
 
-                                            $s = ($data['eachtime'] == $time) ? ' selected="selected"' : '';
+                                            $s = (isset($_POST['eachtime']) && $_POST['eachtime'] == $time) ? ' selected="selected"' : '';
                                     ?>
                                     <option value="<?=$time;?>"<?=$s;?>><?=$time;?></option>
                                     <?php } } ?>

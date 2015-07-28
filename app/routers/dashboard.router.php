@@ -106,7 +106,7 @@ $app->post('/dashboard/search/', function () use($app) {
     }
 
     if (!$r['relativeURL']) {
-        redirect(url('/') . 'error/screen-error?code=' . _h($screen[0]));
+        redirect(url('/') . 'err/screen-error?code=' . _h($screen[0]));
     } else {
         redirect(url('/') . $r['relativeURL']);
     }

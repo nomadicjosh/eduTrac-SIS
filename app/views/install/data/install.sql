@@ -140,20 +140,6 @@ CREATE TABLE IF NOT EXISTS `attendance` (
   KEY `stuID` (`stuID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `bill` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `stuID` bigint(20) NOT NULL,
-  `termCode` varchar(11) NOT NULL,
-  `postedBy` bigint(20) NOT NULL,
-  `stu_comments` text NOT NULL,
-  `staff_comments` text NOT NULL,
-  `dateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`),
-  KEY `stuID` (`stuID`),
-  KEY `termCode` (`termCode`),
-  KEY `postedBy` (`postedBy`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `billing_table` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(180) NOT NULL,
@@ -826,28 +812,6 @@ CREATE TABLE IF NOT EXISTS `course_sec` (
   KEY `courseID` (`courseID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `cronjob` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `scriptpath` varchar(255) DEFAULT NULL,
-  `name` varchar(128) DEFAULT NULL,
-  `time_interval` int(11) DEFAULT NULL,
-  `fire_time` int(11) NOT NULL DEFAULT '0',
-  `time_last_fired` int(11) DEFAULT NULL,
-  `run_only_once` tinyint(1) NOT NULL DEFAULT '0',
-  `currently_running` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `fire_time` (`fire_time`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `cronlog` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date_added` int(11) DEFAULT NULL,
-  `script` varchar(128) DEFAULT NULL,
-  `output` text,
-  `execution_time` varchar(60) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `degree` (
   `degreeID` int(11) NOT NULL AUTO_INCREMENT,
   `degreeCode` varchar(11) NOT NULL,
@@ -864,6 +828,8 @@ CREATE TABLE IF NOT EXISTS `department` (
   `deptTypeCode` varchar(6) NOT NULL,
   `deptCode` varchar(11) NOT NULL,
   `deptName` varchar(180) NOT NULL,
+  `deptEmail` varchar(180) NOT NULL,
+  `deptPhone` varchar(20) NOT NULL,
   `deptDesc` varchar(255) NOT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`deptID`),
@@ -1580,6 +1546,7 @@ INSERT INTO `permission` VALUES(00000000000000000246, 'access_ea', 'Access eduTr
 
 CREATE TABLE IF NOT EXISTS `person` (
   `personID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `altID` varchar(255) DEFAULT NULL,
   `uname` varchar(80) NOT NULL,
   `prefix` varchar(6) NOT NULL,
   `personType` varchar(3) NOT NULL,
@@ -1600,6 +1567,7 @@ CREATE TABLE IF NOT EXISTS `person` (
   `auth_token` varchar(255) DEFAULT NULL,
   `approvedDate` datetime NOT NULL,
   `approvedBy` bigint(20) NOT NULL,
+  `LastLogin` datetime NOT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`personID`),
   UNIQUE KEY `uname` (`uname`),
@@ -2318,21 +2286,6 @@ CREATE TABLE IF NOT EXISTS `student` (
   KEY `status` (`status`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `student_fee` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `stuID` bigint(20) NOT NULL,
-  `termCode` varchar(11) NOT NULL,
-  `billID` bigint(20) NOT NULL,
-  `feeID` int(11) NOT NULL,
-  `postedBy` bigint(20) NOT NULL,
-  `dateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `student_fee_index` (`stuID`,`billID`,`feeID`),
-  KEY `billID` (`billID`),
-  KEY `feeID` (`feeID`),
-  KEY `postedBy` (`postedBy`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `student_load_rule` (
   `slrID` int(11) NOT NULL AUTO_INCREMENT,
   `status` varchar(1) NOT NULL,
@@ -2407,16 +2360,70 @@ CREATE TABLE IF NOT EXISTS `stu_acad_level` (
   KEY `acadProgCode` (`acadProgCode`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `stu_comment` (
-  `commentID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `stu_acct_bill` (
+`ID` bigint(20) NOT NULL,
+  `billID` varchar(11) NOT NULL,
   `stuID` bigint(20) NOT NULL,
-  `comment` text NOT NULL,
+  `termCode` varchar(11) NOT NULL,
+  `authCode` varchar(23) NOT NULL,
+  `stu_comments` text NOT NULL,
+  `staff_comments` text NOT NULL,
+  `postedBy` bigint(20) NOT NULL,
+  `billTimeStamp` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `stu_acct_bill` ADD PRIMARY KEY (`ID`), ADD UNIQUE KEY `billID` (`billID`), ADD KEY `stuID` (`stuID`), ADD KEY `termCode` (`termCode`), ADD KEY `postedBy` (`postedBy`);
+
+ALTER TABLE `stu_acct_bill` MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE IF NOT EXISTS `stu_acct_fee` (
+`ID` bigint(20) NOT NULL,
+  `billID` varchar(11) NOT NULL,
+  `stuID` bigint(20) NOT NULL,
+  `termCode` varchar(11) NOT NULL,
+  `type` varchar(11) NOT NULL,
+  `description` varchar(125) NOT NULL,
+  `amount` double(6,2) NOT NULL,
+  `feeTimeStamp` datetime NOT NULL,
+  `postedBy` bigint(20) NOT NULL,
+  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `stu_acct_fee` ADD PRIMARY KEY (`ID`), ADD KEY `billID` (`billID`), ADD KEY `stuID` (`stuID`), ADD KEY `termCode` (`termCode`), ADD KEY `postedBy` (`postedBy`);
+
+ALTER TABLE `stu_acct_fee` MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE IF NOT EXISTS `stu_acct_pp` (
+`ID` bigint(20) NOT NULL,
+  `stuID` bigint(20) NOT NULL,
+  `termCode` varchar(11) NOT NULL,
+  `payFrequency` enum('1','7','14','30','365') NOT NULL,
+  `amount` double(6,2) NOT NULL,
+  `startDate` date NOT NULL,
+  `endDate` date NOT NULL,
+  `comments` text NOT NULL,
   `addDate` date NOT NULL,
   `addedBy` bigint(20) NOT NULL,
-  PRIMARY KEY (`commentID`),
-  KEY `stuID` (`stuID`),
-  KEY `addedBy` (`addedBy`)
+  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `stu_acct_pp` ADD PRIMARY KEY (`ID`);
+
+ALTER TABLE `stu_acct_pp` MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE IF NOT EXISTS `stu_acct_tuition` (
+`ID` bigint(20) NOT NULL,
+  `stuID` bigint(20) NOT NULL,
+  `termCode` varchar(11) NOT NULL,
+  `total` double(6,2) NOT NULL,
+  `postedBy` bigint(20) NOT NULL,
+  `tuitionTimeStamp` datetime NOT NULL,
+  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `stu_acct_tuition` ADD PRIMARY KEY (`ID`), ADD KEY `termCode` (`termCode`);
+
+ALTER TABLE `stu_acct_tuition` MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT;
 
 CREATE TABLE IF NOT EXISTS `stu_course_sec` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -2427,6 +2434,8 @@ CREATE TABLE IF NOT EXISTS `stu_course_sec` (
   `termCode` varchar(11) NOT NULL,
   `courseCredits` double(4,1) NOT NULL DEFAULT '0.0',
   `ceu` double(4,1) NOT NULL DEFAULT '0.0',
+  `regDate` date DEFAULT NULL,
+  `regTime` varchar(10) DEFAULT NULL,
   `status` enum('A','N','D','W','C') NOT NULL DEFAULT 'A',
   `statusDate` date NOT NULL,
   `statusTime` varchar(10) NOT NULL,
@@ -2450,7 +2459,7 @@ CREATE TABLE IF NOT EXISTS `stu_program` (
   `acadProgCode` varchar(20) NOT NULL,
   `currStatus` varchar(1) NOT NULL,
   `eligible_to_graduate` enum('1','0') NOT NULL DEFAULT '0',
-  `antGradDate` varchar(5) NOT NULL,
+  `antGradDate` varchar(8) NOT NULL,
   `graduationDate` date NOT NULL,
   `statusDate` date NOT NULL,
   `startDate` date NOT NULL,
@@ -2622,12 +2631,6 @@ ALTER TABLE `attendance` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`
 
 ALTER TABLE `attendance` ADD FOREIGN KEY (`courseSecID`) REFERENCES `course_sec` (`courseSecID`) ON UPDATE CASCADE;
 
-ALTER TABLE `bill` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
-
-ALTER TABLE `bill` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
-
-ALTER TABLE `bill` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
-
 ALTER TABLE `building` ADD FOREIGN KEY (`locationCode`) REFERENCES `location` (`locationCode`) ON UPDATE CASCADE;
 
 ALTER TABLE `course` ADD FOREIGN KEY (`subjectCode`) REFERENCES `subject` (`subjectCode`) ON UPDATE CASCADE;
@@ -2774,6 +2777,32 @@ ALTER TABLE `stu_acad_cred` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`pe
 
 ALTER TABLE `stu_acad_level` ADD FOREIGN KEY (`acadProgCode`) REFERENCES `acad_program` (`acadProgCode`) ON UPDATE CASCADE;
 
+ALTER TABLE `stu_acct_bill` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_bill` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_bill` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`billID`) REFERENCES `stu_acct_bill` (`billID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_pp` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_pp` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_pp` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_tuition` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_tuition` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+
+ALTER TABLE `stu_acct_tuition` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+
 ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`courseSecID`) REFERENCES `course_sec` (`courseSecID`) ON UPDATE CASCADE;
@@ -2785,16 +2814,6 @@ ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`courseSection`) REFERENCES `cours
 ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
-
-ALTER TABLE `student_fee` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
-
-ALTER TABLE `student_fee` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
-
-ALTER TABLE `student_fee` ADD FOREIGN KEY (`billID`) REFERENCES `bill` (`ID`) ON UPDATE CASCADE;
-
-ALTER TABLE `student_fee` ADD FOREIGN KEY (`feeID`) REFERENCES `billing_table` (`ID`) ON UPDATE CASCADE;
-
-ALTER TABLE `student_fee` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_program` ADD FOREIGN KEY (`acadProgCode`) REFERENCES `acad_program` (`acadProgCode`) ON UPDATE CASCADE ON DELETE RESTRICT;
 
@@ -2815,10 +2834,6 @@ ALTER TABLE `stu_term_gpa` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`term
 ALTER TABLE `stu_term_load` ADD FOREIGN KEY (`stuID`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_term_load` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE ON DELETE RESTRICT;
-
-ALTER TABLE `stu_comment` ADD FOREIGN KEY (`stuID`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
-
-ALTER TABLE `stu_comment` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`stuID`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
