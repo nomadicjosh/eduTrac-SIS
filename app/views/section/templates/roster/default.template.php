@@ -1,6 +1,11 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
+/*
+Template Name: Default
+Template Slug: default
+*/
+
 /**
- * Student Roster View
+ * Default Student Roster View
  *  
  * PHP 5.4+
  *

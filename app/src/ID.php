@@ -49,4 +49,14 @@ class ID
         }
         return $randomString;
     }
+    
+    public static function code($length)
+    {
+        $characters = "0123456789876543210ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789YXWVUTSRQPONMLKJIHGFEDCBAZ9876543210";
+        $randomString = "";
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[mt_rand(0, strlen($characters) - 1)];
+        }
+        return $randomString;
+    }
 }

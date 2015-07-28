@@ -383,3 +383,8 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
         }
     });
 });
+
+$app->setError(function() use($app) {
+
+    $app->view->display('error/404', ['title' => '404 Error']);
+});

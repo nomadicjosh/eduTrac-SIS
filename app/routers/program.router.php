@@ -217,3 +217,8 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
         );
     });
 });
+
+$app->setError(function() use($app) {
+
+    $app->view->display('error/404', ['title' => '404 Error']);
+});

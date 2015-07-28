@@ -22,10 +22,11 @@ $js = [
 $json_url = url('/api/');
 
 $logger = new \app\src\Log();
+$email = new \app\src\Email();
 $dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
-$app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+$app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow, $email) {
 
     /**
      * Before route check.
@@ -194,9 +195,20 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
 
         if ($app->req->isPost()) {
+            $nae = $app->db->person()->where('personID = ?', $id)->findOne();
+            if ($nae->ssn > 0) {
+                $pass = str_replace('-', '', $nae->ssn);
+            } elseif ($nae->dob != '0000-00-00') {
+                $pass = str_replace('-', '', $nae->dob);
+            } else {
+                $pass = 'myaccount';
+            }
+            $degree = $app->db->acad_program()->where('acadProgCode = ?', _trim($_POST['acadProgCode']))->findOne();
+            $appl = $app->db->application()->where('personID = ?', $id)->findOne();
+
             $student = $app->db->student();
             $student->stuID = $id;
             $student->status = $_POST['status'];
@@ -221,6 +233,33 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $al->addDate = $app->db->NOW();
 
             if ($student->save() && $sacp->save() && $al->save()) {
+                if ($app->hook->{'get_option'}('send_acceptance_email') == 1) {
+                    $host = strtolower($_SERVER['SERVER_NAME']);
+                    $site = _t('myeduTrac :: ') . $app->hook->{'get_option'}('institution_name');
+                    $message = $app->hook->{'get_option'}('student_acceptance_letter');
+                    $message = str_replace('#uname#', $nae->uname, $message);
+                    $message = str_replace('#fname#', $nae->fname, $message);
+                    $message = str_replace('#lname#', $nae->lname, $message);
+                    $message = str_replace('#name#', get_name($id), $message);
+                    $message = str_replace('#id#', $id, $message);
+                    $message = str_replace('#email#', $nae->email, $message);
+                    $message = str_replace('#sacp#', _trim($_POST['acadProgCode']), $message);
+                    $message = str_replace('#acadlevel#', _trim($_POST['acadLevelCode']), $message);
+                    $message = str_replace('#degree#', $degree->degreeCode, $message);
+                    $message = str_replace('#startterm#', $appl->startTerm, $message);
+                    $message = str_replace('#adminemail#', $app->hook->{'get_option'}('system_email'), $message);
+                    $message = str_replace('#url#', url('/'), $message);
+                    $message = str_replace('#helpdesk#', $app->hook->{'get_option'}('help_desk'), $message);
+                    $message = str_replace('#currentterm#', $app->hook->{'get_option'}('current_term_code'), $message);
+                    $message = str_replace('#instname#', $app->hook->{'get_option'}('institution_name'), $message);
+                    $message = str_replace('#mailaddr#', $app->hook->{'get_option'}('mailing_address'), $message);
+
+                    $headers = "From: $site <auto-reply@$host>\r\n";
+                    $headers .= "X-Mailer: PHP/" . phpversion();
+                    $headers .= "MIME-Version: 1.0" . "\r\n";
+                    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+                    $email->et_mail($app->hook->{'get_option'}('admissions_email'), _t("Student Acceptance Letter"), $message, $headers);
+                }
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Student', get_name($id), get_persondata('uname'));
                 redirect(url('/') . 'stu/' . $id . '/' . bm());
@@ -730,11 +769,27 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
              */
             if (($_POST['status'] == 'W' || $_POST['status'] == 'D') && $date < $term[0]['termStartDate']) {
                 $q = $app->db->stu_course_sec()
-                    ->where('stuID = ?', $_POST['stuID'])->_and_()
-                    ->where('courseSecID = ?', $_POST['courseSecID'])
+                    ->where('stuID = ?', $decode[0]['stuID'])->_and_()
+                    ->where('courseSection = ?', $decode[0]['courseSection'])
                     ->delete();
                 $q = $app->db->stu_acad_cred()->where('stuAcadCredID = ?', $id)->delete();
-                redirect(url('/') . 'stu/stac/' . $_POST['stuID'] . '/' . bm());
+                
+                if (function_exists('financial_module')) {
+                    $q = $app->db->stu_acct_fee()->where('stuID = ?', $decode[0]['stuID'])->_and_()->where('description = ?', $decode[0]['courseSection'])->delete();
+                    /**
+                     * Begin Updating tuition totals.
+                     */
+                    $total = qt('course_sec', 'courseFee', 'courseSection = "' . $decode[0]['courseSection'] . '"') + qt('course_sec', 'labFee', 'courseSection = "' . $decode[0]['courseSection'] . '"') + qt('course_sec', 'materialFee', 'courseSection = "' . $decode[0]['courseSection'] . '"');
+                    $stuTuition = $app->db->stu_acct_tuition()->where('stuID = ? AND termCode = ?', [$decode[0]['stuID'], $_POST['termCode']])->findOne();
+                    $q = $app->db->stu_acct_tuition();
+                    $q->total = bcsub($stuTuition->total, $total);
+                    $q->where('stuID = ?', $decode[0]['stuID'])->_and_()->where('termCode = ?', $_POST['termCode'])->update();
+                    /**
+                     * End updating tuition totals.
+                     */
+                }
+                
+                redirect(url('/') . 'stu/stac/' . $decode[0]['stuID'] . '/' . bm());
                 exit();
             }
             /**
@@ -744,11 +799,26 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
              * records.
              */ elseif (($_POST['status'] == 'W' || $_POST['status'] == 'D') && $date >= $term[0]['termStartDate'] && $date < $term[0]['dropAddEndDate']) {
                 $q = $app->db->stu_course_sec()
-                    ->where('stuID = ?', $_POST['stuID'])->_and_()
-                    ->where('courseSecID = ?', $_POST['courseSecID'])
+                    ->where('stuID = ?', $decode[0]['stuID'])->_and_()
+                    ->where('courseSection = ?', $decode[0]['courseSection'])
                     ->delete();
                 $q = $app->db->stu_acad_cred()->where('stuAcadCredID = ?', $id)->delete();
-                redirect(url('/') . 'stu/stac/' . $_POST['stuID'] . '/' . bm());
+                
+                if (function_exists('financial_module')) {
+                    $q = $app->db->stu_acct_fee()->where('stuID = ?', $decode[0]['stuID'])->_and_()->where('description = ?', $decode[0]['courseSection'])->delete();
+                    /**
+                     * Begin Updating tuition totals.
+                     */
+                    $total = qt('course_sec', 'courseFee', 'courseSection = "' . $decode[0]['courseSection'] . '"') + qt('course_sec', 'labFee', 'courseSection = "' . $decode[0]['courseSection'] . '"') + qt('course_sec', 'materialFee', 'courseSection = "' . $decode[0]['courseSection'] . '"');
+                    $q = $app->db->stu_acct_tuition();
+                    $q->total = bcsub($q->total, $total);
+                    $q->where('stuID = ?', $decode[0]['stuID'])->_and_()->where('termCode = ?', $_POST['termCode'])->update();
+                    /**
+                     * End updating tuition totals.
+                     */
+                }
+                
+                redirect(url('/') . 'stu/stac/' . $decode[0]['stuID'] . '/' . bm());
                 exit();
             }
             /**
@@ -764,7 +834,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 $q->status = $_POST['status'];
                 $q->statusDate = $q->NOW();
                 $q->statusTime = $time;
-                $q->where('stuID = ?', $_POST['stuID'])->_and_()
+                $q->where('stuID = ?', $decode[0]['stuID'])->_and_()
                     ->where('courseSecID = ?', $_POST['courseSecID'])
                     ->update();
                 $sacd->update();
@@ -781,7 +851,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 $q->status = $_POST['status'];
                 $q->statusDate = $_POST['statusDate'];
                 $q->statusTime = $_POST['statusTime'];
-                $q->where('stuID = ?', $_POST['stuID'])->_and_()
+                $q->where('stuID = ?', $decode[0]['stuID'])->_and_()
                     ->where('courseSecID = ?', $_POST['courseSecID'])
                     ->update();
                 $sacd->update();
@@ -856,7 +926,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $sacp->where('stuProgID = ?', $id);
             if ($sacp->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Student Acad Program (SACP)', get_name($id), get_persondata('uname'));
+                $logger->setLog('Update Record', 'Student Acad Program (SACP)', get_name($_POST['stuID']), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -1085,7 +1155,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/tran/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {
-            redirect(url('/stu/tran/') . $_POST['studentID'] . '/' . $_POST['acadLevelCode'] . '/');
+            redirect(url('/stu/tran/') . $_POST['stuID'] . '/' . $_POST['acadLevelCode'] . '/' . $_POST['template'] . '/');
         }
 
         $app->view->display('student/tran', [
@@ -1096,11 +1166,13 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         );
     });
 
-    $app->get('/tran/(\d+)/(\w+)/', function ($id, $level) use($app, $css, $js, $flashNow) {
+    $app->get('/tran/(\d+)/(\w+)/(\w+)/', function ($id, $level, $template) use($app, $css, $js, $flashNow) {
 
         $tranInfo = $app->db->stu_acad_cred()
             ->setTableAlias('a')
-            ->select('CASE a.acadLevelCode WHEN "UG" THEN "Undergraduate" WHEN "GR" THEN "Graduate" WHEN "Phd" THEN "Doctorate" ELSE "Continuing Education" END AS "Level"')
+            ->select('CASE a.acadLevelCode WHEN "UG" THEN "Undergraduate" WHEN "GR" THEN "Graduate" '
+                . 'WHEN "Phd" THEN "Doctorate" WHEN "CE" THEN "Continuing Education" WHEN "CTF" THEN "Certificate" '
+                . 'WHEN "DIP" THEN "Diploma" WHEN "PR" THEN "Professional" ELSE "Non-Degree" END AS "Level"')
             ->select('a.stuID,b.address1,b.address2,b.city,b.state')
             ->select('b.zip,c.ssn,c.dob,d.graduationDate,f.degreeCode')
             ->select('f.degreeName,g.majorCode,g.majorName,h.minorCode')
@@ -1119,8 +1191,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             ->where('b.addressStatus = "C"')->_and_()
             ->where('b.addressType = "P"')->_and_()
             ->where('e.acadLevelCode = ?', $level)->_and_()
-            ->where('d.currStatus = "A"')->_or_()
-            ->where('d.currStatus = "G"');
+            ->where('(d.currStatus = "A" OR d.currStatus = "G")');
         $info = $tranInfo->find(function($data) {
             $array = [];
             foreach ($data as $d) {
@@ -1233,7 +1304,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * the results in a html format.
          */ else {
 
-            $app->view->display('student/transcript', [
+            $app->view->display('student/templates/transcript/' . $template . '.template', [
                 'title' => 'Print Transcript',
                 'cssArray' => $css,
                 'jsArray' => $js,
@@ -1296,8 +1367,8 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
         ];
 
-        $bill = $app->db->bill()
-            ->select('ID,stuID,termCode')
+        $bill = $app->db->stu_acct_bill()
+            ->select('billID,stuID,termCode')
             ->where('stuID = ?', get_persondata('personID'))
             ->groupBy('stuID,termCode');
         $q = $bill->find(function($data) {
@@ -1317,20 +1388,14 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         );
     });
 
-    $app->match('GET|POST', '/bill/(\d+)/term/(.*)/', function ($id, $term) use($app) {
+    $app->match('GET|POST', '/bill/([^/]+)/', function ($id) use($app) {
 
-        $bill = $app->db->student_fee()
+        $bill = $app->db->stu_acct_bill()
             ->setTableAlias('a')
-            ->select('a.ID AS "FeeID",a.stuID,b.name')
-            ->select('b.amount,c.ID AS "BillID",c.termCode')
-            ->select('c.stu_comments,c.dateTime,d.termName')
-            ->_join('billing_table', 'a.feeID = b.ID', 'b')
-            ->_join('bill', 'a.stuID = c.stuID', 'c')
-            ->_join('term', 'c.termCode = d.termCode', 'd')
-            ->where('a.stuID = ?', $id)->_and_()
-            ->where('c.termCode = ?', $term)->_and_()
-            ->where('a.billID = c.ID')->_and_()
-            ->where('a.stuID = ?', get_persondata('personID'));
+            ->select('a.*, b.termName')
+            ->_join('term', 'a.termCode = b.termCode', 'b')
+            ->where('billID = ?', $id)->_and_()
+            ->where('stuID = ?', get_persondata('personID'));
         $q1 = $bill->find(function($data) {
             $array = [];
             foreach ($data as $d) {
@@ -1338,33 +1403,52 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             }
             return $array;
         });
-        $begin = $app->db->query("SELECT 
-                        SUM(b.amount) as sum 
-                    FROM student_fee a 
-                    LEFT JOIN billing_table b ON a.feeID = b.ID 
-                    LEFT JOIN bill c ON a.billID = c.ID 
-                    WHERE a.stuID = c.stuID 
-                    AND c.stuID = ? 
-                    AND c.termCode = ? 
-                    GROUP BY c.stuID,c.termCode", [$id, $term]
-        );
-        $q2 = $begin->find(function($data) {
+
+        $stuTuition = $app->db->stu_acct_tuition()
+            ->where('stuID = ?', $q1[0]['stuID'])->_and_()
+            ->where('termCode = ?', $q1[0]['termCode']);
+        $query = $stuTuition->find(function($data) {
             $array = [];
             foreach ($data as $d) {
                 $array[] = $d;
             }
             return $array;
         });
-        $crseFees = $app->db->query("SELECT 
-                        COALESCE(SUM(b.courseFee+b.labFee+b.materialFee),0) AS 'CourseFees' 
-                    FROM stu_course_sec a
-                    LEFT JOIN course_sec b ON a.courseSecCode = b.courseSecCode 
-            		AND a.termCode = b.termCode 
-                    WHERE a.stuID = ? 
-                    AND a.termCode = ? 
-                    AND a.status <> 'C'", [$id, $term]
+        $tuition = $app->db->query('SELECT '
+            . 'SUM(amount) as sum '
+            . 'FROM stu_acct_fee '
+            . 'WHERE billID = ? '
+            . 'AND type = "Tuition" '
+            . 'GROUP BY stuID, termCode', [$id]
         );
-        $q3 = $crseFees->find(function($data) {
+        $q2 = $tuition->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        $fee = $app->db->query('SELECT '
+            . 'ID, description, amount as Fee '
+            . 'FROM stu_acct_fee '
+            . 'WHERE billID = ? '
+            . 'AND type = "Fee"', [$id]
+        );
+        $q3 = $fee->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        $sumFee = $app->db->query("SELECT 
+                        SUM(amount) as sum 
+                    FROM stu_acct_fee 
+                    WHERE billID = ? 
+                    AND type = 'Fee' 
+                    GROUP BY stuID,termCode", [$id]
+        );
+        $q4 = $sumFee->find(function($data) {
             $array = [];
             foreach ($data as $d) {
                 $array[] = $d;
@@ -1376,9 +1460,9 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     FROM payment 
                     WHERE stuID = ? 
                     AND termCode = ? 
-                    GROUP BY stuID,termCode", [$id, $term]
+                    GROUP BY stuID,termCode", [$q1[0]['stuID'], $q1[0]['termCode']]
         );
-        $q4 = $sumPay->find(function($data) {
+        $q5 = $sumPay->find(function($data) {
             $array = [];
             foreach ($data as $d) {
                 $array[] = $d;
@@ -1390,40 +1474,9 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     FROM refund 
                     WHERE stuID = ? 
                     AND termCode = ? 
-                    GROUP BY stuID,termCode", [$id, $term]
+                    GROUP BY stuID,termCode", [$q1[0]['stuID'], $q1[0]['termCode']]
         );
-        $q5 = $sumRefund->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-        $payment = $app->db->query("SELECT 
-                        a.ID AS 'paymentID',a.amount,a.comment,a.dateTime,c.type 
-                    FROM payment a 
-                    LEFT JOIN bill b ON a.stuID = b.stuID 
-                    LEFT JOIN payment_type c ON a.paymentTypeID = c.ptID 
-                    WHERE a.termCode = b.termCode 
-                    AND a.stuID = ? 
-                    AND a.termCode = ?", [$id, $term]
-        );
-        $q6 = $payment->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-        $refund = $app->db->query("SELECT 
-                        a.ID AS 'refundID',a.amount,a.comment,a.dateTime 
-                    FROM refund a 
-                    LEFT JOIN bill b ON a.stuID = b.stuID 
-                    WHERE a.termCode = b.termCode 
-                    AND a.stuID = ? 
-                    AND a.termCode = ?", [$id, $term]
-        );
-        $q7 = $refund->find(function($data) {
+        $q6 = $sumRefund->find(function($data) {
             $array = [];
             foreach ($data as $d) {
                 $array[] = $d;
@@ -1460,14 +1513,119 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          */ else {
 
             $app->view->display('student/vbill', [
-                'title' => $term . ' Bill',
+                'title' => $q1[0]['termCode'] . ' Bill',
                 'bill' => $q1,
-                'begin' => money_format('-%n', $q2[0]['sum']),
-                'courseFees' => $q3,
-                'sumPayments' => $q4[0]['sum'],
-                'sumRefund' => $q5[0]['sum'],
-                'payment' => $q6,
-                'refund' => $q7
+                'tuition1' => $query,
+                'tuition2' => money_format('%n', $q2[0]['sum']),
+                'fee' => $q3,
+                'begin' => money_format('-%n', bcadd($query[0]['total'], $q4[0]['sum'])),
+                'sumFee' => $q4[0]['sum'],
+                'sumPayments' => $q5[0]['sum'],
+                'sumRefund' => $q6[0]['sum']
+                ]
+            );
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/account-history/', function() use($app) {
+        if (!checkStuAccess(get_persondata('personID'))) {
+            redirect(url('/profile/'));
+        }
+
+        if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+            redirect(url('/offline/'));
+        }
+    });
+
+    $app->get('/account-history/', function () use($app, $js, $logger, $flashNow) {
+        $css = [ 'css/admin/module.admin.page.alt.tables.min.css', 'css/admin/module.admin.page.invoice.min.css'];
+        $js = [
+            'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
+            'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
+            'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
+            'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
+        ];
+        $plan = $app->db->query('SELECT *,'
+            . ' CASE payFrequency'
+            . ' WHEN "1" THEN "Daily"'
+            . ' WHEN "7" THEN "Weekly"'
+            . ' WHEN "14" THEN "Bi-Weekly"'
+            . ' WHEN "30" THEN "Monthly"'
+            . ' ELSE "Yearly"'
+            . ' END AS Frequency'
+            . ' FROM stu_acct_pp'
+            . ' WHERE stuID = ?', [get_persondata('personID')]
+        );
+        $sql = $plan->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        $history = $app->db->query('SELECT 
+            ID AS FeeID, billID AS billID, stuID AS stuID,
+            termCode AS termCode, type as type, description AS description,
+            amount AS FeeAmount, NULL AS PayAmount, NULL AS method, feeTimeStamp AS timestamp 
+            FROM stu_acct_fee 
+            WHERE stuID = ? 
+            AND type = "Fee"
+            UNION ALL 
+                SELECT NULL as FeeID, NULL AS billID, stuID AS stuID, termCode AS termCode,
+                NULL as type, "Tuition" as description, total AS FeeAmount, NULL AS PayAmount,
+                NULL as method, tuitionTimeStamp AS timestamp 
+                FROM stu_acct_tuition 
+                WHERE stuID = ? 
+            UNION ALL 
+            SELECT NULL as FeeID, NULL AS billID, stuID AS stuID, termCode AS termCode,
+            NULL as type, "Payment" as description, NULL AS FeeAmount, amount AS PayAmount, 
+            paymentTypeID as method, dateTime AS timestamp 
+            FROM payment 
+            WHERE stuID = ? 
+            ORDER BY timestamp ASC', [get_persondata('personID'), get_persondata('personID'), get_persondata('personID')]);
+        $q = $history->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($q === false) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($q) === true) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If data is zero, 404 not found.
+         */ elseif (count($q[0]['stuID']) <= 0) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+            $app->view->display('student/account-history', [
+                'title' => 'Student Account History',
+                'cssArray' => $css,
+                'jsArray' => $js,
+                'history' => $q,
+                'plan' => $sql
                 ]
             );
         }

@@ -1,4 +1,10 @@
-<?php $app = \Liten\Liten::getInstance(); ?>
+<?php 
+/*
+Layout Name: Default
+Layout Slug: default
+*/
+
+$app = \Liten\Liten::getInstance(); ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="front ie lt-ie9 lt-ie8 lt-ie7 fluid top-full"> <![endif]-->
 <!--[if IE 7]>    <html class="front ie lt-ie9 lt-ie8 fluid top-full sticky-top"> <![endif]-->
@@ -273,8 +279,5 @@
     }
 	?>
 
-<?php if($app->hook->get_option('enable_cron_jobs') == 1) { ?>
-<img src="<?=url('/');?>cron/fireCron/?image=1" width="1px" height="1px" style="border:0;" />
-<?php } ?>
 </body>
 </html>

@@ -32,7 +32,7 @@ require( BASE_PATH . 'Liten' . DS . 'Bootstrap.php');
 $app = new \Liten\Liten(
     [
     'cookies.lifetime' => '86400',
-    'cookies.savepath' => '/tmp/' . $app->req->server['SERVER_NAME'] . '/'
+    'cookies.savepath' => '/tmp/' . str_replace('.','_',$app->req->server['SERVER_NAME'] . '/')
     ]
 );
 
@@ -98,11 +98,13 @@ if (file_exists(BASE_PATH . 'config.php')) {
  * add your own customized screens without needing to touch
  * the core.
  */
-$dropins = glob(APP_PATH . 'dropins' . DS . '*.php');
-if (is_array($dropins)) {
-    foreach ($dropins as $dropin) {
-        if (file_exists($dropin))
-            include($dropin);
+if (file_exists(BASE_PATH . 'config.php')) {
+    $dropins = glob(APP_PATH . 'dropins' . DS . '*.php');
+    if (is_array($dropins)) {
+        foreach ($dropins as $dropin) {
+            if (file_exists($dropin))
+                include($dropin);
+        }
     }
 }
 

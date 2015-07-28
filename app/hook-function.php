@@ -796,8 +796,11 @@ function acad_level_select($levelCode = null, $readonly = null, $required = '')
             <option value="">&nbsp;</option>
             <option value="NA"' . selected($levelCode, 'NA', false) . '>N/A Not Applicable</option>
             <option value="CE"' . selected($levelCode, 'CE', false) . '>CE Continuing Education</option>
+            <option value="CTF"' . selected($levelCode, 'CTF', false) . '>CTF Certificate</option>
             <option value="UG"' . selected($levelCode, 'UG', false) . '>UG Undergraduate</option>
             <option value="GR"' . selected($levelCode, 'GR', false) . '>GR Graduate</option>
+            <option value="DIP"' . selected($levelCode, 'DIP', false) . '>DIP Diploma</option>
+            <option value="PR"' . selected($levelCode, 'PR', false) . '>PR Professional</option>
             <option value="PhD"' . selected($levelCode, 'PhD', false) . '>PhD Doctorate</option>
             </select>';
     return $app->hook->{'apply_filter'}('acad_level', $select, $levelCode);
@@ -819,8 +822,11 @@ function fee_acad_level_select($levelCode = null)
             <option value="">&nbsp;</option>
             <option value="NA"' . selected($levelCode, 'NA', false) . '>N/A Not Applicable</option>
             <option value="CE"' . selected($levelCode, 'CE', false) . '>CE Continuing Education</option>
+            <option value="CTF"' . selected($levelCode, 'CTF', false) . '>CTF Certificate</option>
             <option value="UG"' . selected($levelCode, 'UG', false) . '>UG Undergraduate</option>
             <option value="GR"' . selected($levelCode, 'GR', false) . '>GR Graduate</option>
+            <option value="DIP"' . selected($levelCode, 'DIP', false) . '>DIP Diploma</option>
+            <option value="PR"' . selected($levelCode, 'PR', false) . '>PR Professional</option>
             <option value="PhD"' . selected($levelCode, 'PhD', false) . '>PhD Doctorate</option>
             </select>';
     return $app->hook->{'apply_filter'}('fee_acad_level', $select, $levelCode);

@@ -190,6 +190,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             foreach ($_POST as $k => $v) {
                 $crse->$k = $v;
             }
+            $crse->where('courseID = ?', (int)$id);
             if ($crse->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Course', $decode[0]['courseCode'], get_persondata('uname'));
@@ -374,4 +375,9 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             redirect($app->req->server['HTTP_REFERER']);
         }
     });
+});
+
+$app->setError(function() use($app) {
+
+    $app->view->display('error/404', ['title' => '404 Error']);
 });

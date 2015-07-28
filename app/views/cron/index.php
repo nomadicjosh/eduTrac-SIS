@@ -1,13 +1,12 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * Cron Jobs View
+ * Cron Job Handler View
  *  
  * PHP 5.4+
  *
  * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @license     http://edutrac.7mediaws.org/general/edutrac_erp_commercial_license/ Commercial License
  * @link        http://www.7mediaws.org/
  * @since       3.0.0
  * @package     eduTrac
@@ -16,50 +15,43 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$cron = new \app\src\Cron;
+$message = new \app\src\Messages;
 ?>
 
 <script type="text/javascript">
-$(function() { // wrap inside the jquery ready() function
-
-	//Attach an onclick handler to each of your buttons that are meant to "approve"
-	$('a[class="push-button"]').click(function(){
-	
-	   //Get the ID of the button that was clicked on
-	   var id_of_item_to_push = $(this).attr("id");
-	   
-	   //Get the url
-	   var id_of_url = $(this).attr("url");
-
-	   $.ajax({
-	      url: "url=" + id_of_url, //This is the page where you will handle your SQL insert
-	      type: "POST",
-	      data: "id=" + id_of_item_to_push, //The data your sending to some-page.php
-	      success: function(){
-	          console.log("Push request was successful.");
-	      },
-	      error:function(){
-	          console.log("Push request failed.");
-	      }   
-	    });
-
-	});
-
-});
+$(".panel").show();
+setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
 	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><?=_t( 'Cron Jobs' );?></li>
+	<li><?=_t( 'Cronjob Handler' );?></li>
 </ul>
 
-<h3><?=_t( 'Cron Jobs' );?></h3>
+<h3><?=_t( 'Cronjob Handler' );?></h3>
 <div class="innerLR">
-
+    
+    <?=$message->flashMessage();?>
+    
+    <!-- Form -->
+    <form class="form-horizontal margin-none" action="<?=url('/');?>cron/" id="validateSubmitForm" method="post" autocomplete="off">
 	<!-- Widget -->
 	<div class="widget widget-heading-simple widget-body-gray">
+        
+        <!-- Tabs Heading -->
+        <div class="tabsbar">
+            <ul>
+                <li class="glyphicons dashboard active"><a href="<?=url('/');?>cron/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
+                <li class="glyphicons star"><a href="<?=url('/');?>cron/new/<?=bm();?>"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
+                <li class="glyphicons list tab-stacked"><a href="<?=url('/');?>cron/log/<?=bm();?>"><i></i> <?=_t( 'Log' );?></a></li>
+                <li class="glyphicons wrench tab-stacked"><a href="<?=url('/');?>cron/setting/<?=bm();?>"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
+                <!-- <li class="glyphicons circle_question_mark tab-stacked"><a href="<?=url('/');?>cron/about/<?=bm();?>"><i></i> <span><?=_t( 'About' );?></span></a></li> -->
+            </ul>
+        </div>
+        <!-- // Tabs Heading END -->
+        
 		<div class="widget-body">
 		
 			<!-- Table -->
@@ -68,64 +60,50 @@ $(function() { // wrap inside the jquery ready() function
 				<!-- Table heading -->
 				<thead>
 					<tr>
-						<th class="text-center"><?=_t( 'Job Name' );?></th>
-						<th class="text-center"><?=_t( 'Last Fired' );?></th>
-						<th class="text-center"><?=_t( 'Next Execution' );?></th>
-						<th class="text-center"><?=_t( 'Interval' );?></th>
-						<th class="text-center"><?=_t( 'Action' );?></th>
+                        <th class="text-center"></th>
+						<th class="text-center"><?=_t( 'Cronjob' );?></th>
+						<th class="text-center"><?=_t( 'Time/Each' );?></th>
+						<th class="text-center"><?=_t( 'Last Run' );?></th>
+						<th class="text-center"><?=_t( '# Runs' );?></th>
+                        <th class="text-center"><?=_t( 'Logs/Run' );?></th>
 					</tr>
 				</thead>
 				<!-- // Table heading END -->
 				
 				<!-- Table body -->
 				<tbody>
-				<?php if($cronjob != '') : foreach($cronjob as $key => $value) { ?>
+				<?php if (isset($_SESSION['cronjobs'], $_SESSION['cronjobs']['jobs']) && count($_SESSION['cronjobs']['jobs']) > 0) { ?>
+                <?php foreach ($_SESSION['cronjobs']['jobs'] as $k => $cronjob) {?>
                 <tr class="gradeX">
-                    <td class="text-center"><?=_h($value['name']);?></td>
-                    <td class="text-center">
-                        <?php if(_h((int)$value['time_last_fired']) == 0) {
-                            echo '<font color="#FF8000">Not yet fired</font>'; 
-                        } else {
-                            echo strftime("%H:%M:%S ",_h($value['time_last_fired']));
-                            echo strftime("on %b %d, %Y",_h($value['time_last_fired']));
-                        } ?>
-                    </td>
-                    <td class="text-center">
-                        <?php
-                            echo strftime("%H:%M:%S ",_h($value['fire_time']));
-                            echo strftime("%b %d, %Y",_h($value['fire_time']));
-                        ?>
-                    </td>
-                    <td class="text-center">
-                        <?php
-                            $time_interval = $cron->time_unit(_h((int)$value['time_interval']));
-                            echo _h((int)$time_interval[0]) . ' ' . $time_interval[1];
-                        ?>
-                    </td>
-                    <td class="text-center">
-                    	<div class="btn-group dropup">
-                            <button class="btn btn-default btn-xs" type="button"><?=_t( 'Actions' ); ?></button>
-                            <button data-toggle="dropdown" class="btn btn-xs btn-primary dropdown-toggle" type="button">
-                                <span class="caret"></span>
-                                <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
-                            </button>
-                            <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/');?>cron/<?=_h($value['id']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
-                                <li><a class="push-button" id="<?=_h($value['id']);?>" href="#" url="<?=_h($v['scriptpath']);?>"><?=_t( 'Push' ); ?></a></li>
-                            </ul>
-                        </div>
-                    </td>
+                    <td class="text-center"><input type="checkbox" value="xx" name="cronjobs[<?=$k;?>]" /></td>
+                    <td class="text-center"><a href="<?=url('/cron/view/') . $k . '/';?>" title="Edit"><?=(strlen($cronjob['url']) > 52) ? substr($cronjob['url'], 0, 50) . '..' : $cronjob['url'];?></a></td>
+                    <td class="text-center">Each <?=($cronjob['time'] != '') ? "day on " . $cronjob['time']  . ' hours' : $options[$cronjob['each']] . ((isset($cronjob['eachtime']) && strlen($cronjob['eachtime']) > 0) ? ' at ' . $cronjob['eachtime'] : '');?></td>
+                    <td class="text-center"><?=($cronjob['lastrun'] !== '') ? date('M d, Y @ h:i A', strtotime($cronjob['lastrun'])) : '';?></td>
+                    <td class="text-center"><?=$cronjob['runned'];?></td>
+                    <td class="text-center"><?=($cronjob['savelog'] == true) ? 'Yes' : 'No'; ?><?php echo isset($_SESSION['cronjobs']['settings']) ? ' / <a target="_blank" href="'.url('/cron/cronjob/').'?password=' . $_SESSION['cronjobs']['settings']['cronjobpassword'] . '&id=' . $k . '">'._t('Run').'</a>' : '';?></td>
                 </tr>
-                <?php } endif; ?>
+                <?php } } ?>
 					
 				</tbody>
 				<!-- // Table body END -->
 				
 			</table>
 			<!-- // Table END -->
-			
+            
+            <?php if (isset($k, $cronjob)) { ?> 
+            <hr class="separator" />
+				
+            <div class="separator line bottom"></div>
+
+            <!-- Form actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Delete selected handler(s)' );?></button>
+            </div>
+            <!-- // Form actions END -->
+			<?php } ?>
 		</div>
 	</div>
+    </form>
 	<div class="separator bottom"></div>
 	<!-- // Widget END -->
 	
