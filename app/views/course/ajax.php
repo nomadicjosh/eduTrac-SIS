@@ -1,3 +1,4 @@
+<?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed'); ?>
 <style>
     .error { display: none;}
     .success { display: none;}
