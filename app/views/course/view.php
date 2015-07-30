@@ -16,6 +16,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+include('ajax.php');
 ?>
 
 <script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
@@ -61,24 +62,26 @@ $message = new \app\src\Messages;
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Department' );?></label>
-							<div class="col-md-8">
-								<select name="deptCode"<?=cio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+							<div class="col-md-8" id="divDept">
+								<select name="deptCode"<?=cio();?> id="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
                             		<?php table_dropdown('department', 'deptTypeCode = "acad" AND deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName', _h($crse[0]['deptCode'])); ?>
                             	</select>
 							</div>
+							<a<?=ae('access_forms');?> href="#dept" data-toggle="modal" title="Department" class="btn btn-primary"><i class="fa fa-plus"></i></a>
 						</div>
 						<!-- // Group END -->
 						
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Subject' );?></label>
-							<div class="col-md-8">
-								<select name="subjectCode"<?=cio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+							<div class="col-md-8" id="divSubj">
+								<select name="subjectCode"<?=cio();?> id="subjectCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
 	                        		<?php subject_code_dropdown(_h($crse[0]['subjectCode'])); ?>
 	                        	</select>
 	                       </div>
+	                       <a<?=ae('access_forms');?> href="#subj" data-toggle="modal" title="Subject" class="btn btn-primary"><i class="fa fa-plus"></i></a>
 						</div>
 						<!-- // Group END -->
 						
