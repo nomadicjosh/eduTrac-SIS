@@ -35,7 +35,17 @@ include('ajax.php');
 	<li><?=_h($crse[0]['courseCode']);?></li>
 </ul>
 
-<h3><?=_h($crse[0]['courseCode']);?></h3>
+<h3><?=_h($crse[0]['courseCode']);?> 
+    <span data-toggle="tooltip" data-original-title="Create Course" data-placement="top">
+        <a<?=ae('add_course');?> href="<?=url('/');?>crse/" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+    </span>
+    <span data-toggle="tooltip" data-original-title="Clone Course" data-placement="top">
+        <a<?=ae('add_course');?> href="#crse<?=_h($crse[0]['courseID']);?>" data-toggle="modal" class="btn btn-primary"><i class="fa fa-copy"></i></a>
+    </span>
+    <span data-toggle="tooltip" data-original-title="Create Course Section" data-placement="top">
+        <a<?=ae('add_course_sec');?> href="<?=url('/');?>sect/add/<?=_h($crse[0]['courseID']);?>/" class="btn btn-primary"><i class="fa fa-code-fork"></i></a>
+    </span>
+</h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
@@ -253,7 +263,6 @@ include('ajax.php');
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=cids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<a<?=ae('add_course');?> href="#crse<?=_h($crse[0]['courseID']);?>" data-toggle="modal" class="btn btn-icon btn-primary glyphicons circle_plus"><i></i><?=_t( 'Clone' ); ?></a>
                     <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>crse/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
