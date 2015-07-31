@@ -9,7 +9,7 @@
  * 
  * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
+ * @package     eduTrac SIS
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 $app = \Liten\Liten::getInstance();
@@ -39,6 +39,17 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
 				<h4 class="heading"><font color="red">*</font> <?=_t( 'Indicates field is required' );?></h4>
 			</div>
 			<!-- // Widget heading END -->
+            
+            <!-- Tabs Heading -->
+            <div class="tabsbar">
+                <ul>
+                    <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left active"><a href="<?=url('/');?>setting/" data-toggle="tab"><i></i> <?=_t( 'General' );?></a></li>
+                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=url('/');?>registration/"><i></i> <?=_t( 'Registration' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons inbox tab-stacked"><a href="<?=url('/');?>email/"><i></i> <?=_t( 'Email' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked"><a href="<?=url('/');?>templates/"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
+                </ul>
+            </div>
+            <!-- // Tabs Heading END -->
 			
 			<div class="widget-body">
 			
