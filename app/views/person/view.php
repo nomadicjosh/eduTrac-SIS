@@ -33,6 +33,11 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 </ul>
 
 <h3><?=_t( 'Person:' );?> <?=_h($nae[0]['lname']);?>, <?=_h($nae[0]['fname']);?>
+    <?php if(!isset($_COOKIE['SWITCH_USERBACK']) && _h($nae[0]['personID']) != get_persondata('personID')) : ?>
+    <span data-toggle="tooltip" data-original-title="Switch to User" data-placement="top">
+        <a<?=ae('login_as_user');?> href="<?=url('/');?>switchUserTo/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-exchange"></i></a>
+    </span>
+    <?php endif; ?>
     <?php if($staff[0]['staffID'] <= 0) : ?>
     <span data-toggle="tooltip" data-original-title="Create Staff Record" data-placement="top">
         <a<?=ae('create_staff_record');?> href="<?=url('/');?>staff/add/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-user"></i></a>
