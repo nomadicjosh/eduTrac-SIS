@@ -41,59 +41,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <div class="innerLR">
     
-    <!-- List Widget -->
-    <div class="relativeWrap">
-        <div class="widget">
-            <div class="widget-head">
-                <h4 class="heading glyphicons user"><i></i><?=get_name(_h($stuInfo->getStuID()));?></h4>
-                <a href="<?=url('/');?>stu/<?=_h($stuInfo->getStuID());?>/" class="heading pull-right"><?=_h($stuInfo->getStuID());?></a>
-            </div>
-            <div class="widget-body">
-                <!-- 3 Column Grid / One Third -->
-                <div class="row">
-                    
-                    <!-- One Third Column -->
-                    <div class="col-md-1">
-                        <?=getSchoolPhoto($stuInfo->getStuID(), $stuInfo->getEmail1(), '90');?>
-                    </div>
-                    <!-- // One Third Column END -->
-    
-                    <!-- One Third Column -->
-                    <div class="col-md-3">
-                        <p><?=_h($stuInfo->getAddress1());?> <?=_h($stuInfo->getAddress2());?></p>
-                        <p>&nbsp;</p>
-                        <p><?=_h($stuInfo->getCity());?> <?=_h($stuInfo->getState());?> <?=_h($stuInfo->getZip());?></p>
-                    </div>
-                    <!-- // One Third Column END -->
-                    
-                    <!-- One Third Column -->
-                    <div class="col-md-4">
-                        <p><strong><?=_t( 'Phone:' );?></strong> <?=_h($stuInfo->getPhone1());?></p>
-                        <p><strong><?=_t( 'Email:' );?></strong> <a href="mailto:<?=_h($stuInfo->getEmail1());?>"><?=_h($stuInfo->getEmail1());?></a></p>
-                        <p><strong><?=_t( 'Birth Date:' );?></strong> <?=(_h($stuInfo->getDob()) > '0000-00-00' ? date('D, M d, o',strtotime(_h($stuInfo->getDob()))) : '');?></p>
-                    </div>
-                    <!-- // One Third Column END -->
-                    
-                    <!-- One Third Column -->
-                    <div class="col-md-3">
-                        <p><strong><?=_t( 'Status:' );?></strong> <?=_h($stuInfo->getStuStatus());?></p>
-                        <p><strong><?=_t( 'FERPA:' );?></strong> <?=is_ferpa(_h($stuInfo->getStuID()));?> 
-                            <?php if(is_ferpa(_h($stuInfo->getStuID())) == 'Yes') : ?>
-                                <a href="#FERPA" data-toggle="modal"><img style="vertical-align:top !important;" src="<?=url('/');?>static/common/theme/images/exclamation.png" /></a>
-                            <?php else : ?>
-                                <a href="#FERPA" data-toggle="modal"><img style="vertical-align:top !important;" src="<?=url('/');?>static/common/theme/images/information.png" /></a>
-                            <?php endif; ?>
-                        </p>
-                        <p><strong><?=_t( 'Entry Date:' );?></strong> <?=date('D, M d, o',strtotime(_h($stuInfo->getAddDate())));?></p>
-                    </div>
-                    <!-- // One Third Column END -->
-                    
-                </div>
-                <!-- // 3 Column Grid / One Third END -->
-            </div>
-        </div>
-    </div>
-    <!-- // List Widget END -->
+    <?php $stuInfo->getStuHeader(); ?>
     
     <div class="separator line bottom"></div>
 	
