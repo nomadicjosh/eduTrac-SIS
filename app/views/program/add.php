@@ -16,6 +16,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+include('ajax.php');
 ?>
 
 <script type="text/javascript">
@@ -117,20 +118,21 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 						<!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Department' );?></label>
-                            <div class="col-md-8">
-                                <select name="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                            <div class="col-md-8" id="divDept">
+                                <select name="deptCode" id="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('department','deptCode <> "NULL"','deptCode','deptCode','deptName');?>
                                 </select>
                             </div>
+                            <a<?=ae('access_forms');?> href="#dept" data-toggle="modal" title="Department" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'School' );?></label>
-                            <div class="col-md-8">
-                                <select name="schoolCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                            <div class="col-md-8" id="divSchool">
+                                <select name="schoolCode" id="schoolCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('school','schoolCode <> "NULL"','schoolCode','schoolCode','schoolName');?>
                                 </select>
@@ -141,12 +143,13 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Effective Catalog Year' );?></label>
-                            <div class="col-md-8">
-                                <select name="acadYearCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                            <div class="col-md-8" id="divYear">
+                                <select name="acadYearCode" id="acadYearCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('acad_year','acadYearCode <> "NULL"','acadYearCode','acadYearCode','acadYearDesc');?>
                                 </select>
                             </div>
+                            <a<?=ae('access_forms');?> href="#year" data-toggle="modal" title="Academic Year" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
 						
@@ -178,60 +181,65 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Degree' );?></label>
-                            <div class="col-md-8">
-                                <select name="degreeCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                            <div class="col-md-8" id="divDegree">
+                                <select name="degreeCode" id="degreeCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('degree','degreeCode <> "NULL"','degreeCode','degreeCode','degreeName');?>
                                 </select>
                             </div>
+                            <a<?=ae('access_forms');?> href="#degree" data-toggle="modal" title="Degree" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'CCD' );?></label>
-                            <div class="col-md-8">
-                                <select name="ccdCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                            <div class="col-md-8" id="divCCD">
+                                <select name="ccdCode" id="ccdCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('ccd','ccdCode <> "NULL"','ccdCode','ccdCode','ccdName');?>
                                 </select>
                             </div>
+                            <a<?=ae('access_forms');?> href="#ccd" data-toggle="modal" title="CCD" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Major' );?></label>
-                            <div class="col-md-8">
-                                <select name="majorCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                            <div class="col-md-8" id="divMajor">
+                                <select name="majorCode" id="majorCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('major','majorCode <> "NULL"','majorCode','majorCode','majorName');?>
                                 </select>
                             </div>
+                            <a<?=ae('access_forms');?> href="#major" data-toggle="modal" title="Major" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Minor' );?></label>
-                            <div class="col-md-8">
-                                <select name="minorCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                            <div class="col-md-8" id="divMinor">
+                                <select name="minorCode" id="minorCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('minor','minorCode <> "NULL"','minorCode','minorCode','minorName');?>
                                 </select>
                             </div>
+                            <a<?=ae('access_forms');?> href="#minor" data-toggle="modal" title="Minor" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Specialization' );?></label>
-                            <div class="col-md-8">
-                                <select name="specCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                            <div class="col-md-8" id="divSpec">
+                                <select name="specCode" id="specCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('specialization', 'specCode <> "NULL"', 'specCode', 'specCode', 'specName'); ?>
                                 </select>
                             </div>
+                            <a<?=ae('access_forms');?> href="#spec" data-toggle="modal" title="Specialization" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
                         
@@ -247,24 +255,26 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'CIP' );?></label>
-                            <div class="col-md-8">
-                                <select name="cipCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                            <div class="col-md-8" id="divCIP">
+                                <select name="cipCode" id="cipCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('cip','cipCode <> "NULL"','cipCode','cipCode','cipName');?>
                                 </select>
                             </div>
+                            <a<?=ae('access_forms');?> href="#cip" data-toggle="modal" title="CIP" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Location' );?></label>
-                            <div class="col-md-8">
-                                <select name="locationCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                            <div class="col-md-8" id="divLoc">
+                                <select name="locationCode" id="locationCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('location','locationCode <> "NULL"','locationCode','locationCode','locationName');?>
                                 </select>
                             </div>
+                            <a<?=ae('access_forms');?> href="#loc" data-toggle="modal" title="Location" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
 						
