@@ -4,12 +4,12 @@
  *  
  * PHP 5.4+
  *
- * eduTrac ERP(tm) : College Management System (http://www.7mediaws.org/)
+ * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
  * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
  * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac ERP
+ * @package     eduTrac SIS
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 $app = \Liten\Liten::getInstance();
@@ -32,7 +32,18 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<li><?=_t( 'View Person' );?></li>
 </ul>
 
-<h3><?=_t( 'Person:' );?> <?=_h($nae[0]['lname']);?>, <?=_h($nae[0]['fname']);?></h3>
+<h3><?=_t( 'Person:' );?> <?=_h($nae[0]['lname']);?>, <?=_h($nae[0]['fname']);?>
+    <?php if($staff[0]['staffID'] <= 0) : ?>
+    <span data-toggle="tooltip" data-original-title="Create Staff Record" data-placement="top">
+        <a<?=ae('create_staff_record');?> href="<?=url('/');?>staff/add/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-user"></i></a>
+    </span>
+    <?php endif; ?>
+    <?php if($appl[0]['personID'] <= 0) : ?>
+    <span data-toggle="tooltip" data-original-title="Create Application" data-placement="top">
+        <a<?=hl('applications','access_application_screen');?> href="<?=url('/');?>appl/add/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-archive"></i></a>
+    </span>
+    <?php endif; ?>
+</h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
@@ -146,9 +157,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'City' );?></label>
+                            <label class="col-md-3 control-label"><?=_t( 'City' );?></label>
                             <div class="col-md-5">
-                                <input class="form-control" type="text" readonly value="<?=_h($addr[0]['city']);?>" required />
+                                <input class="form-control" type="text" readonly value="<?=_h($addr[0]['city']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
