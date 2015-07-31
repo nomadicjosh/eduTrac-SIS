@@ -1,11 +1,8 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed'); ?>
-<style>
-    .error { display: none;}
-    .success { display: none;}
-</style>
-
 <script type="text/javascript">
     $(function () {
+        $('.flash').fadeOut(200).hide();
+        
         $("#btn_dept").click(function (e) {
             e.preventDefault();
             var deptCode = $("#newDeptCode").val();
@@ -18,18 +15,21 @@
                     '&deptEmail=' + deptEmail + '&deptPhone=' + deptPhone + '&deptDesc=' + deptDesc;
             if (deptCode == '')
             {
-                $('.success').fadeOut(200).hide();
-                $('.error').fadeIn(200).show();
+                $('.alerts-success').fadeOut(200).hide();
+                $('.alerts-error').fadeIn(200).show();
+                setTimeout(function() { $(".flash").hide(); }, 3000);
             }
             if (deptTypeCode == '')
             {
-                $('.success').fadeOut(200).hide();
-                $('.error').fadeIn(200).show();
+                $('.alerts-success').fadeOut(200).hide();
+                $('.alerts-error').fadeIn(200).show();
+                setTimeout(function() { $(".flash").hide(); }, 3000);
             }
             if (deptName == '')
             {
-                $('.success').fadeOut(200).hide();
-                $('.error').fadeIn(200).show();
+                $('.alerts-success').fadeOut(200).hide();
+                $('.alerts-error').fadeIn(200).show();
+                setTimeout(function() { $(".flash").hide(); }, 3000);
             }
             else
             {
@@ -39,14 +39,14 @@
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
-                        $('.success').fadeIn(200).show();
-                        $('.error').fadeOut(200).hide();
+                        $('.alerts-success').fadeIn(200).show();
+                        $('.alerts-error').fadeOut(200).hide();
+                        setTimeout(function() { $(".flash").hide(); }, 3000);
                         $("#deptForm")[0].reset();
                         $('#deptCode').append($('<option>', {
                             value: data.deptCode,
                             text: deptCode + ' ' + deptName
                         }));
-                        //$('#divDept').html(data);
                         $("#divDept").load(location.href + " #divDept>*","");
                     }
                 });
@@ -68,8 +68,10 @@
                 <!-- // Modal heading END -->
                 <div class="modal-body">
 
-                    <div class="error"><?= _t('You must fill out the required fields.'); ?></div>
-                    <div class="success"><?= _t('The Department was created successfully.'); ?></div>
+                    <div class="flash alerts alerts-error center"><?= _t('You must fill out the required fields.'); ?></div>
+                    <div class="flash alerts alerts-success center"><?= _t('The Department was created successfully.'); ?></div>
+                    
+                    <div class="center">&nbsp;</div>
 
                     <!-- Group -->
                     <div class="form-group">
@@ -136,6 +138,8 @@
 
 <script type="text/javascript">
     $(function () {
+        $('.flash').fadeOut(200).hide();
+        
         $("#btn_subj").click(function (e) {
             e.preventDefault();
             var subjectCode = $("#newSubjCode").val();
@@ -143,13 +147,15 @@
             var dataString = 'subjectCode=' + subjectCode + '&subjectName=' + subjectName;
             if (subjectCode == '')
             {
-                $('.success').fadeOut(200).hide();
-                $('.error').fadeIn(200).show();
+                $('.alerts-success').fadeOut(200).hide();
+                $('.alerts-error').fadeIn(200).show();
+                setTimeout(function() { $(".flash").hide(); }, 3000);
             }
             if (subjectName == '')
             {
-                $('.success').fadeOut(200).hide();
-                $('.error').fadeIn(200).show();
+                $('.alerts-success').fadeOut(200).hide();
+                $('.alerts-error').fadeIn(200).show();
+                setTimeout(function() { $(".flash").hide(); }, 3000);
             }
             else
             {
@@ -159,8 +165,9 @@
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
-                        $('.success').fadeIn(200).show();
-                        $('.error').fadeOut(200).hide();
+                        $('.alerts-success').fadeIn(200).show();
+                        $('.alerts-error').fadeOut(200).hide();
+                        setTimeout(function() { $(".flash").hide(); }, 3000);
                         $("#subjForm")[0].reset();
                         $('#subjectCode').append($('<option>', {
                             value: data.subjectCode,
@@ -187,8 +194,10 @@
                 <!-- // Modal heading END -->
                 <div class="modal-body">
 
-                    <div class="error"><?= _t('You must fill out the required fields.'); ?></div>
-                    <div class="success"><?= _t('The Subject was created successfully.'); ?></div>
+                    <div class="flash alerts alerts-error center"><?= _t('You must fill out the required fields.'); ?></div>
+                    <div class="flash alerts alerts-success center"><?= _t('The Subject was created successfully.'); ?></div>
+                    
+                    <div class="center">&nbsp;</div>
 
                     <!-- Group -->
                     <div class="form-group">
