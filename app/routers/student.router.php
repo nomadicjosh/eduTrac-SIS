@@ -1582,7 +1582,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             UNION ALL 
             SELECT NULL as FeeID, NULL AS billID, stuID AS stuID, termCode AS termCode,
             NULL as type, "Payment" as description, NULL AS FeeAmount, amount AS PayAmount, 
-            paymentTypeID as method, dateTime AS timestamp 
+            paymentTypeID as method, paymentDate AS timestamp 
             FROM payment 
             WHERE stuID = ? 
             ORDER BY timestamp ASC', [get_persondata('personID'), get_persondata('personID'), get_persondata('personID')]);
