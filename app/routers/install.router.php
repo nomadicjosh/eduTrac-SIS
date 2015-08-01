@@ -189,7 +189,7 @@ $app->match('GET|POST', '/install/createAdmin/', function () use($app) {
 
             $sql[] = "INSERT INTO `options_meta` VALUES(36, 'myet_layout', 'default');";
             
-            $sql[] = "INSERT INTO `options_meta` VALUES(33, 'open_terms', '\"15/FA\"');";
+            $sql[] = "INSERT INTO `options_meta` VALUES(37, 'open_terms', '\"15/FA\"');";
 
             foreach ($sql as $query) {
                 $connect->exec($query);
