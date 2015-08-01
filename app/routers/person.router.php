@@ -102,6 +102,10 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
         $decode = json_decode($json, true);
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+        $s_decode = json_decode($staff, true);
+        $appl = _file_get_contents($json_url . 'application/personID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+        $a_decode = json_decode($appl, true);
 
         $addr = $app->db->address()
             ->where('addressType = "P"')->_and_()
@@ -150,7 +154,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 'cssArray' => $css,
                 'jsArray' => $js,
                 'nae' => $decode,
-                'addr' => $q
+                'addr' => $q,
+                'staff' => $s_decode,
+                'appl' => $a_decode
                 ]
             );
         }

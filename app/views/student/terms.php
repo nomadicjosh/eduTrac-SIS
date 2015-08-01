@@ -19,9 +19,15 @@ if($app->hook->{'get_option'}('myet_layout') === null) {
     $app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_layout') . '.layout');
 }
 $app->view->block('myet');
+$stuInfo = new \app\src\Student;
+$stuInfo->Load_from_key(get_persondata('personID'));
 ?>
 
 <div class="col-md-12">
+    
+    <?php $stuInfo->getStuHeader(); ?>
+    
+    <div class="separator line bottom"></div>
 
 	<h3 class="glyphicons pin_flag"><i></i><?=_t( 'Registered Terms' );?></h3>
 	<div class="separator bottom"></div>

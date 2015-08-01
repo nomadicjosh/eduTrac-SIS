@@ -752,7 +752,7 @@ function address_type_select($typeCode = NULL)
 function dept_type_select($typeCode = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    $select = '<select name="deptTypeCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+    $select = '<select name="deptTypeCode" id="deptType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
             <option value="">&nbsp;</option>
             <option value="ADMIN"' . selected($typeCode, 'ADMIN', false) . '>' . _t('Administrative') . '</option>
             <option value="ACAD"' . selected($typeCode, 'ACAD', false) . '>' . _t('Academic') . '</option>

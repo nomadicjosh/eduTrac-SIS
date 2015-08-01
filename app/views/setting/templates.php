@@ -9,7 +9,7 @@
  * 
  * @link        http://www.7mediaws.org/
  * @since       6.0.00
- * @package     eduTrac
+ * @package     eduTrac SIS
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 $app = \Liten\Liten::getInstance();
@@ -111,6 +111,17 @@ tinymce.init({
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
+            
+            <!-- Tabs Heading -->
+            <div class="tabsbar">
+                <ul>
+                    <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left"><a href="<?=url('/');?>setting/"><i></i> <?=_t( 'General' );?></a></li>
+                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=url('/');?>registration/"><i></i> <?=_t( 'Registration' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons inbox tab-stacked"><a href="<?=url('/');?>email/"><i></i> <?=_t( 'Email' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked active"><a href="<?=url('/');?>templates/" data-toggle="tab"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
+                </ul>
+            </div>
+            <!-- // Tabs Heading END -->
 			
 			<div class="widget-body">
 			

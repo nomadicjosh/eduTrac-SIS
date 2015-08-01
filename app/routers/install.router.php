@@ -117,7 +117,7 @@ $app->match('GET|POST', '/install/createAdmin/', function () use($app) {
 
             $sql[] = "INSERT INTO `staff_meta` VALUES(1, 'FT', 1, 00000001, 00000001, 'STA', '2011-02-01', '2011-02-01', NULL, '" . $now . "', 00000001, '" . $now . "');";
 
-            $sql[] = "INSERT INTO `options_meta` VALUES(1, 'dbversion', '00043');";
+            $sql[] = "INSERT INTO `options_meta` VALUES(1, 'dbversion', '00044');";
 
             $sql[] = "INSERT INTO `options_meta` VALUES(2, 'system_email', '" . Session::get('email') . "');";
 
@@ -188,6 +188,8 @@ $app->match('GET|POST', '/install/createAdmin/', function () use($app) {
             $sql[] = "INSERT INTO `options_meta` VALUES(35, 'person_login_details', '<p>Dear #fname#:</p>\r\n<p>An account has just been created for you. Below are your login details.</p>\r\n<p>Username: #uname#</p>\r\n<p>Password: #password#</p>\r\n<p>ID: #id#</p>\r\n<p>Alternate ID:&nbsp;#altID#</p>\r\n<p>You may log into your account at the url below:</p>\r\n<p><a href=\"#url#\">#url#</a></p>');";
 
             $sql[] = "INSERT INTO `options_meta` VALUES(36, 'myet_layout', 'default');";
+            
+            $sql[] = "INSERT INTO `options_meta` VALUES(37, 'open_terms', '\"15/FA\"');";
 
             foreach ($sql as $query) {
                 $connect->exec($query);

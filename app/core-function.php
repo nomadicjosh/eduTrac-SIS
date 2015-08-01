@@ -11,11 +11,11 @@ if (!defined('BASE_PATH'))
  * 
  * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
+ * @package     eduTrac SIS
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.0.00');
+define('RELEASE_TAG', '6.0.01');
 
 $app = \Liten\Liten::getInstance();
 
