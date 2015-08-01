@@ -5,8 +5,7 @@ if (!defined('BASE_PATH'))
 $app = \Liten\Liten::getInstance();
 
 /**
- * Creates a directory with proper permissions to store
- * cookies and delete cookies on the server.
+ * Creates a cron directory with proper permissions.
  */
 if (!file_exists(cronDir())) {
     mkdir(cronDir(), 0777, true);
@@ -16,8 +15,8 @@ if (!file_exists(cronDir())) {
  * Creates the cron directory with proper permissions to store
  * cronjob information.
  */
-if (!file_exists(cronDir() . 'cron/')) {
-    mkdir(cronDir() . 'cron/', 0777, true);
+if (!file_exists(cronDir() . 'cron/logs/')) {
+    mkdir(cronDir() . 'cron/logs/', 0777, true);
 }
 
 /**

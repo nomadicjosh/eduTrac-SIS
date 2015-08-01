@@ -375,6 +375,46 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             redirect($app->req->server['HTTP_REFERER']);
         }
     });
+    
+    $app->post('/dept/', function() use($app) {
+        $dept = $app->db->department();
+        foreach($_POST as $k => $v) {
+            $dept->$k = $v;
+        }
+        $dept->save();
+        $ID = $dept->lastInsertId();
+
+        $department = $app->db->department()
+            ->where('deptID = ?', $ID);
+        $q = $department->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        echo json_encode($q);
+    });
+    
+    $app->post('/subj/', function() use($app) {
+        $subj = $app->db->subject();
+        foreach($_POST as $k => $v) {
+            $subj->$k = $v;
+        }
+        $subj->save();
+        $ID = $subj->lastInsertId();
+
+        $subject = $app->db->subject()
+            ->where('subjectID = ?', $ID);
+        $q = $subject->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        echo json_encode($q);
+    });
 });
 
 $app->setError(function() use($app) {

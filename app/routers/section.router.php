@@ -250,6 +250,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         if ($app->req->isPost()) {
             $sc = $decode[0]['courseCode'] . '-' . $_POST['sectionNumber'];
             $courseSection = $_POST['termCode'] . '-' . $decode[0]['courseCode'] . '-' . $_POST['sectionNumber'];
+            
+            $dotw = '';
+            /** Combine the days of the week to be entered into the database */
+            $days = $_POST['dotw'];
+            for ($i = 0; $i < sizeof($days); $i++) {
+                $dotw .= $days[$i];
+            }
 
             $sect = $app->db->course_sec();
             $sect->sectionNumber = $_POST['sectionNumber'];
@@ -269,6 +276,12 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $sect->endDate = $_POST['endDate'];
             $sect->minCredit = $_POST['minCredit'];
             $sect->ceu = $_POST['ceu'];
+            $sect->secType = $_POST['secType'];
+            $sect->instructorMethod = $_POST['instructorMethod'];
+            $sect->dotw = $dotw;
+            $sect->startTime = $_POST['startTime'];
+            $sect->endTime = $_POST['endTime'];
+            $sect->webReg = $_POST['webReg'];
             $sect->currStatus = $_POST['currStatus'];
             $sect->statusDate = $app->db->NOW();
             $sect->comment = $_POST['comment'];
@@ -945,6 +958,26 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         $data = json_encode($items);
         $response = isset($_GET['callback']) ? $_GET['callback'] . "(" . $data . ")" : $data;
         echo($response);
+    });
+    
+    $app->post('/loc/', function() use($app) {
+        $loc = $app->db->location();
+        foreach($_POST as $k => $v) {
+            $loc->$k = $v;
+        }
+        $loc->save();
+        $ID = $loc->lastInsertId();
+        
+        $location = $app->db->location()
+            ->where('locationID = ?', $ID);
+        $q = $location->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        echo json_encode($q);
     });
 });
 

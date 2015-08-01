@@ -76,7 +76,7 @@ $message = new \app\src\Messages;
     					<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Building' );?></label>
 							<div class="col-md-8">
-							    <select name="buildingCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csio();?> required>
+							    <select name="buildingCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csio();?>>
 							        <option value="NULL">&nbsp;</option>
                             	   <?php table_dropdown('building','buildingCode <> "NULL"','buildingCode','buildingCode','buildingName',_h($soff[0]['buildingCode'])); ?>
                             	</select>
@@ -88,7 +88,7 @@ $message = new \app\src\Messages;
 						<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Class Room' );?></label>
 							<div class="col-md-8">
-							    <select name="roomCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csio();?> required>
+							    <select name="roomCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csio();?>>
 							        <option value="NULL">&nbsp;</option>
                             	    <?php table_dropdown('room','roomCode <> "NULL"','roomCode','roomCode','roomNumber',_h($soff[0]['roomCode'])); ?>
                             	</select>
@@ -98,7 +98,7 @@ $message = new \app\src\Messages;
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Meeting Days' );?></label>
+							<label class="col-md-3 control-label"><?=_t( 'Meeting Days' );?></label>
 							<div class="col-md-8 widget-body uniformjs">
     							<label class="checkbox">
 									<input type="checkbox" class="checkbox" name="dotw[]" value="Su" <?php if(preg_match("/Su/", _h($soff[0]['dotw']))) { echo 'checked="checked"'; } ?> />
@@ -140,10 +140,10 @@ $message = new \app\src\Messages;
 					    
 					    <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Start Time' );?></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Start Time' );?></label>
                             <div class="col-md-4">
                                 <div class="input-group bootstrap-timepicker">
-            				        <input id="timepicker10" type="text"<?=csio();?> name="startTime" class="form-control" value="<?=_h($soff[0]['startTime']);?>" required/>
+            				        <input id="timepicker10" type="text"<?=csio();?> name="startTime" class="form-control" value="<?=_h($soff[0]['startTime']);?>" />
             				        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
 						        </div>
                             </div>
@@ -152,10 +152,10 @@ $message = new \app\src\Messages;
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'End Time' );?></label>
+                            <label class="col-md-3 control-label"><?=_t( 'End Time' );?></label>
                             <div class="col-md-4">
                                 <div class="input-group bootstrap-timepicker">
-        					        <input id="timepicker11" type="text"<?=csio();?> name="endTime" class="form-control" value="<?=_h($soff[0]['endTime']);?>" required/>
+        					        <input id="timepicker11" type="text"<?=csio();?> name="endTime" class="form-control" value="<?=_h($soff[0]['endTime']);?>" />
         					        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
 						        </div>
                             </div>

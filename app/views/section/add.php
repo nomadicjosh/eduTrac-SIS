@@ -9,18 +9,19 @@
  * 
  * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
+ * @package     eduTrac SIS
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+include('ajax.php');
 ?>
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
-    jQuery('#term').live('change', function(event) {
+    jQuery('#termCode').live('change', function(event) {
         $.ajax({
             type    : 'POST',
             url     : '<?=url('/');?>sect/secTermLookup/',
@@ -87,8 +88,8 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Term' );?></label>
-							<div class="col-md-8">
-								<select name="termCode" id="term" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+							<div class="col-md-8" id="divTerm">
+								<select name="termCode" id="termCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
                             		<?php table_dropdown('term', 'termCode <> "NULL"', 'termCode', 'termCode', 'termName'); ?>
                             	</select>
@@ -120,12 +121,13 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Department' );?></label>
-                            <div class="col-md-8">
-                                <select name="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                            <div class="col-md-8" id="divDept">
+                                <select name="deptCode" id="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
                                     <?php table_dropdown('department', 'deptTypeCode = "acad" AND deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName', _h($crse[0]['deptCode'])); ?>
                                 </select>
                             </div>
+                            <a<?=ae('access_forms');?> href="#dept" data-toggle="modal" title="Department" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
                         
@@ -168,26 +170,123 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Location' );?></label>
+                            <div class="col-md-8" id="divLoc">
+                                <select name="locationCode" id="locationCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('location', 'locationCode <> "NULL"', 'locationCode', 'locationCode', 'locationName'); ?>
+                                </select>
+                            </div>
+                            <a<?=ae('access_forms');?> href="#loc" data-toggle="modal" title="Location" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Section Type' );?></label>
+							<div class="col-md-8">
+								<select name="secType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+									<option value="">&nbsp;</option>
+	                        		<option value="ONL"><?=_t( 'ONL Online' );?></option>
+	                        		<option value="HB"><?=_t( 'HB Hybrid' );?></option>
+	                        		<option value="ONC"><?=_t( 'ONC On-Campus' );?></option>
+	                        	</select>
+	                       </div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Instructor Method' );?></label>
+                            <div class="col-md-8">
+                                <?=instructor_method();?>
+                           </div>
+                        </div>
+                        <!-- // Group END -->
 						
 					</div>
 					<!-- // Column END -->
 					
 					<!-- Column -->
 					<div class="col-md-6">
-					    
-					    <!-- Group -->
+                        
+                        <?php $app->hook->{'do_action'}( 'create_course_section_field_right' ); ?>
+                        
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><?=_t( 'Meeting Days' );?></label>
+							<div class="col-md-8 widget-body uniformjs">
+    							<label class="checkbox">
+									<input type="checkbox" class="checkbox" name="dotw[]" value="Su" />
+									<?=_t( 'Sunday' );?>
+								</label>
+								<label class="checkbox">
+									<input type="checkbox" class="checkbox" name="dotw[]" value="M" />
+									<?=_t( 'Monday' );?>
+								</label>
+								<label class="checkbox">
+									<input type="checkbox" class="checkbox" name="dotw[]" value="Tu" />
+									<?=_t( 'Tuesday' );?>
+								</label>
+								<label class="checkbox">
+									<input type="checkbox" class="checkbox" name="dotw[]" value="W" />
+									<?=_t( 'Wednesday' );?>
+								</label>
+								<label class="checkbox">
+									<input type="checkbox" class="checkbox" name="dotw[]" value="Th" />
+									<?=_t( 'Thursday' );?>
+								</label>
+								<label class="checkbox">
+									<input type="checkbox" class="checkbox" name="dotw[]" value="F" />
+									<?=_t( 'Friday' );?>
+								</label>
+								<label class="checkbox">
+									<input type="checkbox" class="checkbox" name="dotw[]" value="Sa" />
+									<?=_t( 'Saturday' );?>
+								</label>
+							</div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Location' );?></label>
-                            <div class="col-md-8">
-                                <select name="locationCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
-                                    <option value="">&nbsp;</option>
-                                    <?php table_dropdown('location', 'locationCode <> "NULL"', 'locationCode', 'locationCode', 'locationName'); ?>
-                                </select>
+                            <label class="col-md-3 control-label"><?=_t( 'Start Time' );?></label>
+                            <div class="col-md-4">
+                                <div class="input-group bootstrap-timepicker">
+            				        <input id="timepicker10" type="text" name="startTime" class="form-control" />
+            				        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+						        </div>
                             </div>
                         </div>
                         <!-- // Group END -->
                         
-                        <?php $app->hook->{'do_action'}( 'create_course_section_field_right' ); ?>
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'End Time' );?></label>
+                            <div class="col-md-4">
+                                <div class="input-group bootstrap-timepicker">
+        					        <input id="timepicker11" type="text" name="endTime" class="form-control" />
+        					        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+						        </div>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Register Online' );?></label>
+                            <div class="col-md-8">
+                                <select name="webReg" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <option value="1"><?=_t( 'Yes' );?></option>
+                                    <option value="0"><?=_t( 'No' );?></option>
+                                </select>
+                           </div>
+                        </div>
+                        <!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">

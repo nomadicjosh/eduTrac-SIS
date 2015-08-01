@@ -16,6 +16,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+include('ajax.php');
 ?>
 
 <script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
@@ -34,7 +35,17 @@ $message = new \app\src\Messages;
 	<li><?=_h($crse[0]['courseCode']);?></li>
 </ul>
 
-<h3><?=_h($crse[0]['courseCode']);?></h3>
+<h3><?=_h($crse[0]['courseCode']);?> 
+    <span data-toggle="tooltip" data-original-title="Create Course" data-placement="top">
+        <a<?=ae('add_course');?> href="<?=url('/');?>crse/" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+    </span>
+    <span data-toggle="tooltip" data-original-title="Clone Course" data-placement="top">
+        <a<?=ae('add_course');?> href="#crse<?=_h($crse[0]['courseID']);?>" data-toggle="modal" class="btn btn-primary"><i class="fa fa-copy"></i></a>
+    </span>
+    <span data-toggle="tooltip" data-original-title="Create Course Section" data-placement="top">
+        <a<?=ae('add_course_sec');?> href="<?=url('/');?>sect/add/<?=_h($crse[0]['courseID']);?>/" class="btn btn-primary"><i class="fa fa-code-fork"></i></a>
+    </span>
+</h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
@@ -61,24 +72,26 @@ $message = new \app\src\Messages;
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Department' );?></label>
-							<div class="col-md-8">
-								<select name="deptCode"<?=cio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+							<div class="col-md-8" id="divDept">
+								<select name="deptCode"<?=cio();?> id="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
                             		<?php table_dropdown('department', 'deptTypeCode = "acad" AND deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName', _h($crse[0]['deptCode'])); ?>
                             	</select>
 							</div>
+							<a<?=ae('access_forms');?> href="#dept" data-toggle="modal" title="Department" class="btn btn-primary"><i class="fa fa-plus"></i></a>
 						</div>
 						<!-- // Group END -->
 						
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Subject' );?></label>
-							<div class="col-md-8">
-								<select name="subjectCode"<?=cio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+							<div class="col-md-8" id="divSubj">
+								<select name="subjectCode"<?=cio();?> id="subjectCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
 	                        		<?php subject_code_dropdown(_h($crse[0]['subjectCode'])); ?>
 	                        	</select>
 	                       </div>
+	                       <a<?=ae('access_forms');?> href="#subj" data-toggle="modal" title="Subject" class="btn btn-primary"><i class="fa fa-plus"></i></a>
 						</div>
 						<!-- // Group END -->
 						
@@ -250,7 +263,6 @@ $message = new \app\src\Messages;
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=cids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<a<?=ae('add_course');?> href="#crse<?=_h($crse[0]['courseID']);?>" data-toggle="modal" class="btn btn-icon btn-primary glyphicons circle_plus"><i></i><?=_t( 'Clone' ); ?></a>
                     <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>crse/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->

@@ -1306,8 +1306,9 @@ CREATE TABLE IF NOT EXISTS `payment` (
   `paypal_txn_fee` double(10,2) NOT NULL DEFAULT '0.00',
   `paymentTypeID` int(11) NOT NULL,
   `comment` text NOT NULL,
+  `paymentDate` date NOT NULL,
   `postedBy` bigint(20) NOT NULL,
-  `dateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`),
   KEY `stuID` (`stuID`),
   KEY `termCode` (`termCode`),
@@ -1607,8 +1608,9 @@ CREATE TABLE IF NOT EXISTS `refund` (
   `termCode` varchar(11) NOT NULL,
   `amount` double(10,2) NOT NULL DEFAULT '0.00',
   `comment` text NOT NULL,
+  `refundDate` date NOT NULL,
   `postedBy` bigint(20) NOT NULL,
-  `dateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`),
   KEY `stuID` (`stuID`),
   KEY `termCode` (`termCode`),
@@ -2867,7 +2869,7 @@ ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`courseID`) REFERENCES `cours
 
 ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
                   
-INSERT INTO `options_meta` VALUES(1, 'dbversion', '00043');
+INSERT INTO `options_meta` VALUES(1, 'dbversion', '00044');
         
 INSERT INTO `options_meta` VALUES(2, 'system_email', '{email}');
         
@@ -2938,3 +2940,5 @@ INSERT INTO `options_meta` VALUES(34, 'send_acceptance_email', '0');
 INSERT INTO `options_meta` VALUES(35, 'person_login_details', '<p>Dear #fname#:</p>\r\n<p>An account has just been created for you. Below are your login details.</p>\r\n<p>Username: #uname#</p>\r\n<p>Password: #password#</p>\r\n<p>ID: #id#</p>\r\n<p>Alternate ID:&nbsp;#altID#</p>\r\n<p>You may log into your account at the url below:</p>\r\n<p><a href="#url#">#url#</a></p>');
 
 INSERT INTO `options_meta` VALUES(36, 'myet_layout', 'default');
+
+INSERT INTO `options_meta` VALUES(37, 'open_terms', '"15/FA"');
