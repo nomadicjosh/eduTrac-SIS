@@ -1786,12 +1786,9 @@ function cronDir()
     $subdomain = '';
     $domain_parts = explode('.', $_SERVER['SERVER_NAME']);
     if (count($domain_parts) == 3) {
-
-        if ($subdomain == '' | $subdomain == 'www') {
-            $subdomain = 'www';
-        } else {
-        	$subdomain = $domain_parts[0];
-        }
+        $subdomain = $domain_parts[0];
+    } else {
+    	$subdomain = 'www';
     }
     
     return APP_PATH . 'views/cron/' . $subdomain . '/';
