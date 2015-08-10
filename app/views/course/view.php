@@ -2,15 +2,25 @@
 /**
  * Edit Course View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * eduTrac SIS
+ * Copyright (C) 2013 Joshua Parker
  * 
- * @link        http://www.7mediaws.org/
+ * eduTrac SIS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
@@ -37,7 +47,7 @@ include('ajax.php');
 
 <h3><?=_h($crse[0]['courseCode']);?> 
     <span data-toggle="tooltip" data-original-title="Create Course" data-placement="top">
-        <a<?=ae('add_course');?> href="<?=url('/');?>crse/" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+        <a<?=ae('add_course');?> href="<?=url('/');?>crse/add/" class="btn btn-primary"><i class="fa fa-plus"></i></a>
     </span>
     <span data-toggle="tooltip" data-original-title="Clone Course" data-placement="top">
         <a<?=ae('add_course');?> href="#crse<?=_h($crse[0]['courseID']);?>" data-toggle="modal" class="btn btn-primary"><i class="fa fa-copy"></i></a>

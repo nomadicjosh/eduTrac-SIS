@@ -2,20 +2,31 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 /**
- * eduTrac Core Functions
+ * eduTrac SIS Core Functions
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * eduTrac SIS
+ * Copyright (C) 2013 Joshua Parker
  * 
- * @link        http://www.7mediaws.org/
+ * eduTrac SIS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
  * @since       3.0.0
  * @package     eduTrac SIS
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+ 
 define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.0.02');
+define('RELEASE_TAG', '6.0.03');
 
 $app = \Liten\Liten::getInstance();
 
@@ -165,7 +176,7 @@ function ml($func)
 function bm()
 {
     $app = \Liten\Liten::getInstance();
-    if ($app->hook->{'get_option'}('enable_benchmark') == 1) {
+    if (get_option('enable_benchmark') == 1) {
         return '?php-benchmark-test=1&display-data=1';
     }
 }
@@ -299,14 +310,15 @@ function payment_type_dropdown($typeID = NULL)
 function table_dropdown($table, $where = null, $id, $code, $name, $activeID = null, $bind = null)
 {
     $app = \Liten\Liten::getInstance();
-    $table = $app->db->$table()
-        ->select("$id,$code,$name");
     if ($where !== null && $bind == null) {
-        $table->where($where);
+		$table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where");
     }
-    if ($bind !== null) {
-        $table->where($where, $bind);
+	elseif ($bind !== null) {
+		$table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where", $bind);
     }
+	else {
+		$table = $app->db->query("SELECT $id, $code, $name FROM $table");
+	}
     $q = $table->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -631,7 +643,7 @@ function rolePerm($id)
         return $array;
     });
     foreach ($q2 as $r) {
-        $perm = $app->hook->maybe_unserialize($v['permission']);
+        $perm = maybe_unserialize($v['permission']);
         echo '
 				<tr>
 					<td>' . $r['permName'] . '</td>
@@ -661,7 +673,7 @@ function personPerm($id)
     foreach ($q as $r) {
         $array[] = $r;
     }
-    $personPerm = $app->hook->{'maybe_unserialize'}($r['permission']);
+    $personPerm = maybe_unserialize($r['permission']);
     /**
      * Select the role(s) of the person who's 
      * personID = $id
@@ -694,7 +706,7 @@ function personPerm($id)
     foreach ($q2 as $r2) {
         $array2[] = $r2;
     }
-    $perm = $app->hook->{'maybe_unserialize'}($r2['permission']);
+    $perm = maybe_unserialize($r2['permission']);
     $permission = $app->db->permission();
     $sql = $permission->find(function($data) {
         $array = [];
@@ -948,7 +960,7 @@ function getStuSec($code, $term)
 function isRegistrationOpen()
 {
     $app = \Liten\Liten::getInstance();
-    if ($app->hook->get_option('open_registration') == 0 || !isStudent(get_persondata('personID'))) {
+    if (get_option('open_registration') == 0 || !isStudent(get_persondata('personID'))) {
         return ' style="display:none !important;"';
     }
 }
@@ -1042,7 +1054,7 @@ function student_can_register()
                     WHERE stuID = ? 
                     AND termCode = ? 
                     AND status IN('A','N') 
-                    GROUP BY stuID,termCode", [ get_persondata('personID'), $app->hook->get_option('registration_term')]
+                    GROUP BY stuID,termCode", [ get_persondata('personID'), get_option('registration_term')]
     );
     $q = $stcs->find(function($data) {
         $array = [];
@@ -1094,7 +1106,7 @@ function student_can_register()
         return $array;
     });
 
-    if ($courses != NULL && $courses >= $app->hook->{'get_option'}('number_of_courses')) {
+    if ($courses != NULL && $courses >= get_option('number_of_courses')) {
         return false;
     } elseif (count($sql1[0]['rstrID']) > 0) {
         return false;
@@ -1270,7 +1282,7 @@ function redirect_upgrade_db()
     $acl = new \app\src\ACL(get_persondata('personID'));
     if ($acl->userHasRole(8)) {
         if (RELEASE_TAG == \app\src\ReleaseAPI::inst()->init('RELEASE_TAG')) {
-            if ($app->hook->get_option('dbversion') < \app\src\ReleaseAPI::inst()->init('DB_VERSION')) {
+            if (get_option('dbversion') < \app\src\ReleaseAPI::inst()->init('DB_VERSION')) {
                 if (basename($app->req->server["REQUEST_URI"]) != "upgrade") {
                     redirect(url('/dashboard/upgrade/'));
                 }
@@ -1312,7 +1324,7 @@ function et_check_password($password, $hash, $person_id = '')
             et_set_password($password, $person_id);
             $hash = et_hash_password($password);
         }
-        return $app->hook->{'apply_filter'}('check_password', $check, $password, $hash, $person_id);
+        return apply_filter('check_password', $check, $password, $hash, $person_id);
     }
 
     // If the stored hash is longer than an MD5, presume the
@@ -1321,7 +1333,7 @@ function et_check_password($password, $hash, $person_id = '')
 
     $check = $hasher->CheckPassword($password, $hash);
 
-    return $app->hook->{'apply_filter'}('check_password', $check, $password, $hash, $person_id);
+    return apply_filter('check_password', $check, $password, $hash, $person_id);
 }
 
 function et_set_password($password, $person_id)
@@ -1349,7 +1361,7 @@ function et_authenticate_cookie($cookie, $cookiehash, $person_id = '')
 
     $check = $hasher->CheckPassword($cookie, $cookiehash);
 
-    return $app->hook->{'apply_filter'}('authenticate_cookie', $check, $cookie, $cookiehash, $person_id);
+    return apply_filter('authenticate_cookie', $check, $cookie, $cookiehash, $person_id);
 }
 
 /**
@@ -1518,8 +1530,8 @@ function forbidden_keyword()
 function the_myet_welcome_message()
 {
     $app = \Liten\Liten::getInstance();
-    $welcome_message = $app->hook->{'get_option'}('myet_welcome_message');
-    $welcome_message = $app->hook->{'apply_filter'}('the_myet_welcome_message', $welcome_message);
+    $welcome_message = get_option('myet_welcome_message');
+    $welcome_message = apply_filter('the_myet_welcome_message', $welcome_message);
     $welcome_message = str_replace(']]>', ']]&gt;', $welcome_message);
     return $welcome_message;
 }
@@ -1686,10 +1698,12 @@ function get_layouts_header($layout_dir = '')
  */
 function qt($table, $field, $where = null) {
     $app = \Liten\Liten::getInstance();
-    $query = $app->db->$table();
     if($where !== null) {
-        $query->where($where);
+		$query = $app->db->query("SELECT * FROM $table WHERE $where");
     }
+	else {
+		$query = $app->db->query("SELECT * FROM $table");
+	}
     $result = $query->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -1772,10 +1786,11 @@ function cronDir()
     $subdomain = '';
     $domain_parts = explode('.', $_SERVER['SERVER_NAME']);
     if (count($domain_parts) == 3) {
-        $subdomain = $domain_parts[0];
 
-        if ($subdomain == '') {
+        if ($subdomain == '' | $subdomain == 'www') {
             $subdomain = 'www';
+        } else {
+        	$subdomain = $domain_parts[0];
         }
     }
     

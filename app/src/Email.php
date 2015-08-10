@@ -6,27 +6,34 @@ if (!defined('BASE_PATH'))
 /**
  * Email Class
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * eduTrac SIS
+ * Copyright (C) 2013 Joshua Parker
  * 
- * @license     http://www.edutracerp.com/general/edutrac-erp-commercial-license/ Commercial License
- * @link        http://www.7mediaws.org/
+ * eduTrac SIS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 class Email
 {
 
     private $_mailer;
-    private $_app;
 
     public function __construct()
     {
         $this->_mailer = new \app\src\PHPMailer(true);
-        $this->_app = \Liten\Liten::getInstance();
     }
 
     /**
@@ -41,7 +48,7 @@ class Email
     {
         $charset = 'UTF-8';
 
-        extract($this->_app->hook->apply_filter('et_mail', compact('to', 'subject', 'message', 'headers', 'attachments')));
+        extract(apply_filter('et_mail', compact('to', 'subject', 'message', 'headers', 'attachments')));
 
         if (!is_array($attachments))
             $attachments = explode("\n", str_replace("\r\n", "\n", $attachments));
@@ -62,8 +69,8 @@ class Email
         }
 
         // Plugin authors can override the default mailer
-        $this->_mailer->From = $this->_app->hook->apply_filter('et_mail_from', $from_email);
-        $this->_mailer->FromName = $this->_app->hook->apply_filter('et_mail_from_name', $from_name);
+        $this->_mailer->From = apply_filter('et_mail_from', $from_email);
+        $this->_mailer->FromName = apply_filter('et_mail_from_name', $from_name);
 
         // Set destination addresses
         if (!is_array($to))
@@ -97,7 +104,7 @@ class Email
         if (!isset($content_type))
             $content_type = 'text/plain';
 
-        $content_type = $this->_app->hook->apply_filter('et_mail_content_type', $content_type);
+        $content_type = apply_filter('et_mail_content_type', $content_type);
 
         $this->_mailer->ContentType = $content_type;
 
@@ -106,7 +113,7 @@ class Email
             $this->_mailer->IsHTML(true);
 
         // Set the content-type and charset
-        $this->_mailer->CharSet = $this->_app->hook->apply_filter('et_mail_charset', $charset);
+        $this->_mailer->CharSet = apply_filter('et_mail_charset', $charset);
 
         // Set custom headers
         if (!empty($headers)) {
@@ -128,7 +135,7 @@ class Email
             }
         }
 
-        $this->_app->hook->do_action_array('etMailer_init', array(&$this->_mailer));
+        do_action_array('etMailer_init', array(&$this->_mailer));
 
         // Send!
         try {
@@ -143,7 +150,7 @@ class Email
     public function et_progress_report($email, $id, $host)
     {
         $name = get_name($id);
-        $site = $this->_app->hook->get_option('institution_name');
+        $site = get_option('institution_name');
         $message = "You have a new progress report from your child's teacher: $name \n
 		
 		Log into your account to view this new progress report. \n
@@ -164,13 +171,13 @@ class Email
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
         $this->et_mail($email, "Progress Report", $message, $headers);
-        return $this->_app->hook->apply_filter('progress_report', $message, $headers);
+        return apply_filter('progress_report', $message, $headers);
     }
 
     public function course_registration($id, $term, $host)
     {
         $name = get_name($id);
-        $site = $this->_app->hook->{'get_option'}('institution_name');
+        $site = get_option('institution_name');
         $message = "<p>Dear Registrar:</p>
         
         <p>The following student submitted a new course registration.</p>
@@ -198,8 +205,8 @@ class Email
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
-        $this->et_mail($this->_app->hook->{'get_option'}('registrar_email_address'), _t("Course Registration"), $message, $headers);
-        return $this->_app->hook->{'apply_filter'}('course_registration', $message, $headers);
+        $this->et_mail(get_option('registrar_email_address'), _t("Course Registration"), $message, $headers);
+        return apply_filter('course_registration', $message, $headers);
     }
 
     public function stu_email($email, $from, $subject, $message, $attachment = '')
@@ -212,13 +219,13 @@ class Email
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
         $this->et_mail($email, $subject, $message, $headers, $attachment);
-        return $this->_app->hook->apply_filter('stu_email', $headers);
+        return apply_filter('stu_email', $headers);
     }
 
     public function myetRegConfirm($email, $id, $username, $password, $host)
     {
         $name = get_name($id);
-        $site = _t('myeduTrac::') . $this->_app->hook->{'get_option'}('institution_name');
+        $site = _t('myeduTrac::') . get_option('institution_name');
         $message = "<p>Hello $name:</p>
         
 		<p>Below are your login details. Keep this email for future reference.</p>
@@ -242,14 +249,14 @@ class Email
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
-        $this->et_mail($email, $this->_app->hook->{'get_option'}('institution_name') . _t(" Account Login Details"), $message, $headers);
-        return $this->_app->hook->{'apply_filter'}('myedutrac_appl_confirm', $message, $headers);
+        $this->et_mail($email, get_option('institution_name') . _t(" Account Login Details"), $message, $headers);
+        return apply_filter('myedutrac_appl_confirm', $message, $headers);
     }
 
     public function myetApplication($id, $host)
     {
         $name = get_name($id);
-        $site = _t('myeduTrac::') . $this->_app->hook->{'get_option'}('institution_name');
+        $site = _t('myeduTrac::') . get_option('institution_name');
         $message = "<p>Dear Admissions:</p>
         
 		<p>A new application has been submitted via <em>my</em>eduTrac self service.</p>
@@ -274,7 +281,7 @@ class Email
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
-        $this->et_mail($this->_app->hook->{'get_option'}('admissions_email'), _t("Application for Admissions"), $message, $headers);
-        return $this->_app->hook->{'apply_filter'}('myedutrac_application', $message, $headers);
+        $this->et_mail(get_option('admissions_email'), _t("Application for Admissions"), $message, $headers);
+        return apply_filter('myedutrac_application', $message, $headers);
     }
 }
