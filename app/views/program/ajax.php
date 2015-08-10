@@ -412,21 +412,21 @@
                     <!-- Group -->
                     <div class="form-group">
                         <label class="col-md-3 control-label"><font color="red">*</font> <?= _t('Location Code'); ?></label>
-                        <div class="col-md-8"><input class="form-control" name="locationCode" id="newLocCode" type="text" required /></div>
+                        <div class="col-md-8"><input class="form-control" name="ccdCode" id="newCCDCode" type="text" required /></div>
                     </div>
                     <!-- // Group END -->
 
                     <!-- Group -->
                     <div class="form-group">
                         <label class="col-md-3 control-label"><font color="red">*</font> <?= _t('Location Name'); ?></label>
-                        <div class="col-md-8"><input class="form-control" name="locationName" id="locationName" type="text" required /></div>
+                        <div class="col-md-8"><input class="form-control" name="ccdName" id="ccdName" type="text" required /></div>
                     </div>
                     <!-- // Group END -->
 
                 </div>
                 <div class="modal-footer">
                     <input name="addDate" id="addDate" value="<?= date('Y-m-d'); ?>" type="hidden" />
-                    <button type="button" id="btn_loc" class="btn btn-icon btn-default"><i></i><?= _t('Add'); ?></button>
+                    <button type="button" id="btn_ccd" class="btn btn-icon btn-default"><i></i><?= _t('Add'); ?></button>
                     <button type="button" data-dismiss="modal" class="btn btn-icon btn-primary"><i></i><?= _t('Cancel'); ?></button>
                 </div>
             </div>
