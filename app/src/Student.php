@@ -7,16 +7,27 @@ if (!defined('BASE_PATH'))
 /**
  * Student DBObject Class
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * eduTrac SIS
+ * Copyright (C) 2013 Joshua Parker
  * 
- * @link        http://www.7mediaws.org/
+ * eduTrac SIS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 class Student
 {
 
@@ -96,8 +107,8 @@ class Student
     public function getRestriction()
     {
         $rest = $this->_app->db->query("SELECT 
-                        b.rstrCode,a.severity,b.description,c.deptEmail,c.deptPhone,
-        				GROUP_CONCAT(DISTINCT c.deptName SEPARATOR ',') AS 'Restriction' 
+                        b.rstrCode,a.severity,b.description,c.deptEmail,c.deptPhone,c.deptName,
+        				GROUP_CONCAT(DISTINCT b.rstrCode SEPARATOR ',') AS 'Restriction' 
     				FROM restriction a 
 					LEFT JOIN restriction_code b ON a.rstrCode = b.rstrCode 
 					LEFT JOIN department c ON b.deptCode = c.deptCode 
@@ -265,9 +276,9 @@ class Student
                                 <?php endif; ?>
                             </p>
                             <p><strong><?= _t('Restriction(s):'); ?></strong> 
-                                <?php foreach ($this->getRestriction() as $v) : ?>
-                                    <span data-toggle="popover" data-title="<?= _h($v['Restriction']); ?>" data-content="Contact: <?= _h($v['description']); ?><?= (_h($v['deptEmail']) != '') ? ' | ' . $v['deptEmail'] : ''; ?><?= (_h($v['deptPhone']) != '') ? ' | ' . $v['deptPhone'] : ''; ?><?= (_h($v['severity']) == 99) ? _t(' | Restricted from registering for courses.') : ''; ?>" data-placement="bottom"><a href="#"><?= _h($v['rstrCode']); ?></a></span>
-                                <?php endforeach; ?>
+                                <?php $prefix = ''; foreach ($this->getRestriction() as $v) : ?>
+                                    <?=$prefix;?><span data-toggle="popover" data-title="<?= _h($v['description']); ?>" data-content="Contact: <?= _h($v['deptName']); ?> <?= (_h($v['deptEmail']) != '') ? ' | ' . $v['deptEmail'] : ''; ?><?= (_h($v['deptPhone']) != '') ? ' | ' . $v['deptPhone'] : ''; ?><?= (_h($v['severity']) == 99) ? _t(' | Restricted from registering for courses.') : ''; ?>" data-placement="bottom"><a href="#"><?= _h($v['Restriction']); ?></a></span>
+                                <?php $prefix = ', '; endforeach; ?>
                             </p>
                             <p><strong><?= _t('Entry Date:'); ?></strong> <?= date('D, M d, o', strtotime(_h($this->getAddDate()))); ?></p>
                         </div>

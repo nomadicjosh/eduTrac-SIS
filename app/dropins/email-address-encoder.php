@@ -1,5 +1,4 @@
 <?php
-$app = \Liten\Liten::getInstance();
 /*
   DropIn Name: Email Address Encoder
   Description: A plugin which protects email addresses from email-harvesting robots by encoding them into decimal and hexadecimal entities.
@@ -9,7 +8,7 @@ if (!defined('EAE_FILTER_PRIORITY'))
     define('EAE_FILTER_PRIORITY', 1000);
 
 foreach (array('the_custom_page_content', 'the_myet_page_content', 'the_myet_welcome_message') as $filter) {
-    $app->hook->{'add_filter'}($filter, 'eae_encode_emails', EAE_FILTER_PRIORITY);
+    add_filter($filter, 'eae_encode_emails', EAE_FILTER_PRIORITY);
 }
 
 /**
@@ -24,19 +23,18 @@ foreach (array('the_custom_page_content', 'the_myet_page_content', 'the_myet_wel
  */
 function eae_encode_emails($string)
 {
-    $app = \Liten\Liten::getInstance();
 
     // abort if $string doesn't contain a @-sign
-    if ($app->hook->{'apply_filter'}('eae_at_sign_check', true)) {
+    if (apply_filter('eae_at_sign_check', true)) {
         if (strpos($string, '@') === false)
             return $string;
     }
 
     // override encoding function with the 'eae_method' filter
-    $method = $app->hook->{'apply_filter'}('eae_method', 'eae_encode_str');
+    $method = apply_filter('eae_method', 'eae_encode_str');
 
     // override regex pattern with the 'eae_regexp' filter
-    $regexp = $app->hook->{'apply_filter'}(
+    $regexp = apply_filter(
         'eae_regexp', '{
 			(?:mailto:)?
 			(?:

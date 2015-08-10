@@ -6,22 +6,31 @@ if (!defined('BASE_PATH'))
 /**
  * API for Release and Update Checks
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * eduTrac SIS
+ * Copyright (C) 2013 Joshua Parker
  * 
- * @link        http://www.7mediaws.org/
+ * eduTrac SIS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
  * @since       4.5.3
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 class ReleaseAPI
 {
 
     protected $_url = 'http://edutrac.s3.amazonaws.com/';
     protected $_json_url;
-    protected $_app;
 
     /**
      * 
@@ -32,7 +41,6 @@ class ReleaseAPI
     public function __construct(\Liten\Liten $liten = null)
     {
         $this->_json_url = _file_get_contents($this->_url . 'release.json');
-        $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
     }
 
     public static function inst()
@@ -75,7 +83,7 @@ class ReleaseAPI
 
     public function getSchema()
     {
-        $sql = $this->_url . $this->init('UPGRADE_SQL') . DS . $this->_app->hook->{'get_option'}('dbversion') . '.sql';
+        $sql = $this->_url . $this->init('UPGRADE_SQL') . DS . get_option('dbversion') . '.sql';
         return $sql;
     }
 }

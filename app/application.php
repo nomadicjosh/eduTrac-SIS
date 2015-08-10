@@ -2,7 +2,29 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
-$app = \Liten\Liten::getInstance();
+/**
+ * Bootstrap
+ *  
+ * eduTrac SIS
+ * Copyright (C) 2013 Joshua Parker
+ * 
+ * eduTrac SIS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
 
 /**
  * Creates a cron directory with proper permissions.
@@ -42,7 +64,7 @@ if (APP_ENV == 'DEV') {
 define('LOCALE_DIR', APP_PATH . 'lang');
 $encoding = 'UTF-8';
 if (file_exists(BASE_PATH . 'config.php')) {
-    $locale = ($app->hook->get_option('et_core_locale') !== null) ? $app->hook->get_option('et_core_locale') : 'en_US';
+    $locale = (get_option('et_core_locale') !== null) ? get_option('et_core_locale') : 'en_US';
 } else {
     $locale = 'en_US';
 }
