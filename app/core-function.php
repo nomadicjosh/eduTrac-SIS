@@ -1795,6 +1795,31 @@ function cronDir()
 }
 
 /**
+ * Retrieves a list of roles from the roles table.
+ * 
+ * @since 6.0.04
+ * @return mixed
+ */
+function get_perm_roles() {
+	$app = \Liten\Liten::getInstance();
+    $query = $app->db->query( 'SELECT 
+    		trim(leading "0" from ID) AS roleID, roleName 
+		FROM role' 
+	);
+    $result = $query->find(function($data) {
+        $array = [];
+        foreach ($data as $d) {
+            $array[] = $d;
+        }
+        return $array;
+    });
+	
+    foreach($result as $r) {
+    	echo '<option value="' . _h($r['roleID']) . '">' . _h($r['roleName']) . '</option>' . "\n";
+    }
+}
+
+/**
  * Added htmLawed functions
  * 
  * @since 5.0.1
