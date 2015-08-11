@@ -207,6 +207,13 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $nae->password = $password;
             if ($nae->save()) {
                 $ID = $nae->lastInsertId();
+				
+				$role = $app->db->person_roles();
+				$role->personID = $ID;
+				$role->roleID = $_POST['roleID'];
+				$role->addDate = $app->db->NOW();
+				$role->save();
+				
                 $addr = $app->db->address();
                 $addr->personID = $ID;
                 $addr->address1 = $_POST['address1'];
