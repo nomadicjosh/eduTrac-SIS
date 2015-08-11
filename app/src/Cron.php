@@ -4,17 +4,14 @@ if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * Cron Class
+ * Cronjob Class
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
+ * @deprecated Deprecated as of release 6.0.00.
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 class Cron
 {
