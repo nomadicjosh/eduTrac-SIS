@@ -1,16 +1,14 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
  * Edit Course View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @link        http://www.7mediaws.org/
+ * This view renders the course record for the CRSE screen.
+ *  
+ * @license GPLv3
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
@@ -30,7 +28,7 @@ include('ajax.php');
 	<li><?=_t( 'You are here' );?></li>
 	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>course/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
+	<li><a href="<?=url('/');?>crse/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Create Course' );?></li>
 </ul>
