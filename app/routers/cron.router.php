@@ -435,7 +435,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
                         // execute cronjob
                         $ch = curl_init();
                         curl_setopt($ch, CURLOPT_URL, $cronjob['url']);
-                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
                         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                         curl_setopt($ch, CURLOPT_TIMEOUT, (isset($cronjons['settings'], $cronjobs['settings']['timeout']) ? $cronjob['settings']['timeout'] : 5));
 
