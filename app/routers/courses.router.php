@@ -1,13 +1,22 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+/**
+ * Courses Router
+ *  
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
 
 /**
  * Before router check.
  */
 $app->before('GET|POST', '/courses(.*)', function() use($app) {
 
-    if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+    if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
         redirect(url('/offline/'));
     }
 });
@@ -57,13 +66,13 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 }
                 return $array;
             });
-            if (bcadd(count($q1[0]['id']), count($_POST['courseSecID'])) > $app->hook->{'get_option'}('number_of_courses')) {
-                $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . $app->hook->{'get_option'}('number_of_courses') . _t(' courses</strong> per term.'));
+            if (bcadd(count($q1[0]['id']), count($_POST['courseSecID'])) > get_option('number_of_courses')) {
+                $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . get_option('number_of_courses') . _t(' courses</strong> per term.'));
                 redirect(url('/') . 'courses/');
                 exit();
             }
             /* Retrieve the dropAddEndDate from the registration term. */
-            $json_term = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
+            $json_term = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/?key=' . get_option('api_key'));
             $daDate = json_decode($json_term, true);
             $deleteDate = date('Y-m-d', strtotime($daDate[0]['dropAddEndDate'] . ' + 1 days'));
 
@@ -84,7 +93,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 redirect(url('/') . 'courses/cart/');
             }
         }
-        $terms = $app->hook->{'get_option'}('open_terms');
+        $terms = get_option('open_terms');
         $sect = $app->db->course_sec()
             ->setTableAlias('a')
             ->select('a.courseSecID,a.courseSecCode,a.secShortTitle,a.dotw')
@@ -151,7 +160,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
          */
         $check = $app->db->stu_course_sec()
             ->where('stuID = ?', get_persondata('personID'))->_and_()
-            ->where('termCode = ?', $app->hook->{'get_option'}('registration_term'))->_and_()
+            ->where('termCode = ?', get_option('registration_term'))->_and_()
             ->whereIn('status', ['A', 'N']);
         $d = $check->find(function($data) {
             $array = [];
@@ -161,8 +170,8 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
             return $array;
         });
         $counts = array_count_values($_POST['regAction']);
-        if (bcadd(count($d[0]['id']), $counts['register']) > $app->hook->{'get_option'}('number_of_courses')) {
-            $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . $app->hook->{'get_option'}('number_of_courses') . _t(' courses</strong> per term.'));
+        if (bcadd(count($d[0]['id']), $counts['register']) > get_option('number_of_courses')) {
+            $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . get_option('number_of_courses') . _t(' courses</strong> per term.'));
             redirect($app->req->server['HTTP_REFERER']);
             exit();
         }
@@ -286,7 +295,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 return $array;
             });
             if (count($qry[0]['courseSection']) > 0) {
-                if ($app->hook->{'get_option'}('registrar_email_address') != '') {
+                if (get_option('registrar_email_address') != '') {
                     $email->course_registration(get_persondata('personID'), $_POST['termCode'], url('/'));
                 }
             }

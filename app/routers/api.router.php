@@ -1,14 +1,23 @@
 <?php
-
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+
+/**
+ * REST API Router
+ *  
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
 
 /**
  * Before router middleware checks for a valid
  * api key.
  */
 $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/api(.*)', function() use ($app) {
-    if ($app->req->_get('key') !== $app->hook->{'get_option'}('api_key') || $app->hook->{'get_option'}('api_key') === null) {
+    if ($app->req->_get('key') !== get_option('api_key') || get_option('api_key') === null) {
         $app->res->_format('json', 401);
         exit();
     }

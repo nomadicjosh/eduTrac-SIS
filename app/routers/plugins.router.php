@@ -1,6 +1,15 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+/**
+ * Plugins Router
+ *  
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
 
 /**
  * Before route check.
@@ -42,12 +51,12 @@ $app->group('/plugins', function() use ($app, $css, $js) {
     });
 
     $app->get('/activate/', function() use($app) {
-        $app->hook->{'activate_plugin'}($_GET['id']);
+        activate_plugin($_GET['id']);
         redirect($app->req->server['HTTP_REFERER']);
     });
 
     $app->get('/deactivate/', function() use($app) {
-        $app->hook->{'deactivate_plugin'}($_GET['id']);
+        deactivate_plugin($_GET['id']);
         redirect($app->req->server['HTTP_REFERER']);
     });
 

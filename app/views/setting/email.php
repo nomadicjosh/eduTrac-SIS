@@ -1,17 +1,14 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * System Settings View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * Email Settings View
  * 
- * @license     http://www.edutracerp.com/general/edutrac-erp-commercial-license/ Commercial License
- * @link        http://www.7mediaws.org/
+ * This view is used to render the email settings screen.
+ *  
+ * @license GPLv3
+ * 
  * @since       3.0.0
  * @package     eduTrac SIS
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
@@ -62,7 +59,7 @@ $app->view->block('dashboard');
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'System Email' );?>  <a href="#system" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
-								<input type="text" name="system_email" value="<?=_h($app->hook->{'get_option'}('system_email'));?>" class="form-control" required/>
+								<input type="text" name="system_email" value="<?=_h(get_option('system_email'));?>" class="form-control" required/>
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -71,7 +68,7 @@ $app->view->block('dashboard');
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Registrar's Email" );?> <a href="#registrar" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="text" name="registrar_email_address" value="<?=_h($app->hook->{'get_option'}('registrar_email_address'));?>" class="form-control" required/> 
+                                <input type="text" name="registrar_email_address" value="<?=_h(get_option('registrar_email_address'));?>" class="form-control" required/> 
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -80,7 +77,7 @@ $app->view->block('dashboard');
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Room Request Email" );?> <a href="#request" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="text" name="room_request_email" value="<?=_h($app->hook->{'get_option'}('room_request_email'));?>" class="form-control" required/> 
+                                <input type="text" name="room_request_email" value="<?=_h(get_option('room_request_email'));?>" class="form-control" required/> 
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -95,7 +92,7 @@ $app->view->block('dashboard');
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Contact Email" );?> <a href="#contact" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="text" name="contact_email" value="<?=_h($app->hook->{'get_option'}('contact_email'));?>" class="form-control" required/>
+                                <input type="text" name="contact_email" value="<?=_h(get_option('contact_email'));?>" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -104,7 +101,7 @@ $app->view->block('dashboard');
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Admissions Email" );?> <a href="#admissions" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="text" name="admissions_email" value="<?=_h($app->hook->{'get_option'}('admissions_email'));?>" class="form-control" required/>
+                                <input type="text" name="admissions_email" value="<?=_h(get_option('admissions_email'));?>" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->

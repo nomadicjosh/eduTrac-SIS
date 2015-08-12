@@ -1,6 +1,15 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+/**
+ * Form Router
+ *  
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
 
 $logger = new \app\src\Log();
 $flashNow = new \app\src\Messages();
@@ -580,7 +589,7 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
             $subj->subjectName = _filter_input_string(INPUT_POST, 'subjectName');
             if($subj->save()) {
                 $ID = $subj->lastInsertId();
-                $app->hook->{'do_action'}( 'create_subject_code', _trim(_filter_input_string(INPUT_POST, 'subjectCode')), _filter_input_string(INPUT_POST, 'subjectName') );
+                do_action( 'create_subject_code', _trim(_filter_input_string(INPUT_POST, 'subjectCode')), _filter_input_string(INPUT_POST, 'subjectName') );
                 $app->flash( 'success_message', $flashNow->notice(200) );
                 $logger->setLog('New Record', 'Subject', _filter_input_string(INPUT_POST, 'subjectName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'subjectCode')) . ')', get_persondata('uname'));
                 redirect( url('/form/subject/') . $ID . '/' );

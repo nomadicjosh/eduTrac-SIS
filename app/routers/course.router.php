@@ -1,6 +1,15 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+/**
+ * Course Router
+ *  
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
 
 /**
  * Before route checks to make sure the logged in user
@@ -98,7 +107,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {
@@ -182,7 +191,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
 
         if ($app->req->isPost()) {

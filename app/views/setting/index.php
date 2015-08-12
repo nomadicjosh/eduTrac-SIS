@@ -1,16 +1,14 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
  * System Settings View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @link        http://www.7mediaws.org/
+ * This view is used to render the general settings screen.
+ *  
+ * @license GPLv3
+ * 
  * @since       3.0.0
  * @package     eduTrac SIS
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
@@ -62,7 +60,7 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Institution Name' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="institution_name" value="<?=_h($app->hook->{'get_option'}('institution_name'));?>" class="form-control" required />
+								<input type="text" name="institution_name" value="<?=_h(get_option('institution_name'));?>" class="form-control" required />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -73,8 +71,8 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
                             <div class="col-md-8">
                                 <select name="enable_benchmark" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'enable_benchmark' )), '1', false ); ?>><?=_t( "Yes" );?></option>
-                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'enable_benchmark' )), '0', false ); ?>><?=_t( "No" );?></option>
+                                    <option value="1"<?=selected( _h(get_option( 'enable_benchmark' )), '1', false ); ?>><?=_t( "Yes" );?></option>
+                                    <option value="0"<?=selected( _h(get_option( 'enable_benchmark' )), '0', false ); ?>><?=_t( "No" );?></option>
                                 </select>
                             </div>
                         </div>
@@ -87,7 +85,7 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
 						        <select name="myet_layout" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
                             		<?php foreach($layouts_header as $layout) { ?>
-                                    <option value="<?=$layout['Slug'];?>"<?=selected( _h($app->hook->{'get_option'}( 'myet_layout' )), $layout['Slug'], false ); ?>><?=$layout['Name'];?></option>
+                                    <option value="<?=$layout['Slug'];?>"<?=selected( _h(get_option( 'myet_layout' )), $layout['Slug'], false ); ?>><?=$layout['Name'];?></option>
                                     <?php } ?>
                             	</select>
 							</div>
@@ -100,8 +98,8 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
                             <div class="col-md-8">
                                 <select name="enable_myet_portal" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'enable_myet_portal' )), '1', false ); ?>><?=_t( "Online" );?></option>
-                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'enable_myet_portal' )), '0', false ); ?>><?=_t( "Offline" );?></option>
+                                    <option value="1"<?=selected( _h(get_option( 'enable_myet_portal' )), '1', false ); ?>><?=_t( "Online" );?></option>
+                                    <option value="0"<?=selected( _h(get_option( 'enable_myet_portal' )), '0', false ); ?>><?=_t( "Offline" );?></option>
                                 </select>
                             </div>
                         </div>
@@ -111,7 +109,7 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
     					<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Offline Message' );?> <a href="#portaloff" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
-								<textarea name="myet_offline_message" class="form-control" rows="5" required><?=_h($app->hook->{'get_option'}('myet_offline_message'));?></textarea>
+								<textarea name="myet_offline_message" class="form-control" rows="5" required><?=_h(get_option('myet_offline_message'));?></textarea>
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -122,8 +120,8 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
                             <div class="col-md-8">
                                 <select name="enable_myet_appl_form" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'enable_myet_appl_form' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
-                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'enable_myet_appl_form' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
+                                    <option value="1"<?=selected( _h(get_option( 'enable_myet_appl_form' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
+                                    <option value="0"<?=selected( _h(get_option( 'enable_myet_appl_form' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
                                 </select>
                             </div>
                         </div>
@@ -135,8 +133,8 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
                             <div class="col-md-8">
                                 <select name="send_acceptance_email" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 	<option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'send_acceptance_email' )), '1', false ); ?>><?=_t( "Yes" );?></option>
-                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'send_acceptance_email' )), '0', false ); ?>><?=_t( "No" );?></option>
+                                    <option value="1"<?=selected( _h(get_option( 'send_acceptance_email' )), '1', false ); ?>><?=_t( "Yes" );?></option>
+                                    <option value="0"<?=selected( _h(get_option( 'send_acceptance_email' )), '0', false ); ?>><?=_t( "No" );?></option>
                                 </select>
                             </div>
                         </div>
@@ -148,8 +146,8 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
                             <div class="col-md-8">
                                 <select name="screen_caching" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'screen_caching' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
-                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'screen_caching' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
+                                    <option value="1"<?=selected( _h(get_option( 'screen_caching' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
+                                    <option value="0"<?=selected( _h(get_option( 'screen_caching' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
                                 </select>
                             </div>
                         </div>
@@ -161,8 +159,8 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
                             <div class="col-md-8">
                                 <select name="db_caching" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 	<option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'db_caching' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
-                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'db_caching' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
+                                    <option value="1"<?=selected( _h(get_option( 'db_caching' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
+                                    <option value="0"<?=selected( _h(get_option( 'db_caching' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
                                 </select>
                             </div>
                         </div>
@@ -174,10 +172,10 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
                             <div class="col-md-8">
                                 <select name="et_core_locale" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                 	<option value="">&nbsp;</option>
-                                    <option value="en_US"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'en_US', false ); ?>><?=_t( "English" );?></option>
-                                    <option value="fr_FR"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'fr_FR', false ); ?>><?=_t( "French" );?></option>
-                                    <option value="pt_BR"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'pt_BR', false ); ?>><?=_t( "Portuguese" );?></option>
-                                    <option value="es_ES"<?=selected( _h($app->hook->{'get_option'}( 'et_core_locale' )), 'es_ES', false ); ?>><?=_t( "Spanish" );?></option>
+                                    <option value="en_US"<?=selected( _h(get_option( 'et_core_locale' )), 'en_US', false ); ?>><?=_t( "English" );?></option>
+                                    <option value="fr_FR"<?=selected( _h(get_option( 'et_core_locale' )), 'fr_FR', false ); ?>><?=_t( "French" );?></option>
+                                    <option value="pt_BR"<?=selected( _h(get_option( 'et_core_locale' )), 'pt_BR', false ); ?>><?=_t( "Portuguese" );?></option>
+                                    <option value="es_ES"<?=selected( _h(get_option( 'et_core_locale' )), 'es_ES', false ); ?>><?=_t( "Spanish" );?></option>
                                 </select>
                             </div>
                         </div>
@@ -196,7 +194,7 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
                                 <select name="system_timezone" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 	<option value="">&nbsp;</option>
                                     <?php foreach(generate_timezone_list() as $k => $v) : ?>
-                                    <option value="<?=$k;?>"<?=selected( _h($app->hook->{'get_option'}( 'system_timezone' )), $k, false ); ?>><?=$v;?></option>
+                                    <option value="<?=$k;?>"<?=selected( _h(get_option( 'system_timezone' )), $k, false ); ?>><?=$v;?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -207,7 +205,7 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Cookie TTL' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="cookieexpire" value="<?=_h((int)$app->hook->{'get_option'}('cookieexpire'));?>" class="form-control" required/>
+								<input type="text" name="cookieexpire" value="<?=_h((int)get_option('cookieexpire'));?>" class="form-control" required/>
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -216,7 +214,7 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Cookie Path' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="cookiepath" value="<?=_h($app->hook->{'get_option'}('cookiepath'));?>" class="form-control" required/>
+								<input type="text" name="cookiepath" value="<?=_h(get_option('cookiepath'));?>" class="form-control" required/>
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -227,8 +225,8 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
                             <div class="col-md-8">
                                 <select name="curl" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h($app->hook->{'get_option'}( 'curl' )), '1', false ); ?>><?=_t( "On" );?></option>
-                                    <option value="0"<?=selected( _h($app->hook->{'get_option'}( 'curl' )), '0', false ); ?>><?=_t( "Off" );?></option>
+                                    <option value="1"<?=selected( _h(get_option( 'curl' )), '1', false ); ?>><?=_t( "On" );?></option>
+                                    <option value="0"<?=selected( _h(get_option( 'curl' )), '0', false ); ?>><?=_t( "Off" );?></option>
                                 </select>
                             </div>
                         </div>
@@ -238,7 +236,7 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
     					<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'API Key' );?> <a href="#apikey" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
-                                <input type="text" name="api_key" value="<?=_h($app->hook->{'get_option'}('api_key'));?>" class="form-control" required/>
+                                <input type="text" name="api_key" value="<?=_h(get_option('api_key'));?>" class="form-control" required/>
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -247,7 +245,7 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
     					<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Contact Phone' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="contact_phone" value="<?=_h($app->hook->{'get_option'}('contact_phone'));?>" class="form-control" />
+								<input type="text" name="contact_phone" value="<?=_h(get_option('contact_phone'));?>" class="form-control" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -256,7 +254,7 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
     					<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Help Desk' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="help_desk" value="<?=_h($app->hook->{'get_option'}('help_desk'));?>" class="form-control" />
+								<input type="text" name="help_desk" value="<?=_h(get_option('help_desk'));?>" class="form-control" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -265,7 +263,7 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'eduTrac Analytics' );?> <a href="#ea" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="text" name="edutrac_analytics_url" value="<?=_h($app->hook->{'get_option'}('edutrac_analytics_url'));?>" class="form-control" />
+                                <input type="text" name="edutrac_analytics_url" value="<?=_h(get_option('edutrac_analytics_url'));?>" class="form-control" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -274,7 +272,7 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
     					<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Mailing Address' );?></label>
 							<div class="col-md-8">
-								<textarea name="mailing_address" class="form-control" rows="5"><?=_h($app->hook->{'get_option'}('mailing_address'));?></textarea>
+								<textarea name="mailing_address" class="form-control" rows="5"><?=_h(get_option('mailing_address'));?></textarea>
 							</div>
 						</div>
 						<!-- // Group END -->

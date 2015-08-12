@@ -6,6 +6,16 @@ use \app\src\Session;
 Session::init();
 
 /**
+ * Install Router
+ *  
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
+
+/**
  * Before route check.
  */
 $app->before('GET|POST', '/install.*', function() use($app) {
