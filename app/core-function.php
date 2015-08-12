@@ -4,21 +4,7 @@ if (!defined('BASE_PATH'))
 /**
  * eduTrac SIS Core Functions
  *  
- * eduTrac SIS
- * Copyright (C) 2013 Joshua Parker
- * 
- * eduTrac SIS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * @license GPLv3
  * 
  * @since       3.0.0
  * @package     eduTrac SIS
@@ -1817,6 +1803,54 @@ function get_perm_roles() {
     foreach($result as $r) {
     	echo '<option value="' . _h($r['roleID']) . '">' . _h($r['roleName']) . '</option>' . "\n";
     }
+}
+
+/**
+ * Strips out all duplicate values and compact the array.
+ * 
+ * @since 6.0.04
+ * @param mixed $a An array that be compacted.
+ * @return mixed 
+ */
+function array_unique_compact($a) {
+  $tmparr = array_unique($a);
+  $i=0;
+  foreach ($tmparr as $v) {
+    $newarr[$i] = $v;
+    $i++;
+  }
+  return $newarr;
+}
+
+/**
+ * Retrieves all the tags from every student
+ * and removes duplicates.
+ * 
+ * @since 6.0.04
+ * @return mixed
+ */
+function tagList()
+{
+    $app = \Liten\Liten::getInstance();
+    $tagging = $app->db->query( 'SELECT tags FROM student' );
+    $q = $tagging->find(function($data) {
+        $array = [];
+        foreach ($data as $d) {
+            $array[] = $d;
+        }
+        return $array;
+    });
+	$tags = [];
+	foreach($q as $r) {
+		$tags = array_merge($tags, explode(",", $r['tags']));
+	}
+    $tags = array_unique_compact($tags);
+	foreach($tags as $key => $value) {
+		if($value == "" || strlen($value) <= 0) {
+			unset($tags[$key]);
+		}
+	}
+	return $tags;
 }
 
 /**

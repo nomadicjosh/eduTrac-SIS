@@ -2,6 +2,16 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
+/**
+ * Student Router
+ *
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
+
 $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
 $js = [
     'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
@@ -122,7 +132,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     CASE c.status 
                     WHEN 'A' Then 'Active' 
                     ELSE 'Inactive' 
-                    END AS 'stuStatus' 
+                    END AS 'stuStatus',c.tags 
                 FROM stu_program a 
                 LEFT JOIN acad_program b ON a.acadProgCode = b.acadProgCode 
                 LEFT JOIN student c ON a.stuID = c.stuID 
