@@ -1,17 +1,14 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
  * Registration Settings View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @license     http://www.edutracerp.com/general/edutrac-erp-commercial-license/ Commercial License
- * @link        http://www.7mediaws.org/
+ * This view is used to render the registration settings screen.
+ *  
+ * @license GPLv3
+ * 
  * @since       3.0.0
  * @package     eduTrac SIS
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
@@ -64,8 +61,8 @@ $app->view->block('dashboard');
 							<div class="col-md-8">
 								<select name="open_registration" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                             		<option value="">&nbsp;</option>
-                            		<option value="1"<?=selected( _h($app->hook->{'get_option'}( 'open_registration' )), '1', false ); ?>><?=_t( "Yes" );?></option>
-                            		<option value="0"<?=selected( _h($app->hook->{'get_option'}( 'open_registration' )), '0', false ); ?>><?=_t( "No" );?></option>
+                            		<option value="1"<?=selected( _h(get_option( 'open_registration' )), '1', false ); ?>><?=_t( "Yes" );?></option>
+                            		<option value="0"<?=selected( _h(get_option( 'open_registration' )), '0', false ); ?>><?=_t( "No" );?></option>
                             	</select>
 							</div>
 						</div>
@@ -77,7 +74,7 @@ $app->view->block('dashboard');
                             <div class="col-md-8">
                                 <select name="current_term_code" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('term','termCode <> "NULL"','termCode','termCode','termName',_h($app->hook->{'get_option'}('current_term_code'))); ?>
+                                    <?php table_dropdown('term','termCode <> "NULL"','termCode','termCode','termName',_h(get_option('current_term_code'))); ?>
                                 </select>
                             </div>
                         </div>
@@ -87,7 +84,7 @@ $app->view->block('dashboard');
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( '# of Courses' );?> <a href="#courses" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="text" name="number_of_courses" value="<?=_h($app->hook->{'get_option'}('number_of_courses'));?>" class="form-control" required/> 
+                                <input type="text" name="number_of_courses" value="<?=_h(get_option('number_of_courses'));?>" class="form-control" required/> 
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -96,7 +93,7 @@ $app->view->block('dashboard');
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Account Balance' );?> <a href="#balance" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="text" readonly name="account_balance" value="<?=_h($app->hook->{'get_option'}('account_balance'));?>" class="form-control" /> 
+                                <input type="text" readonly name="account_balance" value="<?=_h(get_option('account_balance'));?>" class="form-control" /> 
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -111,7 +108,7 @@ $app->view->block('dashboard');
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Open Terms' );?> <a href="#openterm" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="text" name="open_terms" value="<?=_h($app->hook->{'get_option'}('open_terms'));?>" class="form-control" required/> 
+                                <input type="text" name="open_terms" value="<?=_h(get_option('open_terms'));?>" class="form-control" required/> 
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -122,7 +119,7 @@ $app->view->block('dashboard');
                             <div class="col-md-8">
                                 <select name="registration_term" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('term','termCode <> "NULL"','termCode','termCode','termName',_h($app->hook->{'get_option'}('registration_term'))); ?>
+                                    <?php table_dropdown('term','termCode <> "NULL"','termCode','termCode','termName',_h(get_option('registration_term'))); ?>
                                 </select>
                             </div>
                         </div>
@@ -132,7 +129,7 @@ $app->view->block('dashboard');
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Instructions' );?> <a href="#reginfo" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <textarea class="form-control" name="reg_instructions" rows="3" data-height="auto"><?=_h($app->hook->{'get_option'}('reg_instructions'));?></textarea>
+                                <textarea class="form-control" name="reg_instructions" rows="3" data-height="auto"><?=_h(get_option('reg_instructions'));?></textarea>
                             </div>
                         </div>
                         <!-- // Group END -->

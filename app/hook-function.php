@@ -27,6 +27,34 @@ if (!defined('BASE_PATH'))
 $app = \Liten\Liten::getInstance();
 
 /**
+ * Wrapper function for Hooks::activate_plugin() and
+ * activates plugin based on $_GET['id'].
+ * @see Hooks::activate_plugin()
+ * 
+ * @since 6.0.04
+ * @param string $id ID of the plugin to be activated.
+ * @return mixed Activates plugin if it exists.
+ */
+function activate_plugin($id) {
+	$app = \Liten\Liten::getInstance();
+	return $app->hook->activate_plugin($id);
+}
+
+/**
+ * Wrapper function for Hooks::deactivate_plugin() and
+ * deactivates plugin based on $_GET['id'].
+ * @see Hooks::deactivate_plugin()
+ * 
+ * @since 6.0.04
+ * @param string $id ID of the plugin to be deactivated.
+ * @return mixed Deactivates plugin if it exists and is active.
+ */
+function deactivate_plugin($id) {
+	$app = \Liten\Liten::getInstance();
+	return $app->hook->deactivate_plugin($id);
+}
+
+/**
  * Wrapper function for Hooks::load_activated_plugins() and
  * loads all activated plugins for inclusion.
  * @see Hooks::load_activated_plugins()

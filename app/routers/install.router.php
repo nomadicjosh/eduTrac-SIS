@@ -6,6 +6,16 @@ use \app\src\Session;
 Session::init();
 
 /**
+ * Install Router
+ *  
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
+
+/**
  * Before route check.
  */
 $app->before('GET|POST', '/install.*', function() use($app) {
@@ -117,7 +127,7 @@ $app->match('GET|POST', '/install/createAdmin/', function () use($app) {
 
             $sql[] = "INSERT INTO `staff_meta` VALUES(1, 'FT', 1, 00000001, 00000001, 'STA', '2011-02-01', '2011-02-01', NULL, '" . $now . "', 00000001, '" . $now . "');";
 
-            $sql[] = "INSERT INTO `options_meta` VALUES(1, 'dbversion', '00044');";
+            $sql[] = "INSERT INTO `options_meta` VALUES(1, 'dbversion', '00045');";
 
             $sql[] = "INSERT INTO `options_meta` VALUES(2, 'system_email', '" . Session::get('email') . "');";
 

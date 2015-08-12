@@ -1,6 +1,15 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+/**
+ * Staff Router
+ *  
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
 
 /**
  * Before router middleware checks to see
@@ -109,7 +118,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
     		redirect( $app->req->server['HTTP_REFERER'] );
     	}
         
-        $json = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+        $json = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
 
         $addr = $app->db->address()
@@ -178,10 +187,10 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
 
     $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $dbcache, $logger, $flashNow) {
 
-        $json_p = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+        $json_p = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
         $p_decode = json_decode($json_p, true);
 
-        $json_s = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+        $json_s = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
         $s_decode = json_decode($json_s, true);
 
         if ($app->req->isPost()) {

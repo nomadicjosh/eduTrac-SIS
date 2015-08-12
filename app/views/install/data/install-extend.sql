@@ -2285,6 +2285,7 @@ CREATE TABLE IF NOT EXISTS `student` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `stuID` bigint(20) NOT NULL,
   `status` enum('A','I') NOT NULL DEFAULT 'A',
+  `tags` varchar(255) NOT NULL,
   `addDate` date NOT NULL,
   `approvedBy` bigint(20) NOT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -2869,7 +2870,7 @@ ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`courseID`) REFERENCES `cours
 
 ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
                   
-INSERT INTO `options_meta` VALUES(1, 'dbversion', '00044');
+INSERT INTO `options_meta` VALUES(1, 'dbversion', '00045');
         
 INSERT INTO `options_meta` VALUES(2, 'system_email', '{email}');
         

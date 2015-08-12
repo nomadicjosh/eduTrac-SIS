@@ -1,7 +1,15 @@
 <?php
-
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+/**
+ * Error Router
+ *  
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
 
 $app->get('404', function () use($app) {
     $app->view->display('error/404');

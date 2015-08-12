@@ -1,16 +1,15 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * Add Person View
+ * NAE New Record View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * This view is used when creating a new person record
+ * via the NAE screen.
  * 
- * @link        http://www.7mediaws.org/
+ * @license GPLv3
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
@@ -324,6 +323,18 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <label class="col-md-3 control-label"><?=_t( 'Emergency Contact Phone' );?></label>
                             <div class="col-md-8">
                                 <input class="form-control" type="text" name="emergency_contact_phone" value="<?=(isset($_POST['emergency_contact_phone'])) ? $_POST['emergency_contact_phone'] : '';?>" />
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Person Role' );?></label>
+                            <div class="col-md-8">
+                                <select name="roleID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?=get_perm_roles();?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->

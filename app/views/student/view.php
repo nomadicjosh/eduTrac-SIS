@@ -1,16 +1,15 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * View Student View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * SPRO Record View
  * 
- * @link        http://www.7mediaws.org/
+ * This view is used when viewing a student record via
+ * the SPRO screen.
+ *
+ * @license GPLv3
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
@@ -18,9 +17,17 @@ $app->view->block('dashboard');
 $message = new \app\src\Messages;
 $stuInfo = new \app\src\Student;
 $stuInfo->Load_from_key(_h($prog[0]['stuID']));
+$list = '"'.implode('","', tagList()).'"';
 ?>
 
 <script type="text/javascript">
+$(function() {
+<?php if(strlen($list) >= 3) : ?>
+	$("#select2_5").select2({tags:[<?=$list;?>]});
+<?php else : ?>
+	$("#select2_5").select2({tags:[]});
+<?php endif; ?>
+});
 $(".panel").show();
 setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
@@ -113,7 +120,14 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                 <!-- Column -->
                 <div class="col-md-6">
                     
-                    <!-- Needed for formatting -->
+                    <!-- Group -->
+					<div class="form-group">
+                        <label class="col-md-3 control-label"><?=_t( 'Tags' );?> <a href="#tags" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+						<div class="col-md-8">
+							<input id="select2_5" style="width:100%;" type="hidden"<?=sio();?> name="tags" value="<?=_h($prog[0]['tags']);?>" />
+						</div>
+					</div>
+					<!-- // Group END -->
                     
                 </div>
                 <!-- // Column END -->
@@ -185,6 +199,25 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
         </div>
     </div>
     <!-- // Modal END -->
+    
+    <div class="modal fade" id="tags">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- Modal heading -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title"><?=_t( 'Tags' );?></h3>
+				</div>
+				<!-- // Modal heading END -->
+                <div class="modal-body">
+                    <p><?=_t( "Tags are only for internal use, but they let staff members identify students based on unique or particular characteristics. Tags are like 'metadata' or 'keywords' attached to students in the system to make them easier to find or communicate with. Nevertheless, feel free to use them in a way that is most beneficial for your institution." );?></p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
+                </div>
+           	</div>
+      	</div>
+    </div>
     
 </div>  
         

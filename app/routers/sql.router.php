@@ -1,6 +1,15 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+/**
+ * SQL Router
+ *  
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
 
 $app->before('GET|POST', '/sql/', function() {
     if (!hasPermission('access_sql_interface_screen')) {

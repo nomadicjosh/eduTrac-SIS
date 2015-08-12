@@ -1,6 +1,15 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+/**
+ * Index Router
+ *  
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
 
 $json_url = url('/api/');
 $hasher = new \app\src\PasswordHash(8, FALSE);
@@ -20,7 +29,7 @@ $app->before('GET|POST', '/', function() {
 });
 
 $app->before('GET|POST', '/', function() use($app) {
-    if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+    if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
         redirect(url('/offline/'));
     }
 });
@@ -31,7 +40,7 @@ $app->get('/', function () use($app) {
 });
 
 $app->before('GET|POST', '/spam/', function() use($app) {
-    if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+    if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
         redirect(url('/offline/'));
     }
 
@@ -51,7 +60,7 @@ $app->get('/offline/', function () use($app) {
 });
 
 $app->before('GET|POST', '/online-app/', function() use($app) {
-    if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+    if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
         redirect(url('/offline/'));
     }
 });
@@ -110,8 +119,8 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
             $ll->LastLogin = $ll->NOW();
             $ll->where('personID = ?', _h($r['personID']))->update();
             if (isset($_POST['rememberme'])) {
-                $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), ($app->hook->{'get_option'}('cookieexpire') !== '') ? $app->hook->{'get_option'}('cookieexpire') : $app->config('cookie.lifetime'));
-                $app->cookies->setSecureCookie('ET_REMEMBER', 'rememberme', ($app->hook->{'get_option'}('cookieexpire') !== '') ? $app->hook->{'get_option'}('cookieexpire') : $app->config('cookie.lifetime'));
+                $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
+                $app->cookies->setSecureCookie('ET_REMEMBER', 'rememberme', (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
             } else {
                 $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
             }
@@ -275,7 +284,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
         redirect($app->req->server['HTTP_REFERER']);
     }
 
-    $json = _file_get_contents($json_url . 'permission/ID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+    $json = _file_get_contents($json_url . 'permission/ID/' . $id . '/?key=' . get_option('api_key'));
     $decode = json_decode($json, true);
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
@@ -392,7 +401,7 @@ $app->match('GET|POST', '/role/', function () use($app) {
 });
 
 $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
-    $json = _file_get_contents($json_url . 'role/ID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+    $json = _file_get_contents($json_url . 'role/ID/' . $id . '/?key=' . get_option('api_key'));
     $decode = json_decode($json, true);
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
@@ -462,7 +471,7 @@ $app->match('GET|POST', '/role/add/', function () use($app, $flashNow) {
     if ($app->req->isPost()) {
         $roleID = $_POST['roleID'];
         $roleName = $_POST['roleName'];
-        $rolePerm = $app->hook->{'maybe_serialize'}($_POST['permission']);
+        $rolePerm = maybe_serialize($_POST['permission']);
 
         $strSQL = $app->db->query(sprintf("REPLACE INTO `role` SET `ID` = %u, `roleName` = '%s', `permission` = '%s'", $roleID, $roleName, $rolePerm));
         if ($strSQL) {
@@ -486,7 +495,7 @@ $app->match('GET|POST', '/role/add/', function () use($app, $flashNow) {
 $app->post('/role/editRole/', function () use($app, $flashNow) {
     $roleID = $_POST['roleID'];
     $roleName = $_POST['roleName'];
-    $rolePerm = $app->hook->{'maybe_serialize'}($_POST['permission']);
+    $rolePerm = maybe_serialize($_POST['permission']);
 
     $strSQL = $app->db->query(sprintf("REPLACE INTO `role` SET `ID` = %u, `roleName` = '%s', `permission` = '%s'", $roleID, $roleName, $rolePerm));
     if ($strSQL) {
@@ -505,10 +514,10 @@ $app->post('/message/', function () use($app, $logger) {
         if (!isset($_POST[$option_name]))
             continue;
         $value = $_POST[$option_name];
-        $app->hook->{'update_option'}($option_name, $value);
+        update_option($option_name, $value);
     }
     // Update more options here
-    $app->hook->{'do_action'}('update_options');
+    do_action('update_options');
     /* Write to logs */
     $logger->setLog('Update', 'myeduTrac', 'Welcome Message', get_persondata('uname'));
 
@@ -527,8 +536,8 @@ $app->before('GET|POST', '/switchUserTo/(\d+)/', function() {
 $app->get('/switchUserTo/(\d+)/', function ($id) use($app) {
 
     if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('SWITCH_USERBACK', get_persondata('personID'), ($app->hook->{'get_option'}('cookieexpire') !== '') ? $app->hook->{'get_option'}('cookieexpire') : $app->config('cookie.lifetime'));
-        $app->cookies->setSecureCookie('SWITCH_USERNAME', get_persondata('uname'), ($app->hook->{'get_option'}('cookieexpire') !== '') ? $app->hook->{'get_option'}('cookieexpire') : $app->config('cookie.lifetime'));
+        $app->cookies->setSecureCookie('SWITCH_USERBACK', get_persondata('personID'), (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
+        $app->cookies->setSecureCookie('SWITCH_USERNAME', get_persondata('uname'), (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
     } else {
         $app->cookies->setSecureCookie('SWITCH_USERBACK', get_persondata('personID'), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
         $app->cookies->setSecureCookie('SWITCH_USERNAME', get_persondata('uname'), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
@@ -551,7 +560,7 @@ $app->get('/switchUserTo/(\d+)/', function ($id) use($app) {
     $app->cookies->remove("ET_COOKNAME");
 
     if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->hook->{'get_option'}('cookieexpire') !== '') ? $app->hook->{'get_option'}('cookieexpire') : $app->config('cookie.lifetime'));
+        $app->cookies->setSecureCookie('ET_COOKNAME', $id, (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
     } else {
         $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
     }
@@ -603,7 +612,7 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
      * original logged in user.
      */
     if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->hook->{'get_option'}('cookieexpire') !== '') ? $app->hook->{'get_option'}('cookieexpire') : $app->config('cookie.lifetime'));
+        $app->cookies->setSecureCookie('ET_COOKNAME', $id, (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
     } else {
         $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
     }

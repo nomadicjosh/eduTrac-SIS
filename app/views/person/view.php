@@ -1,16 +1,15 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * View Person View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * NAE Record View
  * 
- * @link        http://www.7mediaws.org/
+ * This view is used when viewing a person record via
+ * the NAE screen.
+ *
+ * @license GPLv3
+ * 
  * @since       3.0.0
  * @package     eduTrac SIS
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
@@ -42,10 +41,19 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <span data-toggle="tooltip" data-original-title="Create Staff Record" data-placement="top">
         <a<?=ae('create_staff_record');?> href="<?=url('/');?>staff/add/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-user"></i></a>
     </span>
+    <?php else : ?>
+	<span data-toggle="tooltip" data-original-title="STAF Screen" data-placement="top">
+        <a<?=ae('access_staff_screen');?> href="<?=url('/');?>staff/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-user"></i></a>
+    </span>
     <?php endif; ?>
     <?php if($appl[0]['personID'] <= 0) : ?>
     <span data-toggle="tooltip" data-original-title="Create Application" data-placement="top">
         <a<?=hl('applications','access_application_screen');?> href="<?=url('/');?>appl/add/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-archive"></i></a>
+    </span>
+    <?php endif; ?>
+    <?php if(isStudent($nae[0]['personID'])) : ?>
+    <span data-toggle="tooltip" data-original-title="SPRO Screen" data-placement="top">
+        <a<?=ae('access_student_screen');?> href="<?=url('/');?>stu/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-certificate"></i></a>
     </span>
     <?php endif; ?>
 </h3>

@@ -1,16 +1,14 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
  * Email Templates View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @link        http://www.7mediaws.org/
+ * This view is used to render the email templates screen.
+ *  
+ * @license GPLv3
+ * 
  * @since       6.0.00
  * @package     eduTrac SIS
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
@@ -210,7 +208,7 @@ tinymce.init({
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="coa" class="col-md-8 form-control" name="coa_form_text" rows="10"><?=_h($app->hook->{'get_option'}('coa_form_text'));?></textarea>
+                    <textarea id="coa" class="col-md-8 form-control" name="coa_form_text" rows="10"><?=_h(get_option('coa_form_text'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -231,7 +229,7 @@ tinymce.init({
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="password" class="col-md-8 form-control" name="reset_password_text" rows="10"><?=_h($app->hook->{'get_option'}('reset_password_text'));?></textarea>
+                    <textarea id="password" class="col-md-8 form-control" name="reset_password_text" rows="10"><?=_h(get_option('reset_password_text'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -252,7 +250,7 @@ tinymce.init({
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="rrt" class="col-md-8 form-control" name="room_request_text" rows="10"><?=_h($app->hook->{'get_option'}('room_request_text'));?></textarea>
+                    <textarea id="rrt" class="col-md-8 form-control" name="room_request_text" rows="10"><?=_h(get_option('room_request_text'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -273,7 +271,7 @@ tinymce.init({
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="rcomfirm" class="col-md-8 form-control" name="room_booking_confirmation_text" rows="10"><?=_h($app->hook->{'get_option'}('room_booking_confirmation_text'));?></textarea>
+                    <textarea id="rcomfirm" class="col-md-8 form-control" name="room_booking_confirmation_text" rows="10"><?=_h(get_option('room_booking_confirmation_text'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -294,7 +292,7 @@ tinymce.init({
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="applLetter" class="col-md-8 form-control" name="student_acceptance_letter" rows="10"><?=_h($app->hook->{'get_option'}('student_acceptance_letter'));?></textarea>
+                    <textarea id="applLetter" class="col-md-8 form-control" name="student_acceptance_letter" rows="10"><?=_h(get_option('student_acceptance_letter'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -315,7 +313,7 @@ tinymce.init({
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="login" class="col-md-8 form-control" name="person_login_details" rows="10"><?=_h($app->hook->{'get_option'}('person_login_details'));?></textarea>
+                    <textarea id="login" class="col-md-8 form-control" name="person_login_details" rows="10"><?=_h(get_option('person_login_details'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -336,7 +334,7 @@ tinymce.init({
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="uname" class="col-md-8 form-control" name="update_username" rows="10"><?=_h($app->hook->{'get_option'}('update_username'));?></textarea>
+                    <textarea id="uname" class="col-md-8 form-control" name="update_username" rows="10"><?=_h(get_option('update_username'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>

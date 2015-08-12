@@ -2,6 +2,16 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
+/**
+ * Cron Router
+ *
+ * @license GPLv3
+ * 
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
+ */
+
 session_start();
 session_regenerate_id();
 
@@ -50,12 +60,23 @@ foreach ($regions as $name => $mask) {
     }
 }
 
+/**
+ * Retrieves a serialized array of cronjob handlers.
+ * 
+ * @since 6.0.00
+ * @return mixed
+ */
 function getCronjobs()
 {
     $cronDir = cronDir() . 'cron/';
     return unserialize(base64_decode(substr(file_get_contents($cronDir . 'cronjobs.dat.php'), 7, -2)));
 }
 
+/**
+ * Saves new cronjob handlers to serialized array.
+ * 
+ * @since 6.0.00
+ */
 function saveCronjobs($data)
 {
     $cronDir = cronDir() . 'cron/';
@@ -64,6 +85,11 @@ function saveCronjobs($data)
     }
 }
 
+/**
+ * Saves cronjob handler activity to a log file.
+ * 
+ * @since 6.0.00
+ */
 function saveLogs($text)
 {
     $cronDir = cronDir() . 'cron/';
@@ -72,6 +98,11 @@ function saveLogs($text)
     }
 }
 
+/**
+ * Updates a cronjob handler.
+ * 
+ * @since 6.0.00
+ */
 function updateCronjobs($id = '')
 {
     $app = \Liten\Liten::getInstance();
@@ -404,7 +435,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
                         // execute cronjob
                         $ch = curl_init();
                         curl_setopt($ch, CURLOPT_URL, $cronjob['url']);
-                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
                         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                         curl_setopt($ch, CURLOPT_TIMEOUT, (isset($cronjons['settings'], $cronjobs['settings']['timeout']) ? $cronjob['settings']['timeout'] : 5));
 
@@ -632,16 +663,16 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
         $queue = $app->db->email_queue()->where('sent = "0"');
         $queue->find(function($data) use($app, $emailer) {
             foreach ($data as $d) {
-                if ($app->hook->{'has_action'}('etMailer_init', 'et_smtp')) {
+                if (has_action('etMailer_init', 'et_smtp')) {
                     $emailer->IsSMTP();
                     $emailer->Mailer = "smtp";
-                    $emailer->Host = _h($app->hook->{'get_option'}('et_smtp_host'));
-                    $emailer->SMTPSecure = _h($app->hook->{'get_option'}('et_smtp_smtpsecure'));
-                    $emailer->Port = _h($app->hook->{'get_option'}('et_smtp_port'));
-                    $emailer->SMTPAuth = (_h($app->hook->{'get_option'}("et_smtp_smtpauth")) == "yes") ? TRUE : FALSE;
+                    $emailer->Host = _h(get_option('et_smtp_host'));
+                    $emailer->SMTPSecure = _h(get_option('et_smtp_smtpsecure'));
+                    $emailer->Port = _h(get_option('et_smtp_port'));
+                    $emailer->SMTPAuth = (_h(get_option("et_smtp_smtpauth")) == "yes") ? TRUE : FALSE;
                     if ($emailer->SMTPAuth) {
-                        $emailer->Username = _h($app->hook->{'get_option'}('et_smtp_username'));
-                        $emailer->Password = _h($app->hook->{'get_option'}('et_smtp_password'));
+                        $emailer->Username = _h(get_option('et_smtp_username'));
+                        $emailer->Password = _h(get_option('et_smtp_password'));
                     }
                     $emailer->AddAddress($d['email'], $d['lname'] . ', ' . $d['fname']);
                     $emailer->From = $d['fromEmail'];
