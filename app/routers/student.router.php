@@ -122,7 +122,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         }
 
         $spro = $app->db->student()->where('stuID', $id)->findOne();
-        $json = _file_get_contents($json_url . 'application/personID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+        $json = _file_get_contents($json_url . 'application/personID/' . (int) $id . '/?key=' . get_option('api_key'));
         $admit = json_decode($json, true);
 
         $prog = $app->db->query("SELECT 
@@ -243,10 +243,10 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $al->addDate = $app->db->NOW();
 
             if ($student->save() && $sacp->save() && $al->save()) {
-                if ($app->hook->{'get_option'}('send_acceptance_email') == 1) {
+                if (get_option('send_acceptance_email') == 1) {
                     $host = strtolower($_SERVER['SERVER_NAME']);
-                    $site = _t('myeduTrac :: ') . $app->hook->{'get_option'}('institution_name');
-                    $message = $app->hook->{'get_option'}('student_acceptance_letter');
+                    $site = _t('myeduTrac :: ') . get_option('institution_name');
+                    $message = get_option('student_acceptance_letter');
                     $message = str_replace('#uname#', $nae->uname, $message);
                     $message = str_replace('#fname#', $nae->fname, $message);
                     $message = str_replace('#lname#', $nae->lname, $message);
@@ -257,18 +257,18 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     $message = str_replace('#acadlevel#', _trim($_POST['acadLevelCode']), $message);
                     $message = str_replace('#degree#', $degree->degreeCode, $message);
                     $message = str_replace('#startterm#', $appl->startTerm, $message);
-                    $message = str_replace('#adminemail#', $app->hook->{'get_option'}('system_email'), $message);
+                    $message = str_replace('#adminemail#', get_option('system_email'), $message);
                     $message = str_replace('#url#', url('/'), $message);
-                    $message = str_replace('#helpdesk#', $app->hook->{'get_option'}('help_desk'), $message);
-                    $message = str_replace('#currentterm#', $app->hook->{'get_option'}('current_term_code'), $message);
-                    $message = str_replace('#instname#', $app->hook->{'get_option'}('institution_name'), $message);
-                    $message = str_replace('#mailaddr#', $app->hook->{'get_option'}('mailing_address'), $message);
+                    $message = str_replace('#helpdesk#', get_option('help_desk'), $message);
+                    $message = str_replace('#currentterm#', get_option('current_term_code'), $message);
+                    $message = str_replace('#instname#', get_option('institution_name'), $message);
+                    $message = str_replace('#mailaddr#', get_option('mailing_address'), $message);
 
                     $headers = "From: $site <auto-reply@$host>\r\n";
                     $headers .= "X-Mailer: PHP/" . phpversion();
                     $headers .= "MIME-Version: 1.0" . "\r\n";
                     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                    $email->et_mail($app->hook->{'get_option'}('admissions_email'), _t("Student Acceptance Letter"), $message, $headers);
+                    $email->et_mail(get_option('admissions_email'), _t("Student Acceptance Letter"), $message, $headers);
                 }
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Student', get_name($id), get_persondata('uname'));
@@ -527,7 +527,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+        $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
 
         $shis = $app->db->query("SELECT 
@@ -647,7 +647,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+        $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
 
         $strc = $app->db->query("SELECT 
@@ -725,14 +725,14 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/sacd/(\d+)/', function ($id) use($app, $css, $js, $json_url, $dbcache) {
 
-        $json = _file_get_contents($json_url . 'stu_acad_cred/stuAcadCredID/' . (int) $id . '/?key=' . $app->hook->{'get_option'}('api_key'));
+        $json = _file_get_contents($json_url . 'stu_acad_cred/stuAcadCredID/' . (int) $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
 
         $date = date("Y-m-d");
         $time = date("h:m A");
 
         if ($app->req->isPost()) {
-            $rterm = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
+            $rterm = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/?key=' . get_option('api_key'));
             $term = json_decode($rterm, true);
 
             $sacd = $app->db->stu_acad_cred();
@@ -1018,7 +1018,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/add-prog/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         if ($app->req->isPost()) {
-            $json = _file_get_contents($json_url . 'acad_program/acadProgCode/' . $_POST['acadProgCode'] . '/?key=' . $app->hook->{'get_option'}('api_key'));
+            $json = _file_get_contents($json_url . 'acad_program/acadProgCode/' . $_POST['acadProgCode'] . '/?key=' . get_option('api_key'));
             $decode = json_decode($json, true);
 
             $level = $app->db->stu_acad_level()
@@ -1336,7 +1336,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect(url('/profile/'));
         }
 
-        if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
             redirect(url('/offline/'));
         }
     });
@@ -1362,7 +1362,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect(url('/profile/'));
         }
 
-        if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
             redirect(url('/offline/'));
         }
     });
@@ -1545,7 +1545,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect(url('/profile/'));
         }
 
-        if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
             redirect(url('/offline/'));
         }
     });
@@ -1649,7 +1649,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect(url('/profile/'));
         }
 
-        if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
             redirect(url('/offline/'));
         }
     });
@@ -1694,7 +1694,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect(url('/profile/'));
         }
 
-        if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
             redirect(url('/offline/'));
         }
     });
@@ -1777,7 +1777,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect(url('/profile/'));
         }
 
-        if (_h($app->hook->{'get_option'}('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
             redirect(url('/offline/'));
         }
     });
