@@ -2279,6 +2279,7 @@ CREATE TABLE IF NOT EXISTS `student` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `stuID` bigint(20) NOT NULL,
   `status` enum('A','I') NOT NULL DEFAULT 'A',
+  `tags` varchar(255) NOT NULL,
   `addDate` date NOT NULL,
   `approvedBy` bigint(20) NOT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
