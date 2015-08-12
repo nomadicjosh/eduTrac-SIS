@@ -12,7 +12,7 @@ if (!defined('BASE_PATH'))
  */
  
 define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.0.03');
+define('RELEASE_TAG', '6.0.04');
 
 $app = \Liten\Liten::getInstance();
 
