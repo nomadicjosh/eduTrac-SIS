@@ -2,23 +2,9 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 /**
- * eduTrac Hooks Helper
- *
- * eduTrac SIS
- * Copyright (C) 2013 Joshua Parker
- * 
- * eduTrac SIS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * eduTrac Hooks Helper & Wrapper
+ *  
+ * @license GPLv3
  * 
  * @since       3.0.0
  * @package     eduTrac SIS
@@ -35,9 +21,10 @@ $app = \Liten\Liten::getInstance();
  * @param string $id ID of the plugin to be activated.
  * @return mixed Activates plugin if it exists.
  */
-function activate_plugin($id) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->activate_plugin($id);
+function activate_plugin($id)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->activate_plugin($id);
 }
 
 /**
@@ -49,9 +36,10 @@ function activate_plugin($id) {
  * @param string $id ID of the plugin to be deactivated.
  * @return mixed Deactivates plugin if it exists and is active.
  */
-function deactivate_plugin($id) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->deactivate_plugin($id);
+function deactivate_plugin($id)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->deactivate_plugin($id);
 }
 
 /**
@@ -63,9 +51,10 @@ function deactivate_plugin($id) {
  * @param string $plugins_dir Loads plugins from specified folder
  * @return mixed
  */
-function load_activated_plugins($plugins_dir = '') {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->load_activated_plugins($plugins_dir);
+function load_activated_plugins($plugins_dir = '')
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->load_activated_plugins($plugins_dir);
 }
 
 /**
@@ -74,12 +63,13 @@ function load_activated_plugins($plugins_dir = '') {
  * @see Hooks::is_plugin_activated()
  * 
  * @since 6.0.03
- * @param string $plugins Name of plugin file.
+ * @param string $plugin Name of plugin file.
  * @return bool False if plugin is not activated and true if it is activated.
  */
-function is_plugin_activated($plugin) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->is_plugin_activated($plugin);
+function is_plugin_activated($plugin)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->is_plugin_activated($plugin);
 }
 
 /**
@@ -91,14 +81,15 @@ function is_plugin_activated($plugin) {
  *
  * @since 6.0.03
  * @param string $hook the name of the eduTrac SIS element to be filtered or eduTrac SIS action to be triggered
- * @param callback $function the name of the function that is to be called.
+ * @param callback $function_to_add the name of the function that is to be called.
  * @param int $priority Used to specify the order in which the functions associated with a particular action are executed (default=10, lower=earlier execution, and functions with the same priority are executed in the order in which they were added to the filter)
- * @param int $accepted_args optional. The number of arguments the function accept (default is the number provided).
+ * @param int $accepted_args The number of arguments the function accept (default is the number provided).
  * @return bool
  */
-function add_filter($hook, $function_to_add, $priority = 10, $accepted_args = 1) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->add_filter($hook, $function_to_add, $priority, $accepted_args);
+function add_filter($hook, $function_to_add, $priority = 10, $accepted_args = 1)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->add_filter($hook, $function_to_add, $priority, $accepted_args);
 }
 
 /**
@@ -108,14 +99,15 @@ function add_filter($hook, $function_to_add, $priority = 10, $accepted_args = 1)
  *
  * @since 6.0.03
  * @param string $hook
- * @param string $function
+ * @param string $function_to_add
  * @param int $priority
  * @param int $accepted_args
  * @return bool
  */
-function add_action($hook, $function_to_add, $priority = 10, $accepted_args = 1) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->add_action($hook, $function_to_add, $priority, $accepted_args);
+function add_action($hook, $function_to_add, $priority = 10, $accepted_args = 1)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->add_action($hook, $function_to_add, $priority, $accepted_args);
 }
 
 /**
@@ -129,9 +121,10 @@ function add_action($hook, $function_to_add, $priority = 10, $accepted_args = 1)
  * @param int $priority The priority of the function (default: 10).
  * @return bool Whether the function is removed.
  */
-function remove_action($hook, $function_to_remove, $priority = 10) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->remove_action($hook, $function_to_remove, $priority);
+function remove_action($hook, $function_to_remove, $priority = 10)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->remove_action($hook, $function_to_remove, $priority);
 }
 
 /**
@@ -144,9 +137,10 @@ function remove_action($hook, $function_to_remove, $priority = 10) {
  * @param int $priority The priority number to remove them from.
  * @return bool True when finished.
  */
-function remove_all_actions($hook, $priority = false) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->remove_all_actions($hook, $priority);
+function remove_all_actions($hook, $priority = false)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->remove_all_actions($hook, $priority);
 }
 
 /**
@@ -171,9 +165,10 @@ function remove_all_actions($hook, $priority = false) {
  * @param mixed $value The value of the element before filtering.
  * @return mixed
  */
-function apply_filter($hook, $value) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->apply_filter($hook, $value);
+function apply_filter($hook, $value)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->apply_filter($hook, $value);
 }
 
 /**
@@ -185,9 +180,10 @@ function apply_filter($hook, $value) {
  * @param mixed $arg Additional arguments passed to functions hooked to the action.
  * @return mixed|null
  */
-function do_action($hook, $arg = '') {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->do_action($hook, $arg);
+function do_action($hook, $arg = '')
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->do_action($hook, $arg);
 }
 
 /**
@@ -196,12 +192,13 @@ function do_action($hook, $arg = '') {
  * @see Hooks::_call_all_hook()
  * 
  * @since 6.0.03
- * @param mixed $arg Parameters from the hook that was called.
+ * @param mixed $args Parameters from the hook that was called.
  * @return mixed
  */
-function _call_all_hook($args) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->_call_all_hook($args);
+function _call_all_hook($args)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->_call_all_hook($args);
 }
 
 /**
@@ -214,9 +211,10 @@ function _call_all_hook($args) {
  * @param mixed $args Arguments supplied to the functions hooked to it.
  * @return mixed|null
  */
-function do_action_array($hook, $args) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->do_action_array($hook, $args);
+function do_action_array($hook, $args)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->do_action_array($hook, $args);
 }
 
 /**
@@ -238,9 +236,10 @@ function do_action_array($hook, $args) {
  * @param int $accepted_args The number of arguments the function accepts (default: 1).
  * @return bool Whether the function was registered as a filter before it was removed.
  */
-function remove_filter($hook, $function_to_remove, $priority = 10) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->remove_filter($hook, $function_to_remove, $priority);
+function remove_filter($hook, $function_to_remove, $priority = 10)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->remove_filter($hook, $function_to_remove, $priority);
 }
 
 /**
@@ -253,9 +252,10 @@ function remove_filter($hook, $function_to_remove, $priority = 10) {
  * @param int $priority The priority number to remove.
  * @return bool True when finished.
  */
-function remove_all_filters($hook, $priority = false) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->remove_all_filters($hook, $priority);
+function remove_all_filters($hook, $priority = false)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->remove_all_filters($hook, $priority);
 }
 
 /**
@@ -268,9 +268,10 @@ function remove_all_filters($hook, $priority = false) {
  * @param callback $function_to_check If specified, return the priority of that function on this hook or false if not attached.
  * @return int|bool Optionally returns the priority on that hook for the specified function.
  */
-function has_filter($hook, $function_to_check = false) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->has_filter($hook, $function_to_check);
+function has_filter($hook, $function_to_check = false)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->has_filter($hook, $function_to_check);
 }
 
 /**
@@ -283,9 +284,10 @@ function has_filter($hook, $function_to_check = false) {
  * @param callback|bool $function_to_check The callback to check for.
  * @return int|bool
  */
-function has_action($hook, $function_to_check = false) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->has_action($hook, $function_to_check);
+function has_action($hook, $function_to_check = false)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->has_action($hook, $function_to_check);
 }
 
 /**
@@ -298,9 +300,10 @@ function has_action($hook, $function_to_check = false) {
  * @param mixed $default The default value.
  * @return mixed Returns value of default if not found.
  */
-function get_option($meta_key, $default = false) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->get_option($meta_key, $default);
+function get_option($meta_key, $default = false)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->get_option($meta_key, $default);
 }
 
 /**
@@ -313,9 +316,10 @@ function get_option($meta_key, $default = false) {
  * @param mixed $newvalue The new value to update with or add.
  * @return bool False if not updated or true if updated.
  */
-function update_option($meta_key, $newvalue) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->update_option($meta_key, $newvalue);
+function update_option($meta_key, $newvalue)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->update_option($meta_key, $newvalue);
 }
 
 /**
@@ -328,9 +332,10 @@ function update_option($meta_key, $newvalue) {
  * @param mixed $value The option value.
  * @return bool False if not added or true if added.
  */
-function add_option($name, $value = '') {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->add_option($name, $value);
+function add_option($name, $value = '')
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->add_option($name, $value);
 }
 
 /**
@@ -342,9 +347,10 @@ function add_option($name, $value = '') {
  * @param string $name Name of the option to delete.
  * @return bool False if not deleted or true if deleted.
  */
-function delete_option($name) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->delete_option($name);
+function delete_option($name)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->delete_option($name);
 }
 
 /**
@@ -356,9 +362,10 @@ function delete_option($name) {
  * @param string|array|object $data Data to be serialized.
  * @return mixed
  */
-function maybe_serialize($data) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->maybe_serialize($data);
+function maybe_serialize($data)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->maybe_serialize($data);
 }
 
 /**
@@ -370,9 +377,10 @@ function maybe_serialize($data) {
  * @param string $data Value to check if serialized.
  * @return bool False if not serialized or true if serialized.
  */
-function is_serialized($data) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->is_serialized($data);
+function is_serialized($data)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->is_serialized($data);
 }
 
 /**
@@ -384,11 +392,11 @@ function is_serialized($data) {
  * @param string $original Maybe unserialized original, if is needed.
  * @return mixed Any type of serialized data.
  */
-function maybe_unserialize($original) {
-	$app = \Liten\Liten::getInstance();
-	return $app->hook->maybe_unserialize($original);
+function maybe_unserialize($original)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->maybe_unserialize($original);
 }
-
 /**
  * Includes and loads all activated plugins.
  *
@@ -459,7 +467,7 @@ if (!function_exists('add_parsecode')) {
 /**
  * Removes hook for parsecode.
  *
- * @since 1.0
+ * @since 1.0.0
  * @uses $parsecode_tags
  *
  * @param string $tag parsecode tag to remove hook for.
@@ -478,7 +486,7 @@ function remove_parsecode($tag)
  * parsecodes global by a empty array. This is actually a very efficient method
  * for removing all parsecodes.
  *
- * @since 1.0
+ * @since 1.0.0
  * @uses $parsecode_tags
  */
 function remove_all_parsecodes()
@@ -495,7 +503,7 @@ function remove_all_parsecodes()
  * without any filtering. This might cause issues when plugins are disabled but
  * the parsecode will still show up in the post or content.
  *
- * @since 1.0
+ * @since 1.0.0
  * @uses $parsecode_tags
  * @uses get_parsecode_regex() Gets the search pattern for searching parsecodes.
  *
@@ -528,7 +536,7 @@ function do_parsecode($content)
  * 5 - The content of a parsecode when it wraps some content.
  * 6 - An extra ] to allow for escaping parsecodes with double [[]]
  *
- * @since 1.0
+ * @since 1.0.0
  * @uses $parsecode_tags
  *
  * @return string The parsecode search regular expression
@@ -575,7 +583,7 @@ function get_parsecode_regex()
  * Regular Expression callable for do_parsecode() for calling parsecode hook.
  * @see get_parsecode_regex for details of the match array contents.
  *
- * @since 1.0
+ * @since 1.0.0
  * @access private
  * @uses $parsecode_tags
  *
@@ -610,7 +618,7 @@ function do_parsecode_tag($m)
  * attribute as the value in the key/value pair. This allows for easier
  * retrieval of the attributes, since all attributes have to be known.
  *
- * @since 1.0
+ * @since 1.0.0
  *
  * @param string $text
  * @return array List of attributes and their value.
@@ -649,7 +657,7 @@ function parsecode_parse_atts($text)
  * If the $atts list has unsupported attributes, then they will be ignored and
  * removed from the final returned list.
  *
- * @since 1.0
+ * @since 1.0.0
  *
  * @param array $pairs Entire list of supported attributes and their defaults.
  * @param array $atts User defined attributes in parsecode tag.
@@ -671,7 +679,7 @@ function parsecode_atts($pairs, $atts)
 /**
  * Remove all parsecode tags from the given content.
  *
- * @since 1.0
+ * @since 1.0.0
  * @uses $parsecode_tags
  *
  * @param string $content Content to remove parsecode tags.
@@ -961,7 +969,6 @@ function dashboard_acadProg_count()
  */
 function show_update_message()
 {
-    $app = \Liten\Liten::getInstance();
     $acl = new \app\src\ACL(get_persondata('personID'));
     if ($acl->userHasRole(8)) {
         if (RELEASE_TAG < \app\src\ReleaseAPI::inst()->releaseTag()) {
@@ -983,7 +990,6 @@ function show_update_message()
  */
 function get_base_url()
 {
-    $app = \Liten\Liten::getInstance();
     $url = url('/');
     return apply_filter('base_url', $url);
 }
@@ -998,7 +1004,6 @@ function get_base_url()
  */
 function get_javascript_directory_uri()
 {
-    $app = \Liten\Liten::getInstance();
     $directory = 'static/assets/components';
     $javascript_root_uri = get_base_url();
     $javascript_dir_uri = "$javascript_root_uri$directory/";
@@ -1015,7 +1020,6 @@ function get_javascript_directory_uri()
  */
 function get_less_directory_uri()
 {
-    $app = \Liten\Liten::getInstance();
     $directory = 'static/assets/less';
     $less_root_uri = get_base_url();
     $less_dir_uri = "$less_root_uri$directory/";
@@ -1032,7 +1036,6 @@ function get_less_directory_uri()
  */
 function get_css_directory_uri()
 {
-    $app = \Liten\Liten::getInstance();
     $directory = 'static/assets/css';
     $css_root_uri = get_base_url();
     $css_dir_uri = "$css_root_uri$directory/";
@@ -1050,7 +1053,6 @@ function get_css_directory_uri()
  */
 function et_parse_str($string, &$array)
 {
-    $app = \Liten\Liten::getInstance();
     parse_str($string, $array);
     /**
      * Filter the array of variables derived from a parsed string.
@@ -1071,7 +1073,6 @@ function et_parse_str($string, &$array)
  */
 function get_met_title()
 {
-    $app = \Liten\Liten::getInstance();
     $title = '<em>' . _t('my') . '</em>' . ( 'eduTrac' );
     return apply_filter('met_title', $title);
 }
@@ -1086,7 +1087,6 @@ function get_met_title()
  */
 function get_met_footer_release()
 {
-    $app = \Liten\Liten::getInstance();
     if (CURRENT_RELEASE != RELEASE_TAG) {
         $release = _t('Powered by eduTrac SIS r') . CURRENT_RELEASE . ' (t' . RELEASE_TAG . ')';
     } else {
@@ -1105,7 +1105,6 @@ function get_met_footer_release()
  */
 function get_met_footer_title()
 {
-    $app = \Liten\Liten::getInstance();
     $title = '<em>' . _t('my') . '</em>' . ( 'eduTrac' );
     return apply_filter('met_footer_title', $title);
 }
@@ -1121,7 +1120,6 @@ function get_met_footer_title()
  */
 function address_type_select($typeCode = NULL)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="addressType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
             <option value="">&nbsp;</option>
             <option value="B"' . selected($typeCode, 'B', false) . '>Business</option>
@@ -1142,7 +1140,6 @@ function address_type_select($typeCode = NULL)
  */
 function dept_type_select($typeCode = NULL)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="deptTypeCode" id="deptType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
             <option value="">&nbsp;</option>
             <option value="ADMIN"' . selected($typeCode, 'ADMIN', false) . '>' . _t('Administrative') . '</option>
@@ -1162,7 +1159,6 @@ function dept_type_select($typeCode = NULL)
  */
 function address_status_select($status = NULL)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="addressStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 			<option value="">&nbsp;</option>
 	    	<option value="C"' . selected($status, 'C', false) . '>Current</option>
@@ -1182,7 +1178,6 @@ function address_status_select($status = NULL)
  */
 function acad_level_select($levelCode = null, $readonly = null, $required = '')
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"' . $readonly . $required . '>
             <option value="">&nbsp;</option>
             <option value="NA"' . selected($levelCode, 'NA', false) . '>N/A Not Applicable</option>
@@ -1208,7 +1203,6 @@ function acad_level_select($levelCode = null, $readonly = null, $required = '')
  */
 function fee_acad_level_select($levelCode = null)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="acadLevelCode" class="form-control">
             <option value="">&nbsp;</option>
             <option value="NA"' . selected($levelCode, 'NA', false) . '>N/A Not Applicable</option>
@@ -1234,8 +1228,7 @@ function fee_acad_level_select($levelCode = null)
  */
 function status_select($status = NULL, $readonly = '')
 {
-    $app = \Liten\Liten::getInstance();
-    $select = '<select name="currStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"'.$readonly.' required>
+    $select = '<select name="currStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"' . $readonly . ' required>
     			<option value="">&nbsp;</option>
     	    	<option value="A"' . selected($status, 'A', false) . '>A Active</option>
     	    	<option value="I"' . selected($status, 'I', false) . '>I Inactive</option>
@@ -1256,7 +1249,6 @@ function status_select($status = NULL, $readonly = '')
  */
 function course_sec_status_select($status = NULL, $readonly = '')
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="currStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required' . $readonly . '>
     			<option value="">&nbsp;</option>
     	    	<option' . dopt('activate_course_sec') . ' value="A"' . selected($status, 'A', false) . '>A Active</option>
@@ -1279,7 +1271,6 @@ function course_sec_status_select($status = NULL, $readonly = '')
  */
 function person_type_select($type = NULL)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="personType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                 <option value="">&nbsp;</option>
                 <option value="FAC"' . selected($type, 'FAC', false) . '>FAC Faculty</option>
@@ -1302,7 +1293,6 @@ function person_type_select($type = NULL)
  */
 function course_level_select($levelCode = NULL, $readonly = null)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="courseLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required' . $readonly . '>
 			<option value="">&nbsp;</option>
 	    	<option value="100"' . selected($levelCode, '100', false) . '>100 Course Level</option>
@@ -1329,7 +1319,6 @@ function course_level_select($levelCode = NULL, $readonly = null)
  */
 function instructor_method($method = NULL)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="instructorMethod" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                 <option value="">&nbsp;</option>
                 <option value="LEC"' . selected($method, 'LEC', false) . '>' . _t('LEC Lecture') . '</option>
@@ -1348,13 +1337,12 @@ function instructor_method($method = NULL)
  * if $status is not NULL, shows the status 
  * for a particular student course section record.
  * 
- * @since 1.0
+ * @since 1.0.0
  * @param string $status
  * @return string Returns the record status if selected is true.
  */
 function stu_course_sec_status_select($status = NULL, $readonly = '')
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required' . $readonly . '>
                 <option value="">&nbsp;</option>
                 <option value="A"' . selected($status, 'A', false) . '>' . _t('A Add') . '</option>
@@ -1377,7 +1365,6 @@ function stu_course_sec_status_select($status = NULL, $readonly = '')
  */
 function stu_prog_status_select($status = NULL)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="currStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                 <option value="">&nbsp;</option>
                 <option value="A"' . selected($status, 'A', false) . '>' . _t('A Active') . '</option>
@@ -1391,16 +1378,15 @@ function stu_prog_status_select($status = NULL)
 
 /**
  * Credit type select: shows general list of credit types and
- * if $type is not NULL, shows the credit type 
+ * if $status is not NULL, shows the credit type 
  * for a particular course or course section record.
  * 
  * @since 1.0.0
- * @param string $type
+ * @param string $status
  * @return string Returns the record type if selected is true.
  */
-function credit_type($type = NULL)
+function credit_type($status = NULL)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                 <option value="">&nbsp;</option>
                 <option value="I"' . selected($status, 'I', false) . '>' . _t('I Institutional') . '</option>
@@ -1423,7 +1409,6 @@ function credit_type($type = NULL)
  */
 function class_year($year = NULL)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="classYear" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                 <option value="">&nbsp;</option>
                 <option value="FR"' . selected($year, 'FR', false) . '>' . _t('FR Freshman') . '</option>
@@ -1496,7 +1481,6 @@ function grades($id, $aID)
  */
 function admit_status_select($status = NULL)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="admitStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                 <option value="">&nbsp;</option>
                 <option value="FF"' . selected($status, 'FF', false) . '>' . _t('FF First Time Freshman') . '</option>
@@ -1518,7 +1502,6 @@ function admit_status_select($status = NULL)
  */
 function general_ledger_type_select($type = NULL)
 {
-    $app = \Liten\Liten::getInstance();
     $select = '<select name="gl_acct_type" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                 <option value="">&nbsp;</option>
                 <option value="' . _t('Asset') . '"' . selected($type, _t('Asset'), false) . '>' . _t('Asset') . '</option>
@@ -1532,7 +1515,6 @@ function general_ledger_type_select($type = NULL)
 
 function get_user_avatar($email, $s = 80, $class = '', $d = 'mm', $r = 'g', $img = false)
 {
-    $app = \Liten\Liten::getInstance();
     $url = 'http://www.gravatar.com/avatar/';
     $url .= md5(strtolower(trim($email)));
     $url .= "?s=200&d=$d&r=$r";
@@ -1541,18 +1523,28 @@ function get_user_avatar($email, $s = 80, $class = '', $d = 'mm', $r = 'g', $img
     return apply_filter('user_avatar', $avatar, $email, $s, $class, $d, $r, $img);
 }
 
+/**
+ * Sucess update flash message.
+ * 
+ * @deprecated since release 6.0.05
+ * @return mixed
+ */
 function success_update()
 {
-    $app = \Liten\Liten::getInstance();
     $message = '<div class="alert alert-success">';
     $message .= '<strong>' . _t('Success!') . '</strong> ' . _t('The record was updated successfully.');
     $message .= '</div>';
     return apply_filter('success_update', $message);
 }
 
+/**
+ * Error update flash message
+ * 
+ * @deprecated since release 6.0.05
+ * @return mixed
+ */
 function error_update()
 {
-    $app = \Liten\Liten::getInstance();
     $message = '<div class="alert alert-danger">';
     $message .= '<strong>' . _t('Error!') . '</strong> ' . _t('The system was unable to update the record in the database. Please try again. If the problem persists, contact your system administrator.');
     $message .= '</div>';
@@ -1561,7 +1553,6 @@ function error_update()
 
 function nocache_headers()
 {
-    $app = \Liten\Liten::getInstance();
     $headers = [
         'Expires' => 'Sun, 01 Jan 2014 00:00:00 GMT',
         'Cache-Control' => 'no-cache, no-store, must-revalidate',
