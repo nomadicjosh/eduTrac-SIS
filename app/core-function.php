@@ -161,7 +161,6 @@ function ml($func)
  */
 function bm()
 {
-    $app = \Liten\Liten::getInstance();
     if (get_option('enable_benchmark') == 1) {
         return '?php-benchmark-test=1&display-data=1';
     }
@@ -208,7 +207,7 @@ function courseList($id)
  * to a particular record.
  * 
  * @since 1.0.0
- * @param string $subjectID - optional
+ * @param string $subjectCode - optional
  * @return string Returns the record key if selected is true.
  */
 function subject_code_dropdown($subjectCode = NULL)
@@ -286,11 +285,11 @@ function payment_type_dropdown($typeID = NULL)
  * to a particular record.
  * 
  * @since 1.0.0
- * @param string $table
- * @param string $where
- * @param string $code
- * @param string $name
- * @param string $activeCode
+ * @param string $table Name of database table that is being queried.
+ * @param string $where Partial where clause (id = '1').
+ * @param string $code Unique code from table.
+ * @param string $name Name or title of record retrieving.
+ * @param string $activeID Field to compare to.
  * @return mixed
  */
 function table_dropdown($table, $where = null, $id, $code, $name, $activeID = null, $bind = null)
@@ -945,7 +944,6 @@ function getStuSec($code, $term)
 
 function isRegistrationOpen()
 {
-    $app = \Liten\Liten::getInstance();
     if (get_option('open_registration') == 0 || !isStudent(get_persondata('personID'))) {
         return ' style="display:none !important;"';
     }
@@ -1301,7 +1299,6 @@ function et_hash_password($password)
 
 function et_check_password($password, $hash, $person_id = '')
 {
-    $app = \Liten\Liten::getInstance();
     // If the hash is still md5...
     if (strlen($hash) <= 32) {
         $check = ( $hash == md5($password) );
@@ -1331,6 +1328,11 @@ function et_set_password($password, $person_id)
     $q->where('personID = ?', $person_id)->update();
 }
 
+/**
+ * @deprecated since release 6.0.05
+ * @param string $cookie
+ * @return string
+ */
 function et_hash_cookie($cookie)
 {
     // By default, use the portable hash from phpass
@@ -1339,10 +1341,15 @@ function et_hash_cookie($cookie)
     return $hasher->HashPassword($cookie);
 }
 
+/**
+ * @deprecated since release 6.0.05
+ * @param string $cookie
+ * @param string $cookiehash
+ * @param int $person_id
+ * @return bool
+ */
 function et_authenticate_cookie($cookie, $cookiehash, $person_id = '')
 {
-    $app = \Liten\Liten::getInstance();
-
     $hasher = new \app\src\PasswordHash(8, TRUE);
 
     $check = $hasher->CheckPassword($cookie, $cookiehash);
@@ -1515,7 +1522,6 @@ function forbidden_keyword()
  */
 function the_myet_welcome_message()
 {
-    $app = \Liten\Liten::getInstance();
     $welcome_message = get_option('myet_welcome_message');
     $welcome_message = apply_filter('the_myet_welcome_message', $welcome_message);
     $welcome_message = str_replace(']]>', ']]&gt;', $welcome_message);
