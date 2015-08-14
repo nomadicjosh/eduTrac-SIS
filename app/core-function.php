@@ -10,9 +10,8 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
- 
 define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.0.04');
+define('RELEASE_TAG', '6.0.05');
 
 $app = \Liten\Liten::getInstance();
 
@@ -161,7 +160,6 @@ function ml($func)
  */
 function bm()
 {
-    $app = \Liten\Liten::getInstance();
     if (get_option('enable_benchmark') == 1) {
         return '?php-benchmark-test=1&display-data=1';
     }
@@ -208,7 +206,7 @@ function courseList($id)
  * to a particular record.
  * 
  * @since 1.0.0
- * @param string $subjectID - optional
+ * @param string $subjectCode - optional
  * @return string Returns the record key if selected is true.
  */
 function subject_code_dropdown($subjectCode = NULL)
@@ -286,25 +284,23 @@ function payment_type_dropdown($typeID = NULL)
  * to a particular record.
  * 
  * @since 1.0.0
- * @param string $table
- * @param string $where
- * @param string $code
- * @param string $name
- * @param string $activeCode
+ * @param string $table Name of database table that is being queried.
+ * @param string $where Partial where clause (id = '1').
+ * @param string $code Unique code from table.
+ * @param string $name Name or title of record retrieving.
+ * @param string $activeID Field to compare to.
  * @return mixed
  */
 function table_dropdown($table, $where = null, $id, $code, $name, $activeID = null, $bind = null)
 {
     $app = \Liten\Liten::getInstance();
     if ($where !== null && $bind == null) {
-		$table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where");
+        $table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where");
+    } elseif ($bind !== null) {
+        $table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where", $bind);
+    } else {
+        $table = $app->db->query("SELECT $id, $code, $name FROM $table");
     }
-	elseif ($bind !== null) {
-		$table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where", $bind);
-    }
-	else {
-		$table = $app->db->query("SELECT $id, $code, $name FROM $table");
-	}
     $q = $table->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -945,7 +941,6 @@ function getStuSec($code, $term)
 
 function isRegistrationOpen()
 {
-    $app = \Liten\Liten::getInstance();
     if (get_option('open_registration') == 0 || !isStudent(get_persondata('personID'))) {
         return ' style="display:none !important;"';
     }
@@ -1301,7 +1296,6 @@ function et_hash_password($password)
 
 function et_check_password($password, $hash, $person_id = '')
 {
-    $app = \Liten\Liten::getInstance();
     // If the hash is still md5...
     if (strlen($hash) <= 32) {
         $check = ( $hash == md5($password) );
@@ -1331,6 +1325,11 @@ function et_set_password($password, $person_id)
     $q->where('personID = ?', $person_id)->update();
 }
 
+/**
+ * @deprecated since release 6.0.05
+ * @param string $cookie
+ * @return string
+ */
 function et_hash_cookie($cookie)
 {
     // By default, use the portable hash from phpass
@@ -1339,10 +1338,15 @@ function et_hash_cookie($cookie)
     return $hasher->HashPassword($cookie);
 }
 
+/**
+ * @deprecated since release 6.0.05
+ * @param string $cookie
+ * @param string $cookiehash
+ * @param int $person_id
+ * @return bool
+ */
 function et_authenticate_cookie($cookie, $cookiehash, $person_id = '')
 {
-    $app = \Liten\Liten::getInstance();
-
     $hasher = new \app\src\PasswordHash(8, TRUE);
 
     $check = $hasher->CheckPassword($cookie, $cookiehash);
@@ -1515,7 +1519,6 @@ function forbidden_keyword()
  */
 function the_myet_welcome_message()
 {
-    $app = \Liten\Liten::getInstance();
     $welcome_message = get_option('myet_welcome_message');
     $welcome_message = apply_filter('the_myet_welcome_message', $welcome_message);
     $welcome_message = str_replace(']]>', ']]&gt;', $welcome_message);
@@ -1682,14 +1685,14 @@ function get_layouts_header($layout_dir = '')
  * @param mixed $where
  * @return mixed
  */
-function qt($table, $field, $where = null) {
+function qt($table, $field, $where = null)
+{
     $app = \Liten\Liten::getInstance();
-    if($where !== null) {
-		$query = $app->db->query("SELECT * FROM $table WHERE $where");
+    if ($where !== null) {
+        $query = $app->db->query("SELECT * FROM $table WHERE $where");
+    } else {
+        $query = $app->db->query("SELECT * FROM $table");
     }
-	else {
-		$query = $app->db->query("SELECT * FROM $table");
-	}
     $result = $query->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -1711,7 +1714,8 @@ function qt($table, $field, $where = null) {
  * @param int $stuID
  * @return int
  */
-function prev_stu_acct_record($id, $stuID) {
+function prev_stu_acct_record($id, $stuID)
+{
     $app = \Liten\Liten::getInstance();
     $query = $app->db->stu_acct_bill()
         ->setTableAlias('sab')
@@ -1741,7 +1745,8 @@ function prev_stu_acct_record($id, $stuID) {
  * @param int $stuID
  * @return int
  */
-function next_stu_acct_record($id, $stuID) {
+function next_stu_acct_record($id, $stuID)
+{
     $app = \Liten\Liten::getInstance();
     $query = $app->db->stu_acct_bill()
         ->setTableAlias('sab')
@@ -1763,21 +1768,32 @@ function next_stu_acct_record($id, $stuID) {
 }
 
 /**
- * Returns the directory based on subdomain.
+ * Subdomain as directory function uses the subdomain
+ * of the install as a directory.
  * 
- * @return mixed
+ * @since 6.0.05
+ * @return string
  */
-function cronDir()
+function subdomain_as_directory()
 {
     $subdomain = '';
     $domain_parts = explode('.', $_SERVER['SERVER_NAME']);
     if (count($domain_parts) == 3) {
         $subdomain = $domain_parts[0];
     } else {
-    	$subdomain = 'www';
+        $subdomain = 'www';
     }
-    
-    return APP_PATH . 'views/cron/' . $subdomain . '/';
+    return $subdomain;
+}
+
+/**
+ * Returns the directory based on subdomain.
+ * 
+ * @return mixed
+ */
+function cronDir()
+{
+    return APP_PATH . 'views/cron/' . subdomain_as_directory() . '/';
 }
 
 /**
@@ -1786,12 +1802,13 @@ function cronDir()
  * @since 6.0.04
  * @return mixed
  */
-function get_perm_roles() {
-	$app = \Liten\Liten::getInstance();
-    $query = $app->db->query( 'SELECT 
+function get_perm_roles()
+{
+    $app = \Liten\Liten::getInstance();
+    $query = $app->db->query('SELECT 
     		trim(leading "0" from ID) AS roleID, roleName 
-		FROM role' 
-	);
+		FROM role'
+    );
     $result = $query->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -1799,9 +1816,9 @@ function get_perm_roles() {
         }
         return $array;
     });
-	
-    foreach($result as $r) {
-    	echo '<option value="' . _h($r['roleID']) . '">' . _h($r['roleName']) . '</option>' . "\n";
+
+    foreach ($result as $r) {
+        echo '<option value="' . _h($r['roleID']) . '">' . _h($r['roleName']) . '</option>' . "\n";
     }
 }
 
@@ -1812,14 +1829,15 @@ function get_perm_roles() {
  * @param mixed $a An array that be compacted.
  * @return mixed 
  */
-function array_unique_compact($a) {
-  $tmparr = array_unique($a);
-  $i=0;
-  foreach ($tmparr as $v) {
-    $newarr[$i] = $v;
-    $i++;
-  }
-  return $newarr;
+function array_unique_compact($a)
+{
+    $tmparr = array_unique($a);
+    $i = 0;
+    foreach ($tmparr as $v) {
+        $newarr[$i] = $v;
+        $i++;
+    }
+    return $newarr;
 }
 
 /**
@@ -1832,7 +1850,7 @@ function array_unique_compact($a) {
 function tagList()
 {
     $app = \Liten\Liten::getInstance();
-    $tagging = $app->db->query( 'SELECT tags FROM student' );
+    $tagging = $app->db->query('SELECT tags FROM student');
     $q = $tagging->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -1840,17 +1858,17 @@ function tagList()
         }
         return $array;
     });
-	$tags = [];
-	foreach($q as $r) {
-		$tags = array_merge($tags, explode(",", $r['tags']));
-	}
+    $tags = [];
+    foreach ($q as $r) {
+        $tags = array_merge($tags, explode(",", $r['tags']));
+    }
     $tags = array_unique_compact($tags);
-	foreach($tags as $key => $value) {
-		if($value == "" || strlen($value) <= 0) {
-			unset($tags[$key]);
-		}
-	}
-	return $tags;
+    foreach ($tags as $key => $value) {
+        if ($value == "" || strlen($value) <= 0) {
+            unset($tags[$key]);
+        }
+    }
+    return $tags;
 }
 
 /**

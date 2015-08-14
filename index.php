@@ -85,7 +85,7 @@ if (!file_exists(BASE_PATH . 'config.php')) {
 
 benchmark_init();
 if (file_exists(BASE_PATH . 'config.php')) {
-    date_default_timezone_set(($app->hook->{'get_option'}('system_timezone') !== NULL) ? $app->hook->{'get_option'}('system_timezone') : 'America/New_York');
+    date_default_timezone_set((get_option('system_timezone') !== NULL) ? get_option('system_timezone') : 'America/New_York');
 } else {
     date_default_timezone_set('America/New_York');
 }

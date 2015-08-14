@@ -706,6 +706,101 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             }
         });
     });
+    
+    $app->get('/purgeEmailHold/', function () use($app) {
+        $app->db->email_hold()
+            ->where('processed = "1"')->_and_()
+            ->where('DATE_ADD(dateTime, INTERVAL 15 DAY) <= ?', date('Y-m-d'))
+            ->delete();
+    });
+    
+    $app->get('/purgeEmailHold/', function () use($app) {
+        $app->db->email_queue()
+            ->where('sent = "1"')
+            ->delete();
+    });
+    
+    $app->get('/updateStuTerms/', function () use($app) {
+        $terms = $app->db->query( "SELECT 
+                    SUM(a.attCred) as Credits,
+                    a.stuID as stuAcadCredID,
+                    a.termCode as termAcadCredCode,
+                    a.acadLevelCode as acadCredLevel,
+                    b.stuID AS stuTermID,
+                    b.termCode AS TermCode,
+                    b.acadLevelCode as termAcadLevel,
+                    b.termCredits AS TermCredits 
+                FROM 
+                    stu_acad_cred a 
+                LEFT JOIN 
+                    stu_term b 
+                ON 
+                    a.stuID = b.stuID 
+                WHERE 
+                    a.termCode = b.termCode 
+                AND 
+                    a.acadLevelCode = b.acadLevelCode 
+                GROUP BY 
+                    a.stuID,a.termCode"
+        );
+        $q = $terms->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        
+        foreach($q as $r) {
+            if($r['Credits'] != $r['TermCredits']) {                
+                $q2 = $app->db->stu_term();
+                $q2->termCredits = $r['Credits'];
+                $q2->where('stuID = ?', $r['stuTermID'])->_and_()
+                    ->where('termCode = ?', $r['TermCode'])->_and_()
+                    ->where('acadLevelCode = ?', $r['termAcadLevel']);
+                $q2->update();
+            }
+        }
+    });
+    
+    $app->get('/updateStuLoad/', function () use($app) {
+        $load = $app->db->query( "SELECT 
+                    a.termCredits,
+                    a.stuID AS StudentID,
+                    a.termCode AS TermCode,
+                    a.acadLevelCode AS AcademicLevel,
+                    a.LastUpdate AS termLatest,
+                    b.LastUpdate AS stuTermLatest 
+                FROM 
+                    stu_term a 
+                LEFT JOIN 
+                    stu_term_load b 
+                ON 
+                    a.stuID = b.stuID 
+                WHERE 
+                    a.termCode = b.termCode 
+                AND 
+                    a.acadLevelCode = b.acadLevelCode"
+        );
+        $q = $load->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        
+        foreach($q as $r) {
+            if($r['termLatest'] > $r['stuTermLatest']) {                
+                $q2 = $app->db->stu_term_load();
+                $q2->stuLoad = getstudentload(_h($r['TermCode']),_h($r['termCredits']),_h($r['AcademicLevel']));
+                $q2->where('stuID = ?', $r['StudentID'])->_and_()
+                    ->where('termCode = ?', $r['TermCode'])->_and_()
+                    ->where('acadLevelCode = ?', $r['AcademicLevel']);
+                $q2->update();
+            }
+        }
+    });
 
     $app->get('/runGraduation/', function () use($app) {
         $hold = $app->db->graduation_hold()
@@ -788,6 +883,76 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
                 $ins->save();
             }
         }
+    });
+    
+    $app->get('/updateTermGPA/', function () use($app) {
+        $gpa = $app->db->query( "SELECT 
+                    a.stuID,
+                    a.termCode,
+                    a.acadLevelCode,
+                    SUM(a.gradePoints) AS GradePoints,
+                    SUM(b.attCred) AS Attempted,
+                    SUM(b.compCred) AS Completed,
+                    SUM(b.gradePoints) AS termGradePoints,
+                    SUM(b.attCred*b.gradePoints) AS Points 
+                FROM 
+                    stu_term_gpa a 
+                LEFT JOIN 
+                    stu_acad_cred b 
+                ON 
+                    a.stuID = b.stuID 
+                LEFT JOIN 
+                	grade_scale c 
+            	ON 
+            		b.grade = c.grade 
+                WHERE 
+                    a.termCode = b.termCode 
+                AND 
+                	b.grade <> 'NULL' 
+        		AND 
+        			c.count_in_gpa = '1' 
+    			AND 
+    				c.status = '1' 
+                AND 
+                    a.acadLevelCode = b.acadLevelCode 
+                GROUP BY 
+                	a.stuID,a.termCode,a.acadLevelCode"
+        );
+        $q = $gpa->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        
+        foreach($q as $r) {
+            if($r['GradePoints'] != $r['termGradePoints']) {  
+                $GPA = $r['Points']/$r['Attempted'];
+                $q2 = $app->db->stu_term_gpa();
+                $q2->attCred = $r['Attempted'];
+                $q2->compCred = $r['Completed'];
+                $q2->gradePoints = $r['termGradePoints'];
+                $q2->termGPA = $GPA;
+                $q2->where('stuID = ?', $r['stuID'])->_and_()
+                    ->where('termCode = ?', $r['termCode'])->_and_()
+                    ->where('acadLevelCode = ?', $r['acadLevelCode']);
+                $q2->update();
+            }
+        }
+    });
+    
+    $app->get('/purgeErrorLog/', function () use($app) {
+        $app->db->error()
+            ->where('DATE_ADD(addDate, INTERVAL 5 DAY) <= ?', date('Y-m-d'))
+            ->delete();
+    });
+    
+    $app->get('/purgeSavedQuery/', function () use($app) {
+        $app->db->saved_query()
+            ->where('DATE_ADD(createdDate, INTERVAL 30 DAY) <= ?', date('Y-m-d'))->_and_()
+            ->where('purgeQuery = "1"')
+            ->delete();
     });
 
     $app->get('/runDBBackup/', function () use($app) {
