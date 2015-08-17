@@ -890,11 +890,11 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
                     a.stuID,
                     a.termCode,
                     a.acadLevelCode,
-                    SUM(a.gradePoints) AS GradePoints,
+                    a.termGPA,
+                    a.gradePoints AS termGradePoints,
                     SUM(b.attCred) AS Attempted,
                     SUM(b.compCred) AS Completed,
-                    SUM(b.gradePoints) AS termGradePoints,
-                    SUM(b.attCred*b.gradePoints) AS Points 
+                    SUM(b.gradePoints) AS stacGradePoints 
                 FROM 
                     stu_term_gpa a 
                 LEFT JOIN 
@@ -927,8 +927,8 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
         });
         
         foreach($q as $r) {
-            if($r['GradePoints'] != $r['termGradePoints']) {  
-                $GPA = $r['Points']/$r['Attempted'];
+            $GPA = $r['stacGradePoints']/$r['Attempted'];
+            if($r['termGradePoints'] != $r['stacGradePoints'] || $r['termGPA'] != $GPA) {  
                 $q2 = $app->db->stu_term_gpa();
                 $q2->attCred = $r['Attempted'];
                 $q2->compCred = $r['Completed'];
