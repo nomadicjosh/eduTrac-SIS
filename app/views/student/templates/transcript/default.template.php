@@ -48,7 +48,7 @@ $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 // ---------------------------------------------------------
 
 // set font
-$pdf->SetFont('times', '', 10);
+$pdf->SetFont('times', '', 8);
 
 // add a page
 $pdf->AddPage();
@@ -84,7 +84,7 @@ $pdf->writeHTMLCell(0, 0, '', '', $txt1, 0, 1, 0, true, 'L', true);
 $pdf->writeHTMLCell(0, 0, 234, 20, $txt2, 0, 1, 0, true, 'L', true);
 
 // column titles
-$table = '<table cellpadding="4" cellspacing="5" border="0" class="table table-striped" id="table-example">';
+$table = '<table cellpadding="0" cellspacing="0" border="0" class="table table-striped" id="table-example">';
 $table .= '<thead><tr>';
 $table .= '<th><b>'._t( 'Course' ).'</b></th>';
 $table .= '<th><b>'._t( 'Course Title' ).'</b></th>';
@@ -160,8 +160,8 @@ $table .= '</table>';
 
 $pdf->writeHTML($table, true, 0);
 
-$footer = "<p>*******************************************************************************************************************************************************</p>";
-$footer .= '<table cellpadding="4" cellspacing="5" border="0" class="table table-striped" id="table-example">';
+$footer = "<p>*********************************************************************************************************************************************************************************************</p>";
+$footer .= '<table cellpadding="0" cellspacing="0" border="0" class="table table-striped" id="table-example">';
 $footer .= '<thead><tr>';
 $footer .= '<th><b>'._t( 'Degree' ).'</b></th>';
 $footer .= '<th><b>'._t( 'Major' ).'</b></th>';
@@ -205,7 +205,7 @@ $footer .= '<td>'._h($stuInfo[0]['ccdCode']).' - '._h($stuInfo[0]['ccdName']).'<
 $footer .= '</tr>';
 $footer .= '</tbody>';
 $footer .= '</table>';
-$footer .= "<p>*******************************************************************************************************************************************************</p>";
+$footer .= "<p>*********************************************************************************************************************************************************************************************</p>";
 $footer .= "<p>*"._t( 'Transfer Credits' )."</p>";
 
 $pdf->writeHTML($footer, true, 0);
