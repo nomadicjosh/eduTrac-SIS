@@ -268,7 +268,7 @@ $app->match('GET|POST', '/permission/', function () use($app) {
     );
 });
 
-$app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url, $logger, $flashNow) {
+$app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url, $logger, $cache, $flashNow) {
     if ($app->req->isPost()) {
         $perm = $app->db->permission();
         foreach (_filter_input_array(INPUT_POST) as $k => $v) {
@@ -276,6 +276,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
         }
         $perm->where('ID = ?', $id);
         if ($perm->update()) {
+            $cache->clearCache('permission');
             $app->flash('success_message', $flashNow->notice(200));
             $logger->setLog('Update Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
         } else {
@@ -340,7 +341,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
     }
 });
 
-$app->match('GET|POST', '/permission/add/', function () use($app) {
+$app->match('GET|POST', '/permission/add/', function () use($app, $flashNow, $cache, $logger) {
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
     $js = [
@@ -356,6 +357,22 @@ $app->match('GET|POST', '/permission/add/', function () use($app) {
         'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
         'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
     ];
+    
+    if ($app->req->isPost()) {
+        $perm = $app->db->permission();
+        foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+            $perm->$k = $v;
+        }
+        if ($perm->save()) {
+            $cache->clearCache('permission');
+            $app->flash('success_message', $flashNow->notice(200));
+            $logger->setLog('New Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
+            redirect( url('/permission/') );
+        } else {
+            $app->flash('error_message', $flashNow->notice(409));
+            redirect($app->req->server['HTTP_REFERER']);
+        }
+    }
 
 
     $app->view->display('permission/add', [

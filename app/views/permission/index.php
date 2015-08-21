@@ -15,10 +15,16 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$message = new \app\src\Messages;
 $perms = new \app\src\ACL();
 $cache = new \app\src\Cache('permission');
 if(!$cache->setCache()) :
 ?>
+
+<script type="text/javascript">
+	$(".panel").show();
+	setTimeout(function() { $(".panel").hide(); }, 10000);
+</script>
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here');?></li>
@@ -29,6 +35,8 @@ if(!$cache->setCache()) :
 
 <h3><?=_t( 'Manage Permissions' );?></h3>
 <div class="innerLR">
+    
+    <?=$message->flashMessage();?>
 
     <!-- Widget -->
     <div class="widget widget-heading-simple widget-body-gray">
