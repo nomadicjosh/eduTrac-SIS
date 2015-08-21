@@ -17,6 +17,7 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
 $list = '"'.implode('","', courseList(_h($crse[0]['preReq']))).'"';
+$screen = 'vcrse';
 ?>
 
 <script type="text/javascript">
@@ -42,12 +43,14 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
+    
+    <?php include('menu.php'); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>crse/addnl/<?=_h($crse[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray col-md-10">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -135,6 +138,32 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 		
 	</form>
 	<!-- // Form END -->
+    
+    <!-- Modal -->
+    <div class="modal fade" id="crse<?=_h($crse[0]['courseID']);?>">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal heading -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title"><?=_h($crse[0]['courseShortTitle']);?> <?=_h($crse[0]['courseCode']);?></h3>
+                </div>
+                <!-- // Modal heading END -->
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <p><?=_t( "Are you sure you want to create a copy of this course?" );?></p>
+                </div>
+                <!-- // Modal body END -->
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <a href="<?=url('/');?>crse/clone/<?=_h($crse[0]['courseID']);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
+                    <a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'No' );?></a> 
+                </div>
+                <!-- // Modal footer END -->
+            </div>
+        </div>
+    </div>
+    <!-- // Modal END -->
 	
 </div>	
 		
