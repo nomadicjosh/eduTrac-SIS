@@ -56,12 +56,14 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <h3><?=_h($crse[0]['courseCode']);?>-<sec id="section"></sec></h3>
 <div class="innerLR">
+    
+    <?php include('menu.php'); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>sect/add/<?=_h($crse[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray col-md-10">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">

@@ -53,20 +53,18 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<li><?=_h($sect[0]['courseSection']);?></li>
 </ul>
 
-<h3><?=_h($sect[0]['courseSection']);?>
-    <span data-toggle="tooltip" data-original-title="Create Another Section" data-placement="top">
-        <a<?=ae('add_course_sec');?> href="<?=url('/');?>sect/add/<?=_h($sect[0]['courseID']);?>/" class="btn btn-primary"><i class="fa fa-code-fork"></i></a>
-    </span>
-</h3>
+<h3><?=_h($sect[0]['courseSection']);?></h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
+    
+    <?php include('menu.php'); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>sect/<?=_h($sect[0]['courseSecID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray col-md-10">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">

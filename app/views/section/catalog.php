@@ -26,9 +26,18 @@ $app->view->block('dashboard');
 
 <h3><?=_t( 'Course Catalogs' );?></h3>
 <div class="innerLR">
+    
+    <?php include('menu.php'); ?>
 
 	<!-- Widget -->
-	<div class="widget widget-heading-simple widget-body-gray">
+	<div class="widget widget-heading-simple widget-body-gray col-md-10">
+        
+        <!-- Widget heading -->
+        <div class="widget-head">
+            <h4 class="heading"><!-- Filler --></h4>
+        </div>
+        <!-- // Widget heading END -->
+            
 		<div class="widget-body">
 			
 			<!-- Table -->

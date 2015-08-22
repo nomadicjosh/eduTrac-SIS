@@ -29,21 +29,30 @@ $message = new \app\src\Messages;
 	<li class="divider"></li>
 	<li><a href="<?=url('/');?>sect/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>sect/<?=_h($grade[0]['courseSecID']);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($grade[0]['courseSection']);?></a></li>
+	<li><a href="<?=url('/');?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($sect[0]['courseSection']);?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Course Section Final Grades' );?></li>
 </ul>
 
-<h3><?=_t( 'Final Grades for ' );?><?=$grade[0]['secShortTitle'];?></h3>
+<h3><?=_t( 'Final Grades for ' );?><?=$sect[0]['secShortTitle'];?></h3>
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
+    
+    <?php include('menu.php'); ?>
 
     <!-- Form -->
-    <form class="form-horizontal margin-none" action="<?=url('/');?>sect/fgrade/<?=_h($grade[0]['courseSecID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+    <form class="form-horizontal margin-none" action="<?=url('/');?>sect/fgrade/<?=_h($sect[0]['courseSecID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 
 	<!-- Widget -->
-	<div class="widget widget-heading-simple widget-body-gray">
+	<div class="widget widget-heading-simple widget-body-gray col-md-10">
+        
+        <!-- Widget heading -->
+        <div class="widget-head">
+            <h4 class="heading"><!-- Filler --></h4>
+        </div>
+        <!-- // Widget heading END -->
+            
 		<div class="widget-body">
 			
 			<!-- Table -->
@@ -62,7 +71,7 @@ $message = new \app\src\Messages;
 				
 				<!-- Table body -->
 				<tbody>
-                <?php if($grade[0]['stuID'] != '') : foreach($grade as $k => $v) { ?>
+                <?php if($sect[0]['stuID'] != '') : foreach($grade as $k => $v) { ?>
                 <tr class="gradeX">
                     <td class="text-center"><?=_h($v['courseSection']);?></td>
                     <td class="text-center">
@@ -88,13 +97,13 @@ $message = new \app\src\Messages;
     			
 			<!-- Form actions -->
 			<div class="form-actions">
-				<?php if($grade[0]['facID'] == get_persondata('personID')) : ?>
-			    <?php if($grade[0]['stuID'] != '') : ?>
-			    <input type="hidden" name="attCredit" value="<?=_h($grade[0]['minCredit']);?>" />
-			    <input type="hidden" name="courseSecID" value="<?=_h($grade[0]['courseSecID']);?>" />
+				<?php if($sect[0]['facID'] == get_persondata('personID')) : ?>
+			    <?php if($sect[0]['stuID'] != '') : ?>
+			    <input type="hidden" name="attCredit" value="<?=_h($sect[0]['minCredit']);?>" />
+			    <input type="hidden" name="courseSecID" value="<?=_h($sect[0]['courseSecID']);?>" />
 				<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Submit' );?></button>
                 <?php endif; endif; ?>
-				<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>sect/<?=_h($grade[0]['courseSecID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+				<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 			</div>
 			<!-- // Form actions END -->
 			

@@ -416,7 +416,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 'title' => $decode[0]['secShortTitle'] . ' :: Course Section',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'addnl' => $decode
+                'sect' => $decode
                 ]
             );
         }
@@ -494,7 +494,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 'title' => $decode[0]['secShortTitle'] . ' :: Course Section',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'soff' => $decode
+                'sect' => $decode
                 ]
             );
         }
@@ -581,7 +581,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 'title' => $q[0]['courseSection'] . ' :: Section Final Grades',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'grade' => $q
+                'sect' => $q
                 ]
             );
         }

@@ -17,6 +17,7 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
 $templates_header = get_templates_header(APP_PATH . 'views/section/templates/roster/');
+$screen = 'sros';
 ?>
 
 <script type="text/javascript">
@@ -50,12 +51,14 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
+    
+    <?php include('menu.php'); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>sect/sros/" id="validateSubmitForm" method="post" target="new" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray col-md-10">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
