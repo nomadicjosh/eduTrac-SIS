@@ -15,6 +15,22 @@ define('RELEASE_TAG', '6.0.06');
 
 $app = \Liten\Liten::getInstance();
 
+/**
+ * Custom make directory function.
+ * 
+ * This function will check if the path is an existing directory,
+ * if not, then it will be created with set permissions and also created 
+ * recursively if needed.
+ * 
+ * @since 6.1.00
+ * @param string $path Path to be created.
+ * @return string
+ */
+function _mkdir($path)
+{
+     return is_dir($path) || mkdir($path,755,true);
+}
+
 function _t($msgid)
 {
     return gettext($msgid);

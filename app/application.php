@@ -15,31 +15,23 @@ if (!defined('BASE_PATH'))
 /**
  * Creates a cookies directory with proper permissions.
  */
-if (!file_exists($app->config('cookies.savepath'))) {
-    mkdir($app->config('cookies.savepath'), 0755, true);
-}
+_mkdir($app->config('cookies.savepath'));
 
 /**
  * Creates a file directory with proper permissions.
  */
-if (!file_exists($app->config('file.savepath'))) {
-    mkdir($app->config('file.savepath'), 0755, true);
-}
+_mkdir($app->config('file.savepath'));
 
 /**
  * Creates a cron directory with proper permissions.
  */
-if (!file_exists(cronDir())) {
-    mkdir(cronDir(), 0755, true);
-}
+_mkdir(cronDir());
 
 /**
  * Creates the cron directory with proper permissions to store
  * cronjob information.
  */
-if (!file_exists(cronDir() . 'cron/logs/')) {
-    mkdir(cronDir() . 'cron/logs/', 0755, true);
-}
+_mkdir(cronDir() . 'cron/logs/');
 
 /**
  * Error log setting
