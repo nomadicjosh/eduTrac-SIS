@@ -29,10 +29,18 @@ require( BASE_PATH . 'Liten' . DS . 'Bootstrap.php');
  * your Liten application by passing an associative array
  * of setting names and values into the application constructor.
  */
+$subdomain = '';
+$domain_parts = explode('.', $_SERVER['SERVER_NAME']);
+if (count($domain_parts) == 3) {
+    $subdomain = $domain_parts[0];
+} else {
+    $subdomain = 'www';
+}
 $app = new \Liten\Liten(
     [
     'cookies.lifetime' => '86400',
-    'cookies.savepath' => '/tmp/' . str_replace('.','_',$app->req->server['SERVER_NAME'] . '/')
+    'cookies.savepath' => '/tmp/' . $subdomain . '/',
+    'file.savepath' => '/tmp/' . $subdomain . '/files/'
     ]
 );
 
