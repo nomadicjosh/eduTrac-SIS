@@ -16,24 +16,29 @@ if (!defined('BASE_PATH'))
 class Cron
 {
 
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     public $script;
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     public $output;
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     public $executionTime;
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     protected $_app;
 
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     public function __construct(\Liten\Liten $liten = null)
@@ -41,7 +46,8 @@ class Cron
         $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
     }
     
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     public function run($id)
@@ -51,7 +57,8 @@ class Cron
         return $q;
     }
 
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     public function stop($id)
@@ -65,7 +72,8 @@ class Cron
         }
     }
     
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     public function fireScript($script, $id, $buffer_output = 1)
@@ -95,7 +103,8 @@ class Cron
             ob_end_clean();
     }
 
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     public function fireRemoteScript($url)
@@ -143,7 +152,8 @@ class Cron
         return $buffer;
     }
 
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     public function schedule()
@@ -189,7 +199,8 @@ class Cron
         }
     }
 
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     public function Clear($id)
@@ -198,7 +209,8 @@ class Cron
         $q = $this->_app->db->query("UPDATE cronjob SET currently_running = '0' WHERE id = ?", [$id]);
     }
 
-    /*
+    /**
+     *
      * @deprecated Deprecated as of release 6.0.00.
      */
     public function time_unit($time_interval)
