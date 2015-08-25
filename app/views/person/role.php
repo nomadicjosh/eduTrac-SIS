@@ -1,16 +1,14 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * Manage Person Role View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * Manager person role View
  * 
- * @link        http://www.7mediaws.org/
+ * This view is used when editing a person's role.
+ *
+ * @license GPLv3
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
@@ -29,21 +27,29 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<li class="divider"></li>
 	<li><a href="<?=url('/');?>nae/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
 	<li class="divider"></li>
-    <li><a href="<?=url('/');?>nae/<?=_h($role[0]['personID']);?>/<?=bm();?>" class="glyphicons vcard"><i></i> <?=get_name(_h($role[0]['personID']));?></a></li>
+    <li><a href="<?=url('/');?>nae/<?=_h($nae[0]['personID']);?>/<?=bm();?>" class="glyphicons vcard"><i></i> <?=get_name(_h($nae[0]['personID']));?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Manage Person Role' );?></li>
 </ul>
 
-<h3><?=get_name(_h($role[0]['personID']));?>: <?=_t( 'ID#' );?> <?=_h($role[0]['personID']);?></h3>
+<h3><?=get_name(_h($nae[0]['personID']));?>: <?=_t( 'ID#' );?> <?=_h($nae[0]['personID']);?></h3>
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
+    
+    <?php include('menu.php'); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>nae/role/<?=_h($role[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>nae/role/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray col-md-10">
+            
+            <!-- Widget heading -->
+			<div class="widget-head">
+				<h4 class="heading"><!-- Filler --></h4>
+			</div>
+			<!-- // Widget heading END -->
 			
 			<div class="widget-body">
 						
@@ -63,7 +69,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 					<!-- Table body -->
 					<tbody>
 						<?php 
-						$roleACL = new \app\src\ACL(_h((int)$role[0]['personID']));
+						$roleACL = new \app\src\ACL(_h((int)$nae[0]['personID']));
 							$role = $roleACL->getAllRoles('full');
 							foreach ($role as $k => $v) {
 								echo '<tr><td>'._h($v['Name']).'</td>';

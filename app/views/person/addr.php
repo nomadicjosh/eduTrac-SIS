@@ -1,21 +1,21 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * Edit Address View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * Edit address View
  * 
- * @link        http://www.7mediaws.org/
+ * This view is used when editing a person's address record via
+ * the ADDR screen.
+ *
+ * @license GPLv3
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$screen = 'addr';
 ?>
 
 <script type="text/javascript">
@@ -36,16 +36,18 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<li><?=_t( 'Edit Address' );?></li>
 </ul>
 
-<h3><?=get_name(_h((int)$addr[0]['personID']));?>: <?=_h($addr[0]['personID']);?></h3>
+<h3><?=get_name(_h((int)$addr[0]['personID']));?></h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
+    
+    <?php include('menu.php'); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>nae/addr/<?=_h($addr[0]['addressID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray col-md-10">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -59,6 +61,15 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<div class="row">
 					<!-- Column -->
 					<div class="col-md-6">
+                        
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><?=_t( 'Person ID' );?></label>
+							<div class="col-md-8">
+								<input type="text" readonly class="form-control" value="<?=_h($nae[0]['personID']);?>" />
+							</div>
+						</div>
+						<!-- // Group END -->
 						
 						<!-- Group -->
 						<div class="form-group">

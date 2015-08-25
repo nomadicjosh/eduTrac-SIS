@@ -1,20 +1,20 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * Address Summary View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * Address Summary (ADSU) View
  * 
- * @link        http://www.7mediaws.org/
+ * This view is used when viewing the address summary
+ * of the requested person.
+ *
+ * @license GPLv3
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$screen = 'adsu';
 ?>
 
 <ul class="breadcrumb">
@@ -23,19 +23,27 @@ $app->view->block('dashboard');
     <li class="divider"></li>
     <li><a href="<?=url('/');?>nae/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=url('/');?>nae/<?=_h($adsu[0]['personID']);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name(_h($adsu[0]['personID']));?></a></li>
+    <li><a href="<?=url('/');?>nae/<?=_h($nae[0]['personID']);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name(_h($nae[0]['personID']));?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'Address Summary' );?></li>
 </ul>
 
-<h3><?=get_name(_h((int)$adsu[0]['personID']));?> <?=_t( "ID: " );?><?=_h($adsu[0]['personID']);?></h3>
+<h3><?=get_name(_h((int)$nae[0]['personID']));?> <?=_t( "ID: " );?><?=_h($nae[0]['personID']);?></h3>
 <div class="innerLR">
+    
+    <?php include('menu.php'); ?>
         
         <!-- Widget -->
-        <div class="widget widget-heading-simple widget-body-gray">
+        <div class="widget widget-heading-simple widget-body-gray col-md-10">
+            
+            <!-- Widget heading -->
+			<div class="widget-head">
+				<h4 class="heading"><!-- Filler --></h4>
+			</div>
+			<!-- // Widget heading END -->
             
             <div class="widget-body">
-                <?php if($adsu !='') : foreach($adsu as $k => $v) { ?>
+                <?php if($nae !='') : foreach($nae as $k => $v) { ?>
                 <!-- Row -->
                 <div class="row">
                     
@@ -96,8 +104,8 @@ $app->view->block('dashboard');
                 
                 <!-- Form actions -->
                 <div class="form-actions">
-                    <button type="button"<?=aids();?> class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=url('/');?>nae/addr-form/<?=_h($adsu[0]['personID']);?>/<?=bm();?>'"><i></i><?=_t( 'Add' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>nae/<?=_h($adsu[0]['personID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button"<?=aids();?> class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=url('/');?>nae/addr-form/<?=_h($nae[0]['personID']);?>/<?=bm();?>'"><i></i><?=_t( 'Add' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>nae/<?=_h($nae[0]['personID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>
                 <!-- // Form actions END -->
 
