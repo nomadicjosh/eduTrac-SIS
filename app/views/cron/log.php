@@ -16,7 +16,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
-$cronlog = cronDir() . 'cron/cronjobs.log';
+$cronlog = cronDir() . 'cron/logs/cronjobs.log';
 ?>
 
 <script type="text/javascript">

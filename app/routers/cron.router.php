@@ -356,7 +356,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
     $app->match('GET|POST', '/log/', function () use($app) {
         if ($app->req->isPost()) {
             $app->flash('success_message', _t('Cronjob log cleaned.'));
-            file_put_contents(cronDir() . 'cron/cronjobs.log', '');
+            file_put_contents(cronDir() . 'cron/logs/cronjobs.log', '');
 
             redirect($app->req->server['HTTP_REFERER']);
         }
