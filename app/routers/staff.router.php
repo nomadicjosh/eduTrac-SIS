@@ -12,6 +12,20 @@ if (!defined('BASE_PATH'))
  */
 
 /**
+ * Simple function to demonstrate how to control file access using "accessControl" callback.
+ * This method will disable accessing files/folders starting from '.' (dot)
+ *
+ * @param  string  $attr  attribute name (read|write|locked|hidden)
+ * @param  string  $path  file path relative to volume root directory started with directory separator
+ * @return bool|null
+ **/
+function access($attr, $path, $data, $volume) {
+	return strpos(basename($path), '.') === 0       // if file/folder begins with '.' (dot)
+		? !($attr == 'read' || $attr == 'write')    // set read+write to false, other (locked+hidden) set to true
+		:  null;                                    // else elFinder decide it itself
+}
+
+/**
  * Before router middleware checks to see
  * if the user is logged in.
  */
@@ -29,7 +43,12 @@ $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff(.*)', function() use ($ap
     }
 });
 
-$css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
+$css = [
+    'css/admin/module.admin.page.form_elements.min.css',
+    'css/admin/module.admin.page.tables.min.css',
+    'plugins/elfinder/css/elfinder.min.css',
+    'plugins/elfinder/css/theme.css'
+];
 $js = [
     'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
     'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
@@ -51,6 +70,12 @@ $logger = new \app\src\Log();
 $cache = new \app\src\Cache();
 $dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
+
+use \app\src\elFinder\elFinderConnector;
+use \app\src\elFinder\elFinder;
+use \app\src\elFinder\elFinderVolumeDriver;
+use \app\src\elFinder\elFinderVolumeLocalFileSystem;
+use \app\src\elFinder\elFinderVolumeS3;
 
 $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $logger, $flashNow) {
 
@@ -93,6 +118,114 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
         );
     });
 
+    $app->match('GET|POST|PATCH|PUT|OPTIONS|DELETE', '/connector/', function () use($app) {
+        error_reporting(0);
+        if (get_option('elfinder_driver') === 'elf_local_driver') :
+            _mkdir($app->config('file.savepath') . get_persondata('uname') . '/');
+            $opts = array(
+                // 'debug' => true,
+                'roots' => array(
+                    array(
+                        'driver' => 'LocalFileSystem',
+                        'path' => $app->config('file.savepath') . get_persondata('uname') . '/',
+                        'alias' => 'Files',
+                        'mimeDetect' => 'mime_content_type',
+                        'mimefile' => BASE_PATH . 'app/src/elFinder/mime.types',
+                        'accessControl' => 'access',
+                        'attributes' => array(
+                            array(
+                                'read' => true,
+                                'write' => true,
+                                'locked' => false
+                            )
+                        ),
+                        'uploadAllow' => [
+                            'image/png', 'image/gif', 'image/jpeg',
+                            'application/pdf', 'application/msword', 'application/rtf',
+                            'application/vnd.ms-excel', 'application/x-compress',
+                            'application/x-compressed-tar', 'application/x-gzip',
+                            'application/x-tar', 'application/zip', 'audio/mpeg',
+                            'audio/x-m4a', 'audio/x-wav', 'text/css', 'text/plain', 'text/x-comma-separated-values',
+                            'text/rdf', 'video/mpeg', 'video/mp4', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                            'application/vnd.ms-powerpoint', 'application/vnd.ms-excel'],
+                        'uploadDeny' => ['application/x-php'],
+                        'uploadOrder' => array('allow', 'deny')
+                    )
+                )
+            );
+        else :
+            $opts = array(
+                //'debug' => true,
+                'roots' => array(
+                    array(
+                        'driver' => 'S3',
+                        'path' => ucfirst(get_persondata('uname')),
+                        'URL' => 'http://' . get_option('amz_s3_bucket') . '.s3.amazonaws.com/' . ucfirst(get_persondata('uname')) . '/',
+                        'alias' => 'Files',
+                        'mimeDetect' => 'mime_content_type',
+                        'mimefile' => BASE_PATH . 'app/src/elFinder/mime.types',
+                        'accessControl' => 'access',
+                        'uploadAllow' => [
+                            'image/png', 'image/gif', 'image/jpeg',
+                            'application/pdf', 'application/msword', 'application/rtf',
+                            'application/vnd.ms-excel', 'application/x-compress',
+                            'application/x-compressed-tar', 'application/x-gzip',
+                            'application/x-tar', 'application/zip', 'audio/mpeg',
+                            'audio/x-m4a', 'audio/x-wav', 'text/css', 'text/plain', 'text/x-comma-separated-values',
+                            'text/rdf', 'video/mpeg', 'video/mp4', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                            'application/vnd.ms-powerpoint', 'application/vnd.ms-excel'],
+                        'uploadDeny' => ['application/x-php'],
+                        'uploadOrder' => array('allow', 'deny'),
+                        "s3" => array(
+                            "key" => get_option('amz_s3_access_key'),
+                            "secret" => get_option('amz_s3_secret_key'),
+                            "region" => 'us-east-1'
+                        ),
+                        "bucket" => get_option('amz_s3_bucket'),
+                        "acl" => "public-read"
+                    )
+                )
+            );
+        endif;
+        // run elFinder
+        $connector = new elFinderConnector(new elFinder($opts));
+        $connector->run();
+    });
+
+    /**
+     * Before route middleware check.
+     */
+    $app->before('GET|POST', '/file-manager/', function() {
+        if (!hasPermission('access_dashboard')) {
+            redirect(url('/'));
+        }
+    });
+    $app->get('/file-manager/', function () use($app, $css, $js) {
+        $app->view->display('staff/file-manager', [
+            'title' => 'File Manager',
+            'cssArray' => $css,
+            'jsArray' => $js
+            ]
+        );
+    });
+    
+    /**
+     * Before route middleware check.
+     */
+    $app->before('GET|POST', '/elfinder/', function() {
+        if (!hasPermission('access_dashboard')) {
+            redirect(url('/'));
+        }
+    });
+    $app->match('GET|POST','/elfinder/', function () use($app) {
+        $app->view->display('staff/elfinder', [
+            'title' => 'elfinder 2.0',
+            'cssArray' => ['plugins/elfinder/css/elfinder.min.css','plugins/elfinder/css/theme.css'],
+            'jsArray' => ['plugins/elfinder/js/elfinder.min.js','plugins/elfinder/js/tinymce.plugin.js']
+            ]
+        );
+    });
+
     /**
      * Before route middleware check.
      */
@@ -103,21 +236,21 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        if($app->req->isPost()) {
-    		$staff = $app->db->staff();
-    		foreach(_filter_input_array(INPUT_POST) as $k => $v) {
-    			$staff->$k = $v;
-    		}
-    		$staff->where('staffID = ?', $id);
-    		if($staff->update()) {
+        if ($app->req->isPost()) {
+            $staff = $app->db->staff();
+            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                $staff->$k = $v;
+            }
+            $staff->where('staffID = ?', $id);
+            if ($staff->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Staff', get_name($id), get_persondata('uname'));
-    		} else {
-    			$app->flash('error_message', $flashNow->notice(409));
-    		}
-    		redirect( $app->req->server['HTTP_REFERER'] );
-    	}
-        
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
+
         $json = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
 
