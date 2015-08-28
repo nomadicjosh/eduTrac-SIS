@@ -397,6 +397,62 @@ function maybe_unserialize($original)
     $app = \Liten\Liten::getInstance();
     return $app->hook->maybe_unserialize($original);
 }
+
+/**
+ * Returns false.
+ * 
+ * Apply to filters to return false.
+ * 
+ * @since 6.1.00
+ * @return bool False
+ */
+function __return_false()
+{
+    return false;
+}
+
+/**
+ * Returns true.
+ * 
+ * Apply to filters to return true.
+ * 
+ * @since 6.1.00
+ * @return bool True
+ */
+function __return_true()
+{
+    return true;
+}
+
+/**
+ * Returns null.
+ * 
+ * Apply to filters to return null.
+ * 
+ * @since 6.1.00
+ * @return bool NULL
+ */
+function __return_null()
+{
+    return null;
+}
+
+/**
+ * JSTree Sidebar Menu Include
+ * 
+ * Includes the jstree sidebar menu on several screens.
+ * 
+ * @since 6.1.00
+ * @return mixed
+ */
+function jstree_sidebar_menu($screen,$crse='',$sect='',$nae='',$staff='',$spro='',$prog='')
+{
+    $menu = BASE_PATH . 'app/views/dashboard/menu.php';
+    if (!has_filter('sidebar_menu')) {
+        include($menu);
+    }
+    return apply_filter('sidebar_menu',$menu,$screen,$crse,$sect,$nae,$staff,$spro,$prog);
+}
 /**
  * Includes and loads all activated plugins.
  *
