@@ -28,7 +28,7 @@ $app = \Liten\Liten::getInstance();
  */
 function _mkdir($path)
 {
-     return is_dir($path) || mkdir($path,777,true);
+     return is_dir($path) || mkdir($path,0755,true);
 }
 
 function _t($msgid)
