@@ -7,37 +7,27 @@ if (!defined('BASE_PATH'))
 /**
  * Student DBObject Class
  *  
- * eduTrac SIS
- * Copyright (C) 2013 Joshua Parker
+ * PHP 5.4+
+ *
+ * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
+ * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * eduTrac SIS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac SIS
- * @author      Joshua Parker <joshmac3@icloud.com>
+ * @package     eduTrac
+ * @author      Joshua Parker <josh@7mediaws.org>
  */
 
 class Student
 {
 
-    private $_ID; //int(11) unsigned zerofill
-    private $_stuID; //int(8) unsigned zerofill
+    private $_ID;
+    private $_stuID;
     private $_status;
     private $_stuStatus;
-    private $_addDate; //datetime
+    private $_addDate;
     private $_approvedBy;
-    private $_LastUpdate; //timestamp
+    private $_LastUpdate;
     private $_address1;
     private $_address2;
     private $_city;
@@ -58,8 +48,8 @@ class Student
     /**
      * Load one row into var_class. To use the vars use for exemple echo $class->getVar_name; 
      *
-     * @param key_table_type $key_row
-     * 
+     * @param int $key_row
+     * @return mixed
      */
     public function Load_from_key($key_row)
     {
@@ -233,7 +223,10 @@ class Student
         <div class="relativeWrap">
             <div class="widget">
                 <div class="widget-head">
-                    <h4 class="heading glyphicons user"><i></i><?= get_name(_h($this->getStuID())); ?></h4>
+                    <h4 class="heading glyphicons user"><i></i><?= get_name(_h($this->getStuID())); ?></h4>&nbsp;&nbsp;
+                    <?php if(!isset($_COOKIE['SWITCH_USERBACK']) && _h($this->getStuID()) != get_persondata('personID')) : ?>
+                    <span<?=ae('login_as_user');?> class="label label-inverse"><a href="<?=url('/');?>switchUserTo/<?=_h($this->getStuID());?>/"><font color="#FFFFFF"><?= _t('Switch To'); ?></font></a></span>
+                    <?php endif; ?>
                     <?php if(get_persondata('personID') == $this->getStuID() && !hasPermission('access_dashboard')) : ?>
                     <a href="<?= url('/'); ?>profile/" class="heading pull-right"><?= _h($this->getStuID()); ?></a>
                     <?php else : ?>
