@@ -180,12 +180,6 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
                             </div>
                         </div>
                         <!-- // Group END -->
-						
-					</div>
-					<!-- // Column END -->
-					
-					<!-- Column -->
-					<div class="col-md-6">
                         
                         <!-- Group -->
                         <div class="form-group">
@@ -218,7 +212,53 @@ $layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
 							</div>
 						</div>
 						<!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+					
+					<!-- Column -->
+					<div class="col-md-6">
                         
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'File Manager Driver' );?></label>
+                            <div class="col-md-8">
+                                <select name="elfinder_driver" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                	<option value="">&nbsp;</option>
+                                    <option value="elf_local_driver"<?=selected( _h(get_option( 'elfinder_driver' )), 'elf_local_driver', false ); ?>><?=_t( 'Local' );?></option>
+                                    <option value="elf_s3_driver"<?=selected( _h(get_option( 'elfinder_driver' )), 'elf_s3_driver', false ); ?>><?=_t( 'Amazon S3' );?></option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+						<?php if(get_option('elfinder_driver') === 'elf_s3_driver') : ?>
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Amazon S3 Bucket' );?></label>
+							<div class="col-md-8">
+								<input type="text" name="amz_s3_bucket" value="<?=_h(get_option('amz_s3_bucket'));?>" class="form-control" required/>
+							</div>
+						</div>
+						<!-- // Group END -->
+                        
+						<!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'S3 Access Key' );?></label>
+							<div class="col-md-8">
+								<input type="text" name="amz_s3_access_key" value="<?=_h(get_option('amz_s3_access_key'));?>" class="form-control" required/>
+							</div>
+						</div>
+						<!-- // Group END -->
+						
+						<!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'S3 Secret Key' );?></label>
+							<div class="col-md-8">
+								<input type="text" name="amz_s3_secret_key" value="<?=_h(get_option('amz_s3_secret_key'));?>" class="form-control" required/>
+							</div>
+						</div>
+						<!-- // Group END -->
+                        <?php endif; ?>
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Curl' );?></label>
