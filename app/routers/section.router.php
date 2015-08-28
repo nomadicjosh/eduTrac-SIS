@@ -350,7 +350,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 'title' => 'Create Section',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'crse' => $decode
+                'sect' => $decode
                 ]
             );
         }

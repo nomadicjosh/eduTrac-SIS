@@ -1,16 +1,12 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
  * Course Section Final Grading View
- *  
- * PHP 5.4+
  *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       4.2.2
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
@@ -39,19 +35,13 @@ $message = new \app\src\Messages;
     
     <?=$message->flashMessage();?>
     
-    <?php include('menu.php'); ?>
+    <?php jstree_sidebar_menu($screen,'',$sect); ?>
 
     <!-- Form -->
     <form class="form-horizontal margin-none" action="<?=url('/');?>sect/fgrade/<?=_h($sect[0]['courseSecID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 
 	<!-- Widget -->
-	<div class="widget widget-heading-simple widget-body-gray col-md-10">
-        
-        <!-- Widget heading -->
-        <div class="widget-head">
-            <h4 class="heading"><!-- Filler --></h4>
-        </div>
-        <!-- // Widget heading END -->
+	<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
             
 		<div class="widget-body">
 			
