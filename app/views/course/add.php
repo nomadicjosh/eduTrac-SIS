@@ -18,7 +18,7 @@ include('ajax.php');
 $screen = 'acrse';
 ?>
 
-<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+<script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
 <script src="<?=url('/');?>static/assets/plugins/tinymce/plugin.js"></script>
 <script type="text/javascript">
 	tinymce.init({selector: "textarea",plugins: [ "placeholder" ]});
