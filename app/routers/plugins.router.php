@@ -51,12 +51,44 @@ $app->group('/plugins', function() use ($app, $css, $js) {
     });
 
     $app->get('/activate/', function() use($app) {
-        activate_plugin($_GET['id']);
+        /**
+         * Fires before a specific plugin is activated.
+         * 
+         * _filter_input_string(INPUT_GET, 'id') refers to the plugin's
+         * name (i.e. moodle.plugin.php).
+         * 
+         * @since 6.1.00
+         */
+        do_action( 'activate_plugin', _filter_input_string(INPUT_GET, 'id') );
+        
+        activate_plugin(_filter_input_string(INPUT_GET, 'id'));
+        
+        /**
+         * Fires as a specifig plugin is being activated.
+         * 
+         * _filter_input_string(INPUT_GET, 'id') refers to the plugin's
+         * name (i.e. moodle.plugin.php).
+         * 
+         * @since 6.1.00
+         */
+        do_action( 'activate_' . _filter_input_string(INPUT_GET, 'id') );
+        
         redirect($app->req->server['HTTP_REFERER']);
     });
 
     $app->get('/deactivate/', function() use($app) {
-        deactivate_plugin($_GET['id']);
+        deactivate_plugin(_filter_input_string(INPUT_GET, 'id'));
+        
+        /**
+         * Fires as a specifig plugin is being deactivated.
+         * 
+         * _filter_input_string(INPUT_GET, 'id') refers to the plugin's
+         * name (i.e. moodle.plugin.php).
+         * 
+         * @since 6.1.00
+         */
+        do_action( 'deactivate_' . _filter_input_string(INPUT_GET, 'id') );
+        
         redirect($app->req->server['HTTP_REFERER']);
     });
 
