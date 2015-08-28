@@ -14,6 +14,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$screen = 'pperm';
 ?>
 
 <script type="text/javascript">
@@ -37,19 +38,13 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     
     <?=$message->flashMessage();?>
     
-    <?php include('menu.php'); ?>
+    <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>nae/perms/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray col-md-10">
-            
-            <!-- Widget heading -->
-			<div class="widget-head">
-				<h4 class="heading"><!-- Filler --></h4>
-			</div>
-			<!-- // Widget heading END -->
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 			
 			<div class="widget-body">
 						

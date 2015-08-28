@@ -1,20 +1,20 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
  * Person Search View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
  * 
- * @link        http://www.7mediaws.org/
+ * This view is used when searching for a
+ * person record.
+ *
+ * @license GPLv3
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$screen = 'nae';
 ?>
 
 <ul class="breadcrumb">
@@ -26,9 +26,11 @@ $app->view->block('dashboard');
 
 <h3><?=_t( 'Search Person' );?></h3>
 <div class="innerLR">
+    
+    <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Widget -->
-	<div class="widget widget-heading-simple widget-body-gray">
+	<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		<div class="widget-body">
 		
 			<div class="tab-pane" id="search-users">

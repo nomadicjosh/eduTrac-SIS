@@ -31,16 +31,10 @@ $screen = 'adsu';
 <h3><?=get_name(_h((int)$nae[0]['personID']));?> <?=_t( "ID: " );?><?=_h($nae[0]['personID']);?></h3>
 <div class="innerLR">
     
-    <?php include('menu.php'); ?>
+    <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
         
         <!-- Widget -->
-        <div class="widget widget-heading-simple widget-body-gray col-md-10">
-            
-            <!-- Widget heading -->
-			<div class="widget-head">
-				<h4 class="heading"><!-- Filler --></h4>
-			</div>
-			<!-- // Widget heading END -->
+        <div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
             
             <div class="widget-body">
                 <?php if($nae !='') : foreach($nae as $k => $v) { ?>
