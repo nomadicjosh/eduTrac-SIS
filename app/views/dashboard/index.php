@@ -15,31 +15,35 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$screen = 'dash';
 ?>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
 	<li><a href="#" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
-    <li class="pull-right hidden-phone"><a href="<?=_h($app->hook->{'get_option'}('help_desk'));?>" class="glyphicons shield"><?=_t( 'Get Help' );?><i></i></a></li>
+    <li class="pull-right hidden-phone"><a href="<?=_h(get_option('help_desk'));?>" class="glyphicons shield"><?=_t( 'Get Help' );?><i></i></a></li>
 	<li class="pull-right hidden-phone divider"></li>
 
 </ul>
 
 <?=show_update_message();?>
 
-<?php
-//$cache = new \eduTrac\Classes\Libraries\Cache('dashboard');
-//if(!$cache->setCache()) :
-?>
-
 <h2><?=_t( 'Dashboard' );?></h2>
 <div class="innerLR">
-	
-	<?php dashboard_top_widgets();?>
 
 	<div class="row">
         
-        <div class="col-md-4 tablet-column-reset">
+        <?php jstree_sidebar_menu($screen); ?>
+        
+        <div class="<?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?> tablet-column-reset">
+	
+			<div class="row">
+                <?php dashboard_top_widgets();?>
+            </div>
+            
+        </div>
+        
+        <div class="<?=(has_filter('sidebar_menu')) ? 'col-md-4' : 'col-md-3';?> tablet-column-reset">
 	
 			<div class="row">
 				<div class="col-md-12">
@@ -89,7 +93,7 @@ $app->view->block('dashboard');
 			</div>
 		</div>
         
-		<div class="col-md-8 tablet-column-reset">
+		<div class="<?=(has_filter('sidebar_menu')) ? 'col-md-8' : 'col-md-7';?> tablet-column-reset">
 	
 			<div class="row">
 				<div class="col-md-12">
@@ -170,5 +174,5 @@ $app->view->block('dashboard');
 		
 		</div>
 		<!-- // Content END -->
-<?php //endif; echo $cache->getCache();
+<?php
 $app->view->stop();

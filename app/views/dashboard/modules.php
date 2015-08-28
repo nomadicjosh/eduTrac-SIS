@@ -1,21 +1,18 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * Modules View
+ * Modules view
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
- * @since       5.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @since       5.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $modules_header = $app->module->{'get_modules_header'}(APP_PATH . 'modules/');
+$screen = 'mods';
 ?>
 
 <ul class="breadcrumb">
@@ -28,7 +25,9 @@ $modules_header = $app->module->{'get_modules_header'}(APP_PATH . 'modules/');
 <h3><?=_t( 'Modules' );?></h3>
 <div class="innerLR">
     
-    <div class="tab-pane" id="search-users">
+    <?php jstree_sidebar_menu($screen); ?>
+    
+    <div class="tab-pane <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>" id="search-users">
         <div class="widget widget-heading-simple widget-body-white margin-none">
             <div class="widget-body">
 
@@ -38,12 +37,13 @@ $modules_header = $app->module->{'get_modules_header'}(APP_PATH . 'modules/');
 
             </div>
         </div>
+        <div class="separator bottom"></div>
     </div>
     
     <div class="separator bottom"></div>
 
 	<!-- Widget -->
-	<div class="widget widget-heading-simple widget-body-gray">
+	<div class="widget widget-heading-simple widget-body-gray col-md-10">
 		<div class="widget-body">
         
 			<!-- Table -->
