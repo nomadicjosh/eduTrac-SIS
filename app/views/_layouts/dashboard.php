@@ -54,6 +54,7 @@
         <script src="<?= get_javascript_directory_uri(); ?>modules/admin/charts/flot/assets/lib/excanvas.js?v=v2.1.0"></script>
         <script src="<?= get_javascript_directory_uri(); ?>plugins/browser/ie/ie.prototype.polyfill.js?v=v2.1.0"></script>
         <script src="<?= get_javascript_directory_uri(); ?>plugins/typeahead/bootstrap-typeahead.js?v=v2.3.2"></script>
+        <script src="<?= url('/'); ?>static/assets/plugins/jstree/jstree.min.js"></script>
 
         <?php
         if (isset($cssArray)) {
@@ -63,6 +64,7 @@
         }
 
         ?>
+        <link rel="stylesheet" href="<?= url('/'); ?>static/assets/plugins/jstree/themes/proton/style.css" />
     <?php admin_head(); ?>
     </head>
     <body class="">
@@ -155,6 +157,8 @@
                                 </li>
 
                                 <li><a href="<?= url('/'); ?>dashboard/support/<?= bm(); ?>" class="glyphicons life_preserver"><i></i><?= _t('Online Documentation'); ?></a></li>
+                                
+                                <li><a href="<?= url('/'); ?>staff/file-manager/<?= bm(); ?>" class="glyphicons file"><i></i><?= _t('File Manager'); ?></a></li>
 
                                 <li<?= ml('booking_module'); ?> class="dropdown submenu">
                                     <a data-toggle="dropdown" class="dropdown-toggle glyphicons calendar"><i></i><?= _t('Events Calendar'); ?></a>
