@@ -10,7 +10,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 /**
  * Before route check.
  */
@@ -259,7 +258,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         if ($app->req->isPost()) {
             $sc = $decode[0]['courseCode'] . '-' . $_POST['sectionNumber'];
             $courseSection = $_POST['termCode'] . '-' . $decode[0]['courseCode'] . '-' . $_POST['sectionNumber'];
-            
+
             $dotw = '';
             /** Combine the days of the week to be entered into the database */
             $days = $_POST['dotw'];
@@ -658,6 +657,15 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $stac->addedBy = get_persondata('personID');
             $stac->addDate = $app->db->NOW();
 
+            /**
+             * Fires when a staff member registers a student
+             * into a course.
+             * 
+             * @since 6.1.00
+             * @return mixed
+             */
+            do_action('rgn_student_course_registration');
+
             if ($stcs->save() && $stac->save()) {
                 if (function_exists('financial_module')) {
                     /**
@@ -976,15 +984,15 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         $response = isset($_GET['callback']) ? $_GET['callback'] . "(" . $data . ")" : $data;
         echo($response);
     });
-    
+
     $app->post('/loc/', function() use($app) {
         $loc = $app->db->location();
-        foreach($_POST as $k => $v) {
+        foreach ($_POST as $k => $v) {
             $loc->$k = $v;
         }
         $loc->save();
         $ID = $loc->lastInsertId();
-        
+
         $location = $app->db->location()
             ->where('locationID = ?', $ID);
         $q = $location->find(function($data) {

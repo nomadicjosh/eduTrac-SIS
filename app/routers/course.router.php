@@ -10,7 +10,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 /**
  * Before route checks to make sure the logged in user
  * us allowed to manage options/settings.
@@ -199,7 +198,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             foreach ($_POST as $k => $v) {
                 $crse->$k = $v;
             }
-            $crse->where('courseID = ?', (int)$id);
+            $crse->where('courseID = ?', (int) $id);
             if ($crse->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Course', $decode[0]['courseCode'], get_persondata('uname'));
@@ -384,10 +383,10 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             redirect($app->req->server['HTTP_REFERER']);
         }
     });
-    
+
     $app->post('/dept/', function() use($app) {
         $dept = $app->db->department();
-        foreach($_POST as $k => $v) {
+        foreach ($_POST as $k => $v) {
             $dept->$k = $v;
         }
         $dept->save();
@@ -404,10 +403,10 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         });
         echo json_encode($q);
     });
-    
+
     $app->post('/subj/', function() use($app) {
         $subj = $app->db->subject();
-        foreach($_POST as $k => $v) {
+        foreach ($_POST as $k => $v) {
             $subj->$k = $v;
         }
         $subj->save();
