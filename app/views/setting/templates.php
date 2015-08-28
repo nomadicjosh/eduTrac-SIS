@@ -15,7 +15,7 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 ?>
 
-<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+<script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
 <script type="text/javascript">
 tinymce.init({
 	selector: "textarea",
@@ -25,6 +25,10 @@ tinymce.init({
 		"insertdatetime media table contextmenu paste"
 	],
 	toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | gplaceholder | pplaceholder | splaceholder | eplaceholder",
+    autosave_ask_before_unload: false,
+    relative_urls: false,
+    remove_script_host: false,
+    file_picker_callback : elFinderBrowser,
     setup: function(editor) {
         editor.addButton('gplaceholder', {
             type: 'menubutton',
@@ -95,6 +99,36 @@ tinymce.init({
 	autosave_ask_before_unload: false,
     height:400
 });
+function elFinderBrowser (callback, value, meta) {
+  tinymce.activeEditor.windowManager.open({
+    file: '<?=url('/');?>staff/elfinder/',// use an absolute path!
+    title: 'elFinder 2.0',
+    width: 900,  
+    height: 450,
+    resizable: 'yes'
+  }, {
+    oninsert: function (file) {
+    // Provide file and text for the link dialog
+        if (meta.filetype == 'file') {
+//            callback('mypage.html', {text: 'My text'});
+            callback(file.url);
+        }
+
+        // Provide image and alt text for the image dialog
+        if (meta.filetype == 'image') {
+//            callback('myimage.jpg', {alt: 'My alt text'});
+            callback(file.url);
+        }
+
+        // Provide alternative source and posted for the media dialog
+        if (meta.filetype == 'media') {
+//            callback('movie.mp4', {source2: 'alt.ogg', poster: 'image.jpg'});
+            callback(file.url);
+        }
+    }
+  });
+  return false;
+}
 </script>
 
 <ul class="breadcrumb">
