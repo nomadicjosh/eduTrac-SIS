@@ -16,6 +16,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$screen = 'ayr';
 ?>
 
 <ul class="breadcrumb">
@@ -27,12 +28,14 @@ $message = new \app\src\Messages;
 
 <h3><?=_t( 'Academic Year' );?></h3>
 <div class="innerLR">
+    
+    <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>form/acad-year/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -86,7 +89,7 @@ $message = new \app\src\Messages;
 	<div class="separator bottom"></div>
 	
 	<!-- Widget -->
-    <div class="widget widget-heading-simple widget-body-gray">
+    <div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
         <div class="widget-body">
         
             <!-- Table -->
@@ -117,7 +120,7 @@ $message = new \app\src\Messages;
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
                                 <li><a href="<?=url('/');?>form/acad-year/<?=_h($value['acadYearID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
-                                <?php $app->hook->{'do_action'}('search_acad_year_action'); ?>
+                                <?php do_action('search_acad_year_action'); ?>
                             </ul>
                         </div>
                     </td>
