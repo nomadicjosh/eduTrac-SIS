@@ -1,22 +1,8 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * Edit Course View
- *  
- * eduTrac SIS
- * Copyright (C) 2013 Joshua Parker
- * 
- * eduTrac SIS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Edit course view.
+ *
+ * @license GPLv3
  * 
  * @since       3.0.0
  * @package     eduTrac SIS
@@ -47,12 +33,17 @@ $screen = 'vcrse';
 	<li><?=_h($crse[0]['courseCode']);?></li>
 </ul>
 
-<h3><?=_h($crse[0]['courseCode']);?></h3>
+<h3>
+    <?=_h($crse[0]['courseCode']);?> 
+    <span data-toggle="tooltip" data-original-title="Clone Course" data-placement="top">
+        <a<?=ae('add_course');?> href="#crse<?=_h($crse[0]['courseID']);?>" data-toggle="modal" class="btn btn-primary"><i class="fa fa-copy"></i></a>
+    </span>
+</h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
     
-    <?php include('menu.php'); ?>
+    <?php include(BASE_PATH . 'app/views/dashboard/menu.php'); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>crse/<?=_h($crse[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
