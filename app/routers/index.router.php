@@ -533,7 +533,11 @@ $app->post('/message/', function () use($app, $logger) {
         $value = $_POST[$option_name];
         update_option($option_name, $value);
     }
-    // Update more options here
+    /**
+     * Fired when updating options for options_meta table.
+     * 
+     * @return mixed
+     */
     do_action('update_options');
     /* Write to logs */
     $logger->setLog('Update', 'myeduTrac', 'Welcome Message', get_persondata('uname'));

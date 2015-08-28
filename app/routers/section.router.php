@@ -309,6 +309,14 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                     "approvedDate" => $_POST['approvedDate'], "approvedBy" => $_POST['approvedBy'], "secLongTitle" => $decode[0]['courseLongTitle'],
                     "section" => _trim($courseSection), "description" => $decode[0]['courseDesc']
                 ];
+                /**
+                 * Create Course Section Action Hook
+                 * 
+                 * Fired when a course section is created.
+                 * 
+                 * @param mixed $section An array of values
+                 * @return mixed
+                 */
                 do_action('create_course_section', $section);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course Section', _trim($courseSection), get_persondata('uname'));
