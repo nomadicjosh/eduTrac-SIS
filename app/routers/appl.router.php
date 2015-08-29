@@ -392,7 +392,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
 
         if ($app->req->isPost()) {
             $inst = $app->db->institution_attended();
-            $inst->fice_ceeb = $_POST['fice_ceeb'];
+            $inst->fice_ceeb = _trim((int)$_POST['fice_ceeb']);
             $inst->fromDate = $_POST['fromDate'];
             $inst->toDate = $_POST['toDate'];
             $inst->GPA = $_POST['GPA'];
@@ -458,7 +458,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
 
         if ($app->req->isPost()) {
             $inst = $app->db->institution();
-            $inst->fice_ceeb = $_POST['fice_ceeb'];
+            $inst->fice_ceeb = _trim((int)$_POST['fice_ceeb']);
             $inst->instType = $_POST['instType'];
             $inst->instName = $_POST['instName'];
             $inst->city = $_POST['city'];
