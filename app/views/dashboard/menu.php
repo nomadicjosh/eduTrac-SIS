@@ -48,8 +48,31 @@
                                 <?php endif; ?>
                             </ul>
                         </li>
+                        <?php if(hasPermission('edit_settings')) : ?>
+                        <li><?=_t( 'Administrative' );?>
+                            <ul>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_58"><a<?=($screen === 'setting') ? ' class="jstree-clicked"' : '';?> href="<?= url('/'); ?>setting/"><?=_t( 'Settings' );?></a></li>
+                                <?php if(hasPermission('import_data') && function_exists('import_module')) : ?>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_59"><a<?=($screen === 'import') ? ' class="jstree-clicked"' : '';?> href="<?= url('/'); ?>form/import/"><?=_t( 'Importer' );?></a></li>
+                                <?php endif; ?>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_60"><a<?=($screen === 'cron') ? ' class="jstree-clicked"' : '';?> href="<?=url('/');?>cron/"><?=_t( 'Cronjob Handler' );?></a></li>
+                                <?php if(hasPermission('access_permission_screen')) : ?>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_61"><a<?=($screen === 'perm') ? ' class="jstree-clicked"' : '';?> href="<?=url('/');?>permission/"><?=_t( '(PERM) - Permissions' );?></a></li>
+                                <?php endif; ?>
+                                <?php if(hasPermission('access_role_screen')) : ?>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_62"><a<?=($screen === 'role') ? ' class="jstree-clicked"' : '';?> href="<?=url('/');?>role/"><?=_t( '(ROLE) - Roles' );?></a></li>
+                                <?php endif; ?>
+                                <?php if(hasPermission('access_error_log_screen') && function_exists('event_log_module')) : ?>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_63"><a<?=($screen === 'err') ? ' class="jstree-clicked"' : '';?> href="<?=url('/');?>err/logs/"><?=_t( 'Error Log' );?></a></li>
+                                <?php endif; ?>
+                                <?php if(hasPermission('access_audit_trail_screen') && function_exists('event_log_module')) : ?>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_64"><a<?=($screen === 'audit') ? ' class="jstree-clicked"' : '';?> href="<?=url('/');?>audit-trail/"><?=_t( 'Audit Trail' );?></a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </li>
+                        <?php endif; ?>
                         <?php if(hasPermission('access_form')) : ?>
-                        <li><?=_t( 'Form' );?>
+                        <li><?=_t( 'Forms' );?>
                             <ul>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_4"><a<?=($screen === 'ayr') ? ' class="jstree-clicked"' : '';?> href="<?=url('/');?>form/acad-year/"><?=_t( '(AYR) - Academic Year' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_5"><a<?=($screen === 'sem') ? ' class="jstree-clicked"' : '';?> href="<?=url('/');?>form/semester/"><?=_t( '(SEM) - Semester' );?></a></li>
