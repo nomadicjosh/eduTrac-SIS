@@ -984,16 +984,23 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
                 $result->where('stuID = ?', $r['stuID'])->_and_()
                     ->where('termCode = ?', $r['termCode'])
                     ->update();
+            } elseif($r['Balance'] < 0) {
+                $result = $app->db->stu_acct_bill();
+                $result->balanceDue = '1';
+                $result->where('stuID = ?', $r['stuID'])->_and_()
+                    ->where('termCode = ?', $r['termCode'])
+                    ->update();
             }
         }
     });
 
-    $app->get('/runDBBackup/', function () use($app) {
+    $app->get('/runDBBackup/', function () {
         $dbhost = DB_HOST;
         $dbuser = DB_USER;
         $dbpass = DB_PASS;
         $dbname = DB_NAME;
-        $backupDir = '/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/_HOLD_/';
+        _mkdir('/tmp/' . subdomain_as_directory() . '/backups/');
+        $backupDir = '/tmp/' . subdomain_as_directory() . '/backups/';
         $backupFile = $backupDir . $dbname . '-' . date("Y-m-d-H-i-s") . '.gz';
         if (!file_exists($backupFile)) {
             $command = "mysqldump --opt -h $dbhost -u $dbuser -p$dbpass $dbname | gzip > $backupFile";
