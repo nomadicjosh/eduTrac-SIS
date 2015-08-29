@@ -899,7 +899,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         echo json_encode($json);
     });
 
-    $app->post('/stuLookup/', function() use($app, $json_url) {
+    $app->post('/stuLookup/', function() use($json_url) {
         $json_stu = _file_get_contents($json_url . 'student/stuID/' . (int) $_POST['stuID'] . '/?key=' . get_option('api_key'));
         $stu = json_decode($json_stu, true);
 
@@ -936,7 +936,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
         // Get parameters from Array
         $id = !empty($_GET['id']) ? $_GET['id'] : '';
-        $sect = $app->db->query("SELECT courseSecID,courseSecCode,termCode FROM course_sec WHERE termCode = ? AND currStatus = 'A'", [$id]);
+        $sect = $app->db->query("SELECT courseSecID,courseSection FROM course_sec WHERE termCode = ? AND currStatus = 'A'", [$id]);
 
         $q = $sect->find(function($data) {
             $array = [];
@@ -947,7 +947,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         });
         $items = [];
         foreach ($q as $r) {
-            $option = [ 'id' => $r['courseSecID'], 'value' => $r['termCode'] . '-' . $r['courseSecCode']];
+            $option = [ 'id' => $r['courseSecID'], 'value' => $r['courseSection']];
             $items[] = $option;
         }
 
@@ -961,7 +961,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         // Get parameters from Array
         $term = !empty($_GET['term']) ? $_GET['term'] : '';
         $sect = $app->db->course_sec()
-            ->select('DISTINCT course_sec.courseSecID,course_sec.courseSecCode,course_sec.termCode')
+            ->select('DISTINCT course_sec.courseSecID,course_sec.courseSecCode,course_sec.termCode,course_sec.courseSection')
             ->_join('stu_course_sec', 'course_sec.courseSecID = b.courseSecID', 'b')
             ->where('course_sec.termCode = ?', $term)->_and_()
             ->where('course_sec.currStatus = "A"')->_and_()
@@ -976,7 +976,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         });
         $items = [];
         foreach ($q as $r) {
-            $option = [ 'id' => $r['courseSecID'], 'value' => $r['termCode'] . '-' . $r['courseSecCode']];
+            $option = [ 'id' => $r['courseSecID'], 'value' => $r['courseSection']];
             $items[] = $option;
         }
 
