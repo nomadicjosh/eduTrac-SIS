@@ -736,11 +736,11 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
             $sacd = $app->db->stu_acad_cred();
             $sacd->courseID = $_POST['courseID'];
-            $sacd->courseSecID = $_POST['courseSecID'];
+            $sacd->courseSecID = $decode[0]['courseSecID'];
             $sacd->courseCode = $_POST['courseCode'];
-            $sacd->courseSecCode = $_POST['courseSecCode'];
+            $sacd->courseSecCode = $decode[0]['courseSecCode'];
             $sacd->sectionNumber = $_POST['sectionNumber'];
-            $sacd->courseSection = $_POST['courseSection'];
+            $sacd->courseSection = $decode[0]['courseSection'];
             $sacd->termCode = $_POST['termCode'];
             $sacd->reportingTerm = $term[0]['reportingTerm'];
             $sacd->subjectCode = $_POST['subjectCode'];
@@ -750,7 +750,6 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $sacd->attCred = $_POST['attCred'];
             $sacd->ceu = $_POST['ceu'];
             $sacd->status = $_POST['status'];
-            $sacd->statusTime = $_POST['statusTime'];
             $sacd->acadLevelCode = $_POST['acadLevelCode'];
             $sacd->courseLevelCode = $_POST['courseLevelCode'];
             $sacd->creditType = $_POST['creditType'];
@@ -759,14 +758,20 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             if (($_POST['status'] == 'W' || $_POST['status'] == 'D') && $date >= $term[0]['termStartDate'] && $date > $term[0]['dropAddEndDate']) {
                 $sacd->compCred = '0.0';
                 $sacd->gradePoints = acadCredGradePoints($_POST['grade'], '0.0');
+                $sacd->statusTime = $time;
                 if (empty($_POST['grade'])) {
                     $sacd->grade = "W";
                 } else {
                     $sacd->grade = $_POST['grade'];
                 }
             } else {
-                $sacd->compCred = $_POST['compCred'];
-                $sacd->gradePoints = acadCredGradePoints($_POST['grade'], $_POST['compCred']);
+                if (acadCredGradePoints($_POST['grade'], $_POST['attCred']) > 0) {
+                    $compCred = $_POST['attCred'];
+                } else {
+                    $compCred = '0';
+                }
+                $sacd->compCred = $compCred;
+                $sacd->gradePoints = acadCredGradePoints($_POST['grade'], $_POST['attCred']);
                 $sacd->grade = $_POST['grade'];
             }
             $sacd->where('stuAcadCredID = ?', $id);
@@ -1283,22 +1288,22 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             return $array;
         });
 
-        /*$stuTerms = $app->db->stu_term_gpa()
-            ->setTableAlias('sttr')
-            ->select('sttr.termCode,sttr.acadLevelCode,sttr.attCred,sttr.compCred')
-            ->select('sttr.gradePoints,sttr.termGPA')
-            ->_join('term', 'sttr.termCode = term.termCode')
-            ->where('sttr.stuID = ?', $id)->_and_()
-            ->where('sttr.acadLevelCode = ?', $level)
-            ->groupBy('termCode')
-            ->orderBy('termStartDate', 'ASC');
-        $stuTermTran = $stuTerms->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });*/
+        /* $stuTerms = $app->db->stu_term_gpa()
+          ->setTableAlias('sttr')
+          ->select('sttr.termCode,sttr.acadLevelCode,sttr.attCred,sttr.compCred')
+          ->select('sttr.gradePoints,sttr.termGPA')
+          ->_join('term', 'sttr.termCode = term.termCode')
+          ->where('sttr.stuID = ?', $id)->_and_()
+          ->where('sttr.acadLevelCode = ?', $level)
+          ->groupBy('termCode')
+          ->orderBy('termStartDate', 'ASC');
+          $stuTermTran = $stuTerms->find(function($data) {
+          $array = [];
+          foreach ($data as $d) {
+          $array[] = $d;
+          }
+          return $array;
+          }); */
 
         /**
          * If the database table doesn't exist, then it

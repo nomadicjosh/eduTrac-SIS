@@ -981,7 +981,7 @@ function gs($s)
 function acadCredGradePoints($grade, $credits)
 {
     $app = \Liten\Liten::getInstance();
-    $gp = $app->db->query("SELECT points FROM grade_scale WHERE grade = ?", [$grade]);
+    $gp = $app->db->grade_scale()->select('points')->where('grade = ?', $grade);
     $q = $gp->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -990,7 +990,7 @@ function acadCredGradePoints($grade, $credits)
         return $array;
     });
     foreach ($q as $r) {
-        $gradePoints = $r['points'] * $credits;
+        $gradePoints = $r['points']*$credits;
     }
     return $gradePoints;
 }
