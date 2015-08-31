@@ -1545,6 +1545,8 @@ INSERT INTO `permission` VALUES(00000000000000000245, 'access_payment_gateway', 
 
 INSERT INTO `permission` VALUES(00000000000000000246, 'access_ea', 'Access eduTrac Analytics');
 
+INSERT INTO `permission` VALUES(00000000000000000247, 'execute_saved_query', 'Execute Saved Query');
+
 CREATE TABLE IF NOT EXISTS `person` (
   `personID` bigint(20) NOT NULL AUTO_INCREMENT,
   `altID` varchar(255) DEFAULT NULL,
@@ -2371,7 +2373,9 @@ CREATE TABLE IF NOT EXISTS `stu_acct_bill` (
   `authCode` varchar(23) NOT NULL,
   `stu_comments` text NOT NULL,
   `staff_comments` text NOT NULL,
+  `balanceDue` enum('1','0') NOT NULL DEFAULT '1',
   `postedBy` bigint(20) NOT NULL,
+  `billingDate` date NOT NULL,
   `billTimeStamp` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -2387,6 +2391,7 @@ CREATE TABLE IF NOT EXISTS `stu_acct_fee` (
   `type` varchar(11) NOT NULL,
   `description` varchar(125) NOT NULL,
   `amount` double(6,2) NOT NULL,
+  `feeDate` date NOT NULL,
   `feeTimeStamp` datetime NOT NULL,
   `postedBy` bigint(20) NOT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -2702,11 +2707,11 @@ ALTER TABLE `met_news` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personI
 
 ALTER TABLE `met_page` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
-ALTER TABLE `payment` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+ALTER TABLE `payment` ADD CONSTRAINT pay_fk_stuID FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
-ALTER TABLE `payment` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+ALTER TABLE `payment` ADD CONSTRAINT pay_fk_termCode FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
 
-ALTER TABLE `payment` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+ALTER TABLE `payment` ADD CONSTRAINT pay_fk_postedBy FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
 ALTER TABLE `person` ADD FOREIGN KEY (`approvedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
@@ -2714,11 +2719,11 @@ ALTER TABLE `person_perms` ADD FOREIGN KEY (`personID`) REFERENCES `person` (`pe
 
 ALTER TABLE `person_roles` ADD FOREIGN KEY (`personID`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
-ALTER TABLE `refund` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+ALTER TABLE `refund` ADD CONSTRAINT ref_fk_stuID FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
-ALTER TABLE `refund` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+ALTER TABLE `refund` ADD CONSTRAINT ref_fk_termCode FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
 
-ALTER TABLE `refund` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+ALTER TABLE `refund` ADD CONSTRAINT ref_fk_postedBy FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
 ALTER TABLE `restriction_code` ADD FOREIGN KEY (`deptCode`) REFERENCES `department` (`deptCode`) ON UPDATE CASCADE;
 
@@ -2786,13 +2791,13 @@ ALTER TABLE `stu_acct_bill` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`ter
 
 ALTER TABLE `stu_acct_bill` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
-ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`billID`) REFERENCES `stu_acct_bill` (`billID`) ON UPDATE CASCADE;
+ALTER TABLE `stu_acct_fee` ADD CONSTRAINT saf_fk_billID FOREIGN KEY (`billID`) REFERENCES `stu_acct_bill` (`billID`) ON UPDATE CASCADE;
 
-ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+ALTER TABLE `stu_acct_fee` ADD CONSTRAINT saf_fk_stuID FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
-ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+ALTER TABLE `stu_acct_fee` ADD CONSTRAINT saf_fk_termCode FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
 
-ALTER TABLE `stu_acct_fee` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+ALTER TABLE `stu_acct_fee` ADD CONSTRAINT saf_fk_postedBy FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_acct_pp` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
@@ -2800,11 +2805,11 @@ ALTER TABLE `stu_acct_pp` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termC
 
 ALTER TABLE `stu_acct_pp` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
-ALTER TABLE `stu_acct_tuition` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+ALTER TABLE `stu_acct_tuition` ADD CONSTRAINT sat_fk_stuID FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
-ALTER TABLE `stu_acct_tuition` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
+ALTER TABLE `stu_acct_tuition` ADD CONSTRAINT sat_fk_termCode FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
 
-ALTER TABLE `stu_acct_tuition` ADD FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+ALTER TABLE `stu_acct_tuition` ADD CONSTRAINT sat_fk_postedBy FOREIGN KEY (`postedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 

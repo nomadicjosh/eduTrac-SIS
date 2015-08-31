@@ -1,21 +1,21 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * Add Address View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * Add address View
  * 
- * @link        http://www.7mediaws.org/
+ * This view is used when viewing adding a new address
+ * record via the ADDR screen.
+ *
+ * @license GPLv3
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$screen = 'addr';
 ?>
 
 <script type="text/javascript">
@@ -29,23 +29,25 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<li class="divider"></li>
 	<li><a href="<?=url('/');?>nae/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=url('/');?>nae/<?=_h($addr[0]['personID']);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name(_h((int)$addr[0]['personID']));?></a></li>
+    <li><a href="<?=url('/');?>nae/<?=_h($nae[0]['personID']);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name(_h((int)$nae[0]['personID']));?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=url('/');?>nae/adsu/<?=_h($addr[0]['personID']);?>/<?=bm();?>" class="glyphicons vcard"><i></i> <?=_t( 'Address Summary' );?></a></li>
+    <li><a href="<?=url('/');?>nae/adsu/<?=_h($nae[0]['personID']);?>/<?=bm();?>" class="glyphicons vcard"><i></i> <?=_t( 'Address Summary' );?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Edit Address' );?></li>
 </ul>
 
-<h3><?=get_name(_h((int)$addr[0]['personID']));?> <?=_t( "ID: " );?><?=_h($addr[0]['personID']);?></h3>
+<h3><?=get_name(_h((int)$nae[0]['personID']));?></h3>
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
+    
+    <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>nae/addr-form/<?=_h($addr[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>nae/addr-form/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -59,12 +61,21 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<div class="row">
 					<!-- Column -->
 					<div class="col-md-6">
+                        
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><?=_t( 'Person ID' );?></label>
+							<div class="col-md-8">
+								<input class="form-control" type="text" readonly value="<?=_h($nae[0]['personID']);?>" />
+							</div>
+						</div>
+						<!-- // Group END -->
 						
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'First Name' );?></label>
 							<div class="col-md-8">
-								<input class="form-control" type="text" readonly value="<?=_h($addr[0]['fname']);?>" />
+								<input class="form-control" type="text" readonly value="<?=_h($nae[0]['fname']);?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -73,7 +84,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Last Name' );?></label>
                             <div class="col-md-8">
-                                <input class="form-control" type="text" readonly value="<?=_h($addr[0]['lname']);?>" />
+                                <input class="form-control" type="text" readonly value="<?=_h($nae[0]['lname']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -82,7 +93,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Middle Initial' );?></label>
                             <div class="col-md-2">
-                                <input class="form-control" type="text" readonly value="<?=_h($addr[0]['mname']);?>" />
+                                <input class="form-control" type="text" readonly value="<?=_h($nae[0]['mname']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -340,7 +351,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Primary Email' );?></label>
                             <div class="col-md-6">
-                                <input class="form-control" type="email" readonly value="<?=_h($addr[0]['email']);?>" />
+                                <input class="form-control" type="email" readonly value="<?=_h($nae[0]['email']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -373,7 +384,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>nae/adsu/<?=_h($addr[0]['personID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>nae/adsu/<?=_h($nae[0]['personID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

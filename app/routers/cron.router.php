@@ -11,7 +11,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 session_start();
 session_regenerate_id();
 
@@ -356,7 +355,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
     $app->match('GET|POST', '/log/', function () use($app) {
         if ($app->req->isPost()) {
             $app->flash('success_message', _t('Cronjob log cleaned.'));
-            file_put_contents(cronDir() . 'cron/cronjobs.log', '');
+            file_put_contents(cronDir() . 'cron/logs/cronjobs.log', '');
 
             redirect($app->req->server['HTTP_REFERER']);
         }
@@ -706,22 +705,22 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             }
         });
     });
-    
+
     $app->get('/purgeEmailHold/', function () use($app) {
         $app->db->email_hold()
             ->where('processed = "1"')->_and_()
             ->where('DATE_ADD(dateTime, INTERVAL 15 DAY) <= ?', date('Y-m-d'))
             ->delete();
     });
-    
+
     $app->get('/purgeEmailHold/', function () use($app) {
         $app->db->email_queue()
             ->where('sent = "1"')
             ->delete();
     });
-    
+
     $app->get('/updateStuTerms/', function () use($app) {
-        $terms = $app->db->query( "SELECT 
+        $terms = $app->db->query("SELECT 
                     SUM(a.attCred) as Credits,
                     a.stuID as stuAcadCredID,
                     a.termCode as termAcadCredCode,
@@ -750,9 +749,9 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             }
             return $array;
         });
-        
-        foreach($q as $r) {
-            if($r['Credits'] != $r['TermCredits']) {                
+
+        foreach ($q as $r) {
+            if ($r['Credits'] != $r['TermCredits']) {
                 $q2 = $app->db->stu_term();
                 $q2->termCredits = $r['Credits'];
                 $q2->where('stuID = ?', $r['stuTermID'])->_and_()
@@ -762,9 +761,9 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             }
         }
     });
-    
+
     $app->get('/updateStuLoad/', function () use($app) {
-        $load = $app->db->query( "SELECT 
+        $load = $app->db->query("SELECT 
                     a.termCredits,
                     a.stuID AS StudentID,
                     a.termCode AS TermCode,
@@ -789,11 +788,11 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             }
             return $array;
         });
-        
-        foreach($q as $r) {
-            if($r['termLatest'] > $r['stuTermLatest']) {                
+
+        foreach ($q as $r) {
+            if ($r['termLatest'] > $r['stuTermLatest']) {
                 $q2 = $app->db->stu_term_load();
-                $q2->stuLoad = getstudentload(_h($r['TermCode']),_h($r['termCredits']),_h($r['AcademicLevel']));
+                $q2->stuLoad = getstudentload(_h($r['TermCode']), _h($r['termCredits']), _h($r['AcademicLevel']));
                 $q2->where('stuID = ?', $r['StudentID'])->_and_()
                     ->where('termCode = ?', $r['TermCode'])->_and_()
                     ->where('acadLevelCode = ?', $r['AcademicLevel']);
@@ -884,9 +883,9 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             }
         }
     });
-    
+
     $app->get('/updateTermGPA/', function () use($app) {
-        $gpa = $app->db->query( "SELECT 
+        $gpa = $app->db->query("SELECT 
                     a.stuID,
                     a.termCode,
                     a.acadLevelCode,
@@ -925,10 +924,10 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             }
             return $array;
         });
-        
-        foreach($q as $r) {
-            $GPA = $r['stacGradePoints']/$r['Attempted'];
-            if($r['termGradePoints'] != $r['stacGradePoints'] || $r['termGPA'] != $GPA) {  
+
+        foreach ($q as $r) {
+            $GPA = $r['stacGradePoints'] / $r['Attempted'];
+            if ($r['termGradePoints'] != $r['stacGradePoints'] || $r['termGPA'] != $GPA) {
                 $q2 = $app->db->stu_term_gpa();
                 $q2->attCred = $r['Attempted'];
                 $q2->compCred = $r['Completed'];
@@ -941,13 +940,13 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             }
         }
     });
-    
+
     $app->get('/purgeErrorLog/', function () use($app) {
         $app->db->error()
             ->where('DATE_ADD(addDate, INTERVAL 5 DAY) <= ?', date('Y-m-d'))
             ->delete();
     });
-    
+
     $app->get('/purgeSavedQuery/', function () use($app) {
         $app->db->saved_query()
             ->where('DATE_ADD(createdDate, INTERVAL 30 DAY) <= ?', date('Y-m-d'))->_and_()
@@ -955,12 +954,53 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             ->delete();
     });
 
-    $app->get('/runDBBackup/', function () use($app) {
+    $app->get('/checkStuBalance/', function () use($app) {
+        $bal = $app->db->query(
+            "SELECT pay.stuID,pay.termCode,COALESCE(Fees,0)+COALESCE(Tuition,0) as Fees,COALESCE(SUM(pay.amount),0) AS Payments,COALESCE(Fees,0)+COALESCE(Tuition,0)+COALESCE(SUM(pay.amount),0) AS Balance
+            FROM payment AS pay LEFT JOIN
+            (SELECT COALESCE(SUM(y.amount),0)*-1 AS Fees,y.stuID,y.termCode
+             FROM stu_acct_fee y
+             WHERE y.type = 'Fee'
+             GROUP BY y.stuID,y.termCode) saf 
+             ON pay.stuID = saf.stuID AND pay.termCode = saf.termCode
+             LEFT JOIN
+             (SELECT COALESCE(SUM(a.total),0)*-1 AS Tuition,a.stuID,a.termCode
+             FROM stu_acct_tuition a
+             GROUP BY a.stuID, a.termCode) stu_tuition
+             ON pay.stuID = stu_tuition.stuID AND pay.termCode = stu_tuition.termCode
+             GROUP BY pay.stuID,pay.termCode"
+        );
+        $q = $bal->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        foreach ($q as $r) {
+            if ($r['Balance'] >= 0) {
+                $result = $app->db->stu_acct_bill();
+                $result->balanceDue = '0';
+                $result->where('stuID = ?', $r['stuID'])->_and_()
+                    ->where('termCode = ?', $r['termCode'])
+                    ->update();
+            } elseif($r['Balance'] < 0) {
+                $result = $app->db->stu_acct_bill();
+                $result->balanceDue = '1';
+                $result->where('stuID = ?', $r['stuID'])->_and_()
+                    ->where('termCode = ?', $r['termCode'])
+                    ->update();
+            }
+        }
+    });
+
+    $app->get('/runDBBackup/', function () {
         $dbhost = DB_HOST;
         $dbuser = DB_USER;
         $dbpass = DB_PASS;
         $dbname = DB_NAME;
-        $backupDir = '/tmp/' . str_replace('.', '_', $_SERVER['SERVER_NAME']) . '/_HOLD_/';
+        _mkdir('/tmp/' . subdomain_as_directory() . '/backups/');
+        $backupDir = '/tmp/' . subdomain_as_directory() . '/backups/';
         $backupFile = $backupDir . $dbname . '-' . date("Y-m-d-H-i-s") . '.gz';
         if (!file_exists($backupFile)) {
             $command = "mysqldump --opt -h $dbhost -u $dbuser -p$dbpass $dbname | gzip > $backupFile";

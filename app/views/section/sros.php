@@ -1,22 +1,19 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
  * Course Section Roster View
- *  
- * PHP 5.4+
  *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       4.0.9
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
 $templates_header = get_templates_header(APP_PATH . 'views/section/templates/roster/');
+$screen = 'sros';
 ?>
 
 <script type="text/javascript">
@@ -50,12 +47,14 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
+    
+    <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>sect/sros/" id="validateSubmitForm" method="post" target="new" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">

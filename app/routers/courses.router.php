@@ -10,7 +10,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 /**
  * Before router check.
  */
@@ -281,6 +280,15 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
             }
             ++$r;
         }
+
+        /**
+         * Fires when a student registers for a course.
+         * 
+         * @since 6.1.00
+         * @return mixed
+         */
+        do_action('myet_student_course_registration');
+
         // Flash messages for success or error
         if ($ID > 0) {
             $st = $app->db->stu_acad_cred()

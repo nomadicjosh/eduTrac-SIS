@@ -16,16 +16,40 @@ if (!defined('BASE_PATH'))
 class Cron
 {
 
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     public $script;
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     public $output;
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     public $executionTime;
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     protected $_app;
 
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     public function __construct(\Liten\Liten $liten = null)
     {
         $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
     }
-
+    
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     public function run($id)
     {
         $q = $this->_app->db->query("UPDATE cronjob SET currently_running = '1' WHERE id = ?", [$id]);
@@ -33,6 +57,10 @@ class Cron
         return $q;
     }
 
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     public function stop($id)
     {
         $q = $this->_app->db->query("UPDATE cronjob SET currently_running = '0' WHERE id = ?", [$id]);
@@ -43,7 +71,11 @@ class Cron
                     VALUES (?,?,?,?)", [$now, $this->script, $this->output, $this->executionTime]);
         }
     }
-
+    
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     public function fireScript($script, $id, $buffer_output = 1)
     {
         if ($buffer_output)
@@ -71,6 +103,10 @@ class Cron
             ob_end_clean();
     }
 
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     public function fireRemoteScript($url)
     {
         $url_parsed = parse_url($url);
@@ -116,13 +152,17 @@ class Cron
         return $buffer;
     }
 
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     public function schedule()
     {
         $timeWindow = time() + 3600;
         $schedule = $this->_app->db->query("SELECT * FROM cronjob WHERE fire_time <= ? AND time_interval IS NOT NULL", [$timeWindow]);
         $q = $schedule->find(function($data) {
             $array = [];
-            foreach($data as $d) {
+            foreach ($data as $d) {
                 $array[] = $d;
             }
             return $array;
@@ -159,12 +199,20 @@ class Cron
         }
     }
 
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     public function Clear($id)
     {
         //If things go wrong, or script timeout CLEAR script so will run next time
         $q = $this->_app->db->query("UPDATE cronjob SET currently_running = '0' WHERE id = ?", [$id]);
     }
 
+    /**
+     *
+     * @deprecated Deprecated as of release 6.0.00.
+     */
     public function time_unit($time_interval)
     {
         $unit = array(0, 'type');

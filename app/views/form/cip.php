@@ -16,6 +16,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$screen = 'cip';
 ?>
 
 <script type="text/javascript">
@@ -34,12 +35,14 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
+    
+    <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>form/cip/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -91,7 +94,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	<!-- // Form END -->
 	
 	<!-- Widget -->
-    <div class="widget widget-heading-simple widget-body-gray">
+    <div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
         <div class="widget-body">
         
             <!-- Table -->

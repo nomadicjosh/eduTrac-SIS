@@ -3,23 +3,9 @@ if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * Bootstrap
+ * Bootstrap for the application
  *  
- * eduTrac SIS
- * Copyright (C) 2013 Joshua Parker
- * 
- * eduTrac SIS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * @license GPLv3
  * 
  * @since       5.0.0
  * @package     eduTrac SIS
@@ -27,19 +13,25 @@ if (!defined('BASE_PATH'))
  */
 
 /**
+ * Creates a cookies directory with proper permissions.
+ */
+_mkdir($app->config('cookies.savepath'));
+
+/**
+ * Creates a file directory with proper permissions.
+ */
+_mkdir($app->config('file.savepath'));
+
+/**
  * Creates a cron directory with proper permissions.
  */
-if (!file_exists(cronDir())) {
-    mkdir(cronDir(), 0777, true);
-}
+_mkdir(cronDir());
 
 /**
  * Creates the cron directory with proper permissions to store
  * cronjob information.
  */
-if (!file_exists(cronDir() . 'cron/logs/')) {
-    mkdir(cronDir() . 'cron/logs/', 0777, true);
-}
+_mkdir(cronDir() . 'cron/logs/');
 
 /**
  * Error log setting

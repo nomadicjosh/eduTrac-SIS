@@ -11,9 +11,25 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.0.06');
+define('RELEASE_TAG', '6.1.00');
 
 $app = \Liten\Liten::getInstance();
+
+/**
+ * Custom make directory function.
+ * 
+ * This function will check if the path is an existing directory,
+ * if not, then it will be created with set permissions and also created 
+ * recursively if needed.
+ * 
+ * @since 6.1.00
+ * @param string $path Path to be created.
+ * @return string
+ */
+function _mkdir($path)
+{
+     return is_dir($path) || mkdir($path,0755,true);
+}
 
 function _t($msgid)
 {
@@ -965,7 +981,7 @@ function gs($s)
 function acadCredGradePoints($grade, $credits)
 {
     $app = \Liten\Liten::getInstance();
-    $gp = $app->db->query("SELECT points FROM grade_scale WHERE grade = ?", [$grade]);
+    $gp = $app->db->grade_scale()->select('points')->where('grade = ?', $grade);
     $q = $gp->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -974,7 +990,7 @@ function acadCredGradePoints($grade, $credits)
         return $array;
     });
     foreach ($q as $r) {
-        $gradePoints = $r['points'] * $credits;
+        $gradePoints = $r['points']*$credits;
     }
     return $gradePoints;
 }

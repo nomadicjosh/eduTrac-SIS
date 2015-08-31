@@ -20,3 +20,5 @@ body>.container-fluid.fixed #custom-footer{-webkit-border-radius:0 0 5px 5px;-mo
     top: 0 !important;
     left: 0 !important;
 }
+
+.jstree-menu {margin:28px 0px 0px 0px !important;}

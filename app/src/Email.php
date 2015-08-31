@@ -5,22 +5,8 @@ if (!defined('BASE_PATH'))
 
 /**
  * Email Class
- *  
- * eduTrac SIS
- * Copyright (C) 2013 Joshua Parker
- * 
- * eduTrac SIS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @license GPLv3
  * 
  * @since       3.0.0
  * @package     eduTrac SIS
@@ -43,6 +29,14 @@ class Email
      * A true return value does not automatically mean that the user received the
      * email successfully. It just only means that the method used was able to
      * process the request without any errors.
+     * 
+     * @since 1.0.0
+     * @param string $to Recipient's email address.
+     * @param string $subject Subject of the email.
+     * @param mixed $message The body of the email.
+     * @param mixed $headers Email headers sent.
+     * @param mixed $attachments Attachments to be sent with the email.
+     * @return mixed
      */
     public function et_mail($to, $subject, $message, $headers = '', $attachments = array())
     {
@@ -147,6 +141,13 @@ class Email
         return true;
     }
 
+    /**
+     * @deprecated Deprecated as of release 2.0.0
+     * @param string $email
+     * @param int $id
+     * @param string $host
+     * @return mixed
+     */
     public function et_progress_report($email, $id, $host)
     {
         $name = get_name($id);
@@ -174,6 +175,14 @@ class Email
         return apply_filter('progress_report', $message, $headers);
     }
 
+    /**
+     * Sends new course registration information to the registrar.
+     * 
+     * @param int $id Student ID
+     * @param string $term Term for which student is registering.
+     * @param string $host Hostname of the current installation.
+     * @return mixed
+     */
     public function course_registration($id, $term, $host)
     {
         $name = get_name($id);
@@ -209,6 +218,16 @@ class Email
         return apply_filter('course_registration', $message, $headers);
     }
 
+    /**
+     * Method used to send students an email currently via the faculty portal.
+     * 
+     * @param string $email Student's email address.
+     * @param string $from Sender's email address.
+     * @param string $subject Subject of the email.
+     * @param mixed $message Body of the email.
+     * @param mixed $attachment Any attachment to be sent with the email.
+     * @return mixed
+     */
     public function stu_email($email, $from, $subject, $message, $attachment = '')
     {
         $headers = "From: $from" . "\r\n";
@@ -222,6 +241,17 @@ class Email
         return apply_filter('stu_email', $headers);
     }
 
+    /**
+     * When a prospects register via the eduTrac SIS self service portal, an
+     * is sent with account login details.
+     * 
+     * @param string $email Email address of prospect.
+     * @param int $id Person ID of the propect.
+     * @param string $username Login username of the new prospect.
+     * @param string $password Login password of the new prospect. 
+     * @param string $host Hostname of the current installation.
+     * @return mixed
+     */
     public function myetRegConfirm($email, $id, $username, $password, $host)
     {
         $name = get_name($id);
@@ -253,13 +283,20 @@ class Email
         return apply_filter('myedutrac_appl_confirm', $message, $headers);
     }
 
+    /**
+     * Email sent to admissions to alert of a new application.
+     * 
+     * @param int $id Person ID of the prospect.
+     * @param string $host Hostname of the current installation.
+     * @return type
+     */
     public function myetApplication($id, $host)
     {
         $name = get_name($id);
         $site = _t('myeduTrac::') . get_option('institution_name');
         $message = "<p>Dear Admissions:</p>
         
-		<p>A new application has been submitted via <em>my</em>eduTrac self service.</p>
+		<p>A new application has been submitted via <em>my</em>eduTrac SIS self service.</p>
         
         <p>Log into your account to view this new application.</p>
         

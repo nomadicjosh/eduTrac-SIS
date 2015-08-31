@@ -13,6 +13,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$screen = 'setting';
 ?>
 
 <ul class="breadcrumb">
@@ -24,12 +25,14 @@ $app->view->block('dashboard');
 
 <h3><?=_t( 'Email Settings' );?></h3>
 <div class="innerLR">
+    
+    <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>email/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">

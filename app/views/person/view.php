@@ -15,6 +15,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$screen = 'vnae';
 ?>
 
 <script type="text/javascript">
@@ -32,40 +33,23 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 </ul>
 
 <h3><?=_t( 'Person:' );?> <?=_h($nae[0]['lname']);?>, <?=_h($nae[0]['fname']);?>
-    <?php if(!isset($_COOKIE['SWITCH_USERBACK']) && _h($nae[0]['personID']) != get_persondata('personID')) : ?>
-    <span data-toggle="tooltip" data-original-title="Switch to User" data-placement="top">
-        <a<?=ae('login_as_user');?> href="<?=url('/');?>switchUserTo/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-exchange"></i></a>
-    </span>
-    <?php endif; ?>
-    <?php if($staff[0]['staffID'] <= 0) : ?>
-    <span data-toggle="tooltip" data-original-title="Create Staff Record" data-placement="top">
-        <a<?=ae('create_staff_record');?> href="<?=url('/');?>staff/add/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-user"></i></a>
-    </span>
-    <?php else : ?>
-	<span data-toggle="tooltip" data-original-title="STAF Screen" data-placement="top">
-        <a<?=ae('access_staff_screen');?> href="<?=url('/');?>staff/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-user"></i></a>
-    </span>
-    <?php endif; ?>
     <?php if($appl[0]['personID'] <= 0) : ?>
     <span data-toggle="tooltip" data-original-title="Create Application" data-placement="top">
         <a<?=hl('applications','access_application_screen');?> href="<?=url('/');?>appl/add/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-archive"></i></a>
-    </span>
-    <?php endif; ?>
-    <?php if(isStudent($nae[0]['personID'])) : ?>
-    <span data-toggle="tooltip" data-original-title="SPRO Screen" data-placement="top">
-        <a<?=ae('access_student_screen');?> href="<?=url('/');?>stu/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-certificate"></i></a>
     </span>
     <?php endif; ?>
 </h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
+    
+    <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>nae/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -79,6 +63,15 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<div class="row">
 					<!-- Column -->
 					<div class="col-md-6">
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Person ID' );?></label>
+                            <div class="col-md-8">
+                                <input class="form-control" type="text" value="<?=_h($nae[0]['personID']);?>" readonly />
+                            </div>
+                        </div>
+                        <!-- // Group END -->
 					    
 					    <!-- Group -->
                         <div class="form-group">
@@ -366,7 +359,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- // Group END -->
                         
                         <!-- Group -->
-                        <div class="form-group">
+                        <div<?=ae('access_user_role_screen');?> class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Role' );?> <a href="<?=url('/');?>nae/role/<?=_h($nae[0]['personID']);?>/<?=bm();?>"><img src="<?=url('/');?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-2">
                                 <input class="form-control center" type="text" readonly value="X" />
@@ -375,7 +368,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- // Group END -->
                         
                         <!-- Group -->
-                        <div class="form-group">
+                        <div<?=ae('access_user_permission_screen');?> class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Permission' );?> <a href="<?=url('/');?>nae/perms/<?=_h($nae[0]['personID']);?>/<?=bm();?>"><img src="<?=url('/');?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-2">
                                 <input class="form-control center" type="text" readonly value="X" />

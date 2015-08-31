@@ -1,21 +1,20 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * Manage Person Permissions View
- *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * Manage person permissions View
  * 
- * @link        http://www.7mediaws.org/
+ * This view is used when editing a person's permissions.
+ *
+ * @license GPLv3
+ * 
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$screen = 'pperm';
 ?>
 
 <script type="text/javascript">
@@ -29,21 +28,23 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<li class="divider"></li>
 	<li><a href="<?=url('/');?>nae/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
 	<li class="divider"></li>
-    <li><a href="<?=url('/');?>nae/<?=_h($perms[0]['personID']);?>/<?=bm();?>" class="glyphicons vcard"><i></i> <?=get_name(_h($perms[0]['personID']));?></a></li>
+    <li><a href="<?=url('/');?>nae/<?=_h($nae[0]['personID']);?>/<?=bm();?>" class="glyphicons vcard"><i></i> <?=get_name(_h($nae[0]['personID']));?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Manage Person Permissions' );?></li>
 </ul>
 
-<h3><?=get_name(_h($perms[0]['personID']));?>: <?=_t( 'ID#' );?> <?=_h($perms[0]['personID']);?></h3>
+<h3><?=get_name(_h($nae[0]['personID']));?>: <?=_t( 'ID#' );?> <?=_h($nae[0]['personID']);?></h3>
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
+    
+    <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>nae/perms/<?=_h($perms[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=url('/');?>nae/perms/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 			
 			<div class="widget-body">
 						
@@ -61,7 +62,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				
 					<!-- Table body -->
 					<tbody>
-						<?php personPerm(_h($perms[0]['personID'])); ?>
+						<?php personPerm(_h($nae[0]['personID'])); ?>
 					</tbody>
 					<!-- // Table body END -->
 		
@@ -73,7 +74,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>nae/<?=_h($perms[0]['personID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>nae/<?=_h($nae[0]['personID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

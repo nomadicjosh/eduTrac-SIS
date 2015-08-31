@@ -1,22 +1,8 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * Edit Course View
- *  
- * eduTrac SIS
- * Copyright (C) 2013 Joshua Parker
- * 
- * eduTrac SIS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Edit course view.
+ *
+ * @license GPLv3
  * 
  * @since       3.0.0
  * @package     eduTrac SIS
@@ -27,11 +13,13 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
 include('ajax.php');
+$screen = 'vcrse';
 ?>
 
-<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+<script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
+<script src="<?=url('/');?>static/assets/plugins/tinymce/plugin.js"></script>
 <script type="text/javascript">
-	tinymce.init({selector: "textarea"});
+	tinymce.init({selector: "textarea",plugins: [ "placeholder" ]});
 	$(".panel").show();
 	setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
@@ -45,26 +33,23 @@ include('ajax.php');
 	<li><?=_h($crse[0]['courseCode']);?></li>
 </ul>
 
-<h3><?=_h($crse[0]['courseCode']);?> 
-    <span data-toggle="tooltip" data-original-title="Create Course" data-placement="top">
-        <a<?=ae('add_course');?> href="<?=url('/');?>crse/add/" class="btn btn-primary"><i class="fa fa-plus"></i></a>
-    </span>
+<h3>
+    <?=_h($crse[0]['courseCode']);?> 
     <span data-toggle="tooltip" data-original-title="Clone Course" data-placement="top">
         <a<?=ae('add_course');?> href="#crse<?=_h($crse[0]['courseID']);?>" data-toggle="modal" class="btn btn-primary"><i class="fa fa-copy"></i></a>
-    </span>
-    <span data-toggle="tooltip" data-original-title="Create Course Section" data-placement="top">
-        <a<?=ae('add_course_sec');?> href="<?=url('/');?>sect/add/<?=_h($crse[0]['courseID']);?>/" class="btn btn-primary"><i class="fa fa-code-fork"></i></a>
     </span>
 </h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
+    
+    <?php include(BASE_PATH . 'app/views/dashboard/menu.php'); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>crse/<?=_h($crse[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
-		
+        
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray col-md-10">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -262,10 +247,9 @@ include('ajax.php');
 				<div class="separator line bottom"></div>
 				
 				<!-- Group -->
-				<div class="form-group">
+				<div class="form-group col-md-12">
 					<div class="widget-body">
-						<label class="col-md-3 control-label"><?=_t( 'Course Description' );?></label>
-						<div class="col-md-6"><textarea id="mustHaveId"<?=cio();?> class="col-md-12 form-control" name="courseDesc" rows="5"><?=_h($crse[0]['courseDesc']);?></textarea></div>
+						<div class="col-md-12"><textarea id="mustHaveId"<?=cio();?> class="col-md-12 form-control" name="courseDesc" rows="8" placeholder="Enter the course description . . ."><?=_h($crse[0]['courseDesc']);?></textarea></div>
 					</div>
 				</div>
 				<!-- // Group END -->

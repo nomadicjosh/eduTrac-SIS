@@ -15,11 +15,13 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
 include('ajax.php');
+$screen = 'acrse';
 ?>
 
-<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+<script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
+<script src="<?=url('/');?>static/assets/plugins/tinymce/plugin.js"></script>
 <script type="text/javascript">
-	tinymce.init({selector: "textarea"});
+	tinymce.init({selector: "textarea",plugins: [ "placeholder" ]});
 	$(".panel").show();
 	setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
@@ -37,12 +39,14 @@ include('ajax.php');
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
+    
+    <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>crse/add/" id="validateSubmitForm" method="post" autocomplete="off">
-		
+        
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -190,10 +194,9 @@ include('ajax.php');
 				<div class="separator line bottom"></div>
 								
 				<!-- Group -->
-				<div class="form-group">
+				<div class="form-group col-md-12">
 					<div class="widget-body">
-						<label class="col-md-3 control-label"><?=_t( 'Course Description' );?></label>
-						<div class="col-md-6"><textarea id="mustHaveId"<?=cio();?> class="wysihtml5 col-md-12 form-control" name="courseDesc" rows="5"></textarea></div>
+						<div class="col-md-12"><textarea id="mustHaveId"<?=cio();?> class="wysihtml5 col-md-12 form-control" name="courseDesc" rows="8" placeholder="Enter the course description . . ."></textarea></div>
 					</div>
 				</div>
 				<!-- // Group END -->

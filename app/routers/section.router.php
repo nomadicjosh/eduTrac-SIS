@@ -10,7 +10,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 /**
  * Before route check.
  */
@@ -259,7 +258,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         if ($app->req->isPost()) {
             $sc = $decode[0]['courseCode'] . '-' . $_POST['sectionNumber'];
             $courseSection = $_POST['termCode'] . '-' . $decode[0]['courseCode'] . '-' . $_POST['sectionNumber'];
-            
+
             $dotw = '';
             /** Combine the days of the week to be entered into the database */
             $days = $_POST['dotw'];
@@ -309,6 +308,14 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                     "approvedDate" => $_POST['approvedDate'], "approvedBy" => $_POST['approvedBy'], "secLongTitle" => $decode[0]['courseLongTitle'],
                     "section" => _trim($courseSection), "description" => $decode[0]['courseDesc']
                 ];
+                /**
+                 * Create Course Section Action Hook
+                 * 
+                 * Fired when a course section is created.
+                 * 
+                 * @param mixed $section An array of values
+                 * @return mixed
+                 */
                 do_action('create_course_section', $section);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course Section', _trim($courseSection), get_persondata('uname'));
@@ -350,7 +357,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 'title' => 'Create Section',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'crse' => $decode
+                'sect' => $decode
                 ]
             );
         }
@@ -416,7 +423,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 'title' => $decode[0]['secShortTitle'] . ' :: Course Section',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'addnl' => $decode
+                'sect' => $decode
                 ]
             );
         }
@@ -494,7 +501,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 'title' => $decode[0]['secShortTitle'] . ' :: Course Section',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'soff' => $decode
+                'sect' => $decode
                 ]
             );
         }
@@ -581,7 +588,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 'title' => $q[0]['courseSection'] . ' :: Section Final Grades',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'grade' => $q
+                'sect' => $q
                 ]
             );
         }
@@ -649,6 +656,15 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $stac->endDate = $sect[0]['endDate'];
             $stac->addedBy = get_persondata('personID');
             $stac->addDate = $app->db->NOW();
+
+            /**
+             * Fires when a staff member registers a student
+             * into a course.
+             * 
+             * @since 6.1.00
+             * @return mixed
+             */
+            do_action('rgn_student_course_registration');
 
             if ($stcs->save() && $stac->save()) {
                 if (function_exists('financial_module')) {
@@ -883,7 +899,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         echo json_encode($json);
     });
 
-    $app->post('/stuLookup/', function() use($app, $json_url) {
+    $app->post('/stuLookup/', function() use($json_url) {
         $json_stu = _file_get_contents($json_url . 'student/stuID/' . (int) $_POST['stuID'] . '/?key=' . get_option('api_key'));
         $stu = json_decode($json_stu, true);
 
@@ -920,7 +936,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
         // Get parameters from Array
         $id = !empty($_GET['id']) ? $_GET['id'] : '';
-        $sect = $app->db->query("SELECT courseSecID,courseSecCode,termCode FROM course_sec WHERE termCode = ? AND currStatus = 'A'", [$id]);
+        $sect = $app->db->query("SELECT courseSecID,courseSection FROM course_sec WHERE termCode = ? AND currStatus = 'A'", [$id]);
 
         $q = $sect->find(function($data) {
             $array = [];
@@ -931,7 +947,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         });
         $items = [];
         foreach ($q as $r) {
-            $option = [ 'id' => $r['courseSecID'], 'value' => $r['termCode'] . '-' . $r['courseSecCode']];
+            $option = [ 'id' => $r['courseSecID'], 'value' => $r['courseSection']];
             $items[] = $option;
         }
 
@@ -945,7 +961,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         // Get parameters from Array
         $term = !empty($_GET['term']) ? $_GET['term'] : '';
         $sect = $app->db->course_sec()
-            ->select('DISTINCT course_sec.courseSecID,course_sec.courseSecCode,course_sec.termCode')
+            ->select('DISTINCT course_sec.courseSecID,course_sec.courseSecCode,course_sec.termCode,course_sec.courseSection')
             ->_join('stu_course_sec', 'course_sec.courseSecID = b.courseSecID', 'b')
             ->where('course_sec.termCode = ?', $term)->_and_()
             ->where('course_sec.currStatus = "A"')->_and_()
@@ -960,7 +976,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         });
         $items = [];
         foreach ($q as $r) {
-            $option = [ 'id' => $r['courseSecID'], 'value' => $r['termCode'] . '-' . $r['courseSecCode']];
+            $option = [ 'id' => $r['courseSecID'], 'value' => $r['courseSection']];
             $items[] = $option;
         }
 
@@ -968,15 +984,15 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         $response = isset($_GET['callback']) ? $_GET['callback'] . "(" . $data . ")" : $data;
         echo($response);
     });
-    
+
     $app->post('/loc/', function() use($app) {
         $loc = $app->db->location();
-        foreach($_POST as $k => $v) {
+        foreach ($_POST as $k => $v) {
             $loc->$k = $v;
         }
         $loc->save();
         $ID = $loc->lastInsertId();
-        
+
         $location = $app->db->location()
             ->where('locationID = ?', $ID);
         $q = $location->find(function($data) {

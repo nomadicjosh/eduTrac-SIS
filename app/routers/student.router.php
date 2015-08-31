@@ -11,7 +11,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
 $js = [
     'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
@@ -737,11 +736,11 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
             $sacd = $app->db->stu_acad_cred();
             $sacd->courseID = $_POST['courseID'];
-            $sacd->courseSecID = $_POST['courseSecID'];
+            $sacd->courseSecID = $decode[0]['courseSecID'];
             $sacd->courseCode = $_POST['courseCode'];
-            $sacd->courseSecCode = $_POST['courseSecCode'];
+            $sacd->courseSecCode = $decode[0]['courseSecCode'];
             $sacd->sectionNumber = $_POST['sectionNumber'];
-            $sacd->courseSection = $_POST['courseSection'];
+            $sacd->courseSection = $decode[0]['courseSection'];
             $sacd->termCode = $_POST['termCode'];
             $sacd->reportingTerm = $term[0]['reportingTerm'];
             $sacd->subjectCode = $_POST['subjectCode'];
@@ -751,7 +750,6 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $sacd->attCred = $_POST['attCred'];
             $sacd->ceu = $_POST['ceu'];
             $sacd->status = $_POST['status'];
-            $sacd->statusTime = $_POST['statusTime'];
             $sacd->acadLevelCode = $_POST['acadLevelCode'];
             $sacd->courseLevelCode = $_POST['courseLevelCode'];
             $sacd->creditType = $_POST['creditType'];
@@ -760,14 +758,20 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             if (($_POST['status'] == 'W' || $_POST['status'] == 'D') && $date >= $term[0]['termStartDate'] && $date > $term[0]['dropAddEndDate']) {
                 $sacd->compCred = '0.0';
                 $sacd->gradePoints = acadCredGradePoints($_POST['grade'], '0.0');
+                $sacd->statusTime = $time;
                 if (empty($_POST['grade'])) {
                     $sacd->grade = "W";
                 } else {
                     $sacd->grade = $_POST['grade'];
                 }
             } else {
-                $sacd->compCred = $_POST['compCred'];
-                $sacd->gradePoints = acadCredGradePoints($_POST['grade'], $_POST['compCred']);
+                if (acadCredGradePoints($_POST['grade'], $_POST['attCred']) > 0) {
+                    $compCred = $_POST['attCred'];
+                } else {
+                    $compCred = '0';
+                }
+                $sacd->compCred = $compCred;
+                $sacd->gradePoints = acadCredGradePoints($_POST['grade'], $_POST['attCred']);
                 $sacd->grade = $_POST['grade'];
             }
             $sacd->where('stuAcadCredID = ?', $id);
@@ -783,7 +787,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     ->where('courseSection = ?', $decode[0]['courseSection'])
                     ->delete();
                 $q = $app->db->stu_acad_cred()->where('stuAcadCredID = ?', $id)->delete();
-                
+
                 if (function_exists('financial_module')) {
                     $q = $app->db->stu_acct_fee()->where('stuID = ?', $decode[0]['stuID'])->_and_()->where('description = ?', $decode[0]['courseSection'])->delete();
                     /**
@@ -798,7 +802,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                      * End updating tuition totals.
                      */
                 }
-                
+
                 redirect(url('/') . 'stu/stac/' . $decode[0]['stuID'] . '/' . bm());
                 exit();
             }
@@ -813,7 +817,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     ->where('courseSection = ?', $decode[0]['courseSection'])
                     ->delete();
                 $q = $app->db->stu_acad_cred()->where('stuAcadCredID = ?', $id)->delete();
-                
+
                 if (function_exists('financial_module')) {
                     $q = $app->db->stu_acct_fee()->where('stuID = ?', $decode[0]['stuID'])->_and_()->where('description = ?', $decode[0]['courseSection'])->delete();
                     /**
@@ -827,7 +831,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                      * End updating tuition totals.
                      */
                 }
-                
+
                 redirect(url('/') . 'stu/stac/' . $decode[0]['stuID'] . '/' . bm());
                 exit();
             }
@@ -1211,16 +1215,17 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         });
 
         $tranCourse = $app->db->query("SELECT 
-                        compCred,attCred,grade,gradePoints,
-                        termCode,creditType,
-                        shortTitle,REPLACE(courseCode,'-',' ') AS CourseName,courseSecCode,
-                        startDate,endDate 
-                    FROM stu_acad_cred 
-                    WHERE stuID = ? 
-                    AND acadLevelCode = ? 
-                    AND creditType = 'I' 
-                    GROUP BY courseSecCode,termCode,acadLevelCode
-                    ORDER BY endDate ASC", [$id, $level]);
+                        stac.compCred,stac.attCred,stac.grade,stac.gradePoints,
+                        stac.termCode,stac.creditType,
+                        stac.shortTitle,REPLACE(stac.courseCode,'-',' ') AS CourseName,stac.courseSecCode,
+                        stac.startDate,stac.endDate 
+                    FROM stu_acad_cred stac
+                    LEFT JOIN term ON stac.termCode = term.termCode
+                    WHERE stac.stuID = ? 
+                    AND stac.acadLevelCode = ? 
+                    AND stac.creditType = 'I' 
+                    GROUP BY stac.courseSecCode,stac.termCode,stac.acadLevelCode
+                    ORDER BY term.termStartDate ASC", [$id, $level]);
         $course = $tranCourse->find(function($data) {
             $array = [];
             foreach ($data as $d) {
@@ -1282,6 +1287,23 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             }
             return $array;
         });
+
+        /* $stuTerms = $app->db->stu_term_gpa()
+          ->setTableAlias('sttr')
+          ->select('sttr.termCode,sttr.acadLevelCode,sttr.attCred,sttr.compCred')
+          ->select('sttr.gradePoints,sttr.termGPA')
+          ->_join('term', 'sttr.termCode = term.termCode')
+          ->where('sttr.stuID = ?', $id)->_and_()
+          ->where('sttr.acadLevelCode = ?', $level)
+          ->groupBy('termCode')
+          ->orderBy('termStartDate', 'ASC');
+          $stuTermTran = $stuTerms->find(function($data) {
+          $array = [];
+          foreach ($data as $d) {
+          $array[] = $d;
+          }
+          return $array;
+          }); */
 
         /**
          * If the database table doesn't exist, then it

@@ -397,6 +397,62 @@ function maybe_unserialize($original)
     $app = \Liten\Liten::getInstance();
     return $app->hook->maybe_unserialize($original);
 }
+
+/**
+ * Returns false.
+ * 
+ * Apply to filters to return false.
+ * 
+ * @since 6.1.00
+ * @return bool False
+ */
+function __return_false()
+{
+    return false;
+}
+
+/**
+ * Returns true.
+ * 
+ * Apply to filters to return true.
+ * 
+ * @since 6.1.00
+ * @return bool True
+ */
+function __return_true()
+{
+    return true;
+}
+
+/**
+ * Returns null.
+ * 
+ * Apply to filters to return null.
+ * 
+ * @since 6.1.00
+ * @return bool NULL
+ */
+function __return_null()
+{
+    return null;
+}
+
+/**
+ * JSTree Sidebar Menu Include
+ * 
+ * Includes the jstree sidebar menu on several screens.
+ * 
+ * @since 6.1.00
+ * @return mixed
+ */
+function jstree_sidebar_menu($screen, $crse = '', $sect = '', $nae = '', $staff = '', $spro = '', $prog = '')
+{
+    $menu = BASE_PATH . 'app/views/dashboard/menu.php';
+    if (!has_filter('sidebar_menu')) {
+        include($menu);
+    }
+    return apply_filter('sidebar_menu', $menu, $screen, $crse, $sect, $nae, $staff, $spro, $prog);
+}
 /**
  * Includes and loads all activated plugins.
  *
@@ -802,72 +858,111 @@ function parsecode_unautop($pee)
 }
 
 /**
- * Fires after eduTrac SIS has finished loading but before any headers are sent.
+ * Fires the init action.
  *
  * @since 1.0.0
  */
 function init()
 {
+    /**
+     * Fires after eduTrac SIS has finished loading but before any headers are sent.
+     *
+     * @since 1.0.0
+     */
     do_action('init');
 }
 
 /**
- * Fires in head section of all dashboard screens.
+ * Fires the admin_head action.
  *
  * @since 1.0.0
  */
 function admin_head()
 {
+    /**
+     * Prints scripts and/or data in the head tag of the dashboard.
+     *
+     * @since 1.0.0
+     */
     do_action('admin_head');
 }
 
 /**
- * Fires in head section of myeduTrac self service portal.
+ * Fires the myet_head action.
  *
  * @since 1.0.0
  */
 function myet_head()
 {
+    /**
+     * Prints scripts and/or data in the head tag of the myeduTrac self service
+     * portal.
+     *
+     * @since 1.0.0
+     */
     do_action('myet_head');
 }
 
 /**
- * Fires in footer section of the dashboard.
+ * Fires the footer action.
  *
  * @since 1.0.0
  */
 function footer()
 {
+    /**
+     * Prints scripts and/or data before the ending body tag of the myeduTrac
+     * self service portal.
+     *
+     * @since 1.0.0
+     */
     do_action('footer');
 }
 
 /**
- * Fires in footer section of dashboard.
+ * Fires the release action.
  *
  * @since 1.0.0
  */
 function release()
 {
+    /**
+     * Prints eduTrac SIS release information.
+     *
+     * @since 1.0.0
+     */
     do_action('release');
 }
 
 /**
- * Fires on the dashboard screen.
+ * Fires the dashboard_top_widgets action.
  *
  * @since 1.0.0
  */
 function dashboard_top_widgets()
 {
+    /**
+     * Prints widgets at the top portion of the dashboard.
+     *
+     * @since 1.0.0
+     */
     do_action('dashboard_top_widgets');
 }
 
 /**
- * Fires on the dashboard screen.
+ * Fires the dashboard_right_widgets action.
  *
+ * @deprecated since 5.0.0
  * @since 1.0.0
  */
 function dashboard_right_widgets()
 {
+    /**
+     * Prints widgets on the right side of the dashboard.
+     *
+     * @deprecated since 5.0.0
+     * @since 1.0.0
+     */
     do_action('dashboard_right_widgets');
 }
 

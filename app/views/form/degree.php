@@ -16,6 +16,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$screen = 'deg';
 ?>
 
 <ul class="breadcrumb">
@@ -27,12 +28,14 @@ $message = new \app\src\Messages;
 
 <h3><?=_t( 'Degree' );?></h3>
 <div class="innerLR">
+    
+    <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=url('/');?>form/degree/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -84,7 +87,7 @@ $message = new \app\src\Messages;
 	<!-- // Form END -->
 	
 	<!-- Widget -->
-    <div class="widget widget-heading-simple widget-body-gray">
+    <div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
         <div class="widget-body">
         
             <!-- Table -->
