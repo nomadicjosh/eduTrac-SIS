@@ -127,7 +127,7 @@ $app->match('GET|POST', '/install/createAdmin/', function () use($app) {
 
             $sql[] = "INSERT INTO `staff_meta` VALUES(1, 'FT', 1, 00000001, 00000001, 'STA', '2011-02-01', '2011-02-01', NULL, '" . $now . "', 00000001, '" . $now . "');";
 
-            $sql[] = "INSERT INTO `options_meta` VALUES(1, 'dbversion', '00045');";
+            $sql[] = "INSERT INTO `options_meta` VALUES(1, 'dbversion', '00046');";
 
             $sql[] = "INSERT INTO `options_meta` VALUES(2, 'system_email', '" . Session::get('email') . "');";
 
@@ -200,6 +200,8 @@ $app->match('GET|POST', '/install/createAdmin/', function () use($app) {
             $sql[] = "INSERT INTO `options_meta` VALUES(36, 'myet_layout', 'default');";
             
             $sql[] = "INSERT INTO `options_meta` VALUES(37, 'open_terms', '\"15/FA\"');";
+            
+            $sql[] = "INSERT INTO `options_meta` VALUES(38, 'elfinder_driver', 'elf_local_driver');";
 
             foreach ($sql as $query) {
                 $connect->exec($query);
