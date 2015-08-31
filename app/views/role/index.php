@@ -16,6 +16,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $roles = new \app\src\ACL();
+$screen = 'role';
 ?>
 
 <ul class="breadcrumb">
@@ -27,9 +28,11 @@ $roles = new \app\src\ACL();
 
 <h3><?=_t( 'Manage Roles' );?></h3>
 <div class="innerLR">
+    
+    <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Widget -->
-	<div class="widget widget-heading-simple widget-body-gray">
+	<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		<div class="widget-body">
 		
 			<!-- Table -->
@@ -69,17 +72,16 @@ $roles = new \app\src\ACL();
 				
 			</table>
 			<!-- // Table END -->
-			
+            <hr class="separator" />
+		<!-- Form actions -->
+        <div class="form-actions">
+            <button type="submit" name="NewRole" class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=url('/');?>role/add/<?=bm();?>'"><i></i><?=_t( 'New Role' );?></button>
+        </div>
+        <!-- // Form actions END -->
 		</div>
 	</div>
 	<div class="separator bottom"></div>
 	<!-- // Widget END -->
-	
-	<!-- Form actions -->
-	<div class="form-actions">
-		<button type="submit" name="NewRole" class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=url('/');?>role/add/<?=bm();?>'"><i></i><?=_t( 'New Role' );?></button>
-	</div>
-	<!-- // Form actions END -->
 	
 </div>	
 	
