@@ -2378,7 +2378,7 @@ CREATE TABLE IF NOT EXISTS `stu_acct_bill` (
   `postedBy` bigint(20) NOT NULL,
   `billingDate` date NOT NULL,
   `billTimeStamp` datetime NOT NULL,
-  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `stu_acct_bill` ADD PRIMARY KEY (`ID`), ADD UNIQUE KEY `billID` (`billID`), ADD KEY `stuID` (`stuID`), ADD KEY `termCode` (`termCode`), ADD KEY `postedBy` (`postedBy`);
