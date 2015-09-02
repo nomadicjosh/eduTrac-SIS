@@ -830,13 +830,15 @@ CREATE TABLE IF NOT EXISTS `department` (
   `deptTypeCode` varchar(6) NOT NULL,
   `deptCode` varchar(11) NOT NULL,
   `deptName` varchar(180) NOT NULL,
+  `deptEmail` varchar(180) NOT NULL,
+  `deptPhone` varchar(20) NOT NULL,
   `deptDesc` varchar(255) NOT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`deptID`),
   UNIQUE KEY `deptCode` (`deptCode`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `department` VALUES(00000000001, 'NULL', 'NULL', 'Null', '', '', 'Default', '{now}');
+INSERT INTO `department` VALUES(1, 'NULL', 'NULL', 'Null', '', '', 'Default', '{now}');
 
 CREATE TABLE IF NOT EXISTS `email_hold` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -2384,7 +2386,7 @@ CREATE TABLE IF NOT EXISTS `stu_acct_bill` (
   `postedBy` bigint(20) NOT NULL,
   `billingDate` date NOT NULL,
   `billTimeStamp` datetime NOT NULL,
-  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `stu_acct_bill` ADD PRIMARY KEY (`ID`), ADD UNIQUE KEY `billID` (`billID`), ADD KEY `stuID` (`stuID`), ADD KEY `termCode` (`termCode`), ADD KEY `postedBy` (`postedBy`);
@@ -2877,7 +2879,7 @@ ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`courseID`) REFERENCES `cours
 
 ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
                   
-INSERT INTO `options_meta` VALUES(1, 'dbversion', '00047');
+INSERT INTO `options_meta` VALUES(1, 'dbversion', '00048');
         
 INSERT INTO `options_meta` VALUES(2, 'system_email', '{email}');
         
