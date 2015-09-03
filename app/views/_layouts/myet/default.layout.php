@@ -209,40 +209,13 @@ $app = \Liten\Liten::getInstance(); ?>
         
         <?= $app->view->show('myet'); ?>
         
-    		<div id="footer" class="hidden-print">
-			
-			<div class="container-960 innerTB">
-				<div class="row">
-					<div class="col-md-4">
-						<h4><?=_t( 'Address' );?></h4>
-						<div class="box-generic">
-							<?=_h($app->hook->{'get_option'}('institution_name'));?><br />
-							<?=nl2br(_h($app->hook->{'get_option'}('mailing_address')));?>
-						</div>
-					</div>
-					<div class="col-md-2">
-						<!-- Blank column -->
-					</div>
-					<div class="col-md-3">
-						<!-- Blank column -->
-					</div>
-					<div class="col-md-3">
-						<h4><?=_t( 'Contact' );?></h4>
-						<ul class="icons">
-							<li class="glyphicons iphone"><i></i><?=_h($app->hook->{'get_option'}('contact_phone'));?></li>
-							<li class="glyphicons envelope"><i></i><a href="mailto:<?=unicoder(_h($app->hook->{'get_option'}('contact_email')));?>"><?=unicoder(_h($app->hook->{'get_option'}('contact_email')));?></a></li>
-						</ul>
-					</div>
-				</div>
+    		<div id="custom-footer" class="hidden-print">
 				
 				<!--  Copyright Line -->
 				<div class="copy">
 					<?=get_met_footer_release();?>
-					<span class="appbrand" style="text-transform:none !important;"><?=get_met_footer_title();?></span>
 				</div>
 				<!--  End Copyright Line -->
-				
-			</div>
 	
 		</div>
 		<!-- // Footer END -->
