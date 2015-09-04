@@ -13,10 +13,10 @@
  * @author      Joshua Parker <josh@7mediaws.org>
  */
 $app = \Liten\Liten::getInstance();
-if($app->hook->{'get_option'}('myet_layout') === null) {
+if(get_option('myet_layout') === null) {
     $app->view->extend('_layouts/myet/default.layout');
 } else {
-    $app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_layout') . '.layout');
+    $app->view->extend('_layouts/myet/' . get_option('myet_layout') . '.layout');
 }
 $app->view->block('myet');
 $stuInfo = new \app\src\Student;
@@ -49,8 +49,8 @@ $stuInfo->Load_from_key(get_persondata('personID'));
                         <th class="text-center"><?=_t( 'Time' );?></th>
 						<th class="text-center"><?=_t( 'Instructor' );?></th>
                         <?php if($schedule !== null) : ?>
-                        <?php if(gradebookExist(_h($schedule[0]['courseSecID']))) : ?>
-						<th<?=ml('gradebook_module');?> class="text-center"><?=_t( 'Grades' );?></th>
+                        <?php if(function_exists('gradebook_module') && gradebookExist(_h($schedule[0]['courseSecID']))) : ?>
+						<th class="text-center"><?=_t( 'Grades' );?></th>
                         <?php endif; endif; ?>
 					</tr>
 				</thead>
@@ -67,8 +67,8 @@ $stuInfo->Load_from_key(get_persondata('personID'));
                     <td class="text-center"><?=_h($v['dotw']);?></td>
                     <td class="text-center"><?=_h($v['startTime'].' To '.$v['endTime']);?></td>
                     <td class="text-center"><?=get_name(_h($v['facID']));?></td>
-                    <?php if(gradebookExist(_h($v['courseSecID']))) : ?>
-                    <td<?=ml('gradebook_module');?> class="text-center">
+                    <?php if(function_exists('gradebook_module') && gradebookExist(_h($v['courseSecID']))) : ?>
+                    <td class="text-center">
                     	<a href="<?=url('/');?>stu/grades/<?=_h($v['courseSecID']);?>/" title="Grades" class="btn btn-primary"><i class="fa fa-book"></i></a>
 					</td>
                     <?php endif; ?>
