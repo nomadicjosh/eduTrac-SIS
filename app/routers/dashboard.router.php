@@ -44,8 +44,6 @@ $app->get('/dashboard', function () use($app) {
         'components/modules/admin/charts/flot/assets/lib/plugins/jquery.flot.tooltip.min.js?v=v2.1.0',
         'components/modules/admin/charts/flot/assets/custom/js/flotcharts.common.js?v=v2.1.0',
         'components/modules/admin/charts/flot/assets/custom/js/flotchart-simple.init.js?v=v2.1.0',
-        'components/modules/admin/charts/easy-pie/assets/lib/js/jquery.easy-pie-chart.js?v=v2.1.0',
-        'components/modules/admin/charts/easy-pie/assets/custom/easy-pie.init.js?v=v2.1.0',
         'components/modules/admin/charts/flot/custom/chart.js',
         'components/modules/admin/charts/flot/custom/js/custom-flot.js'
     ];
