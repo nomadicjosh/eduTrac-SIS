@@ -13,9 +13,9 @@ $app = \Liten\Liten::getInstance(); ?>
 <!--[if !IE]><!--><html class="front fluid top-full sticky-top"><!-- <![endif]-->
 <head>
 	<title><?php if (isset($title)) {
-            echo $title . ' - ' . $app->hook->{'get_option'}('institution_name');
+            echo $title . ' - ' . get_option('institution_name');
         } else {
-            echo $app->hook->{'get_option'}('institution_name');
+            echo get_option('institution_name');
         } ?>
         </title>
 	
@@ -27,21 +27,6 @@ $app = \Liten\Liten::getInstance(); ?>
 	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
 	<meta name="robots" content="noindex, nofollow">
 	<link rel="shortcut icon" href="<?=get_base_url();?>favicon.ico" type="image/x-icon">
-	
-	<!-- 
-	**********************************************************
-	In development, use the LESS files and the less.js compiler
-	instead of the minified CSS loaded by default.
-	**********************************************************
-	<link rel="stylesheet/less" href="<?=get_less_directory_uri();?>admin/module.admin.page.layout.section.layout-fluid-menu-top-full.less" />
-	<?php
-	if (isset($lessArray)) {
-        foreach ($lessArray as $less){
-            echo '<link rel="stylesheet/less" href="' . url('/') . 'static/assets/'.$less.'">' . "\n";
-        }
-    }
-	?>
-	-->
 
 	<!--[if lt IE 9]><link rel="stylesheet" href="<?=get_base_url();?>static/assets/components/library/bootstrap/css/bootstrap.min.css" /><![endif]-->
 	<link rel="stylesheet" href="<?=get_base_url();?>static/assets/css/front/module.front.page.index.min.css" />
@@ -88,13 +73,13 @@ $app = \Liten\Liten::getInstance(); ?>
 					
 					<ul class="topnav pull-right">
 						
-						<li class="hidden-xs"><a href="<?=_h($app->hook->{'get_option'}('help_desk'));?>" class="glyphicons shield"><i></i> <?=_t( 'Get Help' );?></a></li>
+						<li class="hidden-xs"><a href="<?=_h(get_option('help_desk'));?>" class="glyphicons shield"><i></i> <?=_t( 'Get Help' );?></a></li>
 						<?php if(!isUserLoggedIn()) : ?>
 						<li class="glyphs2 hidden-xs">
 							<ul>
 								<li><a href="<?=get_base_url();?>login/" class="glyphicons unlock"><i></i> <?=_t( 'Sign in' );?></a></li>
-								<?php if(_h($app->hook->{'get_option'}('enable_myet_appl_form')) == 1) : ?>
-                                <?php $app->hook->{'do_action'}('apply_online'); ?>
+								<?php if(_h(get_option('enable_myet_appl_form')) == 1) : ?>
+                                <?php do_action('apply_online'); ?>
 								<li<?= ml('myet_module'); ?><?= hl('apply_online'); ?>><a href="<?=get_base_url();?>online-app/" class="glyphicons user_add"><i></i> <?=_t( 'Apply' );?></a></li>
 								<?php endif; ?>
 							</ul>
@@ -191,7 +176,7 @@ $app = \Liten\Liten::getInstance(); ?>
 					</ul>
 				</li>
                 <?php endif; ?>
-				<?php $app->hook->do_action('myet_helpdesk_menu'); ?>
+				<?php do_action('myet_helpdesk_menu'); ?>
 				<?php endif; ?>
 				<li><a href="<?=get_base_url();?>courses/" class="glyphicons search"><i></i><?=_t( 'Search Courses' );?></a></li>
 				<?php if(shoppingCart()) : ?>
