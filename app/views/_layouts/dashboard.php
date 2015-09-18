@@ -21,22 +21,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
         <link rel="shortcut icon" href="<?= url('/'); ?>favicon.ico" type="image/x-icon">
 
-        <!-- 
-        **********************************************************
-        In development, use the LESS files and the less.js compiler
-        instead of the minified CSS loaded by default.
-        **********************************************************
-        <link rel="stylesheet/less" href="<?= get_less_directory_uri(); ?>admin/module.admin.page.layout.section.layout-fluid-menu-top-full.less" />
-        <?php
-        if (isset($lessArray)) {
-            foreach ($lessArray as $less) {
-                echo '<link rel="stylesheet/less" href="' . url('/') . 'static/assets/' . $less . '">' . "\n";
-            }
-        }
-
-        ?>
-        -->
-
 <!--[if lt IE 9]><link rel="stylesheet" href="<?= url('/'); ?>static/assets/components/library/bootstrap/css/bootstrap.min.css" /><![endif]-->
         <link rel="stylesheet" href="<?= get_css_directory_uri(); ?>admin/module.admin.page.layout.section.layout-fluid-menu-top-full.min.css" />
         <link rel="stylesheet" href="<?= get_css_directory_uri(); ?>admin/custom.css" />

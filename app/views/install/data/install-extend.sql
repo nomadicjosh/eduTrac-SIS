@@ -2799,6 +2799,8 @@ ALTER TABLE `stu_acad_cred` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`pe
 
 ALTER TABLE `stu_acad_level` ADD FOREIGN KEY (`acadProgCode`) REFERENCES `acad_program` (`acadProgCode`) ON UPDATE CASCADE;
 
+ALTER TABLE `stu_acad_level` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
+
 ALTER TABLE `stu_acct_bill` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_acct_bill` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE;
@@ -2839,7 +2841,7 @@ ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`p
 
 ALTER TABLE `stu_program` ADD FOREIGN KEY (`acadProgCode`) REFERENCES `acad_program` (`acadProgCode`) ON UPDATE CASCADE ON DELETE RESTRICT;
 
-ALTER TABLE `stu_program` ADD FOREIGN KEY (`stuID`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+ALTER TABLE `stu_program` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_program` ADD FOREIGN KEY (`approvedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
@@ -2847,19 +2849,17 @@ ALTER TABLE `stu_program` ADD FOREIGN KEY (`advisorID`) REFERENCES `staff` (`sta
 
 ALTER TABLE `stu_program` ADD FOREIGN KEY (`catYearCode`) REFERENCES `acad_year` (`acadYearCode`) ON UPDATE CASCADE;
 
-ALTER TABLE `stu_term` ADD FOREIGN KEY (`stuID`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+ALTER TABLE `stu_term` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_term` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 ALTER TABLE `stu_term_gpa` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE ON DELETE RESTRICT;
 
-ALTER TABLE `stu_term_load` ADD FOREIGN KEY (`stuID`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
+ALTER TABLE `stu_term_gpa` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+ALTER TABLE `stu_term_load` ADD FOREIGN KEY (`stuID`) REFERENCES `student` (`stuID`) ON UPDATE CASCADE;
 
 ALTER TABLE `stu_term_load` ADD FOREIGN KEY (`termCode`) REFERENCES `term` (`termCode`) ON UPDATE CASCADE ON DELETE RESTRICT;
-
-ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`stuID`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
-
-ALTER TABLE `stu_course_sec` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
 
 ALTER TABLE `term` ADD FOREIGN KEY (`semCode`) REFERENCES `semester` (`semCode`) ON UPDATE CASCADE;
 
