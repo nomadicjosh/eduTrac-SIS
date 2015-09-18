@@ -93,17 +93,34 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
             }
         }
         $terms = get_option('open_terms');
-        $sect = $app->db->course_sec()
-            ->setTableAlias('a')
-            ->select('a.courseSecID,a.courseSecCode,a.secShortTitle,a.dotw')
-            ->select('a.startTime,a.endTime,a.minCredit,a.termCode')
-            ->select('a.courseFee,a.labFee,a.materialFee,a.facID')
-            ->select('a.comment,a.courseSection,b.locationName,c.courseDesc')
-            ->_join('location', 'a.locationCode = b.locationCode', 'b')
-            ->_join('course', 'a.courseID = c.courseID', 'c')
-            ->where('a.currStatus = "A"')->_and_()
-            ->where('a.webReg = "1"')->_and_()
-            ->where('a.termCode IN(' . $terms . ')');
+        if (function_exists('create_payment_plan') && isStudent(get_persondata('personID'))) {
+            $sect = $app->db->course_sec()
+                ->setTableAlias('a')
+                ->select('a.courseSecID,a.courseSecCode,a.secShortTitle,a.dotw')
+                ->select('a.startTime,a.endTime,a.minCredit,a.termCode')
+                ->select('a.courseFee,a.labFee,a.materialFee,a.facID')
+                ->select('a.comment,a.courseSection,b.locationName,c.courseDesc')
+                ->_join('location', 'a.locationCode = b.locationCode', 'b')
+                ->_join('course', 'a.courseID = c.courseID', 'c')
+                ->_join('acad_program', 'c.subjectCode = d.specCode AND c.acadLevelCode = d.acadLevelCode', 'd')
+                ->_join('stu_program', 'd.acadProgCode = e.acadProgCode', 'e')
+                ->where('e.stuID = ?', get_persondata('personID'))->_and_()
+                ->where('a.currStatus = "A"')->_and_()
+                ->where('a.webReg = "1"')->_and_()
+                ->where('a.termCode IN(' . $terms . ')');
+        } else {
+            $sect = $app->db->course_sec()
+                ->setTableAlias('a')
+                ->select('a.courseSecID,a.courseSecCode,a.secShortTitle,a.dotw')
+                ->select('a.startTime,a.endTime,a.minCredit,a.termCode')
+                ->select('a.courseFee,a.labFee,a.materialFee,a.facID')
+                ->select('a.comment,a.courseSection,b.locationName,c.courseDesc')
+                ->_join('location', 'a.locationCode = b.locationCode', 'b')
+                ->_join('course', 'a.courseID = c.courseID', 'c')
+                ->where('a.currStatus = "A"')->_and_()
+                ->where('a.webReg = "1"')->_and_()
+                ->where('a.termCode IN(' . $terms . ')');
+        }
         $q = $sect->find(function($data) {
             $array = [];
             foreach ($data as $d) {
