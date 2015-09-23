@@ -202,7 +202,17 @@ $message = new \app\src\Messages;
                         </div>
                         <!-- // Group END -->
                         
-                        <?php $app->hook->{'do_action'}('left_appl_form_field'); ?>
+                        <?php 
+                            /**
+                             * Application Form Field (Left)
+                             * 
+                             * Action will print a form field on the left side
+                             * of the appl screen when triggered.
+                             * 
+                             * @since 5.0.0
+                             */
+                            do_action('left_new_appl_form_field'); 
+                        ?>
 						
 					</div>
 					<!-- // Column END -->
@@ -246,7 +256,17 @@ $message = new \app\src\Messages;
                         </div>
                         <!-- // Group END -->
                         
-                        <?php $app->hook->{'do_action'}('right_appl_form_field'); ?>
+                        <?php 
+                            /**
+                             * Application Form Field (Right)
+                             * 
+                             * Action will print a form field on the right side
+                             * of the appl screen when triggered.
+                             * 
+                             * @since 5.0.0
+                             */
+                            do_action('right_new_appl_form_field'); 
+                        ?>
 						
 					</div>
 					<!-- // Column END -->

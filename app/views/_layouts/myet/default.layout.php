@@ -79,7 +79,17 @@ $app = \Liten\Liten::getInstance(); ?>
 							<ul>
 								<li><a href="<?=get_base_url();?>login/" class="glyphicons unlock"><i></i> <?=_t( 'Sign in' );?></a></li>
 								<?php if(_h(get_option('enable_myet_appl_form')) == 1) : ?>
-                                <?php do_action('apply_online'); ?>
+                                <?php 
+                                    /**
+                                     * Apply Online
+                                     * 
+                                     * This action is triggered to echo out new links
+                                     * at the top of myeduTrac self service portal.
+                                     * 
+                                     * @since 5.0.0
+                                     */
+                                    do_action('apply_online'); 
+                                ?>
 								<li<?= ml('myet_module'); ?><?= hl('apply_online'); ?>><a href="<?=get_base_url();?>online-app/" class="glyphicons user_add"><i></i> <?=_t( 'Apply' );?></a></li>
 								<?php endif; ?>
 							</ul>
@@ -108,7 +118,7 @@ $app = \Liten\Liten::getInstance(); ?>
 						<li class="glyphs2 hidden-xs">
 							<ul>
 								<li class="single">
-									<a href="<?=url('/');?>switchUserBack/<?=$app->cookies->getSecureCookie('SWITCH_USERBACK');?>/" class="no-ajaxify glyphicons history"><i></i> <?php _e( _t( 'Switch Back to' ) ); ?> <?=$app->cookies->getSecureCookie('SWITCH_USERNAME');?></a>
+									<a href="<?=url('/');?>switchUserBack/<?=$app->cookies->getSecureCookie('SWITCH_USERBACK');?>/" class="no-ajaxify glyphicons history"><i></i> <?=_t( 'Switch Back to' );?> <?=$app->cookies->getSecureCookie('SWITCH_USERNAME');?></a>
 								</li>
 							</ul>
 						</li>
@@ -141,6 +151,18 @@ $app = \Liten\Liten::getInstance(); ?>
 								<li<?=ml('financial_module');?>><a href="<?=get_base_url();?>stu/bill/"><?=_t( 'My Bills' );?></a></li>
 								<li><a href="<?=get_base_url();?>stu/terms/"><?=_t( 'Class Schedule' );?></a></li>
 								<li><a href="<?=get_base_url();?>stu/final-grades/"><?=_t( 'Final Grades' );?></a></li>
+                                <?php 
+                                    /**
+                                     * Student My Menu Action Hook
+                                     * 
+                                     * Hook into this action in order to add a new menu item
+                                     * to be accessed by any logged in student under myeduTrac
+                                     * self service portal.
+                                     * 
+                                     * @since 6.1.05
+                                     */
+                                    do_action('student_my_menu'); 
+                                ?>
                             </ul>
                         </li>
 						<li<?=ml('myet_module');?> class="dropdown submenu">
@@ -149,8 +171,32 @@ $app = \Liten\Liten::getInstance(); ?>
                                 <li><a href="<?=get_base_url();?>form/address/"><?=_t( 'Change of Address Form' );?></a></li>
 								<li><a href="<?=get_base_url();?>form/request-form/"><?=_t( 'Booking Request Form' );?></a></li>
 								<li><a href="<?=get_base_url();?>form/photo/"><?=_t( 'School Photo' );?></a></li>
+                                <?php 
+                                    /**
+                                     * Forms My Menu Action Hook
+                                     * 
+                                     * Hook into this action in order to add a new menu item
+                                     * to be accessed by any logged in user under myeduTrac
+                                     * self service portal.
+                                     * 
+                                     * @since 6.1.05
+                                     */
+                                    do_action('forms_my_menu'); 
+                                ?>
                             </ul>
                         </li>
+                        <?php 
+                            /**
+                             * My Menu Action Hook
+                             * 
+                             * Hook into this action in order to add a new menu item
+                             * to be accessed by any logged in user under myeduTrac
+                             * self service portal.
+                             * 
+                             * @since 5.0.0
+                             */
+                            do_action('my_menu'); 
+                        ?>
                         <li><a href="<?=get_base_url();?>appl/applications/"><?=_t( 'Applications' );?></a></li>
 						<li><a href="<?=get_base_url();?>profile/"><?=_t( 'Profile' );?></a></li>
 						<li><a href="<?=get_base_url();?>password/"><?=_t( 'Change Password' );?></a></li>
@@ -176,7 +222,17 @@ $app = \Liten\Liten::getInstance(); ?>
 					</ul>
 				</li>
                 <?php endif; ?>
-				<?php do_action('myet_helpdesk_menu'); ?>
+				<?php 
+                    /**
+                     * myeduTrac Main Menu Hook
+                     * 
+                     * Hook into this action in order to add a new menu item
+                     * to be accessed by any user or visitor.
+                     * 
+                     * @since 6.1.05
+                     */
+                    do_action('myet_main_menu'); 
+                ?>
 				<?php endif; ?>
 				<li><a href="<?=get_base_url();?>courses/" class="glyphicons search"><i></i><?=_t( 'Search Courses' );?></a></li>
 				<?php if(shoppingCart()) : ?>
@@ -202,10 +258,11 @@ $app = \Liten\Liten::getInstance(); ?>
 				</div>
 				<!--  End Copyright Line -->
 	
-		</div>
-		<!-- // Footer END -->
+            </div>
+            <!-- // Footer END -->
 		
 	</div>
+</div>
 	<!-- // Main Container Fluid END -->
 	
 	<!-- Global -->
