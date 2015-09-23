@@ -279,6 +279,16 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                     $ID = $stac->lastInsertId();
                     $now = $app->db->NOW();
                     /**
+                     * Is triggered after registration and after new STAC record
+                     * is added to the database.
+                     * 
+                     * @since 6.1.05
+                     * @param mixed $stac Array of STAC data.
+                     * @param int $ID Primary key of the new STAC record.
+                     * @return mixed
+                     */
+                    do_action_array('post_save_myet_stac', [ $stac, $ID ]);
+                    /**
                      * Delete the record from the shopping cart after
                      * registration is complete.
                      */

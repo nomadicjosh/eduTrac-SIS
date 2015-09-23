@@ -107,11 +107,25 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         if ($app->req->isPost()) {
             $spro = $app->db->student();
+            /**
+             * Triggers before SPRO record is updated.
+             * 
+             * @since 6.1.05
+             */
+            do_action('pre_update_spro');
             foreach (_filter_input_array(INPUT_POST) as $k => $v) {
                 $spro->$k = $v;
             }
             $spro->where('stuID = ?', $id);
             if ($spro->update()) {
+                /**
+                 * Triggers after SPRO record is updated.
+                 * 
+                 * @since 6.1.05
+                 * @param mixed $spro Array of student data.
+                 * @return mixed
+                 */
+                do_action('post_update_spro', $spro);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Student Profile (SPRO)', get_name($id), get_persondata('uname'));
             } else {
@@ -269,6 +283,12 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
                     $email->et_mail(get_option('admissions_email'), _t("Student Acceptance Letter"), $message, $headers);
                 }
+                /**
+                 * Triggers after new student record is saved.
+                 * 
+                 * @since 6.1.05
+                 */
+                do_action('post_save_stu');
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Student', get_name($id), get_persondata('uname'));
                 redirect(url('/') . 'stu/' . $id . '/' . bm());
@@ -870,6 +890,14 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     ->update();
                 $sacd->update();
             }
+            /**
+             * Triggers after SACD record is updated.
+             * 
+             * @since 6.1.05
+             * @param mixed $sacd Array of student academic credit data.
+             * @return mixed
+             */
+            do_action('post_update_sacd', $sacd);
             $dbcache->clearCache("stu_acad_cred-$id");
             redirect($app->req->server['HTTP_REFERER']);
         }

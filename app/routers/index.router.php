@@ -114,7 +114,7 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
         /**
          * Checks if the password is correct.
          */
-        if ($hasher->checkPassword($app->req->_post('password'), $r['password'])) {
+        if (et_check_password($app->req->_post('password'), $r['password'], _h($r['personID']))) {
             $ll = $app->db->person();
             $ll->LastLogin = $ll->NOW();
             $ll->where('personID = ?', _h($r['personID']))->update();

@@ -132,6 +132,14 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             }
             $crse->where('courseID = ?', (int) $id);
             if ($crse->update()) {
+                /**
+                 * Is triggered after a course is updated.
+                 * 
+                 * @since 6.1.05
+                 * @param mixed $crse Array of course data.
+                 * @return mixed
+                 */
+                do_action('post_update_crse', $crse);
                 $dbcache->clearCache("course-$id");
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update', 'Course', $decode[0]['courseCode'], get_persondata('uname'));
@@ -200,6 +208,14 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             }
             $crse->where('courseID = ?', (int) $id);
             if ($crse->update()) {
+                /**
+                 * Is triggered after course additional info is updated.
+                 * 
+                 * @since 6.1.05
+                 * @param mixed $crse Array of course data.
+                 * @return mixed
+                 */
+                do_action('post_update_crse_addnl_info', $crse);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Course', $decode[0]['courseCode'], get_persondata('uname'));
             } else {
@@ -280,6 +296,15 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $crse->approvedBy = get_persondata('personID');
             if ($crse->save()) {
                 $ID = $crse->lastInsertId();
+                /**
+                 * Is triggered after a new course is added.
+                 * 
+                 * @since 6.1.05
+                 * @param mixed $crse Array of course data.
+                 * @param int $ID Primary key of the new course added.
+                 * @return mixed
+                 */
+                do_action_array('post_save_crse', [$crse, $ID]);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course', $_POST['subjectCode'] . '-' . $_POST['courseNumber'], get_persondata('uname'));
                 redirect(url('/crse/') . (int) $ID . '/');
