@@ -488,8 +488,10 @@ do_action('custom_plugin_page');
 /**
  * An action called to create db tables needed
  * for a plugin
+ * @see Plugin::register_activation_hook()
  *
  * @since 4.2.0
+ * @deprecated since release 6.1.06
  * @uses do_action() Calls 'create_db_table' hook.
  */
 do_action('create_db_table');
