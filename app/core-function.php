@@ -193,7 +193,7 @@ function _bool($num)
     }
 }
 
-function courseList($id)
+function courseList($id = '')
 {
     $app = \Liten\Liten::getInstance();
     $crse = $app->db->course()
@@ -305,6 +305,7 @@ function payment_type_dropdown($typeID = NULL)
  * @param string $code Unique code from table.
  * @param string $name Name or title of record retrieving.
  * @param string $activeID Field to compare to.
+ * @param string $bind Bind parameters to avoid SQL injection.
  * @return mixed
  */
 function table_dropdown($table, $where = null, $id, $code, $name, $activeID = null, $bind = null)
@@ -352,7 +353,7 @@ function get_staff_email()
         }
         return $array;
     });
-    foreach ($q as $k => $v) {
+    foreach ($q as $v) {
         echo '<option value="' . _h($v['email']) . '">' . get_name(_h($v['personID'])) . '</option>' . "\n";
     }
 }
@@ -404,8 +405,8 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
  * A function which returns true if the logged in user
  * is a student in the system.
  * @since 4.3
- * @param $id
- * @return mixed
+ * @param int $id Student's ID.
+ * @return bool
  */
 function isStudent($id)
 {
@@ -428,8 +429,8 @@ function isStudent($id)
  * A function which returns true if the logged in user
  * has an active student, staff, or faculty record.
  * @since 4.3
- * @param $id
- * @return mixed
+ * @param int $id Person ID.
+ * @return bool
  */
 function isRecordActive($id)
 {
@@ -461,8 +462,8 @@ function isRecordActive($id)
  * hide the menu item. For myeduTrac usage.
  * 
  * @since 4.3
- * @param $id int(required)
- * @return mixed
+ * @param int $id Person ID
+ * @return string
  */
 function checkStuMenuAccess($id)
 {
@@ -476,7 +477,7 @@ function checkStuMenuAccess($id)
  * redirect the user to his/her profile.
  * 
  * @since 4.3
- * @param $id int(required)
+ * @param int $id Person ID.
  * @return mixed
  */
 function checkStuAccess($id)
@@ -877,6 +878,13 @@ function translate_addr_type($type)
     }
 }
 
+/**
+ * Returns the name of a particular person.
+ * 
+ * @since 1.0.0
+ * @param int $ID Person ID.
+ * @return string
+ */
 function get_name($ID)
 {
     $app = \Liten\Liten::getInstance();
@@ -889,13 +897,15 @@ function get_name($ID)
         return $array;
     });
     foreach ($q as $r) {
-        $array[] = $r;
+        return _h($r['lname']) . ', ' . _h($r['fname']);
     }
-    return _h($r['lname']) . ', ' . _h($r['fname']);
 }
 
 /**
  * @since 4.1.6
+ * @param int $ID Person ID
+ * @param int $initials Number of initials to show.
+ * @return string
  */
 function get_initials($ID, $initials = 2)
 {
@@ -917,6 +927,12 @@ function get_initials($ID, $initials = 2)
     }
 }
 
+/**
+ * Returns the ID of the person if he/she has an application.
+ * 
+ * @param int $id Person ID
+ * @return int
+ */
 function hasAppl($id)
 {
     $app = \Liten\Liten::getInstance();
@@ -976,8 +992,14 @@ function gs($s)
         return ' readonly="readonly"';
     }
 }
-/* Calculate grade points for stu_acad_cred. */
 
+/**
+ *  Calculates grade points for stu_acad_cred.
+ * 
+ * @param string $grade Letter grade.
+ * @param float $credits Number of course credits.
+ * @return mixed
+ */
 function acadCredGradePoints($grade, $credits)
 {
     $app = \Liten\Liten::getInstance();
@@ -1042,6 +1064,12 @@ function print_gzipped_page()
     }
 }
 
+/**
+ * Checks to see if the logged in student can
+ * register for courses.
+ * 
+ * @return bool
+ */
 function student_can_register()
 {
     $app = \Liten\Liten::getInstance();
@@ -1119,6 +1147,10 @@ function student_can_register()
  * the course the student is registering for.
  * If there is one, then we do a check to see
  * if the student has meet the preReq.
+ * 
+ * @param int $stuID Student ID.
+ * @param int $courseSecID ID of course section.
+ * @return bool
  */
 function prerequisite($stuID, $courseSecID)
 {
@@ -1172,6 +1204,11 @@ function prerequisite($stuID, $courseSecID)
  * uploaded school photo.
  * 
  * @since 4.5
+ * @param int $id Person ID.
+ * @param string $email Email of the requested person.
+ * @param int $s Size of the photo.
+ * @param string $class HTML element for CSS.
+ * @return mixed
  */
 function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
 {
@@ -1301,7 +1338,13 @@ function foot_release()
         echo "r" . CURRENT_RELEASE;
     }
 }
-
+/**
+ * Hashes a plain text password.
+ * 
+ * @since 1.0.0
+ * @param string $password Plain text password
+ * @return mixed
+ */
 function et_hash_password($password)
 {
     // By default, use the portable hash from phpass
@@ -1310,6 +1353,15 @@ function et_hash_password($password)
     return $hasher->HashPassword($password);
 }
 
+/**
+ * Checks a plain text password against a hashed password.
+ * 
+ * @since 1.0.0
+ * @param string $password Plain test password.
+ * @param string $hash Hashed password in the database to check against.
+ * @param int $person_id Person ID.
+ * @return mixed
+ */
 function et_check_password($password, $hash, $person_id = '')
 {
     // If the hash is still md5...
@@ -1332,6 +1384,15 @@ function et_check_password($password, $hash, $person_id = '')
     return apply_filter('check_password', $check, $password, $hash, $person_id);
 }
 
+/**
+ * Used by et_check_password in order to rehash
+ * an old password that was hashed using MD5 function.
+ * 
+ * @since 1.0.0
+ * @param string $password Person password.
+ * @param int $person_id Person ID.
+ * @return mixed
+ */
 function et_set_password($password, $person_id)
 {
     $app = \Liten\Liten::getInstance();
@@ -1423,6 +1484,9 @@ function generate_timezone_list()
 
 /**
  * Get age by birthdate.
+ * 
+ * @param string $birthdate Person's birth date.
+ * @return mixed
  */
 function getAge($birthdate = '0000-00-00')
 {
@@ -1469,8 +1533,9 @@ function unicoder($string)
  * based on user's id.
  *
  * @since 3.0.2
+ * @param int $id Person ID.
+ * @param mixed $field Data requested of particular person.
  * @return mixed
- * 
  */
 function getUserValue($id, $field)
 {
@@ -1611,7 +1676,6 @@ function convertCourseSec($sect)
  * @since 6.0.00
  * @param string (optional) $template_dir loads templates from specified folder
  * @return mixed
- *
  */
 function get_templates_header($template_dir = '')
 {
@@ -1654,7 +1718,6 @@ function get_templates_header($template_dir = '')
  * @since 6.0.00
  * @param string (optional) $layout_dir loads layouts from specified folder
  * @return mixed
- *
  */
 function get_layouts_header($layout_dir = '')
 {
