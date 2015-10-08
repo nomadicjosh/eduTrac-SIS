@@ -1,4 +1,4 @@
-<?php namespace app\srcs;
+<?php namespace app\src;
 
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -6,16 +6,11 @@ if (!defined('BASE_PATH'))
 /**
  * Plugin Class for Hook System
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @license     http://www.edutracerp.com/general/edutrac-erp-commercial-license/ Commercial License
- * @link        http://www.7mediaws.org/
  * @since       4.2.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 class Plugin
 {
@@ -28,24 +23,38 @@ class Plugin
         self::$_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
     }
 
+    /**
+     * Plugin Basename
+     * 
+     * The method extracts the file name of a specific plugin.
+     * 
+     * @since 4.2.0
+     * @param string $file Plugin's file name.
+     * @return string The file name of the plugin.
+     */
     public static function plugin_basename($file)
     {
-        foreach (self::$path as $dir => $realdir) {
-            if (strpos($file, $realdir) === 0) {
-                $file = $dir . substr($file, strlen($realdir));
-            }
-        }
         $plugindir = PLUGINS_DIR;
         $dropindir = DROPINS_DIR;
 
         $file = preg_replace('#^' . preg_quote($plugindir, '#') . '/|^' . preg_quote($dropindir, '#') . '/#', '', $file);
         $file = trim($file, '/');
-        return $file;
+        return basename($file);
     }
 
+    /**
+     * Register Activation Hook
+     * 
+     * This method is used to run code that should be executed
+     * when a plugin is being activated.
+     * 
+     * @since 4.2.0
+     * @param string $file Plugin's file name.
+     * @param string $function The function which should be executed.
+     */
     public static function register_activation_hook($file, $function)
     {
         $file = self::plugin_basename($file);
-        self::$_app->hook->add_action('activate_' . $file, $function);
+        add_action('activate_' . $file, $function);
     }
 }
