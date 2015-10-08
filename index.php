@@ -10,6 +10,8 @@ defined('APP_ENV') or define('APP_ENV', 'PROD');
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 defined('BASE_PATH') or define('BASE_PATH', __DIR__ . DS);
 defined('APP_PATH') or define('APP_PATH', BASE_PATH . 'app' . DS);
+defined('DROPINS_DIR') or define('DROPINS_DIR', BASE_PATH . 'app' . DS . 'dropins' . DS);
+defined('PLUGINS_DIR') or define('PLUGINS_DIR', BASE_PATH . 'app' . DS . 'plugins' . DS);
 defined('CACHE_PATH') or define('CACHE_PATH', APP_PATH . 'tmp/cache' . DS);
 defined('K_PATH_IMAGES') or define('K_PATH_IMAGES', BASE_PATH . 'static/images/');
 
