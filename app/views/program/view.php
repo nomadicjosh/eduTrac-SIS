@@ -156,6 +156,17 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         </div>
                         <!-- // Group END -->
                         
+                        <?php 
+                        /**
+                         * Prints a new field on the left of the screen
+                         * when fired.
+                         * 
+                         * @since 6.1.06
+                         * @param array $prog Current program data object.
+                         */
+                        do_action('left_prog_view_form', $prog); 
+                        ?>
+                        
                     </div>
                     <!-- // Column END -->
                     
@@ -280,6 +291,17 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <a<?=ae('access_forms');?> href="#loc" data-toggle="modal" title="Location" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
+                        
+                        <?php 
+                        /**
+                         * Prints a field on the right of the screen
+                         * when fired.
+                         * 
+                         * @since 6.1.06
+                         * @param array $prog Current program data object.
+                         */
+                        do_action('right_prog_view_form', $prog); 
+                        ?>
                         
                     </div>
                     <!-- // Column END -->

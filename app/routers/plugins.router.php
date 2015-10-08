@@ -10,7 +10,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 /**
  * Before route check.
  */
@@ -51,44 +50,100 @@ $app->group('/plugins', function() use ($app, $css, $js) {
     });
 
     $app->get('/activate/', function() use($app) {
+        ob_start();
+
+        $pluginName = _filter_input_string(INPUT_GET, 'id');
+        $plugin = str_replace('.plugin.php', '', $pluginName);
+
+        if (!file_exists(PLUGINS_DIR . $plugin . '/' . $pluginName)) {
+            $file = PLUGINS_DIR . $pluginName;
+        } else {
+            $file = PLUGINS_DIR . $plugin . '/' . $pluginName;
+        }
+        if (file_exists($file)) {
+            include_once($file);
+        }
+
         /**
          * Fires before a specific plugin is activated.
          * 
-         * _filter_input_string(INPUT_GET, 'id') refers to the plugin's
+         * $pluginName refers to the plugin's
          * name (i.e. moodle.plugin.php).
          * 
          * @since 6.1.00
+         * @param string $pluginName The plugin's base name.
          */
-        do_action( 'activate_plugin', _filter_input_string(INPUT_GET, 'id') );
-        
-        activate_plugin(_filter_input_string(INPUT_GET, 'id'));
-        
+        do_action('activate_plugin', $pluginName);
+
         /**
          * Fires as a specifig plugin is being activated.
          * 
-         * _filter_input_string(INPUT_GET, 'id') refers to the plugin's
+         * $pluginName refers to the plugin's
          * name (i.e. moodle.plugin.php).
          * 
          * @since 6.1.00
+         * @param string $pluginName The plugin's base name.
          */
-        do_action( 'activate_' . _filter_input_string(INPUT_GET, 'id') );
-        
+        do_action('activate_' . $pluginName);
+
+        activate_plugin($pluginName);
+
+        /**
+         * Fires after a plugin has been activated.
+         * 
+         * $pluginName refers to the plugin's
+         * name (i.e. moodle.plugin.php).
+         * 
+         * @since 6.1.06
+         * @param string $pluginName The plugin's base name.
+         */
+        do_action('activated_plugin', $pluginName);
+
+        if (ob_get_length() > 0) {
+            ob_get_clean();
+        }
+        ob_end_clean();
+
         redirect($app->req->server['HTTP_REFERER']);
     });
 
     $app->get('/deactivate/', function() use($app) {
-        deactivate_plugin(_filter_input_string(INPUT_GET, 'id'));
-        
+        $pluginName = _filter_input_string(INPUT_GET, 'id');
+        /**
+         * Fires before a specific plugin is deactivated.
+         * 
+         * $pluginName refers to the plugin's
+         * name (i.e. moodle.plugin.php).
+         * 
+         * @since 6.1.06
+         * @param string $pluginName The plugin's base name.
+         */
+        do_action('deactivate_plugin', $pluginName);
+
         /**
          * Fires as a specifig plugin is being deactivated.
          * 
-         * _filter_input_string(INPUT_GET, 'id') refers to the plugin's
+         * $pluginName refers to the plugin's
          * name (i.e. moodle.plugin.php).
          * 
          * @since 6.1.00
+         * @param string $pluginName The plugin's base name.
          */
-        do_action( 'deactivate_' . _filter_input_string(INPUT_GET, 'id') );
-        
+        do_action('deactivate_' . $pluginName);
+
+        deactivate_plugin($pluginName);
+
+        /**
+         * Fires after a specific plugin has been deactivated.
+         * 
+         * $pluginName refers to the plugin's
+         * name (i.e. moodle.plugin.php).
+         * 
+         * @since 6.1.06
+         * @param string $pluginName The plugin's base name.
+         */
+        do_action('deactivated_plugin', $pluginName);
+
         redirect($app->req->server['HTTP_REFERER']);
     });
 

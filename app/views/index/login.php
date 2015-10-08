@@ -2,22 +2,14 @@
 /**
  * myeduTrac Login View
  *  
- * PHP 5.4+
- *
- * eduTrac ERP(tm) : College Management System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       4.3
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
-if($app->hook->{'get_option'}('myet_layout') === null) {
-    $app->view->extend('_layouts/myet/default.layout');
-} else {
-    $app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_layout') . '.layout');
-}
+$app->view->extend('_layouts/myet/' . get_option('myet_layout') . '.layout');
 $app->view->block('myet');
 $message = new \app\src\Messages;
 ?>
@@ -39,6 +31,16 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 			<h1 class="glyphicons unlock"><?=_t( 'Sign in' );?> <i></i></h1>
 			
 			<?=$message->flashMessage();?>
+            
+            <?php 
+            /**
+             * Prints scripts or data at the top
+             * of the login form
+             * 
+             * @since 6.1.06
+             */
+            do_action('login_form_top'); 
+            ?>
 		
 			<!-- Box -->
 			<div class="widget widget-heading-simple widget-body-gray">
@@ -65,6 +67,15 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				</div>
 			</div>
 			<!-- // Box END -->
+            
+            <?php 
+            /**
+             * Prints scripts or data at the bottom
+             * of the login form.
+             * 
+             * @since 6.1.06
+             */
+            do_action('login_form_bottom'); ?>
 			
 		</div>
 		

@@ -151,6 +151,16 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <a<?=ae('access_forms');?> href="#year" data-toggle="modal" title="Academic Year" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
+                        
+                        <?php 
+                        /**
+                         * Prints a new field on the left of the screen
+                         * when fired.
+                         * 
+                         * @since 6.1.06
+                         */
+                        do_action('left_prog_new_form'); 
+                        ?>
 						
 					</div>
 					<!-- // Column END -->
@@ -276,6 +286,16 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <a<?=ae('access_forms');?> href="#loc" data-toggle="modal" title="Location" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                         </div>
                         <!-- // Group END -->
+                        
+                        <?php 
+                        /**
+                         * Prints a field on the right of the screen
+                         * when fired.
+                         * 
+                         * @since 6.1.06
+                         */
+                        do_action('right_prog_new_form'); 
+                        ?>
 						
 					</div>
 					<!-- // Column END -->
