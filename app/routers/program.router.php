@@ -10,7 +10,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 /**
  * Before route checks to make sure the logged in user
  * us allowed to manage options/settings.
@@ -225,15 +224,15 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
             ]
         );
     });
-    
+
     $app->post('/year/', function() use($app) {
         $year = $app->db->acad_year();
-        foreach($_POST as $k => $v) {
+        foreach ($_POST as $k => $v) {
             $year->$k = $v;
         }
         $year->save();
         $ID = $year->lastInsertId();
-        
+
         $acad = $app->db->acad_year()
             ->where('acadYearID = ?', $ID);
         $q = $acad->find(function($data) {
@@ -245,15 +244,15 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
         });
         echo json_encode($q);
     });
-    
+
     $app->post('/degree/', function() use($app) {
         $deg = $app->db->degree();
-        foreach($_POST as $k => $v) {
+        foreach ($_POST as $k => $v) {
             $deg->$k = $v;
         }
         $deg->save();
         $ID = $deg->lastInsertId();
-        
+
         $degree = $app->db->degree()
             ->where('degreeID = ?', $ID);
         $q = $degree->find(function($data) {
@@ -265,15 +264,15 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
         });
         echo json_encode($q);
     });
-    
+
     $app->post('/ccd/', function() use($app) {
         $c = $app->db->ccd();
-        foreach($_POST as $k => $v) {
+        foreach ($_POST as $k => $v) {
             $c->$k = $v;
         }
         $c->save();
         $ID = $c->lastInsertId();
-        
+
         $ccd = $app->db->ccd()
             ->where('ccdID = ?', $ID);
         $q = $ccd->find(function($data) {
@@ -285,15 +284,15 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
         });
         echo json_encode($q);
     });
-    
+
     $app->post('/major/', function() use($app) {
         $maj = $app->db->major();
-        foreach($_POST as $k => $v) {
+        foreach ($_POST as $k => $v) {
             $maj->$k = $v;
         }
         $maj->save();
         $ID = $maj->lastInsertId();
-        
+
         $major = $app->db->major()
             ->where('majorID = ?', $ID);
         $q = $major->find(function($data) {
@@ -305,15 +304,15 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
         });
         echo json_encode($q);
     });
-    
+
     $app->post('/minor/', function() use($app) {
         $min = $app->db->minor();
-        foreach($_POST as $k => $v) {
+        foreach ($_POST as $k => $v) {
             $min->$k = $v;
         }
         $min->save();
         $ID = $min->lastInsertId();
-        
+
         $minor = $app->db->minor()
             ->where('minorID = ?', $ID);
         $q = $minor->find(function($data) {
@@ -325,15 +324,15 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
         });
         echo json_encode($q);
     });
-    
+
     $app->post('/spec/', function() use($app) {
         $spec = $app->db->specialization();
-        foreach($_POST as $k => $v) {
+        foreach ($_POST as $k => $v) {
             $spec->$k = $v;
         }
         $spec->save();
         $ID = $spec->lastInsertId();
-        
+
         $specialization = $app->db->specialization()
             ->where('specID = ?', $ID);
         $q = $specialization->find(function($data) {
@@ -345,15 +344,15 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
         });
         echo json_encode($q);
     });
-    
+
     $app->post('/cip/', function() use($app) {
         $c = $app->db->cip();
-        foreach($_POST as $k => $v) {
+        foreach ($_POST as $k => $v) {
             $c->$k = $v;
         }
         $c->save();
         $ID = $c->lastInsertId();
-        
+
         $cip = $app->db->cip()
             ->where('cipID = ?', $ID);
         $q = $cip->find(function($data) {
