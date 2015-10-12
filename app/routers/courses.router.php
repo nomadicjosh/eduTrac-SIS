@@ -71,7 +71,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 exit();
             }
             /* Retrieve the dropAddEndDate from the registration term. */
-            $json_term = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/?key=' . get_option('api_key'));
+            $json_term = _file_get_contents($json_url . 'term/termCode/' . $_POST['regTerm'] . '/?key=' . get_option('api_key'));
             $daDate = json_decode($json_term, true);
             $deleteDate = date('Y-m-d', strtotime($daDate[0]['dropAddEndDate'] . ' + 1 days'));
 
@@ -165,7 +165,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
     });
 
     $app->post('/reg/', function () use($app, $css, $js, $flashNow, $email) {
-
+        $uname = get_persondata('uname');
         /**
          * Checks to see how many courses the student has already registered 
          * for the requested semester. If the student has already registered for 
@@ -279,15 +279,22 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                     $ID = $stac->lastInsertId();
                     $now = $app->db->NOW();
                     /**
-                     * Is triggered after registration and after new STAC record
+                     * @since 6.1.07
+                     */
+                    $sacd = $app->db->stu_acad_cred()
+                        ->setTableAlias('stac')
+                        ->select('stac.*,nae.uname,nae.fname,nae.lname,nae.email')
+                        ->_join('person','stac.stuID = nae.personID','nae')
+                        ->where('stac.stuAcadCredID = ?', $ID)
+                        ->findOne();
+                    /**
+                     * Fires after registration and after new STAC record
                      * is added to the database.
                      * 
                      * @since 6.1.05
-                     * @param mixed $stac Array of STAC data.
-                     * @param int $ID Primary key of the new STAC record.
-                     * @return mixed
+                     * @param array $sacd Student Academic Credit detail data object.
                      */
-                    do_action_array('post_save_myet_stac', [ $stac, $ID ]);
+                    do_action('post_save_myet_reg', $sacd);
                     /**
                      * Delete the record from the shopping cart after
                      * registration is complete.

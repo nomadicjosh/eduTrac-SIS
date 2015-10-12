@@ -220,6 +220,24 @@ $app->match('GET|POST', '/password/', function () use($app, $flashNow) {
             $sql->password = et_hash_password($_POST['newPass']);
             $sql->where('personID = ?', get_persondata('personID'));
             if ($sql->update()) {
+                /**
+                 * @since 6.1.07
+                 */
+                $pass = [];
+                $pass['pass'] = $_POST['newPass'];
+                $pass['personID'] = get_persondata('personID');
+                $pass['uname'] = get_persondata('uname');
+                $pass['fname'] = get_persondata('fname');
+                $pass['lname'] = get_persondata('lname');
+                $pass['email'] = get_persondata('email');
+                /**
+                 * Fires after password was updated successfully.
+                 * 
+                 * @since 6.1.07
+                 * @param string $pass Plaintext password submitted by logged in user.
+                 */
+                do_action('post_change_password', $pass);
+                
                 $app->flash('success_message', $flashNow->notice(200));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));

@@ -96,8 +96,6 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						</div>
 						<!-- // Group END -->
 						
-						<?php do_action( 'create_course_section_field_left' ); ?>
-						
 						<!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Start / End' );?></label>
@@ -205,6 +203,16 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                            </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <?php 
+                        /**
+                         * Prints a custom field or data on the left side
+                         * of the course section screen when fired.
+                         * 
+                         * @since 6.1.07
+                         */
+                        do_action( 'left_sect_new_form' ); 
+                        ?>
 						
 					</div>
 					<!-- // Column END -->
@@ -286,6 +294,16 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                            </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <?php 
+                        /**
+                         * Prints a custom field or data on the right side
+                         * of the course section screen when fired.
+                         * 
+                         * @since 6.1.07
+                         */
+                        do_action( 'right_sect_new_form' ); 
+                        ?>
                         
                         <!-- Group -->
                         <div class="form-group">

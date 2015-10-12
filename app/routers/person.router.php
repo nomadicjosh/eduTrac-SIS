@@ -11,7 +11,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
 $js = [
     'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
@@ -95,6 +94,14 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        /**
+         * Fires before person record is updated.
+         * 
+         * @since 6.1.07
+         * @param int $id Person ID.
+         */
+        do_action('pre_update_person', $id);
+
         if ($app->req->isPost()) {
             $nae = $app->db->person();
             foreach (_filter_input_array(INPUT_POST) as $k => $v) {
@@ -107,6 +114,19 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
+            
+            /**
+             * @since 6.1.07
+             */
+            $person = $app->db->person()->where('personID = ?', $id)->findOne();
+            /**
+             * Fires after person record has been updated.
+             * 
+             * @since 6.1.07
+             * @param array $nae Person data object.
+             */
+            do_action('post_update_person', $person);
+
             redirect($app->req->server['HTTP_REFERER']);
         }
 
@@ -182,17 +202,25 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
     });
 
     $app->match('GET|POST', '/add/', function () use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow, $email) {
+        /**
+         * Fires before person record is created.
+         * 
+         * @since 6.1.07
+         */
+        do_action('pre_save_person');
+
+        $passSuffix = 'eT*';
 
         if ($app->req->isPost()) {
             $dob = str_replace('-', '', $_POST['dob']);
             $ssn = str_replace('-', '', $_POST['ssn']);
 
             if ($_POST['ssn'] > 0) {
-                $password = et_hash_password((int) $ssn);
+                $password = et_hash_password((int) $ssn . $passSuffix);
             } elseif (!empty($_POST['dob'])) {
-                $password = et_hash_password((int) $dob);
+                $password = et_hash_password((int) $dob . $passSuffix);
             } else {
-                $password = et_hash_password('myaccount');
+                $password = et_hash_password('myaccount' . $passSuffix);
             }
 
             $nae = $app->db->person();
@@ -217,13 +245,13 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $nae->password = $password;
             if ($nae->save()) {
                 $ID = $nae->lastInsertId();
-				
-				$role = $app->db->person_roles();
-				$role->personID = $ID;
-				$role->roleID = $_POST['roleID'];
-				$role->addDate = $app->db->NOW();
-				$role->save();
-				
+
+                $role = $app->db->person_roles();
+                $role->personID = $ID;
+                $role->roleID = $_POST['roleID'];
+                $role->addDate = $app->db->NOW();
+                $role->save();
+
                 $addr = $app->db->address();
                 $addr->personID = $ID;
                 $addr->address1 = $_POST['address1'];
@@ -242,11 +270,11 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
                 if (isset($_POST['sendemail']) && $_POST['sendemail'] == 'send') {
                     if ($_POST['ssn'] > 0) {
-                        $pass = (int) $ssn;
+                        $pass = (int) $ssn . $passSuffix;
                     } elseif (!empty($_POST['dob'])) {
-                        $pass = (int) $dob;
+                        $pass = (int) $dob . $passSuffix;
                     } else {
-                        $pass = 'myaccount';
+                        $pass = 'myaccount' . $passSuffix;
                     }
                     $host = strtolower($_SERVER['SERVER_NAME']);
                     $site = _t('myeduTrac :: ') . get_option('institution_name');
@@ -270,6 +298,15 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     $email->et_mail($_POST['email'], _t("myeduTrac Login Details"), $message, $headers);
                 }
                 if ($addr->save()) {
+                    /**
+                     * Fires after person record has been created.
+                     * 
+                     * @since 6.1.07
+                     * @param string $pass Plaintext password.
+                     * @param array $nae Person data object.
+                     */
+                    do_action_array('post_save_person', [ $pass, $nae ]);
+
                     $logger->setLog('New Record', 'Name and Address', get_name($ID), get_persondata('uname'));
                     $app->flash('success_message', $flashNow->notice(200));
                     redirect(url('/nae/') . $ID . '/');
@@ -301,7 +338,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
     });
 
     $app->get('/adsu/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
-        
+
         $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
         $s_decode = json_decode($staff, true);
 
@@ -374,7 +411,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
-        
+
         $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
         $s_decode = json_decode($staff, true);
 
@@ -467,7 +504,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
         $json_p = _file_get_contents($json_url . 'person/personID/' . $a_decode[0]['personID'] . '/?key=' . get_option('api_key'));
         $p_decode = json_decode($json_p, true);
-        
+
         $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
         $s_decode = json_decode($staff, true);
 
@@ -539,7 +576,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
-        
+
         $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
         $s_decode = json_decode($staff, true);
 
@@ -616,7 +653,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
-        
+
         $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
         $s_decode = json_decode($staff, true);
 
@@ -700,6 +737,8 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
     });
 
     $app->get('/resetPassword/(\d+)/', function ($id) use($app, $logger, $flashNow, $email) {
+        
+        $passSuffix = 'eT*';
 
         $person = $app->db->person()
             ->select('uname,email,fname,lname,dob,ssn')
@@ -717,12 +756,13 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         }
         $dob = str_replace('-', '', $r1['dob']);
         if ($r1['ssn'] > 0) {
-            $pass = $r1['ssn'];
+            $pass = $r1['ssn'].$passSuffix;
         } elseif ($r1['dob'] != '0000-00-00') {
-            $pass = $dob;
+            $pass = $dob.$passSuffix;
         } else {
-            $pass = 'myaccount';
+            $pass = 'myaccount'.$passSuffix;
         }
+        
         $from = get_option('institution_name');
         $fromEmail = get_option('system_email');
         $url = url('/');
@@ -749,6 +789,21 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         $q2->password = $password;
         $q2->where('personID = ?', $id);
         if ($q2->update()) {
+            /**
+             * @since 6.1.07
+             */
+            $pass = [];
+            $pass['pass'] = $pass;
+            $pass['uname'] = $r1['uname'];
+            /**
+             * Fires after successful reset of person's password.
+             * 
+             * @since 6.1.07
+             * @param array $pass Plaintext password.
+             * @param string $uname Person's username
+             */
+            do_action('post_reset_password', $pass);
+            
             $app->flash('success_message', 'The password has been reset and an email has been sent to this user.');
             $email->et_mail($r1['email'], "Reset Password", $body, $headers);
             $logger->setLog('Update Record', 'Reset Password', get_name($id), get_persondata('uname'));

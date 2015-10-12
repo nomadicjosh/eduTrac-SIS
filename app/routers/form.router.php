@@ -589,14 +589,15 @@ $app->group('/form', function() use ($app, $css, $js, $logger, $dbcache, $flashN
             $subj->subjectName = _filter_input_string(INPUT_POST, 'subjectName');
             if($subj->save()) {
                 $ID = $subj->lastInsertId();
+                $subject = ['subjectCode' => $subj->subjectCode, 'subjectName' => $subj->subjectName];
                 /**
-                 * Create Subject Action Hook
+                 * Fires after subject has been created.
                  * 
-                 * Fired when a subject code is created.
-                 * 
-                 * @return mixed
+                 * @since 6.1.07
+                 * @param array $subject Subject data object.
                  */
-                do_action( 'create_subject_code', _trim(_filter_input_string(INPUT_POST, 'subjectCode')), _filter_input_string(INPUT_POST, 'subjectName') );
+                do_action( 'post_save_subject', $subject );
+                
                 $app->flash( 'success_message', $flashNow->notice(200) );
                 $logger->setLog('New Record', 'Subject', _filter_input_string(INPUT_POST, 'subjectName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'subjectCode')) . ')', get_persondata('uname'));
                 redirect( url('/form/subject/') . $ID . '/' );
