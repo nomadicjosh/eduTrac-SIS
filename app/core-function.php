@@ -11,7 +11,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.1.06');
+define('RELEASE_TAG', '6.1.07');
 
 $app = \Liten\Liten::getInstance();
 
@@ -28,7 +28,7 @@ $app = \Liten\Liten::getInstance();
  */
 function _mkdir($path)
 {
-     return is_dir($path) || mkdir($path,0755,true);
+    return is_dir($path) || mkdir($path, 0755, true);
 }
 
 function _t($msgid)
@@ -1012,7 +1012,7 @@ function acadCredGradePoints($grade, $credits)
         return $array;
     });
     foreach ($q as $r) {
-        $gradePoints = $r['points']*$credits;
+        $gradePoints = $r['points'] * $credits;
     }
     return $gradePoints;
 }
@@ -1338,6 +1338,7 @@ function foot_release()
         echo "r" . CURRENT_RELEASE;
     }
 }
+
 /**
  * Hashes a plain text password.
  * 
@@ -1542,17 +1543,9 @@ function getUserValue($id, $field)
     $app = \Liten\Liten::getInstance();
     $value = $app->db->person()
         ->select($field)
-        ->where('personID = ?', $id);
-    $q = $value->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $r) {
-        return $r[$field];
-    }
+        ->where('personID = ?', $id)
+        ->findOne();
+    return $value->$field;
 }
 
 /**
