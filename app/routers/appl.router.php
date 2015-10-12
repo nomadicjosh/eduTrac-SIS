@@ -215,19 +215,12 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             $app->flash('error_message', $flashNow->notice(409));
         }
 
-        $person = $app->db->person()->select('uname')->where('personID = ?', $_POST['personID']);
-        $q = $person->find(function($data) {
-            $array = [];
-            foreach($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
         $uname = $app->db->person();
         $uname->uname = $_POST['uname'];
         $uname->where('personID = ?', $_POST['personID']);
-        if ($q[0]['uname'] !== $_POST['uname']) {
+        if ($person->uname !== $_POST['uname']) {
             if ($uname->update()) {
+                
                 $host = strtolower($_SERVER['SERVER_NAME']);
                 $site = get_option('institution_name');
                 
@@ -248,6 +241,17 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 $headers .= "MIME-Version: 1.0" . "\r\n";
                 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
                 $email->et_mail(getUserValue($_POST['personID'], 'email'), _t("myeduTrac Username Change"), $message, $headers);
+                
+                /**
+                 * @since 6.1.07
+                 */
+                $person = $app->db->person()->where('uname = ?', $_POST['uname'])->findOne();
+                /**
+                 * Fires after username has been updated successfully.
+                 * 
+                 * @since 6.1.07
+                 */
+                do_action('post_update_username', $person);
                     
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));

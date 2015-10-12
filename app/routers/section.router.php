@@ -105,6 +105,14 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+        /**
+         * Fires before the course section has been updated.
+         * 
+         * @since 6.1.07
+         * @param int $id Primary key of the course section.
+         */
+        do_action('pre_update_course_sec', $id);
+
         $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
 
@@ -191,6 +199,25 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 $logger->setLog('Update Error', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $decode[0]['courseSecCode'] . ')', get_persondata('uname'));
                 $app->flash('error_message', $flashNow->notice(409));
             }
+            /**
+             * Query course section after it has been updated.
+             * 
+             * @since 6.1.07
+             */
+            $section = $app->db->course_sec()
+                ->setTableAlias('sect')
+                ->select('sect.*,crse.subjectCode,crse.deptCode,crse.creditType')
+                ->select('crse.courseShortTitle,crse.courseLongTitle')
+                ->_join('course', 'sect.courseID = crse.courseID', 'crse')
+                ->where('courseSecID = ?', $id)
+                ->findOne();
+            /**
+             * Fires after the course section has been updated.
+             * 
+             * @since 6.1.07
+             * @param array $sect Course section data object.
+             */
+            do_action('post_update_course_sec', $section);
             redirect(url('/sect/') . $id . '/');
         }
 
@@ -252,6 +279,14 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        /**
+         * Fires before a course section has been created.
+         * 
+         * @since 6.1.07
+         * @param int $id Primary key of the course from which the course section is created.
+         */
+        do_action('pre_save_course_sec', $id);
+
         $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
 
@@ -309,14 +344,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                     "section" => _trim($courseSection), "description" => $decode[0]['courseDesc']
                 ];
                 /**
-                 * Create Course Section Action Hook
+                 * Fires after a course section has been created.
                  * 
-                 * Fired when a course section is created.
-                 * 
-                 * @param mixed $section An array of values
-                 * @return mixed
+                 * @since 6.1.07
+                 * @param array $section Course section data object.
                  */
-                do_action('create_course_section', $section);
+                do_action('post_save_course_sec', $section);
+                
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course Section', _trim($courseSection), get_persondata('uname'));
                 redirect(url('/sect/') . $ID . '/');
@@ -373,6 +407,15 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        /**
+         * Fires before course section additional
+         * information has been updated.
+         * 
+         * @since 6.1.07
+         * @param int $id Primary key of the course section.
+         */
+        do_action('pre_course_sec_addnl', $id);
+
         $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/?key=' . get_option('api_key'));
         $decode = json_decode($json, true);
 
@@ -388,6 +431,26 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
+            /**
+             * Query course section after it has been updated.
+             * 
+             * @since 6.1.07
+             */
+            $section = $app->db->course_sec()
+                ->setTableAlias('sect')
+                ->select('sect.*,crse.subjectCode,crse.deptCode,crse.creditType')
+                ->select('crse.courseShortTitle,crse.courseLongTitle')
+                ->_join('course', 'sect.courseID = crse.courseID', 'crse')
+                ->where('courseSecID = ?', $id)
+                ->findOne();
+            /**
+             * Fires after course section additional
+             * information has been updated.
+             * 
+             * @since 6.1.07
+             * @param array $section Course section data object.
+             */
+            do_action('post_course_sec_addnl', $section);
             redirect($app->req->server['HTTP_REFERER']);
         }
 
@@ -605,6 +668,14 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
     $app->match('GET|POST', '/rgn/', function () use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
 
+        /**
+         * Fires before a student is registered into
+         * a course by a staff member.
+         * 
+         * @since 6.1.07
+         */
+        do_action('pre_rgn_stu_crse_reg');
+
         $time = date("h:i A");
 
         if ($app->req->isPost()) {
@@ -657,16 +728,26 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $stac->addedBy = get_persondata('personID');
             $stac->addDate = $app->db->NOW();
 
-            /**
-             * Fires when a staff member registers a student
-             * into a course.
-             * 
-             * @since 6.1.00
-             * @return mixed
-             */
-            do_action('rgn_student_course_registration');
-
             if ($stcs->save() && $stac->save()) {
+                /**
+                 * @since 6.1.07
+                 */
+                $ID = $stac->lastInsertId();
+                $sacd = $app->db->stu_acad_cred()
+                        ->setTableAlias('stac')
+                        ->select('stac.*,nae.uname,nae.fname,nae.lname,nae.email')
+                        ->_join('person','stac.stuID = nae.personID','nae')
+                        ->where('stac.stuAcadCredID = ?', $ID)
+                        ->findOne();
+                /**
+                 * Fires after a student has been registered into
+                 * a course by a staff member.
+                 * 
+                 * @since 6.1.07
+                 * @param array $sacd Student Academic Credit detail data object.
+                 */
+                do_action('post_rgn_stu_crse_reg', $sacd);
+
                 if (function_exists('financial_module')) {
                     /**
                      * Generate bill and/or add fees.

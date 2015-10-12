@@ -296,15 +296,16 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $crse->approvedBy = get_persondata('personID');
             if ($crse->save()) {
                 $ID = $crse->lastInsertId();
+                
+                $course = $app->db->course()->where('courseID = ?', (int)$ID)->findOne();
                 /**
-                 * Is triggered after a new course is added.
+                 * Fires after a new course has been created.
                  * 
                  * @since 6.1.05
-                 * @param mixed $crse Array of course data.
-                 * @param int $ID Primary key of the new course added.
-                 * @return mixed
+                 * @param mixed $course Course data object.
                  */
-                do_action_array('post_save_crse', [$crse, $ID]);
+                do_action('post_save_crse', $course);
+                
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course', $_POST['subjectCode'] . '-' . $_POST['courseNumber'], get_persondata('uname'));
                 redirect(url('/crse/') . (int) $ID . '/');

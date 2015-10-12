@@ -219,6 +219,13 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
     });
 
     $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
+        /**
+         * Fires before new student record is created.
+         * 
+         * @since 6.1.07
+         * @param int $id Student's ID.
+         */
+        do_action('pre_save_stu', $id);
 
         if ($app->req->isPost()) {
             $nae = $app->db->person()->where('personID = ?', $id)->findOne();
@@ -284,11 +291,25 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     $email->et_mail(get_option('admissions_email'), _t("Student Acceptance Letter"), $message, $headers);
                 }
                 /**
-                 * Triggers after new student record is saved.
-                 * 
-                 * @since 6.1.05
+                 * @since 6.1.07
                  */
-                do_action('post_save_stu');
+                $spro = $app->db->student()
+                    ->setTableAlias('spro')
+                    ->select('spro.*, nae.*, addr.*')
+                    ->_join('person', 'spro.stuID = nae.personID', 'nae')
+                    ->_join('address', 'spro.stuID = addr.personID', 'addr')
+                    ->where('spro.stuID = ?', $id)->_and_()
+                    ->where('addr.addressType = "P"')->_and_()
+                    ->where('addr.addressStatus = "C"')
+                    ->findOne();
+                /**
+                 * Fires after new student record has been created.
+                 * 
+                 * @since 6.1.07
+                 * @param array $spro Student data object.
+                 */
+                do_action('post_save_stu', $spro);
+                
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Student', get_name($id), get_persondata('uname'));
                 redirect(url('/') . 'stu/' . $id . '/' . bm());
