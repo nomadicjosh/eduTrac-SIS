@@ -57,4 +57,20 @@ class Plugin
         $file = self::plugin_basename($file);
         add_action('activate_' . $file, $function);
     }
+
+    /**
+     * Register Deactivation Hook
+     * 
+     * This method is used to run code that should be executed
+     * when a plugin is being deactivated.
+     * 
+     * @since 6.1.07
+     * @param string $file Plugin's file name.
+     * @param string $function The function which should be executed.
+     */
+    public static function register_deactivation_hook($file, $function)
+    {
+        $file = self::plugin_basename($file);
+        add_action('deactivate_' . $file, $function);
+    }
 }
