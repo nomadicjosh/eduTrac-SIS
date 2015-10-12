@@ -13,6 +13,22 @@ if (!defined('BASE_PATH'))
 $app = \Liten\Liten::getInstance();
 
 /**
+ * Wrapper function for Hooks::register_admin_page() and
+ * register's a plugin administration page.
+ * @see Hooks::register_admin_page()
+ * 
+ * @since 6.1.07
+ * @param string $slug Plugin's slug.
+ * @param string $title Title that is show for the plugin's link.
+ * @param string $function The function which prints the plugin's page.
+ */
+function register_admin_page($slug, $title, $function)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->hook->register_admin_page($slug, $title, $function);
+}
+
+/**
  * Wrapper function for Hooks::activate_plugin() and
  * activates plugin based on $_GET['id'].
  * @see Hooks::activate_plugin()
