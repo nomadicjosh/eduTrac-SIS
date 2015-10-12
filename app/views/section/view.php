@@ -181,6 +181,17 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <?php
+                        /**
+                         * Prints a custom field or data on the left side
+                         * of the course section view screen.
+                         * 
+                         * @since 6.1.07
+                         * @param array $sect Course section data object.
+                         */
+                        do_action('left_sect_view_form', $sect);
+                        ?>
 						
 					</div>
 					<!-- // Column END -->
@@ -199,6 +210,17 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <?php
+                        /**
+                         * Prints a custom field or data on the right side
+                         * of the course section view screen.
+                         * 
+                         * @since 6.1.07
+                         * @param array $sect Course section data object.
+                         */
+                        do_action('right_sect_view_form', $sect);
+                        ?>
                         
                         <!-- Group -->
                         <div class="form-group">
