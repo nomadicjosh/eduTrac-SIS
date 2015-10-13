@@ -59,7 +59,16 @@ $app->get('/offline/', function () use($app) {
     $app->view->display('index/offline');
 });
 
-$app->before('GET|POST', '/online-app/', function() use($app) {
+$app->match('GET|POST', '/component/', function() use($app, $css, $js) {
+        $app->view->display('index/component', [
+            'title' => COMPONENT_TITLE,
+            'cssArray' => $css,
+            'jsArray' => $js
+            ]
+        );
+    });
+
+$app->before('GET|POST', '/online-app/', function() {
     if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
         redirect(url('/offline/'));
     }
