@@ -775,35 +775,35 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $rterm = _file_get_contents($json_url . 'term/termCode/' . $_POST['termCode'] . '/?key=' . get_option('api_key'));
             $term = json_decode($rterm, true);
 
-            $sacd = $app->db->stu_acad_cred();
-            $sacd->courseID = $_POST['courseID'];
-            $sacd->courseSecID = $decode[0]['courseSecID'];
-            $sacd->courseCode = $_POST['courseCode'];
-            $sacd->courseSecCode = $decode[0]['courseSecCode'];
-            $sacd->sectionNumber = $_POST['sectionNumber'];
-            $sacd->courseSection = $decode[0]['courseSection'];
-            $sacd->termCode = $_POST['termCode'];
-            $sacd->reportingTerm = $term[0]['reportingTerm'];
-            $sacd->subjectCode = $_POST['subjectCode'];
-            $sacd->deptCode = $_POST['deptCode'];
-            $sacd->shortTitle = $_POST['shortTitle'];
-            $sacd->longTitle = $_POST['longTitle'];
-            $sacd->attCred = $_POST['attCred'];
-            $sacd->ceu = $_POST['ceu'];
-            $sacd->status = $_POST['status'];
-            $sacd->acadLevelCode = $_POST['acadLevelCode'];
-            $sacd->courseLevelCode = $_POST['courseLevelCode'];
-            $sacd->creditType = $_POST['creditType'];
-            $sacd->startDate = $_POST['startDate'];
-            $sacd->endDate = $_POST['endDate'];
+            $detail = $app->db->stu_acad_cred();
+            $detail->courseID = $_POST['courseID'];
+            $detail->courseSecID = $decode[0]['courseSecID'];
+            $detail->courseCode = $_POST['courseCode'];
+            $detail->courseSecCode = $decode[0]['courseSecCode'];
+            $detail->sectionNumber = $_POST['sectionNumber'];
+            $detail->courseSection = $decode[0]['courseSection'];
+            $detail->termCode = $_POST['termCode'];
+            $detail->reportingTerm = $term[0]['reportingTerm'];
+            $detail->subjectCode = $_POST['subjectCode'];
+            $detail->deptCode = $_POST['deptCode'];
+            $detail->shortTitle = $_POST['shortTitle'];
+            $detail->longTitle = $_POST['longTitle'];
+            $detail->attCred = $_POST['attCred'];
+            $detail->ceu = $_POST['ceu'];
+            $detail->status = $_POST['status'];
+            $detail->acadLevelCode = $_POST['acadLevelCode'];
+            $detail->courseLevelCode = $_POST['courseLevelCode'];
+            $detail->creditType = $_POST['creditType'];
+            $detail->startDate = $_POST['startDate'];
+            $detail->endDate = $_POST['endDate'];
             if (($_POST['status'] == 'W' || $_POST['status'] == 'D') && $date >= $term[0]['termStartDate'] && $date > $term[0]['dropAddEndDate']) {
-                $sacd->compCred = '0.0';
-                $sacd->gradePoints = acadCredGradePoints($_POST['grade'], '0.0');
-                $sacd->statusTime = $time;
+                $detail->compCred = '0.0';
+                $detail->gradePoints = acadCredGradePoints($_POST['grade'], '0.0');
+                $detail->statusTime = $time;
                 if (empty($_POST['grade'])) {
-                    $sacd->grade = "W";
+                    $detail->grade = "W";
                 } else {
-                    $sacd->grade = $_POST['grade'];
+                    $detail->grade = $_POST['grade'];
                 }
             } else {
                 if (acadCredGradePoints($_POST['grade'], $_POST['attCred']) > 0) {
@@ -811,11 +811,11 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 } else {
                     $compCred = '0';
                 }
-                $sacd->compCred = $compCred;
-                $sacd->gradePoints = acadCredGradePoints($_POST['grade'], $_POST['attCred']);
-                $sacd->grade = $_POST['grade'];
+                $detail->compCred = $compCred;
+                $detail->gradePoints = acadCredGradePoints($_POST['grade'], $_POST['attCred']);
+                $detail->grade = $_POST['grade'];
             }
-            $sacd->where('stuAcadCredID = ?', $id);
+            $detail->where('stuAcadCredID = ?', $id);
 
             /**
              * If the posted status is 'W' or 'D' and today's date is less than the 
@@ -892,7 +892,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 $q->where('stuID = ?', $decode[0]['stuID'])->_and_()
                     ->where('courseSecID = ?', $_POST['courseSecID'])
                     ->update();
-                $sacd->update();
+                $detail->update();
             }
             /**
              * If there is no status change or the status change is not a 'W', 
@@ -909,16 +909,25 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 $q->where('stuID = ?', $decode[0]['stuID'])->_and_()
                     ->where('courseSecID = ?', $_POST['courseSecID'])
                     ->update();
-                $sacd->update();
+                $detail->update();
             }
+            /**
+             * @since 6.1.08
+             */
+            $sacd = $app->db->stu_acad_cred()
+                ->setTableAlias('sacd')
+                ->select('sacd.*,nae.uname,nae.fname,nae.lname,nae.email')
+                ->_join('person','sacd.stuID = nae.personID','nae')
+                ->where('stuAcadCredID = ?', $id)
+                ->findOne();
             /**
              * Triggers after SACD record is updated.
              * 
              * @since 6.1.05
-             * @param mixed $sacd Array of student academic credit data.
-             * @return mixed
+             * @param array $sacd Student Academic Credit Detail data object.
              */
             do_action('post_update_sacd', $sacd);
+            
             $dbcache->clearCache("stu_acad_cred-$id");
             redirect($app->req->server['HTTP_REFERER']);
         }

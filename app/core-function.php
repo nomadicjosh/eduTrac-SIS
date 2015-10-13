@@ -11,7 +11,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.1.07');
+define('RELEASE_TAG', '6.1.08');
 
 $app = \Liten\Liten::getInstance();
 
@@ -1942,6 +1942,66 @@ function tagList()
     }
     return $tags;
 }
+
+function check_mime_type($file,$mode=0) {
+		// mode 0 = full check
+    	// mode 1 = extension check only
+
+	    $mime_types = array(
+	
+	        'txt' => 'text/plain',
+	        'csv' => 'text/plain',
+	
+	        // images
+	        'png' => 'image/png',
+	        'jpe' => 'image/jpeg',
+	        'jpeg' => 'image/jpeg',
+	        'jpg' => 'image/jpeg',
+	        'gif' => 'image/gif',
+	        'bmp' => 'image/bmp',
+	        'tiff' => 'image/tiff',
+	        'tif' => 'image/tiff',
+	        'svg' => 'image/svg+xml',
+	        'svgz' => 'image/svg+xml',
+	
+	        // archives
+	        'zip' => 'application/zip',
+	        'rar' => 'application/x-rar-compressed',
+	
+	
+	        // adobe
+	        'pdf' => 'application/pdf',
+	        'ai' => 'application/postscript',
+	        'eps' => 'application/postscript',
+	        'ps' => 'application/postscript',
+	
+	        // ms office
+	        'doc' => 'application/msword',
+	        'rtf' => 'application/rtf',
+	        'xls' => 'application/vnd.ms-excel',
+	        'ppt' => 'application/vnd.ms-powerpoint',
+	        'docx' => 'application/msword',
+	        'xlsx' => 'application/vnd.ms-excel',
+	        'pptx' => 'application/vnd.ms-powerpoint'
+        );
+
+    	$ext = strtolower(array_pop(explode('.',$file)));
+		
+		if(function_exists('mime_content_type')&&$mode==0) {
+	        $mimetype = mime_content_type($file);
+	        return $mimetype;
+        }
+
+	    if(function_exists('finfo_open')&&$mode==0) {
+	        $finfo = finfo_open(FILEINFO_MIME);
+	        $mimetype = finfo_file($finfo, $file);
+	        finfo_close($finfo);
+	        return $mimetype;
+        }
+		elseif(array_key_exists($ext, $mime_types)) {
+    		return $mime_types[$ext];
+    	}
+	}
 
 /**
  * Added htmLawed functions

@@ -1248,32 +1248,6 @@ CREATE TABLE IF NOT EXISTS `minor` (
 
 INSERT INTO `minor` VALUES(00000000001, 'NULL', '', '{now}');
 
-CREATE TABLE IF NOT EXISTS `nslc_hold_file` (
-  `nslcHoldFileID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `stuID` bigint(20) NOT NULL,
-  `lname` varchar(150) NOT NULL,
-  `fname` varchar(150) NOT NULL,
-  `address1` varchar(150) NOT NULL,
-  `city` varchar(150) NOT NULL,
-  `state` varchar(150) NOT NULL,
-  `zip` varchar(150) NOT NULL,
-  `country` varchar(150) NOT NULL,
-  `ssn` int(20) DEFAULT NULL,
-  PRIMARY KEY (`nslcHoldFileID`),
-  UNIQUE KEY `userID` (`stuID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `nslc_setup` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `branch` varchar(2) NOT NULL,
-  `termCode` varchar(8) NOT NULL,
-  `termStartDate` date NOT NULL,
-  `termEndDate` date NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-INSERT INTO `nslc_setup` VALUES(00000000001, '00', '13/FA', '2013-09-01', '2013-12-18');
-
 CREATE TABLE IF NOT EXISTS `options_meta` (
 `meta_id` int(11) NOT NULL,
   `meta_key` varchar(60) NOT NULL DEFAULT '',
@@ -2879,7 +2853,7 @@ ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`courseID`) REFERENCES `cours
 
 ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
                   
-INSERT INTO `options_meta` VALUES(1, 'dbversion', '00048');
+INSERT INTO `options_meta` VALUES(1, 'dbversion', '00049');
         
 INSERT INTO `options_meta` VALUES(2, 'system_email', '{email}');
         

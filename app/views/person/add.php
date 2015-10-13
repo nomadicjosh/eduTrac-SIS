@@ -235,9 +235,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Preferred Email' );?></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Preferred Email' );?></label>
                             <div class="col-md-6">
-                                <input class="form-control" type="email" name="email" value="<?=(isset($_POST['email'])) ? $_POST['email'] : '';?>" />
+                                <input class="form-control" type="email" name="email" value="<?=(isset($_POST['email'])) ? $_POST['email'] : '';?>" required/>
                             </div>
                         </div>
                         <!-- // Group END -->

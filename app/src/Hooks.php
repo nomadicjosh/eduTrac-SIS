@@ -162,7 +162,7 @@ class Hooks
      */
     public function activate_plugin($plugin)
     {
-        $this->_app->db->plugin()->insert( ['location' => $plugin] );
+        $this->_app->db->plugin()->insert(['location' => $plugin]);
     }
 
     /**
@@ -175,7 +175,7 @@ class Hooks
      */
     public function deactivate_plugin($plugin)
     {
-        $this->_app->db->plugin()->where('location = ?',$plugin)->delete();
+        $this->_app->db->plugin()->where('location = ?', $plugin)->delete();
     }
 
     /**
@@ -224,7 +224,7 @@ class Hooks
      */
     public function is_plugin_activated($plugin)
     {
-        $plugin = $this->_app->db->plugin()->where('location = ?',$plugin);
+        $plugin = $this->_app->db->plugin()->where('location = ?', $plugin);
         $q = $plugin->find(function($data) {
             $array = [];
             foreach ($data as $d) {
@@ -232,7 +232,7 @@ class Hooks
             }
             return $array;
         });
-        
+
         if (count($q) > 0)
             return true;
         return false;
@@ -618,7 +618,7 @@ class Hooks
     {
         return $this->has_filter($hook, $function_to_check);
     }
-    
+
     /**
      * Display list of links to plugin admin pages, if any
      */
@@ -628,7 +628,7 @@ class Hooks
             return;
 
         foreach ((array) $this->_app->hook->plugin_pages as $page) {
-            echo '<li><a href="'. $url .'?page=' . $page['slug'] . '">' . $page['title'] . '</a></li>'."\n";
+            echo '<li><a href="' . $url . '?page=' . $page['slug'] . '">' . $page['title'] . '</a></li>' . "\n";
         }
     }
 
@@ -668,6 +668,63 @@ class Hooks
         $this->do_action('load-' . $plugin_page);
 
         call_user_func($this->_app->hook->plugin_pages[$plugin_page]['function']);
+    }
+
+    /**
+     * Display list of companion links to plugins, if any
+     * 
+     * @since 6.1.08
+     */
+    public function list_plugin_component_pages($url)
+    {
+
+        if (!property_exists($this->_app->hook, 'comp_pages') || !$this->_app->hook->comp_pages)
+            return;
+
+        foreach ((array) $this->_app->hook->comp_pages as $comp_page) {
+            echo '<li><a href="' . $url . '?cID=' . $comp_page['slug'] . '">' . $comp_page['title'] . '</a></li>';
+        }
+    }
+
+    /**
+     * Register a plugin component/users page.
+     * 
+     * @since 6.1.08
+     * @param string $slug
+     * @param string $title
+     * @param string $function
+     */
+    public static function register_component_page($slug, $title, $function)
+    {
+
+        if (!property_exists($this->_app->hook, 'comp_pages') || !$this->_app->hook->comp_pages)
+            $this->_app->hook->comp_pages = array();
+
+        $this->_app->hook->comp_pages[$slug] = array(
+            'slug' => $slug,
+            'title' => $title,
+            'function' => $function
+        );
+    }
+
+    /**
+     * Handle plugin component page
+     * 
+     * @since 6.1.08
+     * @param string $comp_page
+     */
+    public static function plugin_component_page($comp_page)
+    {
+
+        // Check the plugin page is actually registered
+        if (!isset($this->_app->hook->comp_pages[$comp_page])) {
+            die('This page does not exist. Maybe a component you thought was activated is inactive?');
+        }
+
+        // Draw the page itself
+        $this->do_action('load-' . $comp_page);
+
+        call_user_func($this->_app->hook->comp_pages[$comp_page]['function']);
     }
 
     /**
@@ -723,7 +780,7 @@ class Hooks
         $_newvalue = $this->maybe_serialize($newvalue);
 
         $this->do_action('update_option', $meta_key, $oldvalue, $newvalue);
-        
+
         $key = $this->_app->db->options_meta();
         $key->meta_value = $_newvalue;
         $key->where('meta_key = ?', $meta_key)->update();
@@ -747,7 +804,7 @@ class Hooks
         $_value = $this->maybe_serialize($value);
 
         $this->do_action('add_option', $name, $_value);
-        
+
         $this->_app->db->options_meta()->insert(['meta_key' => $name, 'meta_value' => $_value]);
         $this->_app->db->option[$name] = $value;
         return;
@@ -766,12 +823,12 @@ class Hooks
             }
             return $array;
         });
-        
+
         if (is_null($results) || !$results)
             return false;
 
         $this->do_action('delete_option', $name);
-        
+
         $this->_app->db->options_meta()->where('option_name', $name)->delete();
         return true;
     }
