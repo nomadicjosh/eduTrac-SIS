@@ -54,18 +54,15 @@ if (APP_ENV == 'DEV') {
 }
 
 define('LOCALE_DIR', APP_PATH . 'lang');
-$encoding = 'UTF-8';
 if (file_exists(BASE_PATH . 'config.php')) {
     $locale = (get_option('et_core_locale') !== null) ? get_option('et_core_locale') : 'en_US';
 } else {
     $locale = 'en_US';
 }
-putenv('LC_MESSAGES='.$locale);
 
-// gettext setup
-setlocale(LC_MESSAGES, $locale);
-// Set the text domain as 'messages'
-$domain = 'eduTrac';
-bindtextdomain($domain, LOCALE_DIR);
-bind_textdomain_codeset($domain, $encoding);
-textdomain($domain);
+/**
+ * Loads the default textdomain.
+ * 
+ * @since 6.1.09
+ */
+load_default_textdomain('eduTrac', $locale, LOCALE_DIR);

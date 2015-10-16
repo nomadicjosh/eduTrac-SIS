@@ -1943,65 +1943,121 @@ function tagList()
     return $tags;
 }
 
-function check_mime_type($file,$mode=0) {
-		// mode 0 = full check
-    	// mode 1 = extension check only
+function check_mime_type($file, $mode = 0)
+{
+    // mode 0 = full check
+    // mode 1 = extension check only
 
-	    $mime_types = array(
-	
-	        'txt' => 'text/plain',
-	        'csv' => 'text/plain',
-	
-	        // images
-	        'png' => 'image/png',
-	        'jpe' => 'image/jpeg',
-	        'jpeg' => 'image/jpeg',
-	        'jpg' => 'image/jpeg',
-	        'gif' => 'image/gif',
-	        'bmp' => 'image/bmp',
-	        'tiff' => 'image/tiff',
-	        'tif' => 'image/tiff',
-	        'svg' => 'image/svg+xml',
-	        'svgz' => 'image/svg+xml',
-	
-	        // archives
-	        'zip' => 'application/zip',
-	        'rar' => 'application/x-rar-compressed',
-	
-	
-	        // adobe
-	        'pdf' => 'application/pdf',
-	        'ai' => 'application/postscript',
-	        'eps' => 'application/postscript',
-	        'ps' => 'application/postscript',
-	
-	        // ms office
-	        'doc' => 'application/msword',
-	        'rtf' => 'application/rtf',
-	        'xls' => 'application/vnd.ms-excel',
-	        'ppt' => 'application/vnd.ms-powerpoint',
-	        'docx' => 'application/msword',
-	        'xlsx' => 'application/vnd.ms-excel',
-	        'pptx' => 'application/vnd.ms-powerpoint'
-        );
+    $mime_types = array(
+        'txt' => 'text/plain',
+        'csv' => 'text/plain',
+        // images
+        'png' => 'image/png',
+        'jpe' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
+        'gif' => 'image/gif',
+        'bmp' => 'image/bmp',
+        'tiff' => 'image/tiff',
+        'tif' => 'image/tiff',
+        'svg' => 'image/svg+xml',
+        'svgz' => 'image/svg+xml',
+        // archives
+        'zip' => 'application/zip',
+        'rar' => 'application/x-rar-compressed',
+        // adobe
+        'pdf' => 'application/pdf',
+        'ai' => 'application/postscript',
+        'eps' => 'application/postscript',
+        'ps' => 'application/postscript',
+        // ms office
+        'doc' => 'application/msword',
+        'rtf' => 'application/rtf',
+        'xls' => 'application/vnd.ms-excel',
+        'ppt' => 'application/vnd.ms-powerpoint',
+        'docx' => 'application/msword',
+        'xlsx' => 'application/vnd.ms-excel',
+        'pptx' => 'application/vnd.ms-powerpoint'
+    );
 
-    	$ext = strtolower(array_pop(explode('.',$file)));
-		
-		if(function_exists('mime_content_type')&&$mode==0) {
-	        $mimetype = mime_content_type($file);
-	        return $mimetype;
-        }
+    $ext = strtolower(array_pop(explode('.', $file)));
 
-	    if(function_exists('finfo_open')&&$mode==0) {
-	        $finfo = finfo_open(FILEINFO_MIME);
-	        $mimetype = finfo_file($finfo, $file);
-	        finfo_close($finfo);
-	        return $mimetype;
-        }
-		elseif(array_key_exists($ext, $mime_types)) {
-    		return $mime_types[$ext];
-    	}
-	}
+    if (function_exists('mime_content_type') && $mode == 0) {
+        $mimetype = mime_content_type($file);
+        return $mimetype;
+    }
+
+    if (function_exists('finfo_open') && $mode == 0) {
+        $finfo = finfo_open(FILEINFO_MIME);
+        $mimetype = finfo_file($finfo, $file);
+        finfo_close($finfo);
+        return $mimetype;
+    } elseif (array_key_exists($ext, $mime_types)) {
+        return $mime_types[$ext];
+    }
+}
+
+/**
+ * Load a .mo file into the text domain $domain.
+ *
+ * @since 6.1.09
+ *
+ * @param string $domain Text domain. Unique identifier for retrieving translated strings.
+ * @param string $locale Translation that should be loaded.
+ * @param string $path Path to the .mo file.
+ * @return bool True on success, false on failure.
+ */
+function load_default_textdomain($domain, $locale, $path)
+{
+
+    $gettext = new \app\src\Gettext($domain);
+
+    /**
+     * Fires before the MO translation file is loaded.
+     *
+     * @since 6.1.09
+     *
+     * @param string $domain Text domain. Unique identifier for retrieving translated strings.
+     * @param string $locale Translation that should be loaded.
+     * @param string $path Path to the .mo file.
+     */
+    do_action_array('load_default_textdomain', $domain, $locale, $path);
+
+    $gettext->setLocale($locale, $path);
+
+    return true;
+}
+
+/**
+ * Load a plugin's translated strings.
+ *
+ * If the path is not given then it will be the root of the plugin directory.
+ *
+ * @since 6.1.09
+ *
+ * @param string $domain          Unique identifier for retrieving translated strings
+ * @param string $plugin_rel_path Optional. Relative path to PLUGINS_DIR where the .mo file resides.
+ *                                Default false.
+ * @return bool True when textdomain is successfully loaded, false otherwise.
+ */
+/*function load_plugin_textdomain($domain, $plugin_rel_path = false)
+{
+    $locale = get_option('et_core_locale');
+
+    if ($plugin_rel_path !== false) {
+        $path = PLUGINS_DIR . $plugin_rel_path;
+    } else {
+        $path = PLUGINS_DIR;
+    }
+
+    // Load the textdomain according to the plugin first
+    $gettext = new \app\src\Gettext($domain);
+    if ($loaded = $gettext->setLocale($locale, $path)) {
+        return $loaded;
+    }
+
+    return false;
+}*/
 
 /**
  * Added htmLawed functions
