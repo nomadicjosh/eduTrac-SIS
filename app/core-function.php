@@ -31,9 +31,21 @@ function _mkdir($path)
     return is_dir($path) || mkdir($path, 0755, true);
 }
 
-function _t($msgid)
+/**
+ * Displays the returned translated text.
+ * 
+ * @since 1.0.0
+ * @param type $msgid The translated string.
+ * @param type $domain Domain lookup for translated text.
+ * @return string Translated text according to current locale.
+ */
+function _t($msgid, $domain = NULL)
 {
-    return gettext($msgid);
+    if ($domain !== NULL) {
+        return dgettext($domain, $msgid);
+    } else {
+        return gettext($msgid);
+    }
 }
 
 function getPathInfo($relative)
@@ -1222,11 +1234,11 @@ function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
         return $array;
     });
     if (count($q) > 0) {
-        $photosize = getimagesize(url('/') . 'static/photos/' . $q[0]['photo']);
+        $photosize = getimagesize(get_base_url() . 'static/photos/' . $q[0]['photo']);
         if (getPathInfo('/form/photo/') === '/form/photo/') {
-            $avatar = '<a href="' . url('/') . 'form/deleteSchoolPhoto/"><img src="' . url('/') . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
+            $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
         } else {
-            $avatar = '<img src="' . url('/') . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
+            $avatar = '<img src="' . get_base_url() . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
         }
     } else {
         $avatar = get_user_avatar($email, $s, $class);
@@ -1305,7 +1317,7 @@ function upgradeSQL($file, $delimiter = ';')
             }
 
             fclose($file);
-            redirect(url('/dashboard/upgrade/'));
+            redirect(get_base_url() . 'dashboard/upgrade/');
         }
     }
 }
@@ -1318,7 +1330,7 @@ function redirect_upgrade_db()
         if (RELEASE_TAG == \app\src\ReleaseAPI::inst()->init('RELEASE_TAG')) {
             if (get_option('dbversion') < \app\src\ReleaseAPI::inst()->init('DB_VERSION')) {
                 if (basename($app->req->server["REQUEST_URI"]) != "upgrade") {
-                    redirect(url('/dashboard/upgrade/'));
+                    redirect(get_base_url() . 'dashboard/upgrade/');
                 }
             }
         }
@@ -1998,31 +2010,47 @@ function check_mime_type($file, $mode = 0)
 }
 
 /**
+ * Loads the current or default locale.
+ * 
+ * @since 6.1.09
+ * @return string The locale.
+ */
+function load_core_locale()
+{
+    if (file_exists(BASE_PATH . 'config.php')) {
+        $locale = (get_option('et_core_locale') !== null) ? get_option('et_core_locale') : 'en_US';
+    } else {
+        $locale = 'en_US';
+    }
+    return apply_filter('core_locale', $locale);
+}
+
+/**
  * Load a .mo file into the text domain $domain.
  *
  * @since 6.1.09
- *
  * @param string $domain Text domain. Unique identifier for retrieving translated strings.
  * @param string $locale Translation that should be loaded.
  * @param string $path Path to the .mo file.
  * @return bool True on success, false on failure.
  */
-function load_default_textdomain($domain, $locale, $path)
+function load_default_textdomain($domain, $path)
 {
-
+    $function = load_core_locale();
+    $locale = apply_filter('core_et_locale', $function);
+    
     $gettext = new \app\src\Gettext($domain);
 
     /**
-     * Fires before the MO translation file is loaded.
+     * Fires before the .mo translation file is loaded.
      *
      * @since 6.1.09
-     *
-     * @param string $domain Text domain. Unique identifier for retrieving translated strings.
      * @param string $locale Translation that should be loaded.
-     * @param string $path Path to the .mo file.
+     * @param string $domain Text domain. Unique identifier for retrieving translated strings.
+     * @param string $path Path to the locale directory.
      */
-    do_action_array('load_default_textdomain', $domain, $locale, $path);
-
+    do_action_array('load_default_textdomain', $locale, $domain, $path);
+    
     $gettext->setLocale($locale, $path);
 
     return true;
@@ -2034,15 +2062,15 @@ function load_default_textdomain($domain, $locale, $path)
  * If the path is not given then it will be the root of the plugin directory.
  *
  * @since 6.1.09
- *
  * @param string $domain          Unique identifier for retrieving translated strings
- * @param string $plugin_rel_path Optional. Relative path to PLUGINS_DIR where the .mo file resides.
+ * @param string $plugin_rel_path Optional. Relative path to PLUGINS_DIR where the locale directory resides.
  *                                Default false.
  * @return bool True when textdomain is successfully loaded, false otherwise.
  */
-/*function load_plugin_textdomain($domain, $plugin_rel_path = false)
+function load_plugin_textdomain($domain, $plugin_rel_path = false)
 {
-    $locale = get_option('et_core_locale');
+    $function = load_core_locale();
+    $locale = apply_filter('plugin_locale', $function);
 
     if ($plugin_rel_path !== false) {
         $path = PLUGINS_DIR . $plugin_rel_path;
@@ -2057,7 +2085,7 @@ function load_default_textdomain($domain, $locale, $path)
     }
 
     return false;
-}*/
+}
 
 /**
  * Added htmLawed functions

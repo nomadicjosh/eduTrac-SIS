@@ -53,16 +53,9 @@ if (APP_ENV == 'DEV') {
     set_error_handler('logError', E_ALL & ~E_NOTICE);
 }
 
-define('LOCALE_DIR', APP_PATH . 'lang');
-if (file_exists(BASE_PATH . 'config.php')) {
-    $locale = (get_option('et_core_locale') !== null) ? get_option('et_core_locale') : 'en_US';
-} else {
-    $locale = 'en_US';
-}
-
 /**
  * Loads the default textdomain.
  * 
  * @since 6.1.09
  */
-load_default_textdomain('eduTrac', $locale, LOCALE_DIR);
+load_default_textdomain('eduTrac', APP_PATH . 'lang' . DS);
