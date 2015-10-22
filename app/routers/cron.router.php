@@ -126,7 +126,7 @@ function updateCronjobs($id = '')
     }
 
     if ($id != '' && is_numeric($id)) {
-        redirect(url('/cron/view/') . $id);
+        redirect(get_base_url() . 'cron/view' . DS . $id);
     } else {
         redirect($app->req->server['HTTP_REFERER']);
     }
@@ -169,7 +169,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
      */
     $app->before('GET', '/', function() {
         if (!hasPermission('access_cronjob_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -178,7 +178,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -223,7 +223,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_cronjob_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -232,7 +232,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 

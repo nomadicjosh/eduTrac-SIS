@@ -16,7 +16,7 @@ if (!defined('BASE_PATH'))
 $app->before('GET|POST', '/courses(.*)', function() use($app) {
 
     if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
-        redirect(url('/offline/'));
+        redirect(get_base_url() . 'offline' . DS);
     }
 });
 
@@ -34,7 +34,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/api/');
+$json_url = get_base_url() . 'api' . DS;
 
 $logger = new \app\src\Log();
 $email = new \app\src\Email();
@@ -67,7 +67,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
             });
             if (bcadd(count($q1[0]['id']), count($_POST['courseSecID'])) > get_option('number_of_courses')) {
                 $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . get_option('number_of_courses') . _t(' courses</strong> per term.'));
-                redirect(url('/') . 'courses/');
+                redirect(get_base_url() . 'courses' . DS);
                 exit();
             }
             /* Retrieve the dropAddEndDate from the registration term. */
@@ -89,7 +89,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                     $app->flash('error_message', $flashNow->notice(409));
                 }
                 ++$i;
-                redirect(url('/') . 'courses/cart/');
+                redirect(get_base_url() . 'courses/cart' . DS);
             }
         }
         $terms = get_option('open_terms');
@@ -338,7 +338,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
             });
             if (count($qry[0]['courseSection']) > 0) {
                 if (get_option('registrar_email_address') != '') {
-                    $email->course_registration(get_persondata('personID'), $_POST['termCode'], url('/'));
+                    $email->course_registration(get_persondata('personID'), $_POST['termCode'], get_base_url());
                 }
             }
             $app->flash('success_message', $flashNow->notice(200));

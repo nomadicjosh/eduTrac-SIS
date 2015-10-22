@@ -15,6 +15,10 @@ if (!defined('BASE_PATH'))
  * Before route check.
  */
 $app->before('GET|POST', '/dashboard(.*)', function() {
+    if (!file_exists(BASE_PATH . 'config.php')) {
+        redirect(get_base_url() . 'install/?step=1');
+    }
+    
     if (!hasPermission('access_dashboard')) {
         redirect(url('/'));
     }

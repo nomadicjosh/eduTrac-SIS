@@ -18,17 +18,17 @@ Session::init();
 /**
  * Before route check.
  */
-$app->before('GET|POST', '/install.*', function() use($app) {
+$app->before('GET|POST', '/install(.*)', function() use($app) {
     if (file_exists(BASE_PATH . 'config.php')) {
-        redirect(url('/'));
+        redirect(get_base_url());
     }
     
     if(!$app->req->_get('step')) {
-        redirect(url('/install/?step=1'));
+        redirect(get_base_url() . 'install/?step=1');
     }
 
     if ($app->req->_get('step') === '') {
-        redirect(url('/install/?step=1'));
+        redirect(get_base_url() . 'install/?step=1');
     }
 });
 
@@ -58,9 +58,9 @@ $app->match('GET|POST', '/install/checkDB/', function () use($app) {
         $_SESSION['error_message'] = [];
         if (!$connect) {
             $_SESSION['error_message'][] = _t('Unable to establish a database connection.');
-            redirect(url('/install/?step=3'));
+            redirect(get_base_url() . 'install/?step=3');
         } else {
-            redirect(url('/install/?step=4'));
+            redirect(get_base_url() . 'install/?step=4');
         }
     }
 });
@@ -82,10 +82,10 @@ $app->match('GET|POST', '/install/installData/', function () use($app) {
         if ($connect) {
             $q = _file_get_contents(APP_PATH . 'views/install/data/install.sql');
             $connect->exec($q);
-            redirect(url('/install/?step=5'));
+            redirect(get_base_url() . 'install/?step=5');
         } else {
             $_SESSION['error_message'][] = _t('Unable to establish a database connection.');
-            redirect(url('/install/?step=3'));
+            redirect(get_base_url() . 'install/?step=3');
         }
     }
 });
@@ -208,7 +208,7 @@ $app->match('GET|POST', '/install/createAdmin/', function () use($app) {
             }
         }
     }
-    redirect(url('/install/?step=6'));
+    redirect(get_base_url() . 'install/?step=6');
 });
 
 $app->match('GET|POST', '/install/finishInstall/', function () use($app) {
@@ -238,7 +238,7 @@ $app->match('GET|POST', '/install/finishInstall/', function () use($app) {
 		# Destroy the session
         Session::destroy();
         
-        redirect(url('/'));
+        redirect(get_base_url());
     }
 });
 
