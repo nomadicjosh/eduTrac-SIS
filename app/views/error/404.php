@@ -2,22 +2,15 @@
 /**
  * Error View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
-if($app->hook->{'get_option'}('myet_layout') === null) {
-    $app->view->extend('_layouts/myet/default.layout');
-} else {
-    $app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_layout') . '.layout');
-}
+$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
 ?>
 
@@ -44,7 +37,7 @@ $app->view->block('myet');
                             <!-- Column -->
                             <div class="span6">
                                 <div class="center">
-                                    <p><?=_t('Is this a serious error?');?> <a href="<?=$app->hook->{'get_option'}('help_desk');?>"><?=_t('Let us know');?></a></p>
+                                    <p><?=_t('Is this a serious error?');?> <a href="<?=_h(get_option('help_desk'));?>"><?=_t('Let us know');?></a></p>
                                 </div>
                             </div>
                             <!-- // Column END -->
