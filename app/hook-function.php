@@ -1094,20 +1094,6 @@ function show_update_message()
 }
 
 /**
- * Retrieves eduTrac site root url.
- *
- * @since 4.1.9
- * @uses apply_filter() Calls 'base_url' filter.
- *
- * @return string eduTrac root url.
- */
-function get_base_url()
-{
-    $url = url('/');
-    return apply_filter('base_url', $url);
-}
-
-/**
  * Retrieve javascript directory uri.
  *
  * @since 4.1.9
