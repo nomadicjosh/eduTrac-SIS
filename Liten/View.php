@@ -33,7 +33,7 @@ if (!defined('BASE_PATH'))
 
 class View
 {
-    
+
     /**
      * Liten application object
      * 
@@ -79,8 +79,8 @@ class View
      * 
      * @var string
      */
-    protected $_viewPath;
-    
+    public $_viewPath;
+
     public function __construct(\Liten\Liten $liten = null)
     {
         $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
