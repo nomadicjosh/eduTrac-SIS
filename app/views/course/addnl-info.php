@@ -26,11 +26,11 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/')?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url()?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>crse/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
+	<li><a href="<?=get_base_url();?>crse/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>crse/<?=_h($crse[0]['courseID']);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($crse[0]['courseCode']);?></a></li>
+	<li><a href="<?=get_base_url();?>crse/<?=_h($crse[0]['courseID']);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($crse[0]['courseCode']);?></a></li>
     <li class="divider"></li>
 	<li><?=_h($crse[0]['courseCode']);?></li>
 </ul>
@@ -43,7 +43,7 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
     <?php jstree_sidebar_menu($screen,$crse); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>crse/addnl/<?=_h($crse[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>crse/addnl/<?=_h($crse[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -124,7 +124,7 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=cids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>crse/<?=_h($crse[0]['courseID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/<?=_h($crse[0]['courseID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				
@@ -152,7 +152,7 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
                 <!-- // Modal body END -->
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <a href="<?=url('/');?>crse/clone/<?=_h($crse[0]['courseID']);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
+                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse[0]['courseID']);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
                     <a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'No' );?></a> 
                 </div>
                 <!-- // Modal footer END -->

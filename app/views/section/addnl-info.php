@@ -22,11 +22,11 @@ $screen = 'vsect';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/')?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url()?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>sect/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
+	<li><a href="<?=get_base_url();?>sect/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($sect[0]['termCode']);?>-<?=_h($sect[0]['courseSecCode']);?></a></li>
+	<li><a href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($sect[0]['termCode']);?>-<?=_h($sect[0]['courseSecCode']);?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'View Section' );?></li>
 </ul>
@@ -39,7 +39,7 @@ $screen = 'vsect';
     <?php jstree_sidebar_menu($screen, '', $sect); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>sect/addnl/<?=_h($sect[0]['courseSecID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>sect/addnl/<?=_h($sect[0]['courseSecID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -53,12 +53,12 @@ $screen = 'vsect';
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons adjust_alt"><a href="<?=url('/');?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_h($sect[0]['courseSection']);?></a></li>
-                    <li class="glyphicons circle_info active"><a href="<?=url('/');?>sect/addnl/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Additional Info' );?></a></li>
-                    <li class="glyphicons more_items tab-stacked"><a href="<?=url('/');?>sect/soff/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Offering Info' );?></a></li>
-                    <li<?=ml('financial_module');?> class="glyphicons money tab-stacked"><a href="<?=url('/');?>sect/sbill/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Billing Info' );?></a></li>
+                    <li class="glyphicons adjust_alt"><a href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_h($sect[0]['courseSection']);?></a></li>
+                    <li class="glyphicons circle_info active"><a href="<?=get_base_url();?>sect/addnl/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Additional Info' );?></a></li>
+                    <li class="glyphicons more_items tab-stacked"><a href="<?=get_base_url();?>sect/soff/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Offering Info' );?></a></li>
+                    <li<?=ml('financial_module');?> class="glyphicons money tab-stacked"><a href="<?=get_base_url();?>sect/sbill/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Billing Info' );?></a></li>
                     <?php if($sect[0]['roomCode'] != '') : ?>
-                    <li<?=ml('booking_module');?> class="glyphicons calendar tab-stacked"><a href="<?=url('/');?>sect/sbook/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Booking Info' );?></span></a></li>
+                    <li<?=ml('booking_module');?> class="glyphicons calendar tab-stacked"><a href="<?=get_base_url();?>sect/sbook/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Booking Info' );?></span></a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -140,7 +140,7 @@ $screen = 'vsect';
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=csids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

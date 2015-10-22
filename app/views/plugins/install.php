@@ -2,16 +2,13 @@
 /**
  * Plugin Installer View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       5.0.4
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -25,9 +22,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-    <li><a href="<?=url('/');?>plugins/<?=bm();?>" class="glyphicons cogwheel"><i></i> <?=_t( 'Plugins' );?></a></li>
+    <li><a href="<?=get_base_url();?>plugins/<?=bm();?>" class="glyphicons cogwheel"><i></i> <?=_t( 'Plugins' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Install Plugin' );?></li>
 </ul>
@@ -38,7 +35,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>plugins/install/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>plugins/install/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">

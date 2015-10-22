@@ -25,9 +25,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard<?=bm();?>/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard<?=bm();?>/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>nae/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
+	<li><a href="<?=get_base_url();?>nae/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'View Person' );?></li>
 </ul>
@@ -35,7 +35,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Person:' );?> <?=_h($nae[0]['lname']);?>, <?=_h($nae[0]['fname']);?>
     <?php if($appl[0]['personID'] <= 0) : ?>
     <span data-toggle="tooltip" data-original-title="Create Application" data-placement="top">
-        <a<?=hl('applications','access_application_screen');?> href="<?=url('/');?>appl/add/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-archive"></i></a>
+        <a<?=hl('applications','access_application_screen');?> href="<?=get_base_url();?>appl/add/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-archive"></i></a>
     </span>
     <?php endif; ?>
 </h3>
@@ -46,7 +46,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>nae/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -84,7 +84,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Alternate ID' );?> <a href="#altID" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Alternate ID' );?> <a href="#altID" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input class="form-control" type="text" name="altID" value="<?=_h($nae[0]['altID']);?>" />
                             </div>
@@ -93,7 +93,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Person Type' );?> <a href="#myModal" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Person Type' );?> <a href="#myModal" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <?=person_type_select(_h($nae[0]['personType']));?>
                             </div>
@@ -145,7 +145,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><?=_t( 'Address1' );?> <a href="<?=url('/');?>nae/adsu/<?=_h($nae[0]['personID']);?>/<?=bm();?>"><img src="<?=url('/');?>static/common/theme/images/cascade.png" /></a></label>
+							<label class="col-md-3 control-label"><?=_t( 'Address1' );?> <a href="<?=get_base_url();?>nae/adsu/<?=_h($nae[0]['personID']);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
 							<div class="col-md-8">
 								<input class="form-control" type="text" readonly value="<?=_h($addr[0]['address1']);?>" required />
 							</div>
@@ -311,7 +311,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Status' );?> <a href="#status" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Status' );?> <a href="#status" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=pio();?> required>
                                     <option value="">&nbsp;</option>
@@ -360,7 +360,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div<?=ae('access_user_role_screen');?> class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Role' );?> <a href="<?=url('/');?>nae/role/<?=_h($nae[0]['personID']);?>/<?=bm();?>"><img src="<?=url('/');?>static/common/theme/images/cascade.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Role' );?> <a href="<?=get_base_url();?>nae/role/<?=_h($nae[0]['personID']);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-2">
                                 <input class="form-control center" type="text" readonly value="X" />
                             </div>
@@ -369,7 +369,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div<?=ae('access_user_permission_screen');?> class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Permission' );?> <a href="<?=url('/');?>nae/perms/<?=_h($nae[0]['personID']);?>/<?=bm();?>"><img src="<?=url('/');?>static/common/theme/images/cascade.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Permission' );?> <a href="<?=get_base_url();?>nae/perms/<?=_h($nae[0]['personID']);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-2">
                                 <input class="form-control center" type="text" readonly value="X" />
                             </div>
@@ -441,8 +441,8 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=pids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button"<?=ae('reset_person_password');?> class="btn btn-icon btn-primary glyphicons refresh" onclick="window.location='<?=url('/');?>nae/resetPassword/<?=_h($nae[0]['personID']);?>'"><i></i><?=_t( 'Reset Password' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>nae/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button"<?=ae('reset_person_password');?> class="btn btn-icon btn-primary glyphicons refresh" onclick="window.location='<?=get_base_url();?>nae/resetPassword/<?=_h($nae[0]['personID']);?>'"><i></i><?=_t( 'Reset Password' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

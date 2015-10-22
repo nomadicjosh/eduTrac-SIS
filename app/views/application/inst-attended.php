@@ -2,16 +2,13 @@
 /**
  * Add Institution Attended View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
- * @since       4.1.1
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @since       3.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -23,7 +20,7 @@ jQuery(document).ready(function() {
     jQuery('#applicantID').live('change', function(event) {
         $.ajax({
             type    : 'POST',
-            url     : '<?=url('/');?>appl/applicantLookup/',
+            url     : '<?=get_base_url();?>appl/applicantLookup/',
             dataType: 'json',
             data    : $('#validateSubmitForm').serialize(),
             cache: false,
@@ -41,9 +38,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here' );?></li>
-    <li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=url('/');?>appl/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Application' );?></a></li>
+    <li><a href="<?=get_base_url();?>appl/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Application' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'Institution Attended' );?></li>
 </ul>
@@ -54,7 +51,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>appl/inst-attended/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/inst-attended/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -173,7 +170,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Submit' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>appl/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>appl/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

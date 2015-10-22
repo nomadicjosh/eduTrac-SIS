@@ -2,16 +2,13 @@
 /**
  * Update View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
- * @since       5.0.3
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @since       3.0.0
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -20,7 +17,7 @@ $update = new \app\src\Update('http://edutrac.s3.amazonaws.com', RELEASE_TAG);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Automatic Update' );?></li>
 </ul>

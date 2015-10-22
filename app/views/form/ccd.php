@@ -2,17 +2,13 @@
 /**
  * Add CCD View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @license     http://www.edutracerp.com/general/edutrac-erp-commercial-license/ Commercial License
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -128,7 +124,6 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
                                 <li><a href="<?=url('/');?>form/ccd/<?=_h($value['ccdID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
-                                <?php do_action('search_ccd_action'); ?>
                             </ul>
                         </div>
                     </td>

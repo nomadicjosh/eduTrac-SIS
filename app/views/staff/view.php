@@ -2,16 +2,13 @@
 /**
  * View Staff View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -27,9 +24,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>staff/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Staff' );?></a></li>
+	<li><a href="<?=get_base_url();?>staff/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Staff' );?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'View Staff' );?></li>
 </ul>
@@ -41,7 +38,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
         <div class="widget">
             <div class="widget-head">
                 <h4 class="heading glyphicons user"><i></i><?=get_name(_h($staffInfo->getStaffID()));?></h4>
-                <a href="<?=url('/');?>staff/<?=_h($staffInfo->getStaffID());?>/" class="heading pull-right"><?=_h($staffInfo->getStaffID());?></a>
+                <a href="<?=get_base_url();?>staff/<?=_h($staffInfo->getStaffID());?>/" class="heading pull-right"><?=_h($staffInfo->getStaffID());?></a>
             </div>
             <div class="widget-body">
                 <!-- 3 Column Grid / One Third -->
@@ -89,7 +86,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>staff/<?=_h($staff[0]['staffID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>staff/<?=_h($staff[0]['staffID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -103,10 +100,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li<?=ae('access_human_resources');?> class="glyphicons user"><a href="<?=url('/');?>hr/<?=_h($staff[0]['staffID']);?>/"><i></i> <?=get_name(_h($staff[0]['staffID']));?></a></li>
-                    <li class="glyphicons nameplate active"><a href="<?=url('/');?>staff/<?=_h($staff[0]['staffID']);?>/" data-toggle="tab"><i></i> <?=_t( 'Staff Record' );?></a></li>
-                    <li<?=ae('access_human_resources');?> class="glyphicons folder_open tab-stacked"><a href="<?=url('/');?>hr/positions/<?=_h($staff[0]['staffID']);?>/"><i></i> <?=_t( 'View Positions' );?></a></li>
-                    <li<?=ae('access_human_resources');?> class="glyphicons circle_plus tab-stacked"><a href="<?=url('/');?>hr/add/<?=_h($staff[0]['staffID']);?>/"><i></i> <span><?=_t( 'Add Position' );?></span></a></li>
+                    <li<?=ae('access_human_resources');?> class="glyphicons user"><a href="<?=get_base_url();?>hr/<?=_h($staff[0]['staffID']);?>/"><i></i> <?=get_name(_h($staff[0]['staffID']));?></a></li>
+                    <li class="glyphicons nameplate active"><a href="<?=get_base_url();?>staff/<?=_h($staff[0]['staffID']);?>/" data-toggle="tab"><i></i> <?=_t( 'Staff Record' );?></a></li>
+                    <li<?=ae('access_human_resources');?> class="glyphicons folder_open tab-stacked"><a href="<?=get_base_url();?>hr/positions/<?=_h($staff[0]['staffID']);?>/"><i></i> <?=_t( 'View Positions' );?></a></li>
+                    <li<?=ae('access_human_resources');?> class="glyphicons circle_plus tab-stacked"><a href="<?=get_base_url();?>hr/add/<?=_h($staff[0]['staffID']);?>/"><i></i> <span><?=_t( 'Add Position' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -259,7 +256,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=staids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>staff/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>staff/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

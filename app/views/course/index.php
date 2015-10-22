@@ -16,7 +16,7 @@ $screen = 'crse';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Courses' );?></li>
 </ul>
@@ -35,7 +35,7 @@ $screen = 'crse';
 					<div class="widget-body">
 						
 						<div class="widget widget-heading-simple widget-body-simple text-right form-group">
-							<form class="form-search text-center" action="<?=url('/');?>crse/<?=bm();?>" method="post" autocomplete="off">
+							<form class="form-search text-center" action="<?=get_base_url();?>crse/<?=bm();?>" method="post" autocomplete="off">
 							  	<input type="text" name="crse" class="form-control" placeholder="Search subject or course code . . . " /> 
 							</form>
 						</div>
@@ -80,10 +80,10 @@ $screen = 'crse';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/');?>crse/<?=_h($v['courseID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>crse/<?=_h($v['courseID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
                                 <li<?=ae('add_course');?>><a href="#crse<?=_h($v['courseID']);?>" data-toggle="modal"><?=_t( 'Clone' ); ?></a></li>
                                 <?php if(_h($v['currStatus']) == _t( 'A' ) && _h($v['endDate']) == '0000-00-00') : ?>
-                                <li<?=ae('add_course_sec');?>><a href="<?=url('/');?>sect/add/<?=_h($v['courseID']);?>/<?=bm();?>"><?=_t( 'Create Section' ); ?></a></li>
+                                <li<?=ae('add_course_sec');?>><a href="<?=get_base_url();?>sect/add/<?=_h($v['courseID']);?>/<?=bm();?>"><?=_t( 'Create Section' ); ?></a></li>
                                 <?php endif; ?>
                             </ul>
                         </div>
@@ -116,7 +116,7 @@ $screen = 'crse';
                         <!-- // Modal body END -->
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <a href="<?=url('/');?>crse/clone/<?=_h($v['courseID']);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
+                            <a href="<?=get_base_url();?>crse/clone/<?=_h($v['courseID']);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
                             <a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'No' );?></a> 
                         </div>
                         <!-- // Modal footer END -->

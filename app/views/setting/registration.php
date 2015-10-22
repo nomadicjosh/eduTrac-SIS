@@ -18,7 +18,7 @@ $screen = 'setting';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Registration Settings' );?></li>
 </ul>
@@ -29,7 +29,7 @@ $screen = 'setting';
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>registration/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>registration/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -43,10 +43,10 @@ $screen = 'setting';
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left"><a href="<?=url('/');?>setting/"><i></i> <?=_t( 'General' );?></a></li>
-                    <li<?= hl('registration_settings'); ?> class="glyphicons lock active"><a href="<?=url('/');?>registration/" data-toggle="tab"><i></i> <?=_t( 'Registration' );?></a></li>
-                    <li<?= hl('email_settings'); ?> class="glyphicons inbox tab-stacked"><a href="<?=url('/');?>email/"><i></i> <?=_t( 'Email' );?></a></li>
-                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked"><a href="<?=url('/');?>templates/"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
+                    <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left"><a href="<?=get_base_url();?>setting/"><i></i> <?=_t( 'General' );?></a></li>
+                    <li<?= hl('registration_settings'); ?> class="glyphicons lock active"><a href="<?=get_base_url();?>registration/" data-toggle="tab"><i></i> <?=_t( 'Registration' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons inbox tab-stacked"><a href="<?=get_base_url();?>email/"><i></i> <?=_t( 'Email' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked"><a href="<?=get_base_url();?>templates/"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -85,7 +85,7 @@ $screen = 'setting';
 						
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( '# of Courses' );?> <a href="#courses" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( '# of Courses' );?> <a href="#courses" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input type="text" name="number_of_courses" value="<?=_h(get_option('number_of_courses'));?>" class="form-control" required/> 
                             </div>
@@ -94,7 +94,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Account Balance' );?> <a href="#balance" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Account Balance' );?> <a href="#balance" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input type="text" readonly name="account_balance" value="<?=_h(get_option('account_balance'));?>" class="form-control" /> 
                             </div>
@@ -109,7 +109,7 @@ $screen = 'setting';
 						
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Open Terms' );?> <a href="#openterm" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Open Terms' );?> <a href="#openterm" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input type="text" name="open_terms" value="<?=_h(get_option('open_terms'));?>" class="form-control" required/> 
                             </div>
@@ -118,7 +118,7 @@ $screen = 'setting';
 						
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Registration Term' );?> <a href="#register" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Registration Term' );?> <a href="#register" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <select name="registration_term" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
@@ -130,7 +130,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Instructions' );?> <a href="#reginfo" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Instructions' );?> <a href="#reginfo" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <textarea class="form-control" name="reg_instructions" rows="3" data-height="auto"><?=_h(get_option('reg_instructions'));?></textarea>
                             </div>

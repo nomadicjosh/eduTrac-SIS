@@ -23,16 +23,16 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here' );?></li>
-    <li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=url('/');?>program/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Program' );?></a></li>
+    <li><a href="<?=get_base_url();?>program/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Program' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'View Program' );?></li>
 </ul>
 
 <h3><?=_h($prog[0]['acadProgCode']);?>
     <span data-toggle="tooltip" data-original-title="Create Program" data-placement="top">
-        <a<?=ae('add_acad_prog');?> href="<?=url('/');?>program/add/" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+        <a<?=ae('add_acad_prog');?> href="<?=get_base_url();?>program/add/" class="btn btn-primary"><i class="fa fa-plus"></i></a>
     </span>
 </h3>
 <div class="innerLR">
@@ -42,7 +42,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <?php jstree_sidebar_menu($screen,'','','','','',$prog); ?>
 
     <!-- Form -->
-    <form class="form-horizontal margin-none" action="<?=url('/');?>program/<?=_h($prog[0]['acadProgID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+    <form class="form-horizontal margin-none" action="<?=get_base_url();?>program/<?=_h($prog[0]['acadProgID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
         
         <!-- Widget -->
         <div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -314,7 +314,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                 <div class="form-actions">
                     <input class="form-control" type="hidden" name="acadProgID" value="<?=_h($prog[0]['acadProgID']);?>" />
                     <button type="submit"<?=apids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>program/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>program/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>
                 <!-- // Form actions END -->
                 

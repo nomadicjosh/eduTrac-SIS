@@ -2,22 +2,15 @@
 /**
  * myeduTrac Student Schedule View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       4.3
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
-if($app->hook->{'get_option'}('myet_layout') === null) {
-    $app->view->extend('_layouts/myet/default.layout');
-} else {
-    $app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_layout') . '.layout');
-}
+$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
 $stuInfo = new \app\src\Student;
 $stuInfo->Load_from_key(get_persondata('personID'));
@@ -55,7 +48,7 @@ $stuInfo->Load_from_key(get_persondata('personID'));
                 <td class="text-center"><?=_h($v['termCode']);?></td>
                 <td class="text-center"><?=_h($v['Courses']);?></td>
                 <td class="text-center">
-                	<a href="<?=url('/');?>stu/schedule/<?=_h($v['termCode']);?>/" title="View" class="btn btn-primary"><i class="fa fa-calendar"></i></a>
+                	<a href="<?=get_base_url();?>stu/schedule/<?=_h($v['termCode']);?>/" title="View" class="btn btn-primary"><i class="fa fa-calendar"></i></a>
 				</td>
             </tr>
 			<?php } endif; ?>

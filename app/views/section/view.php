@@ -20,7 +20,7 @@ jQuery(document).ready(function() {
     jQuery('#term').live('change', function(event) {
         $.ajax({
             type    : 'POST',
-            url     : '<?=url('/');?>sect/secTermLookup/',
+            url     : '<?=get_base_url();?>sect/secTermLookup/',
             dataType: 'json',
             data    : $('#validateSubmitForm').serialize(),
             cache: false,
@@ -43,9 +43,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>sect/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
+	<li><a href="<?=get_base_url();?>sect/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_h($sect[0]['courseSection']);?></li>
 </ul>
@@ -58,7 +58,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?php jstree_sidebar_menu($screen, '', $sect); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>sect/<?=_h($sect[0]['courseSecID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -72,12 +72,12 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons adjust_alt active"><a href="<?=url('/');?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_h($sect[0]['courseSection']);?></a></li>
-                    <li class="glyphicons circle_info"><a href="<?=url('/');?>sect/addnl/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Additional Info' );?></a></li>
-                    <li class="glyphicons more_items tab-stacked"><a href="<?=url('/');?>sect/soff/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Offering Info' );?></a></li>
-                    <li<?=ml('financial_module');?> class="glyphicons money tab-stacked"><a href="<?=url('/');?>sect/sbill/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Billing Info' );?></a></li>
+                    <li class="glyphicons adjust_alt active"><a href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_h($sect[0]['courseSection']);?></a></li>
+                    <li class="glyphicons circle_info"><a href="<?=get_base_url();?>sect/addnl/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Additional Info' );?></a></li>
+                    <li class="glyphicons more_items tab-stacked"><a href="<?=get_base_url();?>sect/soff/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Offering Info' );?></a></li>
+                    <li<?=ml('financial_module');?> class="glyphicons money tab-stacked"><a href="<?=get_base_url();?>sect/sbill/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Billing Info' );?></a></li>
                     <?php if($sect[0]['roomCode'] != '') : ?>
-                    <li<?=ml('booking_module');?> class="glyphicons calendar tab-stacked"><a href="<?=url('/');?>sect/sbook/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Booking Info' );?></span></a></li>
+                    <li<?=ml('booking_module');?> class="glyphicons calendar tab-stacked"><a href="<?=get_base_url();?>sect/sbook/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Booking Info' );?></span></a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -274,7 +274,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <?php if(hasPermission('access_grading_screen')) : ?>
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Final Grades' );?> <a href="<?=url('/');?>sect/fgrade/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><img src="<?=url('/');?>static/common/theme/images/cascade.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Final Grades' );?> <a href="<?=get_base_url();?>sect/fgrade/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-2">
                                 <input type="text" disabled value="X" class="form-control col-md-1 center" />
                             </div>
@@ -293,7 +293,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<div class="form-actions">
 				    <input type="hidden" name="courseSecCode" value="<?=_h($sect[0]['courseSecCode']);?>" />
 					<button type="submit"<?=csids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>sect/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>sect/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

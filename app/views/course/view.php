@@ -17,7 +17,7 @@ $screen = 'vcrse';
 ?>
 
 <script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
-<script src="<?=url('/');?>static/assets/plugins/tinymce/plugin.js"></script>
+<script src="<?=get_base_url();?>static/assets/plugins/tinymce/plugin.js"></script>
 <script type="text/javascript">
 	tinymce.init({selector: "textarea",plugins: [ "placeholder" ]});
 	$(".panel").show();
@@ -26,9 +26,9 @@ $screen = 'vcrse';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/')?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url()?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>crse/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
+	<li><a href="<?=get_base_url();?>crse/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_h($crse[0]['courseCode']);?></li>
 </ul>
@@ -46,10 +46,10 @@ $screen = 'vcrse';
     <?php include(BASE_PATH . 'app/views/dashboard/menu.php'); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>crse/<?=_h($crse[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>crse/<?=_h($crse[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
         
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray col-md-10">
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -223,7 +223,7 @@ $screen = 'vcrse';
 						
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Additional Info' );?> <a href="<?=url('/');?>crse/addnl/<?=_h($crse[0]['courseID']);?>/<?=bm();?>"><img src="<?=url('/');?>static/common/theme/images/cascade.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Additional Info' );?> <a href="<?=get_base_url();?>crse/addnl/<?=_h($crse[0]['courseID']);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-1">
                                 <?php
                                      if($crse[0]['preReq'] != '' || $crse[0]['allowAudit'] != 0  || $crse[0]['allowWaitlist'] != 0 || 
@@ -257,7 +257,7 @@ $screen = 'vcrse';
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=cids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>crse/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				
@@ -285,7 +285,7 @@ $screen = 'vcrse';
                 <!-- // Modal body END -->
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <a href="<?=url('/');?>crse/clone/<?=_h($crse[0]['courseID']);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
+                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse[0]['courseID']);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
                     <a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'No' );?></a> 
                 </div>
                 <!-- // Modal footer END -->

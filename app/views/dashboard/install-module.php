@@ -22,9 +22,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-    <li><a href="<?=url('/');?>dashboard/modules/<?=bm();?>" class="glyphicons package"><i></i> <?=_t( 'System Modules' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/modules/<?=bm();?>" class="glyphicons package"><i></i> <?=_t( 'System Modules' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Install Modules' );?></li>
 </ul>
@@ -37,7 +37,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>dashboard/install-module/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>dashboard/install-module/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">

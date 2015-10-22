@@ -18,9 +18,9 @@ $screen = 'sros';
 
 <script type="text/javascript">
 $(window).load(function() {
-	$("#terms").jCombo({url: "<?=url('/');?>sect/regTermLookup/" });
+	$("#terms").jCombo({url: "<?=get_base_url();?>sect/regTermLookup/" });
 	$("#section").jCombo({
-		url: "<?=url('/');?>sect/defSecLookup/", 
+		url: "<?=get_base_url();?>sect/defSecLookup/", 
 		input_param: "term", 
 		parent: "#terms", 
 		onChange: function(newvalue) {
@@ -38,7 +38,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Student Roster' );?></li>
 </ul>
@@ -51,7 +51,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>sect/sros/" id="validateSubmitForm" method="post" target="new" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>sect/sros/" id="validateSubmitForm" method="post" target="new" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">

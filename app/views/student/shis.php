@@ -2,16 +2,13 @@
 /**
  * Student Hiatus View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       4.3
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -33,9 +30,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here' );?></li>
-    <li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=url('/');?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'Student Hiatus (SHIS)' );?></li>
 </ul>
@@ -51,17 +48,17 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <!-- Tabs Heading -->
     <div class="tabsbar">
         <ul>
-            <li class="glyphicons user"><a href="<?=url('/');?>stu/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-            <li class="glyphicons package"><a href="<?=url('/');?>stu/stac/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-            <li class="glyphicons tags tab-stacked"><a href="<?=url('/');?>stu/sttr/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-            <li class="glyphicons disk_remove tab-stacked"><a href="<?=url('/');?>stu/strc/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
-            <li class="glyphicons history tab-stacked active"><a href="<?=url('/');?>stu/shis/<?=_h($stu[0]['stuID']);?>/<?=bm();?>" data-toggle="tab"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+            <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+            <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+            <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+            <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
+            <li class="glyphicons history tab-stacked active"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu[0]['stuID']);?>/<?=bm();?>" data-toggle="tab"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
         </ul>
     </div>
     <!-- // Tabs Heading END -->
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>stu/shis/<?=_h($stu[0]['stuID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/shis/<?=_h($stu[0]['stuID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Table -->
 		<table class="table table-striped table-responsive swipe-horizontal table-primary">
@@ -166,7 +163,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 									
 									<!-- Modal footer -->
 									<div class="modal-footer">
-										<a href="<?=url('/');?>stu/deleteSHIS/<?=_h($v['shisID']);?>" class="btn btn-default"><?=_t( 'Delete' );?></a>
+										<a href="<?=get_base_url();?>stu/deleteSHIS/<?=_h($v['shisID']);?>" class="btn btn-default"><?=_t( 'Delete' );?></a>
 										<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Close' );?></a> 
 									</div>
 									<!-- // Modal footer END -->
@@ -192,7 +189,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 			<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
 			<?php endif; ?>
 			<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" data-toggle="modal" data-target="#md-ajax"><i></i><?=_t( 'Add' );?></button>
-			<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>stu/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+			<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 		</div>
 		<!-- // Form actions END -->
 		
@@ -201,7 +198,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	
 	<!-- Modal -->
 	<div class="modal fade" id="md-ajax">
-		<form class="form-horizontal" data-collabel="3" data-alignlabel="left" action="<?=url('/');?>stu/shis/<?=_h($stu[0]['stuID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal" data-collabel="3" data-alignlabel="left" action="<?=get_base_url();?>stu/shis/<?=_h($stu[0]['stuID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 	

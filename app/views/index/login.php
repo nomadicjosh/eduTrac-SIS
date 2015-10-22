@@ -8,8 +8,9 @@
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . get_option('myet_layout') . '.layout');
+$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
 $message = new \app\src\Messages;
 ?>

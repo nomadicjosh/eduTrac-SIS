@@ -32,7 +32,7 @@ $('#tick').hide();
 
 jQuery.ajax({
    type: "POST",
-   url: "<?=url('/');?>nae/usernameCheck/",
+   url: "<?=get_base_url();?>nae/usernameCheck/",
    data: 'uname='+ uname,
    cache: false,
    success: function(response){
@@ -57,7 +57,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Name & Address' );?></li>
 </ul>
@@ -70,7 +70,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>nae/add/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>nae/add/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -99,7 +99,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Alternate ID' );?> <a href="#altID" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Alternate ID' );?> <a href="#altID" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input class="form-control" type="text" name="altID" value="<?=_h($nae[0]['altID']);?>" />
                             </div>
@@ -108,7 +108,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Person Type' );?> <a href="#myModal" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Person Type' );?> <a href="#myModal" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <?=person_type_select((isset($_POST['personType'])) ? $_POST['personType'] : '');?>
                             </div>

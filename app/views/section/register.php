@@ -20,7 +20,7 @@ jQuery(document).ready(function() {
     jQuery('#stuID').live('change', function(event) {
         $.ajax({
             type    : 'POST',
-            url     : '<?=url('/');?>sect/stuLookup/',
+            url     : '<?=get_base_url();?>sect/stuLookup/',
             dataType: 'json',
             data    : $('#validateSubmitForm').serialize(),
             cache: false,
@@ -34,9 +34,9 @@ jQuery(document).ready(function() {
 });
 
 $(window).load(function() {
-	$("#terms").jCombo({url: "<?=url('/');?>sect/regTermLookup/" });
+	$("#terms").jCombo({url: "<?=get_base_url();?>sect/regTermLookup/" });
 	$("#section").jCombo({
-		url: "<?=url('/');?>sect/regSecLookup/", 
+		url: "<?=get_base_url();?>sect/regSecLookup/", 
 		input_param: "id", 
 		parent: "#terms", 
 		onChange: function(newvalue) {
@@ -54,7 +54,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Course Registration' );?></li>
 </ul>
@@ -67,7 +67,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>sect/rgn/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>sect/rgn/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">

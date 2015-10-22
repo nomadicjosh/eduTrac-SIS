@@ -2,16 +2,13 @@
 /**
  * Manage Roles View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -21,7 +18,7 @@ $screen = 'role';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Manage Roles' );?></li>
 </ul>
@@ -57,7 +54,7 @@ $screen = 'role';
 							echo '<tr class="gradeX">'."\n";
 							echo '<td>'._h($v['ID']).'</td>'."\n";
 							echo '<td>'._h($v['Name']).'</td>'."\n";
-							echo '<td class="text-center"><a href="'.url('/').'role/'._h($v['ID']).'/" title="View Role" class="btn btn-default"><i class="fa fa-edit"></i></a></td>';
+							echo '<td class="text-center"><a href="'.get_base_url().'role/'._h($v['ID']).'/" title="View Role" class="btn btn-default"><i class="fa fa-edit"></i></a></td>';
 							echo '</tr>';
 						}
 					}
@@ -75,7 +72,7 @@ $screen = 'role';
             <hr class="separator" />
 		<!-- Form actions -->
         <div class="form-actions">
-            <button type="submit" name="NewRole" class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=url('/');?>role/add/<?=bm();?>'"><i></i><?=_t( 'New Role' );?></button>
+            <button type="submit" name="NewRole" class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=get_base_url();?>role/add/<?=bm();?>'"><i></i><?=_t( 'New Role' );?></button>
         </div>
         <!-- // Form actions END -->
 		</div>

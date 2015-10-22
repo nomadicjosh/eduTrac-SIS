@@ -2,22 +2,15 @@
 /**
  * myeduTrac View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       4.3
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
-if($app->hook->{'get_option'}('myet_layout') === null) {
-    $app->view->extend('_layouts/myet/default.layout');
-} else {
-    $app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_layout') . '.layout');
-}
+$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
 ?>
 
@@ -69,7 +62,7 @@ tinymce.init({
 							<span class="glyphicons single regular calendar"><i></i> <?=date('D, M d, o',strtotime(_h($v['addDate'])));?></span>
 							<div class="separator bottom"></div>
 							<?=_escape(safe_truncate($v['news_content'],125,' . . .'));?>
-							<p class="margin-none strong"><a href="<?=url('/');?>news/<?=_h($v['news_slug']);?>/"><?=_t( 'read more' );?></a></p>
+							<p class="margin-none strong"><a href="<?=get_base_url();?>news/<?=_h($v['news_slug']);?>/"><?=_t( 'read more' );?></a></p>
 						</div>
 					</div>
 				</div>
@@ -82,7 +75,7 @@ tinymce.init({
 
 	<!-- Modal -->
 	<div class="modal fade" id="welcome">
-		<form class="form-horizontal margin-none" action="<?=url('/');?>message/" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal margin-none" action="<?=get_base_url();?>message/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->

@@ -21,7 +21,7 @@ jQuery(document).ready(function() {
     jQuery('#termCode').live('change', function(event) {
         $.ajax({
             type    : 'POST',
-            url     : '<?=url('/');?>sect/secTermLookup/',
+            url     : '<?=get_base_url();?>sect/secTermLookup/',
             dataType: 'json',
             data    : $('#validateSubmitForm').serialize(),
             cache: false,
@@ -44,9 +44,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>sect/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
+	<li><a href="<?=get_base_url();?>sect/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Create Section' );?></li>
 </ul>
@@ -57,7 +57,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?php jstree_sidebar_menu($screen,'',$sect); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>sect/add/<?=_h($sect[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>sect/add/<?=_h($sect[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">

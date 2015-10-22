@@ -2,16 +2,13 @@
 /**
  * Transcript View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -24,7 +21,7 @@ $templates_header = get_templates_header(APP_PATH . 'views/student/templates/tra
     jQuery('#stuID').live('change', function(event) {
         $.ajax({
             type    : 'POST',
-            url     : '<?=url('/');?>sect/stuLookup/',
+            url     : '<?=get_base_url();?>sect/stuLookup/',
             dataType: 'json',
             data    : $('#validateSubmitForm').serialize(),
             cache: false,
@@ -42,7 +39,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Transcript' );?></li>
 </ul>
@@ -53,7 +50,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>stu/tran/" id="validateSubmitForm" method="post" autocomplete="off" target="_blank">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/tran/" id="validateSubmitForm" method="post" autocomplete="off" target="_blank">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">

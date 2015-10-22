@@ -3,16 +3,13 @@
  *
  * Employee Search View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.2
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -20,7 +17,7 @@ $app->view->block('dashboard');
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Employee' );?></li>
 </ul>
@@ -37,9 +34,9 @@ $app->view->block('dashboard');
 					<div class="widget-body">
 						
 						<div class="widget widget-heading-simple widget-body-simple text-right form-group">
-							<form class="form-search text-center" action="<?=url('/');?>hr/<?=bm();?>" method="post" autocomplete="off">
+							<form class="form-search text-center" action="<?=get_base_url();?>hr/<?=bm();?>" method="post" autocomplete="off">
 							  	<input type="text" name="employee" class="form-control" placeholder="Search employee . . . " /> 
-							  	<a href="#myModal" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a>
+							  	<a href="#myModal" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a>
 							</form>
 						</div>
 						
@@ -83,11 +80,11 @@ $app->view->block('dashboard');
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' );?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/');?>hr/<?=_h($v['staffID']);?>/<?=bm();?>"><?=_t( 'View' );?></a></li>
+                                <li><a href="<?=get_base_url();?>hr/<?=_h($v['staffID']);?>/<?=bm();?>"><?=_t( 'View' );?></a></li>
                                 
-                                <li><a href="<?=url('/');?>hr/add/<?=_h($v['staffID']);?>/<?=bm();?>"><?=_t( 'Add Position' );?></a></li>
+                                <li><a href="<?=get_base_url();?>hr/add/<?=_h($v['staffID']);?>/<?=bm();?>"><?=_t( 'Add Position' );?></a></li>
                                 
-                                <li><a href="<?=url('/');?>hr/positions/<?=_h($v['staffID']);?>/<?=bm();?>"><?=_t( 'View Positions' );?></a></li>
+                                <li><a href="<?=get_base_url();?>hr/positions/<?=_h($v['staffID']);?>/<?=bm();?>"><?=_t( 'View Positions' );?></a></li>
                             </ul>
                         </div>
                     </td>

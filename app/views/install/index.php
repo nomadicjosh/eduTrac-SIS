@@ -2,16 +2,13 @@
 /**
  * Install View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/blank');
 $app->view->block('blank');
@@ -23,15 +20,15 @@ require(APP_PATH . 'installer-function.php');
 <html xml:lang="en-us" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?=_t( 'eduTrac ERP Installer' );?></title>
+<title><?=_t( 'eduTrac SIS Installer' );?></title>
 
 <!-- JQuery -->
 <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script> 
-<script type="text/javascript" src="<?=url('/');?>static/assets/js/validate.js"></script> 
-<script type="text/javascript" src="<?=url('/');?>static/assets/js/hoverIntent.js"></script>
-<script type="text/javascript" src="<?=url('/');?>static/assets/js/wizardPro.js"></script>
-<link href="<?=url('/');?>static/assets/css/wizardPro.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/js/validate.js"></script> 
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/js/hoverIntent.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/js/wizardPro.js"></script>
+<link href="<?=get_base_url();?>static/assets/css/wizardPro.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript">
 	$(document).ready(function(){
 		$("#wizard").wizardPro();
@@ -42,7 +39,7 @@ require(APP_PATH . 'installer-function.php');
 
 <div id="container">
     
-    <h2><?=_t( 'eduTrac ERP Installation Wizard' );?></h2>
+    <h2><?=_t( 'eduTrac SIS Installation Wizard' );?></h2>
     
     <div id="wizard" class="wizard-default-style js">
         
@@ -66,7 +63,7 @@ require(APP_PATH . 'installer-function.php');
                     <p><?=_t( "If for some reason the config.php file does not get created after the installer has finished, don't worry. All this does is fill in the database information to the config file. Just go to the root of the install, make a copy of config.sample.php, rename the copy to config.php, and fill in the database information." );?></p>
                     
                     <p><?=_t( "In all likelihood, these items were supplied to you by your Web Host. If you do not have this information, then you will need to contact them before you can continue. If you're all ready..." );?></p>
-                    <button class="next" onclick="window.location='<?=url('/');?>install/?step=2'"><span><?=_t( 'Next Step' );?></span></button>
+                    <button class="next" onclick="window.location='<?=get_base_url();?>install/?step=2'"><span><?=_t( 'Next Step' );?></span></button>
                 </div>
                 
             </div>
@@ -95,7 +92,7 @@ require(APP_PATH . 'installer-function.php');
 						}
 						?>
 					</ul>
-					<button class="next" onclick="window.location='<?=url('/');?>install/?step=3'"><span><?=_t( 'Next Step' );?></span></button>
+					<button class="next" onclick="window.location='<?=get_base_url();?>install/?step=3'"><span><?=_t( 'Next Step' );?></span></button>
                 </div>
       
 				<div class="column_two legend">
@@ -132,7 +129,7 @@ require(APP_PATH . 'installer-function.php');
                 
                 <div class="column_two">
                 	<?=Session::error();?>
-                    <form action="<?=url('/');?>install/checkDB/" class="defaultRequest" method="post">
+                    <form action="<?=get_base_url();?>install/checkDB/" class="defaultRequest" method="post">
                         <fieldset>
                             <p><label><a href="#help-dbname" class="show_helper"><span>(?)</span> <?=_t( 'Database Name' );?></a></label>
                             <input type="text" name="dbname" class="required input-block-level" /></p>
@@ -170,7 +167,7 @@ require(APP_PATH . 'installer-function.php');
                 </div>
                 
                 <div class="column_two legend">
-					<form action="<?=url('/');?>install/installData/" class="defaultRequest" method="post">
+					<form action="<?=get_base_url();?>install/installData/" class="defaultRequest" method="post">
                         <fieldset>
                              <p><label>&nbsp;</label>
                              <button type="submit"><span><?=_t( 'Install Tables' );?></span></button></p>
@@ -211,7 +208,7 @@ require(APP_PATH . 'installer-function.php');
                 
                 <div class="column_two">
                     
-                    <form action="<?=url('/');?>install/createAdmin/" class="defaultRequest" method="post">
+                    <form action="<?=get_base_url();?>install/createAdmin/" class="defaultRequest" method="post">
                         <fieldset>
                             <p><label><?=_t( 'Institution Name' );?></label>
                             <input type="text" name="institutionname" class="required" /></p>
@@ -252,7 +249,7 @@ require(APP_PATH . 'installer-function.php');
                     <h3><?=_t( 'Success!' );?></h3>
                     
                     <p><?=_t( 'eduTrac ERP has been installed. Click the button below in order to create the config file, flush the installer and be redirected to the login page.' );?></p>
-                    <form action="<?=url('/');?>install/finishInstall/" class="defaultRequest" method="post">
+                    <form action="<?=get_base_url();?>install/finishInstall/" class="defaultRequest" method="post">
                         <p><button type="submit"><span><?=_t( 'Finish Installer' );?></span></button></p>
                     </form>
                 </div>
@@ -264,7 +261,7 @@ require(APP_PATH . 'installer-function.php');
         </div>
         
         <div class="no_javascript">
-            <img src="<?=url('/');?>static/assets/img/warning.png" alt="Javascript Required" />
+            <img src="<?=get_base_url();?>static/assets/img/warning.png" alt="Javascript Required" />
             <p><?=_t( 'Javascript is required in order to use this installer.' );?><br />
             <a href="https://support.google.com/adsense/answer/12654"><?=_t( 'How to enable javascript' );?></a>
             -

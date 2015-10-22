@@ -2,16 +2,13 @@
 /**
  * Cronjob Handler Log View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       6.0.00
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -27,7 +24,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Cronjob Handler Log' );?></li>
 </ul>
@@ -40,7 +37,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <?php jstree_sidebar_menu($screen); ?>
 	
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>cron/log/" id="validateSubmitForm" method="post">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>cron/log/" id="validateSubmitForm" method="post">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -48,11 +45,11 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons dashboard"><a href="<?=url('/');?>cron/<?=bm();?>"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
-                    <li class="glyphicons star"><a href="<?=url('/');?>cron/new/<?=bm();?>"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
-                    <li class="glyphicons list tab-stacked active"><a href="<?=url('/');?>cron/log/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Log' );?></a></li>
-                    <li class="glyphicons wrench tab-stacked"><a href="<?=url('/');?>cron/setting/<?=bm();?>"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
-                    <!-- <li class="glyphicons circle_question_mark tab-stacked"><a href="<?=url('/');?>cron/about/<?=bm();?>"><i></i> <span><?=_t( 'About' );?></span></a></li> -->
+                    <li class="glyphicons dashboard"><a href="<?=get_base_url();?>cron/<?=bm();?>"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
+                    <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/<?=bm();?>"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
+                    <li class="glyphicons list tab-stacked active"><a href="<?=get_base_url();?>cron/log/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Log' );?></a></li>
+                    <li class="glyphicons wrench tab-stacked"><a href="<?=get_base_url();?>cron/setting/<?=bm();?>"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
+                    <!-- <li class="glyphicons circle_question_mark tab-stacked"><a href="<?=get_base_url();?>cron/about/<?=bm();?>"><i></i> <span><?=_t( 'About' );?></span></a></li> -->
                 </ul>
             </div>
             <!-- // Tabs Heading END -->

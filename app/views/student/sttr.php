@@ -2,16 +2,13 @@
 /**
  * Student Terms Summary View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       4.4
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -21,11 +18,11 @@ $stuInfo->Load_from_key(_h($stu));
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>student/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+	<li><a href="<?=get_base_url();?>student/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=url('/');?>stu/<?=_h($stu);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_h($stu);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Student Terms Summary (STRS)' );?></li>
 </ul>
@@ -42,11 +39,11 @@ $stuInfo->Load_from_key(_h($stu));
         <!-- Tabs Heading -->
         <div class="tabsbar">
             <ul>
-                <li class="glyphicons user"><a href="<?=url('/');?>stu/<?=_h($stu);?>/<?=bm();?>"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-                <li class="glyphicons package"><a href="<?=url('/');?>stu/stac/<?=_h($stu);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-                <li class="glyphicons tags tab-stacked active"><a href="<?=url('/');?>stu/sttr/<?=_h($stu);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-                <li class="glyphicons disk_remove tab-stacked"><a href="<?=url('/');?>stu/strc/<?=_h($stu);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
-                <li class="glyphicons history tab-stacked"><a href="<?=url('/');?>stu/shis/<?=_h($stu);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+                <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu);?>/<?=bm();?>"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+                <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+                <li class="glyphicons tags tab-stacked active"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+                <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
+                <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
             </ul>
         </div>
         <!-- // Tabs Heading END -->
@@ -100,7 +97,7 @@ $stuInfo->Load_from_key(_h($stu));
             
             <!-- Form actions -->
             <div class="form-actions">
-                <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>stu/<?=_h($stu);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_h($stu);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
             </div>
             <!-- // Form actions END -->
 			
