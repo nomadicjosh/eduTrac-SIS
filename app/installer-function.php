@@ -5,16 +5,13 @@ if (!defined('BASE_PATH'))
 /**
  * eduTrac Installer Helper
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 function validate_php(&$results)
 {
     if (version_compare(PHP_VERSION, '5.4') == -1) {
