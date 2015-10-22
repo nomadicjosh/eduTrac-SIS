@@ -7,9 +7,9 @@
 <!--[if !IE]><!--><html class="fluid top-full sticky-top"><!-- <![endif]-->
     <head>
         <title><?php if (isset($title)) {
-            echo $title . ' - ' . $app->hook->get_option('institution_name');
+            echo $title . ' - ' . _h(get_option('institution_name'));
         } else {
-            echo $app->hook->get_option('institution_name');
+            echo _h(get_option('institution_name'));
         } ?>
         </title>
 
@@ -319,7 +319,7 @@
                             </ul>
                         </li>
 
-                        <li<?= ae('access_ea'); ?>><a href="<?= _h($app->hook->get_option('edutrac_analytics_url')); ?>" class="glyphicons stats"><i></i> <?= _t('eduTrac Analytics'); ?></a></li>
+                        <li<?= ae('access_ea'); ?>><a href="<?= _h(get_option('edutrac_analytics_url')); ?>" class="glyphicons stats"><i></i> <?= _t('eduTrac Analytics'); ?></a></li>
 
                         <?= $app->hook->do_action('custom_list_menu_item'); ?>
 

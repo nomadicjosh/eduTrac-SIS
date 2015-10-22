@@ -82,7 +82,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 }
                 return $array;
             });
-            $json = _file_get_contents($json_url . 'student/stuID/' . $q[0]['personID'] . '/?key=' . get_option('api_key'));
+            $json = _file_get_contents($json_url . 'student/stuID/' . $q[0]['personID'] . '/?key=' . _h(get_option('api_key')));
             $decode = json_decode($json, true);
         }
 
@@ -225,9 +225,9 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             if ($uname->update()) {
 
                 $host = strtolower($_SERVER['SERVER_NAME']);
-                $site = get_option('institution_name');
+                $site = _h(get_option('institution_name'));
 
-                $message = get_option('update_username');
+                $message = _h(get_option('update_username'));
                 $message = str_replace('#uname#', getUserValue($_POST['personID'], 'uname'), $message);
                 $message = str_replace('#fname#', getUserValue($_POST['personID'], 'fname'), $message);
                 $message = str_replace('#lname#', getUserValue($_POST['personID'], 'lname'), $message);
@@ -235,9 +235,9 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 $message = str_replace('#id#', $_POST['personID'], $message);
                 $message = str_replace('#altID#', getUserValue($_POST['personID'], 'altID'), $message);
                 $message = str_replace('#url#', get_base_url(), $message);
-                $message = str_replace('#helpdesk#', get_option('help_desk'), $message);
-                $message = str_replace('#instname#', get_option('institution_name'), $message);
-                $message = str_replace('#mailaddr#', get_option('mailing_address'), $message);
+                $message = str_replace('#helpdesk#', _h(get_option('help_desk')), $message);
+                $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
+                $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
 
                 $headers = "From: $site <dont-reply@$host>\r\n";
                 $headers .= "X-Mailer: PHP/" . phpversion();
@@ -506,7 +506,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = _file_get_contents($json_url . 'institution/institutionID/' . (int) $id . '/?key=' . get_option('api_key'));
+        $json = _file_get_contents($json_url . 'institution/institutionID/' . (int) $id . '/?key=' . _h(get_option('api_key')));
         $inst = json_decode($json, true);
 
         $app->view->display('application/view-inst', [
@@ -532,7 +532,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             'components/modules/admin/forms/elements/bootstrap-timepicker/assets/custom/js/bootstrap-timepicker.init.js?v=v2.1.0'
         ];
 
-        $json_a = _file_get_contents($json_url . 'application/personID/' . (int) get_persondata('personID') . '/?key=' . get_option('api_key'));
+        $json_a = _file_get_contents($json_url . 'application/personID/' . (int) get_persondata('personID') . '/?key=' . _h(get_option('api_key')));
         $appl = json_decode($json_a, true);
 
         $app->view->display('application/appls', [
@@ -545,7 +545,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->post('/applicantLookup/', function() use($json_url) {
-        $json_a = _file_get_contents($json_url . 'person/personID/' . (int) $_POST['personID'] . '/?key=' . get_option('api_key'));
+        $json_a = _file_get_contents($json_url . 'person/personID/' . (int) $_POST['personID'] . '/?key=' . _h(get_option('api_key')));
         $appl = json_decode($json_a, true);
 
         $json = [ 'input#person' => $appl[0]['lname'] . ', ' . $appl[0]['fname']];

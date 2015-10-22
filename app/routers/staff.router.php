@@ -120,7 +120,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
 
     $app->match('GET|POST|PATCH|PUT|OPTIONS|DELETE', '/connector/', function () use($app) {
         error_reporting(0);
-        if (get_option('elfinder_driver') === 'elf_local_driver') :
+        if (_h(get_option('elfinder_driver')) === 'elf_local_driver') :
             _mkdir($app->config('file.savepath') . get_persondata('uname') . '/');
             $opts = array(
                 // 'debug' => true,
@@ -160,7 +160,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
                     array(
                         'driver' => 'S3',
                         'path' => ucfirst(get_persondata('uname')),
-                        'URL' => 'http://' . get_option('amz_s3_bucket') . '.s3.amazonaws.com/' . ucfirst(get_persondata('uname')) . '/',
+                        'URL' => 'http://' . _h(get_option('amz_s3_bucket')) . '.s3.amazonaws.com/' . ucfirst(get_persondata('uname')) . '/',
                         'alias' => 'Files',
                         'mimeDetect' => 'mime_content_type',
                         'mimefile' => BASE_PATH . 'app/src/elFinder/mime.types',
@@ -177,11 +177,11 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
                         'uploadDeny' => ['application/x-php'],
                         'uploadOrder' => array('allow', 'deny'),
                         "s3" => array(
-                            "key" => get_option('amz_s3_access_key'),
-                            "secret" => get_option('amz_s3_secret_key'),
+                            "key" => _h(get_option('amz_s3_access_key')),
+                            "secret" => _h(get_option('amz_s3_secret_key')),
                             "region" => 'us-east-1'
                         ),
-                        "bucket" => get_option('amz_s3_bucket'),
+                        "bucket" => _h(get_option('amz_s3_bucket')),
                         "acl" => "public-read"
                     )
                 )

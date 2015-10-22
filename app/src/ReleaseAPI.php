@@ -83,7 +83,7 @@ class ReleaseAPI
 
     public function getSchema()
     {
-        $sql = $this->_url . $this->init('UPGRADE_SQL') . DS . get_option('dbversion') . '.sql';
+        $sql = $this->_url . $this->init('UPGRADE_SQL') . DS . _h(get_option('dbversion')) . '.sql';
         return $sql;
     }
 }

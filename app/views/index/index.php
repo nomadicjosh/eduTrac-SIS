@@ -89,7 +89,7 @@ tinymce.init({
 					<!-- Group -->
 		            <div class="form-group">
 		                <div class="col-md-12">
-		                    <textarea name="myet_welcome_message" class="form-control" rows="5"><?=_escape($app->hook->{'get_option'}('myet_welcome_message'));?></textarea>
+		                    <textarea name="myet_welcome_message" class="form-control" rows="5"><?=_escape(get_option('myet_welcome_message'));?></textarea>
 		                </div>
 		            </div>
 		            <!-- // Group END -->

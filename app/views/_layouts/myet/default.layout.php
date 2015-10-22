@@ -13,9 +13,9 @@ $app = \Liten\Liten::getInstance(); ?>
 <!--[if !IE]><!--><html class="front fluid top-full sticky-top"><!-- <![endif]-->
 <head>
 	<title><?php if (isset($title)) {
-            echo $title . ' - ' . get_option('institution_name');
+            echo $title . ' - ' . _h(get_option('institution_name'));
         } else {
-            echo get_option('institution_name');
+            echo _h(get_option('institution_name'));
         } ?>
         </title>
 	

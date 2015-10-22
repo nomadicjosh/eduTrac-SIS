@@ -151,7 +151,7 @@ class Email
     public function et_progress_report($email, $id, $host)
     {
         $name = get_name($id);
-        $site = get_option('institution_name');
+        $site = _h(get_option('institution_name'));
         $message = "You have a new progress report from your child's teacher: $name \n
 		
 		Log into your account to view this new progress report. \n
@@ -186,7 +186,7 @@ class Email
     public function course_registration($id, $term, $host)
     {
         $name = get_name($id);
-        $site = get_option('institution_name');
+        $site = _h(get_option('institution_name'));
         $message = "<p>Dear Registrar:</p>
         
         <p>The following student submitted a new course registration.</p>
@@ -214,7 +214,7 @@ class Email
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
-        $this->et_mail(get_option('registrar_email_address'), _t("Course Registration"), $message, $headers);
+        $this->et_mail(_h(get_option('registrar_email_address')), _t("Course Registration"), $message, $headers);
         return apply_filter('course_registration', $message, $headers);
     }
 
@@ -255,7 +255,7 @@ class Email
     public function myetRegConfirm($email, $id, $username, $password, $host)
     {
         $name = get_name($id);
-        $site = _t('myeduTrac::') . get_option('institution_name');
+        $site = _t('myeduTrac::') . _h(get_option('institution_name'));
         $message = "<p>Hello $name:</p>
         
 		<p>Below are your login details. Keep this email for future reference.</p>
@@ -279,7 +279,7 @@ class Email
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
-        $this->et_mail($email, get_option('institution_name') . _t(" Account Login Details"), $message, $headers);
+        $this->et_mail($email, _h(get_option('institution_name')) . _t(" Account Login Details"), $message, $headers);
         return apply_filter('myedutrac_appl_confirm', $message, $headers);
     }
 
@@ -293,7 +293,7 @@ class Email
     public function myetApplication($id, $host)
     {
         $name = get_name($id);
-        $site = _t('myeduTrac::') . get_option('institution_name');
+        $site = _t('myeduTrac::') . _h(get_option('institution_name'));
         $message = "<p>Dear Admissions:</p>
         
 		<p>A new application has been submitted via <em>my</em>eduTrac SIS self service.</p>
@@ -318,7 +318,7 @@ class Email
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
-        $this->et_mail(get_option('admissions_email'), _t("Application for Admissions"), $message, $headers);
+        $this->et_mail(_h(get_option('admissions_email')), _t("Application for Admissions"), $message, $headers);
         return apply_filter('myedutrac_application', $message, $headers);
     }
 }

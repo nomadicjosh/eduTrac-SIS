@@ -263,10 +263,10 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $al->addDate = $app->db->NOW();
 
             if ($student->save() && $sacp->save() && $al->save()) {
-                if (get_option('send_acceptance_email') == 1) {
+                if (_h(get_option('send_acceptance_email')) == 1) {
                     $host = strtolower($_SERVER['SERVER_NAME']);
-                    $site = _t('myeduTrac :: ') . get_option('institution_name');
-                    $message = get_option('student_acceptance_letter');
+                    $site = _t('myeduTrac :: ') . _h(get_option('institution_name'));
+                    $message = _escape(get_option('student_acceptance_letter'));
                     $message = str_replace('#uname#', $nae->uname, $message);
                     $message = str_replace('#fname#', $nae->fname, $message);
                     $message = str_replace('#lname#', $nae->lname, $message);
@@ -277,18 +277,18 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     $message = str_replace('#acadlevel#', _trim($_POST['acadLevelCode']), $message);
                     $message = str_replace('#degree#', $degree->degreeCode, $message);
                     $message = str_replace('#startterm#', $appl->startTerm, $message);
-                    $message = str_replace('#adminemail#', get_option('system_email'), $message);
+                    $message = str_replace('#adminemail#', _h(get_option('system_email')), $message);
                     $message = str_replace('#url#', get_base_url(), $message);
-                    $message = str_replace('#helpdesk#', get_option('help_desk'), $message);
-                    $message = str_replace('#currentterm#', get_option('current_term_code'), $message);
-                    $message = str_replace('#instname#', get_option('institution_name'), $message);
-                    $message = str_replace('#mailaddr#', get_option('mailing_address'), $message);
+                    $message = str_replace('#helpdesk#', _h(get_option('help_desk')), $message);
+                    $message = str_replace('#currentterm#', _h(get_option('current_term_code')), $message);
+                    $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
+                    $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
 
                     $headers = "From: $site <auto-reply@$host>\r\n";
                     $headers .= "X-Mailer: PHP/" . phpversion();
                     $headers .= "MIME-Version: 1.0" . "\r\n";
                     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                    $email->et_mail(get_option('admissions_email'), _t("Student Acceptance Letter"), $message, $headers);
+                    $email->et_mail(_h(get_option('admissions_email')), _t("Student Acceptance Letter"), $message, $headers);
                 }
                 /**
                  * @since 6.1.07
@@ -1416,7 +1416,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect(get_base_url() . 'profile' . DS);
         }
 
-        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
             redirect(get_base_url() . 'offline' . DS);
         }
     });
@@ -1442,7 +1442,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect(get_base_url() . 'profile' . DS);
         }
 
-        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
             redirect(get_base_url() . 'offline' . DS);
         }
     });
@@ -1487,7 +1487,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect(get_base_url() . 'profile' . DS);
         }
 
-        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
             redirect(get_base_url() . 'offline' . DS);
         }
     });
@@ -1570,7 +1570,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect(get_base_url() . 'profile' . DS);
         }
 
-        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
+        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
             redirect(get_base_url() . 'offline' . DS);
         }
     });

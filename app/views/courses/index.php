@@ -10,7 +10,7 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . get_option('myet_layout') . '.layout');
+$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
 $message = new \app\src\Messages();
 ?>
@@ -20,7 +20,7 @@ $(window).load(function(){
     $("tr input[type=checkbox]").click(function(){
         var countchecked = $("tr input[type=checkbox]:checked").length;
     
-        if(countchecked >= <?=_h($app->hook->{'get_option'}('number_of_courses'));?>) 
+        if(countchecked >= <?=_h(get_option('number_of_courses'));?>) 
         {
             $('tr input[type=checkbox]').not(':checked').attr("disabled",true);
         }
@@ -156,7 +156,7 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
 					<!-- // Modal END -->
                 </td>
                 <td<?=isRegistrationOpen();?> class="text-center">
-                    <?php if(_h($v['termCode']) == get_option('registration_term')) : ?>
+                    <?php if(_h($v['termCode']) == _h(get_option('registration_term'))) : ?>
                     <?php if(student_can_register()) : ?>
                     <?php if(prerequisite(get_persondata('personID'),_h($v['courseSecID']))) : ?>
                     <input<?=getStuSec(_h($v['courseSecCode']),_h($v['termCode']));?> type="checkbox" name="courseSecID[]" value="<?=_h($v['courseSecID']);?>" />

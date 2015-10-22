@@ -67,9 +67,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 }
                 return $array;
             });
-            $staff = _file_get_contents($json_url . 'staff/staffID/' . $q[0]['personID'] . '/?key=' . get_option('api_key'));
+            $staff = _file_get_contents($json_url . 'staff/staffID/' . $q[0]['personID'] . '/?key=' . _h(get_option('api_key')));
             $s_decode = json_decode($staff, true);
-            $appl = _file_get_contents($json_url . 'application/personID/' . $q[0]['personID'] . '/?key=' . get_option('api_key'));
+            $appl = _file_get_contents($json_url . 'application/personID/' . $q[0]['personID'] . '/?key=' . _h(get_option('api_key')));
             $a_decode = json_decode($appl, true);
         }
 
@@ -130,11 +130,11 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
-        $appl = _file_get_contents($json_url . 'application/personID/' . $id . '/?key=' . get_option('api_key'));
+        $appl = _file_get_contents($json_url . 'application/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $a_decode = json_decode($appl, true);
 
         $addr = $app->db->address()
@@ -277,7 +277,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                         $pass = 'myaccount' . $passSuffix;
                     }
                     $host = strtolower($_SERVER['SERVER_NAME']);
-                    $site = _t('myeduTrac :: ') . get_option('institution_name');
+                    $site = _t('myeduTrac :: ') . _h(get_option('institution_name'));
                     $message = get_option('person_login_details');
                     $message = str_replace('#uname#', $_POST['uname'], $message);
                     $message = str_replace('#fname#', $_POST['fname'], $message);
@@ -287,9 +287,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     $message = str_replace('#altID#', $_POST['altID'], $message);
                     $message = str_replace('#password#', $pass, $message);
                     $message = str_replace('#url#', get_base_url(), $message);
-                    $message = str_replace('#helpdesk#', get_option('help_desk'), $message);
-                    $message = str_replace('#instname#', get_option('institution_name'), $message);
-                    $message = str_replace('#mailaddr#', get_option('mailing_address'), $message);
+                    $message = str_replace('#helpdesk#', _h(get_option('help_desk')), $message);
+                    $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
+                    $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
 
                     $headers = "From: $site <dont-reply@$host>\r\n";
                     $headers .= "X-Mailer: PHP/" . phpversion();
@@ -339,7 +339,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->get('/adsu/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
 
         $adsu = $app->db->person()
@@ -409,10 +409,10 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/addr-form/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
 
         if ($app->req->isPost()) {
@@ -499,13 +499,13 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/addr/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json_a = _file_get_contents($json_url . 'address/addressID/' . $id . '/?key=' . get_option('api_key'));
+        $json_a = _file_get_contents($json_url . 'address/addressID/' . $id . '/?key=' . _h(get_option('api_key')));
         $a_decode = json_decode($json_a, true);
 
-        $json_p = _file_get_contents($json_url . 'person/personID/' . $a_decode[0]['personID'] . '/?key=' . get_option('api_key'));
+        $json_p = _file_get_contents($json_url . 'person/personID/' . $a_decode[0]['personID'] . '/?key=' . _h(get_option('api_key')));
         $p_decode = json_decode($json_p, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
 
         if ($app->req->isPost()) {
@@ -574,10 +574,10 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
 
         if ($app->req->isPost()) {
@@ -651,10 +651,10 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->match('GET|POST', '/perms/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
 
         if ($app->req->isPost()) {
@@ -763,14 +763,14 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $pass = 'myaccount'.$passSuffix;
         }
         
-        $from = get_option('institution_name');
-        $fromEmail = get_option('system_email');
+        $from = _h(get_option('institution_name'));
+        $fromEmail = _h(get_option('system_email'));
         $url = get_base_url();
         $host = $app->req->server['HTTP_HOST'];
-        $helpDesk = get_option('help_desk');
-        $body = get_option('reset_password_text');
-        $body = str_replace('#instname#', get_option('institution_name'), $body);
-        $body = str_replace('#mailaddr#', get_option('mailing_address'), $body);
+        $helpDesk = _h(get_option('help_desk'));
+        $body = _h(get_option('reset_password_text'));
+        $body = str_replace('#instname#', _h(get_option('institution_name')), $body);
+        $body = str_replace('#mailaddr#', _h(get_option('mailing_address')), $body);
         $body = str_replace('#url#', $url, $body);
         $body = str_replace('#helpdesk#', $helpDesk, $body);
         $body = str_replace('#adminemail#', $fromEmail, $body);
