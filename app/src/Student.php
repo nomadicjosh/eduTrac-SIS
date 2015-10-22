@@ -1,5 +1,4 @@
-<?php
-namespace app\src;
+<?php namespace app\src;
 
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -7,15 +6,11 @@ if (!defined('BASE_PATH'))
 /**
  * Student DBObject Class
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 
 class Student
@@ -225,12 +220,12 @@ class Student
                 <div class="widget-head">
                     <h4 class="heading glyphicons user"><i></i><?= get_name(_h($this->getStuID())); ?></h4>&nbsp;&nbsp;
                     <?php if(!isset($_COOKIE['SWITCH_USERBACK']) && _h($this->getStuID()) != get_persondata('personID')) : ?>
-                    <span<?=ae('login_as_user');?> class="label label-inverse"><a href="<?=url('/');?>switchUserTo/<?=_h($this->getStuID());?>/"><font color="#FFFFFF"><?= _t('Switch To'); ?></font></a></span>
+                    <span<?=ae('login_as_user');?> class="label label-inverse"><a href="<?=get_base_url();?>switchUserTo/<?=_h($this->getStuID());?>/"><font color="#FFFFFF"><?= _t('Switch To'); ?></font></a></span>
                     <?php endif; ?>
                     <?php if(get_persondata('personID') == $this->getStuID() && !hasPermission('access_dashboard')) : ?>
-                    <a href="<?= url('/'); ?>profile/" class="heading pull-right"><?= _h($this->getStuID()); ?></a>
+                    <a href="<?= get_base_url(); ?>profile/" class="heading pull-right"><?= _h($this->getStuID()); ?></a>
                     <?php else : ?>
-                    <a href="<?=url('/');?>stu/<?=_h($this->getStuID());?>/" class="heading pull-right"><?=_h($this->getStuID());?></a>
+                    <a href="<?=get_base_url();?>stu/<?=_h($this->getStuID());?>/" class="heading pull-right"><?=_h($this->getStuID());?></a>
                     <?php endif; ?>
                 </div>
                 <div class="widget-body">
@@ -263,9 +258,9 @@ class Student
                         <div class="col-md-3">
                             <p><strong><?= _t('FERPA:'); ?></strong> <?= is_ferpa(_h($this->getStuID())); ?> 
                                     <?php if (is_ferpa(_h($this->getStuID())) == 'Yes') : ?>
-                                    <a href="#FERPA" data-toggle="modal"><img style="vertical-align:top !important;" src="<?= url('/'); ?>static/common/theme/images/exclamation.png" /></a>
+                                    <a href="#FERPA" data-toggle="modal"><img style="vertical-align:top !important;" src="<?= get_base_url(); ?>static/common/theme/images/exclamation.png" /></a>
                                     <?php else : ?>
-                                    <a href="#FERPA" data-toggle="modal"><img style="vertical-align:top !important;" src="<?= url('/'); ?>static/common/theme/images/information.png" /></a>
+                                    <a href="#FERPA" data-toggle="modal"><img style="vertical-align:top !important;" src="<?= get_base_url(); ?>static/common/theme/images/information.png" /></a>
                                 <?php endif; ?>
                             </p>
                             <p><strong><?= _t('Restriction(s):'); ?></strong> 
