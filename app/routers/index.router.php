@@ -311,9 +311,8 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
         }
         redirect($app->req->server['HTTP_REFERER']);
     }
-
-    $json = _file_get_contents($json_url . 'permission/ID/' . $id . '/?key=' . _h(get_option('api_key')));
-    $decode = json_decode($json, true);
+    
+    $perm = $app->db->permission()->where('ID = ?', $id)->findOne();
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
     $js = [
@@ -334,7 +333,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
      * If the database table doesn't exist, then it
      * is false and a 404 should be sent.
      */
-    if ($decode == false) {
+    if ($perm == false) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
@@ -342,13 +341,13 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
      * If the query is legit, but there
      * is no data in the table, then 404
      * will be shown.
-     */ elseif (empty($decode) == true) {
+     */ elseif (empty($perm) == true) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
     /**
      * If data is zero, 404 not found.
-     */ elseif (count($decode[0]['ID']) <= 0) {
+     */ elseif (count($perm->ID) <= 0) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
@@ -362,7 +361,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
             'title' => 'Edit Permission',
             'cssArray' => $css,
             'jsArray' => $js,
-            'perm' => $decode
+            'perm' => $perm
             ]
         );
     }
@@ -444,9 +443,8 @@ $app->match('GET|POST', '/role/', function () use($app) {
     );
 });
 
-$app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
-    $json = _file_get_contents($json_url . 'role/ID/' . $id . '/?key=' . _h(get_option('api_key')));
-    $decode = json_decode($json, true);
+$app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {    
+    $role = $app->db->role()->where('ID = ?', $id)->findOne();
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
     $js = [
@@ -467,7 +465,7 @@ $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
      * If the database table doesn't exist, then it
      * is false and a 404 should be sent.
      */
-    if ($decode == false) {
+    if ($role == false) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
@@ -475,13 +473,13 @@ $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
      * If the query is legit, but there
      * is no data in the table, then 404
      * will be shown.
-     */ elseif (empty($decode) == true) {
+     */ elseif (empty($role) == true) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
     /**
      * If data is zero, 404 not found.
-     */ elseif (count($decode[0]['ID']) <= 0) {
+     */ elseif (count($role->ID) <= 0) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
@@ -495,7 +493,7 @@ $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
             'title' => 'Edit Role',
             'cssArray' => $css,
             'jsArray' => $js,
-            'role' => $decode
+            'role' => $role
             ]
         );
     }

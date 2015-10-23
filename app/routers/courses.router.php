@@ -71,9 +71,8 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 exit();
             }
             /* Retrieve the dropAddEndDate from the registration term. */
-            $json_term = _file_get_contents($json_url . 'term/termCode/' . $_POST['regTerm'] . '/?key=' . _h(get_option('api_key')));
-            $daDate = json_decode($json_term, true);
-            $deleteDate = date('Y-m-d', strtotime($daDate[0]['dropAddEndDate'] . ' + 1 days'));
+            $term = $app->db->term()->where('termCode = ?', (string) $_POST['regTerm'])->findOne();
+            $deleteDate = date('Y-m-d', strtotime($term->dropAddEndDate . ' + 1 days'));
 
             /* Add courses to the shopping cart. */
             $size = count($_POST['courseSecID']);

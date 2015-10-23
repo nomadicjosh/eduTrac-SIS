@@ -78,7 +78,7 @@ $app->view->block('dashboard');
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
                                 <li><a href="<?=get_base_url();?>appl/<?=_h($v['applID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
-                                <?php if($appl[0]['stuID'] == NULL) { ?>
+                                <?php if($appl->stuID == NULL) { ?>
                                 <li><a href="<?=get_base_url();?>stu/add/<?=_h($v['personID']);?>/<?=bm();?>"><?=_t( 'Create Student' ); ?></a></li>
                                 <?php } ?>
                             </ul>

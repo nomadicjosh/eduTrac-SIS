@@ -55,7 +55,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-4 control-label" for="roleName"><font color="red">*</font> <?=_t( 'Role Name' );?></label>
-							<div class="col-md-6"><input class="form-control" name="roleName" type="text" value="<?=$eRole->getRoleNameFromID(_h($role[0]['ID']));?>" required/></div>
+							<div class="col-md-6"><input class="form-control" name="roleName" type="text" value="<?=$eRole->getRoleNameFromID(_h($role->ID));?>" required/></div>
 						</div>
 						<!-- // Group END -->
 						
@@ -72,7 +72,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 							<!-- // Table heading END -->
 							
 							<tbody>
-								<?php rolePerm(_h($role[0]['ID'])); ?>
+								<?php rolePerm(_h($role->ID)); ?>
 							</tbody>
 				
 					</table>
@@ -83,7 +83,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<input type="hidden" name="action" value="saveRole" />
-					<input type="hidden" name="roleID" value="<?=_h($role[0]['ID']);?>" />
+					<input type="hidden" name="roleID" value="<?=_h($role->ID);?>" />
 					<button type="submit" name="Submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
 					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>role/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>

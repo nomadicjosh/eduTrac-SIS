@@ -160,14 +160,14 @@
                         <li><?=_t( 'Course' );?>
                             <ul>
                                 <?php if($crse !== '') : ?>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_25"><a<?=($screen === 'vcrse') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>crse/<?=_h($crse[0]['courseID']);?>/"><?=_h($crse[0]['courseCode']);?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_25"><a<?=($screen === 'vcrse') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>crse/<?=_h($crse->courseID);?>/"><?=_h($crse->courseCode);?></a></li>
                                 <?php endif; ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_26"><a<?=($screen === 'crse') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>crse/"><?=_t( 'Search Course' );?></a></li>
                                 <?php if(hasPermission('add_course')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_27"><a<?=($screen === 'acrse') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>crse/add/"><?=_t( '(ACRS) - Add Course' );?></a></li>
                                 <?php endif; ?>
                                 <?php if($crse !== '' && hasPermission('add_course_sec')) : ?>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_28"><a<?=($screen === 'csect') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>sect/add/<?=_h($crse[0]['courseID']);?>/"><?=_t( 'Create Section' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_28"><a<?=($screen === 'csect') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>sect/add/<?=_h($crse->courseID);?>/"><?=_t( 'Create Section' );?></a></li>
                                 <?php endif; ?>
                                 
                                 <?php if(function_exists('transfer_module') && hasPermission('register_student')) : ?>
@@ -188,12 +188,12 @@
                             <ul>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_33"><a<?=($screen === 'sect') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/"><?=_t( 'Search Section' );?></a></li>
                                 <?php if($sect !== '') : ?>
-                                <?php if(count($sect[0]['courseSecID']) > 0) : ?>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_34"><a<?=($screen === 'vsect') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>sect/<?=_h($sect[0]['courseSecID']);?>/"><?=_h($sect[0]['courseSection']);?></a></li>
+                                <?php if(count($sect->courseSecID) > 0) : ?>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_34"><a<?=($screen === 'vsect') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>sect/<?=_h($sect->courseSecID);?>/"><?=_h($sect->courseSection);?></a></li>
                                 <?php endif; ?>
                                 <?php endif; ?>
                                 <?php if($sect !== '' && hasPermission('add_course_sec')) : ?>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml35"><a<?=($screen === 'csect') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>sect/add/<?=_h($sect[0]['courseID']);?>/"><?=_t( 'Create Section' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml35"><a<?=($screen === 'csect') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>sect/add/<?=_h($sect->courseID);?>/"><?=_t( 'Create Section' );?></a></li>
                                 <?php endif; ?>
                                 <?php if(hasPermission('register_student')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_36"><a<?=($screen === 'rgn') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/rgn/"><?=_t( '(RGN) - Register' );?></a></li>
@@ -211,20 +211,20 @@
                                 <li><?=_t( 'Gradebook' );?>
                                     <ul>
                                         <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_41"><a<?=($screen === 'mysect') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/courses/"><?=_t( 'My Course Sections' );?></a></li>
-                                        <?php if($sect && hasPermission('access_gradebook')) : ?>
+                                        <?php if($sect && $screen !== 'vsect' && $screen !== 'csect' && hasPermission('access_gradebook')) : ?>
                                         <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_42"><a<?=($screen === 'addassign') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/add-assignment/<?=_h($sect[0]['courseSecID']);?>/"><?=_t( 'Add Assignment' );?></a></li>
-                                        <?php if($sect) : ?>
+                                        <?php if($sect && $screen !== 'vsect' && $screen !== 'csect') : ?>
                                         <?php if(assignmentExist(_h($sect[0]['courseSecID'])) && hasPermission('access_gradebook')) : ?>
                                         <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_43"><a<?=($screen === 'assigns') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/assignments/<?=_h($sect[0]['courseSecID']);?>/"><?=_t( 'Assignments' );?></a></li>
                                         <?php endif; ?>
                                         <?php endif; ?>
                                         <?php endif; ?>
-                                        <?php if($sect) : ?>
+                                        <?php if($sect && $screen !== 'vsect' && $screen !== 'csect') : ?>
                                         <?php if(gradebookExist(_h($sect[0]['courseSecID'])) && hasPermission('access_gradebook')) : ?>
                                         <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_44"><a<?=($screen === 'gradebook') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/gradebook/<?=_h($sect[0]['courseSecID']);?>/"><?=_t( 'Gradebook' );?></a></li>
                                         <?php endif; ?>
                                         <?php endif; ?>
-                                        <?php if($sect) : ?>
+                                        <?php if($sect && $screen !== 'vsect' && $screen !== 'csect') : ?>
                                         <?php if(studentsExist(_h($sect[0]['courseSecID']))) : ?>
                                         <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_45"><a<?=($screen === 'email') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/students/<?=_h($sect[0]['courseSecID']);?>/"><?=_t( 'Email Students' );?></a></li>
                                         <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_46"><a<?=($screen === 'fgrade') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/final-grade/<?=_h($sect[0]['courseSecID']);?>/"><?=_t( 'Final Grades' );?></a></li>

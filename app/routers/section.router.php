@@ -112,9 +112,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * @param int $id Primary key of the course section.
          */
         do_action('pre_update_course_sec', $id);
-
-        $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/?key=' . get_option('api_key'));
-        $decode = json_decode($json, true);
+        
+        $section = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
 
         $date = date("Y-m-d");
         $time = date("h:i A");
@@ -137,9 +136,9 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $sect->acadLevelCode = $_POST['acadLevelCode'];
             $sect->where('courseSecID = ?', (int) $id);
 
-            $da = $app->db->term()->where('termCode = ?', $decode[0]['termCode'])->findOne();
+            $da = $app->db->term()->where('termCode = ?', $section->termCode)->findOne();
 
-            if ($decode[0]['currStatus'] != $_POST['currStatus']) {
+            if ($section->currStatus != $_POST['currStatus']) {
                 /**
                  * If the posted status is 'C' and today's date is less than the 
                  * primary term start date, then delete all student course sec as well as 
@@ -193,10 +192,10 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 $dbcache->clearCache("course_sec-$id");
                 $dbcache->clearCache("crseCatalog");
                 $dbcache->clearCache("$term-catalog");
-                $logger->setLog('Update Record', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $decode[0]['courseSecCode'] . ')', get_persondata('uname'));
+                $logger->setLog('Update Record', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $section->courseSecCode . ')', get_persondata('uname'));
                 $app->flash('success_message', $flashNow->notice(200));
             } else {
-                $logger->setLog('Update Error', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $decode[0]['courseSecCode'] . ')', get_persondata('uname'));
+                $logger->setLog('Update Error', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $section->courseSecCode . ')', get_persondata('uname'));
                 $app->flash('error_message', $flashNow->notice(409));
             }
             /**
@@ -221,7 +220,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             redirect(get_base_url() . 'sect' . DS . $id . '/');
         }
 
-        $preReq = $app->db->course()->select('preReq')->where('courseID = ?', $decode[0]['courseID']);
+        $preReq = $app->db->course()->select('preReq')->where('courseID = ?', $section->courseID);
         $req = $preReq->find(function($data) {
             $array = [];
             foreach ($data as $d) {
@@ -234,7 +233,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($section == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -242,13 +241,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($section) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['courseSecID']) <= 0) {
+         */ elseif (count($section->courseSecID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -259,10 +258,10 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          */ else {
 
             $app->view->display('section/view', [
-                'title' => $decode[0]['secShortTitle'] . ' :: Course Section',
+                'title' => $section->secShortTitle . ' :: Course Section',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'sect' => $decode,
+                'sect' => $section,
                 'req' => $req
                 ]
             );
@@ -415,9 +414,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * @param int $id Primary key of the course section.
          */
         do_action('pre_course_sec_addnl', $id);
-
-        $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/?key=' . get_option('api_key'));
-        $decode = json_decode($json, true);
+        
+        $section = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
 
         if ($app->req->isPost()) {
             $sect = $app->db->course_sec();
@@ -427,7 +425,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $sect->where('courseSecID = ?', $id);
             if ($sect->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Course Section', $decode[0]['courseSection'], get_persondata('uname'));
+                $logger->setLog('Update Record', 'Course Section', $section->courseSection, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -458,7 +456,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($section == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -466,13 +464,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($section) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['courseSecID']) <= 0) {
+         */ elseif (count($section->courseSecID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -483,10 +481,10 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          */ else {
 
             $app->view->display('section/addnl-info', [
-                'title' => $decode[0]['secShortTitle'] . ' :: Course Section',
+                'title' => $section->secShortTitle . ' :: Course Section',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'sect' => $decode
+                'sect' => $section
                 ]
             );
         }
@@ -501,9 +499,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         }
     });
 
-    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        $json = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $id . '/?key=' . get_option('api_key'));
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {        
+        $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
 
         if ($app->req->isPost()) {
             $dotw = '';
@@ -525,7 +522,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             if ($soff->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $dbcache->clearCache("course_sec-$id");
-                $logger->setLog('Update Record', 'Course Section Offering', $decode[0]['courseSection'], get_persondata('uname'));
+                $logger->setLog('Update Record', 'Course Section Offering', $sect->courseSection, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -536,7 +533,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($sect == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -544,13 +541,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($sect) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['courseSecID']) <= 0) {
+         */ elseif (count($sect->courseSecID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -561,10 +558,10 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          */ else {
 
             $app->view->display('section/offering-info', [
-                'title' => $decode[0]['secShortTitle'] . ' :: Course Section',
+                'title' => $sect->secShortTitle . ' :: Course Section',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'sect' => $decode
+                'sect' => $sect
                 ]
             );
         }
@@ -605,13 +602,15 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
+        
+        $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
 
-        $grade = $app->db->course_sec()
+        $fgrade = $app->db->course_sec()
             ->select('course_sec.courseSecID,course_sec.secShortTitle,course_sec.minCredit,course_sec.courseSection,course_sec.facID')
             ->select('b.stuID,b.courseSecCode,b.courseSection,b.termCode,b.grade')
             ->_join('stu_acad_cred', 'course_sec.courseSecID = b.courseSecID', 'b')
-            ->where('courseSecID = ?', $id);
-        $q = $grade->find(function($data) {
+            ->where('course_sec.courseSecID = ?', $id);
+        $q = $fgrade->find(function($data) {
             $array = [];
             foreach ($data as $d) {
                 $array[] = $d;
@@ -651,7 +650,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 'title' => $q[0]['courseSection'] . ' :: Section Final Grades',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'sect' => $q
+                'grade' => $q,
+                'sect' => $sect
                 ]
             );
         }
@@ -678,24 +678,19 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
         $time = date("h:i A");
 
-        if ($app->req->isPost()) {
-            $json_sect = _file_get_contents($json_url . 'course_sec/courseSecID/' . (int) $_POST['courseSecID'] . '/?key=' . get_option('api_key'));
-            $sect = json_decode($json_sect, true);
-
-            $json_crse = _file_get_contents($json_url . 'course/courseID/' . (int) $sect[0]['courseID'] . '/?key=' . get_option('api_key'));
-            $crse = json_decode($json_crse, true);
-
-            $json_term = _file_get_contents($json_url . 'term/termCode/' . $sect[0]['termCode'] . '/?key=' . get_option('api_key'));
-            $term = json_decode($json_term, true);
+        if ($app->req->isPost()) {            
+            $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $_POST['courseSecID'])->findOne();            
+            $crse = $app->db->course()->where('courseID = ?', (int) $sect->courseID)->findOne();            
+            $term = $app->db->term()->where('termCode = ?', $sect->termCode)->findOne();
 
             $stcs = $app->db->stu_course_sec();
             $stcs->stuID = $_POST['stuID'];
-            $stcs->courseSecID = $sect[0]['courseSecID'];
-            $stcs->courseSecCode = $sect[0]['courseSecCode'];
-            $stcs->courseSection = $sect[0]['courseSection'];
-            $stcs->termCode = $sect[0]['termCode'];
-            $stcs->courseCredits = $sect[0]['minCredit'];
-            $stcs->ceu = $sect[0]['ceu'];
+            $stcs->courseSecID = $sect->courseSecID;
+            $stcs->courseSecCode = $sect->courseSecCode;
+            $stcs->courseSection = $sect->courseSection;
+            $stcs->termCode = $sect->termCode;
+            $stcs->courseCredits = $sect->minCredit;
+            $stcs->ceu = $sect->ceu;
             $stcs->status = 'A';
             $stcs->regDate = $app->db->NOW();
             $stcs->regTime = date("h:i A");
@@ -705,26 +700,26 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
             $stac = $app->db->stu_acad_cred();
             $stac->stuID = $_POST['stuID'];
-            $stac->courseID = $sect[0]['courseID'];
-            $stac->courseSecID = $sect[0]['courseSecID'];
-            $stac->courseCode = $sect[0]['courseCode'];
-            $stac->courseSecCode = $sect[0]['courseSecCode'];
-            $stac->sectionNumber = $sect[0]['sectionNumber'];
-            $stac->courseSection = $sect[0]['courseSection'];
-            $stac->termCode = $sect[0]['termCode'];
-            $stac->reportingTerm = $term[0]['reportingTerm'];
-            $stac->subjectCode = $crse[0]['subjectCode'];
-            $stac->deptCode = $sect[0]['deptCode'];
-            $stac->shortTitle = $crse[0]['courseShortTitle'];
-            $stac->longTitle = $crse[0]['courseLongTitle'];
-            $stac->attCred = $sect[0]['minCredit'];
+            $stac->courseID = $sect->courseID;
+            $stac->courseSecID = $sect->courseSecID;
+            $stac->courseCode = $sect->courseCode;
+            $stac->courseSecCode = $sect->courseSecCode;
+            $stac->sectionNumber = $sect->sectionNumber;
+            $stac->courseSection = $sect->courseSection;
+            $stac->termCode = $sect->termCode;
+            $stac->reportingTerm = $term->reportingTerm;
+            $stac->subjectCode = $crse->subjectCode;
+            $stac->deptCode = $sect->deptCode;
+            $stac->shortTitle = $crse->courseShortTitle;
+            $stac->longTitle = $crse->courseLongTitle;
+            $stac->attCred = $sect->minCredit;
             $stac->status = 'A';
             $stac->statusDate = $app->db->NOW();
             $stac->statusTime = $time;
-            $stac->acadLevelCode = $sect[0]['acadLevelCode'];
-            $stac->courseLevelCode = $sect[0]['courseLevelCode'];
-            $stac->startDate = $sect[0]['startDate'];
-            $stac->endDate = $sect[0]['endDate'];
+            $stac->acadLevelCode = $sect->acadLevelCode;
+            $stac->courseLevelCode = $sect->courseLevelCode;
+            $stac->startDate = $sect->startDate;
+            $stac->endDate = $sect->endDate;
             $stac->addedBy = get_persondata('personID');
             $stac->addDate = $app->db->NOW();
 
@@ -752,10 +747,10 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                     /**
                      * Generate bill and/or add fees.
                      */
-                    generate_stu_bill($sect[0]['termCode'], $_POST['stuID'], $sect[0]['courseSecID']);
+                    generate_stu_bill($sect->termCode, $_POST['stuID'], $sect->courseSecID);
                 }
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Course Registration Via Staff', get_name($_POST['stuID']) . ' - ' . $sect[0]['secShortTitle'], get_persondata('uname'));
+                $logger->setLog('New Record', 'Course Registration Via Staff', get_name($_POST['stuID']) . ' - ' . $sect->secShortTitle, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -980,14 +975,11 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         echo json_encode($json);
     });
 
-    $app->post('/stuLookup/', function() use($json_url) {
-        $json_stu = _file_get_contents($json_url . 'student/stuID/' . (int) $_POST['stuID'] . '/?key=' . get_option('api_key'));
-        $stu = json_decode($json_stu, true);
+    $app->post('/stuLookup/', function() use($app) {
+        $stu = $app->db->student()->where('stuID = ?', (int) $_POST['stuID'])->findOne();        
+        $nae = $app->db->person()->where('personID = ?', (int) $stu->stuID)->findOne();
 
-        $json_per = _file_get_contents($json_url . 'person/personID/' . (int) $stu[0]['stuID'] . '/?key=' . get_option('api_key'));
-        $per = json_decode($json_per, true);
-
-        $json = [ 'input#stuName' => $per[0]['lname'] . ', ' . $per[0]['fname']];
+        $json = [ 'input#stuName' => $nae->lname . ', ' . $nae->fname];
 
         echo json_encode($json);
     });

@@ -29,13 +29,13 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	<li><?=_t( 'View Institution' );?></li>
 </ul>
 
-<h3><?=_h($inst[0]['instName']);?></h3>
+<h3><?=_h($inst->instName);?></h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/inst/<?=_h($inst[0]['institutionID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/inst/<?=_h($inst->institutionID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -57,7 +57,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 						<!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'FICE/CEEB Code' );?></label>
-                            <div class="col-md-8"><input class="form-control" name="fice_ceeb"<?=gio();?> type="text" value="<?=_h($inst[0]['fice_ceeb']);?>" required/></div>
+                            <div class="col-md-8"><input class="form-control" name="fice_ceeb"<?=gio();?> type="text" value="<?=_h($inst->fice_ceeb);?>" required/></div>
                         </div>
                         <!-- // Group END -->
 						
@@ -67,9 +67,9 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-8">
                                 <select name="instType"<?=gio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
-                                    <option value="HS"<?=selected('HS',_h($inst[0]['instType']),false);?>><?=_t( 'HS High School' );?></option>
-                                    <option value="COL"<?=selected('COL',_h($inst[0]['instType']),false);?>><?=_t( 'COL College' );?></option>
-                                    <option value="UNIV"<?=selected('UNIV',_h($inst[0]['instType']),false);?>><?=_t( 'UNIV University' );?></option>
+                                    <option value="HS"<?=selected('HS',_h($inst->instType),false);?>><?=_t( 'HS High School' );?></option>
+                                    <option value="COL"<?=selected('COL',_h($inst->instType),false);?>><?=_t( 'COL College' );?></option>
+                                    <option value="UNIV"<?=selected('UNIV',_h($inst->instType),false);?>><?=_t( 'UNIV University' );?></option>
                                 </select>
                             </div>
                         </div>
@@ -78,7 +78,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label" for="instName"><font color="red">*</font> <?=_t( 'Institution Name' );?></label>
-							<div class="col-md-8"><input class="form-control" id="instName" name="instName"<?=gio();?> type="text" value="<?=_h($inst[0]['instName']);?>" required /></div>
+							<div class="col-md-8"><input class="form-control" id="instName" name="instName"<?=gio();?> type="text" value="<?=_h($inst->instName);?>" required /></div>
 						</div>
 						<!-- // Group END -->
 						
@@ -91,14 +91,14 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 					    <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="city"><?=_t( 'City' );?></label>
-                            <div class="col-md-8"><input class="form-control" id="city" name="city"<?=gio();?> type="text" value="<?=_h($inst[0]['city']);?>" /></div>
+                            <div class="col-md-8"><input class="form-control" id="city" name="city"<?=gio();?> type="text" value="<?=_h($inst->city);?>" /></div>
                         </div>
                         <!-- // Group END -->
 						
 						<!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="state"><?=_t( 'State' );?></label>
-                            <div class="col-md-8"><input class="form-control" id="state" name="state"<?=gio();?> type="text" value="<?=_h($inst[0]['state']);?>" /></div>
+                            <div class="col-md-8"><input class="form-control" id="state" name="state"<?=gio();?> type="text" value="<?=_h($inst->state);?>" /></div>
                         </div>
                         <!-- // Group END -->
                         
@@ -108,7 +108,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-8">
                             	<select name="country"<?=gio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" >
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('country',null,'iso2','iso2','short_name',_h($inst[0]['country'])); ?>
+                                    <?php table_dropdown('country',null,'iso2','iso2','short_name',_h($inst->country)); ?>
                                 </select>
                         	</div>
                         </div>
@@ -124,7 +124,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 				
 				<!-- Form actions -->
 				<div class="form-actions">
-                    <input name="institutionID" type="hidden" value="<?=_h($inst[0]['institutionID']);?>" />
+                    <input name="institutionID" type="hidden" value="<?=_h($inst->institutionID);?>" />
 					<button type="submit"<?=gids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Submit' );?></button>
                     <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>appl/inst/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>

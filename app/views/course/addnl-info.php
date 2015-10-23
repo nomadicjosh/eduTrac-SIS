@@ -12,7 +12,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
-$list = '"'.implode('","', courseList(_h($crse[0]['preReq']))).'"';
+$list = '"'.implode('","', courseList(_h($crse->preReq))).'"';
 $screen = 'vcrse';
 ?>
 
@@ -30,12 +30,12 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 	<li class="divider"></li>
 	<li><a href="<?=get_base_url();?>crse/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>crse/<?=_h($crse[0]['courseID']);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($crse[0]['courseCode']);?></a></li>
+	<li><a href="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($crse->courseCode);?></a></li>
     <li class="divider"></li>
-	<li><?=_h($crse[0]['courseCode']);?></li>
+	<li><?=_h($crse->courseCode);?></li>
 </ul>
 
-<h3><?=_t( 'Additional Course Info:' );?> <?=_h($crse[0]['courseCode']);?></h3>
+<h3><?=_t( 'Additional Course Info:' );?> <?=_h($crse->courseCode);?></h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
@@ -43,7 +43,7 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
     <?php jstree_sidebar_menu($screen,$crse); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>crse/addnl/<?=_h($crse[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>crse/addnl/<?=_h($crse->courseID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -64,7 +64,7 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 						<!-- Group -->
 						<div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Prerequisites' );?></label>
-							<div class="col-md-8"><input id="select2_5" style="width:100%;" type="hidden"<?=cio();?> name="preReq" value="<?=_h($crse[0]['preReq']);?>" /></div>
+							<div class="col-md-8"><input id="select2_5" style="width:100%;" type="hidden"<?=cio();?> name="preReq" value="<?=_h($crse->preReq);?>" /></div>
 						</div>
 						<!-- // Group END -->
 						
@@ -74,8 +74,8 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 							<div class="col-md-8">
 								<select name="allowAudit" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=cio();?> required>
 									<option value="">&nbsp;</option>
-	                        		<option value="1"<?=selected(_h((int)$crse[0]['allowAudit']),'1',false);?>><?=_t( 'Yes' );?></option>
-	                        		<option value="0"<?=selected(_h((int)$crse[0]['allowAudit']),'0',false);?>><?=_t( 'No' );?></option>
+	                        		<option value="1"<?=selected(_h((int)$crse->allowAudit),'1',false);?>><?=_t( 'Yes' );?></option>
+	                        		<option value="0"<?=selected(_h((int)$crse->allowAudit),'0',false);?>><?=_t( 'No' );?></option>
 	                        	</select>
 	                       </div>
 						</div>
@@ -87,8 +87,8 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
                             <div class="col-md-8">
                                 <select name="allowWaitlist" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=cio();?> required>
                                     <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected(_h((int)$crse[0]['allowWaitlist']),'1',false);?>><?=_t( 'Yes' );?></option>
-                                    <option value="0"<?=selected(_h((int)$crse[0]['allowWaitlist']),'0',false);?>><?=_t( 'No' );?></option>
+                                    <option value="1"<?=selected(_h((int)$crse->allowWaitlist),'1',false);?>><?=_t( 'Yes' );?></option>
+                                    <option value="0"<?=selected(_h((int)$crse->allowWaitlist),'0',false);?>><?=_t( 'No' );?></option>
                                 </select>
                            </div>
                         </div>
@@ -103,14 +103,14 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 					    <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Minimum Enrollment' );?></label>
-                            <div class="col-md-8"><input class="form-control" type="text"<?=cio();?> name="minEnroll" value="<?=_h((int)$crse[0]['minEnroll']);?>" required /></div>
+                            <div class="col-md-8"><input class="form-control" type="text"<?=cio();?> name="minEnroll" value="<?=_h((int)$crse->minEnroll);?>" required /></div>
                         </div>
                         <!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Seating Capacity' );?></label>
-                            <div class="col-md-8"><input class="form-control" type="text"<?=cio();?> name="seatCap" value="<?=_h((int)$crse[0]['seatCap']);?>" required /></div>
+                            <div class="col-md-8"><input class="form-control" type="text"<?=cio();?> name="seatCap" value="<?=_h((int)$crse->seatCap);?>" required /></div>
                         </div>
                         <!-- // Group END -->
 						
@@ -124,7 +124,7 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=cids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/<?=_h($crse[0]['courseID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				
@@ -136,13 +136,13 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 	<!-- // Form END -->
     
     <!-- Modal -->
-    <div class="modal fade" id="crse<?=_h($crse[0]['courseID']);?>">
+    <div class="modal fade" id="crse<?=_h($crse->courseID);?>">
         <div class="modal-dialog">
             <div class="modal-content">
                 <!-- Modal heading -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h3 class="modal-title"><?=_h($crse[0]['courseShortTitle']);?> <?=_h($crse[0]['courseCode']);?></h3>
+                    <h3 class="modal-title"><?=_h($crse->courseShortTitle);?> <?=_h($crse->courseCode);?></h3>
                 </div>
                 <!-- // Modal heading END -->
                 <!-- Modal body -->
@@ -152,7 +152,7 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
                 <!-- // Modal body END -->
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse[0]['courseID']);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
+                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse->courseID);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
                     <a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'No' );?></a> 
                 </div>
                 <!-- // Modal footer END -->

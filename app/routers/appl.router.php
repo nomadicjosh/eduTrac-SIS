@@ -82,8 +82,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 }
                 return $array;
             });
-            $json = _file_get_contents($json_url . 'student/stuID/' . $q[0]['personID'] . '/?key=' . _h(get_option('api_key')));
-            $decode = json_decode($json, true);
+            $spro = $app->db->student()->where('stuID = ?', $q[0]['personID'])->findOne();
         }
 
         $app->view->display('application/index', [
@@ -91,7 +90,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             'cssArray' => $css,
             'jsArray' => $js,
             'search' => $q,
-            'appl' => $decode
+            'appl' => $spro
             ]
         );
     });
@@ -506,11 +505,10 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = _file_get_contents($json_url . 'institution/institutionID/' . (int) $id . '/?key=' . _h(get_option('api_key')));
-        $inst = json_decode($json, true);
+        $inst = $app->db->institution()->where('institutionID = ?', (int) $id)->findOne();
 
         $app->view->display('application/view-inst', [
-            'title' => $inst[0]['instName'],
+            'title' => $inst->instName,
             'cssArray' => $css,
             'jsArray' => $js,
             'inst' => $inst
@@ -532,23 +530,28 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             'components/modules/admin/forms/elements/bootstrap-timepicker/assets/custom/js/bootstrap-timepicker.init.js?v=v2.1.0'
         ];
 
-        $json_a = _file_get_contents($json_url . 'application/personID/' . (int) get_persondata('personID') . '/?key=' . _h(get_option('api_key')));
-        $appl = json_decode($json_a, true);
+        $appl = $app->db->application()->where('personID = ?', (int) get_persondata('personID'));
+        $q = $appl->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         $app->view->display('application/appls', [
             'title' => 'My Applications',
             'cssArray' => $css,
             'jsArray' => $js,
-            'appls' => $appl
+            'appls' => $q
             ]
         );
     });
 
-    $app->post('/applicantLookup/', function() use($json_url) {
-        $json_a = _file_get_contents($json_url . 'person/personID/' . (int) $_POST['personID'] . '/?key=' . _h(get_option('api_key')));
-        $appl = json_decode($json_a, true);
+    $app->post('/applicantLookup/', function() use($app, $json_url) {
+        $appl = $app->db->person()->where('personID = ?', (int) $_POST['personID'])->findOne();
 
-        $json = [ 'input#person' => $appl[0]['lname'] . ', ' . $appl[0]['fname']];
+        $json = [ 'input#person' => $appl->lname . ', ' . $appl->fname];
 
         echo json_encode($json);
     });

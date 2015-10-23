@@ -105,9 +105,8 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . _h(get_option('api_key')));
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {        
+        $course = $app->db->course()->where('courseID = ?', (int) $id)->findOne();
 
         if ($app->req->isPost()) {
             $crse = $app->db->course();
@@ -127,7 +126,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $crse->startDate = $_POST['startDate'];
             $crse->endDate = $_POST['endDate'];
             $crse->currStatus = $_POST['currStatus'];
-            if ($decode[0]['currStatus'] !== $_POST['currStatus']) {
+            if ($course->currStatus !== $_POST['currStatus']) {
                 $crse->statusDate = $app->db->NOW();
             }
             $crse->where('courseID = ?', (int) $id);
@@ -142,10 +141,10 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 do_action('post_update_crse', $crse);
                 $dbcache->clearCache("course-$id");
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update', 'Course', $decode[0]['courseCode'], get_persondata('uname'));
+                $logger->setLog('Update', 'Course', $course->courseCode, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
-                $logger->setLog('Update Error', 'Course', $decode[0]['courseCode'], get_persondata('uname'));
+                $logger->setLog('Update Error', 'Course', $course->courseCode, get_persondata('uname'));
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
@@ -154,7 +153,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($course == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -162,13 +161,13 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($course) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['courseID']) <= 0) {
+         */ elseif (count($course->courseID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -179,10 +178,10 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          */ else {
 
             $app->view->display('course/view', [
-                'title' => $decode[0]['courseShortTitle'] . ' :: Course',
+                'title' => $course->courseShortTitle . ' :: Course',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'crse' => $decode
+                'crse' => $course
                 ]
             );
         }
@@ -197,9 +196,8 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         }
     });
 
-    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . _h(get_option('api_key')));
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {        
+        $course = $app->db->course()->where('courseID = ?', (int) $id)->findOne();
 
         if ($app->req->isPost()) {
             $crse = $app->db->course();
@@ -217,7 +215,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                  */
                 do_action('post_update_crse_addnl_info', $crse);
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Course', $decode[0]['courseCode'], get_persondata('uname'));
+                $logger->setLog('Update Record', 'Course', $course->courseCode, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -228,7 +226,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($course == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -236,13 +234,13 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($course) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['courseID']) <= 0) {
+         */ elseif (count($course->courseID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -253,10 +251,10 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          */ else {
 
             $app->view->display('course/addnl-info', [
-                'title' => $decode[0]['courseShortTitle'] . ' :: Course',
+                'title' => $course->courseShortTitle . ' :: Course',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'crse' => $decode
+                'crse' => $course
                 ]
             );
         }

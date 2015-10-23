@@ -26,12 +26,12 @@ $screen = 'vsect';
 	<li class="divider"></li>
 	<li><a href="<?=get_base_url();?>sect/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($sect[0]['termCode']);?>-<?=_h($sect[0]['courseSecCode']);?></a></li>
+	<li><a href="<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($sect->termCode);?>-<?=_h($sect->courseSecCode);?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'View Section' );?></li>
 </ul>
 
-<h3><?=_h($sect[0]['termCode']);?>-<?=_h($sect[0]['courseSecCode']);?></h3>
+<h3><?=_h($sect->termCode);?>-<?=_h($sect->courseSecCode);?></h3>
 <div class="innerLR">
 	
 	<?=$message->flashMessage();?>
@@ -39,7 +39,7 @@ $screen = 'vsect';
     <?php jstree_sidebar_menu($screen, '', $sect); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>sect/addnl/<?=_h($sect[0]['courseSecID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>sect/addnl/<?=_h($sect->courseSecID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -53,12 +53,12 @@ $screen = 'vsect';
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons adjust_alt"><a href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_h($sect[0]['courseSection']);?></a></li>
-                    <li class="glyphicons circle_info active"><a href="<?=get_base_url();?>sect/addnl/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Additional Info' );?></a></li>
-                    <li class="glyphicons more_items tab-stacked"><a href="<?=get_base_url();?>sect/soff/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Offering Info' );?></a></li>
-                    <li<?=ml('financial_module');?> class="glyphicons money tab-stacked"><a href="<?=get_base_url();?>sect/sbill/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <?=_t( 'Billing Info' );?></a></li>
-                    <?php if($sect[0]['roomCode'] != '') : ?>
-                    <li<?=ml('booking_module');?> class="glyphicons calendar tab-stacked"><a href="<?=get_base_url();?>sect/sbook/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Booking Info' );?></span></a></li>
+                    <li class="glyphicons adjust_alt"><a href="<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <?=_h($sect->courseSection);?></a></li>
+                    <li class="glyphicons circle_info active"><a href="<?=get_base_url();?>sect/addnl/<?=_h($sect->courseSecID);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Additional Info' );?></a></li>
+                    <li class="glyphicons more_items tab-stacked"><a href="<?=get_base_url();?>sect/soff/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <?=_t( 'Offering Info' );?></a></li>
+                    <li<?=ml('financial_module');?> class="glyphicons money tab-stacked"><a href="<?=get_base_url();?>sect/sbill/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <?=_t( 'Billing Info' );?></a></li>
+                    <?php if($sect->roomCode != '') : ?>
+                    <li<?=ml('booking_module');?> class="glyphicons calendar tab-stacked"><a href="<?=get_base_url();?>sect/sbook/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Booking Info' );?></span></a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -77,7 +77,7 @@ $screen = 'vsect';
 							<div class="col-md-8">
 							    <select name="facID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csio();?> required>
 							        <option value="">&nbsp;</option>
-                            	   <?php facID_dropdown(_h($sect[0]['facID'])); ?>
+                            	   <?php facID_dropdown(_h($sect->facID)); ?>
                             	</select>
 							</div>
 						</div>
@@ -89,9 +89,9 @@ $screen = 'vsect';
 							<div class="col-md-8">
 								<select name="secType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csio();?> required>
 									<option value="">&nbsp;</option>
-	                        		<option value="ONL"<?=selected(_h($sect[0]['secType']),'ONL',false);?>><?=_t( 'ONL Online' );?></option>
-	                        		<option value="HB"<?=selected(_h($sect[0]['secType']),'HB',false);?>><?=_t( 'HB Hybrid' );?></option>
-	                        		<option value="ONC"<?=selected(_h($sect[0]['secType']),'ONC',false);?>><?=_t( 'ONC On-Campus' );?></option>
+	                        		<option value="ONL"<?=selected(_h($sect->secType),'ONL',false);?>><?=_t( 'ONL Online' );?></option>
+	                        		<option value="HB"<?=selected(_h($sect->secType),'HB',false);?>><?=_t( 'HB Hybrid' );?></option>
+	                        		<option value="ONC"<?=selected(_h($sect->secType),'ONC',false);?>><?=_t( 'ONC On-Campus' );?></option>
 	                        	</select>
 	                       </div>
 						</div>
@@ -101,7 +101,7 @@ $screen = 'vsect';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Instructor Method' );?></label>
                             <div class="col-md-8">
-                                <?=instructor_method(_h($sect[0]['instructorMethod']));?>
+                                <?=instructor_method(_h($sect->instructorMethod));?>
                            </div>
                         </div>
                         <!-- // Group END -->
@@ -116,7 +116,7 @@ $screen = 'vsect';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Contact Hours' );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="contactHours"<?=csio();?> value="<?=_h($sect[0]['contactHours']);?>" class="form-control" required />
+                                <input type="text" name="contactHours"<?=csio();?> value="<?=_h($sect->contactHours);?>" class="form-control" required />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -125,7 +125,7 @@ $screen = 'vsect';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Instructor Load' );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="instructorLoad"<?=csio();?> value="<?=_h($sect[0]['instructorLoad']);?>" class="form-control" required />
+                                <input type="text" name="instructorLoad"<?=csio();?> value="<?=_h($sect->instructorLoad);?>" class="form-control" required />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -140,7 +140,7 @@ $screen = 'vsect';
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=csids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				
