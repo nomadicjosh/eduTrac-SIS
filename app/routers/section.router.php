@@ -571,7 +571,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      * Before route check.
      */
     $app->before('GET|POST', '/fgrade/(\d+)/', function() {
-        if (!hasPermission('access_grading_screen')) {
+        if (!hasPermission('submit_final_grades')) {
             redirect(get_base_url() . 'dashboard' . DS);
         }
     });

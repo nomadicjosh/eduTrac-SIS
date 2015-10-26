@@ -271,7 +271,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             </div>
                         </div>
                         <!-- // Group END -->
-                        <?php if(hasPermission('access_grading_screen')) : ?>
+                        <?php if(hasPermission('submit_final_grades')) : ?>
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Final Grades' );?> <a href="<?=get_base_url();?>sect/fgrade/<?=_h($sect->courseSecID);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
