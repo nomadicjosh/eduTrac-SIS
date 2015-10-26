@@ -16,6 +16,24 @@ define('RELEASE_TAG', '6.1.08');
 $app = \Liten\Liten::getInstance();
 
 /**
+ * Retrieves eduTrac site root url.
+ *
+ * @since 4.1.9
+ * @uses apply_filter() Calls 'base_url' filter.
+ *
+ * @return string eduTrac root url.
+ */
+function get_base_url()
+{
+    if (!file_exists(BASE_PATH . 'config.php')) {
+        return url('/');
+    } else {
+        $url = url('/');
+        return apply_filter('base_url', $url);
+    }
+}
+
+/**
  * Custom make directory function.
  * 
  * This function will check if the path is an existing directory,
@@ -2019,10 +2037,10 @@ function load_core_locale()
 {
     if (file_exists(BASE_PATH . 'config.php')) {
         $locale = (get_option('et_core_locale') !== null) ? get_option('et_core_locale') : 'en_US';
+        return apply_filter('core_locale', $locale);
     } else {
-        $locale = 'en_US';
+        return 'en_US';
     }
-    return apply_filter('core_locale', $locale);
 }
 
 /**
@@ -2030,27 +2048,15 @@ function load_core_locale()
  *
  * @since 6.1.09
  * @param string $domain Text domain. Unique identifier for retrieving translated strings.
- * @param string $locale Translation that should be loaded.
  * @param string $path Path to the .mo file.
  * @return bool True on success, false on failure.
  */
 function load_default_textdomain($domain, $path)
 {
-    $function = load_core_locale();
-    $locale = apply_filter('core_et_locale', $function);
-    
+    $locale = load_core_locale();
+
     $gettext = new \app\src\Gettext($domain);
 
-    /**
-     * Fires before the .mo translation file is loaded.
-     *
-     * @since 6.1.09
-     * @param string $locale Translation that should be loaded.
-     * @param string $domain Text domain. Unique identifier for retrieving translated strings.
-     * @param string $path Path to the locale directory.
-     */
-    do_action_array('load_default_textdomain', $locale, $domain, $path);
-    
     $gettext->setLocale($locale, $path);
 
     return true;
