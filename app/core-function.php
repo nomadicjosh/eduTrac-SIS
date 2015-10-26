@@ -11,7 +11,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.1.08');
+define('RELEASE_TAG', '6.1.09');
 
 $app = \Liten\Liten::getInstance();
 
