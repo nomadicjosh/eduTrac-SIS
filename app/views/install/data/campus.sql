@@ -1521,6 +1521,8 @@ INSERT INTO `permission` VALUES(00000000000000000246, 'access_ea', 'Access eduTr
 
 INSERT INTO `permission` VALUES(00000000000000000247, 'execute_saved_query', 'Execute Saved Query');
 
+INSERT INTO `permission` VALUES(00000000000000000248, 'submit_final_grades', 'Submit Final Grades');
+
 CREATE TABLE IF NOT EXISTS `person` (
   `personID` bigint(20) NOT NULL AUTO_INCREMENT,
   `altID` varchar(255) DEFAULT NULL,
