@@ -62,7 +62,7 @@ $pdf->setCellMargins(1, 1, 1, 1);
 // MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
 
 // set some text for student info
-$txt1 = $app->hook->{'get_option'}('institution_name')."<br />";
+$txt1 = _h(get_option('institution_name'))."<br />";
 $txt1 .= "Section: "._h($sros[0]['courseSection'])." "._h($sros[0]['secShortTitle'])."<br />";
 $txt1 .= "Instructor: ".get_name(_h($sros[0]['facID']))."<br />";
 
