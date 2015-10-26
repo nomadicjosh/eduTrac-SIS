@@ -1,41 +1,15 @@
-ALTER TABLE `assignment` ADD COLUMN `courseSecID` bigint(20) DEFAULT NULL AFTER `assignID`;
+CREATE TABLE IF NOT EXISTS `options_meta` (
+`meta_id` int(11) NOT NULL,
+  `meta_key` varchar(60) NOT NULL DEFAULT '',
+  `meta_value` longtext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-UPDATE assignment a 
-        INNER JOIN course_sec b 
-             ON a.courseSecCode = b.courseSecCode AND a.termCode = b.termCode
-SET a.courseSecID = b.courseSecID 
-WHERE a.courseSecID IS NULL;
+ALTER TABLE `options_meta` ADD PRIMARY KEY (`meta_id`), ADD UNIQUE KEY `option_name` (`meta_key`);
 
-ALTER TABLE `assignment` DROP FOREIGN KEY assignment_ibfk_1;
+ALTER TABLE `options_meta` MODIFY `meta_id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `assignment` DROP FOREIGN KEY assignment_ibfk_2;
+INSERT INTO `options_meta` SELECT * FROM `et_option`;
 
-ALTER TABLE `attendance` ADD COLUMN `courseSecID` bigint(20) DEFAULT NULL AFTER `id`;
+INSERT INTO `permission` VALUES('', 'access_gradebook', 'Access Gradebook');
 
-UPDATE attendance a 
-        INNER JOIN course_sec b 
-             ON a.courseSecCode = b.courseSecCode AND a.termCode = b.termCode
-SET a.courseSecID = b.courseSecID 
-WHERE a.courseSecID IS NULL;
-
-ALTER TABLE `attendance` DROP FOREIGN KEY attendance_ibfk_2;
-
-ALTER TABLE `attendance` DROP FOREIGN KEY attendance_ibfk_3;
-
-ALTER TABLE `gradebook` ADD COLUMN `courseSecID` bigint(20) DEFAULT NULL AFTER `gbID`;
-
-UPDATE gradebook a 
-        INNER JOIN course_sec b 
-             ON a.courseSecCode = b.courseSecCode AND a.termCode = b.termCode
-SET a.courseSecID = b.courseSecID 
-WHERE a.courseSecID IS NULL;
-
-ALTER TABLE `gradebook` DROP FOREIGN KEY gradebook_ibfk_1;
-
-ALTER TABLE `gradebook` DROP FOREIGN KEY gradebook_ibfk_2;
-
-ALTER TABLE `institution_attended` CHANGE `GPA` `GPA` double(6,4) DEFAULT NULL;
-
-INSERT INTO `options_meta` VALUES('', 'system_timezone', 'America/New_York');
-
-UPDATE `options_meta` SET meta_value = '00040' WHERE meta_key = 'dbversion';
+UPDATE `options_meta` SET meta_value = '00039.1' WHERE meta_key = 'dbversion';
