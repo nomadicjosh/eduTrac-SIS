@@ -80,7 +80,15 @@
                                 <li<?= ae('access_plugin_admin_page'); ?>><a href="<?= get_base_url(); ?>plugins/install/<?= bm(); ?>" class="glyphicons upload"><i></i><?= _t('Install Plugins'); ?></a></li>
                                 <li<?= ae('access_plugin_screen'); ?>><a href="<?= get_base_url(); ?>plugins/<?= bm(); ?>" class="glyphicons cogwheels"><i></i><?= _t('Plugins'); ?></a></li>
                                 <?php $app->hook->list_plugin_admin_pages(get_base_url() . 'plugins/options' . DS); ?>
-                                <!-- // Components Submenu Regular Items END -->
+                                <?php 
+                                /**
+                                 * Use this alternative action to create admin pages
+                                 * and subpages utilizing routers as well as views.
+                                 * 
+                                 * @since 6.1.09
+                                 */
+                                do_action('list_plugin_admin_pages');
+                                ?>
                             </ul>
                         </li>
                         <li class="dropdown dd-1">
