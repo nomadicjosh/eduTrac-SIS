@@ -2,16 +2,13 @@
 /**
  * Add Role View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -27,9 +24,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>role/<?=bm();?>" class="glyphicons rotation_lock"><i></i> <?=_t( 'Manage Roles' );?></a></li>
+	<li><a href="<?=get_base_url();?>role/<?=bm();?>" class="glyphicons rotation_lock"><i></i> <?=_t( 'Manage Roles' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Edit Role' );?></li>
 </ul>
@@ -42,7 +39,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>role/editRole/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>role/editRole/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -58,7 +55,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-4 control-label" for="roleName"><font color="red">*</font> <?=_t( 'Role Name' );?></label>
-							<div class="col-md-6"><input class="form-control" name="roleName" type="text" value="<?=$eRole->getRoleNameFromID(_h($role[0]['ID']));?>" required/></div>
+							<div class="col-md-6"><input class="form-control" name="roleName" type="text" value="<?=$eRole->getRoleNameFromID(_h($role->ID));?>" required/></div>
 						</div>
 						<!-- // Group END -->
 						
@@ -75,7 +72,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 							<!-- // Table heading END -->
 							
 							<tbody>
-								<?php rolePerm(_h($role[0]['ID'])); ?>
+								<?php rolePerm(_h($role->ID)); ?>
 							</tbody>
 				
 					</table>
@@ -86,9 +83,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<input type="hidden" name="action" value="saveRole" />
-					<input type="hidden" name="roleID" value="<?=_h($role[0]['ID']);?>" />
+					<input type="hidden" name="roleID" value="<?=_h($role->ID);?>" />
 					<button type="submit" name="Submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>role/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>role/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

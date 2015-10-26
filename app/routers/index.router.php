@@ -11,7 +11,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 
-$json_url = url('/api/');
+$json_url = get_base_url() . 'api' . DS;
 $hasher = new \app\src\PasswordHash(8, FALSE);
 
 $logger = new \app\src\Log();
@@ -24,13 +24,13 @@ $flashNow = new \app\src\Messages();
  */
 $app->before('GET|POST', '/', function() {
     if (!file_exists(BASE_PATH . 'config.php')) {
-        redirect(url('/install/?step=1'));
+        redirect(get_base_url() . 'install/?step=1');
     }
 });
 
 $app->before('GET|POST', '/', function() use($app) {
-    if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
-        redirect(url('/offline/'));
+    if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
+        redirect(get_base_url() . 'offline' . DS);
     }
 });
 
@@ -40,12 +40,12 @@ $app->get('/', function () use($app) {
 });
 
 $app->before('GET|POST', '/spam/', function() use($app) {
-    if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
-        redirect(url('/offline/'));
+    if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
+        redirect(get_base_url() . 'offline' . DS);
     }
 
     if (empty($app->req->server['HTTP_REFERER'])) {
-        redirect(url('/'));
+        redirect(get_base_url());
     }
 });
 
@@ -69,8 +69,8 @@ $app->match('GET|POST', '/component/', function() use($app, $css, $js) {
     });
 
 $app->before('GET|POST', '/online-app/', function() {
-    if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
-        redirect(url('/offline/'));
+    if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
+        redirect(get_base_url() . 'offline' . DS);
     }
 });
 
@@ -79,7 +79,7 @@ $app->before('GET|POST', '/online-app/', function() {
  */
 $app->before('GET|POST', '/login/', function() {
     if (isUserLoggedIn()) {
-        redirect(url('/profile/'));
+        redirect(get_base_url() . 'profile' . DS);
     }
 });
 
@@ -116,7 +116,7 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
          */
         if ($app->req->_post('uname') !== _h($r['uname'])) {
             $app->flash('error_message', 'The username does not exist. Please try again.');
-            redirect(url('/login/'));
+            redirect(get_base_url() . 'login' . DS);
             return;
         }
 
@@ -128,16 +128,16 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
             $ll->LastLogin = $ll->NOW();
             $ll->where('personID = ?', _h($r['personID']))->update();
             if (isset($_POST['rememberme'])) {
-                $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
-                $app->cookies->setSecureCookie('ET_REMEMBER', 'rememberme', (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
+                $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
+                $app->cookies->setSecureCookie('ET_REMEMBER', 'rememberme', (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
             } else {
                 $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
             }
             $logger->setLog('Authentication', 'Login', get_name(_h($r['personID'])), _h($r['uname']));
-            redirect(url('/'));
+            redirect(get_base_url());
         } else {
             $app->flash('error_message', 'The password you entered was incorrect.');
-            redirect(url('/login/'));
+            redirect(get_base_url() . 'login' . DS);
         }
     }
 
@@ -152,7 +152,7 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
  */
 $app->before('GET|POST', '/profile/', function() {
     if (!isUserLoggedIn()) {
-        redirect(url('/login/'));
+        redirect(get_base_url() . 'login' . DS);
     }
 });
 
@@ -205,7 +205,7 @@ $app->get('/profile/', function () use($app) {
  */
 $app->before('GET|POST', '/password/', function() {
     if (!isUserLoggedIn()) {
-        redirect(url('/login/'));
+        redirect(get_base_url() . 'login' . DS);
     }
 });
 
@@ -266,7 +266,7 @@ $app->match('GET|POST', '/password/', function () use($app, $flashNow) {
  */
 $app->before('GET|POST', '/permission.*', function() {
     if (!hasPermission('access_permission_screen')) {
-        redirect(url('/dashboard/'));
+        redirect(get_base_url() . 'dashboard' . DS);
     }
 });
 
@@ -311,9 +311,8 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
         }
         redirect($app->req->server['HTTP_REFERER']);
     }
-
-    $json = _file_get_contents($json_url . 'permission/ID/' . $id . '/?key=' . get_option('api_key'));
-    $decode = json_decode($json, true);
+    
+    $perm = $app->db->permission()->where('ID = ?', $id)->findOne();
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
     $js = [
@@ -334,7 +333,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
      * If the database table doesn't exist, then it
      * is false and a 404 should be sent.
      */
-    if ($decode == false) {
+    if ($perm == false) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
@@ -342,13 +341,13 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
      * If the query is legit, but there
      * is no data in the table, then 404
      * will be shown.
-     */ elseif (empty($decode) == true) {
+     */ elseif (empty($perm) == true) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
     /**
      * If data is zero, 404 not found.
-     */ elseif (count($decode[0]['ID']) <= 0) {
+     */ elseif (count($perm->ID) <= 0) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
@@ -362,7 +361,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
             'title' => 'Edit Permission',
             'cssArray' => $css,
             'jsArray' => $js,
-            'perm' => $decode
+            'perm' => $perm
             ]
         );
     }
@@ -394,7 +393,7 @@ $app->match('GET|POST', '/permission/add/', function () use($app, $flashNow, $ca
             $cache->clearCache('permission');
             $app->flash('success_message', $flashNow->notice(200));
             $logger->setLog('New Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
-            redirect( url('/permission/') );
+            redirect( get_base_url() . 'permission' . DS );
         } else {
             $app->flash('error_message', $flashNow->notice(409));
             redirect($app->req->server['HTTP_REFERER']);
@@ -415,7 +414,7 @@ $app->match('GET|POST', '/permission/add/', function () use($app, $flashNow, $ca
  */
 $app->before('GET|POST', '/role.*', function() {
     if (!hasPermission('access_role_screen')) {
-        redirect(url('/dashboard/'));
+        redirect(get_base_url() . 'dashboard' . DS);
     }
 });
 
@@ -444,9 +443,8 @@ $app->match('GET|POST', '/role/', function () use($app) {
     );
 });
 
-$app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
-    $json = _file_get_contents($json_url . 'role/ID/' . $id . '/?key=' . get_option('api_key'));
-    $decode = json_decode($json, true);
+$app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {    
+    $role = $app->db->role()->where('ID = ?', $id)->findOne();
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
     $js = [
@@ -467,7 +465,7 @@ $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
      * If the database table doesn't exist, then it
      * is false and a 404 should be sent.
      */
-    if ($decode == false) {
+    if ($role == false) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
@@ -475,13 +473,13 @@ $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
      * If the query is legit, but there
      * is no data in the table, then 404
      * will be shown.
-     */ elseif (empty($decode) == true) {
+     */ elseif (empty($role) == true) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
     /**
      * If data is zero, 404 not found.
-     */ elseif (count($decode[0]['ID']) <= 0) {
+     */ elseif (count($role->ID) <= 0) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
@@ -495,7 +493,7 @@ $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
             'title' => 'Edit Role',
             'cssArray' => $css,
             'jsArray' => $js,
-            'role' => $decode
+            'role' => $role
             ]
         );
     }
@@ -521,7 +519,7 @@ $app->match('GET|POST', '/role/add/', function () use($app, $flashNow) {
         if ($strSQL) {
             $ID = $strSQL->lastInsertId();
             $app->flash('success_message', $flashNow->notice(200));
-            redirect(url('/role/') . $ID . '/');
+            redirect(get_base_url() . 'role' . DS . $ID . '/');
         } else {
             $app->flash('error_message', $flashNow->notice(409));
             redirect($app->req->server['HTTP_REFERER']);
@@ -577,15 +575,15 @@ $app->post('/message/', function () use($app, $logger) {
  */
 $app->before('GET|POST', '/switchUserTo/(\d+)/', function() {
     if (!hasPermission('login_as_user')) {
-        redirect(url('/dashboard/'));
+        redirect(get_base_url() . 'dashboard' . DS);
     }
 });
 
 $app->get('/switchUserTo/(\d+)/', function ($id) use($app) {
 
     if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('SWITCH_USERBACK', get_persondata('personID'), (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
-        $app->cookies->setSecureCookie('SWITCH_USERNAME', get_persondata('uname'), (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
+        $app->cookies->setSecureCookie('SWITCH_USERBACK', get_persondata('personID'), (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
+        $app->cookies->setSecureCookie('SWITCH_USERNAME', get_persondata('uname'), (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
     } else {
         $app->cookies->setSecureCookie('SWITCH_USERBACK', get_persondata('personID'), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
         $app->cookies->setSecureCookie('SWITCH_USERNAME', get_persondata('uname'), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
@@ -608,12 +606,12 @@ $app->get('/switchUserTo/(\d+)/', function ($id) use($app) {
     $app->cookies->remove("ET_COOKNAME");
 
     if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
+        $app->cookies->setSecureCookie('ET_COOKNAME', $id, (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
     } else {
         $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
     }
 
-    redirect(url('/dashboard/'));
+    redirect(get_base_url() . 'dashboard' . DS);
 });
 
 $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
@@ -660,11 +658,11 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
      * original logged in user.
      */
     if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, (get_option('cookieexpire') !== '') ? get_option('cookieexpire') : $app->config('cookie.lifetime'));
+        $app->cookies->setSecureCookie('ET_COOKNAME', $id, (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
     } else {
         $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
     }
-    redirect(url('/dashboard/'));
+    redirect(get_base_url() . 'dashboard' . DS);
 });
 
 $app->get('/logout/', function () use($app, $logger) {
@@ -724,7 +722,7 @@ $app->get('/logout/', function () use($app, $logger) {
     $app->cookies->remove('SWITCH_USERBACK');
     $app->cookies->remove('SWITCH_USERNAME');
     $app->cookies->remove('ET_REMEMBER');
-    redirect(url('/login/'));
+    redirect(get_base_url() . 'login' . DS);
 });
 
 $app->setError(function() use($app) {

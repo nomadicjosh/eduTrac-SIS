@@ -17,7 +17,7 @@ if (!defined('BASE_PATH'))
  */
 $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/hr(.*)', function() {
     if (!hasPermission('access_human_resources')) {
-        redirect(url('/') . 'dashboard/');
+        redirect(get_base_url() . 'dashboard/');
     }
     /**
      * If user is logged in and the lockscreen cookie is set, 
@@ -25,7 +25,7 @@ $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/hr(.*)', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(url('/') . 'lock/');
+        redirect(get_base_url() . 'lock/');
     }
 });
 
@@ -108,7 +108,7 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
                 $app->flash('error_message', $flashNow->notice(204));
             }
 
-            redirect(url('/hr/') . $id . '/');
+            redirect(get_base_url() . 'hr' . DS . $id . '/');
         }
 
         $empl = $app->db->staff()

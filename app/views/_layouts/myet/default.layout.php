@@ -13,9 +13,9 @@ $app = \Liten\Liten::getInstance(); ?>
 <!--[if !IE]><!--><html class="front fluid top-full sticky-top"><!-- <![endif]-->
 <head>
 	<title><?php if (isset($title)) {
-            echo $title . ' - ' . get_option('institution_name');
+            echo $title . ' - ' . _h(get_option('institution_name'));
         } else {
-            echo get_option('institution_name');
+            echo _h(get_option('institution_name'));
         } ?>
         </title>
 	
@@ -48,7 +48,7 @@ $app = \Liten\Liten::getInstance(); ?>
 	<?php
 	if (isset($cssArray)) {
         foreach ($cssArray as $css){
-            echo '<link href="' . url('/') . 'static/assets/'.$css.'" rel="stylesheet">' . "\n";
+            echo '<link href="' . get_base_url() . 'static/assets/'.$css.'" rel="stylesheet">' . "\n";
         }
     }
 	?>
@@ -118,7 +118,7 @@ $app = \Liten\Liten::getInstance(); ?>
 						<li class="glyphs2 hidden-xs">
 							<ul>
 								<li class="single">
-									<a href="<?=url('/');?>switchUserBack/<?=$app->cookies->getSecureCookie('SWITCH_USERBACK');?>/" class="no-ajaxify glyphicons history"><i></i> <?=_t( 'Switch Back to' );?> <?=$app->cookies->getSecureCookie('SWITCH_USERNAME');?></a>
+									<a href="<?=get_base_url();?>switchUserBack/<?=$app->cookies->getSecureCookie('SWITCH_USERBACK');?>/" class="no-ajaxify glyphicons history"><i></i> <?=_t( 'Switch Back to' );?> <?=$app->cookies->getSecureCookie('SWITCH_USERNAME');?></a>
 								</li>
 							</ul>
 						</li>
@@ -268,10 +268,10 @@ $app = \Liten\Liten::getInstance(); ?>
 	<!-- Global -->
 	<script>
 	var basePath = '',
-		commonPath = '<?=url('/');?>static/assets/',
-		rootPath = '<?=url('/');?>',
+		commonPath = '<?=get_base_url();?>static/assets/',
+		rootPath = '<?=get_base_url();?>',
 		DEV = false,
-		componentsPath = '<?=url('/');?>static/assets/components/';
+		componentsPath = '<?=get_base_url();?>static/assets/components/';
 
 	var primaryColor = '#4a8bc2',
 		dangerColor = '#b55151',
@@ -289,7 +289,7 @@ $app = \Liten\Liten::getInstance(); ?>
 	<?php
 		if (isset($jsArray)) {
         foreach ($jsArray as $js){
-            echo '<script type="text/javascript" src="' . url('/') . 'static/assets/'.$js.'"></script>' . "\n";
+            echo '<script type="text/javascript" src="' . get_base_url() . 'static/assets/'.$js.'"></script>' . "\n";
         }
     }
 	?>

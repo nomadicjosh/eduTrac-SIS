@@ -8,8 +8,9 @@
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_layout') . '.layout');
+$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
 $message = new \app\src\Messages;
 ?>
@@ -18,7 +19,7 @@ $message = new \app\src\Messages;
 $(".panel").show();
 setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
-<script src="<?=url('/');?>static/assets/js/pwdwidget.js" type="text/javascript"></script>
+<script src="<?=get_base_url();?>static/assets/js/pwdwidget.js" type="text/javascript"></script>
 
 <div class="col-md-12">
 	<div class="separator bottom"></div>

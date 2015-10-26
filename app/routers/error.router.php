@@ -21,7 +21,7 @@ $app->get('404', function () use($app) {
  */
 $app->before('GET', '/err/screen-error.*', function() use($app) {
     if (!hasPermission('access_dashboard')) {
-        redirect(url('/'));
+        redirect(get_base_url());
     }
 
     /**
@@ -30,11 +30,11 @@ $app->before('GET', '/err/screen-error.*', function() use($app) {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(url('/lock/'));
+        redirect(get_base_url() . 'lock' . DS);
     }
     
     if(empty($app->req->server['HTTP_REFERER']) === true) {
-        redirect(url('/dashboard/'));
+        redirect(get_base_url() . 'dashboard' . DS);
     }
 });
 

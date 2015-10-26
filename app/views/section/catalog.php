@@ -16,7 +16,7 @@ $screen = 'cat';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Course Catalogs' );?></li>
 </ul>
@@ -60,7 +60,7 @@ $screen = 'cat';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/');?>sect/catalog/<?=_h($v['termCode']);?>/" target="_blank"><?=_t( 'PDF Export' );?></a></li>
+                                <li><a href="<?=get_base_url();?>sect/catalog/<?=_h($v['termCode']);?>/" target="_blank"><?=_t( 'PDF Export' );?></a></li>
                             </ul>
                         </div>
                     </td>

@@ -18,7 +18,7 @@ $screen = 'setting';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Email Settings' );?></li>
 </ul>
@@ -29,7 +29,7 @@ $screen = 'setting';
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>email/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>email/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -43,10 +43,10 @@ $screen = 'setting';
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left"><a href="<?=url('/');?>setting/"><i></i> <?=_t( 'General' );?></a></li>
-                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=url('/');?>registration/"><i></i> <?=_t( 'Registration' );?></a></li>
-                    <li<?= hl('email_settings'); ?> class="glyphicons inbox tab-stacked active"><a href="<?=url('/');?>email/" data-toggle="tab"><i></i> <?=_t( 'Email' );?></a></li>
-                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked"><a href="<?=url('/');?>templates/"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
+                    <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left"><a href="<?=get_base_url();?>setting/"><i></i> <?=_t( 'General' );?></a></li>
+                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=get_base_url();?>registration/"><i></i> <?=_t( 'Registration' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons inbox tab-stacked active"><a href="<?=get_base_url();?>email/" data-toggle="tab"><i></i> <?=_t( 'Email' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked"><a href="<?=get_base_url();?>templates/"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -60,7 +60,7 @@ $screen = 'setting';
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'System Email' );?>  <a href="#system" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'System Email' );?>  <a href="#system" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
 								<input type="text" name="system_email" value="<?=_h(get_option('system_email'));?>" class="form-control" required/>
 							</div>
@@ -69,7 +69,7 @@ $screen = 'setting';
 						
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Registrar's Email" );?> <a href="#registrar" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Registrar's Email" );?> <a href="#registrar" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input type="text" name="registrar_email_address" value="<?=_h(get_option('registrar_email_address'));?>" class="form-control" required/> 
                             </div>
@@ -78,7 +78,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Room Request Email" );?> <a href="#request" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Room Request Email" );?> <a href="#request" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input type="text" name="room_request_email" value="<?=_h(get_option('room_request_email'));?>" class="form-control" required/> 
                             </div>
@@ -93,7 +93,7 @@ $screen = 'setting';
 						
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Contact Email" );?> <a href="#contact" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Contact Email" );?> <a href="#contact" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input type="text" name="contact_email" value="<?=_h(get_option('contact_email'));?>" class="form-control" required/>
                             </div>
@@ -102,7 +102,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Admissions Email" );?> <a href="#admissions" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Admissions Email" );?> <a href="#admissions" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input type="text" name="admissions_email" value="<?=_h(get_option('admissions_email'));?>" class="form-control" required/>
                             </div>

@@ -2,16 +2,13 @@
 /**
  * Pay Grades View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.2
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -25,7 +22,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Pay Grades' );?></li>
 </ul>
@@ -80,7 +77,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	
 	<!-- Modal -->
 	<div class="modal fade" id="grades">
-		<form class="form-horizontal margin-none" action="<?=url('/');?>hr/grades/" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal margin-none" action="<?=get_base_url();?>hr/grades/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->
@@ -136,7 +133,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <?php if($grades != '') : foreach($grades as $k => $v) { ?>
 	<!-- Modal -->
 	<div class="modal fade" id="editPayGrade<?=_h($v['ID']);?>">
-		<form class="form-horizontal margin-none" action="<?=url('/');?>hr/grades/" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal margin-none" action="<?=get_base_url();?>hr/grades/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->

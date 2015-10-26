@@ -28,7 +28,7 @@ $js = [
     'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js'
 ];
 
-$json_url = url('/api/');
+$json_url = get_base_url() . 'api' . DS;
 
 $logger = new \app\src\Log();
 $dbcache = new \app\src\DBCache();
@@ -42,7 +42,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/', function() {
         if (!hasPermission('access_person_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -67,9 +67,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 }
                 return $array;
             });
-            $staff = _file_get_contents($json_url . 'staff/staffID/' . $q[0]['personID'] . '/?key=' . get_option('api_key'));
+            $staff = _file_get_contents($json_url . 'staff/staffID/' . $q[0]['personID'] . '/?key=' . _h(get_option('api_key')));
             $s_decode = json_decode($staff, true);
-            $appl = _file_get_contents($json_url . 'application/personID/' . $q[0]['personID'] . '/?key=' . get_option('api_key'));
+            $appl = _file_get_contents($json_url . 'application/personID/' . $q[0]['personID'] . '/?key=' . _h(get_option('api_key')));
             $a_decode = json_decode($appl, true);
         }
 
@@ -89,7 +89,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_person_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -130,11 +130,11 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
-        $appl = _file_get_contents($json_url . 'application/personID/' . $id . '/?key=' . get_option('api_key'));
+        $appl = _file_get_contents($json_url . 'application/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $a_decode = json_decode($appl, true);
 
         $addr = $app->db->address()
@@ -197,7 +197,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/add/', function() {
         if (!hasPermission('add_person')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -277,7 +277,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                         $pass = 'myaccount' . $passSuffix;
                     }
                     $host = strtolower($_SERVER['SERVER_NAME']);
-                    $site = _t('myeduTrac :: ') . get_option('institution_name');
+                    $site = _t('myeduTrac :: ') . _h(get_option('institution_name'));
                     $message = get_option('person_login_details');
                     $message = str_replace('#uname#', $_POST['uname'], $message);
                     $message = str_replace('#fname#', $_POST['fname'], $message);
@@ -286,10 +286,10 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     $message = str_replace('#id#', $ID, $message);
                     $message = str_replace('#altID#', $_POST['altID'], $message);
                     $message = str_replace('#password#', $pass, $message);
-                    $message = str_replace('#url#', url('/'), $message);
-                    $message = str_replace('#helpdesk#', get_option('help_desk'), $message);
-                    $message = str_replace('#instname#', get_option('institution_name'), $message);
-                    $message = str_replace('#mailaddr#', get_option('mailing_address'), $message);
+                    $message = str_replace('#url#', get_base_url(), $message);
+                    $message = str_replace('#helpdesk#', _h(get_option('help_desk')), $message);
+                    $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
+                    $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
 
                     $headers = "From: $site <dont-reply@$host>\r\n";
                     $headers .= "X-Mailer: PHP/" . phpversion();
@@ -309,7 +309,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
                     $logger->setLog('New Record', 'Name and Address', get_name($ID), get_persondata('uname'));
                     $app->flash('success_message', $flashNow->notice(200));
-                    redirect(url('/nae/') . $ID . '/');
+                    redirect(get_base_url() . 'nae' . DS . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -333,13 +333,13 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/adsu/(\d+)/', function() {
         if (!hasPermission('access_person_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
     $app->get('/adsu/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
 
         $adsu = $app->db->person()
@@ -403,16 +403,16 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/addr-form/(\d+)/', function() {
         if (!hasPermission('add_address')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
     $app->match('GET|POST', '/addr-form/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
 
         if ($app->req->isPost()) {
@@ -442,7 +442,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 $ID = $addr->lastInsertId();
                 $logger->setLog('New Record', 'Address', get_name($decode[0]['personID']), get_persondata('uname'));
                 $app->flash('success_message', $flashNow->notice(200));
-                redirect(url('/nae/addr/') . $ID . '/');
+                redirect(get_base_url() . 'nae/addr' . DS . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -493,19 +493,19 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/addr/(\d+)/', function() {
         if (!hasPermission('access_person_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
     $app->match('GET|POST', '/addr/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json_a = _file_get_contents($json_url . 'address/addressID/' . $id . '/?key=' . get_option('api_key'));
+        $json_a = _file_get_contents($json_url . 'address/addressID/' . $id . '/?key=' . _h(get_option('api_key')));
         $a_decode = json_decode($json_a, true);
 
-        $json_p = _file_get_contents($json_url . 'person/personID/' . $a_decode[0]['personID'] . '/?key=' . get_option('api_key'));
+        $json_p = _file_get_contents($json_url . 'person/personID/' . $a_decode[0]['personID'] . '/?key=' . _h(get_option('api_key')));
         $p_decode = json_decode($json_p, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
 
         if ($app->req->isPost()) {
@@ -568,16 +568,16 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/role/(\d+)/', function() {
         if (!hasPermission('access_user_role_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
     $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
 
         if ($app->req->isPost()) {
@@ -594,7 +594,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             }
             if ($q) {
                 $app->flash('success_message', $flashNow->notice(200));
-                redirect(url('/nae/role/') . $id . '/');
+                redirect(get_base_url() . 'nae/role' . DS . $id . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -645,16 +645,16 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/perms/(\d+)/', function() {
         if (!hasPermission('access_user_permission_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
     $app->match('GET|POST', '/perms/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
-        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
+        $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
+        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
         $s_decode = json_decode($staff, true);
 
         if ($app->req->isPost()) {
@@ -665,7 +665,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             }
             if ($q) {
                 $app->flash('success_message', $flashNow->notice(200));
-                redirect(url('/nae/perms/') . $id . '/');
+                redirect(get_base_url() . 'nae/perms' . DS . $id . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -732,7 +732,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/resetPassword/(\d+)/', function() {
         if (!hasPermission('reset_person_password')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -763,14 +763,14 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $pass = 'myaccount'.$passSuffix;
         }
         
-        $from = get_option('institution_name');
-        $fromEmail = get_option('system_email');
-        $url = url('/');
+        $from = _h(get_option('institution_name'));
+        $fromEmail = _h(get_option('system_email'));
+        $url = get_base_url();
         $host = $app->req->server['HTTP_HOST'];
-        $helpDesk = get_option('help_desk');
-        $body = get_option('reset_password_text');
-        $body = str_replace('#instname#', get_option('institution_name'), $body);
-        $body = str_replace('#mailaddr#', get_option('mailing_address'), $body);
+        $helpDesk = _h(get_option('help_desk'));
+        $body = _h(get_option('reset_password_text'));
+        $body = str_replace('#instname#', _h(get_option('institution_name')), $body);
+        $body = str_replace('#mailaddr#', _h(get_option('mailing_address')), $body);
         $body = str_replace('#url#', $url, $body);
         $body = str_replace('#helpdesk#', $helpDesk, $body);
         $body = str_replace('#adminemail#', $fromEmail, $body);

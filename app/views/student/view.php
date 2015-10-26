@@ -34,9 +34,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here');?></li>
-    <li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=url('/');?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
     <li><?=get_name(_h($prog[0]['stuID']));?> <?=_t( '(SPRO)' );?></li>
 </ul>
@@ -50,7 +50,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?=$message->flashMessage();?>
 
     <!-- Form -->
-    <form class="form-horizontal margin-none" action="<?=url('/');?>stu/<?=$prog[0]['stuID'];?>/" id="validateSubmitForm" method="post" autocomplete="off">
+    <form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/<?=$prog[0]['stuID'];?>/" id="validateSubmitForm" method="post" autocomplete="off">
         
         <!-- Widget -->
         <div class="widget widget-heading-simple widget-body-gray">
@@ -58,11 +58,11 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons user active"><a href="<?=url('/');?>stu/<?=_h($prog[0]['stuID']);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-                    <li class="glyphicons package"><a href="<?=url('/');?>stu/stac/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-                    <li class="glyphicons tags tab-stacked"><a href="<?=url('/');?>stu/sttr/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-                    <li class="glyphicons disk_remove tab-stacked"><a href="<?=url('/');?>stu/strc/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
-                    <li class="glyphicons history tab-stacked"><a href="<?=url('/');?>stu/shis/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+                    <li class="glyphicons user active"><a href="<?=get_base_url();?>stu/<?=_h($prog[0]['stuID']);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+                    <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+                    <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+                    <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
+                    <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -94,7 +94,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <tbody>
                             <?php if($prog != '') : foreach($prog as $k => $v) { ?>
                             <tr class="gradeX">
-                                <td class="text-center"><a href="<?=url('/');?>stu/sacp/<?=_h($v['stuProgID']);?>/<?=bm();?>"><img src="<?=url('/');?>static/common/theme/images/cascade.png" /></a></td>
+                                <td class="text-center"><a href="<?=get_base_url();?>stu/sacp/<?=_h($v['stuProgID']);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></td>
                                 <td><input class="form-control center" type="text" readonly value="<?=_h($v['acadProgCode']);?>" /></td>
                                 <td><input class="form-control center" type="text" readonly value="<?=_h($v['progAcadLevel']);?>" /></td>
                                 <td><input class="form-control center" type="text" readonly value="<?=_h($v['currStatus']);?>" /></td>
@@ -122,7 +122,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                     
                     <!-- Group -->
 					<div class="form-group">
-                        <label class="col-md-3 control-label"><?=_t( 'Tags' );?> <a href="#tags" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                        <label class="col-md-3 control-label"><?=_t( 'Tags' );?> <a href="#tags" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 						<div class="col-md-8">
 							<input id="select2_5" style="width:100%;" type="hidden"<?=sio();?> name="tags" value="<?=_h($prog[0]['tags']);?>" />
 						</div>
@@ -158,7 +158,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                 <!-- Form actions -->
                 <div class="form-actions">
                     <button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>stu/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>
                 <!-- // Form actions END -->
                 

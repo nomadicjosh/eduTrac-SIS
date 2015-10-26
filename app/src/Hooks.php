@@ -671,63 +671,6 @@ class Hooks
     }
 
     /**
-     * Display list of companion links to plugins, if any
-     * 
-     * @since 6.1.08
-     */
-    public function list_plugin_component_pages($url)
-    {
-
-        if (!property_exists($this->_app->hook, 'comp_pages') || !$this->_app->hook->comp_pages)
-            return;
-
-        foreach ((array) $this->_app->hook->comp_pages as $comp_page) {
-            echo '<li><a href="' . $url . '?cID=' . $comp_page['slug'] . '">' . $comp_page['title'] . '</a></li>';
-        }
-    }
-
-    /**
-     * Register a plugin component/users page.
-     * 
-     * @since 6.1.08
-     * @param string $slug
-     * @param string $title
-     * @param string $function
-     */
-    public static function register_component_page($slug, $title, $function)
-    {
-
-        if (!property_exists($this->_app->hook, 'comp_pages') || !$this->_app->hook->comp_pages)
-            $this->_app->hook->comp_pages = array();
-
-        $this->_app->hook->comp_pages[$slug] = array(
-            'slug' => $slug,
-            'title' => $title,
-            'function' => $function
-        );
-    }
-
-    /**
-     * Handle plugin component page
-     * 
-     * @since 6.1.08
-     * @param string $comp_page
-     */
-    public static function plugin_component_page($comp_page)
-    {
-
-        // Check the plugin page is actually registered
-        if (!isset($this->_app->hook->comp_pages[$comp_page])) {
-            die('This page does not exist. Maybe a component you thought was activated is inactive?');
-        }
-
-        // Draw the page itself
-        $this->do_action('load-' . $comp_page);
-
-        call_user_func($this->_app->hook->comp_pages[$comp_page]['function']);
-    }
-
-    /**
      * Read an option from options_meta. Return value or $default if not found
      */
     public function get_option($meta_key, $default = false)

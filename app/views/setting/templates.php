@@ -102,7 +102,7 @@ tinymce.init({
 });
 function elFinderBrowser (callback, value, meta) {
   tinymce.activeEditor.windowManager.open({
-    file: '<?=url('/');?>staff/elfinder/',// use an absolute path!
+    file: '<?=get_base_url();?>staff/elfinder/',// use an absolute path!
     title: 'elFinder 2.0',
     width: 900,  
     height: 450,
@@ -134,7 +134,7 @@ function elFinderBrowser (callback, value, meta) {
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Email Templates' );?></li>
 </ul>
@@ -150,10 +150,10 @@ function elFinderBrowser (callback, value, meta) {
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left"><a href="<?=url('/');?>setting/"><i></i> <?=_t( 'General' );?></a></li>
-                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=url('/');?>registration/"><i></i> <?=_t( 'Registration' );?></a></li>
-                    <li<?= hl('email_settings'); ?> class="glyphicons inbox tab-stacked"><a href="<?=url('/');?>email/"><i></i> <?=_t( 'Email' );?></a></li>
-                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked active"><a href="<?=url('/');?>templates/" data-toggle="tab"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
+                    <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left"><a href="<?=get_base_url();?>setting/"><i></i> <?=_t( 'General' );?></a></li>
+                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=get_base_url();?>registration/"><i></i> <?=_t( 'Registration' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons inbox tab-stacked"><a href="<?=get_base_url();?>email/"><i></i> <?=_t( 'Email' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked active"><a href="<?=get_base_url();?>templates/" data-toggle="tab"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -237,7 +237,7 @@ function elFinderBrowser (callback, value, meta) {
 	<div class="modal fade" id="coa">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
-                <form class="form-horizontal margin-none" action="<?=url('/');?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
+                <form class="form-horizontal margin-none" action="<?=get_base_url();?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -245,7 +245,7 @@ function elFinderBrowser (callback, value, meta) {
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="coa" class="col-md-8 form-control" name="coa_form_text" rows="10"><?=_h(get_option('coa_form_text'));?></textarea>
+                    <textarea id="coa" class="col-md-8 form-control" name="coa_form_text" rows="10"><?=_escape(get_option('coa_form_text'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -258,7 +258,7 @@ function elFinderBrowser (callback, value, meta) {
     <div class="modal fade" id="password">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
-                <form class="form-horizontal margin-none" action="<?=url('/');?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
+                <form class="form-horizontal margin-none" action="<?=get_base_url();?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -266,7 +266,7 @@ function elFinderBrowser (callback, value, meta) {
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="password" class="col-md-8 form-control" name="reset_password_text" rows="10"><?=_h(get_option('reset_password_text'));?></textarea>
+                    <textarea id="password" class="col-md-8 form-control" name="reset_password_text" rows="10"><?=_escape(get_option('reset_password_text'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -279,7 +279,7 @@ function elFinderBrowser (callback, value, meta) {
     <div class="modal fade" id="rrt">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
-                <form class="form-horizontal margin-none" action="<?=url('/');?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
+                <form class="form-horizontal margin-none" action="<?=get_base_url();?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -287,7 +287,7 @@ function elFinderBrowser (callback, value, meta) {
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="rrt" class="col-md-8 form-control" name="room_request_text" rows="10"><?=_h(get_option('room_request_text'));?></textarea>
+                    <textarea id="rrt" class="col-md-8 form-control" name="room_request_text" rows="10"><?=_escape(get_option('room_request_text'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -300,7 +300,7 @@ function elFinderBrowser (callback, value, meta) {
     <div class="modal fade" id="rconfirm">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
-                <form class="form-horizontal margin-none" action="<?=url('/');?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
+                <form class="form-horizontal margin-none" action="<?=get_base_url();?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -308,7 +308,7 @@ function elFinderBrowser (callback, value, meta) {
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="rcomfirm" class="col-md-8 form-control" name="room_booking_confirmation_text" rows="10"><?=_h(get_option('room_booking_confirmation_text'));?></textarea>
+                    <textarea id="rcomfirm" class="col-md-8 form-control" name="room_booking_confirmation_text" rows="10"><?=_escape(get_option('room_booking_confirmation_text'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -321,7 +321,7 @@ function elFinderBrowser (callback, value, meta) {
     <div class="modal fade" id="applLetter">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
-                <form class="form-horizontal margin-none" action="<?=url('/');?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
+                <form class="form-horizontal margin-none" action="<?=get_base_url();?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -329,7 +329,7 @@ function elFinderBrowser (callback, value, meta) {
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="applLetter" class="col-md-8 form-control" name="student_acceptance_letter" rows="10"><?=_h(get_option('student_acceptance_letter'));?></textarea>
+                    <textarea id="applLetter" class="col-md-8 form-control" name="student_acceptance_letter" rows="10"><?=_escape(get_option('student_acceptance_letter'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -342,7 +342,7 @@ function elFinderBrowser (callback, value, meta) {
     <div class="modal fade" id="login">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
-                <form class="form-horizontal margin-none" action="<?=url('/');?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
+                <form class="form-horizontal margin-none" action="<?=get_base_url();?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -350,7 +350,7 @@ function elFinderBrowser (callback, value, meta) {
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="login" class="col-md-8 form-control" name="person_login_details" rows="10"><?=_h(get_option('person_login_details'));?></textarea>
+                    <textarea id="login" class="col-md-8 form-control" name="person_login_details" rows="10"><?=_escape(get_option('person_login_details'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>
@@ -363,7 +363,7 @@ function elFinderBrowser (callback, value, meta) {
     <div class="modal fade" id="uname">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
-                <form class="form-horizontal margin-none" action="<?=url('/');?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
+                <form class="form-horizontal margin-none" action="<?=get_base_url();?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -371,7 +371,7 @@ function elFinderBrowser (callback, value, meta) {
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-                    <textarea id="uname" class="col-md-8 form-control" name="update_username" rows="10"><?=_h(get_option('update_username'));?></textarea>
+                    <textarea id="uname" class="col-md-8 form-control" name="update_username" rows="10"><?=_escape(get_option('update_username'));?></textarea>
 		        </div>
 		        <div class="modal-footer">
                     <button type="submit" class="btn btn-icon btn-default"><i></i><?=_t( 'Update' );?></button>

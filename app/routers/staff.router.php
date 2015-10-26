@@ -31,7 +31,7 @@ function access($attr, $path, $data, $volume) {
  */
 $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff(.*)', function() use ($app) {
     if (!isUserLoggedIn()) {
-        redirect(url('/login/'));
+        redirect(get_base_url() . 'login' . DS);
     }
     /**
      * If user is logged in and the lockscreen cookie is set, 
@@ -39,7 +39,7 @@ $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff(.*)', function() use ($ap
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(url('/') . 'lock/');
+        redirect(get_base_url() . 'lock/');
     }
 });
 
@@ -64,7 +64,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/api/');
+$json_url = get_base_url() . 'api' . DS;
 
 $logger = new \app\src\Log();
 $cache = new \app\src\Cache();
@@ -86,7 +86,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
          */
         $app->before('GET|POST', '/staff/', function() use ($app) {
             if (!hasPermission('access_staff_screen')) {
-                redirect(url('/dashboard/'));
+                redirect(get_base_url() . 'dashboard' . DS);
             }
         });
 
@@ -120,7 +120,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
 
     $app->match('GET|POST|PATCH|PUT|OPTIONS|DELETE', '/connector/', function () use($app) {
         error_reporting(0);
-        if (get_option('elfinder_driver') === 'elf_local_driver') :
+        if (_h(get_option('elfinder_driver')) === 'elf_local_driver') :
             _mkdir($app->config('file.savepath') . get_persondata('uname') . '/');
             $opts = array(
                 // 'debug' => true,
@@ -160,7 +160,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
                     array(
                         'driver' => 'S3',
                         'path' => ucfirst(get_persondata('uname')),
-                        'URL' => 'http://' . get_option('amz_s3_bucket') . '.s3.amazonaws.com/' . ucfirst(get_persondata('uname')) . '/',
+                        'URL' => 'http://' . _h(get_option('amz_s3_bucket')) . '.s3.amazonaws.com/' . ucfirst(get_persondata('uname')) . '/',
                         'alias' => 'Files',
                         'mimeDetect' => 'mime_content_type',
                         'mimefile' => BASE_PATH . 'app/src/elFinder/mime.types',
@@ -177,11 +177,11 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
                         'uploadDeny' => ['application/x-php'],
                         'uploadOrder' => array('allow', 'deny'),
                         "s3" => array(
-                            "key" => get_option('amz_s3_access_key'),
-                            "secret" => get_option('amz_s3_secret_key'),
+                            "key" => _h(get_option('amz_s3_access_key')),
+                            "secret" => _h(get_option('amz_s3_secret_key')),
                             "region" => 'us-east-1'
                         ),
-                        "bucket" => get_option('amz_s3_bucket'),
+                        "bucket" => _h(get_option('amz_s3_bucket')),
                         "acl" => "public-read"
                     )
                 )
@@ -197,7 +197,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
      */
     $app->before('GET|POST', '/file-manager/', function() {
         if (!hasPermission('access_dashboard')) {
-            redirect(url('/'));
+            redirect(get_base_url());
         }
     });
     $app->get('/file-manager/', function () use($app, $css, $js) {
@@ -214,7 +214,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
      */
     $app->before('GET|POST', '/elfinder/', function() {
         if (!hasPermission('access_dashboard')) {
-            redirect(url('/'));
+            redirect(get_base_url());
         }
     });
     $app->match('GET|POST','/elfinder/', function () use($app) {
@@ -231,7 +231,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_staff_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -314,7 +314,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
      */
     $app->before('GET|POST', '/add/(\d+)/', function($id) use ($app) {
         if (!hasPermission('create_staff_record')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -352,7 +352,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
             if ($staff->save() && $meta->save()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Staff Member', get_name($id), get_persondata('uname'));
-                redirect(url('/staff/') . $id);
+                redirect(get_base_url() . 'staff' . DS . $id);
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -386,7 +386,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
          * the user to the staff record.
          */ elseif (count($s_decode[0]['staffID']) > 0) {
 
-            redirect(url('/staff/') . $s_decode[0]['staffID'] . '/');
+            redirect(get_base_url() . 'staff' . DS . $s_decode[0]['staffID'] . '/');
         }
         /**
          * If we get to this point, the all is well

@@ -13,11 +13,11 @@ if (!defined('BASE_PATH'))
 
 $app->before('GET|POST', '/sql/', function() {
     if (!hasPermission('access_sql_interface_screen')) {
-        redirect(url('/') . 'dashboard/');
+        redirect(get_base_url() . 'dashboard/');
     }
 
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(url('/') . 'lock/');
+        redirect(get_base_url() . 'lock/');
     }
 });
 

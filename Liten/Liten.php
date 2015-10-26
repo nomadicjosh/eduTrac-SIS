@@ -101,7 +101,11 @@ class Liten
         });
         // Load default view
         $this->inst->singleton('view', function ($c) {
-            return new \Liten\View();
+            $viewClass = $c['config']['view'];
+            $templatesPath = $c['config']['view_dir'];
+            $view = ($viewClass instanceOf \Liten\View) ? $viewClass : new $viewClass;
+            $view->_viewPath = $templatesPath;
+            return $view;
         });
         // Load default cookies
         $this->inst->singleton('cookies', function ($c) {
@@ -188,6 +192,7 @@ class Liten
             'cookies.secret.key'    => '8sh8w82j9s71092iw8usi',
             'cookies.savepath'      => '/tmp/',
             // Directories
+            'view'                  => '\Liten\View',
             'view_dir'              => APP_PATH . 'views' . DS,
             'layouts_dir'           => APP_PATH . 'views' . DS . '_layouts' . DS,
             'partials_dir'          => APP_PATH . 'views' . DS . '_partials' . DS,

@@ -2,16 +2,13 @@
 /**
  * Edit Student Program
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -30,11 +27,11 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=url('/');?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+	<li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=url('/');?>stu/<?=$stuInfo->getStuID();?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name($stuInfo->getStuID());?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=$stuInfo->getStuID();?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name($stuInfo->getStuID());?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Edit Student Program (SACP)' );?></li>
 </ul>
@@ -48,7 +45,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<?=$message->flashMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>stu/sacp/<?=_h($sacp[0]['stuProgID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacp/<?=_h($sacp[0]['stuProgID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -128,7 +125,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
 						<div class="form-group">
-						    <label class="col-md-3 control-label"><?=_t( 'Eligible to Grad?' );?> <a href="#myModal" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+						    <label class="col-md-3 control-label"><?=_t( 'Eligible to Grad?' );?> <a href="#myModal" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
     							<label class="checkbox">
 									<input type="checkbox"<?=sio();?> class="checkbox" name="eligible_to_graduate" value="1"<?=checked('1',_h($sacp[0]['eligible_to_graduate']),false);?> />
@@ -244,8 +241,8 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<div class="form-actions">
 				    <input type="hidden" name="stuID" value="<?=_h($sacp[0]['stuID']);?>" />
 					<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" onclick="window.location='<?=url('/');?>stu/add-prog/<?=_h($sacp[0]['stuID']);?>/<?=bm();?>'"><i></i><?=_t( 'Add' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=url('/');?>stu/<?=_h($sacp[0]['stuID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" onclick="window.location='<?=get_base_url();?>stu/add-prog/<?=_h($sacp[0]['stuID']);?>/<?=bm();?>'"><i></i><?=_t( 'Add' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_h($sacp[0]['stuID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

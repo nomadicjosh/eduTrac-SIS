@@ -2,22 +2,15 @@
 /**
  * myeduTrac Shopping Cart View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       4.4
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
-if($app->hook->{'get_option'}('myet_layout') === null) {
-    $app->view->extend('_layouts/myet/default.layout');
-} else {
-    $app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_layout') . '.layout');
-}
+$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
 $message = new \app\src\Messages();
 ?>
@@ -35,7 +28,7 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
 	<?=$message->flashMessage();?>
 	
 	<!-- Form -->
-    <form class="margin-none" action="<?=url('/');?>courses/reg/" id="validateSubmitForm" method="post" autocomplete="off">
+    <form class="margin-none" action="<?=get_base_url();?>courses/reg/" id="validateSubmitForm" method="post" autocomplete="off">
 
 	<!-- Widget -->
 	<div class="widget widget-heading-simple widget-body-gray">

@@ -2,16 +2,13 @@
 /**
  * Grade Scale View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       4.0.2
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -21,7 +18,7 @@ $screen = 'grsc';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Grade Scale' );?></li>
 </ul>
@@ -39,7 +36,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>form/grade-scale/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>form/grade-scale/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -81,7 +78,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 						
 						<!-- Group -->
 						<div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Count in GPA' );?> <a href="#modal" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Count in GPA' );?> <a href="#modal" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <select name="count_in_gpa" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
@@ -187,7 +184,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                     <td class="text-center"><?=_h($value['points']);?></td>
                     <td class="text-center"><?=_bool(_h($value['status']));?></td>
                     <td class="center">
-                        <a href="<?=url('/'); ?>form/grade-scale/<?=_h($value['ID']); ?>/<?=bm();?>" title="View" class="btn btn-default"><i class="fa fa-eye"></i></a>
+                        <a href="<?=get_base_url(); ?>form/grade-scale/<?=_h($value['ID']); ?>/<?=bm();?>" title="View" class="btn btn-default"><i class="fa fa-eye"></i></a>
                     </td>
                 </tr>
                 <?php } endif; ?>

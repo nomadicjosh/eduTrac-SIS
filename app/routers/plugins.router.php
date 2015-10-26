@@ -15,7 +15,7 @@ if (!defined('BASE_PATH'))
  */
 $app->before('GET|POST', '/plugins.*', function() {
     if (!hasPermission('access_plugin_screen')) {
-        redirect(url('/dashboard/'));
+        redirect(get_base_url() . 'dashboard' . DS);
     }
 });
 
@@ -161,7 +161,7 @@ $app->group('/plugins', function() use ($app, $css, $js) {
      */
     $app->before('GET|POST', '/install/', function() {
         if (!hasPermission('access_plugin_admin_page')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 

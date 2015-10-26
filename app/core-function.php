@@ -11,9 +11,27 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.1.08');
+define('RELEASE_TAG', '6.1.09');
 
 $app = \Liten\Liten::getInstance();
+
+/**
+ * Retrieves eduTrac site root url.
+ *
+ * @since 4.1.9
+ * @uses apply_filter() Calls 'base_url' filter.
+ *
+ * @return string eduTrac root url.
+ */
+function get_base_url()
+{
+    if (!file_exists(BASE_PATH . 'config.php')) {
+        return url('/');
+    } else {
+        $url = url('/');
+        return apply_filter('base_url', $url);
+    }
+}
 
 /**
  * Custom make directory function.
@@ -31,9 +49,21 @@ function _mkdir($path)
     return is_dir($path) || mkdir($path, 0755, true);
 }
 
-function _t($msgid)
+/**
+ * Displays the returned translated text.
+ * 
+ * @since 1.0.0
+ * @param type $msgid The translated string.
+ * @param type $domain Domain lookup for translated text.
+ * @return string Translated text according to current locale.
+ */
+function _t($msgid, $domain = NULL)
 {
-    return gettext($msgid);
+    if ($domain !== NULL) {
+        return dgettext($domain, $msgid);
+    } else {
+        return gettext($msgid);
+    }
 }
 
 function getPathInfo($relative)
@@ -1222,11 +1252,11 @@ function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
         return $array;
     });
     if (count($q) > 0) {
-        $photosize = getimagesize(url('/') . 'static/photos/' . $q[0]['photo']);
+        $photosize = getimagesize(get_base_url() . 'static/photos/' . $q[0]['photo']);
         if (getPathInfo('/form/photo/') === '/form/photo/') {
-            $avatar = '<a href="' . url('/') . 'form/deleteSchoolPhoto/"><img src="' . url('/') . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
+            $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
         } else {
-            $avatar = '<img src="' . url('/') . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
+            $avatar = '<img src="' . get_base_url() . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
         }
     } else {
         $avatar = get_user_avatar($email, $s, $class);
@@ -1305,7 +1335,7 @@ function upgradeSQL($file, $delimiter = ';')
             }
 
             fclose($file);
-            redirect(url('/dashboard/upgrade/'));
+            redirect(get_base_url() . 'dashboard/upgrade/');
         }
     }
 }
@@ -1318,7 +1348,7 @@ function redirect_upgrade_db()
         if (RELEASE_TAG == \app\src\ReleaseAPI::inst()->init('RELEASE_TAG')) {
             if (get_option('dbversion') < \app\src\ReleaseAPI::inst()->init('DB_VERSION')) {
                 if (basename($app->req->server["REQUEST_URI"]) != "upgrade") {
-                    redirect(url('/dashboard/upgrade/'));
+                    redirect(get_base_url() . 'dashboard/upgrade/');
                 }
             }
         }
@@ -1943,65 +1973,125 @@ function tagList()
     return $tags;
 }
 
-function check_mime_type($file,$mode=0) {
-		// mode 0 = full check
-    	// mode 1 = extension check only
+function check_mime_type($file, $mode = 0)
+{
+    // mode 0 = full check
+    // mode 1 = extension check only
 
-	    $mime_types = array(
-	
-	        'txt' => 'text/plain',
-	        'csv' => 'text/plain',
-	
-	        // images
-	        'png' => 'image/png',
-	        'jpe' => 'image/jpeg',
-	        'jpeg' => 'image/jpeg',
-	        'jpg' => 'image/jpeg',
-	        'gif' => 'image/gif',
-	        'bmp' => 'image/bmp',
-	        'tiff' => 'image/tiff',
-	        'tif' => 'image/tiff',
-	        'svg' => 'image/svg+xml',
-	        'svgz' => 'image/svg+xml',
-	
-	        // archives
-	        'zip' => 'application/zip',
-	        'rar' => 'application/x-rar-compressed',
-	
-	
-	        // adobe
-	        'pdf' => 'application/pdf',
-	        'ai' => 'application/postscript',
-	        'eps' => 'application/postscript',
-	        'ps' => 'application/postscript',
-	
-	        // ms office
-	        'doc' => 'application/msword',
-	        'rtf' => 'application/rtf',
-	        'xls' => 'application/vnd.ms-excel',
-	        'ppt' => 'application/vnd.ms-powerpoint',
-	        'docx' => 'application/msword',
-	        'xlsx' => 'application/vnd.ms-excel',
-	        'pptx' => 'application/vnd.ms-powerpoint'
-        );
+    $mime_types = array(
+        'txt' => 'text/plain',
+        'csv' => 'text/plain',
+        // images
+        'png' => 'image/png',
+        'jpe' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
+        'gif' => 'image/gif',
+        'bmp' => 'image/bmp',
+        'tiff' => 'image/tiff',
+        'tif' => 'image/tiff',
+        'svg' => 'image/svg+xml',
+        'svgz' => 'image/svg+xml',
+        // archives
+        'zip' => 'application/zip',
+        'rar' => 'application/x-rar-compressed',
+        // adobe
+        'pdf' => 'application/pdf',
+        'ai' => 'application/postscript',
+        'eps' => 'application/postscript',
+        'ps' => 'application/postscript',
+        // ms office
+        'doc' => 'application/msword',
+        'rtf' => 'application/rtf',
+        'xls' => 'application/vnd.ms-excel',
+        'ppt' => 'application/vnd.ms-powerpoint',
+        'docx' => 'application/msword',
+        'xlsx' => 'application/vnd.ms-excel',
+        'pptx' => 'application/vnd.ms-powerpoint'
+    );
 
-    	$ext = strtolower(array_pop(explode('.',$file)));
-		
-		if(function_exists('mime_content_type')&&$mode==0) {
-	        $mimetype = mime_content_type($file);
-	        return $mimetype;
-        }
+    $ext = strtolower(array_pop(explode('.', $file)));
 
-	    if(function_exists('finfo_open')&&$mode==0) {
-	        $finfo = finfo_open(FILEINFO_MIME);
-	        $mimetype = finfo_file($finfo, $file);
-	        finfo_close($finfo);
-	        return $mimetype;
-        }
-		elseif(array_key_exists($ext, $mime_types)) {
-    		return $mime_types[$ext];
-    	}
-	}
+    if (function_exists('mime_content_type') && $mode == 0) {
+        $mimetype = mime_content_type($file);
+        return $mimetype;
+    }
+
+    if (function_exists('finfo_open') && $mode == 0) {
+        $finfo = finfo_open(FILEINFO_MIME);
+        $mimetype = finfo_file($finfo, $file);
+        finfo_close($finfo);
+        return $mimetype;
+    } elseif (array_key_exists($ext, $mime_types)) {
+        return $mime_types[$ext];
+    }
+}
+
+/**
+ * Loads the current or default locale.
+ * 
+ * @since 6.1.09
+ * @return string The locale.
+ */
+function load_core_locale()
+{
+    if (file_exists(BASE_PATH . 'config.php')) {
+        $locale = (get_option('et_core_locale') !== null) ? get_option('et_core_locale') : 'en_US';
+        return apply_filter('core_locale', $locale);
+    } else {
+        return 'en_US';
+    }
+}
+
+/**
+ * Load a .mo file into the text domain $domain.
+ *
+ * @since 6.1.09
+ * @param string $domain Text domain. Unique identifier for retrieving translated strings.
+ * @param string $path Path to the .mo file.
+ * @return bool True on success, false on failure.
+ */
+function load_default_textdomain($domain, $path)
+{
+    $locale = load_core_locale();
+
+    $gettext = new \app\src\Gettext($domain);
+
+    $gettext->setLocale($locale, $path);
+
+    return true;
+}
+
+/**
+ * Load a plugin's translated strings.
+ *
+ * If the path is not given then it will be the root of the plugin directory.
+ *
+ * @since 6.1.09
+ * @param string $domain          Unique identifier for retrieving translated strings
+ * @param string $plugin_rel_path Optional. Relative path to PLUGINS_DIR where the locale directory resides.
+ *                                Default false.
+ * @return bool True when textdomain is successfully loaded, false otherwise.
+ */
+function load_plugin_textdomain($domain, $plugin_rel_path = false)
+{
+    $function = load_core_locale();
+    $locale = apply_filter('plugin_locale', $function);
+
+    if ($plugin_rel_path !== false) {
+        $path = PLUGINS_DIR . $plugin_rel_path;
+    } else {
+        $path = PLUGINS_DIR;
+    }
+
+    // Load the textdomain according to the plugin first
+    $gettext = new \app\src\Gettext($domain);
+    if ($loaded = $gettext->setLocale($locale, $path)) {
+        return $loaded;
+    }
+
+    return false;
+}
 
 /**
  * Added htmLawed functions

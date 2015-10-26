@@ -18,12 +18,12 @@ $message = new \app\src\Messages;
 $screen = 'fm';
 ?>
 
-<script src="<?=url('/');?>static/assets/js/jquery.ui.min.js"></script>
-<script type="text/javascript" src="<?=url('/');?>static/assets/plugins/elfinder/js/elfinder.min.js"></script>
+<script src="<?=get_base_url();?>static/assets/js/jquery.ui.min.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/plugins/elfinder/js/elfinder.min.js"></script>
 <script type="text/javascript">
 	$().ready(function() {
 		var elf = $('#elfinder').elfinder({
-			url : '<?=url('/');?>staff/connector/',
+			url : '<?=get_base_url();?>staff/connector/',
 			modal: true,
 			resizable:false
 		}).elfinder('instance');
@@ -32,7 +32,7 @@ $screen = 'fm';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'File Manager' );?></li>
 </ul>

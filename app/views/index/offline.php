@@ -2,25 +2,18 @@
 /**
  * myeduTrac Offline View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       4.3
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
-if($app->hook->{'get_option'}('myet_layout') === null) {
-    $app->view->extend('_layouts/myet/default.layout');
-} else {
-    $app->view->extend('_layouts/myet/' . $app->hook->{'get_option'}('myet_layout') . '.layout');
-}
+$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
-if($app->hook->{'get_option'}('enable_myet_portal') == 1) {
-    redirect(url('/'));
+if(_h(get_option('enable_myet_portal')) == 1) {
+    redirect(get_base_url());
 }
 ?>
 
@@ -35,7 +28,7 @@ if($app->hook->{'get_option'}('enable_myet_portal') == 1) {
 						<div class="col-md-12">
 							<h5 class="strong"><?=_t( 'Offline' );?></h5>
 							<div class="separator bottom"></div>
-                            <section class="panel error-panel"><div class="alerts alerts-info"><?=nl2br(_h($app->hook->{'get_option'}('myet_offline_message')));?></div></section>
+                            <section class="panel error-panel"><div class="alerts alerts-info"><?=nl2br(_h(get_option('myet_offline_message')));?></div></section>
 						</div>
 					</div>
 				</div>

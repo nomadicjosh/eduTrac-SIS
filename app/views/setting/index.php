@@ -19,7 +19,7 @@ $screen = 'setting';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'System Settings' );?></li>
 </ul>
@@ -30,7 +30,7 @@ $screen = 'setting';
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=url('/');?>setting/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>setting/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -44,10 +44,10 @@ $screen = 'setting';
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left active"><a href="<?=url('/');?>setting/" data-toggle="tab"><i></i> <?=_t( 'General' );?></a></li>
-                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=url('/');?>registration/"><i></i> <?=_t( 'Registration' );?></a></li>
-                    <li<?= hl('email_settings'); ?> class="glyphicons inbox tab-stacked"><a href="<?=url('/');?>email/"><i></i> <?=_t( 'Email' );?></a></li>
-                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked"><a href="<?=url('/');?>templates/"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
+                    <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left active"><a href="<?=get_base_url();?>setting/" data-toggle="tab"><i></i> <?=_t( 'General' );?></a></li>
+                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=get_base_url();?>registration/"><i></i> <?=_t( 'Registration' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons inbox tab-stacked"><a href="<?=get_base_url();?>email/"><i></i> <?=_t( 'Email' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked"><a href="<?=get_base_url();?>templates/"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -83,7 +83,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myeT Layout' );?> <a href="#myetLayout" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myeT Layout' );?> <a href="#myetLayout" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
 						        <select name="myet_layout" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
@@ -97,7 +97,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myeT Mode' );?> <a href="#portal" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myeT Mode' );?> <a href="#portal" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <select name="enable_myet_portal" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
@@ -110,7 +110,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
     					<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Offline Message' );?> <a href="#portaloff" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Offline Message' );?> <a href="#portaloff" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
 								<textarea name="myet_offline_message" class="form-control" rows="5" required><?=_h(get_option('myet_offline_message'));?></textarea>
 							</div>
@@ -119,7 +119,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Application' );?> <a href="#appl" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Application' );?> <a href="#appl" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <select name="enable_myet_appl_form" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
@@ -132,7 +132,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Applicant Email' );?> <a href="#applicant" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Applicant Email' );?> <a href="#applicant" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <select name="send_acceptance_email" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 	<option value="">&nbsp;</option>
@@ -145,7 +145,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Screen Caching' );?> <a href="#scache" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Screen Caching' );?> <a href="#scache" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <select name="screen_caching" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
@@ -158,7 +158,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'DB Caching' );?> <a href="#dbcache" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'DB Caching' );?> <a href="#dbcache" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <select name="db_caching" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 	<option value="">&nbsp;</option>
@@ -277,7 +277,7 @@ $screen = 'setting';
                         
                         <!-- Group -->
     					<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'API Key' );?> <a href="#apikey" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'API Key' );?> <a href="#apikey" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
                                 <input type="text" name="api_key" value="<?=_h(get_option('api_key'));?>" class="form-control" required/>
 							</div>
@@ -304,7 +304,7 @@ $screen = 'setting';
 						
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'eduTrac Analytics' );?> <a href="#ea" data-toggle="modal"><img src="<?=url('/');?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'eduTrac Analytics' );?> <a href="#ea" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input type="text" name="edutrac_analytics_url" value="<?=_h(get_option('edutrac_analytics_url'));?>" class="form-control" />
                             </div>

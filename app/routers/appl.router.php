@@ -11,7 +11,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
 
 $js = [
@@ -29,7 +28,7 @@ $js = [
     'components/modules/admin/forms/elements/multiselect/assets/custom/js/multiselect.init.js?v=v2.1.0'
 ];
 
-$json_url = url('/api/');
+$json_url = get_base_url() . 'api' . DS;
 
 $logger = new \app\src\Log();
 $email = new \app\src\Email();
@@ -42,8 +41,12 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      * Before router check.
      */
     $app->before('GET|POST', '/', function() {
+        if (!file_exists(BASE_PATH . 'config.php')) {
+            redirect(get_base_url() . 'install/?step=1');
+        }
+
         if (!hasPermission('access_application_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -52,7 +55,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -79,8 +82,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 }
                 return $array;
             });
-            $json = _file_get_contents($json_url . 'student/stuID/' . $q[0]['personID'] . '/?key=' . get_option('api_key'));
-            $decode = json_decode($json, true);
+            $spro = $app->db->student()->where('stuID = ?', $q[0]['personID'])->findOne();
         }
 
         $app->view->display('application/index', [
@@ -88,7 +90,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             'cssArray' => $css,
             'jsArray' => $js,
             'search' => $q,
-            'appl' => $decode
+            'appl' => $spro
             ]
         );
     });
@@ -98,7 +100,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_application_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -186,7 +188,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/editAppl/(\d+)/', function() {
         if (!hasPermission('create_application')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -220,28 +222,28 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         $uname->where('personID = ?', $_POST['personID']);
         if ($person->uname !== $_POST['uname']) {
             if ($uname->update()) {
-                
+
                 $host = strtolower($_SERVER['SERVER_NAME']);
-                $site = get_option('institution_name');
-                
-                $message = get_option('update_username');
+                $site = _h(get_option('institution_name'));
+
+                $message = _h(get_option('update_username'));
                 $message = str_replace('#uname#', getUserValue($_POST['personID'], 'uname'), $message);
                 $message = str_replace('#fname#', getUserValue($_POST['personID'], 'fname'), $message);
                 $message = str_replace('#lname#', getUserValue($_POST['personID'], 'lname'), $message);
                 $message = str_replace('#name#', get_name($_POST['personID']), $message);
                 $message = str_replace('#id#', $_POST['personID'], $message);
                 $message = str_replace('#altID#', getUserValue($_POST['personID'], 'altID'), $message);
-                $message = str_replace('#url#', url('/'), $message);
-                $message = str_replace('#helpdesk#', get_option('help_desk'), $message);
-                $message = str_replace('#instname#', get_option('institution_name'), $message);
-                $message = str_replace('#mailaddr#', get_option('mailing_address'), $message);
-                
+                $message = str_replace('#url#', get_base_url(), $message);
+                $message = str_replace('#helpdesk#', _h(get_option('help_desk')), $message);
+                $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
+                $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
+
                 $headers = "From: $site <dont-reply@$host>\r\n";
                 $headers .= "X-Mailer: PHP/" . phpversion();
                 $headers .= "MIME-Version: 1.0" . "\r\n";
                 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
                 $email->et_mail(getUserValue($_POST['personID'], 'email'), _t("myeduTrac Username Change"), $message, $headers);
-                
+
                 /**
                  * @since 6.1.07
                  */
@@ -252,7 +254,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                  * @since 6.1.07
                  */
                 do_action('post_update_username', $person);
-                    
+
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));
             } else {
@@ -281,7 +283,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             ++$i;
         }
 
-        redirect(url('/appl/') . $id . '/');
+        redirect(get_base_url() . 'appl' . DS . $id . '/');
     });
 
     /**
@@ -289,7 +291,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('create_application')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -314,7 +316,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 $ID = $appl->lastInsertId();
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Application', get_name($id), get_persondata('uname'));
-                redirect(url('/appl/') . $ID . '/');
+                redirect(get_base_url() . 'appl' . DS . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -388,7 +390,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/inst-attended/', function() {
         if (!hasPermission('access_application_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -396,7 +398,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
 
         if ($app->req->isPost()) {
             $inst = $app->db->institution_attended();
-            $inst->fice_ceeb = _trim((int)$_POST['fice_ceeb']);
+            $inst->fice_ceeb = _trim((int) $_POST['fice_ceeb']);
             $inst->fromDate = $_POST['fromDate'];
             $inst->toDate = $_POST['toDate'];
             $inst->GPA = $_POST['GPA'];
@@ -409,7 +411,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             if ($inst->save()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Institution Attended', get_name($_POST['personID']), get_persondata('uname'));
-                redirect(url('/appl/') . $_POST['personID'] . '/');
+                redirect(get_base_url() . 'appl' . DS . $_POST['personID'] . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -429,7 +431,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/inst(.*)', function() {
         if (!hasPermission('access_application_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -462,7 +464,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
 
         if ($app->req->isPost()) {
             $inst = $app->db->institution();
-            $inst->fice_ceeb = _trim((int)$_POST['fice_ceeb']);
+            $inst->fice_ceeb = _trim((int) $_POST['fice_ceeb']);
             $inst->instType = $_POST['instType'];
             $inst->instName = $_POST['instName'];
             $inst->city = $_POST['city'];
@@ -472,7 +474,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 $ID = $inst->lastInsertId();
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Institution', $_POST['instName'], get_persondata('uname'));
-                redirect(url('/appl/inst/') . $ID . '/');
+                redirect(get_base_url() . 'appl/inst' . DS . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -503,11 +505,10 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = _file_get_contents($json_url . 'institution/institutionID/' . (int) $id . '/?key=' . get_option('api_key'));
-        $inst = json_decode($json, true);
+        $inst = $app->db->institution()->where('institutionID = ?', (int) $id)->findOne();
 
         $app->view->display('application/view-inst', [
-            'title' => $inst[0]['instName'],
+            'title' => $inst->instName,
             'cssArray' => $css,
             'jsArray' => $js,
             'inst' => $inst
@@ -529,23 +530,28 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             'components/modules/admin/forms/elements/bootstrap-timepicker/assets/custom/js/bootstrap-timepicker.init.js?v=v2.1.0'
         ];
 
-        $json_a = _file_get_contents($json_url . 'application/personID/' . (int) get_persondata('personID') . '/?key=' . get_option('api_key'));
-        $appl = json_decode($json_a, true);
+        $appl = $app->db->application()->where('personID = ?', (int) get_persondata('personID'));
+        $q = $appl->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
         $app->view->display('application/appls', [
             'title' => 'My Applications',
             'cssArray' => $css,
             'jsArray' => $js,
-            'appls' => $appl
+            'appls' => $q
             ]
         );
     });
 
-    $app->post('/applicantLookup/', function() use($json_url) {
-        $json_a = _file_get_contents($json_url . 'person/personID/' . (int) $_POST['personID'] . '/?key=' . get_option('api_key'));
-        $appl = json_decode($json_a, true);
+    $app->post('/applicantLookup/', function() use($app, $json_url) {
+        $appl = $app->db->person()->where('personID = ?', (int) $_POST['personID'])->findOne();
 
-        $json = [ 'input#person' => $appl[0]['lname'] . ', ' . $appl[0]['fname']];
+        $json = [ 'input#person' => $appl->lname . ', ' . $appl->fname];
 
         echo json_encode($json);
     });

@@ -9,7 +9,7 @@ $logger = new \app\src\Log;
  */
 $app->before('GET', '/setting/', function() {
     if (!hasPermission('edit_settings')) {
-        redirect(url('/dashboard/'));
+        redirect(get_base_url() . 'dashboard' . DS);
     }
 
     /**
@@ -18,7 +18,7 @@ $app->before('GET', '/setting/', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(url('/lock/'));
+        redirect(get_base_url() . 'lock' . DS);
     }
 });
 
@@ -72,7 +72,7 @@ $app->match('GET|POST', '/setting/', function () use($app, $logger) {
  */
 $app->before('GET', '/registration/', function() {
     if (!hasPermission('edit_settings')) {
-        redirect(url('/dashboard/'));
+        redirect(get_base_url() . 'dashboard' . DS);
     }
 
     /**
@@ -81,7 +81,7 @@ $app->before('GET', '/registration/', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(url('/lock/'));
+        redirect(get_base_url() . 'lock' . DS);
     }
 });
 
@@ -129,7 +129,7 @@ $app->match('GET|POST', '/registration/', function () use($app, $logger) {
  */
 $app->before('GET', '/email/', function() {
     if (!hasPermission('edit_settings')) {
-        redirect(url('/dashboard/'));
+        redirect(get_base_url() . 'dashboard' . DS);
     }
 
     /**
@@ -138,7 +138,7 @@ $app->before('GET', '/email/', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(url('/lock/'));
+        redirect(get_base_url() . 'lock' . DS);
     }
 });
 
@@ -185,7 +185,7 @@ $app->match('GET|POST', '/email/', function () use($app, $logger) {
  */
 $app->before('GET|POST', '/templates/', function() {
     if (!hasPermission('edit_settings')) {
-        redirect(url('/dashboard/'));
+        redirect(get_base_url() . 'dashboard' . DS);
     }
 
     /**
@@ -194,7 +194,7 @@ $app->before('GET|POST', '/templates/', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(url('/lock/'));
+        redirect(get_base_url() . 'lock' . DS);
     }
 });
 

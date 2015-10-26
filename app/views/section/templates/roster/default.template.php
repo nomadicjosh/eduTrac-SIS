@@ -7,16 +7,13 @@ Template Slug: default
 /**
  * Default Student Roster View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       4.0.9
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/blank');
 $app->view->block('blank');
@@ -65,7 +62,7 @@ $pdf->setCellMargins(1, 1, 1, 1);
 // MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
 
 // set some text for student info
-$txt1 = $app->hook->{'get_option'}('institution_name')."<br />";
+$txt1 = _h(get_option('institution_name'))."<br />";
 $txt1 .= "Section: "._h($sros[0]['courseSection'])." "._h($sros[0]['secShortTitle'])."<br />";
 $txt1 .= "Instructor: ".get_name(_h($sros[0]['facID']))."<br />";
 

@@ -2,16 +2,13 @@
 /**
  * Term View
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
+ * @license GPLv3
  * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
+
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
@@ -21,7 +18,7 @@ $screen = 'term';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=url('/');?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Term' );?></li>
 </ul>
@@ -32,7 +29,7 @@ $screen = 'term';
     <?php jstree_sidebar_menu($screen); ?>
 
     <!-- Form -->
-    <form class="form-horizontal margin-none" action="<?=url('/');?>form/term/" id="validateSubmitForm" method="post" autocomplete="off">
+    <form class="form-horizontal margin-none" action="<?=get_base_url();?>form/term/" id="validateSubmitForm" method="post" autocomplete="off">
         
         <!-- Widget -->
         <div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -197,8 +194,7 @@ $screen = 'term';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/');?>form/term/<?=_h($value['termID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
-                                <?php $app->hook->{'do_action'}('search_term_action'); ?>
+                                <li><a href="<?=get_base_url();?>form/term/<?=_h($value['termID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

@@ -28,7 +28,7 @@ $js = [
     'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js'
 ];
 
-$json_url = url('/api/');
+$json_url = get_base_url() . 'api' . DS;
 
 $logger = new \app\src\Log();
 $email = new \app\src\Email();
@@ -42,7 +42,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -51,7 +51,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -91,7 +91,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -100,7 +100,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -205,7 +205,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('create_stu_record')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -214,7 +214,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -263,10 +263,10 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $al->addDate = $app->db->NOW();
 
             if ($student->save() && $sacp->save() && $al->save()) {
-                if (get_option('send_acceptance_email') == 1) {
+                if (_h(get_option('send_acceptance_email')) == 1) {
                     $host = strtolower($_SERVER['SERVER_NAME']);
-                    $site = _t('myeduTrac :: ') . get_option('institution_name');
-                    $message = get_option('student_acceptance_letter');
+                    $site = _t('myeduTrac :: ') . _h(get_option('institution_name'));
+                    $message = _escape(get_option('student_acceptance_letter'));
                     $message = str_replace('#uname#', $nae->uname, $message);
                     $message = str_replace('#fname#', $nae->fname, $message);
                     $message = str_replace('#lname#', $nae->lname, $message);
@@ -277,18 +277,18 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                     $message = str_replace('#acadlevel#', _trim($_POST['acadLevelCode']), $message);
                     $message = str_replace('#degree#', $degree->degreeCode, $message);
                     $message = str_replace('#startterm#', $appl->startTerm, $message);
-                    $message = str_replace('#adminemail#', get_option('system_email'), $message);
-                    $message = str_replace('#url#', url('/'), $message);
-                    $message = str_replace('#helpdesk#', get_option('help_desk'), $message);
-                    $message = str_replace('#currentterm#', get_option('current_term_code'), $message);
-                    $message = str_replace('#instname#', get_option('institution_name'), $message);
-                    $message = str_replace('#mailaddr#', get_option('mailing_address'), $message);
+                    $message = str_replace('#adminemail#', _h(get_option('system_email')), $message);
+                    $message = str_replace('#url#', get_base_url(), $message);
+                    $message = str_replace('#helpdesk#', _h(get_option('help_desk')), $message);
+                    $message = str_replace('#currentterm#', _h(get_option('current_term_code')), $message);
+                    $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
+                    $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
 
                     $headers = "From: $site <auto-reply@$host>\r\n";
                     $headers .= "X-Mailer: PHP/" . phpversion();
                     $headers .= "MIME-Version: 1.0" . "\r\n";
                     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                    $email->et_mail(get_option('admissions_email'), _t("Student Acceptance Letter"), $message, $headers);
+                    $email->et_mail(_h(get_option('admissions_email')), _t("Student Acceptance Letter"), $message, $headers);
                 }
                 /**
                  * @since 6.1.07
@@ -312,7 +312,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Student', get_name($id), get_persondata('uname'));
-                redirect(url('/') . 'stu/' . $id . '/' . bm());
+                redirect(get_base_url() . 'stu/' . $id . '/' . bm());
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 $app->req->server['HTTP_REFERER'];
@@ -353,7 +353,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * student record.
          */ elseif (count($q) <= 0) {
 
-            redirect(url('/stu/') . $id . '/');
+            redirect(get_base_url() . 'stu' . DS . $id . '/');
         }
         /**
          * If we get to this point, the all is well
@@ -376,7 +376,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/stac/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -385,7 +385,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -444,7 +444,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/sttr/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -453,7 +453,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -517,7 +517,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/shis/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -526,7 +526,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -636,7 +636,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/strc/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -645,7 +645,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -750,7 +750,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/sacd/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -759,7 +759,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -844,7 +844,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                      */
                 }
 
-                redirect(url('/') . 'stu/stac/' . $decode[0]['stuID'] . '/' . bm());
+                redirect(get_base_url() . 'stu/stac' . DS . $decode[0]['stuID'] . '/' . bm());
                 exit();
             }
             /**
@@ -873,7 +873,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                      */
                 }
 
-                redirect(url('/') . 'stu/stac/' . $decode[0]['stuID'] . '/' . bm());
+                redirect(get_base_url() . 'stu/stac' . DS . $decode[0]['stuID'] . '/' . bm());
                 exit();
             }
             /**
@@ -976,7 +976,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/sacp/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -985,7 +985,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -1065,7 +1065,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/add-prog/(\d+)/', function() {
         if (!hasPermission('create_stu_record')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
 
         /**
@@ -1074,7 +1074,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(url('/lock/'));
+            redirect(get_base_url() . 'lock' . DS);
         }
     });
 
@@ -1116,7 +1116,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 }
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Student Academic Program', get_name($id), get_persondata('uname'));
-                redirect(url('/') . 'stu/' . $id . '/' . bm());
+                redirect(get_base_url() . 'stu' . DS . $id . '/' . bm());
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 $app->req->server['HTTP_REFERER'];
@@ -1174,7 +1174,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/graduation/', function() {
         if (!hasPermission('graduate_students')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
@@ -1221,13 +1221,13 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/tran.*', function() {
         if (!hasPermission('generate_transcripts')) {
-            redirect(url('/dashboard/'));
+            redirect(get_base_url() . 'dashboard' . DS);
         }
     });
 
     $app->match('GET|POST', '/tran/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {
-            redirect(url('/stu/tran/') . $_POST['stuID'] . '/' . $_POST['acadLevelCode'] . '/' . $_POST['template'] . '/');
+            redirect(get_base_url() . 'stu/tran' . DS . $_POST['stuID'] . '/' . $_POST['acadLevelCode'] . '/' . $_POST['template'] . '/');
         }
 
         $app->view->display('student/tran', [
@@ -1370,7 +1370,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         if ($info == false) {
 
             $app->flash('error_message', $flashNow->notice(204));
-            redirect(url('/stu/tran/'));
+            redirect(get_base_url() . 'stu/tran' . DS);
         }
         /**
          * If the query is legit, but there
@@ -1379,14 +1379,14 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
          */ elseif (empty($info) == true) {
 
             $app->flash('error_message', $flashNow->notice(204));
-            redirect(url('/stu/tran/'));
+            redirect(get_base_url() . 'stu/tran' . DS);
         }
         /**
          * If data is zero, 404 not found.
          */ elseif (count($info) <= 0) {
 
             $app->flash('error_message', $flashNow->notice(204));
-            redirect(url('/stu/tran/'));
+            redirect(get_base_url() . 'stu/tran' . DS);
         }
         /**
          * If we get to this point, the all is well
@@ -1413,11 +1413,11 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/timetable/', function() use($app) {
         if (!checkStuAccess(get_persondata('personID'))) {
-            redirect(url('/profile/'));
+            redirect(get_base_url() . 'profile' . DS);
         }
 
-        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
-            redirect(url('/offline/'));
+        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
+            redirect(get_base_url() . 'offline' . DS);
         }
     });
 
@@ -1439,11 +1439,11 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/terms/', function() use($app) {
         if (!checkStuAccess(get_persondata('personID'))) {
-            redirect(url('/profile/'));
+            redirect(get_base_url() . 'profile' . DS);
         }
 
-        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
-            redirect(url('/offline/'));
+        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
+            redirect(get_base_url() . 'offline' . DS);
         }
     });
 
@@ -1484,11 +1484,11 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/schedule.*', function() use($app) {
         if (!checkStuAccess(get_persondata('personID'))) {
-            redirect(url('/profile/'));
+            redirect(get_base_url() . 'profile' . DS);
         }
 
-        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
-            redirect(url('/offline/'));
+        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
+            redirect(get_base_url() . 'offline' . DS);
         }
     });
 
@@ -1567,11 +1567,11 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $dbcach
      */
     $app->before('GET|POST', '/final-grades/', function() use($app) {
         if (!checkStuAccess(get_persondata('personID'))) {
-            redirect(url('/profile/'));
+            redirect(get_base_url() . 'profile' . DS);
         }
 
-        if (_h(get_option('enable_myet_portal') == 0) && !hasPermission('edit_myet_css')) {
-            redirect(url('/offline/'));
+        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
+            redirect(get_base_url() . 'offline' . DS);
         }
     });
 

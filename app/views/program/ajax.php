@@ -41,7 +41,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "<?= url('/crse/dept/'); ?>",
+                    url: "<?= get_base_url() . 'crse/dept' . DS; ?>",
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
@@ -173,7 +173,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "<?= url('/program/year/'); ?>",
+                    url: "<?= get_base_url() . 'program/year' . DS; ?>",
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
@@ -270,7 +270,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "<?= url('/program/degree/'); ?>",
+                    url: "<?= get_base_url() . 'program/degree' . DS; ?>",
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
@@ -369,7 +369,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "<?= url('/program/ccd/'); ?>",
+                    url: "<?= get_base_url() . 'program/ccd' . DS; ?>",
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
@@ -463,7 +463,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "<?= url('/program/major/'); ?>",
+                    url: "<?= get_base_url() . 'program/major' . DS; ?>",
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
@@ -556,7 +556,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "<?= url('/program/minor/'); ?>",
+                    url: "<?= get_base_url() . 'program/minor' . DS; ?>",
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
@@ -649,7 +649,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "<?= url('/program/spec/'); ?>",
+                    url: "<?= get_base_url() . 'program/spec' . DS; ?>",
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
@@ -742,7 +742,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "<?= url('/program/cip/'); ?>",
+                    url: "<?= get_base_url() . 'program/cip' . DS; ?>",
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
@@ -835,7 +835,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "<?= url('/sect/loc/'); ?>",
+                    url: "<?= get_base_url() . 'sect/loc' . DS; ?>",
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
