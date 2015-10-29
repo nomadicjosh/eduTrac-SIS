@@ -51,13 +51,13 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<li><?=_t( 'Create Section' );?></li>
 </ul>
 
-<h3><?=_h($sect[0]['courseCode']);?>-<sec id="section"></sec></h3>
+<h3><?=_h($sect->courseCode);?>-<sec id="section"></sec></h3>
 <div class="innerLR">
     
     <?php jstree_sidebar_menu($screen,'',$sect); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>sect/add/<?=_h($sect[0]['courseID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>sect/add/<?=_h($sect->courseID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -121,7 +121,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <div class="col-md-8" id="divDept">
                                 <select name="deptCode" id="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('department', 'deptTypeCode = "acad" AND deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName', _h($sect[0]['deptCode'])); ?>
+                                    <?php table_dropdown('department', 'deptTypeCode = "acad" AND deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName', _h($sect->deptCode)); ?>
                                 </select>
                             </div>
                             <a<?=ae('access_forms');?> href="#dept" data-toggle="modal" title="Department" class="btn btn-primary"><i class="fa fa-plus"></i></a>
@@ -132,7 +132,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Credits / CEU's" );?></label>
                             <div class="col-md-4">
-                                <input type="text" name="minCredit" readonly="readonly" class="form-control" value="<?=_h($sect[0]['minCredit']);?>" required/>
+                                <input type="text" name="minCredit" readonly="readonly" class="form-control" value="<?=_h($sect->minCredit);?>" required/>
                             </div>
                             
                             <div class="col-md-4">
@@ -145,7 +145,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Level' );?></label>
                             <div class="col-md-8">
-                                <?=course_level_select(_h($sect[0]['courseLevelCode']));?>
+                                <?=course_level_select(_h($sect->courseLevelCode));?>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -154,7 +154,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($sect[0]['acadLevelCode']),null,'required');?>
+                                <?=acad_level_select(_h($sect->acadLevelCode),null,'required');?>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -163,7 +163,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Short Title' );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="secShortTitle" class="form-control" value="<?=_h($sect[0]['courseShortTitle']);?>" maxlength="25" required/>
+                                <input type="text" name="secShortTitle" class="form-control" value="<?=_h($sect->courseShortTitle);?>" maxlength="25" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
