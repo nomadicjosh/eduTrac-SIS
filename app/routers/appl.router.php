@@ -111,26 +111,14 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             ->select('a.*,b.fname,b.mname,b.lname,b.dob,b.uname')
             ->select('b.email,b.gender')
             ->_join('person', 'a.personID = b.personID', 'b')
-            ->where('a.applID = ?', $id);
-        $q1 = $appl->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+            ->where('a.applID = ?', $id)
+            ->findOne();
         $addr = $app->db->address()
             ->setTableAlias('a')
             ->_join('application', 'a.personID = b.personID', 'b')
             ->where('b.applID = ?', $id)->_and_()
-            ->where('a.addressType = "P"');
-        $q2 = $addr->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+            ->where('a.addressType = "P"')
+            ->findOne();
         $inst = $app->db->institution_attended()
             ->setTableAlias('a')
             ->_join('application', 'a.personID = b.personID', 'b')
@@ -147,7 +135,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($q1 == false) {
+        if ($appl == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -155,13 +143,13 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($q1) == true) {
+         */ elseif (empty($appl) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($q1) <= 0) {
+         */ elseif (count($appl) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -172,11 +160,11 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
          */ else {
 
             $app->view->display('application/view', [
-                'title' => get_name($q1[0]['personID']),
+                'title' => get_name($appl->personID),
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'appl' => $q1,
-                'addr' => $q2,
+                'appl' => $appl,
+                'addr' => $addr,
                 'inst' => $q3
                 ]
             );
@@ -194,6 +182,13 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
 
     $app->post('/editAppl/(\d+)/', function ($id) use($app, $logger, $flashNow, $email) {
         $appl = $app->db->application();
+        /**
+         * Fires during the update of an application.
+         * 
+         * @since 6.1.10
+         * @param array $appl Application data object.
+         */
+        do_action('update_application_db_table', $appl);
         $appl->acadProgCode = $_POST['acadProgCode'];
         $appl->startTerm = $_POST['startTerm'];
         $appl->PSAT_Verbal = $_POST['PSAT_Verbal'];
@@ -209,7 +204,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         $appl->acadProgCode = $_POST['acadProgCode'];
         $appl->acadProgCode = $_POST['acadProgCode'];
         $appl->where('applID = ?', $_POST['applID']);
-
+        
         if ($appl->update()) {
             $app->flash('success_message', $flashNow->notice(200));
             $logger->setLog('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));
@@ -220,7 +215,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         $uname = $app->db->person();
         $uname->uname = $_POST['uname'];
         $uname->where('personID = ?', $_POST['personID']);
-        if ($person->uname !== $_POST['uname']) {
+        if ($uname->uname !== $_POST['uname']) {
             if ($uname->update()) {
 
                 $host = strtolower($_SERVER['SERVER_NAME']);
@@ -299,6 +294,13 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
 
         if ($app->req->isPost()) {
             $appl = $app->db->application();
+            /**
+             * Fires during the saving/creating of an application.
+             * 
+             * @since 6.1.10
+             * @param array $appl Application data object.
+             */
+            do_action('save_application_db_table', $appl);
             $appl->acadProgCode = _trim($_POST['acadProgCode']);
             $appl->startTerm = $_POST['startTerm'];
             $appl->PSAT_Verbal = $_POST['PSAT_Verbal'];
@@ -324,33 +326,21 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         }
 
         $person = $app->db->person()
-            ->where('personID = ?', $id);
-        $q1 = $person->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+            ->where('personID = ?', $id)
+            ->findOne();
 
         $address = $app->db->address()
             ->where('personID = ?', $id)->_and_()
             ->where('addressType = "P"')->_and_()
             ->where('addressStatus = "C"')->_and_()
-            ->whereLte('endDate', '0000-00-00');
-        $q2 = $address->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+            ->whereLte('endDate', '0000-00-00')
+            ->findOne();
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($q1 == false) {
+        if ($person == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -358,13 +348,13 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($q1) == true) {
+         */ elseif (empty($person) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($q1) <= 0) {
+         */ elseif (count($person) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -378,8 +368,8 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 'title' => 'Create Application',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'person' => $q1,
-                'address' => $q2
+                'person' => $person,
+                'address' => $address
                 ]
             );
         }

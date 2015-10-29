@@ -217,6 +217,18 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <?php 
+                            /**
+                             * NAE Form Field (Left)
+                             * 
+                             * Action will print a form field or any type of data
+                             * on the left side of the NAE screen.
+                             * 
+                             * @since 6.1.10
+                             */
+                            do_action('left_nae_new_form'); 
+                        ?>
 						
 					</div>
 					<!-- // Column END -->
@@ -352,6 +364,18 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <?php 
+                            /**
+                             * NAE Form Field (Right)
+                             * 
+                             * Action will print a form field or any type of data
+                             * on the right side of the NAE screen.
+                             * 
+                             * @since 6.1.10
+                             */
+                            do_action('right_nae_new_form'); 
+                        ?>
                         
                         <!-- Group -->
                         <div class="form-group">

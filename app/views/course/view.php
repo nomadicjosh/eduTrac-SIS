@@ -156,6 +156,19 @@ $screen = 'vcrse';
 							</div>
 						</div>
 						<!-- // Group END -->
+                        
+                        <?php 
+                        /**
+                         * CRSE Form Field (Left)
+                         * 
+                         * Action will print a form field or any type of data
+                         * on the left side of the CRSE screen.
+                         * 
+                         * @since 6.1.10
+                         * @param array $crse Course data object.
+                         */
+                        do_action('left_crse_view_form', $crse); 
+                        ?>
 						
 					</div>
 					<!-- // Column END -->
@@ -193,6 +206,19 @@ $screen = 'vcrse';
 							</div>
 						</div>
 						<!-- // Group END -->
+                        
+                        <?php 
+                        /**
+                         * CRSE Form Field (Right)
+                         * 
+                         * Action will print a form field or any type of data
+                         * on the right side of the CRSE screen.
+                         * 
+                         * @since 6.1.10
+                         * @param array $crse Course data object.
+                         */
+                        do_action('right_crse_view_form', $crse); 
+                        ?>
 						
 						<!-- Group -->
 						<div class="form-group">
