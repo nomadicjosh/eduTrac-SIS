@@ -112,7 +112,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * @param int $id Primary key of the course section.
          */
         do_action('pre_update_course_sec', $id);
-        
+
         $section = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
 
         $date = date("Y-m-d");
@@ -122,6 +122,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $term = str_replace("/", "", $_POST['termCode']);
 
             $sect = $app->db->course_sec();
+            /**
+             * Fires during the update of a course section.
+             * 
+             * @since 6.1.10
+             * @param array $sect Course section data object.
+             */
+            do_action('update_course_sec_db_table', $sect);
             $sect->locationCode = $_POST['locationCode'];
             $sect->termCode = $_POST['termCode'];
             $sect->secShortTitle = $_POST['secShortTitle'];
@@ -285,13 +292,12 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * @param int $id Primary key of the course from which the course section is created.
          */
         do_action('pre_save_course_sec', $id);
-
-        $json = _file_get_contents($json_url . 'course/courseID/' . (int) $id . '/?key=' . get_option('api_key'));
-        $decode = json_decode($json, true);
+        
+        $crse = $app->db->course()->where('courseID = ?', $id)->findOne();
 
         if ($app->req->isPost()) {
-            $sc = $decode[0]['courseCode'] . '-' . $_POST['sectionNumber'];
-            $courseSection = $_POST['termCode'] . '-' . $decode[0]['courseCode'] . '-' . $_POST['sectionNumber'];
+            $sc = $crse->courseCode . '-' . $_POST['sectionNumber'];
+            $courseSection = $_POST['termCode'] . '-' . $crse->courseCode . '-' . $_POST['sectionNumber'];
 
             $dotw = '';
             /** Combine the days of the week to be entered into the database */
@@ -301,6 +307,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             }
 
             $sect = $app->db->course_sec();
+            /**
+             * Fires during the saving/creating of a course section.
+             * 
+             * @since 6.1.10
+             * @param array $sect Course section data object.
+             */
+            do_action('save_course_sec_db_table', $sect);
             $sect->sectionNumber = $_POST['sectionNumber'];
             $sect->courseSecCode = _trim($sc);
             $sect->courseSection = _trim($courseSection);
@@ -312,7 +325,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $sect->deptCode = $_POST['deptCode'];
             $sect->termCode = $_POST['termCode'];
             $sect->courseID = $id;
-            $sect->courseCode = $decode[0]['courseCode'];
+            $sect->courseCode = $crse->courseCode;
             $sect->secShortTitle = $_POST['secShortTitle'];
             $sect->startDate = $_POST['startDate'];
             $sect->endDate = $_POST['endDate'];
@@ -339,8 +352,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                     "minCredit" => $_POST['minCredit'], "ceu" => $_POST['ceu'], "courseSection" => _trim($courseSection),
                     "courseLevelCode" => _trim($_POST['courseLevelCode']), "acadLevelCode" => _trim($_POST['acadLevelCode']),
                     "currStatus" => $_POST['currStatus'], "statusDate" => $_POST['statusDate'], "comment" => $_POST['comment'],
-                    "approvedDate" => $_POST['approvedDate'], "approvedBy" => $_POST['approvedBy'], "secLongTitle" => $decode[0]['courseLongTitle'],
-                    "section" => _trim($courseSection), "description" => $decode[0]['courseDesc']
+                    "approvedDate" => $_POST['approvedDate'], "approvedBy" => $_POST['approvedBy'], "secLongTitle" => $crse->courseLongTitle,
+                    "section" => _trim($courseSection), "description" => $crse->courseDesc
                 ];
                 /**
                  * Fires after a course section has been created.
@@ -349,7 +362,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                  * @param array $section Course section data object.
                  */
                 do_action('post_save_course_sec', $section);
-                
+
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course Section', _trim($courseSection), get_persondata('uname'));
                 redirect(get_base_url() . 'sect' . DS . $ID . '/');
@@ -363,7 +376,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($crse == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -371,13 +384,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($crse) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['courseID']) <= 0) {
+         */ elseif (count($crse->courseID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -390,7 +403,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 'title' => 'Create Section',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'sect' => $decode
+                'sect' => $crse
                 ]
             );
         }
@@ -414,7 +427,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
          * @param int $id Primary key of the course section.
          */
         do_action('pre_course_sec_addnl', $id);
-        
+
         $section = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
 
         if ($app->req->isPost()) {
@@ -499,7 +512,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         }
     });
 
-    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {        
+    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
         $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
 
         if ($app->req->isPost()) {
@@ -602,7 +615,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
-        
+
         $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
 
         $fgrade = $app->db->course_sec()
@@ -678,9 +691,9 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
         $time = date("h:i A");
 
-        if ($app->req->isPost()) {            
-            $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $_POST['courseSecID'])->findOne();            
-            $crse = $app->db->course()->where('courseID = ?', (int) $sect->courseID)->findOne();            
+        if ($app->req->isPost()) {
+            $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $_POST['courseSecID'])->findOne();
+            $crse = $app->db->course()->where('courseID = ?', (int) $sect->courseID)->findOne();
             $term = $app->db->term()->where('termCode = ?', $sect->termCode)->findOne();
 
             $stcs = $app->db->stu_course_sec();
@@ -729,11 +742,11 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                  */
                 $ID = $stac->lastInsertId();
                 $sacd = $app->db->stu_acad_cred()
-                        ->setTableAlias('stac')
-                        ->select('stac.*,nae.uname,nae.fname,nae.lname,nae.email')
-                        ->_join('person','stac.stuID = nae.personID','nae')
-                        ->where('stac.stuAcadCredID = ?', $ID)
-                        ->findOne();
+                    ->setTableAlias('stac')
+                    ->select('stac.*,nae.uname,nae.fname,nae.lname,nae.email')
+                    ->_join('person', 'stac.stuID = nae.personID', 'nae')
+                    ->where('stac.stuAcadCredID = ?', $ID)
+                    ->findOne();
                 /**
                  * Fires after a student has been registered into
                  * a course by a staff member.
@@ -976,7 +989,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->post('/stuLookup/', function() use($app) {
-        $stu = $app->db->student()->where('stuID = ?', (int) $_POST['stuID'])->findOne();        
+        $stu = $app->db->student()->where('stuID = ?', (int) $_POST['stuID'])->findOne();
         $nae = $app->db->person()->where('personID = ?', (int) $stu->stuID)->findOne();
 
         $json = [ 'input#stuName' => $nae->lname . ', ' . $nae->fname];

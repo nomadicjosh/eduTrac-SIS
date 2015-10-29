@@ -87,17 +87,23 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
         );
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        $json = _file_get_contents($json_url . 'acad_program/acadProgID/' . $id . '/?key=' . _h(get_option('api_key')));
-        $decode = json_decode($json, true);
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {        
+        $program = $app->db->acad_program()->where('acadProgID = ?', $id)->findOne();
 
         if ($app->req->isPost()) {
             $prog = $app->db->acad_program();
+            /**
+             * Fires during the update of an academic program.
+             * 
+             * @since 6.1.10
+             * @param array $prog Academic program data object.
+             */
+            do_action('update_acad_program_db_table', $prog);
             $prog->acadProgCode = $_POST['acadProgCode'];
             $prog->acadProgTitle = $_POST['acadProgTitle'];
             $prog->programDesc = $_POST['programDesc'];
             $prog->currStatus = $_POST['currStatus'];
-            if ($decode[0]['currStatus'] !== $_POST['currStatus']) {
+            if ($program->currStatus !== $_POST['currStatus']) {
                 $prog->statusDate = $app->db->NOW();
             }
             $prog->deptCode = $_POST['deptCode'];
@@ -117,10 +123,10 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
             if ($prog->update()) {
                 $dbcache->clearCache("acad_program-" . $_POST['acadProgID']);
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update', 'Acad Program', $decode[0]['acadProgCode'], get_persondata('uname'));
+                $logger->setLog('Update', 'Acad Program', $program->acadProgCode, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
-                $logger->setLog('Update Error', 'Acad Program', $decode[0]['acadProgCode'], get_persondata('uname'));
+                $logger->setLog('Update Error', 'Acad Program', $program->acadProgCode, get_persondata('uname'));
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
@@ -129,7 +135,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($program == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -137,13 +143,13 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($program) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['acadProgID']) <= 0) {
+         */ elseif (count($program->acadProgID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -154,10 +160,10 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
          */ else {
 
             $app->view->display('program/view', [
-                'title' => $decode[0]['acadProgTitle'] . ' :: Academic Program',
+                'title' => $program->acadProgTitle . ' :: Academic Program',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'prog' => $decode
+                'prog' => $program
                 ]
             );
         }
@@ -186,6 +192,13 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
 
         if ($app->req->isPost()) {
             $prog = $app->db->acad_program();
+            /**
+             * Fires during the saving/creating of an academic program.
+             * 
+             * @since 6.1.10
+             * @param array $prog Academic program data object.
+             */
+            do_action('save_acad_program_db_table', $prog);
             $prog->acadProgCode = $_POST['acadProgCode'];
             $prog->acadProgTitle = $_POST['acadProgTitle'];
             $prog->programDesc = $_POST['programDesc'];

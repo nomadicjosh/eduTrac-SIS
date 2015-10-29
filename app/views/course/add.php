@@ -116,6 +116,18 @@ $screen = 'acrse';
 							<div class="col-md-8"><input class="form-control" type="text" name="courseNumber" required /></div>
 						</div>
 						<!-- // Group END -->
+                        
+                        <?php 
+                            /**
+                             * CRSE Form Field (Left)
+                             * 
+                             * Action will print a form field or any type of data
+                             * on the left side of the CRSE screen.
+                             * 
+                             * @since 6.1.10
+                             */
+                            do_action('left_crse_new_form'); 
+                        ?>
 						
 					</div>
 					<!-- // Column END -->
@@ -169,6 +181,18 @@ $screen = 'acrse';
 							</div>
 						</div>
 						<!-- // Group END -->
+                        
+                        <?php 
+                            /**
+                             * CRSE Form Field (Right)
+                             * 
+                             * Action will print a form field or any type of data
+                             * on the right side of the CRSE screen.
+                             * 
+                             * @since 6.1.10
+                             */
+                            do_action('right_crse_new_form'); 
+                        ?>
 						
 						<!-- Group -->
                         <div class="form-group">

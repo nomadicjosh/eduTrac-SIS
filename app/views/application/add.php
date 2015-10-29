@@ -28,7 +28,7 @@ $message = new \app\src\Messages;
 <div class="innerLR">
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/add/<?=_h($person[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/add/<?=_h($person->personID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -51,7 +51,7 @@ $message = new \app\src\Messages;
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Person ID' );?></label>
                             <div class="col-md-8">
-                            	<input class="form-control" readonly type="text" value="<?=_h($person[0]['personID']);?>" />
+                            	<input class="form-control" readonly type="text" value="<?=_h($person->personID);?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -60,13 +60,13 @@ $message = new \app\src\Messages;
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'First/Mid/Last Name' );?></label>
                             <div class="col-md-3">
-                            	<input class="form-control" readonly type="text" value="<?=_h($person[0]['fname']);?>" />
+                            	<input class="form-control" readonly type="text" value="<?=_h($person->fname);?>" />
                         	</div>
                         	<div class="col-md-2">
-                            	<input class="form-control" readonly type="text" value="<?=_h($person[0]['mname']);?>" />
+                            	<input class="form-control" readonly type="text" value="<?=_h($person->mname);?>" />
                         	</div>
                         	<div class="col-md-3">
-                            	<input class="form-control" readonly type="text" value="<?=_h($person[0]['lname']);?>" />
+                            	<input class="form-control" readonly type="text" value="<?=_h($person->lname);?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -75,8 +75,8 @@ $message = new \app\src\Messages;
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Permanent Address' );?></label>
                             <div class="col-md-8">
-                            	<input class="form-control" readonly type="text" value="<?=_h($address[0]['address1']);?> <?=_h($address[0]['address2']);?>" />
-                            	<input class="form-control" readonly type="text" value="<?=_h($address[0]['city']);?> <?=_h($address[0]['state']);?> <?=_h($address[0]['zip']);?>" />
+                            	<input class="form-control" readonly type="text" value="<?=_h($address->address1);?> <?=_h($address->address2);?>" />
+                            	<input class="form-control" readonly type="text" value="<?=_h($address->city);?> <?=_h($address->state);?> <?=_h($address->zip);?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -85,8 +85,8 @@ $message = new \app\src\Messages;
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'DOB' );?></label>
                             <div class="col-md-8">
-                            	<?php if(_h($person[0]['dob']) > '0000-00-00') : ?>
-                            	<input class="form-control" readonly type="text" value="<?=date('D, M d, o',strtotime(_h($person[0]['dob'])));?>" />
+                            	<?php if(_h($person->dob) > '0000-00-00') : ?>
+                            	<input class="form-control" readonly type="text" value="<?=date('D, M d, o',strtotime(_h($person->dob)));?>" />
                             	<?php else : ?>
                             	<input class="form-control" readonly type="text" />
                         		<?php endif; ?>
@@ -104,8 +104,8 @@ $message = new \app\src\Messages;
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Age' );?></label>
                             <div class="col-md-8">
-                            	<?php if(_h($person[0]['dob']) > '0000-00-00') : ?>
-                            	<input class="form-control" readonly type="text" value="<?=getAge(_h($person[0]['dob']));?>" />
+                            	<?php if(_h($person->dob) > '0000-00-00') : ?>
+                            	<input class="form-control" readonly type="text" value="<?=getAge(_h($person->dob));?>" />
                             	<?php else : ?>
                             	<input class="form-control" readonly type="text" />
                         		<?php endif; ?>
@@ -117,7 +117,7 @@ $message = new \app\src\Messages;
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Gender' );?></label>
                             <div class="col-md-8">
-                            	<input class="form-control" readonly type="text" value="<?php if(_h($person[0]['gender']) == 'M') : echo 'Male'; elseif(_h($person[0]['gender']) == 'F') : echo 'Female'; endif; ?>" />
+                            	<input class="form-control" readonly type="text" value="<?php if(_h($person->gender) == 'M') : echo 'Male'; elseif(_h($person->gender) == 'F') : echo 'Female'; endif; ?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -126,7 +126,7 @@ $message = new \app\src\Messages;
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Phone Number' );?></label>
                             <div class="col-md-8">
-                            	<input class="form-control" readonly type="text" value="<?=_h($address[0]['phone1']);?>" />
+                            	<input class="form-control" readonly type="text" value="<?=_h($address->phone1);?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -135,7 +135,7 @@ $message = new \app\src\Messages;
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Email Address' );?></label>
                             <div class="col-md-8">
-                            	<input class="form-control" readonly type="text" value="<?=_h($person[0]['email']);?>" />
+                            	<input class="form-control" readonly type="text" value="<?=_h($person->email);?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -203,12 +203,13 @@ $message = new \app\src\Messages;
                             /**
                              * Application Form Field (Left)
                              * 
-                             * Action will print a form field on the left side
-                             * of the appl screen when triggered.
+                             * Action will print a form field or any type of data
+                             * on the left side of the appl screen via the
+                             * dashboard when triggered.
                              * 
-                             * @since 5.0.0
+                             * @since 6.1.10
                              */
-                            do_action('left_new_appl_form_field'); 
+                            do_action('left_appl_new_dash_form'); 
                         ?>
 						
 					</div>
@@ -257,12 +258,13 @@ $message = new \app\src\Messages;
                             /**
                              * Application Form Field (Right)
                              * 
-                             * Action will print a form field on the right side
-                             * of the appl screen when triggered.
+                             * Action will print a form field or any type of data
+                             * on the right side of the appl screen via the
+                             * dashboard when triggered.
                              * 
-                             * @since 5.0.0
+                             * @since 6.1.10
                              */
-                            do_action('right_new_appl_form_field'); 
+                            do_action('right_appl_new_dash_form'); 
                         ?>
 						
 					</div>

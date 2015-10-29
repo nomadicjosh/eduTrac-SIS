@@ -73,31 +73,40 @@ $app->view->block('myet');
 												<label class="control-label-alt"><?=_t( 'Admission Status' );?></label>
 												<input type="text" class="form-control" readonly value="<?=_h($v['admitStatus']);?>" />
 											</div>
-											<div class="col-md-6">
+											<div class="col-md-6  psat-verbal">
 												<label class="control-label-alt"><?=_t( 'PSAT Verbal' );?></label>
 												<input type="text" class="form-control" readonly value="<?=_h($v['PSAT_Verbal']);?>" />
 											</div>
-											<div class="col-md-6">
+											<div class="col-md-6  psat-math">
 												<label class="control-label-alt"><?=_t( 'PSAT Math' );?></label>
 												<input type="text" class="form-control" readonly value="<?=_h($v['PSAT_Math']);?>" />
 											</div>
-											<div class="col-md-6">
+											<div class="col-md-6 sat-verbal">
 												<label class="control-label-alt"><?=_t( 'SAT Verbal' );?></label>
 												<input type="text" class="form-control" readonly value="<?=_h($v['SAT_Verbal']);?>" />
 											</div>
-											<div class="col-md-6">
+											<div class="col-md-6 sat-math">
 												<label class="control-label-alt"><?=_t( 'SAT Math' );?></label>
 												<input type="text" class="form-control" readonly value="<?=_h($v['SAT_Math']);?>" />
 											</div>
-											<div class="col-md-6">
+											<div class="col-md-6 act-english">
 												<label class="control-label-alt"><?=_t( 'ACT English' );?></label>
 												<input type="text" class="form-control" readonly value="<?=_h($v['ACT_English']);?>" />
 											</div>
-											<div class="col-md-6">
+											<div class="col-md-6 act-math">
 												<label class="control-label-alt"><?=_t( 'ACT Math' );?></label>
 												<input type="text" class="form-control" readonly value="<?=_h($v['ACT_Math']);?>" />
 											</div>
-                                            <?php $app->hook->{'do_action'}('my_appl_extra_field'); ?>
+                                            <?php 
+                                            /**
+                                             * Prints custom fields or any type of data
+                                             * when triggered.
+                                             * 
+                                             * @since 6.1.10
+                                             * @param array $v Application data object.
+                                             */
+                                            do_action('my_appl_custom_field', $v); 
+                                            ?>
 											<div class="col-md-6">
 												<label class="control-label-alt"><?=_t( 'Comments' );?></label>
 												<textarea class="form-control" readonly rows="5"><?=_h($v['appl_comments']);?></textarea>

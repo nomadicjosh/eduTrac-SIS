@@ -224,6 +224,13 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             }
 
             $nae = $app->db->person();
+            /**
+             * Fires during the saving/creating of an person record.
+             * 
+             * @since 6.1.10
+             * @param array $nae Person data object.
+             */
+            do_action('save_person_db_table', $nae);
             $nae->uname = $_POST['uname'];
             $nae->altID = $_POST['altID'];
             $nae->personType = $_POST['personType'];

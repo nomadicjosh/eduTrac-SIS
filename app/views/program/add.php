@@ -154,8 +154,8 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         
                         <?php 
                         /**
-                         * Prints a new field on the left of the screen
-                         * when fired.
+                         * Prints a new field or any type of data
+                         * on the left of the screen when fired.
                          * 
                          * @since 6.1.06
                          */
@@ -289,8 +289,8 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         
                         <?php 
                         /**
-                         * Prints a field on the right of the screen
-                         * when fired.
+                         * Prints a field or any type of data
+                         * on the right of the screen when fired.
                          * 
                          * @since 6.1.06
                          */

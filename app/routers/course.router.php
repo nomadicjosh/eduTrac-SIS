@@ -105,11 +105,18 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {        
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
         $course = $app->db->course()->where('courseID = ?', (int) $id)->findOne();
 
         if ($app->req->isPost()) {
             $crse = $app->db->course();
+            /**
+             * Fires during the update of a course.
+             * 
+             * @since 6.1.10
+             * @param array $crse Course data object.
+             */
+            do_action('update_course_db_table', $crse);
             $crse->courseNumber = $_POST['courseNumber'];
             $crse->courseCode = $_POST['subjectCode'] . '-' . $_POST['courseNumber'];
             $crse->subjectCode = $_POST['subjectCode'];
@@ -196,7 +203,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
         }
     });
 
-    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {        
+    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         $course = $app->db->course()->where('courseID = ?', (int) $id)->findOne();
 
         if ($app->req->isPost()) {
@@ -274,6 +281,13 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
         if ($app->req->isPost()) {
             $crse = $app->db->course();
+            /**
+             * Fires during the saving/creating of a course.
+             * 
+             * @since 6.1.10
+             * @param array $crse Course data object.
+             */
+            do_action('save_course_db_table', $crse);
             $crse->courseNumber = $_POST['courseNumber'];
             $crse->courseCode = $_POST['subjectCode'] . '-' . $_POST['courseNumber'];
             $crse->subjectCode = $_POST['subjectCode'];
@@ -294,8 +308,8 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $crse->approvedBy = get_persondata('personID');
             if ($crse->save()) {
                 $ID = $crse->lastInsertId();
-                
-                $course = $app->db->course()->where('courseID = ?', (int)$ID)->findOne();
+
+                $course = $app->db->course()->where('courseID = ?', (int) $ID)->findOne();
                 /**
                  * Fires after a new course has been created.
                  * 
@@ -303,7 +317,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                  * @param mixed $course Course data object.
                  */
                 do_action('post_save_crse', $course);
-                
+
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course', $_POST['subjectCode'] . '-' . $_POST['courseNumber'], get_persondata('uname'));
                 redirect(get_base_url() . 'crse' . DS . (int) $ID . '/');
