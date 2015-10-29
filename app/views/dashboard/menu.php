@@ -150,7 +150,7 @@
                             <ul>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_22"><a<?=($screen === 'prog') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>program/"><?=_t( 'Search Program' );?></a></li>
                                 <?php if($prog !== '') : ?>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_23"><a<?=($screen === 'vprog') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>program/<?=_h( $prog[0]['acadProgID'] );?>"><?=_h( $prog[0]['acadProgCode'] );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_23"><a<?=($screen === 'vprog') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>program/<?=_h( $prog->acadProgID );?>"><?=_h( $prog->acadProgCode );?></a></li>
                                 <?php endif; ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_24"><a<?=($screen === 'aprog') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>program/add/"><?=_t( '(APRG) - Add Program' );?></a></li>
                             </ul>
