@@ -13,9 +13,9 @@ if (!defined('BASE_PATH'))
 /**
  * Before router check.
  */
-$app->before('GET|POST', '/courses(.*)', function() use($app) {
+$app->before('GET|POST', '/courses(.*)', function() {
 
-    if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
+    if (get_option('enable_myet_portal') == 0 && !hasPermission('edit_myet_css')) {
         redirect(get_base_url() . 'offline' . DS);
     }
 });
@@ -65,8 +65,8 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 }
                 return $array;
             });
-            if (bcadd(count($q1[0]['id']), count($_POST['courseSecID'])) > _h(get_option('number_of_courses'))) {
-                $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . _h(get_option('number_of_courses')) . _t(' courses</strong> per term.'));
+            if (bcadd(count($q1[0]['id']), count($_POST['courseSecID'])) > get_option('number_of_courses')) {
+                $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . get_option('number_of_courses') . _t(' courses</strong> per term.'));
                 redirect(get_base_url() . 'courses' . DS);
                 exit();
             }
@@ -91,7 +91,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 redirect(get_base_url() . 'courses/cart' . DS);
             }
         }
-        $terms = _h(get_option('open_terms'));
+        $terms = _escape(get_option('open_terms'));
         if (function_exists('create_payment_plan') && isStudent(get_persondata('personID'))) {
             $sect = $app->db->course_sec()
                 ->setTableAlias('a')
@@ -175,7 +175,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
          */
         $check = $app->db->stu_course_sec()
             ->where('stuID = ?', get_persondata('personID'))->_and_()
-            ->where('termCode = ?', _h(get_option('registration_term')))->_and_()
+            ->where('termCode = ?', get_option('registration_term'))->_and_()
             ->whereIn('status', ['A', 'N']);
         $d = $check->find(function($data) {
             $array = [];
@@ -185,8 +185,8 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
             return $array;
         });
         $counts = array_count_values($_POST['regAction']);
-        if (bcadd(count($d[0]['id']), $counts['register']) > _h(get_option('number_of_courses'))) {
-            $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . _h(get_option('number_of_courses')) . _t(' courses</strong> per term.'));
+        if (bcadd(count($d[0]['id']), $counts['register']) > get_option('number_of_courses')) {
+            $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . get_option('number_of_courses') . _t(' courses</strong> per term.'));
             redirect($app->req->server['HTTP_REFERER']);
             exit();
         }
@@ -336,7 +336,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 return $array;
             });
             if (count($qry[0]['courseSection']) > 0) {
-                if (_h(get_option('registrar_email_address')) != '') {
+                if (get_option('registrar_email_address') != '') {
                     $email->course_registration(get_persondata('personID'), $_POST['termCode'], get_base_url());
                 }
             }
