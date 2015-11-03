@@ -251,6 +251,8 @@ function courseList($id = '')
  * if $subjectCode is not NULL, shows the subject attached 
  * to a particular record.
  * 
+ * @deprecated since release 6.1.12
+ * @see table_dropdown
  * @since 1.0.0
  * @param string $subjectCode - optional
  * @return string Returns the record key if selected is true.
@@ -258,7 +260,9 @@ function courseList($id = '')
 function subject_code_dropdown($subjectCode = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    $subj = $app->db->query('SELECT subjectCode,subjectName FROM subject WHERE subjectCode <> "NULL"');
+    $subj = $app->db->subject()
+        ->select('subjectCode,subjectName')
+        ->whereNotNull('subjectCode');
 
     $q = $subj->find(function($data) {
         $array = [];
@@ -268,7 +272,7 @@ function subject_code_dropdown($subjectCode = NULL)
         return $array;
     });
 
-    foreach ($q as $k => $v) {
+    foreach ($q as $v) {
         echo '<option value="' . _h($v['subjectCode']) . '"' . selected($subjectCode, _h($v['subjectCode']), false) . '>' . _h($v['subjectCode']) . ' ' . _h($v['subjectName']) . '</option>' . "\n";
     }
 }
@@ -285,7 +289,10 @@ function subject_code_dropdown($subjectCode = NULL)
 function facID_dropdown($facID = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    $fac = $app->db->query("SELECT staffID FROM staff_meta WHERE staffType = 'FAC' ORDER BY staffID");
+    $fac = $app->db->staff_meta()
+        ->select('staffID')
+        ->where('staffType = "FAC"')
+        ->orderBy('staffID');
     $q = $fac->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -294,7 +301,7 @@ function facID_dropdown($facID = NULL)
         return $array;
     });
 
-    foreach ($q as $k => $v) {
+    foreach ($q as $v) {
         echo '<option value="' . _h($v['staffID']) . '"' . selected($facID, _h($v['staffID']), false) . '>' . get_name(_h($v['staffID'])) . '</option>' . "\n";
     }
 }
@@ -319,7 +326,7 @@ function payment_type_dropdown($typeID = NULL)
         }
         return $array;
     });
-    foreach ($q as $k => $v) {
+    foreach ($q as $v) {
         echo '<option value="' . _h($v['ptID']) . '"' . selected($typeID, _h($v['ptID']), false) . '>' . _h($v['type']) . '</option>' . "\n";
     }
 }
@@ -370,12 +377,11 @@ function table_dropdown($table, $where = null, $id, $code, $name, $activeID = nu
 function get_staff_email()
 {
     $app = \Liten\Liten::getInstance();
-    $email = $app->db->query("SELECT 
-                        a.email,a.personID 
-                    FROM person a 
-                    LEFT JOIN staff b ON a.personID = b.staffID 
-                    WHERE b.status = 'A' 
-                    ORDER BY lname");
+    $email = $app->db->person()
+        ->select('person.email,person.personID')
+        ->_join('staff', 'person.personID = staff.staffID')
+        ->where('staff.status = "A"')
+        ->orderBy('person.lname');
     $q = $email->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -395,12 +401,18 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
 {
     $app = \Liten\Liten::getInstance();
     if ($id != '') {
-        $array = [];
-        $q = $app->db->query("SELECT * FROM $table WHERE $column = ?", [$id]);
+        $date_select = $app->db->$table()
+            ->where("$column = ?", $id);
+        $q = $date_select->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
         foreach ($q as $r) {
-            $array[] = $r;
+            $date = explode("-", $r[$field]);
         }
-        $date = explode("-", $r[$field]);
     }
 
     /* years */
@@ -434,6 +446,7 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
 /**
  * A function which returns true if the logged in user
  * is a student in the system.
+ * 
  * @since 4.3
  * @param int $id Student's ID.
  * @return bool
@@ -441,15 +454,12 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
 function isStudent($id)
 {
     $app = \Liten\Liten::getInstance();
-    $stu = $app->db->student()->where('stuID = ?', $id);
-    $q = $stu->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    if (count($q) > 0) {
+    
+    $stu = $app->db->student()
+        ->where('stuID = ?', $id)
+        ->findOne();
+    
+    if ($stu !== false) {
         return true;
     }
     return false;
@@ -458,6 +468,7 @@ function isStudent($id)
 /**
  * A function which returns true if the logged in user
  * has an active student, staff, or faculty record.
+ * 
  * @since 4.3
  * @param int $id Person ID.
  * @return bool
@@ -465,23 +476,16 @@ function isStudent($id)
 function isRecordActive($id)
 {
     $app = \Liten\Liten::getInstance();
-    $rec = $app->db->query("SELECT 
-				a.personID 
-			FROM person a 
-			LEFT JOIN student b ON a.personID = b.stuID 
-			LEFT JOIN staff c ON a.personID = c.staffID 
-			WHERE a.personID = ? 
-			AND b.status = 'A' 
-			OR c.status = 'A'", [$id]
-    );
-    $q = $rec->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    if (count($q) > 0) {
+    $rec = $app->db->person()
+        ->select('person.personID')
+        ->_join('student', 'person.personID = student.stuID')
+        ->_join('staff', 'person.personID = staff.staffID')
+        ->where('person.personID = ?', $id)->_and_()
+        ->where('student.status = "A"')->_or_()
+        ->where('staff.status = "A"')
+        ->findOne();
+    
+    if ($rec !== false) {
         return true;
     }
     return false;
@@ -568,11 +572,11 @@ function getstudentload($term, $creds, $level)
 function supervisor($id, $active = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    $s = $app->db->query("SELECT 
-                        staffID  
-                    FROM staff 
-                    WHERE staffID != ?", [$id]
-    );
+
+    $s = $app->db->staff()
+        ->select('staff.staffID')
+        ->whereNot('staff.staffID', $id);
+
     $q = $s->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -581,7 +585,7 @@ function supervisor($id, $active = NULL)
         return $array;
     });
 
-    foreach ($q as $k => $v) {
+    foreach ($q as $v) {
         echo '<option value="' . _h($v['staffID']) . '"' . selected($active, _h($v['staffID']), false) . '>' . get_name(_h($v['staffID'])) . '</option>' . "\n";
     }
 }
@@ -589,63 +593,39 @@ function supervisor($id, $active = NULL)
 function getJobID()
 {
     $app = \Liten\Liten::getInstance();
-    $job = $app->db->query('SELECT jobID FROM staff_meta WHERE staffID = ? AND endDate = NULL or endDate = "0000-00-00"', [get_persondata('personID')]);
-    $q = $job->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $r) {
-        return _h($r['jobID']);
-    }
+    $job = $app->db->staff_meta()
+        ->select('jobID')
+        ->where('staffID = ?', get_persondata('personID'))->_and_()
+        ->where('endDate = "NULL"')->_or_()
+        ->where('endDate = "0000-00-00"')
+        ->findOne();
+
+    return _h($job->jobID);
 }
 
 function getJobTitle()
 {
     $app = \Liten\Liten::getInstance();
-    $job = $app->db->query("SELECT 
-                        a.title 
-                    FROM job a 
-                    LEFT JOIN staff_meta b 
-                    ON a.ID = b.jobID 
-                    WHERE a.ID = ?", [ getJobID()]
-    );
-    $q = $job->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $r) {
-        return _h($r['title']);
-    }
+    $job = $app->db->job()
+        ->select('job.title')
+        ->_join('staff_meta', 'job.ID = staff_meta.jobID')
+        ->where('job.ID = ?', getJobID())
+        ->findOne();
+
+    return _h($job->title);
 }
 
 function getStaffJobTitle($id)
 {
     $app = \Liten\Liten::getInstance();
-    $title = $app->db->query("SELECT 
-                        a.title 
-                    FROM job a 
-                    LEFT JOIN staff_meta b 
-                    ON a.ID = b.jobID 
-                    WHERE b.staffID = ? 
-                    AND b.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)", [ $id, $id]
-    );
-    $q = $title->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
+    $title = $app->db->job()
+        ->select('job.title')
+        ->_join('staff_meta', 'job.ID = staff_meta.jobID')
+        ->where('staff_meta.staffID = ?', $id)->_and_()
+        ->where('staff_meta.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id)
+        ->findOne();
 
-    foreach ($q as $r) {
-        return _h($r['title']);
-    }
+    return _h($title->title);
 }
 
 function rolePerm($id)
@@ -797,15 +777,12 @@ function student_has_restriction()
 function is_count_zero($table, $field, $ID)
 {
     $app = \Liten\Liten::getInstance();
-    $zero = $app->db->query("SELECT $field FROM $table WHERE $field = ?", [$ID]);
-    $q = $zero->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    if (count($q) > 0) {
+    $zero = $app->db->$table()
+        ->select("$field")
+        ->where("$field = ?", $ID)
+        ->findOne();
+
+    if ($zero !== false) {
         return 'X';
     }
 }
@@ -815,10 +792,12 @@ function is_count_zero($table, $field, $ID)
  * active FERPA restrictions for students.
  * 
  * @since 4.5
+ * @param int $id Student's ID.
  */
 function is_ferpa($id)
 {
     $app = \Liten\Liten::getInstance();
+    
     $ferpa = $app->db->query("SELECT 
                         rstrID 
                     FROM restriction 
@@ -826,6 +805,7 @@ function is_ferpa($id)
                     AND rstrCode = 'FERPA' 
                     AND (endDate = '' OR endDate = '0000-00-00')", [$id]
     );
+    
     $q = $ferpa->find(function($data) {
         $array = [];
         foreach ($data as $d) {
@@ -833,10 +813,11 @@ function is_ferpa($id)
         }
         return $array;
     });
+    
     if (count($q) > 0) {
-        return 'Yes';
+        return _t('Yes');
     } else {
-        return 'No';
+        return _t('No');
     }
 }
 
@@ -918,20 +899,19 @@ function translate_addr_type($type)
 function get_name($ID)
 {
     $app = \Liten\Liten::getInstance();
-    $name = $app->db->query("SELECT lname, fname FROM person WHERE personID = ?", [$ID]);
-    $q = $name->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $r) {
-        return _h($r['lname']) . ', ' . _h($r['fname']);
-    }
+
+    $name = $app->db->person()
+        ->select('lname,fname')
+        ->where('personID = ?', $ID)
+        ->findOne();
+
+    return _h($name->lname) . ', ' . _h($name->fname);
 }
 
 /**
+ * Shows selected person's initials instead of
+ * his/her's full name.
+ * 
  * @since 4.1.6
  * @param int $ID Person ID
  * @param int $initials Number of initials to show.
@@ -940,20 +920,15 @@ function get_name($ID)
 function get_initials($ID, $initials = 2)
 {
     $app = \Liten\Liten::getInstance();
-    $name = $app->db->person()->select('lname,fname')->where('personID = ?', $ID);
-    $q = $name->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $r) {
-        if ($initials == 2) {
-            return substr(_h($r['fname']), 0, 1) . '. ' . substr(_h($r['lname']), 0, 1) . '.';
-        } else {
-            return _h($r['lname']) . ', ' . substr(_h($r['fname']), 0, 1) . '.';
-        }
+    $name = $app->db->person()
+        ->select('lname,fname')
+        ->where('personID = ?', $ID)
+        ->findOne();
+
+    if ($initials == 2) {
+        return substr(_h($name->fname), 0, 1) . '. ' . substr(_h($name->lname), 0, 1) . '.';
+    } else {
+        return _h($name->lname) . ', ' . substr(_h($name->fname), 0, 1) . '.';
     }
 }
 
@@ -966,19 +941,12 @@ function get_initials($ID, $initials = 2)
 function hasAppl($id)
 {
     $app = \Liten\Liten::getInstance();
-    $appl = $app->db->query("SELECT * FROM application WHERE personID = ?", [$id]);
-    $q = $appl->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    $a = [];
-    foreach ($q as $r) {
-        $a[] = $r;
-    }
-    return _h($r['personID']);
+    
+    $appl = $app->db->application()
+        ->where('personID = ?', $id)
+        ->findOne();
+    
+    return _h($appl->personID);
 }
 
 function getStuSec($code, $term)
@@ -987,16 +955,10 @@ function getStuSec($code, $term)
     $stcs = $app->db->stu_course_sec()
         ->where('stuID = ?', get_persondata('personID'))->_and_()
         ->where('courseSecCode = ?', $code)->_and_()
-        ->where('termCode = ?', $term);
-
-    $q = $stcs->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    if (count($q[0]['id']) > 0) {
+        ->where('termCode = ?', $term)
+        ->findOne();
+    
+    if ($stcs !== false) {
         return ' style="display:none;"';
     }
 }
@@ -1243,20 +1205,20 @@ function prerequisite($stuID, $courseSecID)
 function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
 {
     $app = \Liten\Liten::getInstance();
-    $photo = $app->db->query('SELECT photo FROM person WHERE personID = ? AND photo <> "" AND photo <> "NULL"', [$id]);
-    $q = $photo->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    if (count($q) > 0) {
-        $photosize = getimagesize(get_base_url() . 'static/photos/' . $q[0]['photo']);
+    
+    $nae = $app->db->person()
+        ->select('photo')
+        ->where('personID = ?', $id)->_and_()
+        ->where('photo <> ""')->_and_()
+        ->where('photo <> "NULL"')
+        ->findOne();
+    
+    if ($nae !== false) {
+        $photosize = getimagesize(get_base_url() . 'static/photos/' . $nae->photo);
         if (getPathInfo('/form/photo/') === '/form/photo/') {
-            $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
+            $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . $nae->photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
         } else {
-            $avatar = '<img src="' . get_base_url() . 'static/photos/' . $q[0]['photo'] . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
+            $avatar = '<img src="' . get_base_url() . 'static/photos/' . $nae->photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
         }
     } else {
         $avatar = get_user_avatar($email, $s, $class);
@@ -1571,10 +1533,12 @@ function unicoder($string)
 function getUserValue($id, $field)
 {
     $app = \Liten\Liten::getInstance();
+    
     $value = $app->db->person()
         ->select($field)
         ->where('personID = ?', $id)
         ->findOne();
+    
     return $value->$field;
 }
 
