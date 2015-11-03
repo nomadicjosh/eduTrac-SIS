@@ -922,19 +922,36 @@ function myet_head()
 }
 
 /**
- * Fires the footer action.
+ * Fires the footer action via the dashboard.
  *
  * @since 1.0.0
  */
 function footer()
 {
     /**
-     * Prints scripts and/or data before the ending body tag of the myeduTrac
-     * self service portal.
+     * Prints scripts and/or data before the ending body tag
+     * of the dashboard.
      *
      * @since 1.0.0
      */
     do_action('footer');
+}
+
+/**
+ * Fires the footer action via
+ * myeduTrac self service portal.
+ *
+ * @since 6.1.12
+ */
+function myet_footer()
+{
+    /**
+     * Prints scripts and/or data before the ending body tag of the myeduTrac
+     * self service portal.
+     *
+     * @since 6.1.12
+     */
+    do_action('myet_footer');
 }
 
 /**
