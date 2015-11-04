@@ -1009,7 +1009,11 @@ function dashboard_right_widgets()
 function dashboard_student_count()
 {
     $app = \Liten\Liten::getInstance();
-    $stu = $app->db->query("SELECT COUNT(stuID) as count FROM student WHERE status = 'A'");
+    $stu = $app->db->student()
+        ->select('COUNT(student.stuID) as count')
+        ->_join('stu_program','student.stuID = stu_program.stuID')
+        ->where('student.status = "A"')->_and_()
+        ->where('stu_program.currStatus = "A"');
     $q = $stu->find(function($data) {
         $array = [];
         foreach ($data as $d) {
