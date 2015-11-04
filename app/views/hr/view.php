@@ -15,7 +15,7 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
 $staffInfo = new \app\src\Staff;
-$staffInfo->Load_from_key(_h($staff[0]['staffID']));
+$staffInfo->Load_from_key(_h($staff->staffID));
 ?>
 
 <script type="text/javascript">
@@ -87,7 +87,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	<?=$message->flashMessage();?>
 
     <!-- Form -->
-    <form class="form-horizontal margin-none" action="<?=get_base_url();?>hr/<?=_h($staff[0]['staffID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+    <form class="form-horizontal margin-none" action="<?=get_base_url();?>hr/<?=_h($staff->staffID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
         
         <!-- Widget -->
         <div class="widget widget-heading-simple widget-body-gray">
@@ -101,10 +101,10 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons user active"><a href="<?=get_base_url();?>hr/<?=_h($staff[0]['staffID']);?>/" data-toggle="tab"><i></i> <?=get_name(_h($staff[0]['staffID']));?></a></li>
-                    <li class="glyphicons nameplate"><a href="<?=get_base_url();?>staff/<?=_h($staff[0]['staffID']);?>/"><i></i> <?=_t( 'Staff Record' );?></a></li>
-                    <li class="glyphicons folder_open tab-stacked"><a href="<?=get_base_url();?>hr/positions/<?=_h($staff[0]['staffID']);?>/"><i></i> <?=_t( 'View Positions' );?></a></li>
-                    <li class="glyphicons circle_plus tab-stacked"><a href="<?=get_base_url();?>hr/add/<?=_h($staff[0]['staffID']);?>/"><i></i> <span><?=_t( 'Add Position' );?></span></a></li>
+                    <li class="glyphicons user active"><a href="<?=get_base_url();?>hr/<?=_h($staff->staffID);?>/" data-toggle="tab"><i></i> <?=get_name(_h($staff->staffID));?></a></li>
+                    <li class="glyphicons nameplate"><a href="<?=get_base_url();?>staff/<?=_h($staff->staffID);?>/"><i></i> <?=_t( 'Staff Record' );?></a></li>
+                    <li class="glyphicons folder_open tab-stacked"><a href="<?=get_base_url();?>hr/positions/<?=_h($staff->staffID);?>/"><i></i> <?=_t( 'View Positions' );?></a></li>
+                    <li class="glyphicons circle_plus tab-stacked"><a href="<?=get_base_url();?>hr/add/<?=_h($staff->staffID);?>/"><i></i> <span><?=_t( 'Add Position' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -122,7 +122,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-8">
                                 <select name="jobStatusCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('job_status',NULL,'typeCode','typeCode','type',_h($staff[0]['jobStatusCode'])); ?>
+                                    <?php table_dropdown('job_status',NULL,'typeCode','typeCode','type',_h($staff->jobStatusCode)); ?>
                                 </select>
                             </div>
                         </div>
@@ -134,8 +134,8 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-8">
                                 <select name="staffType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="FAC"<?=selected('FAC',_h($staff[0]['staffType']),false);?>><?=_t( 'Faculty' );?></option>
-                                    <option value="STA"<?=selected('STA',_h($staff[0]['staffType']),false);?>><?=_t( 'Staff' );?></option>
+                                    <option value="FAC"<?=selected('FAC',_h($staff->staffType),false);?>><?=_t( 'Faculty' );?></option>
+                                    <option value="STA"<?=selected('STA',_h($staff->staffType),false);?>><?=_t( 'Staff' );?></option>
                                 </select>
                             </div>
                         </div>
@@ -147,7 +147,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-8">
                                 <select name="supervisorID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php supervisor(_h($staff[0]['staffID']),_h($staff[0]['supervisorID'])); ?>
+                                    <?php supervisor(_h($staff->staffID),_h($staff->supervisorID)); ?>
                                 </select>
                             </div>
                         </div>
@@ -159,7 +159,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-8">
                                 <select name="jobID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('job',NULL,'ID','ID','title',_h($staff[0]['jobID'])); ?>
+                                    <?php table_dropdown('job',NULL,'ID','ID','title',_h($staff->jobID)); ?>
                                 </select>
                             </div>
                         </div>
@@ -171,7 +171,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-8">
                                 <select name="buildingCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('building','buildingCode <> "NULL"','buildingCode','buildingCode','buildingName',_h($staff[0]['buildingCode'])); ?>
+                                    <?php table_dropdown('building','buildingCode <> "NULL"','buildingCode','buildingCode','buildingName',_h($staff->buildingCode)); ?>
                                 </select>
                             </div>
                         </div>
@@ -183,7 +183,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-8">
                                 <select name="officeCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('room','roomCode <> "NULL"','roomCode','roomCode','roomNumber',_h($staff[0]['officeCode'])); ?>
+                                    <?php table_dropdown('room','roomCode <> "NULL"','roomCode','roomCode','roomNumber',_h($staff->officeCode)); ?>
                                 </select>
                             </div>
                         </div>
@@ -193,7 +193,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Office Phone' );?></label>
                             <div class="col-md-6">
-                                <input class="form-control" type="text" name="office_phone" value="<?=_h($staff[0]['office_phone']);?>" />
+                                <input class="form-control" type="text" name="office_phone" value="<?=_h($staff->office_phone);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -204,7 +204,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-8">
                                 <select name="schoolCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('school','schoolCode <> "NULL"','schoolCode','schoolCode','schoolName',_h($staff[0]['schoolCode'])); ?>
+                                    <?php table_dropdown('school','schoolCode <> "NULL"','schoolCode','schoolCode','schoolName',_h($staff->schoolCode)); ?>
                                 </select>
                             </div>
                         </div>
@@ -216,7 +216,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-8">
                                 <select name="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('department','deptCode <> "NULL"','deptCode','deptCode','deptName',_h($staff[0]['deptCode'])); ?>
+                                    <?php table_dropdown('department','deptCode <> "NULL"','deptCode','deptCode','deptName',_h($staff->deptCode)); ?>
                                 </select>
                             </div>
                         </div>
@@ -228,7 +228,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <span class="input-group-addon">$</span>
-                                    <input class="form-control" id="appendedPrependedInput" type="text" readonly value="<?=number_format(_h($staff[0]['hourly_wage']));?>" />
+                                    <input class="form-control" id="appendedPrependedInput" type="text" readonly value="<?=number_format(_h($staff->hourly_wage));?>" />
                                 </div>
                             </div>
                         </div>
@@ -244,7 +244,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Weekly Hours' );?></label>
                             <div class="col-md-4">
-                                <input class="form-control" type="text" readonly value="<?=_h($staff[0]['weekly_hours']);?>" />
+                                <input class="form-control" type="text" readonly value="<?=_h($staff->weekly_hours);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -255,7 +255,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <span class="input-group-addon">$</span>
-                                    <input class="form-control" id="appendedPrependedInput" type="text" readonly value="<?=number_format(_h($staff[0]['Monthly']));?>" />
+                                    <input class="form-control" id="appendedPrependedInput" type="text" readonly value="<?=number_format(_h($staff->Monthly));?>" />
                                 </div>
                             </div>
                         </div>
@@ -266,7 +266,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <label class="col-md-3 control-label"><?=_t( 'Hire Date' );?></label>
                             <div class="col-md-4">
                                 <div class="input-group date" id="datepicker6">
-                                    <input class="form-control" name="hireDate" type="text" value="<?=_h($staff[0]['hireDate']);?>" />
+                                    <input class="form-control" name="hireDate" type="text" value="<?=_h($staff->hireDate);?>" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
@@ -278,7 +278,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <label class="col-md-3 control-label"><?=_t( 'Start Date' );?></label>
                             <div class="col-md-4">
                                 <div class="input-group date" id="datepicker7">
-                                    <input class="form-control" name="startDate" type="text" value="<?=_h($staff[0]['startDate']);?>" />
+                                    <input class="form-control" name="startDate" type="text" value="<?=_h($staff->startDate);?>" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
@@ -290,10 +290,10 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <label class="col-md-3 control-label"><?=_t( 'End Date' );?></label>
                             <div class="col-md-4">
                                 <div class="input-group date" id="datepicker8">
-                                	<?php if(_h($staff[0]['endDate']) == '0000-00-00') : ?>
+                                	<?php if(_h($staff->endDate) == '0000-00-00') : ?>
                                     <input class="form-control" name="endDate" type="text" />
                                     <?php else : ?>
-                                	<input class="form-control" name="endDate" type="text" value="<?=_h($staff[0]['endDate']);?>" />
+                                	<input class="form-control" name="endDate" type="text" value="<?=_h($staff->endDate);?>" />
                                 	<?php endif; ?>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
@@ -307,8 +307,8 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             <div class="col-md-8">
                                 <select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="A"<?=selected('A',_h($staff[0]['status']),false);?>><?=_t( 'A Active' );?></option>
-                                    <option value="I"<?=selected('I',_h($staff[0]['status']),false);?>><?=_t( 'I Inactive' );?></option>
+                                    <option value="A"<?=selected('A',_h($staff->status),false);?>><?=_t( 'A Active' );?></option>
+                                    <option value="I"<?=selected('I',_h($staff->status),false);?>><?=_t( 'I Inactive' );?></option>
                                 </select>
                             </div>
                         </div>
@@ -318,7 +318,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Add Date' );?></label>
                             <div class="col-md-6">
-                                <input class="form-control" type="text" readonly value="<?=date('D, M d, o',strtotime(_h($staff[0]['addDate'])));?>" required />
+                                <input class="form-control" type="text" readonly value="<?=date('D, M d, o',strtotime(_h($staff->addDate)));?>" required />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -327,7 +327,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Approved By' );?></label>
                             <div class="col-md-6">
-                                <input class="form-control"type="text" readonly value="<?=get_name(_h($staff[0]['approvedBy']));?>" required />
+                                <input class="form-control"type="text" readonly value="<?=get_name(_h($staff->approvedBy));?>" required />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -336,7 +336,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Last Update' );?></label>
                             <div class="col-md-6">
-                                <input class="form-control" type="text" readonly value="<?=date('D, M d, o @ h:i A',strtotime(_h($staff[0]['LastUpdate'])));?>" required />
+                                <input class="form-control" type="text" readonly value="<?=date('D, M d, o @ h:i A',strtotime(_h($staff->LastUpdate)));?>" required />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -350,7 +350,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                 
                 <!-- Form actions -->
                 <div class="form-actions">
-                    <input type="hidden" name="sMetaID" value="<?=_h($staff[0]['sMetaID']);?>" />
+                    <input type="hidden" name="sMetaID" value="<?=_h($staff->sMetaID);?>" />
                     <button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
                     <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>hr/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>

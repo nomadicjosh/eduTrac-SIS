@@ -33,7 +33,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 </ul>
 
 <h3><?=_t( 'Person:' );?> <?=_h($nae[0]['lname']);?>, <?=_h($nae[0]['fname']);?>
-    <?php if($appl[0]['personID'] <= 0) : ?>
+    <?php if($appl->personID <= 0) : ?>
     <span data-toggle="tooltip" data-original-title="Create Application" data-placement="top">
         <a<?=hl('applications','access_application_screen');?> href="<?=get_base_url();?>appl/add/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-archive"></i></a>
     </span>

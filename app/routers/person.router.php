@@ -51,7 +51,10 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         if ($app->req->isPost()) {
             $post = $_POST['nae'];
             $search = $app->db->person()
-                ->select('personID,altID,fname,lname,uname,email')
+                ->select('person.personID,person.altID,person.fname,person.lname,person.uname,person.email')
+                ->select('staff.staffID, appl.personID AS ApplicantID')
+                ->_join('staff','person.personID = staff.staffID')
+                ->_join('application','person.personID = appl.personID','appl')
                 ->whereLike('CONCAT(person.fname," ",person.lname)', "%$post%")->_or_()
                 ->whereLike('CONCAT(person.lname," ",person.fname)', "%$post%")->_or_()
                 ->whereLike('CONCAT(person.lname,", ",person.fname)', "%$post%")->_or_()
@@ -67,19 +70,13 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 }
                 return $array;
             });
-            $staff = _file_get_contents($json_url . 'staff/staffID/' . $q[0]['personID'] . '/?key=' . _h(get_option('api_key')));
-            $s_decode = json_decode($staff, true);
-            $appl = _file_get_contents($json_url . 'application/personID/' . $q[0]['personID'] . '/?key=' . _h(get_option('api_key')));
-            $a_decode = json_decode($appl, true);
         }
 
         $app->view->display('person/index', [
             'title' => 'Name and Address',
             'cssArray' => $css,
             'jsArray' => $js,
-            'search' => $q,
-            'staff' => $s_decode,
-            'appl' => $a_decode
+            'search' => $q
             ]
         );
     });
@@ -132,10 +129,14 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
-        $s_decode = json_decode($staff, true);
-        $appl = _file_get_contents($json_url . 'application/personID/' . $id . '/?key=' . _h(get_option('api_key')));
-        $a_decode = json_decode($appl, true);
+        
+        $staff = $app->db->staff()
+            ->where('staffID = ?', $id)
+            ->findOne();
+        
+        $appl = $app->db->application()
+            ->where('personID = ?', $id)
+            ->findOne();
 
         $addr = $app->db->address()
             ->where('addressType = "P"')->_and_()
@@ -185,8 +186,8 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 'jsArray' => $js,
                 'nae' => $decode,
                 'addr' => $q,
-                'staff' => $s_decode,
-                'appl' => $a_decode
+                'staff' => $staff,
+                'appl' => $appl
                 ]
             );
         }
@@ -346,8 +347,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
 
     $app->get('/adsu/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
-        $s_decode = json_decode($staff, true);
+        $staff = $app->db->staff()
+            ->where('staffID = ?', $id)
+            ->findOne();
 
         $adsu = $app->db->person()
             ->setTableAlias('a')
@@ -399,7 +401,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 'cssArray' => $css,
                 'jsArray' => $js,
                 'nae' => $q,
-                'staff' => $s_decode
+                'staff' => $staff
                 ]
             );
         }
@@ -419,8 +421,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
-        $s_decode = json_decode($staff, true);
+        $staff = $app->db->staff()
+            ->where('staffID = ?', $id)
+            ->findOne();
 
         if ($app->req->isPost()) {
             $addr = $app->db->address();
@@ -489,7 +492,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 'cssArray' => $css,
                 'jsArray' => $js,
                 'nae' => $decode,
-                'staff' => $s_decode
+                'staff' => $staff
                 ]
             );
         }
@@ -512,8 +515,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         $json_p = _file_get_contents($json_url . 'person/personID/' . $a_decode[0]['personID'] . '/?key=' . _h(get_option('api_key')));
         $p_decode = json_decode($json_p, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
-        $s_decode = json_decode($staff, true);
+        $staff = $app->db->staff()
+            ->where('staffID = ?', $id)
+            ->findOne();
 
         if ($app->req->isPost()) {
             $addr = $app->db->address();
@@ -564,7 +568,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 'jsArray' => $js,
                 'addr' => $a_decode,
                 'nae' => $p_decode,
-                'staff' => $s_decode
+                'staff' => $staff
                 ]
             );
         }
@@ -584,8 +588,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
-        $s_decode = json_decode($staff, true);
+        $staff = $app->db->staff()
+            ->where('staffID = ?', $id)
+            ->findOne();
 
         if ($app->req->isPost()) {
             foreach ($_POST as $k => $v) {
@@ -641,7 +646,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 'cssArray' => $css,
                 'jsArray' => $js,
                 'nae' => $decode,
-                'staff' => $s_decode
+                'staff' => $staff
                 ]
             );
         }
@@ -661,8 +666,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
 
-        $staff = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . _h(get_option('api_key')));
-        $s_decode = json_decode($staff, true);
+        $staff = $app->db->staff()
+            ->where('staffID = ?', $id)
+            ->findOne();
 
         if ($app->req->isPost()) {
             if (count($_POST['permission']) > 0) {
@@ -712,7 +718,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
                 'cssArray' => $css,
                 'jsArray' => $js,
                 'nae' => $decode,
-                'staff' => $s_decode
+                'staff' => $staff
                 ]
             );
         }
