@@ -243,6 +243,13 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
             }
             $staff->where('staffID = ?', $id);
             if ($staff->update()) {
+                /**
+                 * Is triggered after staff record is updated.
+                 * 
+                 * @since 6.1.12
+                 * @param mixed $staff Staff data object.
+                 */
+                do_action('post_update_staff', $staff);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Staff', get_name($id), get_persondata('uname'));
             } else {
@@ -251,8 +258,9 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $json = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
-        $decode = json_decode($json, true);
+        $staf = $app->db->staff()
+            ->where('staffID = ?', $id)
+            ->findOne();
 
         $addr = $app->db->address()
             ->setTableAlias('a')
@@ -274,7 +282,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($staf == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -282,13 +290,13 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($staf) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode[0]['staffID']) <= 0) {
+         */ elseif (count($staf->staffID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -299,10 +307,10 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
          */ else {
 
             $app->view->display('staff/view', [
-                'title' => get_name($decode[0]['staffID']),
+                'title' => get_name($staf->staffID),
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'staff' => $decode,
+                'staff' => $staf,
                 'addr' => $q
                 ]
             );
@@ -328,6 +336,13 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
 
         if ($app->req->isPost()) {
             $staff = $app->db->staff();
+            /**
+             * Fires during the saving/creating of a staff record.
+             * 
+             * @since 6.1.12
+             * @param array $staff Staff data object.
+             */
+            do_action('save_staff_db_table', $staff);
             $staff->staffID = $id;
             $staff->schoolCode = $_POST['schoolCode'];
             $staff->buildingCode = $_POST['buildingCode'];
@@ -339,6 +354,14 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
             $staff->approvedBy = get_persondata('personID');
 
             $meta = $app->db->staff_meta();
+            /**
+             * Fires during the saving/creating of staff
+             * meta data.
+             * 
+             * @since 6.1.12
+             * @param array $meta Staff meta data object.
+             */
+            do_action('save_staff_meta_db_table', $meta);
             $meta->jobStatusCode = $_POST['jobStatusCode'];
             $meta->jobID = $_POST['jobID'];
             $meta->staffID = $id;
@@ -350,6 +373,21 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
             $meta->addDate = $meta->NOW();
             $meta->approvedBy = get_persondata('personID');
             if ($staff->save() && $meta->save()) {
+                /**
+                 * Is triggered after staff record has been created.
+                 * 
+                 * @since 6.1.12
+                 * @param mixed $staff Staff data object.
+                 */
+                do_action('post_save_staff', $staff);
+                
+                /**
+                 * Is triggered after staff meta data is saved.
+                 * 
+                 * @since 6.1.12
+                 * @param mixed $staff Staff meta data object.
+                 */
+                do_action('post_save_staff_meta', $meta);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Staff Member', get_name($id), get_persondata('uname'));
                 redirect(get_base_url() . 'staff' . DS . $id);

@@ -115,9 +115,9 @@
                                 <?php endif; ?>
                                 
                                 <?php if($nae !== '') : ?>
-                                <?php if($staff[0]['staffID'] <= 0 && hasPermission('create_staff_record')) : ?>
+                                <?php if($staff->staffID <= 0 && hasPermission('create_staff_record')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_50"><a<?=($screen === 'cstaff') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>staff/add/<?=_h($nae[0]['personID']);?>/"><?=_t( 'Create Staff' );?></a></li>
-                                <?php elseif($staff[0]['staffID'] > 0 && hasPermission('access_staff_screen')) : ?>
+                                <?php elseif($staff->staffID > 0 && hasPermission('access_staff_screen')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_51"><a<?=($screen === 'staff') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>staff/<?=_h($nae[0]['personID']);?>/"><?=_t( '(STAF) - Staff' );?></a></li>
                                 <?php endif; ?>
                                 <?php endif; ?>

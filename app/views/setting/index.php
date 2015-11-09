@@ -171,14 +171,15 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Language' );?></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Language' );?></label>
                             <div class="col-md-8">
-                                <select name="et_core_locale" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                                <select name="et_core_locale" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 	<option value="">&nbsp;</option>
                                     <option value="en_US"<?=selected( _h(get_option( 'et_core_locale' )), 'en_US', false ); ?>><?=_t( "English" );?></option>
-                                    <option value="fr_FR"<?=selected( _h(get_option( 'et_core_locale' )), 'fr_FR', false ); ?>><?=_t( "French" );?></option>
-                                    <option value="pt_BR"<?=selected( _h(get_option( 'et_core_locale' )), 'pt_BR', false ); ?>><?=_t( "Portuguese" );?></option>
                                     <option value="es_ES"<?=selected( _h(get_option( 'et_core_locale' )), 'es_ES', false ); ?>><?=_t( "Spanish" );?></option>
+                                    <option value="fr_FR"<?=selected( _h(get_option( 'et_core_locale' )), 'fr_FR', false ); ?>><?=_t( "French" );?></option>
+                                    <option value="it_IT"<?=selected( _h(get_option( 'et_core_locale' )), 'it_IT', false ); ?>><?=_t( "Italian" );?></option>
+                                    <option value="pt_BR"<?=selected( _h(get_option( 'et_core_locale' )), 'pt_BR', false ); ?>><?=_t( "Portuguese" );?></option>
                                 </select>
                             </div>
                         </div>

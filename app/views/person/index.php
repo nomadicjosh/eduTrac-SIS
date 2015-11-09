@@ -90,11 +90,11 @@ $screen = 'nae';
                                 <li<?=ae('login_as_user');?>><a href="<?=get_base_url();?>switchUserTo/<?=_h($v['personID']);?>/"><?=_t( 'Switch to User' );?></a></li>
                                 <?php endif; ?>
                                 
-                                <?php if($staff[0]['staffID'] <= 0) : ?>
+                                <?php if($v['staffID'] <= 0) : ?>
                                 <li<?=ae('create_staff_record');?>><a href="<?=get_base_url();?>staff/add/<?=_h($v['personID']);?>/<?=bm();?>"><?=_t( 'Create Staff Record' );?></a></li>
                                 <?php endif; ?>
                                 
-                                <?php if($appl[0]['personID'] <= 0) : ?>
+                                <?php if($v['ApplicantID'] <= 0) : ?>
                                 <li<?=hl('applications','access_application_screen');?>><a href="<?=get_base_url();?>appl/add/<?=_h($v['personID']);?>/<?=bm();?>"><?=_t( 'Create Application' );?></a></li>
                                 <?php endif; ?>
                                 

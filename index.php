@@ -66,6 +66,7 @@ if (file_exists(BASE_PATH . 'config.php')) {
 require( APP_PATH . 'functions.php' );
 require( APP_PATH . 'auth-function.php' );
 require( APP_PATH . 'core-function.php' );
+require( APP_PATH . 'parsecode-function.php' );
 if (file_exists(BASE_PATH . 'config.php')) {
     require( APP_PATH . 'hook-function.php' );
 }

@@ -527,8 +527,9 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
          * Select all records from the stu_acad_cred table.
          */
         $terms = $app->db->stu_acad_cred()
-            ->select('stuID,courseSecCode,termCode,acadLevelCode,SUM(attCred)')
-            ->groupBy('stuID,termCode,acadLevelCode');
+            ->setTableAlias('stac')
+            ->select('stac.stuID,stac.courseSecCode,stac.termCode,stac.acadLevelCode,SUM(stac.attCred)')
+            ->groupBy('stac.stuID,stac.termCode,stac.acadLevelCode');
         $q = $terms->find(function($data) {
             $array = [];
             foreach ($data as $d) {
@@ -536,7 +537,7 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
             }
             return $array;
         });
-
+        
         if (count($q) > 0) {
             /**
              * If a student ID exists in the stu_acad_cred table, 
@@ -553,7 +554,12 @@ $app->group('/cron', function() use($app, $css, $js, $logger, $emailer, $email) 
 
     $app->get('/runStuLoad/', function () use($app) {
         $terms = $app->db->stu_term()
-            ->select('stuID,termCode,acadLevelCode,termCredits');
+            ->setTableAlias('sttr')
+            ->select('stuID,termCode,acadLevelCode,termCredits')
+            ->_join('stu_term_load','sttr.stuID = stld.stuID AND sttr.termCode = stld.termCode AND sttr.acadLevelCode = stld.acadLevelCode','stld')
+            ->whereNull('stld.stuID')->_and_()
+            ->whereNull('stld.termCode')->_and_()
+            ->whereNull('stld.acadLevelCode');
         $q = $terms->find(function($data) {
             $array = [];
             foreach ($data as $d) {

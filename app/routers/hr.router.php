@@ -90,7 +90,7 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
             $staff->status = $_POST['status'];
             $staff->where('staffID = ?', $id);
 
-            $smeta = $app->db->stafF_meta();
+            $smeta = $app->db->staff_meta();
             $smeta->jobStatusCode = $_POST['jobStatusCode'];
             $smeta->jobID = $_POST['jobID'];
             $smeta->supervisorID = $_POST['supervisorID'];
@@ -121,21 +121,14 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
             ->_join('job', 'b.jobID = c.ID', 'c')
             ->_join('person', 'staff.staffID = d.personID', 'd')
             ->where('staff.staffID = ?', $id)->_and_()
-            ->where('b.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id);
-
-        $q = $empl->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+            ->where('b.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id)
+            ->findOne();
 
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($q == false) {
+        if ($empl == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -143,13 +136,13 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($q) == true) {
+         */ elseif (empty($empl) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($q[0]['staffID']) <= 0) {
+         */ elseif (count($empl->staffID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -162,7 +155,7 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
                 'title' => 'View Staff Member',
                 'cssArray' => $css,
                 'jsArray' => $js,
-                'staff' => $q
+                'staff' => $empl
                 ]
             );
         }
