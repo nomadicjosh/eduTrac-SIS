@@ -182,7 +182,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="col-md-8">
 	                        <select name="rstrCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 	                            <option value="">&nbsp;</option>
-	                            <?=table_dropdown('restriction_code', 'deptCode = ?', 'rstrCode', 'rstrCode', 'description','',get_persondata('deptCode'));?>
+	                            <?=table_dropdown('restriction_code', 'deptCode = ?', 'rstrCode', 'rstrCode', 'description','',[ get_persondata('deptCode') ]);?>
 	                        </select>
                        </div>
                     </div>
