@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eduTrac\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-06 11:47-0500\n"
-"PO-Revision-Date: 2015-11-06 11:48-0500\n"
+"POT-Creation-Date: 2015-11-09 11:30-0500\n"
+"PO-Revision-Date: 2015-11-09 11:30-0500\n"
 "Last-Translator: Joshua Parker <josh@7mediaws.org>\n"
 "Language-Team: 7 Media Web Solutions, LLC <email@7mediaws.org>\n"
 "Language: en_US\n"
@@ -52,193 +52,193 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: hook-function.php:1030
+#: hook-function.php:667
 msgid "Active Students"
 msgstr ""
 
-#: hook-function.php:1060
+#: hook-function.php:697
 msgid "Active Courses"
 msgstr ""
 
-#: hook-function.php:1090
+#: hook-function.php:727
 msgid "Active Programs"
 msgstr ""
 
-#: hook-function.php:1196 hook-function.php:1228
+#: hook-function.php:833 hook-function.php:865
 msgid "my"
 msgstr ""
 
-#: hook-function.php:1211 hook-function.php:1213
+#: hook-function.php:848 hook-function.php:850
 msgid "Powered by eduTrac SIS r"
 msgstr ""
 
-#: hook-function.php:1265 views/_layouts/dashboard.php:99
+#: hook-function.php:902 views/_layouts/dashboard.php:99
 #: views/dashboard/menu.php:52
 msgid "Administrative"
 msgstr ""
 
-#: hook-function.php:1266
+#: hook-function.php:903
 msgid "Academic"
 msgstr ""
 
-#: hook-function.php:1444
+#: hook-function.php:1081
 msgid "LEC Lecture"
 msgstr ""
 
-#: hook-function.php:1445
+#: hook-function.php:1082
 msgid "LAB Lab"
 msgstr ""
 
-#: hook-function.php:1446
+#: hook-function.php:1083
 msgid "SEM Seminar"
 msgstr ""
 
-#: hook-function.php:1447
+#: hook-function.php:1084
 msgid "LL Lecture + Lab"
 msgstr ""
 
-#: hook-function.php:1448
+#: hook-function.php:1085
 msgid "LS Lecture + Seminar"
 msgstr ""
 
-#: hook-function.php:1449
+#: hook-function.php:1086
 msgid "SL Seminar + Lab"
 msgstr ""
 
-#: hook-function.php:1450
+#: hook-function.php:1087
 msgid "LLS Lecture + Lab + Seminar"
 msgstr ""
 
-#: hook-function.php:1468
+#: hook-function.php:1105
 msgid "A Add"
 msgstr ""
 
-#: hook-function.php:1469
+#: hook-function.php:1106
 msgid "N New"
 msgstr ""
 
-#: hook-function.php:1470
+#: hook-function.php:1107
 msgid "D Drop"
 msgstr ""
 
-#: hook-function.php:1471 hook-function.php:1492 views/student/add.php:199
+#: hook-function.php:1108 hook-function.php:1129 views/student/add.php:199
 msgid "W Withdrawn"
 msgstr ""
 
-#: hook-function.php:1472
+#: hook-function.php:1109
 msgid "C Cancelled"
 msgstr ""
 
-#: hook-function.php:1490 views/hr/view.php:310 views/staff/add.php:219
+#: hook-function.php:1127 views/hr/view.php:310 views/staff/add.php:219
 #: views/staff/view.php:206 views/student/add.php:196
 msgid "A Active"
 msgstr ""
 
-#: hook-function.php:1491
+#: hook-function.php:1128
 msgid "P Potential"
 msgstr ""
 
-#: hook-function.php:1493
+#: hook-function.php:1130
 msgid "C Changed Mind"
 msgstr ""
 
-#: hook-function.php:1494
+#: hook-function.php:1131
 msgid "G Graduated"
 msgstr ""
 
-#: hook-function.php:1512 views/course/view.php:135 views/student/sacd.php:134
+#: hook-function.php:1149 views/course/view.php:135 views/student/sacd.php:134
 msgid "I Institutional"
 msgstr ""
 
-#: hook-function.php:1513 hook-function.php:1607 views/student/sacd.php:135
+#: hook-function.php:1150 hook-function.php:1244 views/student/sacd.php:135
 msgid "TR Transfer"
 msgstr ""
 
-#: hook-function.php:1514
+#: hook-function.php:1151
 msgid "AP Advanced Placement"
 msgstr ""
 
-#: hook-function.php:1515
+#: hook-function.php:1152
 msgid "X Exempt"
 msgstr ""
 
-#: hook-function.php:1516
+#: hook-function.php:1153
 msgid "T Test"
 msgstr ""
 
-#: hook-function.php:1534
+#: hook-function.php:1171
 msgid "FR Freshman"
 msgstr ""
 
-#: hook-function.php:1535
+#: hook-function.php:1172
 msgid "SO Sophomore"
 msgstr ""
 
-#: hook-function.php:1536
+#: hook-function.php:1173
 msgid "JR Junior"
 msgstr ""
 
-#: hook-function.php:1537
+#: hook-function.php:1174
 msgid "SR Senior"
 msgstr ""
 
-#: hook-function.php:1538
+#: hook-function.php:1175
 msgid "UG Undergraduate Student"
 msgstr ""
 
-#: hook-function.php:1539
+#: hook-function.php:1176
 msgid "GR Grad Student"
 msgstr ""
 
-#: hook-function.php:1540
+#: hook-function.php:1177
 msgid "PhD PhD Student"
 msgstr ""
 
-#: hook-function.php:1606
+#: hook-function.php:1243
 msgid "FF First Time Freshman"
 msgstr ""
 
-#: hook-function.php:1608
+#: hook-function.php:1245
 msgid "RA Readmit"
 msgstr ""
 
-#: hook-function.php:1609
+#: hook-function.php:1246
 msgid "NA Non-Applicable"
 msgstr ""
 
-#: hook-function.php:1627
+#: hook-function.php:1264
 msgid "Asset"
 msgstr ""
 
-#: hook-function.php:1628
+#: hook-function.php:1265
 msgid "Liability"
 msgstr ""
 
-#: hook-function.php:1629
+#: hook-function.php:1266
 msgid "Equity"
 msgstr ""
 
-#: hook-function.php:1630
+#: hook-function.php:1267
 msgid "Revenue"
 msgstr ""
 
-#: hook-function.php:1631
+#: hook-function.php:1268
 msgid "Expense"
 msgstr ""
 
-#: hook-function.php:1655 views/install/index.php:249
+#: hook-function.php:1292 views/install/index.php:249
 msgid "Success!"
 msgstr ""
 
-#: hook-function.php:1655
+#: hook-function.php:1292
 msgid "The record was updated successfully."
 msgstr ""
 
-#: hook-function.php:1669 views/error/screen-error.php:34
+#: hook-function.php:1306 views/error/screen-error.php:34
 msgid "Error!"
 msgstr ""
 
-#: hook-function.php:1669
+#: hook-function.php:1306
 msgid ""
 "The system was unable to update the record in the database. Please try "
 "again. If the problem persists, contact your system administrator."
@@ -1335,7 +1335,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: views/admin/index.php:31 views/admin/pages.php:38
+#: views/admin/index.php:31 views/admin/pages.php:29
 msgid "Manage Pages"
 msgstr ""
 
@@ -1365,8 +1365,8 @@ msgstr ""
 msgid "Add Link"
 msgstr ""
 
-#: views/admin/links.php:45 views/admin/links.php:145 views/admin/news.php:56
-#: views/admin/news.php:157 views/admin/pages.php:56 views/admin/pages.php:163
+#: views/admin/links.php:45 views/admin/links.php:145 views/admin/news.php:47
+#: views/admin/news.php:148 views/admin/pages.php:47 views/admin/pages.php:154
 #: views/application/add-inst.php:45 views/application/add.php:38
 #: views/application/inst-attended.php:61 views/application/view-inst.php:45
 #: views/application/view.php:48 views/calendar/request-form.php:63
@@ -1387,8 +1387,8 @@ msgid "Link Source"
 msgstr ""
 
 #: views/admin/links.php:57 views/admin/links.php:95 views/admin/links.php:157
-#: views/admin/news.php:68 views/admin/news.php:105 views/admin/news.php:169
-#: views/admin/pages.php:68 views/admin/pages.php:111 views/admin/pages.php:175
+#: views/admin/news.php:59 views/admin/news.php:96 views/admin/news.php:160
+#: views/admin/pages.php:59 views/admin/pages.php:102 views/admin/pages.php:166
 #: views/application/appls.php:35 views/course/extr.php:70
 #: views/course/extr.php:217 views/course/index.php:58
 #: views/course/vextr.php:143 views/course/view.php:199
@@ -1426,13 +1426,13 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: views/admin/links.php:65 views/admin/links.php:165 views/admin/pages.php:76
-#: views/admin/pages.php:183
+#: views/admin/links.php:65 views/admin/links.php:165 views/admin/pages.php:67
+#: views/admin/pages.php:174
 msgid "Sort"
 msgstr ""
 
-#: views/admin/links.php:74 views/admin/links.php:175 views/admin/news.php:82
-#: views/admin/news.php:183 views/admin/pages.php:88 views/admin/pages.php:193
+#: views/admin/links.php:74 views/admin/links.php:175 views/admin/news.php:73
+#: views/admin/news.php:174 views/admin/pages.php:79 views/admin/pages.php:184
 #: views/application/add-inst.php:127 views/application/add.php:280
 #: views/application/inst-attended.php:172 views/application/view-inst.php:128
 #: views/calendar/view-event.php:220 views/comm-mgmt/add.php:136
@@ -1460,8 +1460,8 @@ msgid "Submit"
 msgstr ""
 
 #: views/admin/links.php:75 views/admin/links.php:176 views/admin/links.php:203
-#: views/admin/news.php:83 views/admin/news.php:184 views/admin/news.php:211
-#: views/admin/pages.php:89 views/admin/pages.php:194 views/admin/pages.php:221
+#: views/admin/news.php:74 views/admin/news.php:175 views/admin/news.php:202
+#: views/admin/pages.php:80 views/admin/pages.php:185 views/admin/pages.php:212
 #: views/application/add-inst.php:128 views/application/add.php:281
 #: views/application/appls.php:120 views/application/inst-attended.php:173
 #: views/application/view-inst.php:129 views/application/view.php:323
@@ -1550,8 +1550,8 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: views/admin/links.php:96 views/admin/links.php:110 views/admin/news.php:106
-#: views/admin/news.php:122 views/admin/pages.php:112 views/admin/pages.php:128
+#: views/admin/links.php:96 views/admin/links.php:110 views/admin/news.php:97
+#: views/admin/news.php:113 views/admin/pages.php:103 views/admin/pages.php:119
 #: views/application/appls.php:36 views/application/index.php:59
 #: views/application/index.php:74 views/application/inst.php:65
 #: views/application/inst.php:79 views/calendar/events.php:53
@@ -1598,7 +1598,7 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: views/admin/links.php:113 views/admin/news.php:125 views/admin/pages.php:131
+#: views/admin/links.php:113 views/admin/news.php:116 views/admin/pages.php:122
 #: views/application/index.php:77 views/application/inst.php:82
 #: views/comm-mgmt/index.php:55 views/course/extr.php:93
 #: views/course/index.php:80 views/course/tceq.php:81
@@ -1620,14 +1620,14 @@ msgstr ""
 msgid "Toggle Dropdown"
 msgstr ""
 
-#: views/admin/links.php:116 views/admin/news.php:128 views/admin/pages.php:134
+#: views/admin/links.php:116 views/admin/news.php:119 views/admin/pages.php:125
 #: views/index/index.php:44 views/permission/index.php:54
 #: views/role/index.php:43
 msgid "Edit"
 msgstr ""
 
-#: views/admin/links.php:117 views/admin/links.php:202 views/admin/news.php:129
-#: views/admin/news.php:210 views/admin/pages.php:135 views/admin/pages.php:220
+#: views/admin/links.php:117 views/admin/links.php:202 views/admin/news.php:120
+#: views/admin/news.php:201 views/admin/pages.php:126 views/admin/pages.php:211
 #: views/calendar/requests.php:89 views/calendar/view-event.php:83
 #: views/calendar/view-event.php:248 views/comm-mgmt/queue.php:97
 #: views/course/extr.php:97 views/error/logs.php:45
@@ -1645,19 +1645,19 @@ msgstr ""
 msgid "Are you sure you want to delete this quick link?"
 msgstr ""
 
-#: views/admin/news.php:38
+#: views/admin/news.php:29
 msgid "Manage News & Annoucements"
 msgstr ""
 
-#: views/admin/news.php:38
+#: views/admin/news.php:29
 msgid "Add News"
 msgstr ""
 
-#: views/admin/news.php:51
+#: views/admin/news.php:42
 msgid "Add News & Annoucement"
 msgstr ""
 
-#: views/admin/news.php:60 views/admin/pages.php:60 views/admin/pages.php:167
+#: views/admin/news.php:51 views/admin/pages.php:51 views/admin/pages.php:158
 #: views/calendar/view-event.php:197 views/comm-mgmt/index.php:38
 #: views/course/atceq.php:90 views/course/atceq.php:125
 #: views/course/extr.php:68 views/course/extr.php:181
@@ -1674,51 +1674,51 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: views/admin/news.php:64 views/admin/news.php:165 views/admin/pages.php:64
-#: views/admin/pages.php:171
+#: views/admin/news.php:55 views/admin/news.php:156 views/admin/pages.php:55
+#: views/admin/pages.php:162
 msgid "Details"
 msgstr ""
 
-#: views/admin/news.php:71 views/admin/news.php:172 views/admin/pages.php:71
-#: views/admin/pages.php:178
+#: views/admin/news.php:62 views/admin/news.php:163 views/admin/pages.php:62
+#: views/admin/pages.php:169
 msgid "Draft"
 msgstr ""
 
-#: views/admin/news.php:72 views/admin/news.php:173 views/admin/pages.php:72
-#: views/admin/pages.php:179
+#: views/admin/news.php:63 views/admin/news.php:164 views/admin/pages.php:63
+#: views/admin/pages.php:170
 msgid "Publish"
 msgstr ""
 
-#: views/admin/news.php:101 views/admin/news.php:161 views/index/news.php:33
+#: views/admin/news.php:92 views/admin/news.php:152 views/index/news.php:33
 msgid "News Title"
 msgstr ""
 
-#: views/admin/news.php:102 views/admin/pages.php:108
+#: views/admin/news.php:93 views/admin/pages.php:99
 #: views/dashboard/modules.php:57 views/index/news.php:34
 msgid "Author"
 msgstr ""
 
-#: views/admin/news.php:103 views/admin/pages.php:109
+#: views/admin/news.php:94 views/admin/pages.php:100
 msgid "Created"
 msgstr ""
 
-#: views/admin/news.php:104 views/admin/pages.php:110
+#: views/admin/news.php:95 views/admin/pages.php:101
 msgid "Last Modified"
 msgstr ""
 
-#: views/admin/news.php:205
+#: views/admin/news.php:196
 msgid "Are you sure you want to delete this news posting?"
 msgstr ""
 
-#: views/admin/pages.php:38 views/admin/pages.php:51
+#: views/admin/pages.php:29 views/admin/pages.php:42
 msgid "Add Page"
 msgstr ""
 
-#: views/admin/pages.php:107
+#: views/admin/pages.php:98
 msgid "Page Title"
 msgstr ""
 
-#: views/admin/pages.php:215
+#: views/admin/pages.php:206
 msgid "Are you sure you want to delete this page?"
 msgstr ""
 
