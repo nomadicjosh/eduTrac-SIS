@@ -80,7 +80,7 @@ $screen = 'acrse';
 							<div class="col-md-8" id="divSubj">
 								<select name="subjectCode" id="subjectCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
-	                        		<?php subject_code_dropdown(); ?>
+	                        		<?php table_dropdown('subject', 'subjectCode <> "NULL"', 'subjectCode', 'subjectCode', 'subjectName'); ?>
 	                        	</select>
 	                       </div>
 	                       <a<?=ae('access_forms');?> href="#subj" data-toggle="modal" title="Subject" class="btn btn-primary"><i class="fa fa-plus"></i></a>
