@@ -11,7 +11,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.1.11');
+define('RELEASE_TAG', '6.1.12');
 
 $app = \Liten\Liten::getInstance();
 
@@ -262,7 +262,7 @@ function subject_code_dropdown($subjectCode = NULL)
     $app = \Liten\Liten::getInstance();
     $subj = $app->db->subject()
         ->select('subjectCode,subjectName')
-        ->whereNotNull('subjectCode');
+        ->where('subjectCode <> "NULL"');
 
     $q = $subj->find(function($data) {
         $array = [];
