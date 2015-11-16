@@ -25,10 +25,9 @@ $flashNow = new \app\src\Messages();
 $app->before('GET|POST', '/', function() {
     if (!file_exists(BASE_PATH . 'config.php')) {
         redirect(get_base_url() . 'install/?step=1');
+        exit();
     }
-});
-
-$app->before('GET|POST', '/', function() use($app) {
+    
     if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
         redirect(get_base_url() . 'offline' . DS);
     }
