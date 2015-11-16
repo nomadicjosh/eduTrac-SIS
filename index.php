@@ -64,35 +64,23 @@ if (file_exists(BASE_PATH . 'config.php')) {
  * or preliminary functions for your application.
  */
 require( APP_PATH . 'functions.php' );
-require( APP_PATH . 'auth-function.php' );
-require( APP_PATH . 'core-function.php' );
-require( APP_PATH . 'parsecode-function.php' );
+require( APP_PATH . 'functions' . DS . 'dependency.php' );
+require( APP_PATH . 'functions' . DS . 'auth-function.php' );
+require( APP_PATH . 'functions' . DS . 'textdomain-function.php' );
+require( APP_PATH . 'functions' . DS . 'core-function.php' );
+require( APP_PATH . 'functions' . DS . 'parsecode-function.php' );
 if (file_exists(BASE_PATH . 'config.php')) {
-    require( APP_PATH . 'hook-function.php' );
+    require( APP_PATH . 'functions' . DS . 'hook-function.php' );
 }
 require( APP_PATH . 'application.php' );
 
 /**
  * Step 5: Include the routers needed
  *
- * Here we loop through the routers directory in order
- * to include routes needed at runtime. This helps
- * keep routers organized and the index.php clean.
+ * Lazy load the routers. A router is loaded
+ * only when it is needed.
  */
-if (!file_exists(BASE_PATH . 'config.php')) {
-    $routers = glob($app->config('routers_dir') . '*.router.php');
-    foreach ($routers as $router) {
-        if (file_exists($router))
-            include($router);
-    }
-} else {
-    /**
-     * If you find you have issues with lazy loading
-     * the needed routers, then comment out the line below
-     * and then uncomment the section above.
-     */
-    include(APP_PATH . 'routers.php');
-}
+include(APP_PATH . 'routers.php');
 
 benchmark_init();
 if (file_exists(BASE_PATH . 'config.php')) {
