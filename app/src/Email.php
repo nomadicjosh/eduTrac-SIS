@@ -142,40 +142,6 @@ class Email
     }
 
     /**
-     * @deprecated Deprecated as of release 2.0.0
-     * @param string $email
-     * @param int $id
-     * @param string $host
-     * @return mixed
-     */
-    public function et_progress_report($email, $id, $host)
-    {
-        $name = get_name($id);
-        $site = _h(get_option('institution_name'));
-        $message = "You have a new progress report from your child's teacher: $name \n
-		
-		Log into your account to view this new progress report. \n
-		
-		$host \n
-		
-		Thank You \n
-		
-		Administrator \n
-		______________________________________________________
-		THIS IS AN AUTOMATED RESPONSE. 
-		***DO NOT RESPOND TO THIS EMAIL****
-		";
-
-        $headers = "From: $site <auto-reply@$host>\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion();
-        $headers .= "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-
-        $this->et_mail($email, "Progress Report", $message, $headers);
-        return apply_filter('progress_report', $message, $headers);
-    }
-
-    /**
      * Sends new course registration information to the registrar.
      * 
      * @param int $id Student ID
