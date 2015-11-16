@@ -11,8 +11,7 @@
 // Initial Installation Info!
 $system = [];
 $system['title'] = '{product}';
-$system['company'] = '{company}';
-$system['version'] = '{version}';
+$system['release'] = '{release}';
 $system['installed'] = '{datenow}';
 
 defined('DB_HOST') or define('DB_HOST', '{hostname}');
@@ -27,11 +26,3 @@ $app->inst->singleton('db', function () {
     return new \Liten\Orm($pdo);
 });
 $orm = $app->inst->db;
-
-$app->inst->singleton('hook', function () {
-    return new \app\src\Hooks();
-});
-
-$app->inst->singleton('module', function () {
-    return new \app\src\Modules();
-});
