@@ -14,7 +14,7 @@ $app->view->extend('_layouts/blank');
 $app->view->block('blank');
 use \app\src\Session;
 Session::init();
-require(APP_PATH . 'installer-function.php');
+require(APP_PATH . 'functions' . DS . 'installer-function.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xml:lang="en-us" xmlns="http://www.w3.org/1999/xhtml">
@@ -100,7 +100,7 @@ require(APP_PATH . 'installer-function.php');
 					<ul>
 					  <li class="ok"><span><?=_t( 'ok' );?></span> &mdash; <?=_t( 'All OK' );?></li>
 					  <li class="warning"><span><?=_t( 'warning' );?></span> &mdash; <?=_t( 'Not a deal breaker and is only a recommendation' );?></li>
-					  <li class="error"><span><?=_t( 'error' );?></span> &mdash; <?=_t( "eduTrac ERP requires this feature and can't work without it" );?></li>
+					  <li class="error"><span><?=_t( 'error' );?></span> &mdash; <?=_t( "eduTrac SIS requires this feature and can't work without it" );?></li>
 					</ul>
 				</div>
                 
@@ -116,7 +116,7 @@ require(APP_PATH . 'installer-function.php');
                 <div id="help-dbname" class="helper">
                     <div class="text">
                         <h3><?=_t( 'Database Name' );?></h3>
-                        <p><?=_t( 'The name of the database you want to run eduTrac ERP in.' );?></p>
+                        <p><?=_t( 'The name of the database you want to run eduTrac SIS in.' );?></p>
                     </div>
                 </div>
                 <!-- </Helper -->
@@ -248,7 +248,7 @@ require(APP_PATH . 'installer-function.php');
                 <div class="column_one">
                     <h3><?=_t( 'Success!' );?></h3>
                     
-                    <p><?=_t( 'eduTrac ERP has been installed. Click the button below in order to create the config file, flush the installer and be redirected to the login page.' );?></p>
+                    <p><?=_t( 'eduTrac SIS has been installed. Click the button below in order to create the config file, flush the installer and be redirected to the login page.' );?></p>
                     <form action="<?=get_base_url();?>install/finishInstall/" class="defaultRequest" method="post">
                         <p><button type="submit"><span><?=_t( 'Finish Installer' );?></span></button></p>
                     </form>

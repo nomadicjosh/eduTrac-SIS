@@ -187,6 +187,11 @@ elseif (strpos(getPathInfo('/audit-trail'), "/audit-trail") === 0)
     require($app->config('routers_dir') . 'log.router.php');
 }
 
+elseif (strpos(getPathInfo('/install'), "/install") === 0)
+{
+    require($app->config('routers_dir') . 'install.router.php');
+}
+
 else {
     require($app->config('routers_dir') . 'index.router.php');
     

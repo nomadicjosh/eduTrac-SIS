@@ -301,10 +301,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Date of Birth' );?></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Date of Birth' );?></label>
                             <div class="col-md-8">
                                 <div class="input-group date col-md-8" id="datepicker6">
-                                    <input class="form-control" name="dob" type="text" value="<?=(isset($_POST['dob'])) ? $_POST['dob'] : '';?>" />
+                                    <input class="form-control" name="dob" type="text" value="<?=(isset($_POST['dob'])) ? $_POST['dob'] : '';?>" required/>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
