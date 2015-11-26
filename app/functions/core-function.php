@@ -11,7 +11,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.1.13');
+define('RELEASE_TAG', '6.1.14');
 
 $app = \Liten\Liten::getInstance();
 
@@ -1958,6 +1958,74 @@ function check_mime_type($file, $mode = 0)
     } elseif (array_key_exists($ext, $mime_types)) {
         return $mime_types[$ext];
     }
+}
+
+/**
+ * Compares release values.
+ * 
+ * @since 6.1.14
+ * @param string $current Current release value.
+ * @param string $latest Latest release value.
+ * @param string $operator Operand use to compare current and latest release values.
+ * @return bool
+ */
+function compare_releases($current, $latest, $operator = '>')
+{
+    $php_function = version_compare($latest, $current, $operator);
+
+    $release = apply_filter('compare_releases', $php_function);
+
+    if ($release) {
+        return $latest;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Retrieves a response code from the header
+ * of a given resource.
+ * 
+ * @since 6.1.14
+ * @param string $url URL of resource/website.
+ * @return int HTTP response code.
+ */
+function get_http_response_code($url)
+{
+    $headers = get_headers($url);
+    $status = substr($headers[0], 9, 3);
+    /**
+     * 
+     */
+    return apply_filter('http_response_code', $status);
+}
+
+/**
+ * Check whether variable is an eduTrac SIS Error.
+ *
+ * Returns true if $object is an object of the \app\src\etError class.
+ *
+ * @since 6.1.14
+ * @param mixed $object Check if unknown variable is an \app\src\etError object.
+ * @return bool True, if \app\src\etError. False, if not \app\src\etError.
+ */
+function is_et_error($object)
+{
+    return ( $object instanceof \app\src\etError );
+}
+
+/**
+ * Check whether variable is an eduTrac SIS Exception.
+ *
+ * Returns true if $object is an object of the \app\src\Exception\BaseException class.
+ *
+ * @since 6.1.14
+ * @param mixed $object Check if unknown variable is an \app\src\Exception\BaseException object.
+ * @return bool True, if \app\src\Exception\BaseException. False, if not \app\src\Exception\BaseException.
+ */
+function is_et_exception($object)
+{
+    return ( $object instanceof \app\src\Exception\BaseException );
 }
 
 /**

@@ -23,8 +23,6 @@ $screen = 'dash';
 
 </ul>
 
-<?=show_update_message();?>
-
 <h2><?=_t( 'Dashboard' );?></h2>
 <div class="innerLR">
 

@@ -12,6 +12,8 @@ if (!defined('BASE_PATH'))
  */
 $app = \Liten\Liten::getInstance();
 
+//include_once(APP_PATH . 'src/Httpful/autoload.php');
+
 $app->inst->singleton('hook', function () {
     return new \app\src\Hooks();
 });
