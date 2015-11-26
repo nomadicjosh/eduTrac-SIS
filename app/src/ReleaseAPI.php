@@ -23,6 +23,7 @@ if (!defined('BASE_PATH'))
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @since       4.5.3
+ * @deprecated  since release 6.1.14
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */

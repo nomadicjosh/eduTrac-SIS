@@ -440,10 +440,24 @@ function show_update_message()
 {
     $acl = new \app\src\ACL(get_persondata('personID'));
     if ($acl->userHasRole(8)) {
-        if (RELEASE_TAG < \app\src\ReleaseAPI::inst()->releaseTag()) {
-            $alert = '<div class="alerts alerts-warn center">';
-            $alert .= _file_get_contents(\app\src\ReleaseAPI::inst()->getNotice());
-            $alert .= '</div>';
+        $url = _file_get_contents(\app\src\CoreUpdate::inst()->url.'core'.DS.'version-check'.DS.'1.0'.DS.'release.json');
+        $status = \app\src\CoreUpdate::inst()->getServerStatus();
+        if (is_et_exception($status)) {
+            return false;
+        }
+        $getReleases = json_decode($url);
+        $array = [];
+        foreach ($getReleases->data as $data) {
+            foreach ($data->values as $value) {
+                $array[] = $value;
+            }
+        }
+        foreach ($array as $release) {
+            if ($release->release_tag > RELEASE_TAG) {
+                $alert = '<div class="alerts alerts-warn center">';
+                $alert .= $release->notice;
+                $alert .= '</div>';
+            }
         }
     }
     return apply_filter('update_message', $alert);
@@ -1014,7 +1028,6 @@ function myet_wysiwyg_editor()
     </script>' . "\n";
     return apply_filter('myet_wysiwyg_editor', $editor);
 }
-
 add_action('admin_head', 'head_release_meta', 5);
 add_action('myet_head', 'head_release_meta', 5);
 add_action('release', 'foot_release', 5);

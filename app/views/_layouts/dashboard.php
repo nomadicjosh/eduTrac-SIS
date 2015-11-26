@@ -395,6 +395,7 @@
                     <!-- // Top Menu Right END -->
 
                 </div>
+                <?=show_update_message();?>
                 <!-- Top navbar END -->
                 <?php redirect_upgrade_db(); ?>
                 <?= $app->view->show('dashboard'); ?>
