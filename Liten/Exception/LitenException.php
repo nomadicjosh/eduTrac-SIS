@@ -41,12 +41,12 @@ abstract class LitenException extends \Exception implements BaseException
     protected $line;                              // Source line of exception
     private $trace;                             // Unknown
 
-    public function __construct($message = null, $code = 0)
+    public function __construct($message = null, $code = 0, $previous = null)
     {
         if (!$message) {
             throw new $this('Unknown ' . get_class($this));
         }
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, $previous);
     }
 
     public function __toString()

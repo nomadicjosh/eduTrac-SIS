@@ -39,5 +39,9 @@ $app->before('GET', '/err/screen-error.*', function() use($app) {
 });
 
 $app->get('/err/screen-error/', function () use($app) {
-    $app->view->display('error/screen-error');
+    $error = new \app\src\Exception\Exception(
+            sprintf(_t('The screen %s does not exist. Please try your search again.'), strtoupper(_h(_filter_input_string(INPUT_GET, 'code')))),
+            'screen_error'
+    );
+    $app->view->display('error/screen-error', ['error' => $error]);
 });

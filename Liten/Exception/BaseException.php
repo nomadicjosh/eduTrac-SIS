@@ -51,5 +51,5 @@ interface BaseException
 
     public function __toString();                 // formated string for display
 
-    public function __construct($message = null, $code = 0);
+    public function __construct($message = null, $code = 0, $previous = null);
 }
