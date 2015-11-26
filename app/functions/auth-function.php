@@ -5,21 +5,15 @@ if (!defined('BASE_PATH'))
 /**
  * eduTrac Auth Helper
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
- * 
- * @link        http://www.7mediaws.org/
  * @since       3.0.0
- * @package     eduTrac ERP
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 function hasPermission($perm)
 {
     $acl = new \app\src\ACL();
 
-    if ($acl->hasPermission($perm)) {
+    if ($acl->hasPermission($perm) && isUserLoggedIn()) {
         return true;
     } else {
         return false;
@@ -51,17 +45,12 @@ function get_persondata($field)
 function isUserLoggedIn()
 {
     $app = \Liten\Liten::getInstance();
-
-    $person = $app->db->person()->select('personID')
-        ->where('person.personID = ?', get_persondata('personID'));
-    $q = $person->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    if ($app->cookies->verifySecureCookie('ET_COOKNAME') && count($q) > 0) {
+    
+    $person = $app->db->person()
+        ->where('person.personID = ?',  get_persondata('personID'))
+        ->count('person.personID');
+    
+    if ($app->cookies->verifySecureCookie('ET_COOKNAME') && $person > 0) {
         return true;
     }
     return false;
