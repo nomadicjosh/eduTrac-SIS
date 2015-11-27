@@ -828,6 +828,20 @@ function logError($type, $string, $file, $line)
     return $log->setError($type, $string, $file, $line);
 }
 
+/**
+ * Custom error log function for better PHP logging.
+ * 
+ * @since 6.1.15
+ * @param string $name Log channel and log file prefix.
+ * @param string $message Message printed to log.
+ */
+function _error_log($name, $message)
+{
+    $log = new \Monolog\Logger(_trim($name));
+    $log->pushHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/' . _trim($name) . '.' . date('m-d-Y') . '.txt'), \Monolog\Logger::CRITICAL);
+    $log->addInfo($message);
+}
+
 function translate_class_year($year)
 {
     switch ($year) {
