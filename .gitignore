@@ -1,4 +1,9 @@
 .DS_Store
+.buildpath
+.idea/
+.project
+.settings/
+et.iml
 app/tmp/logs/*.txt
 app/views/cron/cron*
 static/photos/*.png
