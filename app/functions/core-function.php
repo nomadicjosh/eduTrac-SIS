@@ -2043,6 +2043,16 @@ function is_et_exception($object)
 }
 
 /**
+ * Returns the datetime of when the content of file was changed.
+ * 
+ * @since 6.1.15
+ * @param string $file Absolute path to file.
+ */
+function file_mod_time($file) {
+    return filemtime($file);
+}
+
+/**
  * Added htmLawed functions
  * 
  * @since 5.0.1
