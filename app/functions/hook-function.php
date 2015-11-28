@@ -1,26 +1,30 @@
 <?php
-if (!defined('BASE_PATH'))
+if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 /**
  * eduTrac SIS Hooks Helper & Wrapper
- *  
+ *
  * @license GPLv3
- * 
- * @since       3.0.0
- * @package     eduTrac SIS
- * @author      Joshua Parker <joshmac3@icloud.com>
+ *         
+ * @since 3.0.0
+ * @package eduTrac SIS
+ * @author Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
 
 /**
  * Wrapper function for Hooks::register_admin_page() and
  * register's a plugin administration page.
+ *
  * @see Hooks::register_admin_page()
- * 
+ *
  * @since 6.1.07
- * @param string $slug Plugin's slug.
- * @param string $title Title that is show for the plugin's link.
- * @param string $function The function which prints the plugin's page.
+ * @param string $slug
+ *            Plugin's slug.
+ * @param string $title
+ *            Title that is show for the plugin's link.
+ * @param string $function
+ *            The function which prints the plugin's page.
  */
 function register_admin_page($slug, $title, $function)
 {
@@ -31,10 +35,12 @@ function register_admin_page($slug, $title, $function)
 /**
  * Wrapper function for Hooks::activate_plugin() and
  * activates plugin based on $_GET['id'].
+ *
  * @see Hooks::activate_plugin()
- * 
+ *
  * @since 6.0.04
- * @param string $id ID of the plugin to be activated.
+ * @param string $id
+ *            ID of the plugin to be activated.
  * @return mixed Activates plugin if it exists.
  */
 function activate_plugin($id)
@@ -46,10 +52,12 @@ function activate_plugin($id)
 /**
  * Wrapper function for Hooks::deactivate_plugin() and
  * deactivates plugin based on $_GET['id'].
+ *
  * @see Hooks::deactivate_plugin()
- * 
+ *
  * @since 6.0.04
- * @param string $id ID of the plugin to be deactivated.
+ * @param string $id
+ *            ID of the plugin to be deactivated.
  * @return mixed Deactivates plugin if it exists and is active.
  */
 function deactivate_plugin($id)
@@ -61,10 +69,12 @@ function deactivate_plugin($id)
 /**
  * Wrapper function for Hooks::load_activated_plugins() and
  * loads all activated plugins for inclusion.
+ *
  * @see Hooks::load_activated_plugins()
- * 
+ *
  * @since 6.0.03
- * @param string $plugins_dir Loads plugins from specified folder
+ * @param string $plugins_dir
+ *            Loads plugins from specified folder
  * @return mixed
  */
 function load_activated_plugins($plugins_dir = '')
@@ -76,10 +86,12 @@ function load_activated_plugins($plugins_dir = '')
 /**
  * Wrapper function for Hooks::is_plugin_activated() and
  * checks if a particular plugin is activated
+ *
  * @see Hooks::is_plugin_activated()
- * 
+ *
  * @since 6.0.03
- * @param string $plugin Name of plugin file.
+ * @param string $plugin
+ *            Name of plugin file.
  * @return bool False if plugin is not activated and true if it is activated.
  */
 function is_plugin_activated($plugin)
@@ -91,11 +103,14 @@ function is_plugin_activated($plugin)
 /**
  * Wrapper function for Hooks::get_option() method and
  * reads an option from options_meta table.
+ *
  * @see Hooks::get_option()
  *
  * @since 6.0.03
- * @param string $meta_key Name of the option to retrieve.
- * @param mixed $default The default value.
+ * @param string $meta_key
+ *            Name of the option to retrieve.
+ * @param mixed $default
+ *            The default value.
  * @return mixed Returns value of default if not found.
  */
 function get_option($meta_key, $default = false)
@@ -107,11 +122,14 @@ function get_option($meta_key, $default = false)
 /**
  * Wrapper function for Hooks::update_option() method and
  * updates (add if doesn't exist) an option to options_meta table.
+ *
  * @see Hooks::update_option()
  *
  * @since 6.0.03
- * @param string $meta_key Name of the option to update/add.
- * @param mixed $newvalue The new value to update with or add.
+ * @param string $meta_key
+ *            Name of the option to update/add.
+ * @param mixed $newvalue
+ *            The new value to update with or add.
  * @return bool False if not updated or true if updated.
  */
 function update_option($meta_key, $newvalue)
@@ -123,11 +141,14 @@ function update_option($meta_key, $newvalue)
 /**
  * Wrapper function for Hooks::add_option() method and
  * adds a new option to the options_meta table.
+ *
  * @see Hooks::add_option()
  *
  * @since 6.0.03
- * @param string $name Name of the option to add.
- * @param mixed $value The option value.
+ * @param string $name
+ *            Name of the option to add.
+ * @param mixed $value
+ *            The option value.
  * @return bool False if not added or true if added.
  */
 function add_option($name, $value = '')
@@ -139,10 +160,12 @@ function add_option($name, $value = '')
 /**
  * Wrapper function for Hooks::delete_option() method and
  * deletes an option for the options_meta table.
+ *
  * @see Hooks::delete_option()
  *
  * @since 6.0.03
- * @param string $name Name of the option to delete.
+ * @param string $name
+ *            Name of the option to delete.
  * @return bool False if not deleted or true if deleted.
  */
 function delete_option($name)
@@ -153,17 +176,17 @@ function delete_option($name)
 
 /**
  * JSTree Sidebar Menu Include
- * 
+ *
  * Includes the jstree sidebar menu on several screens.
- * 
+ *
  * @since 6.1.00
  * @return mixed
  */
 function jstree_sidebar_menu($screen, $crse = '', $sect = '', $nae = '', $staff = '', $spro = '', $prog = '')
 {
     $menu = BASE_PATH . 'app/views/dashboard/menu.php';
-    if (!has_filter('sidebar_menu')) {
-        include($menu);
+    if (! has_filter('sidebar_menu')) {
+        include ($menu);
     }
     return apply_filter('sidebar_menu', $menu, $screen, $crse, $sect, $nae, $staff, $spro, $prog);
 }
@@ -202,6 +225,7 @@ do_action('custom_plugin_page');
 /**
  * An action called to create db tables needed
  * for a plugin
+ *
  * @see Plugin::register_activation_hook()
  *
  * @since 4.2.0
@@ -347,9 +371,10 @@ function dashboard_student_count()
     $stu = $app->db->student()
         ->select('COUNT(student.stuID) as count')
         ->_join('stu_program', 'student.stuID = stu_program.stuID')
-        ->where('student.status = "A"')->_and_()
+        ->where('student.status = "A"')
+        ->_and_()
         ->where('stu_program.currStatus = "A"');
-    $q = $stu->find(function($data) {
+    $q = $stu->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
             $array[] = $d;
@@ -379,7 +404,7 @@ function dashboard_course_count()
 {
     $app = \Liten\Liten::getInstance();
     $count = $app->db->query('SELECT COUNT(courseID) as count FROM course WHERE currStatus = "A" AND endDate = "0000-00-00"');
-    $q = $count->find(function($data) {
+    $q = $count->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
             $array[] = $d;
@@ -409,7 +434,7 @@ function dashboard_acadProg_count()
 {
     $app = \Liten\Liten::getInstance();
     $count = $app->db->query('SELECT COUNT(acadProgID) FROM acad_program WHERE currStatus = "A" AND endDate = "0000-00-00"');
-    $q = $count->find(function($data) {
+    $q = $count->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
             $array[] = $d;
@@ -431,31 +456,27 @@ function dashboard_acadProg_count()
 }
 
 /**
- * Shows update message when a new release of 
+ * Shows update message when a new release of
  * eduTrac SIS is available.
  *
  * @since 4.0.0
  */
 function show_update_message()
 {
+    $app = \Liten\Liten::getInstance();
     $acl = new \app\src\ACL(get_persondata('personID'));
     if ($acl->userHasRole(8)) {
-        $url = _file_get_contents(\app\src\CoreUpdate::inst()->url.'core'.DS.'version-check'.DS.'1.0'.DS.'release.json');
-        $status = \app\src\CoreUpdate::inst()->getServerStatus();
-        if (is_et_exception($status)) {
-            return false;
-        }
-        $getReleases = json_decode($url);
-        $array = [];
-        foreach ($getReleases->data as $data) {
-            foreach ($data->values as $value) {
-                $array[] = $value;
-            }
-        }
-        foreach ($array as $release) {
-            if ($release->release_tag > RELEASE_TAG) {
+        $update = new \VisualAppeal\AutoUpdate(rtrim($app->config('file.savepath'), '/'), BASE_PATH, 1800);
+        $update->setCurrentVersion(RELEASE_TAG);
+        $update->setUpdateUrl('http://edutrac.s3.amazonaws.com/core/1.1/update-check');
+        
+        // Optional:
+        $update->addLogHandler(new Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/core-update.' . date('m-d-Y') . '.txt'));
+        $update->setCache(new Desarrolla2\Cache\Adapter\File(APP_PATH . 'tmp/cache'), 3600);
+        if ($update->checkUpdate() !== false) {
+            if ($update->newVersionAvailable()) {
                 $alert = '<div class="alerts alerts-warn center">';
-                $alert .= $release->notice;
+                $alert .= sprintf(_t('eduTrac SIS release %s is available for download/upgrade.'), $update->getLatestVersion());
                 $alert .= '</div>';
             }
         }
@@ -468,7 +489,7 @@ function show_update_message()
  *
  * @since 4.1.9
  * @uses apply_filter() Calls 'javascript_directory_uri' filter.
- *
+ *      
  * @return string eduTrac javascript url.
  */
 function get_javascript_directory_uri()
@@ -484,7 +505,7 @@ function get_javascript_directory_uri()
  *
  * @since 4.1.9
  * @uses apply_filter() Calls 'less_directory_uri' filter.
- *
+ *      
  * @return string eduTrac less url.
  */
 function get_less_directory_uri()
@@ -500,7 +521,7 @@ function get_less_directory_uri()
  *
  * @since 4.1.9
  * @uses apply_filter() Calls 'css_directory_uri' filter.
- *
+ *      
  * @return string eduTrac css url.
  */
 function get_css_directory_uri()
@@ -517,8 +538,10 @@ function get_css_directory_uri()
  * Uses {@link http://www.php.net/parse_str parse_str()}
  *
  * @since 4.2.0
- * @param string $string The string to be parsed.
- * @param array $array Variables will be stored in this array.
+ * @param string $string
+ *            The string to be parsed.
+ * @param array $array
+ *            Variables will be stored in this array.
  */
 function et_parse_str($string, &$array)
 {
@@ -527,7 +550,8 @@ function et_parse_str($string, &$array)
      * Filter the array of variables derived from a parsed string.
      *
      * @since 4.2.0
-     * @param array $array The array populated with variables.
+     * @param array $array
+     *            The array populated with variables.
      */
     $array = apply_filter('et_parse_str', $array);
 }
@@ -537,12 +561,12 @@ function et_parse_str($string, &$array)
  *
  * @since 4.3
  * @uses apply_filter() Calls 'met_title' filter.
- *
+ *      
  * @return string eduTrac frontend site title.
  */
 function get_met_title()
 {
-    $title = '<em>' . _t('my') . '</em>' . ( 'eduTrac' );
+    $title = '<em>' . _t('my') . '</em>' . ('eduTrac');
     return apply_filter('met_title', $title);
 }
 
@@ -551,7 +575,7 @@ function get_met_title()
  *
  * @since 4.3
  * @uses apply_filter() Calls 'met_footer_release' filter.
- *
+ *      
  * @return mixed.
  */
 function get_met_footer_release()
@@ -569,22 +593,22 @@ function get_met_footer_release()
  *
  * @since 4.3
  * @uses apply_filter() Calls 'met_footer_title' filter.
- *
+ *      
  * @return string
  */
 function get_met_footer_title()
 {
-    $title = '<em>' . _t('my') . '</em>' . ( 'eduTrac' );
+    $title = '<em>' . _t('my') . '</em>' . ('eduTrac');
     return apply_filter('met_footer_title', $title);
 }
 
 /**
  * Address type select: shows general list of address types and
- * if $typeCode is not NULL, shows the address type attached 
+ * if $typeCode is not NULL, shows the address type attached
  * to a particular record.
- * 
+ *
  * @since 1.0.0
- * @param string $typeCode
+ * @param string $typeCode            
  * @return string Returns the record key if selected is true.
  */
 function address_type_select($typeCode = NULL)
@@ -600,11 +624,11 @@ function address_type_select($typeCode = NULL)
 
 /**
  * Department Type select: shows general list of department types and
- * if $typeCode is not NULL, shows the department type attached 
+ * if $typeCode is not NULL, shows the department type attached
  * to a particular record.
- * 
+ *
  * @since 1.0.0
- * @param string $typeCode
+ * @param string $typeCode            
  * @return string Returns the record key if selected is true.
  */
 function dept_type_select($typeCode = NULL)
@@ -619,11 +643,11 @@ function dept_type_select($typeCode = NULL)
 
 /**
  * Acad Level select: shows general list of academic levels and
- * if $status is not NULL, shows the academic level attached 
+ * if $status is not NULL, shows the academic level attached
  * to a particular record.
- * 
+ *
  * @since 1.0.0
- * @param string $status
+ * @param string $status            
  * @return string Returns the record status if selected is true.
  */
 function address_status_select($status = NULL)
@@ -638,11 +662,11 @@ function address_status_select($status = NULL)
 
 /**
  * Acad Level select: shows general list of academic levels and
- * if $levelCode is not NULL, shows the academic level attached 
+ * if $levelCode is not NULL, shows the academic level attached
  * to a particular record.
- * 
+ *
  * @since 1.0.0
- * @param string $levelCode
+ * @param string $levelCode            
  * @return string Returns the record key if selected is true.
  */
 function acad_level_select($levelCode = null, $readonly = null, $required = '')
@@ -663,11 +687,11 @@ function acad_level_select($levelCode = null, $readonly = null, $required = '')
 
 /**
  * Fee acad Level select: shows general list of academic levels and
- * if $levelCode is not NULL, shows the academic level attached 
+ * if $levelCode is not NULL, shows the academic level attached
  * to a particular record.
- * 
+ *
  * @since 4.1.7
- * @param string $levelCode
+ * @param string $levelCode            
  * @return string Returns the record key if selected is true.
  */
 function fee_acad_level_select($levelCode = null)
@@ -688,11 +712,11 @@ function fee_acad_level_select($levelCode = null)
 
 /**
  * Status dropdown: shows general list of statuses and
- * if $status is not NULL, shows the current status 
+ * if $status is not NULL, shows the current status
  * for a particular record.
- * 
+ *
  * @since 1.0.0
- * @param string $status
+ * @param string $status            
  * @return string Returns the record key if selected is true.
  */
 function status_select($status = NULL, $readonly = '')
@@ -709,11 +733,11 @@ function status_select($status = NULL, $readonly = '')
 
 /**
  * Course section select: shows general list of statuses and
- * if $status is not NULL, shows the current status 
+ * if $status is not NULL, shows the current status
  * for a particular course section record.
- * 
+ *
  * @since 1.0.0
- * @param string $status
+ * @param string $status            
  * @return string Returns the record key if selected is true.
  */
 function course_sec_status_select($status = NULL, $readonly = '')
@@ -731,11 +755,11 @@ function course_sec_status_select($status = NULL, $readonly = '')
 
 /**
  * Person type select: shows general list of person types and
- * if $type is not NULL, shows the person type 
+ * if $type is not NULL, shows the person type
  * for a particular person record.
- * 
+ *
  * @since 1.0.0
- * @param string $type
+ * @param string $type            
  * @return string Returns the record type if selected is true.
  */
 function person_type_select($type = NULL)
@@ -753,11 +777,11 @@ function person_type_select($type = NULL)
 
 /**
  * Course Level dropdown: shows general list of course levels and
- * if $levelCode is not NULL, shows the course level attached 
+ * if $levelCode is not NULL, shows the course level attached
  * to a particular record.
- * 
+ *
  * @since 1.0.0
- * @param string $levelCode
+ * @param string $levelCode            
  * @return string Returns the record key if selected is true.
  */
 function course_level_select($levelCode = NULL, $readonly = null)
@@ -779,11 +803,11 @@ function course_level_select($levelCode = NULL, $readonly = null)
 
 /**
  * Instructor method select: shows general list of instructor methods and
- * if $method is not NULL, shows the instructor method 
+ * if $method is not NULL, shows the instructor method
  * for a particular course section.
- * 
+ *
  * @since 1.0.0
- * @param string $method
+ * @param string $method            
  * @return string Returns the record method if selected is true.
  */
 function instructor_method($method = NULL)
@@ -803,11 +827,11 @@ function instructor_method($method = NULL)
 
 /**
  * Student Course section status select: shows general list of course sec statuses and
- * if $status is not NULL, shows the status 
+ * if $status is not NULL, shows the status
  * for a particular student course section record.
- * 
+ *
  * @since 1.0.0
- * @param string $status
+ * @param string $status            
  * @return string Returns the record status if selected is true.
  */
 function stu_course_sec_status_select($status = NULL, $readonly = '')
@@ -824,12 +848,12 @@ function stu_course_sec_status_select($status = NULL, $readonly = '')
 }
 
 /**
- * Student program status select: shows general list of student 
- * statuses and if $status is not NULL, shows the status 
+ * Student program status select: shows general list of student
+ * statuses and if $status is not NULL, shows the status
  * for a particular student program record.
- * 
+ *
  * @since 1.0.0
- * @param string $status
+ * @param string $status            
  * @return string Returns the record status if selected is true.
  */
 function stu_prog_status_select($status = NULL)
@@ -847,11 +871,11 @@ function stu_prog_status_select($status = NULL)
 
 /**
  * Credit type select: shows general list of credit types and
- * if $status is not NULL, shows the credit type 
+ * if $status is not NULL, shows the credit type
  * for a particular course or course section record.
- * 
+ *
  * @since 1.0.0
- * @param string $status
+ * @param string $status            
  * @return string Returns the record type if selected is true.
  */
 function credit_type($status = NULL)
@@ -871,9 +895,9 @@ function credit_type($status = NULL)
  * Class year select: shows general list of class years and
  * if $year is not NULL, shows the class year
  * for a particular student.
- * 
+ *
  * @since 1.0.0
- * @param string $year
+ * @param string $year            
  * @return string Returns the record year if selected is true.
  */
 function class_year($year = NULL)
@@ -895,9 +919,9 @@ function class_year($year = NULL)
  * Grading scale: shows general list of letter grades and
  * if $grade is not NULL, shows the grade
  * for a particular student course section record
- * 
+ *
  * @since 1.0.0
- * @param string $grade
+ * @param string $grade            
  * @return string Returns the stu_course_sec grade if selected is true.
  */
 function grading_scale($grade = NULL)
@@ -906,7 +930,7 @@ function grading_scale($grade = NULL)
     $select = '<select name="grade[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>' . "\n";
     $select .= '<option value="">&nbsp;</option>' . "\n";
     $scale = $app->db->query('SELECT * FROM grade_scale WHERE status = "1"');
-    $q = $scale->find(function($data) {
+    $q = $scale->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
             $array[] = $d;
@@ -923,8 +947,11 @@ function grading_scale($grade = NULL)
 function grades($id, $aID)
 {
     $app = \Liten\Liten::getInstance();
-    $grade = $app->db->query('SELECT * FROM gradebook WHERE stuID = ? AND assignID = ?', [ $id, $aID]);
-    $q = $grade->find(function($data) {
+    $grade = $app->db->query('SELECT * FROM gradebook WHERE stuID = ? AND assignID = ?', [
+        $id,
+        $aID
+    ]);
+    $q = $grade->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
             $array[] = $d;
@@ -943,9 +970,9 @@ function grades($id, $aID)
  * Admit status: shows general list of admission statuses and
  * if $status is not NULL, shows the admit status
  * for a particular applicant.
- * 
+ *
  * @since 1.0.0
- * @param string $status
+ * @param string $status            
  * @return string Returns the application admit status if selected is true.
  */
 function admit_status_select($status = NULL)
@@ -961,12 +988,12 @@ function admit_status_select($status = NULL)
 }
 
 /**
- * General Ledger type select: shows general list of general 
- * ledger types and if $type is not NULL, shows the general 
+ * General Ledger type select: shows general list of general
+ * ledger types and if $type is not NULL, shows the general
  * ledger type for a particular general ledger record.
- * 
+ *
  * @since 1.1.5
- * @param string $type
+ * @param string $type            
  * @return string Returns the record type if selected is true.
  */
 function general_ledger_type_select($type = NULL)
@@ -1008,7 +1035,7 @@ function nocache_headers()
 /**
  * WYSIWYG editor function for myeduTrac
  * self service portal.
- * 
+ *
  * @since 6.1.12
  */
 function myet_wysiwyg_editor()
