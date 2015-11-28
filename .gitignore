@@ -12,6 +12,7 @@ static/photos/parkerj.png
 *.db
 *.gz
 *.screen
+*.cache
 /nbproject/
 config.php
 .tmp
