@@ -711,7 +711,8 @@ class AutoUpdate
             $filename = zip_entry_name($file);
             $foldername = $this->_installDir . dirname($filename);
             $absoluteFilename = $this->_installDir . $filename;
-
+            
+            echo '<p>' . $filename . '........... <font color="green">' . _t('UPDATED') . '</font></p>';
             $this->_log->addDebug(sprintf('Updating file "%s"', $filename));
 
             if (!is_dir($foldername)) {
