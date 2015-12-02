@@ -1055,6 +1055,59 @@ function myet_wysiwyg_editor()
     </script>' . "\n";
     return apply_filter('myet_wysiwyg_editor', $editor);
 }
+
+/**
+ * Compares release values.
+ *
+ * @since 6.1.14
+ * @param string $current
+ *            Current release value.
+ * @param string $latest
+ *            Latest release value.
+ * @param string $operator
+ *            Operand use to compare current and latest release values.
+ * @return bool
+ */
+function compare_releases($current, $latest, $operator = '>')
+{
+    $php_function = version_compare($latest, $current, $operator);
+    /**
+     * Filters the comparison between two release.
+     * 
+     * @since 6.1.14
+     * @param $php_function PHP function for comparing two release values.
+     */
+    $release = apply_filter('compare_releases', $php_function);
+
+    if ($release) {
+        return $latest;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Retrieves a response code from the header
+ * of a given resource.
+ *
+ * @since 6.1.14
+ * @param string $url
+ *            URL of resource/website.
+ * @return int HTTP response code.
+ */
+function get_http_response_code($url)
+{
+    $headers = get_headers($url);
+    $status = substr($headers[0], 9, 3);
+    /**
+     * Filters the http response code.
+     * 
+     * @since 6.1.14
+     * @param string
+     */
+    return apply_filter('http_response_code', $status);
+}
+
 add_action('admin_head', 'head_release_meta', 5);
 add_action('myet_head', 'head_release_meta', 5);
 add_action('release', 'foot_release', 5);
