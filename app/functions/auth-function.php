@@ -1,18 +1,18 @@
 <?php
-if (!defined('BASE_PATH'))
+if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
  * eduTrac Auth Helper
- *  
- * @since       3.0.0
- * @package     eduTrac SIS
- * @author      Joshua Parker <joshmac3@icloud.com>
+ *
+ * @since 3.0.0
+ * @package eduTrac SIS
+ * @author Joshua Parker <joshmac3@icloud.com>
  */
 function hasPermission($perm)
 {
     $acl = new \app\src\ACL();
-
+    
     if ($acl->hasPermission($perm) && isUserLoggedIn()) {
         return true;
     } else {
@@ -27,10 +27,10 @@ function get_persondata($field)
     $value = $app->db->person()
         ->select('person.*,address.*,staff.*,student.*')
         ->_join('address', 'person.personID = address.personID')
-        ->_join('staff','person.personID = staff.staffID')
-        ->_join('student','person.personID = student.stuID')
+        ->_join('staff', 'person.personID = staff.staffID')
+        ->_join('student', 'person.personID = student.stuID')
         ->where('person.personID = ?', $personID);
-    $q = $value->find(function($data) {
+    $q = $value->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
             $array[] = $d;
@@ -47,7 +47,7 @@ function isUserLoggedIn()
     $app = \Liten\Liten::getInstance();
     
     $person = $app->db->person()
-        ->where('person.personID = ?',  get_persondata('personID'))
+        ->where('person.personID = ?', get_persondata('personID'))
         ->count('person.personID');
     
     if ($app->cookies->verifySecureCookie('ET_COOKNAME') && $person > 0) {
@@ -62,9 +62,9 @@ function isUserLoggedIn()
  * It should give a user/developer more clarity when
  * understanding what this is actually allowing or
  * not allowing a person to do or see.
- * 
+ *
  * @since 4.3
- * @param $perm string(required)
+ * @param $perm string(required)            
  * @return bool
  */
 function hasRestriction($perm)
@@ -76,9 +76,57 @@ function hasRestriction($perm)
     }
 }
 
+/**
+ * Hide element function.
+ *
+ * This is an alternative to the hl() function which may become
+ * deprecated in a later release.
+ *
+ * @since 6.1.15
+ * @param string $permission
+ *            Permission to check for.
+ * @param string $function_name
+ *            Function to check for.
+ * @return bool
+ */
+function _he($permission, $function_name = null)
+{
+    if (hasPermission($permission)) {
+        return true;
+    }
+    
+    if ($function !== null) {
+        if (! function_exists($function_name)) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+/**
+ * Module function.
+ *
+ * This is an alternative to the ml() function which may become
+ * depreated in a later release.
+ *
+ * @since 6.1.15
+ * @param string $function_name
+ *            Function to check for.
+ * @return bool
+ */
+function _mf($function_name)
+{
+    if (function_exists($function_name)) {
+        return true;
+    }
+    
+    return false;
+}
+
 function ae($perm)
 {
-    if (!hasPermission($perm)) {
+    if (! hasPermission($perm)) {
         return ' style="display:none !important;"';
     }
 }
@@ -335,7 +383,7 @@ function paids()
  */
 function dopt($perm)
 {
-    if (!hasPermission($perm)) {
+    if (! hasPermission($perm)) {
         return ' disabled';
     }
 }
