@@ -184,11 +184,105 @@ function delete_option($name)
  */
 function jstree_sidebar_menu($screen, $crse = '', $sect = '', $nae = '', $staff = '', $spro = '', $prog = '')
 {
-    $menu = BASE_PATH . 'app/views/dashboard/menu.php';
-    if (! has_filter('sidebar_menu')) {
+    $menu = APP_PATH . 'views/dashboard/menu.php';
+    if (! has_filter('core_sidebar_menu')) {
         include ($menu);
     }
-    return apply_filter('sidebar_menu', $menu, $screen, $crse, $sect, $nae, $staff, $spro, $prog);
+    return apply_filter('core_sidebar_menu', $menu, $screen, $crse, $sect, $nae, $staff, $spro, $prog);
+}
+
+/**
+ * Core admin bar include.
+ *
+ * @since 6.1.15
+ */
+function core_admin_bar()
+{
+    $filename = APP_PATH . 'views/dashboard/core-admin-bar.php';
+    
+    if (! is_readable($filename)) {
+        __return_false();
+    }
+    
+    if (! has_filter('core_admin_bar')) {
+        include ($filename);
+    }
+    return apply_filter('core_admin_bar', $filename);
+}
+
+/**
+ * Mark a function as deprecated and inform when it has been used.
+ *
+ * There is a hook deprecated_function_run that will be called that can be used
+ * to get the backtrace up to what file and function called the deprecated
+ * function.
+ *
+ * The current behavior is to trigger a user error if APP_ENV is DEV.
+ *
+ * This function is to be used in every function that is deprecated.
+ *
+ * @since 6.1.15
+ *       
+ * @param string $function_name
+ *            The function that was called.
+ * @param string $release
+ *            The release of eduTrac SIS that deprecated the function.
+ * @param string $replacement
+ *            Optional. The function that should have been called. Default null.
+ */
+function _deprecated_function($function_name, $release, $replacement = null)
+{
+    /**
+     * Fires when a deprecated function is called.
+     *
+     * @since 6.1.15
+     *       
+     * @param string $function_name
+     *            The function that was called.
+     * @param string $replacement
+     *            The function that should have been called.
+     * @param string $release
+     *            The release of eduTrac SIS that deprecated the function.
+     */
+    do_action('deprecated_function_run', $function_name, $replacement, $release);
+    
+    /**
+     * Filter whether to trigger an error for deprecated functions.
+     *
+     * @since 6.1.15
+     *       
+     * @param bool $trigger
+     *            Whether to trigger the error for deprecated functions. Default true.
+     */
+    if (APP_ENV == 'DEV' && apply_filter('deprecated_function_trigger_error', true)) {
+        if (function_exists('_t')) {
+            if (! is_null($replacement)) {
+                trigger_error(sprintf(_t('%1$s is <strong>deprecated</strong> since release %2$s! Use %3$s instead.'), $function_name, $release, $replacement));
+            } else {
+                trigger_error(sprintf(_t('%1$s is <strong>deprecated</strong> since release %2$s with no alternative available.'), $function_name, $release));
+            }
+        } else {
+            if (! is_null($replacement)) {
+                trigger_error(sprintf('%1$s is <strong>deprecated</strong> since release %2$s! Use %3$s instead.', $function_name, $release, $replacement));
+            } else {
+                trigger_error(sprintf('%1$s is <strong>deprecated</strong> since release %2$s with no alternative available.', $function_name, $release));
+            }
+        }
+    }
+}
+
+/**
+ * Prints copyright in the dashboard footer.
+ *
+ * @since 6.1.15
+ */
+function etsis_dashboard_copyright_footer()
+{
+    $copyright = '<!--  Copyright Line -->' . "\n";
+    $copyright .= '<div class="copy">' . _t('&copy; 2013') . ' - ' . foot_release() . ' &nbsp; <a href="http://www.litenframework.com/"><img src="' . get_base_url() . 'static/assets/images/button.png" alt="Built with Liten Framework"/></a></div>' . "\n";
+    $copyright .= '<!--  End Copyright Line -->' . "\n";
+    
+    return apply_filter('etsis_copyright', $copyright);
 }
 /**
  * Includes and loads all activated plugins.
@@ -1073,12 +1167,13 @@ function compare_releases($current, $latest, $operator = '>')
     $php_function = version_compare($latest, $current, $operator);
     /**
      * Filters the comparison between two release.
-     * 
+     *
      * @since 6.1.14
-     * @param $php_function PHP function for comparing two release values.
+     * @param $php_function PHP
+     *            function for comparing two release values.
      */
     $release = apply_filter('compare_releases', $php_function);
-
+    
     if ($release) {
         return $latest;
     } else {
@@ -1101,9 +1196,10 @@ function get_http_response_code($url)
     $status = substr($headers[0], 9, 3);
     /**
      * Filters the http response code.
-     * 
+     *
      * @since 6.1.14
-     * @param string
+     * @param
+     *            string
      */
     return apply_filter('http_response_code', $status);
 }
