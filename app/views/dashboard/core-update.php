@@ -14,6 +14,7 @@ if (! defined('BASE_PATH'))
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$screen = 'update';
 ?>
 
 <ul class="breadcrumb">
@@ -27,8 +28,10 @@ $app->view->block('dashboard');
 <h3><?=_t( 'eduTrac SIS Update' );?></h3>
 <div class="innerLR">
 
+	<?php jstree_sidebar_menu($screen); ?>
+
 	<!-- Widget -->
-	<div class="widget widget-heading-simple widget-body-white">
+	<div class="widget widget-heading-simple widget-body-white <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 
 		<div class="widget-body">
 

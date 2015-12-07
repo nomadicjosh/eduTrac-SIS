@@ -12,6 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$screen = 'appl';
 $message = new \app\src\Messages;
 ?>
 
@@ -27,11 +28,13 @@ $message = new \app\src\Messages;
 <h3><?=_t( 'Create Application' );?></h3>
 <div class="innerLR">
 
+	<?php jstree_sidebar_menu($screen); ?>
+
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/add/<?=_h($person->personID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray">
+		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
