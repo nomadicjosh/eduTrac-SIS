@@ -85,20 +85,12 @@ function hasRestriction($perm)
  * @since 6.1.15
  * @param string $permission
  *            Permission to check for.
- * @param string $function_name
- *            Function to check for.
  * @return bool
  */
-function _he($permission, $function_name = null)
+function _he($permission)
 {
     if (hasPermission($permission)) {
         return true;
-    }
-    
-    if ($function !== null) {
-        if (! function_exists($function_name)) {
-            return true;
-        }
     }
     
     return false;
