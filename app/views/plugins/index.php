@@ -12,6 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$message = new \app\src\Messages;
 $plugins_header = $app->hook->get_plugins_header(APP_PATH . 'plugins/');
 ?>
 
@@ -24,6 +25,8 @@ $plugins_header = $app->hook->get_plugins_header(APP_PATH . 'plugins/');
 
 <h3><?=_t( 'Plugins' );?></h3>
 <div class="innerLR">
+
+	<?=$message->flashMessage();?>
 
 	<!-- Widget -->
 	<div class="widget widget-heading-simple widget-body-gray">
@@ -58,7 +61,7 @@ $plugins_header = $app->hook->get_plugins_header(APP_PATH . 'plugins/');
         			echo '<br /><br />';
         			echo 'Version '.$plugin['Version'];
         			echo ' By <a href="'.$plugin['AuthorURI'].'">'.$plugin['Author']. '</a> ';
-        			echo ' | <a href="' .$plugin['PluginURI'].'">Visit plugin site</a></td>';
+        			echo ' | <a href="' .$plugin['PluginURI'].'">' . _t( 'Visit plugin site' ) . '</a></td>';
         			
                         if($app->hook->is_plugin_activated($plugin['filename']) == true) {
         					echo '<td class="text-center"><a href="'.get_base_url().'plugins/deactivate/?id='.urlencode($plugin['filename']).'" title="Deactivate" class="btn btn-default"><i class="fa fa-minus"></i></a></td>';
