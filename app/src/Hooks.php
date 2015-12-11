@@ -758,7 +758,7 @@ class Hooks
      */
     public function delete_option($name)
     {
-        $key = $this->_app->db->options_meta()->where('option_name = ?', $name);
+        $key = $this->_app->db->options_meta()->where('meta_key = ?', $name);
         $results = $key->find(function($data) {
             $array = [];
             foreach ($data as $d) {
@@ -772,7 +772,7 @@ class Hooks
 
         $this->do_action('delete_option', $name);
 
-        $this->_app->db->options_meta()->where('option_name', $name)->delete();
+        $this->_app->db->options_meta()->where('meta_key', $name)->delete();
         return true;
     }
 
