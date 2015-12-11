@@ -16,7 +16,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
         <link rel="shortcut icon" href="<?= get_base_url(); ?>favicon.ico" type="image/x-icon">
 
-<!--[if lt IE 9]><link rel="stylesheet" href="<?= get_base_url(); ?>static/assets/components/library/bootstrap/css/bootstrap.min.css" /><![endif]-->
+        <!--[if lt IE 9]><link rel="stylesheet" href="<?= get_base_url(); ?>static/assets/components/library/bootstrap/css/bootstrap.min.css" /><![endif]-->
         <link rel="stylesheet" href="<?= get_css_directory_uri(); ?>admin/module.admin.page.layout.section.layout-fluid-menu-top-full.min.css" />
         <link rel="stylesheet" href="<?= get_css_directory_uri(); ?>admin/custom.css" />
 
@@ -56,11 +56,30 @@
             <div id="content">
             
 				<?php core_admin_bar(); ?>
-                <?php do_action('admin_bar'); ?>
+				
+                <?php
+                /**
+                 * Can be used to add a custom admin bar.
+                 * 
+                 * @since 6.1.15
+                 */
+                do_action('admin_bar');
+                ?>
                 
                 <?=show_update_message();?>
                 
+                <?php
+                /**
+                 * Prints any dashboard error notices or messages that should be
+                 * displayed via plugins or some other method.
+                 * 
+                 * @since 6.1.15
+                 */
+                do_action('dashboard_admin_notices');
+                ?>
+                
                 <?= $app->view->show('dashboard'); ?>
+                
                 <div class="clearfix"></div>
 
                 <div id="custom-footer" class="hidden-print">
