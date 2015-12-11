@@ -211,6 +211,27 @@ function core_admin_bar()
 }
 
 /**
+ * Wrapper function for the core PHP function: trigger_error.
+ *
+ * This function makes the error a little more understandable for the
+ * end user to track down the issue.
+ *
+ * @since 6.1.15
+ * @param string $message
+ *            Custom message to print.
+ * @param string $level
+ *            Predefined PHP error constant.
+ */
+function _trigger_error($message, $level = E_USER_NOTICE)
+{
+    $debug = debug_backtrace();
+    $caller = next($debug);
+    echo '<div class="alerts alerts-error center">';
+    trigger_error($message . ' in <strong>' . $caller['function'] . '</strong> called from <strong>' . $caller['file'] . '</strong> on line <strong>' . $caller['line'] . '</strong>' . "\n<br />error handler", $level);
+    echo '</div>';
+}
+
+/**
  * Mark a function as deprecated and inform when it has been used.
  *
  * There is a hook deprecated_function_run that will be called that can be used
@@ -257,15 +278,15 @@ function _deprecated_function($function_name, $release, $replacement = null)
     if (APP_ENV == 'DEV' && apply_filter('deprecated_function_trigger_error', true)) {
         if (function_exists('_t')) {
             if (! is_null($replacement)) {
-                trigger_error(sprintf(_t('%1$s is <strong>deprecated</strong> since release %2$s! Use %3$s instead.'), $function_name, $release, $replacement));
+                _trigger_error(sprintf(_t('%1$s is <strong>deprecated</strong> since release %2$s! Use %3$s instead.'), $function_name, $release, $replacement));
             } else {
-                trigger_error(sprintf(_t('%1$s is <strong>deprecated</strong> since release %2$s with no alternative available.'), $function_name, $release));
+                _trigger_error(sprintf(_t('%1$s is <strong>deprecated</strong> since release %2$s with no alternative available.'), $function_name, $release));
             }
         } else {
             if (! is_null($replacement)) {
-                trigger_error(sprintf('%1$s is <strong>deprecated</strong> since release %2$s! Use %3$s instead.', $function_name, $release, $replacement));
+                _trigger_error(sprintf('%1$s is <strong>deprecated</strong> since release %2$s! Use %3$s instead.', $function_name, $release, $replacement));
             } else {
-                trigger_error(sprintf('%1$s is <strong>deprecated</strong> since release %2$s with no alternative available.', $function_name, $release));
+                _trigger_error(sprintf('%1$s is <strong>deprecated</strong> since release %2$s with no alternative available.', $function_name, $release));
             }
         }
     }
@@ -497,23 +518,16 @@ function dashboard_student_count()
 function dashboard_course_count()
 {
     $app = \Liten\Liten::getInstance();
-    $count = $app->db->query('SELECT COUNT(courseID) as count FROM course WHERE currStatus = "A" AND endDate = "0000-00-00"');
-    $q = $count->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    $a = [];
-    foreach ($q as $r) {
-        $a[] = $r;
-    }
+    
+    $count = $app->db->course()
+        ->where('course.currStatus = "A" AND course.endDate = "0000-00-00"')
+        ->count('course.courseID');
+    
     $crseCount = '<div class="col-md-4">';
     $crseCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
     $crseCount .= '<span class="glyphicons book"><i></i><span class="txt">' . _t('Active Courses') . '</span></span>';
     $crseCount .= '<div class="clearfix"></div>';
-    $crseCount .= '<span class="count">' . $r['count'] . '</span>';
+    $crseCount .= '<span class="count">' . $count . '</span>';
     $crseCount .= '</a>';
     $crseCount .= '</div>';
     echo apply_filter('dashboard_course_count', $crseCount);
@@ -527,23 +541,16 @@ function dashboard_course_count()
 function dashboard_acadProg_count()
 {
     $app = \Liten\Liten::getInstance();
-    $count = $app->db->query('SELECT COUNT(acadProgID) FROM acad_program WHERE currStatus = "A" AND endDate = "0000-00-00"');
-    $q = $count->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    $a = [];
-    foreach ($q as $r) {
-        $a[] = $r;
-    }
+    
+    $count = $app->db->acad_program()
+        ->where('acad_program.currStatus = "A" AND acad_program.endDate = "0000-00-00"')
+        ->count('acad_program.acadProgID');
+    
     $progCount = '<div class="col-md-4">';
     $progCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
     $progCount .= '<span class="glyphicons keynote"><i></i><span class="txt">' . _t('Active Programs') . '</span></span>';
     $progCount .= '<div class="clearfix"></div>';
-    $progCount .= '<span class="count">' . $r['COUNT(acadProgID)'] . '</span>';
+    $progCount .= '<span class="count">' . $count . '</span>';
     $progCount .= '</a>';
     $progCount .= '</div>';
     echo apply_filter('dashboard_acadProg_count', $progCount);
