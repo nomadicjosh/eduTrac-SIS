@@ -211,27 +211,6 @@ function core_admin_bar()
 }
 
 /**
- * Wrapper function for the core PHP function: trigger_error.
- *
- * This function makes the error a little more understandable for the
- * end user to track down the issue.
- *
- * @since 6.1.15
- * @param string $message
- *            Custom message to print.
- * @param string $level
- *            Predefined PHP error constant.
- */
-function _trigger_error($message, $level = E_USER_NOTICE)
-{
-    $debug = debug_backtrace();
-    $caller = next($debug);
-    echo '<div class="alerts alerts-error center">';
-    trigger_error($message . ' in <strong>' . $caller['function'] . '</strong> called from <strong>' . $caller['file'] . '</strong> on line <strong>' . $caller['line'] . '</strong>' . "\n<br />error handler", $level);
-    echo '</div>';
-}
-
-/**
  * Mark a function as deprecated and inform when it has been used.
  *
  * There is a hook deprecated_function_run that will be called that can be used
@@ -278,16 +257,263 @@ function _deprecated_function($function_name, $release, $replacement = null)
     if (APP_ENV == 'DEV' && apply_filter('deprecated_function_trigger_error', true)) {
         if (function_exists('_t')) {
             if (! is_null($replacement)) {
-                _trigger_error(sprintf(_t('%1$s is <strong>deprecated</strong> since release %2$s! Use %3$s instead.'), $function_name, $release, $replacement));
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />'), $function_name, $release, $replacement));
             } else {
-                _trigger_error(sprintf(_t('%1$s is <strong>deprecated</strong> since release %2$s with no alternative available.'), $function_name, $release));
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $function_name, $release));
             }
         } else {
             if (! is_null($replacement)) {
-                _trigger_error(sprintf('%1$s is <strong>deprecated</strong> since release %2$s! Use %3$s instead.', $function_name, $release, $replacement));
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />', $function_name, $release, $replacement));
             } else {
-                _trigger_error(sprintf('%1$s is <strong>deprecated</strong> since release %2$s with no alternative available.', $function_name, $release));
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $function_name, $release));
             }
+        }
+    }
+}
+
+/**
+ * Mark a class as deprecated and inform when it has been used.
+ *
+ * There is a hook deprecated_class_run that will be called that can be used
+ * to get the backtrace up to what file, function/class called the deprecated
+ * class.
+ *
+ * The current behavior is to trigger a user error if APP_ENV is DEV.
+ *
+ * This function is to be used in every class that is deprecated.
+ *
+ * @since 6.1.15
+ *       
+ * @param string $class_name
+ *            The class that was called.
+ * @param string $release
+ *            The release of eduTrac SIS that deprecated the class.
+ * @param string $replacement
+ *            Optional. The class that should have been called. Default null.
+ */
+function _deprecated_class($class_name, $release, $replacement = null)
+{
+    /**
+     * Fires when a deprecated class is called.
+     *
+     * @since 6.1.15
+     *       
+     * @param string $class_name
+     *            The class that was called.
+     * @param string $replacement
+     *            The class that should have been called.
+     * @param string $release
+     *            The release of eduTrac SIS that deprecated the class.
+     */
+    do_action('deprecated_class_run', $class_name, $replacement, $release);
+    
+    /**
+     * Filter whether to trigger an error for deprecated classes.
+     *
+     * @since 6.1.15
+     *       
+     * @param bool $trigger
+     *            Whether to trigger the error for deprecated classes. Default true.
+     */
+    if (APP_ENV == 'DEV' && apply_filter('deprecated_class_trigger_error', true)) {
+        if (function_exists('_t')) {
+            if (! is_null($replacement)) {
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />'), $class_name, $release, $replacement));
+            } else {
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $class_name, $release));
+            }
+        } else {
+            if (! is_null($replacement)) {
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />', $class_name, $release, $replacement));
+            } else {
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $class_name, $release));
+            }
+        }
+    }
+}
+
+/**
+ * Mark a class's method as deprecated and inform when it has been used.
+ *
+ * There is a hook deprecated_class_method_run that will be called that can be used
+ * to get the backtrace up to what file, function/class called the deprecated
+ * method.
+ *
+ * The current behavior is to trigger a user error if APP_ENV is DEV.
+ *
+ * This function is to be used in every class's method that is deprecated.
+ *
+ * @since 6.1.15
+ *       
+ * @param string $method_name
+ *            The class method that was called.
+ * @param string $release
+ *            The release of eduTrac SIS that deprecated the class's method.
+ * @param string $replacement
+ *            Optional. The class method that should have been called. Default null.
+ */
+function _deprecated_class_method($method_name, $release, $replacement = null)
+{
+    /**
+     * Fires when a deprecated class method is called.
+     *
+     * @since 6.1.15
+     *       
+     * @param string $method_name
+     *            The class's method that was called.
+     * @param string $replacement
+     *            The class method that should have been called.
+     * @param string $release
+     *            The release of eduTrac SIS that deprecated the class's method.
+     */
+    do_action('deprecated_class_method_run', $method_name, $replacement, $release);
+    
+    /**
+     * Filter whether to trigger an error for deprecated class methods.
+     *
+     * @since 6.1.15
+     *       
+     * @param bool $trigger
+     *            Whether to trigger the error for deprecated class methods. Default true.
+     */
+    if (APP_ENV == 'DEV' && apply_filter('deprecated_class_method_trigger_error', true)) {
+        if (function_exists('_t')) {
+            if (! is_null($replacement)) {
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />'), $method_name, $release, $replacement));
+            } else {
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $method_name, $release));
+            }
+        } else {
+            if (! is_null($replacement)) {
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />', $method_name, $release, $replacement));
+            } else {
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $method_name, $release));
+            }
+        }
+    }
+}
+
+/**
+ * Mark a function argument as deprecated and inform when it has been used.
+ *
+ * This function is to be used whenever a deprecated function argument is used.
+ * Before this function is called, the argument must be checked for whether it was
+ * used by comparing it to its default value or evaluating whether it is empty.
+ * For example:
+ *
+ * if ( ! empty( $deprecated ) ) {
+ * _deprecated_argument( __FUNCTION__, '6.1.00' );
+ * }
+ *
+ *
+ * There is a hook deprecated_argument_run that will be called that can be used
+ * to get the backtrace up to what file and function used the deprecated
+ * argument.
+ *
+ * The current behavior is to trigger a user error if APP_ENV is set to DEV.
+ *
+ * @since 6.1.15
+ *       
+ * @param string $function_name
+ *            The function that was called.
+ * @param string $release
+ *            The release of eduTrac SIS that deprecated the argument used.
+ * @param string $message
+ *            Optional. A message regarding the change. Default null.
+ */
+function _deprecated_argument($function_name, $release, $message = null)
+{
+    /**
+     * Fires when a deprecated argument is called.
+     *
+     * @since 6.1.15
+     *       
+     * @param string $function_name
+     *            The function that was called.
+     * @param string $message
+     *            A message regarding the change.
+     * @param string $release
+     *            The release of eduTrac SIS that deprecated the argument used.
+     */
+    do_action('deprecated_argument_run', $function_name, $message, $release);
+    /**
+     * Filter whether to trigger an error for deprecated arguments.
+     *
+     * @since 3.0.0
+     *       
+     * @param bool $trigger
+     *            Whether to trigger the error for deprecated arguments. Default true.
+     */
+    if (APP_ENV == 'DEV' && apply_filter('deprecated_argument_trigger_error', true)) {
+        if (function_exists('_t')) {
+            if (! is_null($message)) {
+                _trigger_error(sprintf(_t('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s! %3$s. <br />'), $function_name, $release, $message));
+            } else {
+                _trigger_error(sprintf(_t('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $function_name, $release));
+            }
+        } else {
+            if (! is_null($message)) {
+                _trigger_error(sprintf('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s! %3$s. <br />', $function_name, $release, $message));
+            } else {
+                _trigger_error(sprintf('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $function_name, $release));
+            }
+        }
+    }
+}
+
+/**
+ * Mark something as being incorrectly called.
+ *
+ * There is a hook incorrectly_called_run that will be called that can be used
+ * to get the backtrace up to what file and function called the deprecated
+ * function.
+ *
+ * The current behavior is to trigger a user error if APP_ENV is set to DEV.
+ *
+ * @since 6.1.15
+ *       
+ * @param string $function_name
+ *            The function that was called.
+ * @param string $message
+ *            A message explaining what has been done incorrectly.
+ * @param string $release
+ *            The release of eduTrac SIS where the message was added.
+ */
+function _incorrectly_called($function_name, $message, $release)
+{
+    
+    /**
+     * Fires when the given function is being used incorrectly.
+     *
+     * @since 6.1.15
+     *       
+     * @param string $function_name
+     *            The function that was called.
+     * @param string $message
+     *            A message explaining what has been done incorrectly.
+     * @param string $release
+     *            The release of eduTrac SIS where the message was added.
+     */
+    do_action('incorrectly_called_run', $function_name, $message, $release);
+    
+    /**
+     * Filter whether to trigger an error for _incorrectly_called() calls.
+     *
+     * @since 3.1.0
+     *       
+     * @param bool $trigger
+     *            Whether to trigger the error for _incorrectly_called() calls. Default true.
+     */
+    if (APP_ENV == 'DEV' && apply_filter('incorrectly_called_trigger_error', true)) {
+        if (function_exists('_t')) {
+            $release = is_null($release) ? '' : sprintf(_t('(This message was added in release %s.) <br /><br />'), $release);
+            /* translators: %s: Codex URL */
+            $message .= ' ' . sprintf(_t('Please see <a href="%s">Debugging in eduTrac SIS</a> for more information.'), 'http://developer.edutracsis.com/codex/debugging-edutrac-sis/');
+            _trigger_error(sprintf(_t('%1$s() was called <strong>incorrectly</strong>. %2$s %3$s <br />'), $function_name, $message, $release));
+        } else {
+            $release = is_null($release) ? '' : sprintf('(This message was added in release %s.) <br /><br />', $release);
+            $message .= sprintf(' Please see <a href="%s">Debugging in eduTrac SIS</a> for more information.', 'http://developer.edutracsis.com/codex/debugging-edutrac-sis/');
+            _trigger_error(sprintf('%1$s() was called <strong>incorrectly</strong>. %2$s %3$s <br />', $function_name, $message, $release));
         }
     }
 }
@@ -466,6 +692,7 @@ function dashboard_top_widgets()
  */
 function dashboard_right_widgets()
 {
+    _deprecated_function(__FUNCTION__, '5.0.0');
     /**
      * Prints widgets on the right side of the dashboard.
      *
@@ -1211,6 +1438,52 @@ function get_http_response_code($url)
     return apply_filter('http_response_code', $status);
 }
 
+/**
+ * Plugin success message when plugin is activated successfully.
+ *
+ * @since 6.1.15
+ * @param string $plugin_name
+ *            The name of the plugin that was just activated.
+ */
+function etsis_plugin_activate_message($plugin_name)
+{
+    $app = \Liten\Liten::getInstance();
+    $success = $app->flash('plugin_success_message', _t('Plugin <strong>activated</strong>.'));
+    /**
+     * Filter the default plugin success activation message.
+     *
+     * @since 6.1.15
+     * @param string $success
+     *            The success activation message.
+     * @param string $plugin_name
+     *            The name of the plugin that was just activated.
+     */
+    return apply_filter('etsis_plugin_activate_message', $success, $plugin_name);
+}
+
+/**
+ * Plugin success message when plugin is deactivated successfully.
+ *
+ * @since 6.1.15
+ * @param string $plugin_name
+ *            The name of the plugin that was just deactivated.
+ */
+function etsis_plugin_deactivate_message($plugin_name)
+{
+    $app = \Liten\Liten::getInstance();
+    $success = $app->flash('plugin_success_message', _t('Plugin <strong>deactivated</strong>.'));
+    /**
+     * Filter the default plugin success deactivation message.
+     *
+     * @since 6.1.15
+     * @param string $success
+     *            The success deactivation message.
+     * @param string $plugin_name
+     *            The name of the plugin that was just deactivated.
+     */
+    return apply_filter('etsis_plugin_deactivate_message', $success, $plugin_name);
+}
+
 add_action('admin_head', 'head_release_meta', 5);
 add_action('myet_head', 'head_release_meta', 5);
 add_action('release', 'foot_release', 5);
@@ -1219,6 +1492,8 @@ add_action('dashboard_top_widgets', 'dashboard_course_count', 5);
 add_action('dashboard_top_widgets', 'dashboard_acadProg_count', 5);
 add_action('dashboard_right_widgets', 'dashboard_clock', 5);
 add_action('dashboard_right_widgets', 'dashboard_weather', 5);
+add_action('activated_plugin', 'etsis_plugin_activate_message', 5, 1);
+add_action('deactivated_plugin', 'etsis_plugin_deactivate_message', 5, 1);
 add_filter('the_myet_page_content', 'et_autop');
 add_filter('the_myet_page_content', 'parsecode_unautop');
 add_filter('the_myet_page_content', 'do_parsecode', 5);
