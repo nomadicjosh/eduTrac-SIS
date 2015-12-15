@@ -1,4 +1,5 @@
 <?php
+use app\src\Plugin;
 if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 /**
@@ -43,10 +44,16 @@ function get_base_url()
  */
 function _mkdir($path)
 {
-    if (!is_dir($path)) {
-        if (!mkdir($path, 0755, true)) {
-            _error_log('core_function', sprintf(_t('The following directory could not be created: %s'), $path));
+    if ('' == _trim($path)) {
+        $message = _t('Invalid directory path: Empty path given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
     
+    if (! is_dir($path)) {
+        if (! mkdir($path, 0755, true)) {
+            _error_log('core_function', sprintf(_t('The following directory could not be created: %s'), $path));
+            
             return;
         }
     }
@@ -487,6 +494,18 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
  */
 function isStudent($id)
 {
+    if ('' == _trim($id)) {
+        $message = _t('Invalid student ID: Empty ID given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
+    if (! is_numeric($id)) {
+        $message = _t('Invalid student ID: student id must be numeric.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
     $app = \Liten\Liten::getInstance();
     
     $stu = $app->db->student()
@@ -510,15 +529,25 @@ function isStudent($id)
  */
 function isRecordActive($id)
 {
+    if ('' == _trim($id)) {
+        $message = _t('Invalid person ID: empty ID given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
+    if (! is_numeric($id)) {
+        $message = _t('Invalid person ID: person id must be numeric.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
     $app = \Liten\Liten::getInstance();
     $rec = $app->db->person()
         ->select('person.personID')
         ->_join('student', 'person.personID = student.stuID')
         ->_join('staff', 'person.personID = staff.staffID')
-        ->where('person.personID = ?', $id)
-        ->_and_()
-        ->where('student.status = "A"')
-        ->_or_()
+        ->where('person.personID = ?', $id)->_and_()
+        ->where('student.status = "A"')->_or_()
         ->where('staff.status = "A"')
         ->findOne();
     
@@ -540,6 +569,18 @@ function isRecordActive($id)
  */
 function checkStuMenuAccess($id)
 {
+    if ('' == _trim($id)) {
+        $message = _t('Invalid person ID: empty ID given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
+    if (! is_numeric($id)) {
+        $message = _t('Invalid person ID: person id must be numeric.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
     if (! isStudent($id)) {
         return ' style="display:none !important;"';
     }
@@ -556,8 +597,16 @@ function checkStuMenuAccess($id)
  */
 function checkStuAccess($id)
 {
-    if(!is_int($id)) {
-        return false;
+    if ('' == _trim($id)) {
+        $message = _t('Invalid student ID: empty ID given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
+    if (! is_numeric($id)) {
+        $message = _t('Invalid student ID: student id must be numeric.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
     }
     
     return isStudent($id);
@@ -864,6 +913,18 @@ function is_count_zero($table, $field, $ID)
  */
 function is_ferpa($id)
 {
+    if ('' == _trim($id)) {
+        $message = _t('Invalid student ID: empty ID given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
+    if (! is_numeric($id)) {
+        $message = _t('Invalid student ID: student id must be numeric.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
     $app = \Liten\Liten::getInstance();
     
     $ferpa = $app->db->query("SELECT 
@@ -984,6 +1045,18 @@ function translate_addr_type($type)
  */
 function get_name($ID)
 {
+    if ('' == _trim($ID)) {
+        $message = _t('Invalid person ID: empty ID given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
+    if (! is_numeric($ID)) {
+        $message = _t('Invalid person ID: person id must be numeric.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
     $app = \Liten\Liten::getInstance();
     
     $name = $app->db->person()
@@ -1007,6 +1080,18 @@ function get_name($ID)
  */
 function get_initials($ID, $initials = 2)
 {
+    if ('' == _trim($ID)) {
+        $message = _t('Invalid person ID: empty ID given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
+    if (! is_numeric($ID)) {
+        $message = _t('Invalid person ID: person id must be numeric.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
     $app = \Liten\Liten::getInstance();
     $name = $app->db->person()
         ->select('lname,fname')
@@ -1368,9 +1453,10 @@ function et_parse_args($args, $defaults = '')
 }
 
 /**
+ *
  * @deprecated since release 6.1.15
- * @param unknown $file
- * @param string $delimiter
+ * @param unknown $file            
+ * @param string $delimiter            
  */
 function upgradeSQL($file, $delimiter = ';')
 {
@@ -1420,6 +1506,7 @@ function upgradeSQL($file, $delimiter = ';')
 }
 
 /**
+ *
  * @deprecated since release 6.1.15
  */
 function redirect_upgrade_db()
@@ -1464,6 +1551,12 @@ function foot_release()
  */
 function et_hash_password($password)
 {
+    if ('' == _trim($password)) {
+        $message = _t('Invalid password: empty password given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
     // By default, use the portable hash from phpass
     $hasher = new \app\src\PasswordHash(8, FALSE);
     
@@ -1998,7 +2091,8 @@ function prev_stu_acct_record($id, $stuID)
     $query = $app->db->stu_acct_bill()
         ->setTableAlias('sab')
         ->select('sab.billID')
-        ->where('sab.stuID = ?', $stuID)->_and_()
+        ->where('sab.stuID = ?', $stuID)
+        ->_and_()
         ->where('sab.ID < ?', $id)
         ->orderBy('sab.ID')
         ->limit(1);
@@ -2029,7 +2123,8 @@ function next_stu_acct_record($id, $stuID)
     $query = $app->db->stu_acct_bill()
         ->setTableAlias('sab')
         ->select('sab.billID')
-        ->where('sab.stuID = ?', $stuID)->_and_()
+        ->where('sab.stuID = ?', $stuID)
+        ->_and_()
         ->where('sab.ID > ?', $id)
         ->orderBy('sab.ID')
         ->limit(1);
@@ -2151,6 +2246,12 @@ function tagList()
 
 function check_mime_type($file, $mode = 0)
 {
+    if ('' == _trim($file)) {
+        $message = _t('Invalid file: empty file given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
     // mode 0 = full check
     // mode 1 = extension check only
     $mime_types = array(
@@ -2242,6 +2343,237 @@ function is_et_exception($object)
 function file_mod_time($file)
 {
     return filemtime($file);
+}
+
+/**
+ * Returns an array of function names in a file.
+ *
+ * @since 6.1.15
+ * @param string $file
+ *            The path to the file.
+ * @param bool $sort
+ *            If TRUE, sort results by function name.
+ */
+function get_functions_in_file($file, $sort = FALSE)
+{
+    $file = file($file);
+    $functions = [];
+    foreach ($file as $line) {
+        $line = trim($line);
+        if (substr($line, 0, 8) == 'function') {
+            $functions[] = strtolower(substr($line, 9, strpos($line, '(') - 9));
+        }
+    }
+    if ($sort) {
+        asort($functions);
+        $functions = array_values($functions);
+    }
+    return $functions;
+}
+
+/**
+ * Checks a given file for any duplicated named user functions.
+ *
+ * @since 6.1.15
+ * @param string $file_name            
+ */
+function is_duplicate_function($file_name)
+{
+    if ('' == _trim($file_name)) {
+        $message = _t('Invalid file name: empty file name given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
+    $plugin = get_functions_in_file($file_name);
+    $functions = get_defined_functions();
+    $merge = array_merge($plugin, $functions['user']);
+    if (count($merge) !== count(array_unique($merge))) {
+        $dupe = array_unique(array_diff_assoc($merge, array_unique($merge)));
+        foreach ($dupe as $key => $value) {
+            return new \app\src\etError('duplicate_function_error', sprintf(_t('The following function is already defined elsewhere: <strong>%s</strong>'), $value));
+        }
+    }
+    return false;
+}
+
+/**
+ * Performs a check within a php script and returns any other files
+ * that might have been required or included.
+ *
+ * @since 6.1.15
+ * @param string $file_name
+ *            PHP script to check.
+ */
+function etsis_php_check_includes($file_name)
+{
+    if ('' == _trim($file_name)) {
+        $message = _t('Invalid file name: empty file name given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        return;
+    }
+    
+    // NOTE that any file coming into this function has already passed the syntax check, so
+    // we can assume things like proper line terminations
+    $includes = [];
+    // Get the directory name of the file so we can prepend it to relative paths
+    $dir = dirname($file_name);
+    
+    // Split the contents of $fileName about requires and includes
+    // We need to slice off the first element since that is the text up to the first include/require
+    $requireSplit = array_slice(preg_split('/require|include/i', _file_get_contents($file_name)), 1);
+    
+    // For each match
+    foreach ($requireSplit as $string) {
+        // Substring up to the end of the first line, i.e. the line that the require is on
+        $string = substr($string, 0, strpos($string, ";"));
+        
+        // If the line contains a reference to a variable, then we cannot analyse it
+        // so skip this iteration
+        if (strpos($string, "$") !== false) {
+            continue;
+        }
+        
+        // Split the string about single and double quotes
+        $quoteSplit = preg_split('/[\'"]/', $string);
+        
+        // The value of the include is the second element of the array
+        // Putting this in an if statement enforces the presence of '' or "" somewhere in the include
+        // includes with any kind of run-time variable in have been excluded earlier
+        // this just leaves includes with constants in, which we can't do much about
+        if ($include = $quoteSplit[1]) {
+            // If the path is not absolute, add the dir and separator
+            // Then call realpath to chop out extra separators
+            if (strpos($include, ':') === FALSE)
+                $include = realpath($dir . DS . $include);
+            
+            array_push($includes, $include);
+        }
+    }
+    
+    return $includes;
+}
+
+/**
+ * Performs a syntax and error check of a given PHP script.
+ *
+ * @since 6.1.15
+ * @param string $file_name
+ *            PHP script to check.
+ * @param bool $check_includes
+ *            If set to TRUE, will check if other files have been included.
+ * @return void|\app\src\Exception\Exception
+ */
+function etsis_php_check_syntax($file_name, $check_includes = true)
+{
+    // If it is not a file or we can't read it throw an exception
+    if (! is_file($file_name) || ! is_readable($file_name)) {
+        return new \app\src\Exception\Exception(_t('Cannot read file ') . $file_name, 'php_check_syntax');
+    }
+    
+    $dupe_function = is_duplicate_function($file_name);
+    
+    if (is_et_error($dupe_function)) {
+        return new \app\src\Exception\Exception($dupe_function->get_error_message(), 'php_check_syntax');
+    }
+    
+    // Sort out the formatting of the filename
+    $file_name = realpath($file_name);
+    
+    // Get the shell output from the syntax check command
+    $output = shell_exec('php -l "' . $file_name . '"');
+    
+    // Try to find the parse error text and chop it off
+    $syntaxError = preg_replace("/Errors parsing.*$/", "", $output, - 1, $count);
+    
+    // If the error text above was matched, throw an exception containing the syntax error
+    if ($count > 0) {
+        return new \app\src\Exception\Exception(trim($syntaxError), 'php_check_syntax');
+    }
+    
+    // If we are going to check the files includes
+    if ($check_includes) {
+        foreach (etsis_php_check_includes($file_name) as $include) {
+            // Check the syntax for each include
+            etsis_php_check_syntax($include);
+        }
+    }
+}
+
+/**
+ * Validates a plugin and checks to make sure there are no syntax and/or
+ * parsing errors.
+ *
+ * @since 6.1.15
+ * @param string $plugin_name
+ *            Name of the plugin file (i.e. moodle.plugin.php).
+ */
+function etsis_validate_plugin($plugin_name)
+{
+    $app = \Liten\Liten::getInstance();
+    
+    $plugin = str_replace('.plugin.php', '', $plugin_name);
+    
+    if (! file_exists(PLUGINS_DIR . $plugin . '/' . $plugin_name)) {
+        $file = PLUGINS_DIR . $plugin_name;
+    } else {
+        $file = PLUGINS_DIR . $plugin . '/' . $plugin_name;
+    }
+    
+    $error = etsis_php_check_syntax($file);
+    if (is_et_exception($error)) {
+        $app->flash('error_message', _t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br />') . $error->getMessage());
+        return false;
+    }
+    
+    if (file_exists($file)) {
+        include_once ($file);
+    }
+    
+    /**
+     * Fires before a specific plugin is activated.
+     *
+     * $pluginName refers to the plugin's
+     * name (i.e. moodle.plugin.php).
+     *
+     * @since 6.1.00
+     * @param string $plugin_name
+     *            The plugin's base name.
+     */
+    do_action('activate_plugin', $plugin_name);
+    
+    /**
+     * Fires as a specifig plugin is being activated.
+     *
+     * $pluginName refers to the plugin's
+     * name (i.e. moodle.plugin.php).
+     *
+     * @since 6.1.00
+     * @param string $plugin_name
+     *            The plugin's base name.
+     */
+    do_action('activate_' . $plugin_name);
+    
+    /**
+     * Activate the plugin if there are no errors.
+     *
+     * @since 5.0.0
+     * @param string $plugin_name
+     *            The plugin's base name.
+     */
+    activate_plugin($plugin_name);
+    
+    /**
+     * Fires after a plugin has been activated.
+     *
+     * $pluginName refers to the plugin's
+     * name (i.e. moodle.plugin.php).
+     *
+     * @since 6.1.06
+     * @param string $plugin_name
+     *            The plugin's base name.
+     */
+    do_action('activated_plugin', $plugin_name);
 }
 
 /**
@@ -2895,7 +3227,7 @@ function hl_bal($t, $do = 1, $in = 'div')
         'thead' => 1,
         'tr' => 1
     ); // Omitable closing
-                                                                                                                                                         // block/inline type; ins & del both type; #pcdata: text
+       // block/inline type; ins & del both type; #pcdata: text
     $eB = array(
         'address' => 1,
         'blockquote' => 1,
