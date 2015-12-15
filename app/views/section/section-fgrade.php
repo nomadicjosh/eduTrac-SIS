@@ -12,6 +12,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
+$acl = new \app\src\ACL(get_persondata('personID'));
 $screen = 'vsect';
 ?>
 
@@ -88,7 +89,7 @@ $screen = 'vsect';
     			
 			<!-- Form actions -->
 			<div class="form-actions">
-				<?php if($grade[0]['facID'] == get_persondata('personID')) : ?>
+				<?php if($grade[0]['facID'] == get_persondata('personID') || $acl->userHasRole(8)) : ?>
 			    <?php if($grade[0]['stuID'] != '') : ?>
 			    <input type="hidden" name="attCredit" value="<?=_h($grade[0]['minCredit']);?>" />
 			    <input type="hidden" name="courseSecID" value="<?=_h($grade[0]['courseSecID']);?>" />
