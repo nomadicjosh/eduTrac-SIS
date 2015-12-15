@@ -31,10 +31,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 
 <h3><?=_t( 'Install Modules' );?></h3>
 <div class="innerLR">
+
+	<?=$message->flashMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
-    
-    <?=$message->flashMessage();?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>dashboard/install-module/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
