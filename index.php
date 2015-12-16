@@ -41,8 +41,8 @@ if (count($domain_parts) == 3) {
 $app = new \Liten\Liten(
     [
     'cookies.lifetime' => '86400',
-    'cookies.savepath' => '/tmp/' . $subdomain . '/',
-    'file.savepath' => '/tmp/' . $subdomain . '/files/'
+    'cookies.savepath' => ini_get('session.save_path') . DS . $subdomain . '/',
+    'file.savepath' => ini_get('session.save_path') . DS . $subdomain . '/files/'
     ]
 );
 
@@ -66,6 +66,7 @@ if (file_exists(BASE_PATH . 'config.php')) {
 require( APP_PATH . 'functions.php' );
 require( APP_PATH . 'functions' . DS . 'dependency.php' );
 require( APP_PATH . 'functions' . DS . 'auth-function.php' );
+require( APP_PATH . 'functions' . DS . 'cache-function.php' );
 require( APP_PATH . 'functions' . DS . 'textdomain-function.php' );
 require( APP_PATH . 'functions' . DS . 'core-function.php' );
 require( APP_PATH . 'functions' . DS . 'parsecode-function.php' );
