@@ -22,7 +22,7 @@ function _etsis_cache_init()
 {
     $cache_type = apply_filter('etsis_cache_type', 'file');
     
-    $cache = new \app\src\Cache\Cache($cache_type);
+    $cache = new \app\src\Cache\Object_Cache($cache_type);
     
     if(is_et_exception($cache)) {
         return $cache->getMessage();
