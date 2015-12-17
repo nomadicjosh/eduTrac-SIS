@@ -11,8 +11,8 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-define('CURRENT_RELEASE', '6.0.00');
-define('RELEASE_TAG', '6.2.00-Beta');
+define('CURRENT_RELEASE', '6.2.0');
+define('RELEASE_TAG', '6.2.0-Beta');
 
 $app = \Liten\Liten::getInstance();
 
@@ -46,7 +46,7 @@ function _mkdir($path)
 {
     if ('' == _trim($path)) {
         $message = _t('Invalid directory path: Empty path given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -242,8 +242,10 @@ function courseList($id = '')
     $app = \Liten\Liten::getInstance();
     $crse = $app->db->course()
         ->select('courseCode')
-        ->where('courseID <> ?', $id)->_and_()
-        ->where('currStatus = "A"')->_and_()
+        ->where('courseID <> ?', $id)
+        ->_and_()
+        ->where('currStatus = "A"')
+        ->_and_()
         ->where('endDate <= "0000-00-00"');
     $q = $crse->find(function ($data) {
         $array = [];
@@ -496,13 +498,13 @@ function isStudent($id)
 {
     if ('' == _trim($id)) {
         $message = _t('Invalid student ID: Empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
     if (! is_numeric($id)) {
         $message = _t('Invalid student ID: student id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -531,13 +533,13 @@ function isRecordActive($id)
 {
     if ('' == _trim($id)) {
         $message = _t('Invalid person ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
     if (! is_numeric($id)) {
         $message = _t('Invalid person ID: person id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -546,8 +548,10 @@ function isRecordActive($id)
         ->select('person.personID')
         ->_join('student', 'person.personID = student.stuID')
         ->_join('staff', 'person.personID = staff.staffID')
-        ->where('person.personID = ?', $id)->_and_()
-        ->where('student.status = "A"')->_or_()
+        ->where('person.personID = ?', $id)
+        ->_and_()
+        ->where('student.status = "A"')
+        ->_or_()
         ->where('staff.status = "A"')
         ->findOne();
     
@@ -571,13 +575,13 @@ function checkStuMenuAccess($id)
 {
     if ('' == _trim($id)) {
         $message = _t('Invalid person ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
     if (! is_numeric($id)) {
         $message = _t('Invalid person ID: person id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -599,13 +603,13 @@ function checkStuAccess($id)
 {
     if ('' == _trim($id)) {
         $message = _t('Invalid student ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
     if (! is_numeric($id)) {
         $message = _t('Invalid student ID: student id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -695,8 +699,10 @@ function getJobID()
     $app = \Liten\Liten::getInstance();
     $job = $app->db->staff_meta()
         ->select('jobID')
-        ->where('staffID = ?', get_persondata('personID'))->_and_()
-        ->where('endDate = "NULL"')->_or_()
+        ->where('staffID = ?', get_persondata('personID'))
+        ->_and_()
+        ->where('endDate = "NULL"')
+        ->_or_()
         ->where('endDate = "0000-00-00"')
         ->findOne();
     
@@ -721,7 +727,8 @@ function getStaffJobTitle($id)
     $title = $app->db->job()
         ->select('job.title')
         ->_join('staff_meta', 'job.ID = staff_meta.jobID')
-        ->where('staff_meta.staffID = ?', $id)->_and_()
+        ->where('staff_meta.staffID = ?', $id)
+        ->_and_()
         ->where('staff_meta.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id)
         ->findOne();
     
@@ -915,13 +922,13 @@ function is_ferpa($id)
 {
     if ('' == _trim($id)) {
         $message = _t('Invalid student ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
     if (! is_numeric($id)) {
         $message = _t('Invalid student ID: student id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -963,7 +970,7 @@ function logError($type, $string, $file, $line)
 /**
  * Custom error log function for better PHP logging.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $name
  *            Log channel and log file prefix.
  * @param string $message
@@ -1047,13 +1054,13 @@ function get_name($ID)
 {
     if ('' == _trim($ID)) {
         $message = _t('Invalid person ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
     if (! is_numeric($ID)) {
         $message = _t('Invalid person ID: person id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -1082,13 +1089,13 @@ function get_initials($ID, $initials = 2)
 {
     if ('' == _trim($ID)) {
         $message = _t('Invalid person ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
     if (! is_numeric($ID)) {
         $message = _t('Invalid person ID: person id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -1127,8 +1134,10 @@ function getStuSec($code, $term)
 {
     $app = \Liten\Liten::getInstance();
     $stcs = $app->db->stu_course_sec()
-        ->where('stuID = ?', get_persondata('personID'))->_and_()
-        ->where('courseSecCode = ?', $code)->_and_()
+        ->where('stuID = ?', get_persondata('personID'))
+        ->_and_()
+        ->where('courseSecCode = ?', $code)
+        ->_and_()
         ->where('termCode = ?', $term)
         ->findOne();
     
@@ -1399,8 +1408,10 @@ function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
     
     $nae = $app->db->person()
         ->select('photo')
-        ->where('personID = ?', $id)->_and_()
-        ->where('photo <> ""')->_and_()
+        ->where('personID = ?', $id)
+        ->_and_()
+        ->where('photo <> ""')
+        ->_and_()
         ->where('photo <> "NULL"')
         ->findOne();
     
@@ -1454,13 +1465,13 @@ function et_parse_args($args, $defaults = '')
 
 /**
  *
- * @deprecated since release 6.1.15
+ * @deprecated since release 6.2.0
  * @param unknown $file            
  * @param string $delimiter            
  */
 function upgradeSQL($file, $delimiter = ';')
 {
-    _deprecated_function(__FUNCTION__, '6.1.15');
+    _deprecated_function(__FUNCTION__, '6.2.0');
     
     $app = \Liten\Liten::getInstance();
     set_time_limit(0);
@@ -1507,11 +1518,11 @@ function upgradeSQL($file, $delimiter = ';')
 
 /**
  *
- * @deprecated since release 6.1.15
+ * @deprecated since release 6.2.0
  */
 function redirect_upgrade_db()
 {
-    _deprecated_function(__FUNCTION__, '6.1.15');
+    _deprecated_function(__FUNCTION__, '6.2.0');
     
     $app = \Liten\Liten::getInstance();
     $acl = new \app\src\ACL(get_persondata('personID'));
@@ -1553,7 +1564,7 @@ function et_hash_password($password)
 {
     if ('' == _trim($password)) {
         $message = _t('Invalid password: empty password given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -2248,7 +2259,7 @@ function check_mime_type($file, $mode = 0)
 {
     if ('' == _trim($file)) {
         $message = _t('Invalid file: empty file given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -2336,7 +2347,7 @@ function is_et_exception($object)
 /**
  * Returns the datetime of when the content of file was changed.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $file
  *            Absolute path to file.
  */
@@ -2348,7 +2359,7 @@ function file_mod_time($file)
 /**
  * Returns an array of function names in a file.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $file
  *            The path to the file.
  * @param bool $sort
@@ -2374,14 +2385,14 @@ function get_functions_in_file($file, $sort = FALSE)
 /**
  * Checks a given file for any duplicated named user functions.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $file_name            
  */
 function is_duplicate_function($file_name)
 {
     if ('' == _trim($file_name)) {
         $message = _t('Invalid file name: empty file name given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -2401,7 +2412,7 @@ function is_duplicate_function($file_name)
  * Performs a check within a php script and returns any other files
  * that might have been required or included.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $file_name
  *            PHP script to check.
  */
@@ -2409,7 +2420,7 @@ function etsis_php_check_includes($file_name)
 {
     if ('' == _trim($file_name)) {
         $message = _t('Invalid file name: empty file name given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -2457,7 +2468,7 @@ function etsis_php_check_includes($file_name)
 /**
  * Performs a syntax and error check of a given PHP script.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $file_name
  *            PHP script to check.
  * @param bool $check_includes
@@ -2504,7 +2515,7 @@ function etsis_php_check_syntax($file_name, $check_includes = true)
  * Validates a plugin and checks to make sure there are no syntax and/or
  * parsing errors.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $plugin_name
  *            Name of the plugin file (i.e. moodle.plugin.php).
  */
@@ -2574,6 +2585,54 @@ function etsis_validate_plugin($plugin_name)
      *            The plugin's base name.
      */
     do_action('activated_plugin', $plugin_name);
+}
+
+/**
+ * Single file writable atribute check.
+ * Thanks to legolas558.users.sf.net
+ *
+ * @since 6.2.0
+ * @param string $path            
+ * @return true
+ */
+function win_is_writable($path)
+{
+    // will work in despite of Windows ACLs bug
+    // NOTE: use a trailing slash for folders!!!
+    // see http://bugs.php.net/bug.php?id=27609
+    // see http://bugs.php.net/bug.php?id=30931
+    if ($path{strlen($path) - 1} == '/') { // recursively return a temporary file path
+        return win_is_writable($path . uniqid(mt_rand()) . '.tmp');
+    } elseif (is_dir($path)) {
+        return win_is_writable($path . '/' . uniqid(mt_rand()) . '.tmp');
+    }
+    // check tmp file for read/write capabilities
+    $rm = file_exists($path);
+    $f = fopen($path, 'a');
+    if ($f === false) {
+        return false;
+    }
+    fclose($f);
+    if (! $rm) {
+        unlink($path);
+    }
+    return true;
+}
+
+/**
+ * Alternative to PHP's native is_writable function due to a Window's bug.
+ *
+ * @since 6.2.0
+ * @param string $path
+ *            Path to check.
+ */
+function etsis_is_writable($path)
+{
+    if ('WIN' === strtoupper(substr(PHP_OS, 0, 3))) {
+        return win_is_writable($path);
+    } else {
+        return is_writable($path);
+    }
 }
 
 /**
