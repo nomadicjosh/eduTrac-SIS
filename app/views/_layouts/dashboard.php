@@ -61,7 +61,7 @@
                 /**
                  * Can be used to add a custom admin bar.
                  * 
-                 * @since 6.1.15
+                 * @since 6.2.0
                  */
                 do_action('admin_bar');
                 ?>
@@ -73,7 +73,7 @@
                  * Prints any dashboard error notices or messages that should be
                  * displayed via plugins or some other method.
                  * 
-                 * @since 6.1.15
+                 * @since 6.2.0
                  */
                 do_action('dashboard_admin_notices');
                 ?>

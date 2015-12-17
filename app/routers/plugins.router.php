@@ -60,7 +60,7 @@ $app->group('/plugins', function () use($app, $css, $js) {
          * This function will validate a plugin and make sure
          * there are no errors before activating it.
          *
-         * @since 6.1.15
+         * @since 6.2.0
          */
         etsis_validate_plugin($plugin_name);
         

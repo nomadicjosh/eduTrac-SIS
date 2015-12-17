@@ -194,7 +194,7 @@ function jstree_sidebar_menu($screen, $crse = '', $sect = '', $nae = '', $staff 
 /**
  * Core admin bar include.
  *
- * @since 6.1.15
+ * @since 6.2.0
  */
 function core_admin_bar()
 {
@@ -221,7 +221,7 @@ function core_admin_bar()
  *
  * This function is to be used in every function that is deprecated.
  *
- * @since 6.1.15
+ * @since 6.2.0
  *       
  * @param string $function_name
  *            The function that was called.
@@ -235,7 +235,7 @@ function _deprecated_function($function_name, $release, $replacement = null)
     /**
      * Fires when a deprecated function is called.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      *       
      * @param string $function_name
      *            The function that was called.
@@ -249,7 +249,7 @@ function _deprecated_function($function_name, $release, $replacement = null)
     /**
      * Filter whether to trigger an error for deprecated functions.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      *       
      * @param bool $trigger
      *            Whether to trigger the error for deprecated functions. Default true.
@@ -282,7 +282,7 @@ function _deprecated_function($function_name, $release, $replacement = null)
  *
  * This function is to be used in every class that is deprecated.
  *
- * @since 6.1.15
+ * @since 6.2.0
  *       
  * @param string $class_name
  *            The class that was called.
@@ -296,7 +296,7 @@ function _deprecated_class($class_name, $release, $replacement = null)
     /**
      * Fires when a deprecated class is called.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      *       
      * @param string $class_name
      *            The class that was called.
@@ -310,7 +310,7 @@ function _deprecated_class($class_name, $release, $replacement = null)
     /**
      * Filter whether to trigger an error for deprecated classes.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      *       
      * @param bool $trigger
      *            Whether to trigger the error for deprecated classes. Default true.
@@ -343,7 +343,7 @@ function _deprecated_class($class_name, $release, $replacement = null)
  *
  * This function is to be used in every class's method that is deprecated.
  *
- * @since 6.1.15
+ * @since 6.2.0
  *       
  * @param string $method_name
  *            The class method that was called.
@@ -357,7 +357,7 @@ function _deprecated_class_method($method_name, $release, $replacement = null)
     /**
      * Fires when a deprecated class method is called.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      *       
      * @param string $method_name
      *            The class's method that was called.
@@ -371,7 +371,7 @@ function _deprecated_class_method($method_name, $release, $replacement = null)
     /**
      * Filter whether to trigger an error for deprecated class methods.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      *       
      * @param bool $trigger
      *            Whether to trigger the error for deprecated class methods. Default true.
@@ -412,7 +412,7 @@ function _deprecated_class_method($method_name, $release, $replacement = null)
  *
  * The current behavior is to trigger a user error if APP_ENV is set to DEV.
  *
- * @since 6.1.15
+ * @since 6.2.0
  *       
  * @param string $function_name
  *            The function that was called.
@@ -426,7 +426,7 @@ function _deprecated_argument($function_name, $release, $message = null)
     /**
      * Fires when a deprecated argument is called.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      *       
      * @param string $function_name
      *            The function that was called.
@@ -470,7 +470,7 @@ function _deprecated_argument($function_name, $release, $message = null)
  *
  * The current behavior is to trigger a user error if APP_ENV is set to DEV.
  *
- * @since 6.1.15
+ * @since 6.2.0
  *       
  * @param string $function_name
  *            The function that was called.
@@ -485,7 +485,7 @@ function _incorrectly_called($function_name, $message, $release)
     /**
      * Fires when the given function is being used incorrectly.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      *       
      * @param string $function_name
      *            The function that was called.
@@ -521,7 +521,7 @@ function _incorrectly_called($function_name, $message, $release)
 /**
  * Prints copyright in the dashboard footer.
  *
- * @since 6.1.15
+ * @since 6.2.0
  */
 function etsis_dashboard_copyright_footer()
 {
@@ -1441,7 +1441,7 @@ function get_http_response_code($url)
 /**
  * Plugin success message when plugin is activated successfully.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $plugin_name
  *            The name of the plugin that was just activated.
  */
@@ -1452,7 +1452,7 @@ function etsis_plugin_activate_message($plugin_name)
     /**
      * Filter the default plugin success activation message.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      * @param string $success
      *            The success activation message.
      * @param string $plugin_name
@@ -1464,7 +1464,7 @@ function etsis_plugin_activate_message($plugin_name)
 /**
  * Plugin success message when plugin is deactivated successfully.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $plugin_name
  *            The name of the plugin that was just deactivated.
  */
@@ -1475,7 +1475,7 @@ function etsis_plugin_deactivate_message($plugin_name)
     /**
      * Filter the default plugin success deactivation message.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      * @param string $success
      *            The success deactivation message.
      * @param string $plugin_name

@@ -29,7 +29,7 @@ $app->inst->singleton('module', function () {
  * This function makes the error a little more understandable for the
  * end user to track down the issue.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $message
  *            Custom message to print.
  * @param string $level
@@ -71,13 +71,13 @@ function apply_filter($hook, $value)
 {
     if ('' == _trim($hook)) {
         $message = _t('Invalid apply_filter hook: empty hook name given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
     if (! is_string($hook)) {
         $message = _t('Invalid apply_filter hook: hook name must be a string.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -106,13 +106,13 @@ function add_filter($hook, $function_to_add, $priority = 10, $accepted_args = 1)
 {
     if ('' == _trim($hook)) {
         $message = _t('Invalid add_filter hook: empty hook name given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
     if (! is_string($hook)) {
         $message = _t('Invalid add_filter hook: hook name must be a string.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -137,13 +137,13 @@ function add_action($hook, $function_to_add, $priority = 10, $accepted_args = 1)
 {
     if ('' == _trim($hook)) {
         $message = _t('Invalid add_action hook: empty hook name given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
     if (! is_string($hook)) {
         $message = _t('Invalid add_action hook: hook name must be a string.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -230,13 +230,13 @@ function do_action($hook, $arg = '')
 {
     if ('' == _trim($hook)) {
         $message = _t('Invalid do_action hook: empty hook name given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
     if (! is_string($hook)) {
         $message = _t('Invalid do_action hook: hook name must be a string.');
-        _incorrectly_called(__FUNCTION__, $message, '6.1.15');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
     
@@ -458,7 +458,7 @@ function __return_null()
 /**
  * Special function for file includes.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $file
  *            File which should be included/required.
  * @param bool $once
@@ -486,7 +486,7 @@ function etsis_load_file($file, $once = true, $show_errors = true)
 /**
  * Removes directory recursively along with any files.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $dir
  *            Directory that should be removed.
  */

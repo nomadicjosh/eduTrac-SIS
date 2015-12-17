@@ -82,7 +82,7 @@ function hasRestriction($perm)
  * This is an alternative to the hl() function which may become
  * deprecated in a later release.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $permission
  *            Permission to check for.
  * @return bool
@@ -102,7 +102,7 @@ function _he($permission)
  * This is an alternative to the ml() function which may become
  * depreated in a later release.
  *
- * @since 6.1.15
+ * @since 6.2.0
  * @param string $function_name
  *            Function to check for.
  * @return bool

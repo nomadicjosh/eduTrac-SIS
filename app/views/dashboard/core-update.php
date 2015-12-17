@@ -6,7 +6,7 @@ if (! defined('BASE_PATH'))
  *
  * @license GPLv3
  *         
- * @since 6.1.15
+ * @since 6.2.0
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
