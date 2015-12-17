@@ -4,7 +4,7 @@
  *
  * @license GPLv3
  * 
- * @since       6.1.15
+ * @since       6.2.0
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
@@ -294,8 +294,7 @@ $app = \Liten\Liten::getInstance();
                         <li class="glyphs">
                             <ul>
                                 <li><a href="<?= get_base_url(); ?>" class="glyphicons globe"><i></i></a></li>
-                                <li<?= ae('clear_database_cache'); ?>><a href="<?= get_base_url(); ?>dashboard/clearDBCache/" class="glyphicons database_minus"><i></i></a></li>
-                                <li<?= ae('clear_screen_cache'); ?>><a href="<?= get_base_url(); ?>dashboard/clearScreenCache/" class="glyphicons circle_minus"><i></i></a></li>
+                                <li<?= ae('clear_screen_cache'); ?>><a href="<?= get_base_url(); ?>dashboard/flushCache/" class="glyphicons circle_minus"><i></i></a></li>
                             </ul>
                         </li>
                     </ul>

@@ -282,13 +282,8 @@ $app->match('GET|POST', '/dashboard/install-module/', function () use($app) {
     ]);
 });
 
-$app->get('/dashboard/clearDBCache/', function () use($app, $dbcache) {
-    $dbcache->purge();
-    redirect($app->req->server['HTTP_REFERER']);
-});
-
-$app->get('/dashboard/clearScreenCache/', function () use($app, $cache) {
-    $cache->purge();
+$app->get('/dashboard/flushCache/', function () use($app) {
+    etsis_cache_flush();
     redirect($app->req->server['HTTP_REFERER']);
 });
 
