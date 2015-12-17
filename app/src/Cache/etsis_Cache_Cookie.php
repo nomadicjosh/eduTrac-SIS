@@ -4,7 +4,7 @@ if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * eduTrac SIS Filesystem Cache Class.
+ * eduTrac SIS Cookie Cache Class.
  *
  * @license GPLv3
  *         
@@ -13,12 +13,13 @@ if (! defined('BASE_PATH'))
  * @subpackage Cache
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
+class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_cache
 {
 
     /**
      * Application object.
      *
+     * @since 6.2.0
      * @var object
      */
     protected $_app;
@@ -26,6 +27,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
     /**
      * Cache directory object.
      *
+     * @since 6.2.0
      * @var string
      */
     protected $_dir;
@@ -48,7 +50,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
         $dir = $this->_app->config('file.savepath') . 'cache';
         
         /**
-         * Filter the file cache directory in order to override it
+         * Fiter the file cache directory in order to override it
          * in case some systems are having issues.
          *
          * @since 6.2.0
@@ -69,7 +71,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
          * If the directory isn't writable, throw an exception.
          */
         if (! etsis_is_writable($cacheDir)) {
-            return new \app\src\Exception\Exception(_t('Could not create the file cache directory.'), 'file_system_cache');
+            return new \app\src\Exception\Exception(_t('Could not create the file cache directory.'), 'cookie_cache');
         }
         
         /**
@@ -89,9 +91,9 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
      * @param mixed $data
      *            Data that should be cached.
      * @param string $group
-     *            Optional. Where the cache contents are grouped. Default: 'default'.
+     *            Optional. Where to group the cache contents. Default: 'default'.
      * @param int $ttl
-     *            Time to live sets the life of the cache file.
+     *            Time to live sets the life of the cache file. Default: 0 = expires immediately after request.
      */
     public function create($key, $data, $group = 'default', $ttl = 0)
     {
@@ -110,8 +112,10 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
         
         // If there is an issue with the handler, throw and exception.
         if (! $h) {
-            return new \app\src\Exception\Exception(_t('Could not write to cache'), 'file_system_cache');
+            return new \app\src\Exception\Exception(_t('Could not write to cache'), 'cookie_cache');
         }
+        
+        $this->_app->cookies->set(md5($unique_key), $unique_key, $ttl);
         
         // exclusive lock, will get released when the file is closed
         flock($h, LOCK_EX);
@@ -128,7 +132,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
             $data
         ));
         if (fwrite($h, $data) === false) {
-            return new \app\src\Exception\Exception(_t('Could not write to cache'), 'file_system_cache');
+            return new \app\src\Exception\Exception(_t('Could not write to cache'), 'cookie_cache');
         }
         fclose($h);
     }
@@ -150,7 +154,13 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
         
         $unique_key = $this->unique_key($key, $group);
         
-        $file_name = $this->getFileName($unique_key);
+        $x = isset($_COOKIE[md5($unique_key)]) ? $_COOKIE[md5($unique_key)] : false;
+        if ($x == false) {
+            return null;
+        } else {
+            $file_name = $this->getFileName($unique_key);
+        }
+        
         if (! file_exists($file_name)) {
             return false;
         }
@@ -171,6 +181,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
         if (! $data) {
             
             // If unserializing somehow didn't work out, we'll delete the file
+            $this->_app->cookies->remove(md5($unique_key));
             unlink($file_name);
             return false;
         }
@@ -178,6 +189,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
         if (time() > $data[0]) {
             
             // Unlinking when the file has expired
+            $this->_app->cookies->remove(md5($unique_key));
             unlink($file_name);
             return false;
         }
@@ -195,9 +207,9 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
      * @param mixed $data
      *            Data that should be cached.
      * @param string $group
-     *            Optional. Where the cache contents are grouped. Default: 'default'.
+     *            Optional. Where to group the cache contents. Default: 'default'.
      * @param int $ttl
-     *            Time to live sets the life of the cache file.
+     *            Time to live sets the life of the cache file. Default: no expiration.
      */
     public function update($key, $data, $group = 'default', $ttl = 0)
     {
@@ -215,7 +227,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
      * @param int|string $key
      *            Unique key of cache file.
      * @param string $group
-     *            Optional. Where the cache contents are grouped. Default: 'default'.
+     *            Optional. Where to group the cache contents. Default: 'default'.
      */
     public function delete($key, $group = 'default')
     {
@@ -231,6 +243,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
         
         $file_name = $this->getFileName($unique_key);
         if (file_exists($file_name)) {
+            $this->_app->cookies->remove(md5($unique_key));
             return unlink($file_name);
         } else {
             return false;
@@ -244,10 +257,12 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
      */
     public function flush()
     {
-        $cache = glob($this->_dir . 's_*');
+        $cache = glob($this->_dir . 's_cache*');
         if (is_array($cache)) {
             foreach ($cache as $file_name) {
                 if (file_exists($file_name)) {
+                    $key = str_replace($this->_dir . 's_cache', '', $file_name);
+                    $this->_app->cookies->remove($key);
                     unlink($file_name);
                 }
             }

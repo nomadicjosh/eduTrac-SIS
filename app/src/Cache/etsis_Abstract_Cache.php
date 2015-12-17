@@ -16,11 +16,15 @@ if (! defined('BASE_PATH'))
 abstract class etsis_Abstract_Cache
 {
 
-    abstract function read($key);
+    abstract function read($key, $group);
 
-    abstract function create($key, $data, $ttl);
+    abstract function create($key, $data, $group, $ttl);
 
-    abstract function delete($key);
-    
+    abstract function delete($key, $group);
+
+    abstract protected function unique_key($key, $group);
+
+    abstract protected function _exists($key, $group);
+
     abstract function flush();
 }
