@@ -4,7 +4,7 @@ if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * eduTrac SIS Cache Class
+ * eduTrac SIS Object Cache Class
  *
  * @license GPLv3
  *         
@@ -61,6 +61,12 @@ class Object_Cache
             
             $this->_cache->addServer($servers);
         } elseif ($type == 'custom') {
+            /**
+             * Fires when being used to call another caching system not
+             * native to eduTrac SIS.
+             * 
+             * @since 6.2.0
+             */
             $this->_cache = do_action('custom_cache_system');
         } elseif ($type == 'xcache') {
             $this->_cache = new \app\src\Cache\etsis_Cache_XCache();
