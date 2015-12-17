@@ -51,9 +51,9 @@ function etsis_cache_add($key, $data, $group = '', $expire = 120)
      *
      * @since 6.2.0
      * @param int $expire
-     *            When the cass data should expire, in seconds.
+     *            When the cache data should expire, in seconds.
      */
-    $ttl = apply_filter('etsis_cache_add_ttl', $expire);
+    $ttl = apply_filter('etsis_cache_increase_ttl', $expire);
     $cache = _etsis_cache_init();
     return $cache->create($key, $data, $group, (int) $ttl);
 }
