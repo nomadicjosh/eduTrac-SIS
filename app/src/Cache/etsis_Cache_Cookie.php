@@ -85,25 +85,29 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_cache
     /**
      * Creates the cache file.
      *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::create()
+     *
      * @since 6.2.0
      * @param int|string $key
      *            Unique key of the cache file.
      * @param mixed $data
      *            Data that should be cached.
-     * @param string $group
-     *            Optional. Where to group the cache contents. Default: 'default'.
+     * @param string $namespace
+     *            Optional. Where to namespace the cache contents. Default: 'default'.
      * @param int $ttl
      *            Time to live sets the life of the cache file. Default: 0 = expires immediately after request.
      */
-    public function create($key, $data, $group = 'default', $ttl = 0)
+    public function create($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (empty($group)) {
-            $group = 'default';
+        if (empty($namespace)) {
+            $namespace = 'default';
         }
         
-        $unique_key = $this->unique_key($key, $group);
+        $unique_key = $this->uniqueKey($key, $namespace);
         
-        if ($this->_exists($unique_key, $group)) {
+        if ($this->_exists($unique_key, $namespace)) {
             return false;
         }
         
@@ -140,19 +144,23 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_cache
     /**
      * Fetches cached data.
      *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::read()
+     *
      * @since 6.2.0
      * @param int|string $key
      *            Unique key of the cache file.
-     * @param string $group
-     *            Optional. Where the cache contents are grouped. Default: 'default'.
+     * @param string $namespace
+     *            Optional. Where the cache contents are namespaced. Default: 'default'.
      */
-    public function read($key, $group = 'default')
+    public function read($key, $namespace = 'default')
     {
-        if (empty($group)) {
-            $group = 'default';
+        if (empty($namespace)) {
+            $namespace = 'default';
         }
         
-        $unique_key = $this->unique_key($key, $group);
+        $unique_key = $this->uniqueKey($key, $namespace);
         
         $x = isset($_COOKIE[md5($unique_key)]) ? $_COOKIE[md5($unique_key)] : false;
         if ($x == false) {
@@ -201,43 +209,51 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_cache
      * This method only exists for
      * CRUD completeness purposes and just basically calls the create method.
      *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::update()
+     *
      * @since 6.2.0
      * @param int|string $key
      *            Unique key of the cache file.
      * @param mixed $data
      *            Data that should be cached.
-     * @param string $group
-     *            Optional. Where to group the cache contents. Default: 'default'.
+     * @param string $namespace
+     *            Optional. Where to namespace the cache contents. Default: 'default'.
      * @param int $ttl
      *            Time to live sets the life of the cache file. Default: no expiration.
      */
-    public function update($key, $data, $group = 'default', $ttl = 0)
+    public function update($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (empty($group)) {
-            $group = 'default';
+        if (empty($namespace)) {
+            $namespace = 'default';
         }
         
-        return $this->create($key, $data, $group, $ttl);
+        return $this->create($key, $data, $namespace, $ttl);
     }
 
     /**
      * Deletes a cache file based on unique key.
      *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::delete()
+     *
      * @since 6.2.0
      * @param int|string $key
      *            Unique key of cache file.
-     * @param string $group
-     *            Optional. Where to group the cache contents. Default: 'default'.
+     * @param string $namespace
+     *            Optional. Where to namespace the cache contents. Default: 'default'.
      */
-    public function delete($key, $group = 'default')
+    public function delete($key, $namespace = 'default')
     {
-        if (empty($group)) {
-            $group = 'default';
+        if (empty($namespace)) {
+            $namespace = 'default';
         }
         
-        $unique_key = $this->unique_key($key, $group);
+        $unique_key = $this->uniqueKey($key, $namespace);
         
-        if (! $this->_exists($unique_key, $group)) {
+        if (! $this->_exists($unique_key, $namespace)) {
             return false;
         }
         
@@ -252,6 +268,10 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_cache
 
     /**
      * Flushes the file system cache completely.
+     *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::flush()
      *
      * @since 6.2.0
      */
@@ -272,38 +292,94 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_cache
     }
 
     /**
+     * Removes all cache items from a particular namespace.
+     *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::flushNamespace()
+     *
+     * @since 6.2.0
+     * @param int|string $namespace
+     *            Optional. Where the cache contents are namespaced. Default: 'default'.
+     */
+    public function flushNamespace($namespace = 'default')
+    {
+        if (empty($namespace)) {
+            $namespace = 'default';
+        }
+        
+        $cache = glob($this->_dir . 's_cache_' . $namespace . ':*');
+        if (is_array($cache)) {
+            foreach ($cache as $file_name) {
+                if (file_exists($file_name)) {
+                    $key = str_replace($this->_dir . 's_cache_' . $namespace, '', $file_name);
+                    $this->_app->cookies->remove($key);
+                    unlink($file_name);
+                }
+            }
+        }
+        
+        return true;
+    }
+
+    /**
      * Generates a unique cache key.
+     *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::uniqueKey()
      *
      * @since 6.2.0
      * @access protected
      * @param int|string $key
      *            Unique key for cache file.
-     * @param string $group
-     *            Optional. Where the cache contents are grouped. Default: 'default'.
+     * @param string $namespace
+     *            Optional. Where the cache contents are namespaced. Default: 'default'.
      */
-    protected function unique_key($key, $group = 'default')
+    protected function uniqueKey($key, $namespace = 'default')
     {
-        if (empty($group)) {
-            $group = 'default';
+        if (empty($namespace)) {
+            $namespace = 'default';
         }
         
-        return $this->_cache[$group][$key] = $group . ':' . $key;
+        return $this->_cache[$namespace][$key] = $namespace . ':' . $key;
     }
 
     /**
      * Serves as a utility method to determine whether a key exists in the cache.
      *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::_exists()
+     *
      * @since 6.2.0
      * @access protected
      * @param int|string $key
      *            Cache key to check for existence.
-     * @param string $group
-     *            Cache group for the key existence check.
-     * @return bool Whether the key exists in the cache for the given group.
+     * @param string $namespace
+     *            Cache namespace for the key existence check.
+     * @return bool Whether the key exists in the cache for the given namespace.
      */
-    protected function _exists($key, $group)
+    protected function _exists($key, $namespace)
     {
-        return isset($this->_cache[$group]) && (isset($this->_cache[$group][$key]) || array_key_exists($key, $this->_cache[$group]));
+        return isset($this->_cache[$namespace]) && (isset($this->_cache[$namespace][$key]) || array_key_exists($key, $this->_cache[$namespace]));
+    }
+
+    /**
+     * Unique namespace for cache item.
+     *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::_namespace()
+     *
+     * @since 6.2.0
+     * @param int|string $value
+     *            The value to slice to get namespace.
+     */
+    protected function _namespace($value)
+    {
+        $namespace = explode(':', $value);
+        return $namespace[0] . ':';
     }
 
     /**
@@ -316,6 +392,6 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_cache
      */
     private function getFileName($key)
     {
-        return $this->_dir . 's_cache' . md5($key);
+        return $this->_dir . 's_cache_' . $this->_namespace($key) . md5($key);
     }
 }

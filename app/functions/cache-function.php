@@ -22,11 +22,8 @@ function _etsis_cache_init()
 {
     $cache_type = apply_filter('etsis_cache_type', 'file');
     
-    $cache = new \app\src\Cache\Object_Cache($cache_type);
+    $cache = new \app\src\Cache\etsis_Object_Cache($cache_type);
     
-    if(is_et_exception($cache)) {
-        return $cache->getMessage();
-    }
     return $cache;
 }
 
@@ -39,12 +36,14 @@ function _etsis_cache_init()
  *            The cache key to use for retrieval later.
  * @param mixed $data
  *            The data to add to the cache.
+ * @param string $namespace
+ *            Optional. Where the cache contents are namespaced.
  * @param int $expire
  *            Optional. When the cache data should expire, in seconds.
- *            Default: 120 seconds =  2 minutes.
+ *            Default: 120 seconds = 2 minutes.
  * @return bool False if cache key already exists, true on success.
  */
-function etsis_cache_add($key, $data, $group = '', $expire = 120)
+function etsis_cache_add($key, $data, $namespace = '', $expire = 120)
 {
     /**
      * Filter the expire time for cache item.
@@ -55,7 +54,7 @@ function etsis_cache_add($key, $data, $group = '', $expire = 120)
      */
     $ttl = apply_filter('etsis_cache_increase_ttl', $expire);
     $cache = _etsis_cache_init();
-    return $cache->create($key, $data, $group, (int) $ttl);
+    return $cache->create($key, $data, $namespace, (int) $ttl);
 }
 
 /**
@@ -65,13 +64,15 @@ function etsis_cache_add($key, $data, $group = '', $expire = 120)
  * @uses _etsis_cache_init()
  * @param int|string $key
  *            The key under which the cache contents are stored.
+ * @param string $namespace
+ *            Optional. Where the cache contents are namespaced.
  * @return bool|mixed False on failure to retrieve contents or the cache
  *         contents on success.
  */
-function etsis_cache_get($key, $group = '')
+function etsis_cache_get($key, $namespace = '')
 {
     $cache = _etsis_cache_init();
-    return $cache->read($key, $group);
+    return $cache->read($key, $namespace);
 }
 
 /**
@@ -83,12 +84,14 @@ function etsis_cache_get($key, $group = '')
  *            The key for the cache data that should be replaced.
  * @param mixed $data
  *            The new data to store in the cache.
+ * @param string $namespace
+ *            Optional. Where the cache contents are namespaced.
  * @param int $expire
  *            Optional. When to expire the cache contents, in seconds.
  *            Default: 120 seconds = 2 minutes.
  * @return bool False if original value does not exist, true if contents were replaced
  */
-function etsis_cache_replace($key, $data, $group = '', $expire = 120)
+function etsis_cache_replace($key, $data, $namespace = '', $expire = 120)
 {
     /**
      * Filter the expire time for cache item.
@@ -99,7 +102,7 @@ function etsis_cache_replace($key, $data, $group = '', $expire = 120)
      */
     $ttl = apply_filter('etsis_cache_replace_ttl', $expire);
     $cache = _etsis_cache_init();
-    return $cache->update($key, $data, $group, $ttl);
+    return $cache->update($key, $data, $namespace, $ttl);
 }
 
 /**
@@ -109,12 +112,14 @@ function etsis_cache_replace($key, $data, $group = '', $expire = 120)
  * @uses _etsis_cache_init()
  * @param int|string $key
  *            What the contents in the cache are called.
+ * @param string $namespace
+ *            Optional. Where the cache contents are namespaced.
  * @return bool True on successful removal, false on failure.
  */
-function etsis_cache_delete($key, $group = '')
+function etsis_cache_delete($key, $namespace = '')
 {
     $cache = _etsis_cache_init();
-    return $cache->delete($key, $group);
+    return $cache->delete($key, $namespace);
 }
 
 /**
@@ -128,4 +133,19 @@ function etsis_cache_flush()
 {
     $cache = _etsis_cache_init();
     return $cache->flush();
+}
+
+/**
+ * Removes all cache items from a particular namespace.
+ *
+ * @since 6.2.0
+ * @uses _etsis_cache_init()
+ * @param string $value
+ *            The namespace to delete from.
+ * @return bool False on failure, true on success
+ */
+function etsis_cache_flush_namespace($value)
+{
+    $cache = _etsis_cache_init();
+    return $cache->flushNamespace($value);
 }

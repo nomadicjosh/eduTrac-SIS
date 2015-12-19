@@ -13,7 +13,7 @@ if (! defined('BASE_PATH'))
  * @subpackage Cache
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-class Object_Cache
+class etsis_Object_Cache
 {
 
     /**
@@ -64,7 +64,7 @@ class Object_Cache
             /**
              * Fires when being used to call another caching system not
              * native to eduTrac SIS.
-             * 
+             *
              * @since 6.2.0
              */
             $this->_cache = do_action('custom_cache_system');
@@ -72,6 +72,10 @@ class Object_Cache
             $this->_cache = new \app\src\Cache\etsis_Cache_XCache();
         } elseif ($type == 'cookie') {
             $this->_cache = new \app\src\Cache\etsis_Cache_Cookie();
+        }
+        
+        if (is_et_exception($this->_cache)) {
+            return $this->_cache->getMessage();
         }
         
         return $this->_cache;
@@ -85,18 +89,18 @@ class Object_Cache
      *            Unique key of the cache file.
      * @param mixed $data
      *            Data that should be cached.
-     * @param string $group
-     *            Optional. Where the cache contents are grouped. Default: 'default'.
+     * @param string $namespace
+     *            Optional. Where the cache contents are namespaced. Default: 'default'.
      * @param int $ttl
      *            Time to live sets the life of the cache file. Default: 0.
      */
-    public function create($key, $data, $group = 'default', $ttl = 0)
+    public function create($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (empty($group)) {
-            $group = 'default';
+        if (empty($namespace)) {
+            $namespace = 'default';
         }
         
-        return $this->_cache->create($key, $data, $group, $ttl);
+        return $this->_cache->create($key, $data, $namespace, $ttl);
     }
 
     /**
@@ -105,16 +109,16 @@ class Object_Cache
      * @since 6.2.0
      * @param int|string $key
      *            Unique key of the cache file.
-     * @param string $group
-     *            Optional. Where the cache contents are grouped. Default: 'default'.
+     * @param string $namespace
+     *            Optional. Where the cache contents are namespaced. Default: 'default'.
      */
-    public function read($key, $group = 'default')
+    public function read($key, $namespace = 'default')
     {
-        if (empty($group)) {
-            $group = 'default';
+        if (empty($namespace)) {
+            $namespace = 'default';
         }
         
-        return $this->_cache->read($key, $group);
+        return $this->_cache->read($key, $namespace);
     }
 
     /**
@@ -127,18 +131,18 @@ class Object_Cache
      *            Unique key of the cache file.
      * @param mixed $data
      *            Data that should be cached.
-     * @param string $group
-     *            Optional. Where the cache contents are grouped. Default: 'default'.
+     * @param string $namespace
+     *            Optional. Where the cache contents are namespaced. Default: 'default'.
      * @param int $ttl
      *            Time to live sets the life of the cache file. Default: 0.
      */
-    public function update($key, $data, $group = 'default', $ttl = 0)
+    public function update($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (empty($group)) {
-            $group = 'default';
+        if (empty($namespace)) {
+            $namespace = 'default';
         }
         
-        return $this->create($key, $data, $group, $ttl);
+        return $this->create($key, $data, $namespace, $ttl);
     }
 
     /**
@@ -147,16 +151,16 @@ class Object_Cache
      * @since 6.2.0
      * @param int|string $key
      *            Unique key of cache file.
-     * @param string $group
-     *            Optional. Where the cache contents are grouped. Default: 'default'.
+     * @param string $namespace
+     *            Optional. Where the cache contents are namespaced. Default: 'default'.
      */
-    public function delete($key, $group = 'default')
+    public function delete($key, $namespace = 'default')
     {
-        if (empty($group)) {
-            $group = 'default';
+        if (empty($namespace)) {
+            $namespace = 'default';
         }
         
-        return $this->_cache->delete($key, $group);
+        return $this->_cache->delete($key, $namespace);
     }
 
     /**
@@ -167,5 +171,21 @@ class Object_Cache
     public function flush()
     {
         return $this->_cache->flush();
+    }
+
+    /**
+     * Removes all cache items from a particular namespace.
+     *
+     * @since 6.2.0
+     * @param int|string $namespace
+     *            Optional. Where the cache contents are namespaced. Default: 'default'.
+     */
+    public function flushNamespace($namespace = 'default')
+    {
+        if (empty($namespace)) {
+            $namespace = 'default';
+        }
+        
+        return $this->_cache->flushNamespace($namespace);
     }
 }
