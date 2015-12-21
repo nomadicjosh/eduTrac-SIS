@@ -340,6 +340,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                     $email->course_registration(get_persondata('personID'), $_POST['termCode'], get_base_url());
                 }
             }
+            etsis_cache_flush_namespace('student_account');
             $app->flash('success_message', $flashNow->notice(200));
         } else {
             $app->flash('error_message', $flashNow->notice(409));
