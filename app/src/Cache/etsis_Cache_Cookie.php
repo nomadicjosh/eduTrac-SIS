@@ -107,7 +107,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_cache
         
         $unique_key = $this->uniqueKey($key, $namespace);
         
-        if ($this->_exists($unique_key, $namespace)) {
+        if ($this->_exists($key, $namespace)) {
             return false;
         }
         
@@ -253,14 +253,14 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_cache
         
         $unique_key = $this->uniqueKey($key, $namespace);
         
-        if (! $this->_exists($unique_key, $namespace)) {
+        if (! $this->_exists($key, $namespace)) {
             return false;
         }
         
         $file_name = $this->getFileName($unique_key);
         if (file_exists($file_name)) {
             $this->_app->cookies->remove(md5($unique_key));
-            return unlink($file_name);
+            unlink($file_name);
         } else {
             return false;
         }
@@ -358,11 +358,15 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_cache
      *            Cache key to check for existence.
      * @param string $namespace
      *            Cache namespace for the key existence check.
-     * @return bool Whether the key exists in the cache for the given namespace.
+     * @return bool Whether the cache item exists in the cache for the given key and namespace.
      */
     protected function _exists($key, $namespace)
     {
-        return isset($this->_cache[$namespace]) && (isset($this->_cache[$namespace][$key]) || array_key_exists($key, $this->_cache[$namespace]));
+        $unique_key = $this->uniqueKey($key, $namespace);
+        
+        if (is_readable($this->getFileName($unique_key))) {
+            return true;
+        }
     }
 
     /**
