@@ -1,4 +1,7 @@
-<?php $app = \Liten\Liten::getInstance(); ?>
+<?php $app = \Liten\Liten::getInstance();
+ob_start();
+ob_implicit_flush(0);
+?>
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="ie lt-ie9 lt-ie8 lt-ie7 fluid top-full"> <![endif]-->
 <!--[if IE 7]>    <html class="ie lt-ie9 lt-ie8 fluid top-full sticky-top"> <![endif]-->
@@ -128,3 +131,4 @@
 	<?php footer(); ?>
     </body>
 </html>
+<?php print_gzipped_page(); ?>
