@@ -72,6 +72,8 @@ class etsis_Object_Cache
             $this->_cache = new \app\src\Cache\etsis_Cache_XCache();
         } elseif ($type == 'cookie') {
             $this->_cache = new \app\src\Cache\etsis_Cache_Cookie();
+        } elseif ($type == 'json') {
+            $this->_cache = new \app\src\Cache\etsis_Cache_JSON();
         }
         
         if (is_et_exception($this->_cache)) {
