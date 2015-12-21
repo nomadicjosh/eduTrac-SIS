@@ -529,7 +529,7 @@ function etsis_dashboard_copyright_footer()
     $copyright .= '<div class="copy">' . _t('&copy; 2013') . ' - ' . foot_release() . ' &nbsp; <a href="http://www.litenframework.com/"><img src="' . get_base_url() . 'static/assets/images/button.png" alt="Built with Liten Framework"/></a></div>' . "\n";
     $copyright .= '<!--  End Copyright Line -->' . "\n";
     
-    return apply_filter('etsis_copyright', $copyright);
+    return apply_filter('dashboard_copyright_footer', $copyright);
 }
 /**
  * Includes and loads all activated plugins.
@@ -1056,7 +1056,7 @@ function status_select($status = NULL, $readonly = '')
     			<option value="P"' . selected($status, 'P', false) . '>P Pending</option>
     			<option value="O"' . selected($status, 'O', false) . '>O Obsolete</option>
 		        </select>';
-    return apply_filter('status', $select, $status);
+    return apply_filter('general_status', $select, $status);
 }
 
 /**
@@ -1078,7 +1078,7 @@ function course_sec_status_select($status = NULL, $readonly = '')
     			<option' . dopt('cancel_course_sec') . ' value="C"' . selected($status, 'C', false) . '>C Cancel</option>
     			<option value="O"' . selected($status, 'O', false) . '>O Obsolete</option>
 		        </select>';
-    return apply_filter('status', $select, $status);
+    return apply_filter('course_sec_status', $select, $status);
 }
 
 /**
@@ -1172,7 +1172,7 @@ function stu_course_sec_status_select($status = NULL, $readonly = '')
                 <option value="W"' . selected($status, 'W', false) . '>' . _t('W Withdrawn') . '</option>
                 <option value="C"' . selected($status, 'C', false) . '>' . _t('C Cancelled') . '</option>
                 </select>';
-    return apply_filter('course_sec_status', $select, $status);
+    return apply_filter('stu_course_sec_status', $select, $status);
 }
 
 /**
@@ -1216,7 +1216,7 @@ function credit_type($status = NULL)
                 <option value="X"' . selected($status, 'X', false) . '>' . _t('X Exempt') . '</option>
                 <option value="T"' . selected($status, 'T', false) . '>' . _t('T Test') . '</option>
                 </select>';
-    return apply_filter('course_sec_status', $select, $status);
+    return apply_filter('credit_type', $select, $status);
 }
 
 /**
