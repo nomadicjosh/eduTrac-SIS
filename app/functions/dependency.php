@@ -12,8 +12,8 @@ if (! defined('BASE_PATH'))
  */
 $app = \Liten\Liten::getInstance();
 
-_require_once(APP_PATH . 'src/Httpful/autoload.php');
-_require_once(APP_PATH . 'src/CoreUpdate/vendor/autoload.php');
+etsis_load_file(APP_PATH . 'src/Httpful/autoload.php');
+etsis_load_file(APP_PATH . 'src/CoreUpdate/vendor/autoload.php');
 
 $app->inst->singleton('hook', function () {
     return new \app\src\Hooks();
@@ -456,6 +456,79 @@ function __return_null()
 }
 
 /**
+ * Wrapper function for Plugin::plugin_basename() method and
+ * extracts the file name of a specific plugin.
+ *
+ * @see Plugin::plugin_basename()
+ *
+ * @since 6.2.0
+ * @param string $filename
+ *            Plugin's file name.
+ */
+function plugin_basename($filename)
+{
+    return \app\src\Plugin::plugin_basename($filename);
+}
+
+/**
+ * Wrapper function for Plugin::register_activation_hook() method.
+ * When a plugin
+ * is activated, the action `activate_pluginname` hook is called. `pluginname`
+ * is replaced by the actually file name of the plugin being activated. So if the
+ * plugin is located at 'app/plugin/sample/sample.plugin.php', then the hook will
+ * call 'activate_sample.plugin.php'.
+ *
+ * @see Plugin::register_activation_hook()
+ *
+ * @since 6.2.0
+ * @param string $filename
+ *            Plugin's filename.
+ * @param string $function
+ *            The function that should be triggered by the hook.
+ */
+function register_activation_hook($filename, $function)
+{
+    return \app\src\Plugin::register_activation_hook($filename, $function);
+}
+
+/**
+ * Wrapper function for Plugin::register_deactivation_hook() method.
+ * When a plugin
+ * is deactivated, the action `deactivate_pluginname` hook is called. `pluginname`
+ * is replaced by the actually file name of the plugin being deactivated. So if the
+ * plugin is located at 'app/plugin/sample/sample.plugin.php', then the hook will
+ * call 'deactivate_sample.plugin.php'.
+ *
+ * @see Plugin::register_deactivation_hook()
+ *
+ * @since 6.2.0
+ * @param string $filename
+ *            Plugin's filename.
+ * @param string $function
+ *            The function that should be triggered by the hook.
+ */
+function register_deactivation_hook($filename, $function)
+{
+    return \app\src\Plugin::register_deactivation_hook($filename, $function);
+}
+
+/**
+ * Wrapper function for Plugin::plugin_dir_path() method.
+ * Get the filesystem directory path (with trailing slash) for the plugin __FILE__ passed in.
+ *
+ * @see Plugin::plugin_dir_path()
+ *
+ * @since 6.2.0
+ * @param string $filename
+ *            The filename of the plugin (__FILE__).
+ * @return string The filesystem path of the directory that contains the plugin.
+ */
+function plugin_dir_path($filename)
+{
+    return \app\src\Plugin::plugin_dir_path($filename);
+}
+
+/**
  * Special function for file includes.
  *
  * @since 6.2.0
@@ -476,7 +549,7 @@ function etsis_load_file($file, $once = true, $show_errors = true)
             return require $file;
         }
     } elseif (is_bool($show_errors) && $show_errors) {
-        _trigger_error(_t('Invalid file name: file does not exist. <br />'));
+        _trigger_error(sprintf(_t('Invalid file name: <strong>%s</strong> does not exist. <br />'), $file));
     } elseif ($show_errors instanceof \Closure) {
         return (bool) $show_errors();
     }
@@ -505,4 +578,39 @@ function _rmdir($dir)
         }
         rmdir($dir);
     }
+}
+
+/**
+ * Appends a trailing slash.
+ *
+ * Will remove trailing forward and backslashes if it exists already before adding
+ * a trailing forward slash. This prevents double slashing a string or path.
+ *
+ * The primary use of this is for paths and thus should be used for paths. It is
+ * not restricted to paths and offers no specific path support.
+ *
+ * @since 6.2.0
+ * @param string $string
+ *            What to add the trailing slash to.
+ * @return string String with trailing slash added.
+ */
+function add_trailing_slash($string)
+{
+    return remove_trailing_slash($string) . '/';
+}
+
+/**
+ * Removes trailing forward slashes and backslashes if they exist.
+ *
+ * The primary use of this is for paths and thus should be used for paths. It is
+ * not restricted to paths and offers no specific path support.
+ *
+ * @since 6.2.0
+ * @param string $string
+ *            What to remove the trailing slashes from.
+ * @return string String without the trailing slashes.
+ */
+function remove_trailing_slash($string)
+{
+    return rtrim($string, '/\\');
 }
