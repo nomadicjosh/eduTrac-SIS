@@ -14,6 +14,7 @@ $app = \Liten\Liten::getInstance();
 
 etsis_load_file(APP_PATH . 'src/Httpful/autoload.php');
 etsis_load_file(APP_PATH . 'src/CoreUpdate/vendor/autoload.php');
+etsis_load_file(APP_PATH . 'src/PHPMailer/vendor/autoload.php');
 
 $app->inst->singleton('hook', function () {
     return new \app\src\Hooks();
