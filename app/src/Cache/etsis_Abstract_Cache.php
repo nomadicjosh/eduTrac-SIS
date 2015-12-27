@@ -25,10 +25,16 @@ abstract class etsis_Abstract_Cache
     abstract function flush();
     
     abstract function flushNamespace($namespace);
+    
+    abstract function set($key, $data, $namespace, $ttl);
+    
+    abstract function getStats();
+    
+    abstract function inc($key, $offset, $namespace);
+    
+    abstract function dec($key, $offset, $namespace);
 
     abstract protected function uniqueKey($key, $namespace);
 
     abstract protected function _exists($key, $namespace);
-    
-    abstract protected function _namespace($value);
 }

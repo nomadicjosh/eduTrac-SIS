@@ -37,6 +37,14 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_cache
      */
     protected $_cache = [];
 
+    /**
+     * Sets if cache is enabled or not.
+     *
+     * @since 6.2.0
+     * @var bool
+     */
+    public $enable;
+
     public function __construct($useMemcached)
     {
         $this->useMemcached = $useMemcached;
@@ -56,6 +64,14 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_cache
         } else {
             $this->connection = new \Memcached('etsis');
         }
+        
+        /**
+         * Filter sets whether caching is enabled or not.
+         *
+         * @since 6.2.0
+         * @var bool
+         */
+        $this->enable = apply_filter('enable_caching', true);
     }
 
     /**
@@ -77,17 +93,14 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_cache
      */
     public function create($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (empty($namespace)) {
-            $namespace = 'default';
-        }
-        
-        $unique_key = $this->uniqueKey($key, $namespace);
-        
-        if ($this->_exists($unique_key, $namespace)) {
+        if (! $this->enable) {
             return false;
         }
         
-        return $this->useMemcached ? $this->connection->set($unique_key, $data, $ttl) : $this->connection->set($unique_key, $data, 0, $ttl);
+        if (empty($namespace)) {
+            $namespace = 'default';
+        }
+        return $this->set($key, $data, $namespace, (int) $ttl);
     }
 
     /**
@@ -105,6 +118,10 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_cache
      */
     public function read($key, $namespace = 'default')
     {
+        if (! $this->enable) {
+            return false;
+        }
+        
         if (empty($namespace)) {
             $namespace = 'default';
         }
@@ -133,6 +150,10 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_cache
      */
     public function update($key, $data, $namespace = 'default', $ttl = 0)
     {
+        if (! $this->enable) {
+            return false;
+        }
+        
         if (empty($namespace)) {
             $namespace = 'default';
         }
@@ -143,7 +164,7 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_cache
             return false;
         }
         
-        return $this->useMemcached ? $this->connection->replace($unique_key, $data, $ttl) : $this->connection->replace($unique_key, $data, 0, $ttl);
+        return $this->useMemcached ? $this->connection->replace($unique_key, $data, (int) $ttl) : $this->connection->replace($unique_key, $data, 0, (int) $ttl);
     }
 
     /**
@@ -205,6 +226,127 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_cache
     }
 
     /**
+     * Sets the data contents into the cache.
+     *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::set()
+     *
+     * @since 6.2.0
+     * @param int|string $key
+     *            Unique key of the cache file.
+     * @param mixed $data
+     *            Data that should be cached.
+     * @param string $namespace
+     *            Optional. Where the cache contents are namespaced. Default: 'default'.
+     * @param int $ttl
+     *            Time to live sets the life of the cache file. Default: 0 = expires immediately after request.
+     */
+    public function set($key, $data, $namespace = 'default', $ttl = 0)
+    {
+        if (! $this->enable) {
+            return false;
+        }
+        
+        if (empty($namespace)) {
+            $namespace = 'default';
+        }
+        
+        $unique_key = $this->uniqueKey($key, $namespace);
+        
+        if ($this->_exists($unique_key, $namespace)) {
+            return false;
+        }
+        
+        return $this->useMemcached ? $this->connection->set($unique_key, $data, (int) $ttl) : $this->connection->set($unique_key, $data, 0, (int) $ttl);
+    }
+
+    /**
+     * Echoes the stats of the cache.
+     *
+     * Gives the cache hits, cache misses and cache uptime.
+     *
+     * @since 6.2.0
+     */
+    public function getStats()
+    {
+        if (! $this->enable) {
+            return false;
+        }
+        
+        if ($this->useMemcached == false) {
+            $stats = $this->connection->getStats();
+            echo "<p>";
+            echo "<strong>" . _t('Cache Hits:') . "</strong> " . $stats['get_hits'] . "<br />";
+            echo "<strong>" . _t('Cache Misses:') . "</strong> " . $stats['get_misses'] . "<br />";
+            echo "<strong>" . _t('Uptime:') . "</strong> " . $stats['uptime'] . "<br />";
+            echo "<strong>" . _t('Memory Usage:') . "</strong> " . $stats['bytes'] . "<br />";
+            echo "<strong>" . _t('Memory Available:') . "</strong> " . $stats['limit_maxbytes'] . "<br />";
+            echo "</p>";
+        }
+        
+        if ($this->useMemcached == true) {
+            $stats = $this->connection->getStats();
+            $servers = $this->connection->getServerList();
+            $key = $servers[0]['host'] . ':' . $servers[0]['port'];
+            $stats = $stats[$key];
+            echo "<p>";
+            echo "<strong>" . _t('Cache Hits:') . "</strong> " . $stats['get_hits'] . "<br />";
+            echo "<strong>" . _t('Cache Misses:') . "</strong> " . $stats['get_misses'] . "<br />";
+            echo "<strong>" . _t('Uptime:') . "</strong> " . $stats['uptime'] . "<br />";
+            echo "<strong>" . _t('Memory Usage:') . "</strong> " . $stats['bytes'] . "<br />";
+            echo "<strong>" . _t('Memory Available:') . "</strong> " . $stats['limit_maxbytes'] . "<br />";
+            echo "</p>";
+        }
+    }
+
+    /**
+     * Increments numeric cache item's value.
+     *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::inc()
+     *
+     * @since 6.2.0
+     * @param int|string $key
+     *            The cache key to increment
+     * @param int $offset
+     *            Optional. The amount by which to increment the item's value. Default: 1.
+     * @param string $namespace
+     *            Optional. The namespace the key is in. Default: 'default'.
+     * @return false|int False on failure, the item's new value on success.
+     */
+    public function inc($key, $offset = 1, $namespace = 'default')
+    {
+        $unique_key = $this->uniqueKey($key, $namespace);
+        
+        return $this->connection->increment($unique_key, (int) $offset);
+    }
+
+    /**
+     * Decrements numeric cache item's value.
+     *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::dec()
+     *
+     * @since 6.2.0
+     * @param int|string $key
+     *            The cache key to decrement.
+     * @param int $offset
+     *            Optional. The amount by which to decrement the item's value. Default: 1.
+     * @param string $namespace
+     *            Optional. The namespace the key is in. Default: 'default'.
+     * @return false|int False on failure, the item's new value on success.
+     */
+    public function dec($key, $offset = 1, $namespace = 'default')
+    {
+        $unique_key = $this->uniqueKey($key, $namespace);
+        
+        return $this->connection->decrement($unique_key, (int) $offset);
+    }
+
+    /**
      * Add \Memcache|\Memcached servers.
      *
      * @since 6.2.0
@@ -232,11 +374,6 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_cache
                 $this->connection->addServer($server['host'], $server['port'], true, $server['weight']);
             }
         }
-    }
-
-    public function getStats()
-    {
-        return $this->useMemcached ? $this->connection->getStats() : $this->connection->getExtendedStats();
     }
 
     /**

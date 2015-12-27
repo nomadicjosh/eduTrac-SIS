@@ -13,21 +13,6 @@ if (! defined('BASE_PATH'))
  */
 
 /**
- * Sets up object cache global and assigns it based on
- * the type of caching system used.
- *
- * @since 6.2.0
- */
-function _etsis_cache_init()
-{
-    $cache_type = apply_filter('etsis_cache_type', 'file');
-    
-    $cache = new \app\src\Cache\etsis_Object_Cache($cache_type);
-    
-    return $cache;
-}
-
-/**
  * Adds data to the cache, if the cache key doesn't already exist.
  *
  * @since 6.2.0
@@ -102,7 +87,7 @@ function etsis_cache_replace($key, $data, $namespace = '', $expire = 120)
      */
     $ttl = apply_filter('etsis_cache_replace_ttl', $expire);
     $cache = _etsis_cache_init();
-    return $cache->update($key, $data, $namespace, $ttl);
+    return $cache->update($key, $data, $namespace, (int) $ttl);
 }
 
 /**
@@ -148,4 +133,85 @@ function etsis_cache_flush_namespace($value)
 {
     $cache = _etsis_cache_init();
     return $cache->flushNamespace($value);
+}
+
+/**
+ * Sets the data contents into the cache.
+ *
+ * @since 6.2.0
+ * @param int|string $key
+ *            Unique key of the cache file.
+ * @param mixed $data
+ *            Data that should be cached.
+ * @param string $namespace
+ *            Optional. Where the cache contents are namespaced. Default: 'default'.
+ * @param int $expire
+ *            Optional. When to expire the cache contents, in seconds.
+ *            Default: 120 seconds = 2 minutes.
+ * @return bool Returns true if the cache was set and false otherwise.
+ */
+function etsis_cache_set($key, $data, $namespace = '', $expire = 120)
+{
+    /**
+     * Filter the expire time for cache item.
+     *
+     * @since 6.2.0
+     * @param int $expire
+     *            When the cass data should expire, in seconds.
+     */
+    $ttl = apply_filter('etsis_cache_increase_ttl', $expire);
+    $cache = _etsis_cache_init();
+    return $cache->set($key, $data, $namespace, (int) $ttl);
+}
+
+/**
+ * Returns the stats of the cache.
+ *
+ * Gives the cache hits, cache misses and cache uptime.
+ *
+ * @since 6.2.0
+ * @uses _etsis_cache_init()
+ */
+function etsis_cache_get_stats()
+{
+    $cache = _etsis_cache_init();
+    return $cache->getStats();
+}
+
+/**
+ * Increments numeric cache item's value.
+ *
+ * @since 6.2.0
+ * @uses _etsis_cache_init()
+ * @param int|string $key
+ *            The cache key to increment
+ * @param int $offset
+ *            Optional. The amount by which to increment the item's value. Default: 1.
+ * @param string $namespace
+ *            Optional. The namespace the key is in.
+ * @return false|int False on failure, the item's new value on success.
+ */
+function etsis_cache_increment($key, $offset = 1, $namespace = '')
+{
+    $cache = _etsis_cache_init();
+    return $cache->inc($key, (int) $offset, $namespace);
+}
+
+/**
+ * Decrements numeric cache item's value.
+ *
+ * @since 6.2.0
+ * @uses _etsis_cache_init()
+ * @param int|string $key
+ *            The cache key to decrement.
+ * @param int $offset
+ *            Optional. The amount by which to decrement the item's value. Default: 1.
+ * @param string $namespace
+ *            Optional. The namespace the key is in.
+ * @return false|int False on failure, the item's new value on success.
+ */
+function etsis_cache_decrement($key, $offset = 1, $namespace = '')
+{
+    $cache = _etsis_cache_init();
+    return $cache->dec($key, (int) $offset, $namespace);
 }

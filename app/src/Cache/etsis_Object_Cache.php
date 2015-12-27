@@ -25,13 +25,13 @@ class etsis_Object_Cache
      */
     protected $_cache;
 
-    public function __construct($type)
+    public function __construct($driver)
     {
-        if ($type == 'file') {
+        if ($driver == 'file') {
             $this->_cache = new \app\src\Cache\etsis_Cache_Filesystem();
-        } elseif ($type == 'apc') {
+        } elseif ($driver == 'apc') {
             $this->_cache = new \app\src\Cache\etsis_Cache_APC();
-        } elseif ($type == 'memcache') {
+        } elseif ($driver == 'memcache') {
             /**
              * Filter whether to use \Memcache|\Memcached.
              *
@@ -60,20 +60,22 @@ class etsis_Object_Cache
             $servers = apply_filter('memcache_server_pool', $pool);
             
             $this->_cache->addServer($servers);
-        } elseif ($type == 'custom') {
+        } elseif ($driver == 'external') {
             /**
              * Fires when being used to call another caching system not
              * native to eduTrac SIS.
              *
              * @since 6.2.0
              */
-            $this->_cache = do_action('custom_cache_system');
-        } elseif ($type == 'xcache') {
+            $this->_cache = do_action('external_cache_driver');
+        } elseif ($driver == 'xcache') {
             $this->_cache = new \app\src\Cache\etsis_Cache_XCache();
-        } elseif ($type == 'cookie') {
+        } elseif ($driver == 'cookie') {
             $this->_cache = new \app\src\Cache\etsis_Cache_Cookie();
-        } elseif ($type == 'json') {
+        } elseif ($driver == 'json') {
             $this->_cache = new \app\src\Cache\etsis_Cache_JSON();
+        } elseif ($driver == 'memory') {
+            $this->_cache = new \app\src\Cache\etsis_Cache_Memory();
         }
         
         if (is_et_exception($this->_cache)) {
@@ -102,7 +104,7 @@ class etsis_Object_Cache
             $namespace = 'default';
         }
         
-        return $this->_cache->create($key, $data, $namespace, $ttl);
+        return $this->_cache->create($key, $data, $namespace, (int) $ttl);
     }
 
     /**
@@ -144,7 +146,7 @@ class etsis_Object_Cache
             $namespace = 'default';
         }
         
-        return $this->create($key, $data, $namespace, $ttl);
+        return $this->create($key, $data, $namespace, (int) $ttl);
     }
 
     /**
@@ -189,5 +191,77 @@ class etsis_Object_Cache
         }
         
         return $this->_cache->flushNamespace($namespace);
+    }
+    
+    /**
+     * Sets the data contents into the cache.
+     *
+     * @since 6.2.0
+     * @param int|string $key
+     *            Unique key of the cache file.
+     * @param mixed $data
+     *            Data that should be cached.
+     * @param string $namespace
+     *            Optional. Where the cache contents are namespaced. Default: 'default'.
+     * @param int $ttl
+     *            Time to live sets the life of the cache file. Default: 0 = expires immediately after request.
+     * @return bool Returns true if the cache was set and false otherwise.
+     */
+    public function set($key, $data, $namespace = 'default', $ttl = 0) {
+        if (empty($namespace)) {
+            $namespace = 'default';
+        }
+        return $this->_cache->set($key, $data, $namespace, (int) $ttl);
+    }
+    
+    /**
+     * Returns stats of the cache.
+     *
+     * Gives the cache hits, cache misses and cache uptime.
+     *
+     * @since 6.2.0
+     */
+    public function getStats() {
+        return $this->_cache->getStats();
+    }
+    
+    /**
+     * Increments numeric cache item's value.
+     *
+     * @since 6.2.0
+     * @param int|string $key
+     *            The cache key to increment
+     * @param int $offset
+     *            Optional. The amount by which to increment the item's value. Default: 1.
+     * @param string $namespace
+     *            Optional. The namespace the key is in. Default: 'default'.
+     * @return false|int False on failure, the item's new value on success.
+     */
+    public function inc($key, $offset = 1, $namespace = 'default') {
+        if (empty($namespace)) {
+            $namespace = 'default';
+        }
+        
+        return $this->_cache->inc($key, (int) $offset, $namespace);
+    }
+    
+    /**
+     * Decrements numeric cache item's value.
+     *
+     * @since 6.2.0
+     * @param int|string $key
+     *            The cache key to decrement.
+     * @param int $offset
+     *            Optional. The amount by which to decrement the item's value. Default: 1.
+     * @param string $namespace
+     *            Optional. The namespace the key is in. Default: 'default'.
+     * @return false|int False on failure, the item's new value on success.
+     */
+    public function dec($key, $offset = 1, $namespace = 'default') {
+        if (empty($namespace)) {
+            $namespace = 'default';
+        }
+        
+        return $this->_cache->dec($key, (int) $offset, $namespace);
     }
 }

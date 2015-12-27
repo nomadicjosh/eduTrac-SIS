@@ -23,13 +23,28 @@ class etsis_Cache_APC extends \app\src\Cache\etsis_Abstract_cache
      * @var array
      */
     protected $_cache = [];
+    
+    /**
+     * Sets if cache is enabled or not.
+     *
+     * @since 6.2.0
+     * @var bool
+     */
+    public $enable;
 
     public function __construct()
     {
         if (! extension_loaded('apc') && ! ini_get('apc.enabled') || ! function_exists('apc_fetch')) {
             return new \app\src\Exception\Exception(_t('APC requires PHP APC extension to be installed and loaded.'), 'php_apc_extension');
         }
-        return true;
+        
+        /**
+         * Filter sets whether caching is enabled or not.
+         *
+         * @since 6.2.0
+         * @var bool
+         */
+        $this->enable = apply_filter('enable_caching', true);
     }
 
     /**
@@ -51,6 +66,10 @@ class etsis_Cache_APC extends \app\src\Cache\etsis_Abstract_cache
      */
     public function create($key, $data, $namespace = 'default', $ttl = 0)
     {
+        if (! $this->enable) {
+            return false;
+        }
+        
         if (empty($namespace)) {
             $namespace = 'default';
         }
@@ -61,7 +80,7 @@ class etsis_Cache_APC extends \app\src\Cache\etsis_Abstract_cache
             return false;
         }
         
-        return apc_store($unique_key, $data, $ttl);
+        return set($key, $data, $namespace, (int) $ttl);
     }
 
     /**
@@ -79,6 +98,10 @@ class etsis_Cache_APC extends \app\src\Cache\etsis_Abstract_cache
      */
     public function read($key, $namespace = 'default')
     {
+        if (! $this->enable) {
+            return false;
+        }
+        
         if (empty($namespace)) {
             $namespace = 'default';
         }
@@ -107,13 +130,17 @@ class etsis_Cache_APC extends \app\src\Cache\etsis_Abstract_cache
      */
     public function update($key, $data, $namespace = 'default', $ttl = 0)
     {
+        if (! $this->enable) {
+            return false;
+        }
+        
         if (empty($namespace)) {
             $namespace = 'default';
         }
         
         $unique_key = $this->uniqueKey($key, $namespace);
         
-        return apc_store($unique_key, $data, $ttl);
+        return apc_store($unique_key, $data, (int) $ttl);
     }
 
     /**
@@ -172,11 +199,114 @@ class etsis_Cache_APC extends \app\src\Cache\etsis_Abstract_cache
             $namespace = 'default';
         }
         
-        if (function_exists('apc_inc')) {
-            return apc_inc($namespace, 10);
-        } else {
-            return $this->flush();
+        return $this->flush();
+    }
+    
+    /**
+     * Sets the data contents into the cache.
+     *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::set()
+     *
+     * @since 6.2.0
+     * @param int|string $key
+     *            Unique key of the cache file.
+     * @param mixed $data
+     *            Data that should be cached.
+     * @param string $namespace
+     *            Optional. Where the cache contents are namespaced. Default: 'default'.
+     * @param int $ttl
+     *            Time to live sets the life of the cache file. Default: 0 = expires immediately after request.
+     */
+    public function set($key, $data, $namespace = 'default', $ttl = 0)
+    {
+        if (! $this->enable) {
+            return false;
         }
+    
+        if (empty($namespace)) {
+            $namespace = 'default';
+        }
+        
+        return apc_store($key, $data, (int) $ttl);
+    }
+    
+    /**
+     * Echoes the stats of the cache.
+     *
+     * Gives the cache hits, cache misses and cache uptime.
+     *
+     * @since 6.2.0
+     */
+    public function getStats()
+    {
+        if (! $this->enable) {
+            return false;
+        }
+        
+        $info = apc_cache_info('', true);
+        $sma  = apc_sma_info();
+        
+        if (PHP_VERSION_ID >= 50500) {
+            $info['num_hits']   = isset($info['num_hits'])   ? $info['num_hits']   : $info['nhits'];
+            $info['num_misses'] = isset($info['num_misses']) ? $info['num_misses'] : $info['nmisses'];
+            $info['start_time'] = isset($info['start_time']) ? $info['start_time'] : $info['stime'];
+        }
+        
+        echo "<p>";
+        echo "<strong>" . _t('Cache Hits:') . "</strong> " . $info['num_hits'] . "<br />";
+        echo "<strong>" . _t('Cache Misses:') . "</strong> " . $info['num_misses'] . "<br />";
+        echo "<strong>" . _t('Uptime:') . "</strong> " . $info['start_time'] . "<br />";
+        echo "<strong>" . _t('Memory Usage:') . "</strong> " . $info['mem_size'] . "<br />";
+        echo "<strong>" . _t('Memory Available:') . "</strong> " . $sma['avail_mem'] . "<br />";
+        echo "</p>";
+    }
+    
+    /**
+     * Increments numeric cache item's value.
+     *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::inc()
+     *
+     * @since 6.2.0
+     * @param int|string $key
+     *            The cache key to increment
+     * @param int $offset
+     *            Optional. The amount by which to increment the item's value. Default: 1.
+     * @param string $namespace
+     *            Optional. The namespace the key is in. Default: 'default'.
+     * @return false|int False on failure, the item's new value on success.
+     */
+    public function inc($key, $offset = 1, $namespace = 'default')
+    {
+        $unique_key = $this->uniqueKey($key, $namespace);
+        
+        return apc_inc($unique_key, (int) $offset);
+    }
+    
+    /**
+     * Decrements numeric cache item's value.
+     *
+     * {@inheritDoc}
+     *
+     * @see \app\src\Cache\etsis_Abstract_Cache::dec()
+     *
+     * @since 6.2.0
+     * @param int|string $key
+     *            The cache key to decrement.
+     * @param int $offset
+     *            Optional. The amount by which to decrement the item's value. Default: 1.
+     * @param string $namespace
+     *            Optional. The namespace the key is in. Default: 'default'.
+     * @return false|int False on failure, the item's new value on success.
+     */
+    public function dec($key, $offset = 1, $namespace = 'default')
+    {
+        $unique_key = $this->uniqueKey($key, $namespace);
+        
+        return apc_dec($unique_key, (int) $offset);
     }
 
     /**
