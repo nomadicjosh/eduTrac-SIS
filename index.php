@@ -10,8 +10,10 @@ defined('APP_ENV') or define('APP_ENV', 'PROD');
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 defined('BASE_PATH') or define('BASE_PATH', __DIR__ . DS);
 defined('APP_PATH') or define('APP_PATH', BASE_PATH . 'app' . DS);
-defined('DROPINS_DIR') or define('DROPINS_DIR', BASE_PATH . 'app' . DS . 'dropins' . DS);
-defined('PLUGINS_DIR') or define('PLUGINS_DIR', BASE_PATH . 'app' . DS . 'plugins' . DS);
+defined('ETSIS_DROPIN_DIR') or define('ETSIS_DROPIN_DIR', BASE_PATH . 'app' . DS . 'dropins' . DS);
+defined('ETSIS_PLUGIN_DIR') or define('ETSIS_PLUGIN_DIR', BASE_PATH . 'app' . DS . 'plugins' . DS);
+defined('DROPINS_DIR') or define('DROPINS_DIR', ETSIS_DROPIN_DIR);
+defined('PLUGINS_DIR') or define('PLUGINS_DIR', ETSIS_PLUGIN_DIR);
 defined('CACHE_PATH') or define('CACHE_PATH', APP_PATH . 'tmp/cache' . DS);
 defined('K_PATH_IMAGES') or define('K_PATH_IMAGES', BASE_PATH . 'static/images/');
 
@@ -65,6 +67,8 @@ if (file_exists(BASE_PATH . 'config.php')) {
  */
 require( APP_PATH . 'functions.php' );
 require( APP_PATH . 'functions' . DS . 'dependency.php' );
+require( APP_PATH . 'functions' . DS . 'global-function.php' );
+require( APP_PATH . 'functions' . DS . 'deprecated-function.php' );
 require( APP_PATH . 'functions' . DS . 'auth-function.php' );
 require( APP_PATH . 'functions' . DS . 'cache-function.php' );
 require( APP_PATH . 'functions' . DS . 'textdomain-function.php' );

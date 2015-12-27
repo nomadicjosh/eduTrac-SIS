@@ -217,11 +217,11 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $ssn = str_replace('-', '', $_POST['ssn']);
 
             if ($_POST['ssn'] > 0) {
-                $password = et_hash_password((int) $ssn . $passSuffix);
+                $password = etsis_hash_password((int) $ssn . $passSuffix);
             } elseif (!empty($_POST['dob'])) {
-                $password = et_hash_password((int) $dob . $passSuffix);
+                $password = etsis_hash_password((int) $dob . $passSuffix);
             } else {
-                $password = et_hash_password('myaccount' . $passSuffix);
+                $password = etsis_hash_password('myaccount' . $passSuffix);
             }
 
             $nae = $app->db->person();
@@ -768,9 +768,10 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
             $a[] = $r1;
         }
         $dob = str_replace('-', '', $r1['dob']);
-        if ($r1['ssn'] > 0) {
-            $pass = $r1['ssn'].$passSuffix;
-        } elseif ($r1['dob'] != '0000-00-00') {
+        $ssn = str_replace('-', '', $r1['ssn']);
+        if ($ssn > 0) {
+            $pass = $ssn.$passSuffix;
+        } elseif ($r1['dob'] > '0000-00-00') {
             $pass = $dob.$passSuffix;
         } else {
             $pass = 'myaccount'.$passSuffix;
@@ -797,7 +798,7 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-        $password = et_hash_password($pass);
+        $password = etsis_hash_password($pass);
         $q2 = $app->db->person();
         $q2->password = $password;
         $q2->where('personID = ?', $id);
@@ -807,7 +808,11 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
              */
             $pass = [];
             $pass['pass'] = $pass;
+            $pass['personID'] = $id;
             $pass['uname'] = $r1['uname'];
+            $pass['fname'] = $r1['fname'];
+            $pass['lname'] = $r1['lname'];
+            $pass['email'] = $r1['email'];
             /**
              * Fires after successful reset of person's password.
              * 
@@ -817,9 +822,9 @@ $app->group('/nae', function() use ($app, $css, $js, $json_url, $logger, $dbcach
              */
             do_action('post_reset_password', $pass);
             
-            $app->flash('success_message', 'The password has been reset and an email has been sent to this user.');
-            $email->et_mail($r1['email'], "Reset Password", $body, $headers);
-            $logger->setLog('Update Record', 'Reset Password', get_name($id), get_persondata('uname'));
+            $app->flash( 'success_message', _t('The password has been reset and an email has been sent to this user.') );
+            $email->et_mail( $r1['email'], _t("Reset Password"), $body, $headers );
+            $logger->setLog( _t('Update Record'), _t('Reset Password'), get_name($id), get_persondata('uname') );
         } else {
             $app->flash('error_message', $flashNow->notice(409));
         }

@@ -98,7 +98,7 @@ $app->match('GET|POST', '/install/createAdmin/', function () use($app) {
         Session::set('uname', $app->req->_post('uname'));
         Session::set('fname', $app->req->_post('fname'));
         Session::set('lname', $app->req->_post('lname'));
-        Session::set('password', et_hash_password($app->req->_post('password')));
+        Session::set('password', etsis_hash_password($app->req->_post('password')));
         Session::set('email', $app->req->_post('email'));
         Session::set('apikey', \app\src\ID::code(20));
 

@@ -175,7 +175,7 @@ $screen = 'setting';
                             <div class="col-md-8">
                                 <select name="et_core_locale" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 	<option value="">&nbsp;</option>
-                                    <?php et_dropdown_languages(_h(get_option( 'et_core_locale' ))); ?>
+                                    <?php etsis_dropdown_languages(_h(get_option( 'et_core_locale' ))); ?>
                                 </select>
                             </div>
                         </div>

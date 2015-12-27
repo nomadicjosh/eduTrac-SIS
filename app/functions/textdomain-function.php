@@ -11,8 +11,8 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 
-include_once(APP_PATH . 'src/Gettext/autoloader.php');
-include_once(APP_PATH . 'src/Gettext/Languages/autoloader.php');
+etsis_load_file(APP_PATH . 'src/Gettext/autoloader.php');
+etsis_load_file(APP_PATH . 'src/Gettext/Languages/autoloader.php');
 
 $t = new \Gettext\Translator();
 $t->register();
@@ -148,7 +148,13 @@ function load_plugin_textdomain($domain, $plugin_rel_path = false)
     return false;
 }
 
-function et_dropdown_languages($active = '') {
+/**
+ * Retrieves a list of available locales.
+ * 
+ * @since 6.1.09
+ * @param string $active
+ */
+function etsis_dropdown_languages($active = '') {
     $locales = _file_get_contents('http://edutrac.s3.amazonaws.com/core/translations.json');
     $json = json_decode($locales, true);
     foreach($json as $locale) {

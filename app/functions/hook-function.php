@@ -186,7 +186,7 @@ function jstree_sidebar_menu($screen, $crse = '', $sect = '', $nae = '', $staff 
 {
     $menu = APP_PATH . 'views/dashboard/menu.php';
     if (! has_filter('core_sidebar_menu')) {
-        include ($menu);
+        require($menu);
     }
     return apply_filter('core_sidebar_menu', $menu, $screen, $crse, $sect, $nae, $staff, $spro, $prog);
 }
@@ -564,31 +564,18 @@ do_action('admin_menu');
 do_action('custom_plugin_page');
 
 /**
- * An action called to create db tables needed
- * for a plugin
+ * Fires once activated plugins have loaded.
  *
- * @see Plugin::register_activation_hook()
- *
- * @since 4.2.0
- * @deprecated since release 6.1.06
- * @uses do_action() Calls 'create_db_table' hook.
+ * @since 6.2.0
  */
-do_action('create_db_table');
+do_action('plugin_loaded');
 
 /**
- * Fires the init action.
+ * Fires after eduTrac SIS has finished loading but before any headers are sent.
  *
  * @since 1.0.0
  */
-function init()
-{
-    /**
-     * Fires after eduTrac SIS has finished loading but before any headers are sent.
-     *
-     * @since 1.0.0
-     */
-    do_action('init');
-}
+do_action('init');
 
 /**
  * Fires the admin_head action.
@@ -682,24 +669,6 @@ function dashboard_top_widgets()
      * @since 1.0.0
      */
     do_action('dashboard_top_widgets');
-}
-
-/**
- * Fires the dashboard_right_widgets action.
- *
- * @deprecated since 5.0.0
- * @since 1.0.0
- */
-function dashboard_right_widgets()
-{
-    _deprecated_function(__FUNCTION__, '5.0.0');
-    /**
-     * Prints widgets on the right side of the dashboard.
-     *
-     * @deprecated since 5.0.0
-     * @since 1.0.0
-     */
-    do_action('dashboard_right_widgets');
 }
 
 /**
@@ -865,13 +834,13 @@ function get_css_directory_uri()
  *
  * Uses {@link http://www.php.net/parse_str parse_str()}
  *
- * @since 4.2.0
+ * @since 6.2.0
  * @param string $string
  *            The string to be parsed.
  * @param array $array
  *            Variables will be stored in this array.
  */
-function et_parse_str($string, &$array)
+function etsis_parse_str($string, $array)
 {
     parse_str($string, $array);
     /**
@@ -881,7 +850,7 @@ function et_parse_str($string, &$array)
      * @param array $array
      *            The array populated with variables.
      */
-    $array = apply_filter('et_parse_str', $array);
+    $array = apply_filter('etsis_parse_str', $array);
 }
 
 /**
@@ -1494,9 +1463,9 @@ add_action('dashboard_right_widgets', 'dashboard_clock', 5);
 add_action('dashboard_right_widgets', 'dashboard_weather', 5);
 add_action('activated_plugin', 'etsis_plugin_activate_message', 5, 1);
 add_action('deactivated_plugin', 'etsis_plugin_deactivate_message', 5, 1);
-add_filter('the_myet_page_content', 'et_autop');
+add_filter('the_myet_page_content', 'etsis_autop');
 add_filter('the_myet_page_content', 'parsecode_unautop');
 add_filter('the_myet_page_content', 'do_parsecode', 5);
-add_filter('the_myet_welcome_message', 'et_autop');
+add_filter('the_myet_welcome_message', 'etsis_autop');
 add_filter('the_myet_welcome_message', 'parsecode_unautop');
 add_filter('the_myet_welcome_message', 'do_parsecode', 5);

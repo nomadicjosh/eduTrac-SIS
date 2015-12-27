@@ -263,40 +263,6 @@ function courseList($id = '')
 }
 
 /**
- * Subject dropdown: shows general list of subjects and
- * if $subjectCode is not NULL, shows the subject attached
- * to a particular record.
- *
- * @deprecated since release 6.1.12
- * @see table_dropdown
- * @since 1.0.0
- * @param string $subjectCode
- *            - optional
- * @return string Returns the record key if selected is true.
- */
-function subject_code_dropdown($subjectCode = NULL)
-{
-    _deprecated_function(__FUNCTION__, '6.1.12', 'table_dropdown');
-    
-    $app = \Liten\Liten::getInstance();
-    $subj = $app->db->subject()
-        ->select('subjectCode,subjectName')
-        ->where('subjectCode <> "NULL"');
-    
-    $q = $subj->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    
-    foreach ($q as $v) {
-        echo '<option value="' . _h($v['subjectCode']) . '"' . selected($subjectCode, _h($v['subjectCode']), false) . '>' . _h($v['subjectCode']) . ' ' . _h($v['subjectName']) . '</option>' . "\n";
-    }
-}
-
-/**
  * Faculty dropdown: shows general list of faculty and
  * if $facID is not NULL, shows the faculty attached
  * to a particular record.
@@ -1442,99 +1408,28 @@ function percent($num_amount, $num_total)
  * This function is used throughout eduTrac to allow for both string or array
  * to be merged into another array.
  *
- * @since 4.2.0
+ * @since 6.2.0
  * @param string|array $args
  *            Value to merge with $defaults
  * @param array $defaults
  *            Optional. Array that serves as the defaults. Default empty.
  * @return array Merged user defined values with defaults.
  */
-function et_parse_args($args, $defaults = '')
+function etsis_parse_args($args, $defaults = '')
 {
-    if (is_object($args))
+    if (is_object($args)) {
         $r = get_object_vars($args);
-    elseif (is_array($args))
-        $r = & $args;
-    else
-        et_parse_str($args, $r);
+    } elseif (is_array($args)) {
+        $r = $args;
+    } else {
+        etsis_parse_str($args, $r);
+    }
     
-    if (is_array($defaults))
+    if (is_array($defaults)) {
         return array_merge($defaults, $r);
+    }
+    
     return $r;
-}
-
-/**
- *
- * @deprecated since release 6.2.0
- * @param unknown $file            
- * @param string $delimiter            
- */
-function upgradeSQL($file, $delimiter = ';')
-{
-    _deprecated_function(__FUNCTION__, '6.2.0');
-    
-    $app = \Liten\Liten::getInstance();
-    set_time_limit(0);
-    
-    $contents = _file_get_contents($file);
-    
-    if (strlen($contents) !== 0) {
-        $file = fopen($file, 'r');
-        
-        if (is_resource($file) === true) {
-            $query = [];
-            
-            while (feof($file) === false) {
-                $query[] = fgets($file);
-                
-                if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
-                    $query = trim(implode('', $query));
-                    
-                    if ($app->db->query($query) === false) {
-                        echo '<p><font color="red">ERROR:</font> ' . $query . '</p>' . "\n";
-                    } else {
-                        echo '<p><font color="green">SUCCESS:</font> ' . $query . '</p>' . "\n";
-                    }
-                    
-                    /*
-                     * while (ob_get_level() > 0) {
-                     * ob_end_flush();
-                     * }
-                     *
-                     * flush();
-                     */
-                }
-                
-                if (is_string($query) === true) {
-                    $query = [];
-                }
-            }
-            
-            fclose($file);
-            redirect(get_base_url() . 'dashboard/upgrade/');
-        }
-    }
-}
-
-/**
- *
- * @deprecated since release 6.2.0
- */
-function redirect_upgrade_db()
-{
-    _deprecated_function(__FUNCTION__, '6.2.0');
-    
-    $app = \Liten\Liten::getInstance();
-    $acl = new \app\src\ACL(get_persondata('personID'));
-    if ($acl->userHasRole(8)) {
-        if (RELEASE_TAG == \app\src\ReleaseAPI::inst()->init('RELEASE_TAG')) {
-            if (get_option('dbversion') < \app\src\ReleaseAPI::inst()->init('DB_VERSION')) {
-                if (basename($app->req->server["REQUEST_URI"]) != "upgrade") {
-                    redirect(get_base_url() . 'dashboard/upgrade/');
-                }
-            }
-        }
-    }
 }
 
 function head_release_meta()
@@ -1555,12 +1450,12 @@ function foot_release()
 /**
  * Hashes a plain text password.
  *
- * @since 1.0.0
+ * @since 6.2.0
  * @param string $password
  *            Plain text password
  * @return mixed
  */
-function et_hash_password($password)
+function etsis_hash_password($password)
 {
     if ('' == _trim($password)) {
         $message = _t('Invalid password: empty password given.');
@@ -1577,7 +1472,7 @@ function et_hash_password($password)
 /**
  * Checks a plain text password against a hashed password.
  *
- * @since 1.0.0
+ * @since 6.2.0
  * @param string $password
  *            Plain test password.
  * @param string $hash
@@ -1586,15 +1481,15 @@ function et_hash_password($password)
  *            Person ID.
  * @return mixed
  */
-function et_check_password($password, $hash, $person_id = '')
+function etsis_check_password($password, $hash, $person_id = '')
 {
     // If the hash is still md5...
     if (strlen($hash) <= 32) {
         $check = ($hash == md5($password));
         if ($check && $person_id) {
             // Rehash using new hash.
-            et_set_password($password, $person_id);
-            $hash = et_hash_password($password);
+            etsis_set_password($password, $person_id);
+            $hash = etsis_hash_password($password);
         }
         return apply_filter('check_password', $check, $password, $hash, $person_id);
     }
@@ -1609,20 +1504,20 @@ function et_check_password($password, $hash, $person_id = '')
 }
 
 /**
- * Used by et_check_password in order to rehash
+ * Used by etsis_check_password in order to rehash
  * an old password that was hashed using MD5 function.
  *
- * @since 1.0.0
+ * @since 6.2.0
  * @param string $password
  *            Person password.
  * @param int $person_id
  *            Person ID.
  * @return mixed
  */
-function et_set_password($password, $person_id)
+function etsis_set_password($password, $person_id)
 {
     $app = \Liten\Liten::getInstance();
-    $hash = et_hash_password($password);
+    $hash = etsis_hash_password($password);
     $q = $app->db->person();
     $q->password = $hash;
     $q->where('personID = ?', $person_id)->update();

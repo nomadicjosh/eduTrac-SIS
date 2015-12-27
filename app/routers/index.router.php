@@ -122,7 +122,7 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
         /**
          * Checks if the password is correct.
          */
-        if (et_check_password($app->req->_post('password'), $r['password'], _h($r['personID']))) {
+        if (etsis_check_password($app->req->_post('password'), $r['password'], _h($r['personID']))) {
             $ll = $app->db->person();
             $ll->LastLogin = $ll->NOW();
             $ll->where('personID = ?', _h($r['personID']))->update();
@@ -223,9 +223,9 @@ $app->match('GET|POST', '/password/', function () use($app, $flashNow) {
         foreach ($q as $r) {
             $a[] = $r;
         }
-        if (et_check_password($_POST['currPass'], $r['password'], $r['personID'])) {
+        if (etsis_check_password($_POST['currPass'], $r['password'], $r['personID'])) {
             $sql = $app->db->person();
-            $sql->password = et_hash_password($_POST['newPass']);
+            $sql->password = etsis_hash_password($_POST['newPass']);
             $sql->where('personID = ?', get_persondata('personID'));
             if ($sql->update()) {
                 /**

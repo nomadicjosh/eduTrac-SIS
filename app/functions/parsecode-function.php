@@ -297,7 +297,13 @@ function strip_parsecode_tag($m)
     return $m[1] . $m[6];
 }
 
-function et_autop($pee, $br = 1)
+/**
+ * since 6.2.0
+ * @param unknown $pee
+ * @param number $br
+ * @return string|mixed
+ */
+function etsis_autop($pee, $br = 1)
 {
 
     if (trim($pee) === '')
