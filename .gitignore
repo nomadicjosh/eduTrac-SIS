@@ -24,3 +24,5 @@ READEME.mdown
 tests
 Tests
 phpunit
+composer.json
+composer.lock
