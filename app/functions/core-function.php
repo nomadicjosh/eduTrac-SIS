@@ -11,8 +11,8 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-define('CURRENT_RELEASE', '6.2.0-RC1');
-define('RELEASE_TAG', '6.2.0-RC1');
+define('CURRENT_RELEASE', '6.2.0-RC2');
+define('RELEASE_TAG', '6.2.0-RC2');
 
 $app = \Liten\Liten::getInstance();
 
