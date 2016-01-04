@@ -681,16 +681,16 @@ $app->group('/cron',
                 ->where('sent = "0"');
             $queue->find(function ($data) use($app, $emailer) {
                 foreach ($data as $d) {
-                    if (has_action('etMailer_init', 'et_smtp')) {
+                    if (has_action('etsisMailer_init', 'etsis_smtp')) {
                         $emailer->IsSMTP();
                         $emailer->Mailer = "smtp";
-                        $emailer->Host = _h(get_option('et_smtp_host'));
-                        $emailer->SMTPSecure = _h(get_option('et_smtp_smtpsecure'));
-                        $emailer->Port = _h(get_option('et_smtp_port'));
-                        $emailer->SMTPAuth = (_h(get_option("et_smtp_smtpauth")) == "yes") ? TRUE : FALSE;
+                        $emailer->Host = _h(get_option('etsis_smtp_host'));
+                        $emailer->SMTPSecure = _h(get_option('etsis_smtp_smtpsecure'));
+                        $emailer->Port = _h(get_option('etsis_smtp_port'));
+                        $emailer->SMTPAuth = (_h(get_option("etsis_smtp_smtpauth")) == "yes") ? TRUE : FALSE;
                         if ($emailer->SMTPAuth) {
-                            $emailer->Username = _h(get_option('et_smtp_username'));
-                            $emailer->Password = _h(get_option('et_smtp_password'));
+                            $emailer->Username = _h(get_option('etsis_smtp_username'));
+                            $emailer->Password = _h(get_option('etsis_smtp_password'));
                         }
                         $emailer->AddAddress($d['email'], $d['lname'] . ', ' . $d['fname']);
                         $emailer->From = $d['fromEmail'];
