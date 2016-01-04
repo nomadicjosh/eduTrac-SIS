@@ -182,13 +182,6 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
 
     $app->post('/editAppl/(\d+)/', function ($id) use($app, $logger, $flashNow, $email) {
         $appl = $app->db->application();
-        /**
-         * Fires during the update of an application.
-         * 
-         * @since 6.1.10
-         * @param array $appl Application data object.
-         */
-        do_action('update_application_db_table', $appl);
         $appl->acadProgCode = $_POST['acadProgCode'];
         $appl->startTerm = $_POST['startTerm'];
         $appl->PSAT_Verbal = $_POST['PSAT_Verbal'];
@@ -204,6 +197,14 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         $appl->acadProgCode = $_POST['acadProgCode'];
         $appl->acadProgCode = $_POST['acadProgCode'];
         $appl->where('applID = ?', $_POST['applID']);
+        
+        /**
+         * Fires during the update of an application.
+         *
+         * @since 6.1.10
+         * @param object $appl Application object.
+         */
+        do_action('update_application_db_table', $appl);
         
         if ($appl->update()) {
             $app->flash('success_message', $flashNow->notice(200));
@@ -247,6 +248,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                  * Fires after username has been updated successfully.
                  * 
                  * @since 6.1.07
+                 * @param object $person Person data object.
                  */
                 do_action('post_update_username', $person);
 
@@ -294,13 +296,6 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
 
         if ($app->req->isPost()) {
             $appl = $app->db->application();
-            /**
-             * Fires during the saving/creating of an application.
-             * 
-             * @since 6.1.10
-             * @param array $appl Application data object.
-             */
-            do_action('save_application_db_table', $appl);
             $appl->acadProgCode = _trim($_POST['acadProgCode']);
             $appl->startTerm = $_POST['startTerm'];
             $appl->PSAT_Verbal = $_POST['PSAT_Verbal'];
@@ -314,6 +309,15 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             $appl->applDate = $_POST['applDate'];
             $appl->addedBy = get_persondata('personID');
             $appl->admitStatus = $_POST['admitStatus'];
+            
+            /**
+             * Fires during the saving/creating of an application.
+             *
+             * @since 6.1.10
+             * @param object $appl Application object.
+             */
+            do_action('save_application_db_table', $appl);
+            
             if ($appl->save()) {
                 $ID = $appl->lastInsertId();
                 $app->flash('success_message', $flashNow->notice(200));

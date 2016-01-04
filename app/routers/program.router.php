@@ -92,13 +92,6 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
 
         if ($app->req->isPost()) {
             $prog = $app->db->acad_program();
-            /**
-             * Fires during the update of an academic program.
-             * 
-             * @since 6.1.10
-             * @param array $prog Academic program data object.
-             */
-            do_action('update_acad_program_db_table', $prog);
             $prog->acadProgCode = $_POST['acadProgCode'];
             $prog->acadProgTitle = $_POST['acadProgTitle'];
             $prog->programDesc = $_POST['programDesc'];
@@ -120,6 +113,15 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
             $prog->cipCode = $_POST['cipCode'];
             $prog->locationCode = $_POST['locationCode'];
             $prog->where('acadProgID = ?', $_POST['acadProgID']);
+            
+            /**
+             * Fires during the update of an academic program.
+             *
+             * @since 6.1.10
+             * @param array $prog Academic program object.
+             */
+            do_action('update_acad_program_db_table', $prog);
+            
             if ($prog->update()) {
                 $dbcache->clearCache("acad_program-" . $_POST['acadProgID']);
                 $app->flash('success_message', $flashNow->notice(200));
@@ -192,13 +194,6 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
 
         if ($app->req->isPost()) {
             $prog = $app->db->acad_program();
-            /**
-             * Fires during the saving/creating of an academic program.
-             * 
-             * @since 6.1.10
-             * @param array $prog Academic program data object.
-             */
-            do_action('save_acad_program_db_table', $prog);
             $prog->acadProgCode = $_POST['acadProgCode'];
             $prog->acadProgTitle = $_POST['acadProgTitle'];
             $prog->programDesc = $_POST['programDesc'];
@@ -219,6 +214,15 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
             $prog->acadLevelCode = $_POST['acadLevelCode'];
             $prog->cipCode = $_POST['cipCode'];
             $prog->locationCode = $_POST['locationCode'];
+            
+            /**
+             * Fires during the saving/creating of an academic program.
+             *
+             * @since 6.1.10
+             * @param array $prog Academic program object.
+             */
+            do_action('save_acad_program_db_table', $prog);
+            
             if ($prog->save()) {
                 $ID = $prog->lastInsertId();
                 $app->flash('success_message', $flashNow->notice(200));

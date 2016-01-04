@@ -110,13 +110,6 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
         if ($app->req->isPost()) {
             $crse = $app->db->course();
-            /**
-             * Fires during the update of a course.
-             * 
-             * @since 6.1.10
-             * @param array $crse Course data object.
-             */
-            do_action('update_course_db_table', $crse);
             $crse->courseNumber = $_POST['courseNumber'];
             $crse->courseCode = $_POST['subjectCode'] . '-' . $_POST['courseNumber'];
             $crse->subjectCode = $_POST['subjectCode'];
@@ -133,17 +126,26 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $crse->startDate = $_POST['startDate'];
             $crse->endDate = $_POST['endDate'];
             $crse->currStatus = $_POST['currStatus'];
+            
             if ($course->currStatus !== $_POST['currStatus']) {
                 $crse->statusDate = $app->db->NOW();
             }
             $crse->where('courseID = ?', (int) $id);
+            
+            /**
+             * Fires during the update of a course.
+             *
+             * @since 6.1.10
+             * @param object $crse Course object.
+             */
+            do_action('update_course_db_table', $crse);
+            
             if ($crse->update()) {
                 /**
                  * Is triggered after a course is updated.
                  * 
                  * @since 6.1.05
-                 * @param mixed $crse Array of course data.
-                 * @return mixed
+                 * @param object $crse Course object.
                  */
                 do_action('post_update_crse', $crse);
                 $dbcache->clearCache("course-$id");
@@ -217,8 +219,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                  * Is triggered after course additional info is updated.
                  * 
                  * @since 6.1.05
-                 * @param mixed $crse Array of course data.
-                 * @return mixed
+                 * @param object $crse Course object.
                  */
                 do_action('post_update_crse_addnl_info', $crse);
                 $app->flash('success_message', $flashNow->notice(200));
@@ -281,13 +282,6 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
         if ($app->req->isPost()) {
             $crse = $app->db->course();
-            /**
-             * Fires during the saving/creating of a course.
-             * 
-             * @since 6.1.10
-             * @param array $crse Course data object.
-             */
-            do_action('save_course_db_table', $crse);
             $crse->courseNumber = $_POST['courseNumber'];
             $crse->courseCode = $_POST['subjectCode'] . '-' . $_POST['courseNumber'];
             $crse->subjectCode = $_POST['subjectCode'];
@@ -306,6 +300,15 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $crse->statusDate = $app->db->NOW();
             $crse->approvedDate = $app->db->NOW();
             $crse->approvedBy = get_persondata('personID');
+            
+            /**
+             * Fires during the saving/creating of a course.
+             *
+             * @since 6.1.10
+             * @param array $crse Course object.
+             */
+            do_action('save_course_db_table', $crse);
+            
             if ($crse->save()) {
                 $ID = $crse->lastInsertId();
 
@@ -314,7 +317,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                  * Fires after a new course has been created.
                  * 
                  * @since 6.1.05
-                 * @param mixed $course Course data object.
+                 * @param object $course Course object.
                  */
                 do_action('post_save_crse', $course);
 

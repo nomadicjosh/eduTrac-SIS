@@ -336,13 +336,6 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
 
         if ($app->req->isPost()) {
             $staff = $app->db->staff();
-            /**
-             * Fires during the saving/creating of a staff record.
-             * 
-             * @since 6.1.12
-             * @param array $staff Staff data object.
-             */
-            do_action('save_staff_db_table', $staff);
             $staff->staffID = $id;
             $staff->schoolCode = $_POST['schoolCode'];
             $staff->buildingCode = $_POST['buildingCode'];
@@ -352,16 +345,16 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
             $staff->status = $_POST['status'];
             $staff->addDate = $staff->NOW();
             $staff->approvedBy = get_persondata('personID');
+            
+            /**
+             * Fires during the saving/creating of a staff record.
+             *
+             * @since 6.1.12
+             * @param array $staff Staff object.
+             */
+            do_action('save_staff_db_table', $staff);
 
             $meta = $app->db->staff_meta();
-            /**
-             * Fires during the saving/creating of staff
-             * meta data.
-             * 
-             * @since 6.1.12
-             * @param array $meta Staff meta data object.
-             */
-            do_action('save_staff_meta_db_table', $meta);
             $meta->jobStatusCode = $_POST['jobStatusCode'];
             $meta->jobID = $_POST['jobID'];
             $meta->staffID = $id;
@@ -372,6 +365,16 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
             $meta->endDate = $_POST['endDate'];
             $meta->addDate = $meta->NOW();
             $meta->approvedBy = get_persondata('personID');
+            
+            /**
+             * Fires during the saving/creating of staff
+             * meta data.
+             *
+             * @since 6.1.12
+             * @param array $meta Staff meta object.
+             */
+            do_action('save_staff_meta_db_table', $meta);
+            
             if ($staff->save() && $meta->save()) {
                 /**
                  * Is triggered after staff record has been created.
