@@ -331,7 +331,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_cache
         
         $filename = $this->keyToPath($key, $namespace);
         
-        return rename($filename, $filename . $this->incr($key, 1, $namespace));
+        return rename($filename, $filename . $this->inc($key, 1, $namespace));
     }
 
     /**
