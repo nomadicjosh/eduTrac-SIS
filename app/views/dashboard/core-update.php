@@ -61,7 +61,7 @@ $screen = 'update';
                                 
                                 if ($update->newVersionAvailable()) {
                                     // Install new update
-                                    echo '<p>' . sprintf(_t('New Release: r%s'), $update->getLatestVersion()) . '</p>';
+                                    echo '<p>' . sprintf(_t('New Release: <font color="red">r%s'), $update->getLatestVersion()) . '</font></p>';
                                     echo '<p>' . _t('Installing Updates: ') . '</p>';
                                     echo '<pre>';
                                     var_dump(array_map(function ($version) {
@@ -82,7 +82,7 @@ $screen = 'update';
                                         }
                                     }
                                 } else {
-                                    echo sprintf('<p>' . _t('You currently have the latest release of eduTrac SIS installed: r%s'), RELEASE_TAG . '</p>');
+                                    echo sprintf('<p>' . _t('You currently have the latest release of eduTrac SIS installed: <font color="green">r%s'), RELEASE_TAG . '</font></p>');
                                 }
                             } else {
                                 echo '<p>' . _t('Could not check for updates! See log file for details.') . '</p>';
