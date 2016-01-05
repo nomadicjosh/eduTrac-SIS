@@ -16,7 +16,7 @@ if (!defined('BASE_PATH'))
  */
 $app->before('GET|POST', '/crse(.*)', function() {
     if (!isUserLoggedIn()) {
-        redirect(get_base_url() . 'login' . DS);
+        redirect(get_base_url() . 'login' . '/');
     }
 
     /**
@@ -25,7 +25,7 @@ $app->before('GET|POST', '/crse(.*)', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . DS);
+        redirect(get_base_url() . 'lock' . '/');
     }
 });
 
@@ -45,21 +45,19 @@ $js = [
     'components/modules/admin/forms/elements/bootstrap-maxlength/custom/js/custom.js'
 ];
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$cache = new \app\src\Cache();
-$dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
-$app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+$app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
 
     /**
      * Before route check.
      */
     $app->before('GET|POST', '/', function() {
         if (!hasPermission('access_course_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -101,11 +99,11 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_course_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         $course = $app->db->course()->where('courseID = ?', (int) $id)->findOne();
 
         if ($app->req->isPost()) {
@@ -148,7 +146,6 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                  * @param object $crse Course object.
                  */
                 do_action('post_update_crse', $crse);
-                $dbcache->clearCache("course-$id");
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update', 'Course', $course->courseCode, get_persondata('uname'));
             } else {
@@ -201,7 +198,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/addnl/(\d+)/', function() {
         if (!hasPermission('access_course_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -274,7 +271,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/add/', function() {
         if (!hasPermission('add_course')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -323,7 +320,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course', $_POST['subjectCode'] . '-' . $_POST['courseNumber'], get_persondata('uname'));
-                redirect(get_base_url() . 'crse' . DS . (int) $ID . '/');
+                redirect(get_base_url() . 'crse' . '/' . (int) $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -382,11 +379,11 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/clone/(\d+)/', function() {
         if (!hasPermission('add_course')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->get('/clone/(\d+)/', function($id) use($app, $dbcache, $flashNow, $logger) {
+    $app->get('/clone/(\d+)/', function($id) use($app, $flashNow, $logger) {
         $crse = $app->db->course()->where('courseID', $id)->findOne();
         $clone = $app->db->course();
         $clone->courseNumber = $crse->courseNumber;
@@ -415,10 +412,9 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
         if ($clone->save()) {
             $ID = $clone->lastInsertId();
-            $dbcache->purge();
             $app->flash('success_message', $flashNow->notice(200));
             $logger->setLog('New Record', 'Cloned Course', $crse->courseCode, get_persondata('uname'));
-            redirect(get_base_url() . 'crse' . DS . (int) $ID . '/');
+            redirect(get_base_url() . 'crse' . '/' . (int) $ID . '/');
         } else {
             $app->flash('error_message', $flashNow->notice(409));
             redirect($app->req->server['HTTP_REFERER']);

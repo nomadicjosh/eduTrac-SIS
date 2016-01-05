@@ -16,7 +16,7 @@ if (!defined('BASE_PATH'))
 $app->before('GET|POST', '/courses(.*)', function() {
 
     if (get_option('enable_myet_portal') == 0 && !hasPermission('edit_myet_css')) {
-        redirect(get_base_url() . 'offline' . DS);
+        redirect(get_base_url() . 'offline' . '/');
     }
 });
 
@@ -34,15 +34,13 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$email = new \app\src\Email();
-$cache = new \app\src\Cache();
-$dbcache = new \app\src\DBCache();
+$email = _etsis_email();
 $flashNow = new \app\src\Messages();
 
-$app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow, $email) {
+$app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $flashNow, $email) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js, $json_url, $flashNow) {
         if ($app->req->isPost()) {
@@ -67,7 +65,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
             });
             if (bcadd(count($q1[0]['id']), count($_POST['courseSecID'])) > get_option('number_of_courses')) {
                 $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . get_option('number_of_courses') . _t(' courses</strong> per term.'));
-                redirect(get_base_url() . 'courses' . DS);
+                redirect(get_base_url() . 'courses' . '/');
                 exit();
             }
             /* Retrieve the dropAddEndDate from the registration term. */
@@ -88,7 +86,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                     $app->flash('error_message', $flashNow->notice(409));
                 }
                 ++$i;
-                redirect(get_base_url() . 'courses/cart' . DS);
+                redirect(get_base_url() . 'courses/cart' . '/');
             }
         }
         $terms = _escape(get_option('open_terms'));

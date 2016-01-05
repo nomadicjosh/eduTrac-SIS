@@ -28,14 +28,13 @@ $js = [
     'components/modules/admin/forms/elements/multiselect/assets/custom/js/multiselect.init.js?v=v2.1.0'
 ];
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$email = new \app\src\Email();
-$dbcache = new \app\src\DBCache();
+$email = _etsis_email();
 $flashNow = new \app\src\Messages();
 
-$app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow, $email) {
+$app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
 
     /**
      * Before router check.
@@ -46,7 +45,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         }
 
         if (!hasPermission('access_application_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -55,7 +54,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(get_base_url() . 'lock' . DS);
+            redirect(get_base_url() . 'lock' . '/');
         }
     });
 
@@ -100,7 +99,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_application_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -176,7 +175,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/editAppl/(\d+)/', function() {
         if (!hasPermission('create_application')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -280,7 +279,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             ++$i;
         }
 
-        redirect(get_base_url() . 'appl' . DS . $id . '/');
+        redirect(get_base_url() . 'appl' . '/' . $id . '/');
     });
 
     /**
@@ -288,7 +287,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('create_application')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -322,7 +321,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 $ID = $appl->lastInsertId();
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Application', get_name($id), get_persondata('uname'));
-                redirect(get_base_url() . 'appl' . DS . $ID . '/');
+                redirect(get_base_url() . 'appl' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -384,7 +383,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/inst-attended/', function() {
         if (!hasPermission('access_application_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -405,7 +404,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             if ($inst->save()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Institution Attended', get_name($_POST['personID']), get_persondata('uname'));
-                redirect(get_base_url() . 'appl' . DS . $_POST['personID'] . '/');
+                redirect(get_base_url() . 'appl' . '/' . $_POST['personID'] . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -425,7 +424,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/inst(.*)', function() {
         if (!hasPermission('access_application_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -468,7 +467,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 $ID = $inst->lastInsertId();
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Institution', $_POST['instName'], get_persondata('uname'));
-                redirect(get_base_url() . 'appl/inst' . DS . $ID . '/');
+                redirect(get_base_url() . 'appl/inst' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);

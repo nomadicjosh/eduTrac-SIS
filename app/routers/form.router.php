@@ -33,14 +33,14 @@ $js = [
 ];
 
 $app->group('/form', 
-    function () use($app, $css, $js, $logger, $dbcache, $flashNow) {
+    function () use($app, $css, $js, $logger, $flashNow) {
         
         /**
          * Before route check.
          */
         $app->before('GET|POST', '/semester/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -49,7 +49,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -64,7 +64,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('sem');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Semester', _filter_input_string(INPUT_POST, 'semName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'semCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/semester' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/semester' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -100,7 +100,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/semester/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -109,7 +109,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         $app->match('GET|POST', '/semester/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
@@ -192,7 +192,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/term/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -201,7 +201,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -216,7 +216,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('term');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Term', _filter_input_string(INPUT_POST, 'termName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'termCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/term' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/term' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -254,7 +254,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/term/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -263,7 +263,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         $app->match('GET|POST', '/term/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
@@ -346,7 +346,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/acad-year/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -355,7 +355,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -370,7 +370,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('ayr');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Academic Year', _filter_input_string(INPUT_POST, 'acadYearDesc'), get_persondata('uname'));
-                    redirect(get_base_url() . 'form/acad-year' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/acad-year' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -406,7 +406,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/acad-year/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -415,7 +415,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -499,7 +499,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/department/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -508,7 +508,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -523,7 +523,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('dept');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Department', _filter_input_string(INPUT_POST, 'deptName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'deptCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/department' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/department' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -559,7 +559,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/department/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -568,7 +568,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -652,7 +652,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/subject/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -661,7 +661,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -688,7 +688,7 @@ $app->group('/form',
                     
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Subject', _filter_input_string(INPUT_POST, 'subjectName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'subjectCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/subject' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/subject' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -724,7 +724,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/subject/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -733,7 +733,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -817,7 +817,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/student-load-rule/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -826,7 +826,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -840,7 +840,7 @@ $app->group('/form',
                     $ID = $slr->lastInsertId();
                     etsis_cache_flush_namespace('slr');
                     $app->flash('success_message', $flashNow->notice(200));
-                    redirect(get_base_url() . 'form/student-load-rule' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/student-load-rule' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -875,7 +875,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/student-load-rule/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -884,7 +884,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -967,7 +967,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/degree/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -976,7 +976,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -991,7 +991,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('deg');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Degree', _filter_input_string(INPUT_POST, 'degreeName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'degreeCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/degree' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/degree' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -1027,7 +1027,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/degree/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1036,7 +1036,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1120,7 +1120,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/major/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1129,7 +1129,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1144,7 +1144,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('majr');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Major', _filter_input_string(INPUT_POST, 'majorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'majorCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/major' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/major' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -1180,7 +1180,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/major/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1189,7 +1189,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1273,7 +1273,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/minor/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1282,7 +1282,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1297,7 +1297,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('minr');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Minor', _filter_input_string(INPUT_POST, 'minorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'minorCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/minor' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/minor' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -1333,7 +1333,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/minor/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1342,7 +1342,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1426,7 +1426,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/ccd/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1435,7 +1435,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1450,7 +1450,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('ccd');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'CCD', _filter_input_string(INPUT_POST, 'ccdName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'ccdCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/ccd' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/ccd' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -1485,7 +1485,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/ccd/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1494,7 +1494,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1578,7 +1578,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/specialization/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1587,7 +1587,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1602,7 +1602,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('spec');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Specialization', _filter_input_string(INPUT_POST, 'specName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'specCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/specialization' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/specialization' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -1638,7 +1638,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/specialization/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1647,7 +1647,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1731,7 +1731,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/cip/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1740,7 +1740,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1755,7 +1755,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('cip');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'CIP', _filter_input_string(INPUT_POST, 'cipName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'cipCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/cip' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/cip' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -1791,7 +1791,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/cip/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1800,7 +1800,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1884,7 +1884,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/rstr-code/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1893,7 +1893,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -1908,7 +1908,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('rstr');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Restriction Code', _filter_input_string(INPUT_POST, 'rstrCode'), get_persondata('uname'));
-                    redirect(get_base_url() . 'form/rstr-code' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/rstr-code' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -1945,7 +1945,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/rstr-code/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -1954,7 +1954,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -2038,7 +2038,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/location/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -2047,7 +2047,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -2062,7 +2062,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('loc');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Location', _filter_input_string(INPUT_POST, 'locationCode') . ' (' . _trim(_filter_input_string(INPUT_POST, 'locationCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/location' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/location' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -2098,7 +2098,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/location/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -2107,7 +2107,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -2191,7 +2191,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/building/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -2200,7 +2200,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -2215,7 +2215,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('bldg');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Building', _filter_input_string(INPUT_POST, 'buildingName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'buildingCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/building' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/building' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -2251,7 +2251,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/building/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -2260,7 +2260,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -2344,7 +2344,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/room/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -2353,7 +2353,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -2368,7 +2368,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('room');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Room', _filter_input_string(INPUT_POST, 'roomCode'), get_persondata('uname'));
-                    redirect(get_base_url() . 'form/room' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/room' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -2406,7 +2406,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/room/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -2415,7 +2415,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -2499,7 +2499,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/school/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -2508,7 +2508,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -2523,7 +2523,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('sch');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'School', _filter_input_string(INPUT_POST, 'schoolName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'schoolCode')) . ')', get_persondata('uname'));
-                    redirect(get_base_url() . 'form/school' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/school' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -2561,7 +2561,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/school/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -2570,7 +2570,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -2654,7 +2654,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/grade-scale/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -2663,7 +2663,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -2678,7 +2678,7 @@ $app->group('/form',
                     etsis_cache_flush_namespace('grsc');
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Grade Scale', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
-                    redirect(get_base_url() . 'form/grade-scale' . DS . $ID . '/');
+                    redirect(get_base_url() . 'form/grade-scale' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -2713,7 +2713,7 @@ $app->group('/form',
          */
         $app->before('GET|POST', '/grade-scale/(\d+)/', function () {
             if (! hasPermission('access_forms')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -2722,7 +2722,7 @@ $app->group('/form',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         

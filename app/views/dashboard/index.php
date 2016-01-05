@@ -42,10 +42,6 @@ $screen = 'dash';
 	
 			<div class="row">
 				<div class="col-md-12">
-					<?php
-                    $cache = new \app\src\Cache('rss');
-                    if(!$cache->setCache()) :
-                    ?>
 					<!-- Website Traffic Chart -->
 					<div class="widget widget-body-white" data-toggle="collapse-widget">
 						<div class="widget-head">
@@ -81,7 +77,6 @@ $screen = 'dash';
 						</div>
 					</div>
 					<!-- // Website Traffic Chart END -->
-                    <?php endif; echo $cache->getCache(); ?>
 
 				</div>
                 

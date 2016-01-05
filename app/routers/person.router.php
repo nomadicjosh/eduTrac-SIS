@@ -31,22 +31,21 @@ $js = [
     'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js'
 ];
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
-$email = new \app\src\Email();
+$email = _etsis_email();
 
 $app->group('/nae', 
-    function () use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow, $email) {
+    function () use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
         
         /**
          * Before route check.
          */
         $app->before('GET|POST', '/', function () {
             if (! hasPermission('access_person_screen')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
         });
         
@@ -96,7 +95,7 @@ $app->group('/nae',
          */
         $app->before('GET|POST', '/(\d+)/', function () {
             if (! hasPermission('access_person_screen')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
         });
         
@@ -222,11 +221,11 @@ $app->group('/nae',
          */
         $app->before('GET|POST', '/add/', function () {
             if (! hasPermission('add_person')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
         });
         
-        $app->match('GET|POST', '/add/', function () use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow, $email) {
+        $app->match('GET|POST', '/add/', function () use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
             
             $passSuffix = 'eT*';
             
@@ -351,7 +350,7 @@ $app->group('/nae',
                         
                         $logger->setLog('New Record', 'Name and Address', get_name($ID), get_persondata('uname'));
                         $app->flash('success_message', $flashNow->notice(200));
-                        redirect(get_base_url() . 'nae' . DS . $ID . '/');
+                        redirect(get_base_url() . 'nae' . '/' . $ID . '/');
                     } else {
                         $app->flash('error_message', $flashNow->notice(409));
                         redirect($app->req->server['HTTP_REFERER']);
@@ -374,7 +373,7 @@ $app->group('/nae',
          */
         $app->before('GET|POST', '/adsu/(\d+)/', function () {
             if (! hasPermission('access_person_screen')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
         });
         
@@ -451,7 +450,7 @@ $app->group('/nae',
          */
         $app->before('GET|POST', '/addr-form/(\d+)/', function () {
             if (! hasPermission('add_address')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
         });
         
@@ -491,7 +490,7 @@ $app->group('/nae',
                     $ID = $addr->lastInsertId();
                     $logger->setLog('New Record', 'Address', get_name($decode[0]['personID']), get_persondata('uname'));
                     $app->flash('success_message', $flashNow->notice(200));
-                    redirect(get_base_url() . 'nae/addr' . DS . $ID . '/');
+                    redirect(get_base_url() . 'nae/addr' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -547,7 +546,7 @@ $app->group('/nae',
          */
         $app->before('GET|POST', '/addr/(\d+)/', function () {
             if (! hasPermission('access_person_screen')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
         });
         
@@ -628,7 +627,7 @@ $app->group('/nae',
          */
         $app->before('GET|POST', '/role/(\d+)/', function () {
             if (! hasPermission('access_user_role_screen')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
         });
         
@@ -655,7 +654,7 @@ $app->group('/nae',
                 }
                 if ($q) {
                     $app->flash('success_message', $flashNow->notice(200));
-                    redirect(get_base_url() . 'nae/role' . DS . $id . '/');
+                    redirect(get_base_url() . 'nae/role' . '/' . $id . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -711,7 +710,7 @@ $app->group('/nae',
          */
         $app->before('GET|POST', '/perms/(\d+)/', function () {
             if (! hasPermission('access_user_permission_screen')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
         });
         
@@ -732,7 +731,7 @@ $app->group('/nae',
                 }
                 if ($q) {
                     $app->flash('success_message', $flashNow->notice(200));
-                    redirect(get_base_url() . 'nae/perms' . DS . $id . '/');
+                    redirect(get_base_url() . 'nae/perms' . '/' . $id . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                     redirect($app->req->server['HTTP_REFERER']);
@@ -807,7 +806,7 @@ $app->group('/nae',
          */
         $app->before('GET|POST', '/resetPassword/(\d+)/', function () {
             if (! hasPermission('reset_person_password')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
         });
         

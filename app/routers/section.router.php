@@ -20,7 +20,7 @@ $app->before('GET|POST', '/sect(.*)', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . DS);
+        redirect(get_base_url() . 'lock' . '/');
     }
 });
 
@@ -43,21 +43,19 @@ $js = [
     'components/modules/admin/forms/elements/bootstrap-maxlength/custom/js/custom.js'
 ];
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$cache = new \app\src\Cache();
-$dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
-$app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+$app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
 
     /**
      * Before route check.
      */
     $app->before('GET|POST', '/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -100,11 +98,11 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         $section = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
 
         $date = date("Y-m-d");
@@ -222,7 +220,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
              */
             do_action('post_update_course_sec', $section);
             
-            redirect(get_base_url() . 'sect' . DS . $id . '/');
+            redirect(get_base_url() . 'sect' . '/' . $id . '/');
         }
 
         $preReq = $app->db->course()->select('preReq')->where('courseID = ?', $section->courseID);
@@ -278,7 +276,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('add_course_sec')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -365,7 +363,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course Section', _trim($courseSection), get_persondata('uname'));
-                redirect(get_base_url() . 'sect' . DS . $ID . '/');
+                redirect(get_base_url() . 'sect' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -414,7 +412,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/addnl/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -512,11 +510,11 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/soff/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
         $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
 
         if ($app->req->isPost()) {
@@ -542,7 +540,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
-            redirect(get_base_url() . 'sect/soff' . DS . (int) $id . '/');
+            redirect(get_base_url() . 'sect/soff' . '/' . (int) $id . '/');
         }
 
         /**
@@ -588,7 +586,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/fgrade/(\d+)/', function() {
         if (!hasPermission('submit_final_grades')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -678,11 +676,11 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/rgn/', function() {
         if (!hasPermission('register_students')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/rgn/', function () use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+    $app->match('GET|POST', '/rgn/', function () use($app, $css, $js, $json_url, $logger, $flashNow) {
         $time = date("h:i A");
 
         if ($app->req->isPost()) {
@@ -774,7 +772,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
-            redirect(get_base_url() . 'sect/rgn' . DS);
+            redirect(get_base_url() . 'sect/rgn' . '/');
         }
 
         $app->view->display('section/register', [
@@ -790,14 +788,14 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/sros.*', function() {
         if (!hasPermission('access_stu_roster_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
     $app->match('GET|POST', '/sros/', function () use($app, $css, $js, $logger, $flashNow) {
 
         if ($app->req->isPost()) {
-            redirect(get_base_url() . 'sect/sros' . DS . $_POST['sectionID'] . '/' . $_POST['template'] . '/');
+            redirect(get_base_url() . 'sect/sros' . '/' . $_POST['sectionID'] . '/' . $_POST['template'] . '/');
         }
 
         $app->view->display('section/sros', [
@@ -892,7 +890,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/catalog.*', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 

@@ -29,13 +29,11 @@ $app->before('GET|POST', '/dashboard(.*)', function () {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . DS);
+        redirect(get_base_url() . 'lock' . '/');
     }
 });
 
 $logger = new \app\src\Log();
-$cache = new \app\src\Cache();
-$dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
 $app->get('/dashboard', function () use($app) {
@@ -139,7 +137,7 @@ $app->get('/dashboard/support/', function () use($app) {
  */
 $app->before('GET|POST', '/dashboard/update/', function () {
     if (! hasPermission('edit_settings')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -154,7 +152,7 @@ $app->match('GET|POST', '/dashboard/update/', function () use($app) {
  */
 $app->before('GET|POST', '/dashboard/core-update/', function () {
     if (! hasPermission('edit_settings')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -184,7 +182,7 @@ $app->match('GET|POST', '/dashboard/upgrade/', function () use($app) {
  */
 $app->before('GET|POST', '/dashboard/modules/', function () {
     if (! hasPermission('access_plugin_screen')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -221,7 +219,7 @@ $app->get('/dashboard/modules/', function () use($app) {
  */
 $app->before('GET|POST', '/dashboard/install-module/', function () {
     if (! hasPermission('access_plugin_admin_page')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 });
 

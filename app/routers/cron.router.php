@@ -129,7 +129,7 @@ function updateCronjobs($id = '')
     }
     
     if ($id != '' && is_numeric($id)) {
-        redirect(get_base_url() . 'cron/view' . DS . $id);
+        redirect(get_base_url() . 'cron/view' . '/' . $id);
     } else {
         redirect($app->req->server['HTTP_REFERER']);
     }
@@ -145,10 +145,9 @@ if (file_exists(cronDir() . 'cron/' . 'cronjobs.dat.php')) {
 }
 
 $logger = new \app\src\Log();
-$dbcache = new \app\src\DBCache();
-$email = new \app\src\Email();
+$email = _etsis_email();
 $flashNow = new \app\src\Messages();
-$emailer = new \app\src\PHPMailer();
+$emailer = _etsis_phpmailer();
 
 $css = [
     'css/admin/module.admin.page.form_elements.min.css',
@@ -176,7 +175,7 @@ $app->group('/cron',
          */
         $app->before('GET', '/', function () {
             if (! hasPermission('access_cronjob_screen')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -185,7 +184,7 @@ $app->group('/cron',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         
@@ -229,7 +228,7 @@ $app->group('/cron',
          */
         $app->before('GET|POST', '/(\d+)/', function () {
             if (! hasPermission('access_cronjob_screen')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
             
             /**
@@ -238,7 +237,7 @@ $app->group('/cron',
              * his/her password to gain access.
              */
             if (isset($_COOKIE['SCREENLOCK'])) {
-                redirect(get_base_url() . 'lock' . DS);
+                redirect(get_base_url() . 'lock' . '/');
             }
         });
         

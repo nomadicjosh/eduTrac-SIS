@@ -16,7 +16,7 @@ if (!defined('BASE_PATH'))
  */
 $app->before('GET|POST', '/program(.*)', function() {
     if (!isUserLoggedIn()) {
-        redirect(get_base_url() . 'login' . DS);
+        redirect(get_base_url() . 'login' . '/');
     }
 
     /**
@@ -25,7 +25,7 @@ $app->before('GET|POST', '/program(.*)', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . DS);
+        redirect(get_base_url() . 'lock' . '/');
     }
 });
 
@@ -43,13 +43,12 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
-$app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+$app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {
@@ -87,7 +86,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
         );
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {        
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {        
         $program = $app->db->acad_program()->where('acadProgID = ?', $id)->findOne();
 
         if ($app->req->isPost()) {
@@ -123,7 +122,6 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
             do_action('update_acad_program_db_table', $prog);
             
             if ($prog->update()) {
-                $dbcache->clearCache("acad_program-" . $_POST['acadProgID']);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update', 'Acad Program', $program->acadProgCode, get_persondata('uname'));
             } else {
@@ -177,7 +175,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
      */
     $app->before('GET|POST', '/add/', function() {
         if (!hasPermission('add_acad_prog')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -186,11 +184,11 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(get_base_url() . 'lock' . DS);
+            redirect(get_base_url() . 'lock' . '/');
         }
     });
 
-    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $logger, $dbcache, $flashNow) {
+    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $logger, $flashNow) {
 
         if ($app->req->isPost()) {
             $prog = $app->db->acad_program();
@@ -227,7 +225,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
                 $ID = $prog->lastInsertId();
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Acad Program', $_POST['acadProgCode'], get_persondata('uname'));
-                redirect(get_base_url() . 'program' . DS . $ID . '/');
+                redirect(get_base_url() . 'program' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
