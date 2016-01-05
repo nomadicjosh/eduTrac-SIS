@@ -13,7 +13,7 @@ if (! defined('BASE_PATH'))
  * @subpackage Cache
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_cache
+class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
 {
 
     /**
