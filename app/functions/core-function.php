@@ -1348,7 +1348,7 @@ function prerequisite($stuID, $courseSecID)
             return $array;
         });
     }
-    if (empty($r1['preReq']) || count($req) == count($q2[0]['stuAcadCredID'])) {
+    if (empty($r1['preReq']) || count($req) == count($q2)) {
         return true;
     }
 }
