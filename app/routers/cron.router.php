@@ -725,10 +725,11 @@ $app->group('/cron',
         });
         
         $app->get('/purgeEmailHold/', function () use($app) {
+            $now = date('Y-m-d');
             $app->db->email_hold()
-                ->where('processed = "1"')
+                ->where('email_hold.processed = "1"')
                 ->_and_()
-                ->where('DATE_ADD(dateTime, INTERVAL 15 DAY) <= ?', date('Y-m-d'))
+                ->where('DATE_ADD(email_hold.dateTime, INTERVAL 15 DAY) <= ?', $now)
                 ->delete();
         });
         
@@ -967,18 +968,20 @@ $app->group('/cron',
         });
         
         $app->get('/purgeErrorLog/', function () use($app, $logger) {
+            $now = date('Y-m-d');
             $app->db->error()
-                ->where('DATE_ADD(addDate, INTERVAL 5 DAY) <= ?', date('Y-m-d'))
+                ->where('DATE_ADD(error.addDate, INTERVAL 5 DAY) <= ?', $now)
                 ->delete();
             
             $logger->purgeErrLog();
         });
         
         $app->get('/purgeSavedQuery/', function () use($app) {
+            $now = date('Y-m-d');
             $app->db->saved_query()
-                ->where('DATE_ADD(createdDate, INTERVAL 30 DAY) <= ?', date('Y-m-d'))
+                ->where('DATE_ADD(saved_query.createdDate, INTERVAL 30 DAY) <= ?', $now)
                 ->_and_()
-                ->where('purgeQuery = "1"')
+                ->where('saved_query.purgeQuery = "1"')
                 ->delete();
         });
         
