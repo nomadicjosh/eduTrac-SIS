@@ -68,7 +68,7 @@ class Messages
         if (isset($_COOKIE['plugin_error_message'])) {
             foreach ($plugin_error_message as $message) {
                 $this->_app->cookies->remove('plugin_error_message');
-                return '<section class="panel error-panel"><div class="alerts alerts-error center">' . _t( 'Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br />' ) . $message . '</div></section>';
+                return '<section class="panel error-panel"><div class="alerts alerts-error center">' . sprintf( _t( 'Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br /> %s</div></section>' ), $message );
             }
         }
     }

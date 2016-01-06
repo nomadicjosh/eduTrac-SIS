@@ -102,7 +102,7 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
         }
         
         if(count($q) <= 0) {
-            $app->flash('error_message', 'Your account is deactivated.');
+            $app->flash('error_message', _t( 'Your account is deactivated.' ));
             redirect($app->req->server['HTTP_REFERER']);
             exit();
         }
@@ -112,7 +112,7 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
          * the database.
          */
         if ($app->req->_post('uname') !== _h($r['uname'])) {
-            $app->flash('error_message', 'The username does not exist. Please try again.');
+            $app->flash('error_message', _t( 'The username does not exist. Please try again.' ));
             redirect(get_base_url() . 'login' . '/');
             return;
         }
@@ -133,7 +133,7 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
             $logger->setLog('Authentication', 'Login', get_name(_h($r['personID'])), _h($r['uname']));
             redirect(get_base_url());
         } else {
-            $app->flash('error_message', 'The password you entered was incorrect.');
+            $app->flash('error_message', _t( 'The password you entered was incorrect.' ));
             redirect(get_base_url() . 'login' . '/');
         }
     }

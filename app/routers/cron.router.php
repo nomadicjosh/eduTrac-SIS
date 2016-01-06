@@ -83,7 +83,7 @@ function saveCronjobs($data)
 {
     $cronDir = cronDir() . 'cron/';
     if (! file_put_contents($cronDir . 'cronjobs.dat.php', '<' . '?php /*' . base64_encode(serialize($data)) . '*/')) {
-        error_log('cannot write to cronjobs database file, please check file rights');
+        _error_log('cron', _t( 'cannot write to cronjobs database file, please check file rights' ));
     }
 }
 
@@ -96,7 +96,7 @@ function saveLogs($text)
 {
     $cronDir = cronDir() . 'cron/';
     if (! file_put_contents($cronDir . 'logs/cronjobs.log', date('Y-m-d H:i:s') . ' - ' . $text . PHP_EOL . file_get_contents($cronDir . 'logs/cronjobs.log'))) {
-        error_log('cannot write to cronjobs log file, please check rights');
+        _error_log('cron', _t( 'cannot write to cronjobs database file, please check file rights' ));
     }
 }
 
@@ -201,8 +201,8 @@ $app->group('/cron',
                             // remove all!!
                             foreach ($files as $k => $file) {
                                 if (! unlink($file)) {
-                                    $_SESSION['errors'][] = 'Could not remove file ' . $file . ' from server, please do this manually';
-                                    $app->flash('error_message', 'Could not remove file ' . $file . ' from server, please do this manually.');
+                                    $_SESSION['errors'][] = sprintf( 'Could not remove file %s from server, please do this manually', $file);
+                                    $app->flash('error_message', sprintf( _t( 'Could not remove file %s from server, please do this manually' ), $file));
                                 }
                             }
                         }
