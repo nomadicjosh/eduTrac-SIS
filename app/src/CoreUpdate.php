@@ -53,7 +53,7 @@ class CoreUpdate
             $protocol = 'http://';
         }
 
-        $this->url = $protocol . $this->_baseURL . DS;
+        $this->url = $protocol . $this->_baseURL . '/';
         $this->patch_url = $this->getReleaseJsonUrl();
         $this->local_base_dir = BASE_PATH;
         $this->local_backup_dir = '/tmp/';
@@ -69,7 +69,7 @@ class CoreUpdate
 
     public function getReleaseJsonUrl()
     {
-        $url = $this->url . 'core/version-check' . DS . '1.0/release.json';
+        $url = $this->url . 'core/version-check' . '/' . '1.0/release.json';
         return $url;
     }
 
@@ -147,12 +147,12 @@ class CoreUpdate
 
     public function remoteServerZip($release)
     {
-        return $this->url . 'core' . DS . 'updates' . DS . $release . '.zip';
+        return $this->url . 'core' . '/' . 'updates' . '/' . $release . '.zip';
     }
 
     public function localServerZip($release)
     {
-        return $this->local_base_dir . 'updates' . DS . $release . '.zip';
+        return $this->local_base_dir . 'updates' . '/' . $release . '.zip';
     }
 
     public function _rmdir($dir)

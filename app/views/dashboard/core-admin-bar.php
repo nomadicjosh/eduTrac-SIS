@@ -30,7 +30,7 @@ $app = \Liten\Liten::getInstance();
                             <ul class="dropdown-menu pull-left">
                                 <li<?= ae('access_plugin_admin_page'); ?>><a href="<?= get_base_url(); ?>plugins/install/<?= bm(); ?>" class="glyphicons upload"><i></i><?= _t('Install Plugins'); ?></a></li>
                                 <li<?= ae('access_plugin_screen'); ?>><a href="<?= get_base_url(); ?>plugins/<?= bm(); ?>" class="glyphicons cogwheels"><i></i><?= _t('Plugins'); ?></a></li>
-                                <?php $app->hook->list_plugin_admin_pages(get_base_url() . 'plugins/options' . DS); ?>
+                                <?php $app->hook->list_plugin_admin_pages(get_base_url() . 'plugins/options' . '/'); ?>
                                 <?php 
                                 /**
                                  * Use this alternative action to create admin pages
