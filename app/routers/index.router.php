@@ -83,59 +83,12 @@ $app->before('GET|POST', '/login/', function() {
 $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
 
     if ($app->req->isPost()) {
-        $person = $app->db->person()
-            ->select('person.personID,person.uname,person.password')
-            ->_join('staff','person.personID = staff.staffID')
-            ->_join('student','person.personID = student.stuID')
-            ->where('person.uname = ?', $app->req->_post('uname'))->_and_()
-            ->where('(staff.status = "A" OR student.status = "A")');
-        $q = $person->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-        $a = [];
-        foreach ($q as $r) {
-            $a[] = $r;
-        }
-        
-        if(count($q) <= 0) {
-            $app->flash('error_message', _t( 'Your account is deactivated.' ));
-            redirect($app->req->server['HTTP_REFERER']);
-            exit();
-        }
-
         /**
-         * Checks if the submitted username exists in
-         * the database.
+         * This function is documented in app/functions/auth-function.php.
+         * 
+         * @since 6.2.0
          */
-        if ($app->req->_post('uname') !== _h($r['uname'])) {
-            $app->flash('error_message', _t( 'The username does not exist. Please try again.' ));
-            redirect(get_base_url() . 'login' . '/');
-            return;
-        }
-
-        /**
-         * Checks if the password is correct.
-         */
-        if (etsis_check_password($app->req->_post('password'), $r['password'], _h($r['personID']))) {
-            $ll = $app->db->person();
-            $ll->LastLogin = $ll->NOW();
-            $ll->where('personID = ?', _h($r['personID']))->update();
-            if (isset($_POST['rememberme'])) {
-                $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-                $app->cookies->setSecureCookie('ET_REMEMBER', 'rememberme', (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-            } else {
-                $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
-            }
-            $logger->setLog('Authentication', 'Login', get_name(_h($r['personID'])), _h($r['uname']));
-            redirect(get_base_url());
-        } else {
-            $app->flash('error_message', _t( 'The password you entered was incorrect.' ));
-            redirect(get_base_url() . 'login' . '/');
-        }
+        etsis_authenticate_person($app->req->_post('uname'), $app->req->_post('password'), $app->req->_post('rememberme'));
     }
 
     $app->view->display('index/login', [
@@ -663,60 +616,13 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
 $app->get('/logout/', function () use($app, $logger) {
 
     $logger->setLog('Authentication', 'Logout', get_name(get_persondata('personID')), get_persondata('uname'));
-
-    $vars1 = [];
-    parse_str($app->cookies->get('ET_COOKNAME'), $vars1);
     /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
+     * This function is documented in app/functions/auth-function.php.
+     * 
+     * @since 6.2.0
      */
-    $file1 = $app->config('cookies.savepath') . 'cookies.' . $vars1['data'];
-    if (file_exists($file1)) {
-        unlink($file1);
-    }
-
-    $vars2 = [];
-    parse_str($app->cookies->get('SWITCH_USERBACK'), $vars2);
-    /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
-     */
-    $file2 = $app->config('cookies.savepath') . 'cookies.' . $vars2['data'];
-    if (file_exists($file2)) {
-        unlink($file2);
-    }
-
-    $vars3 = [];
-    parse_str($app->cookies->get('SWITCH_USERNAME'), $vars3);
-    /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
-     */
-    $file3 = $app->config('cookies.savepath') . 'cookies.' . $vars3['data'];
-    if (file_exists($file3)) {
-        unlink($file3);
-    }
-
-    $vars4 = [];
-    parse_str($app->cookies->get('ET_REMEMBER'), $vars4);
-    /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
-     */
-    $file4 = $app->config('cookies.savepath') . 'cookies.' . $vars4['data'];
-    if (file_exists($file4)) {
-        unlink($file4);
-    }
-
-    /**
-     * After the cookie is removed from the server,
-     * we know need to remove it from the browser and
-     * redirect the user to the login page.
-     */
-    $app->cookies->remove('ET_COOKNAME');
-    $app->cookies->remove('SWITCH_USERBACK');
-    $app->cookies->remove('SWITCH_USERNAME');
-    $app->cookies->remove('ET_REMEMBER');
+    etsis_clear_auth_cookie();
+    
     redirect(get_base_url() . 'login' . '/');
 });
 

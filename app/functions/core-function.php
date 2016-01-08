@@ -474,13 +474,9 @@ function isStudent($id)
         return;
     }
     
-    $app = \Liten\Liten::getInstance();
+    $stu = get_person_by('personID', $id);
     
-    $stu = $app->db->student()
-        ->where('stuID = ?', $id)
-        ->findOne();
-    
-    if ($stu !== false) {
+    if ($stu->stuID != '') {
         return true;
     }
     return false;
@@ -1030,12 +1026,7 @@ function get_name($ID)
         return;
     }
     
-    $app = \Liten\Liten::getInstance();
-    
-    $name = $app->db->person()
-        ->select('lname,fname')
-        ->where('personID = ?', $ID)
-        ->findOne();
+    $name = get_person_by('personID', $ID);
     
     return _h($name->lname) . ', ' . _h($name->fname);
 }
@@ -1065,11 +1056,7 @@ function get_initials($ID, $initials = 2)
         return;
     }
     
-    $app = \Liten\Liten::getInstance();
-    $name = $app->db->person()
-        ->select('lname,fname')
-        ->where('personID = ?', $ID)
-        ->findOne();
+    $name = get_person_by('personID', $ID);
     
     if ($initials == 2) {
         return substr(_h($name->fname), 0, 1) . '. ' . substr(_h($name->lname), 0, 1) . '.';
@@ -1634,12 +1621,7 @@ function unicoder($string)
  */
 function getUserValue($id, $field)
 {
-    $app = \Liten\Liten::getInstance();
-    
-    $value = $app->db->person()
-        ->select($field)
-        ->where('personID = ?', $id)
-        ->findOne();
+    $value = get_person_by('personID', $id);
     
     return $value->$field;
 }

@@ -1469,3 +1469,5 @@ add_filter('the_myet_page_content', 'do_parsecode', 5);
 add_filter('the_myet_welcome_message', 'etsis_autop');
 add_filter('the_myet_welcome_message', 'parsecode_unautop');
 add_filter('the_myet_welcome_message', 'do_parsecode', 5);
+add_filter('etsis_authenticate_person', 'etsis_authenticate', 5, 3);
+add_filter('etsis_auth_cookie', 'etsis_set_auth_cookie', 5, 2);
