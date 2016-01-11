@@ -24,9 +24,20 @@ class etsis_Object_Cache
      * @var object
      */
     protected $_cache;
+    
+    /**
+     * Application global scope.
+     * 
+     * @since 6.2.0
+     * @access protected
+     * @var object
+     */
+    protected $_app;
 
-    public function __construct($driver)
+    public function __construct($driver, \Liten\Liten $liten = null)
     {
+        $this->_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+        
         if ($driver == 'file') {
             $this->_cache = new \app\src\Cache\etsis_Cache_Filesystem();
         } elseif ($driver == 'apc') {
@@ -39,7 +50,7 @@ class etsis_Object_Cache
              * @param
              *            bool false Use \Memcache|\Memcached. Default is false.
              */
-            $useMemcached = apply_filter('use_memcached', false);
+            $useMemcached = $this->_app->hook->apply_filter('use_memcached', false);
             
             $this->_cache = new \app\src\Cache\etsis_Cache_Memcache($useMemcached);
             
@@ -57,7 +68,7 @@ class etsis_Object_Cache
              * @param array $pool
              *            Array of servers to add to the connection pool.
              */
-            $servers = apply_filter('memcache_server_pool', $pool);
+            $servers = $this->_app->hook->apply_filter('memcache_server_pool', $pool);
             
             $this->_cache->addServer($servers);
         } elseif ($driver == 'external') {
@@ -67,7 +78,7 @@ class etsis_Object_Cache
              *
              * @since 6.2.0
              */
-            $this->_cache = do_action('external_cache_driver');
+            $this->_cache = $this->_app->hook->do_action('external_cache_driver');
         } elseif ($driver == 'xcache') {
             $this->_cache = new \app\src\Cache\etsis_Cache_XCache();
         } elseif ($driver == 'cookie') {

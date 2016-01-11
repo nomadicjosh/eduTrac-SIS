@@ -17,7 +17,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
 {
 
     /**
-     * Application object.
+     * Holds the application object.
      *
      * @since 6.2.0
      * @var object
@@ -123,7 +123,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
          * @since 6.2.0
          * @var bool
          */
-        $this->enable = apply_filter('enable_caching', true);
+        $this->enable = $this->_app->hook->apply_filter('enable_caching', true);
         
         $this->persist = $this->enable && true;
         
@@ -140,7 +140,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
          * @param string $dir
          *            The directory where file system cache files are saved.
          */
-        $cacheDir = apply_filter('filesystem_cache_dir', $dir);
+        $cacheDir = $this->_app->hook->apply_filter('filesystem_cache_dir', $dir);
         
         /**
          * If the cache directory does not exist, the create it first
@@ -608,6 +608,10 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
      */
     protected function _exists($key, $namespace)
     {
+        if (empty($namespace)) {
+            $namespace = 'default';
+        }
+        
         if (is_readable($this->keyToPath($key, $namespace))) {
             return true;
         }

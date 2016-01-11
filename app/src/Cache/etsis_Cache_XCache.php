@@ -25,6 +25,14 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
     protected $_cache = [];
     
     /**
+     * Holds the application object
+     *
+     * @since 6.2.0
+     * @var object
+     */
+    protected $_app;
+    
+    /**
      * Sets if cache is enabled or not.
      *
      * @since 6.2.0
@@ -32,8 +40,10 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
      */
     public $enable;
 
-    public function __construct()
+    public function __construct(\Liten\Liten $liten = null)
     {
+        $this->_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+        
         if (! extension_loaded('xcache') && ! function_exists('xcache_get')) {
             return new \app\src\Exception\Exception(_t('XCache requires PHP XCache extension to be installed and loaded.'), 'php_xcache_extension');
         }
@@ -44,7 +54,7 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
          * @since 6.2.0
          * @var bool
          */
-        $this->enable = apply_filter('enable_caching', true);
+        $this->enable = $this->_app->hook->apply_filter('enable_caching', true);
     }
 
     /**

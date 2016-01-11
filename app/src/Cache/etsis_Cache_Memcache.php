@@ -36,6 +36,14 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
      * @var array
      */
     protected $_cache = [];
+    
+    /**
+     * Holds the application object
+     *
+     * @since 6.2.0
+     * @var object
+     */
+    protected $_app;
 
     /**
      * Sets if cache is enabled or not.
@@ -45,8 +53,10 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
      */
     public $enable;
 
-    public function __construct($useMemcached)
+    public function __construct($useMemcached, \Liten\Liten $liten = null)
     {
+        $this->_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+        
         $this->useMemcached = $useMemcached;
         
         $ext = $this->useMemcached ? 'memcached' : 'memcache';
@@ -71,7 +81,7 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
          * @since 6.2.0
          * @var bool
          */
-        $this->enable = apply_filter('enable_caching', true);
+        $this->enable = $this->_app->hook->apply_filter('enable_caching', true);
     }
 
     /**
