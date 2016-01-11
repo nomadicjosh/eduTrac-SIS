@@ -40,7 +40,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>dashboard/install-module/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">

@@ -40,7 +40,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
              * 
              * @since 6.1.06
              */
-            do_action('login_form_top'); 
+            $app->hook->do_action('login_form_top'); 
             ?>
 		
 			<!-- Box -->
@@ -76,7 +76,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
              * 
              * @since 6.1.06
              */
-            do_action('login_form_bottom'); ?>
+            $app->hook->do_action('login_form_bottom'); ?>
 			
 		</div>
 		

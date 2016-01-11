@@ -44,7 +44,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						</div>
 						<div class="col-md-6">
 							<label class="control-label"><?=_t( 'New Password' );?></label>
-                            <?php if(has_action('post_save_person') && _h(get_option('moodle_secure_passwords') == 'yes')) : ?>
+                            <?php if($app->hook->has_action('post_save_person') && _h(get_option('moodle_secure_passwords') == 'yes')) : ?>
                             <div class='pwdwidgetdiv' id='thepwddiv'></div>
                             <script type="text/javascript">
                             var pwdwidget = new PasswordWidget('thepwddiv','newPass');

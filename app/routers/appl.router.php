@@ -203,7 +203,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
          * @since 6.1.10
          * @param object $appl Application object.
          */
-        do_action('update_application_db_table', $appl);
+        $app->hook->do_action('update_application_db_table', $appl);
         
         if ($appl->update()) {
             $app->flash('success_message', $flashNow->notice(200));
@@ -242,14 +242,14 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
                 /**
                  * @since 6.1.07
                  */
-                $person = $app->db->person()->where('uname = ?', $_POST['uname'])->findOne();
+                $person = get_person_by('uname', $_POST['uname']);
                 /**
                  * Fires after username has been updated successfully.
                  * 
                  * @since 6.1.07
                  * @param object $person Person data object.
                  */
-                do_action('post_update_username', $person);
+                $app->hook->do_action('post_update_username', $person);
 
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));
@@ -315,7 +315,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
              * @since 6.1.10
              * @param object $appl Application object.
              */
-            do_action('save_application_db_table', $appl);
+            $app->hook->do_action('save_application_db_table', $appl);
             
             if ($appl->save()) {
                 $ID = $appl->lastInsertId();
@@ -541,8 +541,8 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
         );
     });
 
-    $app->post('/applicantLookup/', function() use($app, $json_url) {
-        $appl = $app->db->person()->where('personID = ?', (int) $_POST['personID'])->findOne();
+    $app->post('/applicantLookup/', function() use($app, $json_url) {        
+        $appl = get_person_by('personID', $_POST['personID']);
 
         $json = [ 'input#person' => $appl->lname . ', ' . $appl->fname];
 

@@ -61,7 +61,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -190,7 +190,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                          * @since 6.1.07
                          * @param array $sect Course section data object.
                          */
-                        do_action('left_sect_view_form', $sect);
+                        $app->hook->do_action('left_sect_view_form', $sect);
                         ?>
 						
 					</div>
@@ -219,7 +219,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                          * @since 6.1.07
                          * @param array $sect Course section data object.
                          */
-                        do_action('right_sect_view_form', $sect);
+                        $app->hook->do_action('right_sect_view_form', $sect);
                         ?>
                         
                         <!-- Group -->

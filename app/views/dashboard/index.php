@@ -30,7 +30,7 @@ $screen = 'dash';
         
         <?php jstree_sidebar_menu($screen); ?>
         
-        <div class="<?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?> tablet-column-reset">
+        <div class="<?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?> tablet-column-reset">
 	
 			<div class="row">
                 <?php dashboard_top_widgets();?>
@@ -38,7 +38,7 @@ $screen = 'dash';
             
         </div>
         
-        <div class="<?=(has_filter('sidebar_menu')) ? 'col-md-4' : 'col-md-3';?> tablet-column-reset">
+        <div class="<?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-4' : 'col-md-3';?> tablet-column-reset">
 	
 			<div class="row">
 				<div class="col-md-12">
@@ -83,7 +83,7 @@ $screen = 'dash';
 			</div>
 		</div>
         
-		<div class="<?=(has_filter('sidebar_menu')) ? 'col-md-8' : 'col-md-7';?> tablet-column-reset">
+		<div class="<?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-8' : 'col-md-7';?> tablet-column-reset">
 	
 			<div class="row">
 				<div class="col-md-12">

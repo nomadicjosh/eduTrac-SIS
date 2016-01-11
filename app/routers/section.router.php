@@ -103,7 +103,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        $section = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
+        $section = get_course_sec($id);
 
         $date = date("Y-m-d");
         $time = date("h:i A");
@@ -115,7 +115,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @since 6.1.07
              * @param int $id Primary key of the course section.
              */
-            do_action('pre_update_course_sec', $id);
+            $app->hook->do_action('pre_update_course_sec', $id);
             
             $term = str_replace("/", "", $_POST['termCode']);
 
@@ -139,7 +139,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @since 6.1.10
              * @param array $sect Course section object.
              */
-            do_action('update_course_sec_db_table', $sect);
+            $app->hook->do_action('update_course_sec_db_table', $sect);
 
             $da = $app->db->term()->where('termCode = ?', $section->termCode)->findOne();
 
@@ -218,7 +218,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @since 6.1.07
              * @param array $sect Course section data object.
              */
-            do_action('post_update_course_sec', $section);
+            $app->hook->do_action('post_update_course_sec', $section);
             
             redirect(get_base_url() . 'sect' . '/' . $id . '/');
         }
@@ -280,8 +280,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {        
-        $crse = $app->db->course()->where('courseID = ?', $id)->findOne();
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        $crse = get_course($id);
 
         if ($app->req->isPost()) {
             /**
@@ -290,7 +290,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @since 6.1.07
              * @param int $id Primary key of the course from which the course section is created.
              */
-            do_action('pre_save_course_sec', $id);
+            $app->hook->do_action('pre_save_course_sec', $id);
             
             $sc = $crse->courseCode . '-' . $_POST['sectionNumber'];
             $courseSection = $_POST['termCode'] . '-' . $crse->courseCode . '-' . $_POST['sectionNumber'];
@@ -338,7 +338,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @since 6.1.10
              * @param array $sect Course section object.
              */
-            do_action('save_course_sec_db_table', $sect);
+            $app->hook->do_action('save_course_sec_db_table', $sect);
             
             if ($sect->save()) {
                 $ID = $sect->lastInsertId();
@@ -359,7 +359,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
                  * @since 6.1.07
                  * @param array $section Course section data array.
                  */
-                do_action('post_save_course_sec', $section);
+                $app->hook->do_action('post_save_course_sec', $section);
 
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course Section', _trim($courseSection), get_persondata('uname'));
@@ -417,7 +417,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
     });
 
     $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        $section = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
+        $section = get_course_sec($id);
 
         if ($app->req->isPost()) {
             
@@ -434,7 +434,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @since 6.1.07
              * @param object $sect Course section additional info object.
              */
-            do_action('pre_course_sec_addnl', $sect);
+            $app->hook->do_action('pre_course_sec_addnl', $sect);
             
             if ($sect->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
@@ -462,7 +462,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @since 6.1.07
              * @param array $section Course section data object.
              */
-            do_action('post_course_sec_addnl', $section);
+            $app->hook->do_action('post_course_sec_addnl', $section);
             
             redirect($app->req->server['HTTP_REFERER']);
         }
@@ -515,7 +515,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
     });
 
     $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
+        $sect = get_course_sec($id);
 
         if ($app->req->isPost()) {
             $dotw = '';
@@ -616,8 +616,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
-
-        $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
+        
+        $sect = get_course_sec($id);
 
         $fgrade = $app->db->course_sec()
             ->select('course_sec.courseSecID,course_sec.secShortTitle,course_sec.minCredit,course_sec.courseSection,course_sec.facID')
@@ -685,7 +685,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
 
         if ($app->req->isPost()) {
             
-            $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $_POST['courseSecID'])->findOne();
+            $sect = get_course_sec($_POST['courseSecID']);
             $crse = $app->db->course()->where('courseID = ?', (int) $sect->courseID)->findOne();
             $term = $app->db->term()->where('termCode = ?', $sect->termCode)->findOne();
 
@@ -734,11 +734,11 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * a course by a staff member.
              *
              * @since 6.1.07
-             * @since 6.2.0 Changed to use do_action_array and added $stcs and $stac objects.
+             * @since 6.2.0 Changed to use $app->hook->do_action_array and added $stcs and $stac objects.
              * @param object $stcs Student course section object.
              * @param object $stac Student academic credit object.
              */
-            do_action_array('pre_rgn_stu_crse_reg', [ $stcs, $stac ]);
+            $app->hook->do_action_array('pre_rgn_stu_crse_reg', [ $stcs, $stac ]);
 
             if ($stcs->save() && $stac->save()) {
                 /**
@@ -759,7 +759,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
                  * @since 6.1.07
                  * @param array $sacd Student Academic Credit detail data object.
                  */
-                do_action('post_rgn_stu_crse_reg', $sacd);
+                $app->hook->do_action('post_rgn_stu_crse_reg', $sacd);
 
                 if (function_exists('financial_module')) {
                     /**
@@ -995,7 +995,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
 
     $app->post('/stuLookup/', function() use($app) {
         $stu = $app->db->student()->where('stuID = ?', (int) $_POST['stuID'])->findOne();
-        $nae = $app->db->person()->where('personID = ?', (int) $stu->stuID)->findOne();
+        $nae = get_person_by('personID', $stu->stuID);
 
         $json = [ 'input#stuName' => $nae->lname . ', ' . $nae->fname];
 

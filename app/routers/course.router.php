@@ -103,8 +103,8 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        $course = $app->db->course()->where('courseID = ?', (int) $id)->findOne();
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {        
+        $course = get_course($id);
 
         if ($app->req->isPost()) {
             $crse = $app->db->course();
@@ -136,16 +136,17 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @since 6.1.10
              * @param object $crse Course object.
              */
-            do_action('update_course_db_table', $crse);
+            $app->hook->do_action('update_course_db_table', $crse);
             
             if ($crse->update()) {
+                etsis_cache_delete($id, 'crse');
                 /**
                  * Is triggered after a course is updated.
                  * 
                  * @since 6.1.05
                  * @param object $crse Course object.
                  */
-                do_action('post_update_crse', $crse);
+                $app->hook->do_action('post_update_crse', $crse);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update', 'Course', $course->courseCode, get_persondata('uname'));
             } else {
@@ -203,7 +204,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
     });
 
     $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        $course = $app->db->course()->where('courseID = ?', (int) $id)->findOne();
+        $course = get_course($id);
 
         if ($app->req->isPost()) {
             $crse = $app->db->course();
@@ -212,13 +213,14 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
             }
             $crse->where('courseID = ?', (int) $id);
             if ($crse->update()) {
+                etsis_cache_delete($id, 'crse');
                 /**
                  * Is triggered after course additional info is updated.
                  * 
                  * @since 6.1.05
                  * @param object $crse Course object.
                  */
-                do_action('post_update_crse_addnl_info', $crse);
+                $app->hook->do_action('post_update_crse_addnl_info', $crse);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Course', $course->courseCode, get_persondata('uname'));
             } else {
@@ -304,19 +306,21 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @since 6.1.10
              * @param array $crse Course object.
              */
-            do_action('save_course_db_table', $crse);
+            $app->hook->do_action('save_course_db_table', $crse);
             
             if ($crse->save()) {
                 $ID = $crse->lastInsertId();
-
-                $course = $app->db->course()->where('courseID = ?', (int) $ID)->findOne();
+                
+                etsis_cache_flush_namespace('crse');
+                
+                $course = get_course($ID);
                 /**
                  * Fires after a new course has been created.
                  * 
                  * @since 6.1.05
                  * @param object $course Course object.
                  */
-                do_action('post_save_crse', $course);
+                $app->hook->do_action('post_save_crse', $course);
 
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course', $_POST['subjectCode'] . '-' . $_POST['courseNumber'], get_persondata('uname'));
@@ -336,23 +340,14 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
     });
 
     $app->post('/crseLookup/', function() use($app) {
-
-        $crse = $app->db->course()
-            ->select('courseShortTitle,minCredit,courseLevelCode')
-            ->where('courseID = ?', $_POST['courseID']);
-        $q = $crse->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-        foreach ($q as $k => $v) {
-            $json = [
-                'input#shortTitle' => $v['courseShortTitle'], 'input#minCredit' => $v['minCredit'],
-                'input#courseLevel' => $v['courseLevelCode']
-            ];
-        }
+        
+        $crse = get_course($_POST['courseID']);
+        
+        $json = [
+            'input#shortTitle' => $crse->courseShortTitle, 'input#minCredit' => $crse->minCredit,
+            'input#courseLevel' => $crse->courseLevelCode
+        ];
+        
         echo json_encode($json);
     });
 
@@ -384,7 +379,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
     });
 
     $app->get('/clone/(\d+)/', function($id) use($app, $flashNow, $logger) {
-        $crse = $app->db->course()->where('courseID', $id)->findOne();
+        $crse = get_course($id);
         $clone = $app->db->course();
         $clone->courseNumber = $crse->courseNumber;
         $clone->courseCode = $crse->courseCode;
@@ -412,6 +407,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
 
         if ($clone->save()) {
             $ID = $clone->lastInsertId();
+            etsis_cache_flush_namespace('crse');
             $app->flash('success_message', $flashNow->notice(200));
             $logger->setLog('New Record', 'Cloned Course', $crse->courseCode, get_persondata('uname'));
             redirect(get_base_url() . 'crse' . '/' . (int) $ID . '/');

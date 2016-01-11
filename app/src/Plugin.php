@@ -15,13 +15,27 @@ if (! defined('BASE_PATH'))
 class Plugin
 {
 
-    public static $path = '';
+    public $path = '';
 
-    protected static $_app;
+    public $app;
+    
+    /**
+     *
+     * @var Singleton
+     */
+    protected static $instance;
 
     public function __construct(\Liten\Liten $liten = null)
     {
-        self::$_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+    }
+    
+    public static function inst()
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
     /**
@@ -34,7 +48,7 @@ class Plugin
      *            Plugin's file name.
      * @return string The file name of the plugin.
      */
-    public static function plugin_basename($filename)
+    public function plugin_basename($filename)
     {
         $plugindir = ETSIS_PLUGIN_DIR;
         $dropindir = ETSIS_DROPIN_DIR;
@@ -56,10 +70,10 @@ class Plugin
      * @param string $function
      *            The function which should be executed.
      */
-    public static function register_activation_hook($filename, $function)
+    public function register_activation_hook($filename, $function)
     {
-        $filename = self::plugin_basename($filename);
-        add_action('activate_' . $filename, $function);
+        $filename = $this->plugin_basename($filename);
+        $this->app->hook->add_action('activate_' . $filename, $function);
     }
 
     /**
@@ -74,10 +88,10 @@ class Plugin
      * @param string $function
      *            The function which should be executed.
      */
-    public static function register_deactivation_hook($filename, $function)
+    public function register_deactivation_hook($filename, $function)
     {
-        $filename = self::plugin_basename($filename);
-        add_action('deactivate_' . $filename, $function);
+        $filename = $this->plugin_basename($filename);
+        $this->app->hook->add_action('deactivate_' . $filename, $function);
     }
 
     /**
@@ -89,7 +103,7 @@ class Plugin
      *            The filename of the plugin (__FILE__).
      * @return string The filesystem path of the directory that contains the plugin.
      */
-    public static function plugin_dir_path($filename)
+    public function plugin_dir_path($filename)
     {
         return add_trailing_slash(dirname($filename));
     }

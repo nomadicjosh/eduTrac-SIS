@@ -247,7 +247,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
                  * @since 6.1.12
                  * @param mixed $staff Staff data object.
                  */
-                do_action('post_update_staff', $staff);
+                $app->hook->do_action('post_update_staff', $staff);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Staff', get_name($id), get_persondata('uname'));
             } else {
@@ -350,7 +350,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
              * @since 6.1.12
              * @param array $staff Staff object.
              */
-            do_action('save_staff_db_table', $staff);
+            $app->hook->do_action('save_staff_db_table', $staff);
 
             $meta = $app->db->staff_meta();
             $meta->jobStatusCode = $_POST['jobStatusCode'];
@@ -371,7 +371,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
              * @since 6.1.12
              * @param array $meta Staff meta object.
              */
-            do_action('save_staff_meta_db_table', $meta);
+            $app->hook->do_action('save_staff_meta_db_table', $meta);
             
             if ($staff->save() && $meta->save()) {
                 /**
@@ -380,7 +380,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
                  * @since 6.1.12
                  * @param mixed $staff Staff data object.
                  */
-                do_action('post_save_staff', $staff);
+                $app->hook->do_action('post_save_staff', $staff);
                 
                 /**
                  * Is triggered after staff meta data is saved.
@@ -388,7 +388,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
                  * @since 6.1.12
                  * @param mixed $staff Staff meta data object.
                  */
-                do_action('post_save_staff_meta', $meta);
+                $app->hook->do_action('post_save_staff_meta', $meta);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Staff Member', get_name($id), get_persondata('uname'));
                 redirect(get_base_url() . 'staff' . '/' . $id);

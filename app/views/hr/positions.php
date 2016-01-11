@@ -90,7 +90,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	<?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Widget -->
-	<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+	<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
         
         <!-- Tabs Heading -->
         <div class="tabsbar">

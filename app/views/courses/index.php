@@ -41,7 +41,7 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
 	
 	<?=$message->flashMessage();?>
 	
-    <?php do_action('course_reg_message'); ?>
+    <?php $app->hook->do_action('course_reg_message'); ?>
 	
 	<?php if(_h(get_option('reg_instructions')) != '') { ?>
 		<div class="widget widget-heading-simple widget-body-white">

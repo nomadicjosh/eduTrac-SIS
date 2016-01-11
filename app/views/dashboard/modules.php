@@ -30,7 +30,7 @@ $screen = 'mods';
     
     <?php jstree_sidebar_menu($screen); ?>
     
-    <div class="tab-pane <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>" id="search-users">
+    <div class="tab-pane <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>" id="search-users">
         <div class="widget widget-heading-simple widget-body-white margin-none">
             <div class="widget-body">
 

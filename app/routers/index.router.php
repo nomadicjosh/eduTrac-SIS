@@ -195,7 +195,7 @@ $app->match('GET|POST', '/password/', function () use($app, $flashNow) {
                  * @since 6.1.07
                  * @param string $pass Plaintext password submitted by logged in user.
                  */
-                do_action('post_change_password', $pass);
+                $app->hook->do_action('post_change_password', $pass);
                 
                 $app->flash('success_message', $flashNow->notice(200));
             } else {
@@ -511,7 +511,7 @@ $app->post('/message/', function () use($app, $logger) {
      * 
      * @return mixed
      */
-    do_action('update_options');
+    $app->hook->do_action('update_options');
     /* Write to logs */
     $logger->setLog('Update', 'myeduTrac', 'Welcome Message', get_persondata('uname'));
 

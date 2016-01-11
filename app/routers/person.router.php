@@ -114,7 +114,7 @@ $app->group('/nae',
                  * @since 6.1.07
                  * @param object $nae Name and address object.
                  */
-                do_action('pre_update_person', $nae);
+                $app->hook->do_action('pre_update_person', $nae);
                 
                 if ($nae->update()) {
                     $app->flash('success_message', $flashNow->notice(200));
@@ -127,9 +127,7 @@ $app->group('/nae',
                  *
                  * @since 6.1.07
                  */
-                $person = $app->db->person()
-                    ->where('personID = ?', $id)
-                    ->findOne();
+                $person = get_person_by('personID', $id);
                 /**
                  * Fires after person record has been updated.
                  *
@@ -137,7 +135,7 @@ $app->group('/nae',
                  * @param array $person
                  *            Person data object.
                  */
-                do_action('post_update_person', $person);
+                $app->hook->do_action('post_update_person', $person);
                 
                 redirect($app->req->server['HTTP_REFERER']);
             }
@@ -267,7 +265,7 @@ $app->group('/nae',
                  *
                  * @since 6.1.07
                  */
-                do_action('pre_save_person');
+                $app->hook->do_action('pre_save_person');
                 
                 /**
                  * Fires during the saving/creating of an person record.
@@ -276,7 +274,7 @@ $app->group('/nae',
                  * @param array $nae
                  *            Person data object.
                  */
-                do_action('save_person_db_table', $nae);
+                $app->hook->do_action('save_person_db_table', $nae);
                 
                 if ($nae->save()) {
                     $ID = $nae->lastInsertId();
@@ -343,7 +341,7 @@ $app->group('/nae',
                          * @param array $nae
                          *            Person data object.
                          */
-                        do_action_array('post_save_person', [
+                        $app->hook->do_action_array('post_save_person', [
                             $pass,
                             $nae
                         ]);
@@ -783,22 +781,11 @@ $app->group('/nae',
         });
         
         $app->match('GET|POST', '/usernameCheck/', function () use($app) {
-            $uname = $app->db->person()
-                ->where('uname', $_POST['uname']);
-            $q = $uname->find(function ($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-            foreach ($q as $v) :
-                if ($v['uname'] == $_POST['uname']) :
-                    echo '1';
-                
-            endif;
-            endforeach
-            ;
+            $uname = get_person_by('uname', $_POST['uname']);
+            
+            if ($uname->uname == $_POST['uname']) {
+                echo '1';
+            }
         });
         
         /**
@@ -814,25 +801,13 @@ $app->group('/nae',
             
             $passSuffix = 'eT*';
             
-            $person = $app->db->person()
-                ->select('uname,email,fname,lname,dob,ssn')
-                ->where('personID = ?', $id);
-            $q1 = $person->find(function ($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-            $a = [];
-            foreach ($q1 as $r1) {
-                $a[] = $r1;
-            }
-            $dob = str_replace('-', '', $r1['dob']);
-            $ssn = str_replace('-', '', $r1['ssn']);
+            $person = get_person_by('personID', $id);
+            
+            $dob = str_replace('-', '', $person->dob);
+            $ssn = str_replace('-', '', $person->ssn);
             if ($ssn > 0) {
                 $pass = $ssn . $passSuffix;
-            } elseif ($r1['dob'] > '0000-00-00') {
+            } elseif ($person->dob > '0000-00-00') {
                 $pass = $dob . $passSuffix;
             } else {
                 $pass = 'myaccount' . $passSuffix;
@@ -849,11 +824,11 @@ $app->group('/nae',
             $body = str_replace('#url#', $url, $body);
             $body = str_replace('#helpdesk#', $helpDesk, $body);
             $body = str_replace('#adminemail#', $fromEmail, $body);
-            $body = str_replace('#uname#', _h($r1['uname']), $body);
-            $body = str_replace('#email#', _h($r1['email']), $body);
-            $body = str_replace('#name#', _h($r1['lname']) . ', ' . _h($r1['fname']), $body);
-            $body = str_replace('#fname#', _h($r1['fname']), $body);
-            $body = str_replace('#lname#', _h($r1['lname']), $body);
+            $body = str_replace('#uname#', _h($person->uname), $body);
+            $body = str_replace('#email#', _h($person->email), $body);
+            $body = str_replace('#name#', get_name(_h($person->personID)), $body);
+            $body = str_replace('#fname#', _h($person->fname), $body);
+            $body = str_replace('#lname#', _h($person->lname), $body);
             $body = str_replace('#password#', $pass, $body);
             $headers = "From: $from <auto-reply@$host>\r\n";
             $headers .= "X-Mailer: PHP/" . phpversion();
@@ -871,10 +846,10 @@ $app->group('/nae',
                 $pass = [];
                 $pass['pass'] = $pass;
                 $pass['personID'] = $id;
-                $pass['uname'] = $r1['uname'];
-                $pass['fname'] = $r1['fname'];
-                $pass['lname'] = $r1['lname'];
-                $pass['email'] = $r1['email'];
+                $pass['uname'] = $person->uname;
+                $pass['fname'] = $person->fname;
+                $pass['lname'] = $person->lname;
+                $pass['email'] = $person->email;
                 /**
                  * Fires after successful reset of person's password.
                  *
@@ -884,10 +859,10 @@ $app->group('/nae',
                  * @param string $uname
                  *            Person's username
                  */
-                do_action('post_reset_password', $pass);
+                $app->hook->do_action('post_reset_password', $pass);
                 
                 $app->flash('success_message', _t('The password has been reset and an email has been sent to this user.'));
-                $email->et_mail($r1['email'], _t("Reset Password"), $body, $headers);
+                $email->et_mail($person->email, _t("Reset Password"), $body, $headers);
                 $logger->setLog(_t('Update Record'), _t('Reset Password'), get_name($id), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));

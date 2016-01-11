@@ -526,7 +526,7 @@ function etsis_set_auth_cookie($person, $rememberme = '') {
          * 
          * @since 6.2.0
          */
-        $expire = apply_filter('auth_cookie_expiration', (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
+        $expire = $app->hook->apply_filter('auth_cookie_expiration', (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
         // Set remember me cookie.
         $app->cookies->setSecureCookie('ET_REMEMBER', 'rememberme', $expire);
     } else {
@@ -535,7 +535,7 @@ function etsis_set_auth_cookie($person, $rememberme = '') {
          *
          * @since 6.2.0
          */
-        $expire = apply_filter('auth_cookie_expiration', ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
+        $expire = $app->hook->apply_filter('auth_cookie_expiration', ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
     }
     
     $auth_cookie = _h($person->personID);
@@ -547,7 +547,7 @@ function etsis_set_auth_cookie($person, $rememberme = '') {
      * @param string $auth_cookie Authentication cookie.
      * @param int    $expire  Duration in seconds the authentication cookie should be valid.
      */
-    do_action_array( 'set_auth_cookie', [ $auth_cookie, $expire ] );
+    $app->hook->do_action( 'set_auth_cookie', $auth_cookie, $expire );
     
     $app->cookies->setSecureCookie('ET_COOKNAME', $auth_cookie, $expire);
 }
@@ -566,7 +566,7 @@ function etsis_clear_auth_cookie() {
      *
      * @since 6.2.0
      */
-    do_action( 'clear_auth_cookie' );
+    $app->hook->do_action( 'clear_auth_cookie' );
     
     $vars1 = [];
     parse_str($app->cookies->get('ET_COOKNAME'), $vars1);

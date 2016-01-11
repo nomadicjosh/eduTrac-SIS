@@ -105,7 +105,7 @@ $app->view->block('myet');
                                              * @since 6.1.10
                                              * @param array $v Application data object.
                                              */
-                                            do_action('my_appl_custom_field', $v); 
+                                            $app->hook->do_action('my_appl_custom_field', $v); 
                                             ?>
 											<div class="col-md-6">
 												<label class="control-label-alt"><?=_t( 'Comments' );?></label>

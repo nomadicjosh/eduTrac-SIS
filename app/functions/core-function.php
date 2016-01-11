@@ -1,5 +1,4 @@
 <?php
-use app\src\Plugin;
 if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 /**
@@ -20,14 +19,15 @@ $app = \Liten\Liten::getInstance();
  * Retrieves eduTrac site root url.
  *
  * @since 4.1.9
- * @uses apply_filter() Calls 'base_url' filter.
+ * @uses $app->hook->apply_filter() Calls 'base_url' filter.
  *      
  * @return string eduTrac SIS root url.
  */
 function get_base_url()
 {
+    $app = \Liten\Liten::getInstance();
     $url = url('/');
-    return apply_filter('base_url', $url);
+    return $app->hook->apply_filter('base_url', $url);
 }
 
 /**
@@ -235,31 +235,6 @@ function _bool($num)
             return 'No';
             break;
     }
-}
-
-function courseList($id = '')
-{
-    $app = \Liten\Liten::getInstance();
-    $crse = $app->db->course()
-        ->select('courseCode')
-        ->where('courseID <> ?', $id)
-        ->_and_()
-        ->where('currStatus = "A"')
-        ->_and_()
-        ->where('endDate <= "0000-00-00"');
-    $q = $crse->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    
-    $a = [];
-    foreach ($q as $r) {
-        $a[] = $r['courseCode'];
-    }
-    return $a;
 }
 
 /**
@@ -483,47 +458,6 @@ function isStudent($id)
 }
 
 /**
- * A function which returns true if the logged in user
- * has an active student, staff, or faculty record.
- *
- * @since 4.3
- * @param int $id
- *            Person ID.
- * @return bool
- */
-function isRecordActive($id)
-{
-    if ('' == _trim($id)) {
-        $message = _t('Invalid person ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    if (! is_numeric($id)) {
-        $message = _t('Invalid person ID: person id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    $app = \Liten\Liten::getInstance();
-    $rec = $app->db->person()
-        ->select('person.personID')
-        ->_join('student', 'person.personID = student.stuID')
-        ->_join('staff', 'person.personID = staff.staffID')
-        ->where('person.personID = ?', $id)
-        ->_and_()
-        ->where('student.status = "A"')
-        ->_or_()
-        ->where('staff.status = "A"')
-        ->findOne();
-    
-    if ($rec !== false) {
-        return true;
-    }
-    return false;
-}
-
-/**
  * If the logged in user is not a student,
  * hide the menu item.
  * For myeduTrac usage.
@@ -695,127 +629,6 @@ function getStaffJobTitle($id)
         ->findOne();
     
     return _h($title->title);
-}
-
-function rolePerm($id)
-{
-    $app = \Liten\Liten::getInstance();
-    $role = $app->db->query("SELECT permission from role WHERE ID = ?", [
-        $id
-    ]);
-    $q1 = $role->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    $a = [];
-    foreach ($q1 as $v) {
-        $a[] = $v;
-    }
-    $sql = $app->db->permission();
-    $q2 = $sql->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q2 as $r) {
-        $perm = maybe_unserialize($v['permission']);
-        echo '
-				<tr>
-					<td>' . $r['permName'] . '</td>
-					<td class="text-center">';
-        if (in_array($r['permKey'], $perm)) {
-            echo '<input type="checkbox" name="permission[]" value="' . $r['permKey'] . '" checked="checked" />';
-        } else {
-            echo '<input type="checkbox" name="permission[]" value="' . $r['permKey'] . '" />';
-        }
-        echo '</td>
-            </tr>';
-    }
-}
-
-function personPerm($id)
-{
-    $app = \Liten\Liten::getInstance();
-    $array = [];
-    $pp = $app->db->query("SELECT permission FROM person_perms WHERE personID = ?", [
-        $id
-    ]);
-    $q = $pp->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $r) {
-        $array[] = $r;
-    }
-    $personPerm = maybe_unserialize($r['permission']);
-    /**
-     * Select the role(s) of the person who's
-     * personID = $id
-     */
-    $array1 = [];
-    $pr = $app->db->query("SELECT roleID from person_roles WHERE personID = ?", [
-        $id
-    ]);
-    $q1 = $pr->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q1 as $r1) {
-        $array1[] = $r1;
-    }
-    /**
-     * Select all the permissions from the role(s)
-     * that are connected to the selected person.
-     */
-    $array2 = [];
-    $role = $app->db->query("SELECT permission from role WHERE ID = ?", [
-        _h($r1['roleID'])
-    ]);
-    $q2 = $role->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q2 as $r2) {
-        $array2[] = $r2;
-    }
-    $perm = maybe_unserialize($r2['permission']);
-    $permission = $app->db->permission();
-    $sql = $permission->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($sql as $row) {
-        echo '
-            <tr>
-                <td>' . $row['permName'] . '</td>
-                <td class="text-center">';
-        if (in_array($row['permKey'], $perm)) {
-            echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" checked="checked" disabled="disabled" />';
-        } elseif ($personPerm != '' && in_array($row['permKey'], $personPerm)) {
-            echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" checked="checked" />';
-        } else {
-            echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" />';
-        }
-        echo '</td>
-            </tr>';
-    }
 }
 
 function student_has_restriction()
@@ -1001,67 +814,6 @@ function translate_addr_type($type)
         case 'B':
             return 'Business';
             break;
-    }
-}
-
-/**
- * Returns the name of a particular person.
- *
- * @since 1.0.0
- * @param int $ID
- *            Person ID.
- * @return string
- */
-function get_name($ID)
-{
-    if ('' == _trim($ID)) {
-        $message = _t('Invalid person ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    if (! is_numeric($ID)) {
-        $message = _t('Invalid person ID: person id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    $name = get_person_by('personID', $ID);
-    
-    return _h($name->lname) . ', ' . _h($name->fname);
-}
-
-/**
- * Shows selected person's initials instead of
- * his/her's full name.
- *
- * @since 4.1.6
- * @param int $ID
- *            Person ID
- * @param int $initials
- *            Number of initials to show.
- * @return string
- */
-function get_initials($ID, $initials = 2)
-{
-    if ('' == _trim($ID)) {
-        $message = _t('Invalid person ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    if (! is_numeric($ID)) {
-        $message = _t('Invalid person ID: person id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    $name = get_person_by('personID', $ID);
-    
-    if ($initials == 2) {
-        return substr(_h($name->fname), 0, 1) . '. ' . substr(_h($name->lname), 0, 1) . '.';
-    } else {
-        return _h($name->lname) . ', ' . substr(_h($name->fname), 0, 1) . '.';
     }
 }
 
@@ -1340,47 +1092,6 @@ function prerequisite($stuID, $courseSecID)
     }
 }
 
-/**
- * Function for retrieving a person's
- * uploaded school photo.
- *
- * @since 4.5
- * @param int $id
- *            Person ID.
- * @param string $email
- *            Email of the requested person.
- * @param int $s
- *            Size of the photo.
- * @param string $class
- *            HTML element for CSS.
- * @return mixed
- */
-function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
-{
-    $app = \Liten\Liten::getInstance();
-    
-    $nae = $app->db->person()
-        ->select('photo')
-        ->where('personID = ?', $id)
-        ->_and_()
-        ->where('photo <> ""')
-        ->_and_()
-        ->where('photo <> "NULL"')
-        ->findOne();
-    
-    if ($nae !== false) {
-        $photosize = getimagesize(get_base_url() . 'static/photos/' . $nae->photo);
-        if (getPathInfo('/form/photo/') === '/form/photo/') {
-            $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . $nae->photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
-        } else {
-            $avatar = '<img src="' . get_base_url() . 'static/photos/' . $nae->photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
-        }
-    } else {
-        $avatar = get_user_avatar($email, $s, $class);
-    }
-    return $avatar;
-}
-
 function percent($num_amount, $num_total)
 {
     $count1 = $num_amount / $num_total;
@@ -1470,6 +1181,7 @@ function etsis_hash_password($password)
  */
 function etsis_check_password($password, $hash, $person_id = '')
 {
+    $app = \Liten\Liten::getInstance();
     // If the hash is still md5...
     if (strlen($hash) <= 32) {
         $check = ($hash == md5($password));
@@ -1478,7 +1190,7 @@ function etsis_check_password($password, $hash, $person_id = '')
             etsis_set_password($password, $person_id);
             $hash = etsis_hash_password($password);
         }
-        return apply_filter('check_password', $check, $password, $hash, $person_id);
+        return $app->hook->apply_filter('check_password', $check, $password, $hash, $person_id);
     }
     
     // If the stored hash is longer than an MD5, presume the
@@ -1487,7 +1199,7 @@ function etsis_check_password($password, $hash, $person_id = '')
     
     $check = $hasher->CheckPassword($password, $hash);
     
-    return apply_filter('check_password', $check, $password, $hash, $person_id);
+    return $app->hook->apply_filter('check_password', $check, $password, $hash, $person_id);
 }
 
 /**
@@ -1606,24 +1318,6 @@ function unicoder($string)
         $new_string .= '&#' . ord($val) . ';';
     }
     return $new_string;
-}
-
-/**
- * Retrieve requested field from person table
- * based on user's id.
- *
- * @since 3.0.2
- * @param int $id
- *            Person ID.
- * @param mixed $field
- *            Data requested of particular person.
- * @return mixed
- */
-function getUserValue($id, $field)
-{
-    $value = get_person_by('personID', $id);
-    
-    return $value->$field;
 }
 
 /**
@@ -1756,8 +1450,9 @@ function forbidden_keyword()
  */
 function the_myet_welcome_message()
 {
+    $app = \Liten\Liten::getInstance();
     $welcome_message = get_option('myet_welcome_message');
-    $welcome_message = apply_filter('the_myet_welcome_message', $welcome_message);
+    $welcome_message = $app->hook->apply_filter('the_myet_welcome_message', $welcome_message);
     $welcome_message = str_replace(']]>', ']]&gt;', $welcome_message);
     return $welcome_message;
 }
@@ -1805,29 +1500,6 @@ function removeFromCart($section)
     if (count($q[0]['stuID']) > 0) {
         return true;
     }
-}
-
-/**
- *
- * @since 4.4
- */
-function convertCourseSec($sect)
-{
-    $app = \Liten\Liten::getInstance();
-    $section = $app->db->course_sec()
-        ->select('courseSecCode')
-        ->where('courseSecID = ?', $sect);
-    $q = $section->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $r) {
-        $section = $r['courseSecCode'];
-    }
-    return $section;
 }
 
 /**
@@ -2055,31 +1727,6 @@ function subdomain_as_directory()
 function cronDir()
 {
     return APP_PATH . 'views/cron/' . subdomain_as_directory() . '/';
-}
-
-/**
- * Retrieves a list of roles from the roles table.
- *
- * @since 6.0.04
- * @return mixed
- */
-function get_perm_roles()
-{
-    $app = \Liten\Liten::getInstance();
-    $query = $app->db->query('SELECT 
-    		trim(leading "0" from ID) AS roleID, roleName 
-		FROM role');
-    $result = $query->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    
-    foreach ($result as $r) {
-        echo '<option value="' . _h($r['roleID']) . '">' . _h($r['roleName']) . '</option>' . "\n";
-    }
 }
 
 /**
@@ -2428,7 +2075,7 @@ function etsis_validate_plugin($plugin_name)
      * @param string $plugin_name
      *            The plugin's base name.
      */
-    do_action('activate_plugin', $plugin_name);
+    $app->hook->do_action('activate_plugin', $plugin_name);
     
     /**
      * Fires as a specifig plugin is being activated.
@@ -2440,7 +2087,7 @@ function etsis_validate_plugin($plugin_name)
      * @param string $plugin_name
      *            The plugin's base name.
      */
-    do_action('activate_' . $plugin_name);
+    $app->hook->do_action('activate_' . $plugin_name);
     
     /**
      * Activate the plugin if there are no errors.
@@ -2461,7 +2108,7 @@ function etsis_validate_plugin($plugin_name)
      * @param string $plugin_name
      *            The plugin's base name.
      */
-    do_action('activated_plugin', $plugin_name);
+    $app->hook->do_action('activated_plugin', $plugin_name);
 }
 
 /**
@@ -2510,6 +2157,21 @@ function etsis_is_writable($path)
     } else {
         return is_writable($path);
     }
+}
+
+/**
+ * Takes an array and turns it into an object.
+ *
+ * @param array $array Array of data.
+ */
+function array_to_object(array $array)
+{
+    foreach ($array as $key => $value) {
+        if (is_array($value)) {
+            $array[$key] = array_to_object($value);
+        }
+    }
+    return (object) $array;
 }
 
 /**

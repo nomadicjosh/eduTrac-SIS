@@ -49,7 +49,7 @@ $screen = 'vcrse';
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
         
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -167,7 +167,7 @@ $screen = 'vcrse';
                          * @since 6.1.10
                          * @param array $crse Course data object.
                          */
-                        do_action('left_crse_view_form', $crse); 
+                        $app->hook->do_action('left_crse_view_form', $crse); 
                         ?>
 						
 					</div>
@@ -217,7 +217,7 @@ $screen = 'vcrse';
                          * @since 6.1.10
                          * @param array $crse Course data object.
                          */
-                        do_action('right_crse_view_form', $crse); 
+                        $app->hook->do_action('right_crse_view_form', $crse); 
                         ?>
 						
 						<!-- Group -->

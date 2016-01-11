@@ -291,7 +291,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $fl
                      * @since 6.1.05
                      * @param array $sacd Student Academic Credit detail data object.
                      */
-                    do_action('post_save_myet_reg', $sacd);
+                    $app->hook->do_action('post_save_myet_reg', $sacd);
                     /**
                      * Delete the record from the shopping cart after
                      * registration is complete.
@@ -318,7 +318,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $fl
          * @since 6.1.00
          * @return mixed
          */
-        do_action('myet_student_course_registration');
+        $app->hook->do_action('myet_student_course_registration');
 
         // Flash messages for success or error
         if ($ID > 0) {

@@ -44,7 +44,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/editAppl/<?=_h($appl->applID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -251,7 +251,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                          * @since 6.1.10
                          * @param array $appl Application data object.
                          */
-                        do_action('left_appl_view_dash_form', $appl); 
+                        $app->hook->do_action('left_appl_view_dash_form', $appl); 
                         ?>
 						
 					</div>
@@ -360,7 +360,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                          * @since 6.1.10
                          * @param array $appl Application data object.
                          */
-                        do_action('right_appl_view_dash_form', $appl); 
+                        $app->hook->do_action('right_appl_view_dash_form', $appl); 
                         ?>
 						
 					</div>

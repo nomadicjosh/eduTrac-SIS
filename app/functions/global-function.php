@@ -20,7 +20,9 @@ if (! defined('BASE_PATH'))
  */
 function _etsis_cache_init()
 {
-    $driver = apply_filter('etsis_cache_driver', 'file');
+    $app = \Liten\Liten::getInstance();
+    
+    $driver = $app->hook->apply_filter('etsis_cache_driver', 'file');
     $cache = new \app\src\Cache\etsis_Object_Cache($driver);
     return $cache;
 }

@@ -34,7 +34,7 @@ $screen = 'adsu';
     <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
         
         <!-- Widget -->
-        <div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+        <div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
             
             <div class="widget-body">
                 <?php if($nae !='') : foreach($nae as $k => $v) { ?>

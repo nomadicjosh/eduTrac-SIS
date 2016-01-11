@@ -86,7 +86,7 @@ $app->group('/plugins', function () use($app, $css, $js) {
          * @param string $pluginName
          *            The plugin's base name.
          */
-        do_action('deactivate_plugin', $pluginName);
+        $app->hook->do_action('deactivate_plugin', $pluginName);
         
         /**
          * Fires as a specifig plugin is being deactivated.
@@ -98,7 +98,7 @@ $app->group('/plugins', function () use($app, $css, $js) {
          * @param string $pluginName
          *            The plugin's base name.
          */
-        do_action('deactivate_' . $pluginName);
+        $app->hook->do_action('deactivate_' . $pluginName);
         
         deactivate_plugin($pluginName);
         
@@ -112,7 +112,7 @@ $app->group('/plugins', function () use($app, $css, $js) {
          * @param string $pluginName
          *            The plugin's base name.
          */
-        do_action('deactivated_plugin', $pluginName);
+        $app->hook->do_action('deactivated_plugin', $pluginName);
         
         redirect($app->req->server['HTTP_REFERER']);
     });

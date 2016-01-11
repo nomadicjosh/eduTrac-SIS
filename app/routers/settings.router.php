@@ -53,7 +53,7 @@ $app->match('GET|POST', '/setting/', function () use($app, $logger) {
             update_option($option_name, $value);
         }
         // Update more options here
-        do_action('update_options');
+        $app->hook->do_action('update_options');
         /* Write to logs */
         $logger->setLog('Update', 'Settings', 'System Settings', get_persondata('uname'));
         redirect($app->req->server['HTTP_REFERER']);
@@ -110,7 +110,7 @@ $app->match('GET|POST', '/registration/', function () use($app, $logger) {
             update_option($option_name, $value);
         }
         // Update more options here
-        do_action('update_options');
+        $app->hook->do_action('update_options');
         /* Write to logs */
         $logger->setLog('Update', 'Settings', 'Registration Settings', get_persondata('uname'));
     }
@@ -166,7 +166,7 @@ $app->match('GET|POST', '/email/', function () use($app, $logger) {
             update_option($option_name, $value);
         }
         // Update more options here
-        do_action('update_options');
+        $app->hook->do_action('update_options');
         /* Write to logs */
         $logger->setLog('Update', 'Settings', 'Email Settings', get_persondata('uname'));
     }
@@ -225,7 +225,7 @@ $app->match('GET|POST', '/templates/', function () use($app, $logger) {
             update_option($option_name, $value);
         }
         // Update more options here
-        do_action('update_options');
+        $app->hook->do_action('update_options');
         /* Write to logs */
         $logger->setLog('Update', 'Settings', 'Email Templates', get_persondata('uname'));
     }

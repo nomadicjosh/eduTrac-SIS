@@ -73,7 +73,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>nae/add/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -227,7 +227,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                              * 
                              * @since 6.1.10
                              */
-                            do_action('left_nae_new_form'); 
+                            $app->hook->do_action('left_nae_new_form'); 
                         ?>
 						
 					</div>
@@ -374,7 +374,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                              * 
                              * @since 6.1.10
                              */
-                            do_action('right_nae_new_form'); 
+                            $app->hook->do_action('right_nae_new_form'); 
                         ?>
                         
                         <!-- Group -->

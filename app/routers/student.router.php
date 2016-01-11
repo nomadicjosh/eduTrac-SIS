@@ -117,7 +117,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
              * @since 6.1.05
              * @param object $spro Student profile object.
              */
-            do_action('pre_update_spro', $spro);
+            $app->hook->do_action('pre_update_spro', $spro);
             
             if ($spro->update()) {
                 /**
@@ -127,7 +127,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                  * @param object $spro Student profile data object.
                  * @return mixed
                  */
-                do_action('post_update_spro', $spro);
+                $app->hook->do_action('post_update_spro', $spro);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Student Profile (SPRO)', get_name($id), get_persondata('uname'));
             } else {
@@ -222,7 +222,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
 
     $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
         if ($app->req->isPost()) {            
-            $nae = $app->db->person()->where('personID = ?', $id)->findOne();
+            $nae = get_person_by('personID', $id);
             if ($nae->ssn > 0) {
                 $pass = str_replace('-', '', $nae->ssn);
             } elseif ($nae->dob != '0000-00-00') {
@@ -262,7 +262,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
              * @since 6.1.07
              * @param int $id Student's ID.
              */
-            do_action('pre_save_stu', $id);
+            $app->hook->do_action('pre_save_stu', $id);
 
             if ($student->save() && $sacp->save() && $al->save()) {
                 if (_h(get_option('send_acceptance_email')) == 1) {
@@ -310,7 +310,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                  * @since 6.1.07
                  * @param array $spro Student data object.
                  */
-                do_action('post_save_stu', $spro);
+                $app->hook->do_action('post_save_stu', $spro);
                 
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Student', get_name($id), get_persondata('uname'));
@@ -926,7 +926,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
              * @since 6.1.05
              * @param array $sacd Student Academic Credit Detail data object.
              */
-            do_action('post_update_sacd', $sacd);
+            $app->hook->do_action('post_update_sacd', $sacd);
             
             redirect($app->req->server['HTTP_REFERER']);
         }

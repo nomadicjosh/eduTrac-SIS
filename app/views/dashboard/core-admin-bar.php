@@ -38,7 +38,7 @@ $app = \Liten\Liten::getInstance();
                                  * 
                                  * @since 6.1.09
                                  */
-                                do_action('list_plugin_admin_pages');
+                                $app->hook->do_action('list_plugin_admin_pages');
                                 ?>
                             </ul>
                         </li>

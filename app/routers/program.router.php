@@ -119,7 +119,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
              * @since 6.1.10
              * @param array $prog Academic program object.
              */
-            do_action('update_acad_program_db_table', $prog);
+            $app->hook->do_action('update_acad_program_db_table', $prog);
             
             if ($prog->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
@@ -219,7 +219,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
              * @since 6.1.10
              * @param array $prog Academic program object.
              */
-            do_action('save_acad_program_db_table', $prog);
+            $app->hook->do_action('save_acad_program_db_table', $prog);
             
             if ($prog->save()) {
                 $ID = $prog->lastInsertId();

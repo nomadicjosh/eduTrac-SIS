@@ -61,7 +61,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     
     <?php if(function_exists('savedquery_module')) : ?>
     <div class="tab-pane" id="search-users">
-        <div class="widget widget-heading-simple widget-body-white margin-none <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+        <div class="widget widget-heading-simple widget-body-white margin-none <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
             <div class="widget-body">
 
                 <div class="alerts alerts-info center">
@@ -76,7 +76,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>sql/" id="validateSubmitForm" method="post">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -148,7 +148,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	
 	<?php if(isset($type)) { ?>
 	<!-- Widget -->
-	<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+	<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		<div class="widget-body">
 		
 			<!-- Table -->

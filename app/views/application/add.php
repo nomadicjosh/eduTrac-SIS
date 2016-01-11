@@ -34,7 +34,7 @@ $message = new \app\src\Messages;
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/add/<?=_h($person->personID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -212,7 +212,7 @@ $message = new \app\src\Messages;
                              * 
                              * @since 6.1.10
                              */
-                            do_action('left_appl_new_dash_form'); 
+                            $app->hook->do_action('left_appl_new_dash_form'); 
                         ?>
 						
 					</div>
@@ -267,7 +267,7 @@ $message = new \app\src\Messages;
                              * 
                              * @since 6.1.10
                              */
-                            do_action('right_appl_new_dash_form'); 
+                            $app->hook->do_action('right_appl_new_dash_form'); 
                         ?>
 						
 					</div>

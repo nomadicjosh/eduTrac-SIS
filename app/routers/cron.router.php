@@ -680,7 +680,7 @@ $app->group('/cron',
                 ->where('sent = "0"');
             $queue->find(function ($data) use($app, $emailer) {
                 foreach ($data as $d) {
-                    if (has_action('etsisMailer_init', 'etsis_smtp')) {
+                    if ($app->hook->has_action('etsisMailer_init', 'etsis_smtp')) {
                         $emailer->IsSMTP();
                         $emailer->Mailer = "smtp";
                         $emailer->Host = _h(get_option('etsis_smtp_host'));

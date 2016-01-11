@@ -684,7 +684,7 @@ $app->group('/form',
                      * @param array $subject
                      *            Subject data object.
                      */
-                    do_action('post_save_subject', $subject);
+                    $app->hook->do_action('post_save_subject', $subject);
                     
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('New Record', 'Subject', _filter_input_string(INPUT_POST, 'subjectName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'subjectCode')) . ')', get_persondata('uname'));
