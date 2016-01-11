@@ -12,9 +12,11 @@ if (! defined('BASE_PATH'))
  */
 $app = \Liten\Liten::getInstance();
 
-etsis_load_file(APP_PATH . 'src/Httpful/autoload.php');
-etsis_load_file(APP_PATH . 'src/CoreUpdate/vendor/autoload.php');
-etsis_load_file(APP_PATH . 'src/PHPMailer/vendor/autoload.php');
+etsis_load_file(APP_PATH . 'src/vendor/Gettext/autoloader.php');
+etsis_load_file(APP_PATH . 'src/vendor/Gettext/Languages/autoloader.php');
+etsis_load_file(APP_PATH . 'src/vendor/Httpful/autoload.php');
+etsis_load_file(APP_PATH . 'src/vendor/CoreUpdate/vendor/autoload.php');
+etsis_load_file(APP_PATH . 'src/vendor/PHPMailer/vendor/autoload.php');
 
 $app->inst->singleton('hook', function () {
     return new \app\src\Hooks();
@@ -62,6 +64,7 @@ function _trigger_error($message, $level = E_USER_NOTICE)
  *      Returns an element which may have been filtered by a filter.
  *     
  * @since 6.0.03
+ * @deprecated since 6.2.0
  * @param string $hook
  *            The name of the the element or action.
  * @param mixed $value
@@ -93,6 +96,7 @@ function apply_filter($hook, $value)
  * @see Hooks::add_filter() Typical use: add_filter('some_hook', 'function_handler_for_hook');
  *     
  * @since 6.0.03
+ * @deprecated since 6.2.0
  * @param string $hook
  *            the name of the eduTrac SIS element to be filtered or eduTrac SIS action to be triggered
  * @param callback $function_to_add
@@ -159,6 +163,7 @@ function add_action($hook, $function_to_add, $priority = 10, $accepted_args = 1)
  * @see Hooks::remove_action()
  *
  * @since 6.0.03
+ * @deprecated since 6.2.0
  * @param string $hook
  *            The action hook to which the function to be removed is hooked.
  * @param callback $function_to_remove
@@ -180,6 +185,7 @@ function remove_action($hook, $function_to_remove, $priority = 10)
  * @see Hooks::remove_all_actions()
  *
  * @since 6.0.03
+ * @deprecated since 6.2.0
  * @param string $hook
  *            The action to remove hooks from.
  * @param int $priority
@@ -221,6 +227,7 @@ function remove_all_actions($hook, $priority = false)
  * executes functions hooked on a specific action hook.
  *
  * @since 6.0.03
+ * @deprecated since 6.2.0
  * @param string $hook
  *            The name of the action which should be executed.
  * @param mixed $arg
@@ -252,6 +259,7 @@ function do_action($hook, $arg = '')
  * @see Hooks::_call_all_hook()
  *
  * @since 6.0.03
+ * @deprecated since 6.2.0
  * @param mixed $args
  *            Parameters from the hook that was called.
  * @return mixed
@@ -269,6 +277,7 @@ function _call_all_hook($args)
  * @see Hooks::do_action_array()
  *
  * @since 6.0.03
+ * @deprecated since 6.2.0
  * @param string $hook
  *            Execute functions hooked on a specific action hook, specifying arguments in an array.
  * @param mixed $args
@@ -293,6 +302,7 @@ function do_action_array($hook, $args)
  *      when the hook was added.
  *     
  * @since 6.0.03
+ * @deprecated since 6.2.0
  * @param string $hook
  *            The filter hook to which the function to be removed is hooked.
  * @param callback $function_to_remove
@@ -316,6 +326,7 @@ function remove_filter($hook, $function_to_remove, $priority = 10)
  * @see Hooks::remove_all_filters()
  *
  * @since 6.0.03
+ * @deprecated since 6.2.0
  * @param string $hook
  *            The filter to remove hooks from.
  * @param int $priority
@@ -335,6 +346,7 @@ function remove_all_filters($hook, $priority = false)
  * @see Hooks::has_filter()
  *
  * @since 6.0.03
+ * @deprecated since 6.2.0
  * @param string $hook
  *            The name of the filter hook.
  * @param callback $function_to_check
@@ -354,6 +366,7 @@ function has_filter($hook, $function_to_check = false)
  * @see Hooks::has_action()
  *
  * @since 6.0.03
+ * @deprecated since 6.2.0
  * @param string $hook
  *            The name of the action hook.
  * @param callback|bool $function_to_check
@@ -468,7 +481,7 @@ function __return_null()
  */
 function plugin_basename($filename)
 {
-    return \app\src\Plugin::plugin_basename($filename);
+    return \app\src\Plugin::inst()->plugin_basename($filename);
 }
 
 /**
@@ -489,7 +502,7 @@ function plugin_basename($filename)
  */
 function register_activation_hook($filename, $function)
 {
-    return \app\src\Plugin::register_activation_hook($filename, $function);
+    return \app\src\Plugin::inst()->register_activation_hook($filename, $function);
 }
 
 /**
@@ -510,7 +523,7 @@ function register_activation_hook($filename, $function)
  */
 function register_deactivation_hook($filename, $function)
 {
-    return \app\src\Plugin::register_deactivation_hook($filename, $function);
+    return \app\src\Plugin::inst()->register_deactivation_hook($filename, $function);
 }
 
 /**
@@ -526,7 +539,7 @@ function register_deactivation_hook($filename, $function)
  */
 function plugin_dir_path($filename)
 {
-    return \app\src\Plugin::plugin_dir_path($filename);
+    return \app\src\Plugin::inst()->plugin_dir_path($filename);
 }
 
 /**
