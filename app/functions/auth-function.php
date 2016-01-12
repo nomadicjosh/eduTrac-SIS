@@ -391,7 +391,8 @@ function get_person_by($field, $value)
     $app = \Liten\Liten::getInstance();
 
     $person = $app->db->person()
-    ->select('person.*, address.*, staff.*, student.*')
+    ->select('person.personID, person.altID, person.uname, person.email')
+    ->select('address.*, staff.*, student.*')
     ->_join('address', 'person.personID = address.personID')
     ->_join('staff', 'person.personID = staff.staffID')
     ->_join('student', 'person.personID = student.stuID')
