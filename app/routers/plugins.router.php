@@ -1,25 +1,28 @@
 <?php
-if (!defined('BASE_PATH'))
+if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 /**
  * Plugins Router
- *  
+ *
  * @license GPLv3
- * 
- * @since       5.0.0
- * @package     eduTrac SIS
- * @author      Joshua Parker <joshmac3@icloud.com>
+ *         
+ * @since 5.0.0
+ * @package eduTrac SIS
+ * @author Joshua Parker <joshmac3@icloud.com>
  */
 /**
  * Before route check.
  */
-$app->before('GET|POST', '/plugins.*', function() {
-    if (!hasPermission('access_plugin_screen')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+$app->before('GET|POST', '/plugins.*', function () {
+    if (! hasPermission('access_plugin_screen')) {
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 });
 
-$css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
+$css = [
+    'css/admin/module.admin.page.form_elements.min.css',
+    'css/admin/module.admin.page.tables.min.css'
+];
 $js = [
     'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
     'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
@@ -37,151 +40,122 @@ $js = [
     'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
 ];
 
-$app->group('/plugins', function() use ($app, $css, $js) {
-
+$app->group('/plugins', function () use($app, $css, $js) {
+    
     $app->get('/', function () use($app, $css, $js) {
-
+        
         $app->view->display('plugins/index', [
-            'title' => 'Plugins',
+            'title' => _t( 'Plugins' ),
             'cssArray' => $css,
             'jsArray' => $js
-            ]
-        );
+        ]);
     });
-
-    $app->get('/activate/', function() use($app) {
+    
+    $app->get('/activate/', function () use($app) {
         ob_start();
-
-        $pluginName = _filter_input_string(INPUT_GET, 'id');
-        $plugin = str_replace('.plugin.php', '', $pluginName);
-
-        if (!file_exists(PLUGINS_DIR . $plugin . '/' . $pluginName)) {
-            $file = PLUGINS_DIR . $pluginName;
-        } else {
-            $file = PLUGINS_DIR . $plugin . '/' . $pluginName;
-        }
-        if (file_exists($file)) {
-            include_once($file);
-        }
-
+        
+        $plugin_name = _trim(_filter_input_string(INPUT_GET, 'id'));
+        
         /**
-         * Fires before a specific plugin is activated.
-         * 
-         * $pluginName refers to the plugin's
-         * name (i.e. moodle.plugin.php).
-         * 
-         * @since 6.1.00
-         * @param string $pluginName The plugin's base name.
+         * This function will validate a plugin and make sure
+         * there are no errors before activating it.
+         *
+         * @since 6.2.0
          */
-        do_action('activate_plugin', $pluginName);
-
-        /**
-         * Fires as a specifig plugin is being activated.
-         * 
-         * $pluginName refers to the plugin's
-         * name (i.e. moodle.plugin.php).
-         * 
-         * @since 6.1.00
-         * @param string $pluginName The plugin's base name.
-         */
-        do_action('activate_' . $pluginName);
-
-        activate_plugin($pluginName);
-
-        /**
-         * Fires after a plugin has been activated.
-         * 
-         * $pluginName refers to the plugin's
-         * name (i.e. moodle.plugin.php).
-         * 
-         * @since 6.1.06
-         * @param string $pluginName The plugin's base name.
-         */
-        do_action('activated_plugin', $pluginName);
-
+        etsis_validate_plugin($plugin_name);
+        
         if (ob_get_length() > 0) {
-            ob_get_clean();
+            $output = ob_get_clean();
+            $error = new \app\src\etError('unexpected_output', _t('The plugin generated unexpected output.'), $output);
+            $app->flash('error_message', $error);
         }
         ob_end_clean();
-
+        
         redirect($app->req->server['HTTP_REFERER']);
     });
-
-    $app->get('/deactivate/', function() use($app) {
+    
+    $app->get('/deactivate/', function () use($app) {
         $pluginName = _filter_input_string(INPUT_GET, 'id');
         /**
          * Fires before a specific plugin is deactivated.
-         * 
+         *
          * $pluginName refers to the plugin's
          * name (i.e. moodle.plugin.php).
-         * 
+         *
          * @since 6.1.06
-         * @param string $pluginName The plugin's base name.
+         * @param string $pluginName
+         *            The plugin's base name.
          */
-        do_action('deactivate_plugin', $pluginName);
-
+        $app->hook->do_action('deactivate_plugin', $pluginName);
+        
         /**
          * Fires as a specifig plugin is being deactivated.
-         * 
+         *
          * $pluginName refers to the plugin's
          * name (i.e. moodle.plugin.php).
-         * 
+         *
          * @since 6.1.00
-         * @param string $pluginName The plugin's base name.
+         * @param string $pluginName
+         *            The plugin's base name.
          */
-        do_action('deactivate_' . $pluginName);
-
+        $app->hook->do_action('deactivate_' . $pluginName);
+        
         deactivate_plugin($pluginName);
-
+        
         /**
          * Fires after a specific plugin has been deactivated.
-         * 
+         *
          * $pluginName refers to the plugin's
          * name (i.e. moodle.plugin.php).
-         * 
+         *
          * @since 6.1.06
-         * @param string $pluginName The plugin's base name.
+         * @param string $pluginName
+         *            The plugin's base name.
          */
-        do_action('deactivated_plugin', $pluginName);
-
+        $app->hook->do_action('deactivated_plugin', $pluginName);
+        
         redirect($app->req->server['HTTP_REFERER']);
     });
-
-    $app->match('GET|POST', '/options/', function() use($app, $css, $js) {
+    
+    $app->match('GET|POST', '/options/', function () use($app, $css, $js) {
         $app->view->display('plugins/options', [
-            'title' => 'Plugin Options',
+            'title' => _t( 'Plugin Options' ),
             'cssArray' => $css,
             'jsArray' => $js
-            ]
-        );
+        ]);
     });
-
+    
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/install/', function() {
-        if (!hasPermission('access_plugin_admin_page')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+    $app->before('GET|POST', '/install/', function () {
+        if (! hasPermission('access_plugin_admin_page')) {
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
-
+    
     $app->match('GET|POST', '/install/', function () use($app, $css, $js) {
-
+        
         if ($app->req->isPost()) {
             $name = explode(".", $_FILES["plugin_zip"]["name"]);
-            $accepted_types = [ 'application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/x-compressed'];
-
+            $accepted_types = [
+                'application/zip',
+                'application/x-zip-compressed',
+                'multipart/x-zip',
+                'application/x-compressed'
+            ];
+            
             foreach ($accepted_types as $mime_type) {
                 if ($mime_type == $type) {
                     $okay = true;
                     break;
                 }
             }
-
-            $dir = substr($_FILES["plugin_zip"]["name"], 0, -15);
+            
+            $dir = substr($_FILES["plugin_zip"]["name"], 0, - 15);
             $continue = strtolower($name[1]) == 'zip' ? true : false;
-
-            if (!$continue) {
+            
+            if (! $continue) {
                 $app->flash('error_message', _t('The file you are trying to upload is not the accepted file type. Please try again.'));
             }
             $target_path = APP_PATH . 'plugins' . DS . $_FILES["plugin_zip"]["name"];
@@ -199,17 +173,16 @@ $app->group('/plugins', function() use ($app, $css, $js) {
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
-
+        
         $app->view->display('plugins/install', [
-            'title' => 'Install Plugins',
+            'title' => _t( 'Install Plugins' ),
             'cssArray' => $css,
             'jsArray' => $js
-            ]
-        );
+        ]);
     });
-
-    $app->setError(function() use($app) {
-
+    
+    $app->setError(function () use($app) {
+        
         $app->res->_format('json', 404);
     });
 });

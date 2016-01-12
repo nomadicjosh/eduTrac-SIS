@@ -35,7 +35,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "<?= get_base_url() . 'crse/dept' . DS; ?>",
+                    url: "<?= get_base_url() . 'crse/dept' . '/'; ?>",
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {
@@ -161,7 +161,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "<?= get_base_url() . 'crse/subj' . DS; ?>",
+                    url: "<?= get_base_url() . 'crse/subj' . '/'; ?>",
                     data: dataString,
                     dataType: 'json',
                     success: function (data) {

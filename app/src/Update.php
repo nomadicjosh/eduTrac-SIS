@@ -6,15 +6,10 @@ if (!defined('BASE_PATH'))
 /**
  * Automatic Update Class
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : Student Information System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
- * 
- * @link        http://www.7mediaws.org/
+ * @deprecated 6.1.14
  * @since       4.0.1
- * @package     eduTrac
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @package     eduTrac SIS
+ * @author      Joshua Parker <joshmac3@icloud.com>
  */
 
 /**
@@ -44,6 +39,7 @@ class Update
      */
     function __construct($server_address, $current_version)
     {
+        _deprecated_class(__CLASS__, '6.1.14', 'CoreUpdate');
         $this->server_address = $server_address;
         $this->current_version = $current_version;
         $this->get_server_variables();

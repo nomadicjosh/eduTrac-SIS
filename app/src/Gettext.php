@@ -38,6 +38,10 @@ class Gettext
      */
     public function __construct($domain = null)
     {
+        /**
+         * Deprecated. Use the new Gettext alternative.
+         */
+        _deprecated_class(__CLASS__, '6.1.13', '\\Gettext\\');
         $this->encoding = 'UTF-8';
         $this->domain = $domain;
     }

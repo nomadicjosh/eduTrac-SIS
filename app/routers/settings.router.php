@@ -9,7 +9,7 @@ $logger = new \app\src\Log;
  */
 $app->before('GET', '/setting/', function() {
     if (!hasPermission('edit_settings')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 
     /**
@@ -18,7 +18,7 @@ $app->before('GET', '/setting/', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . DS);
+        redirect(get_base_url() . 'lock' . '/');
     }
 });
 
@@ -53,7 +53,7 @@ $app->match('GET|POST', '/setting/', function () use($app, $logger) {
             update_option($option_name, $value);
         }
         // Update more options here
-        do_action('update_options');
+        $app->hook->do_action('update_options');
         /* Write to logs */
         $logger->setLog('Update', 'Settings', 'System Settings', get_persondata('uname'));
         redirect($app->req->server['HTTP_REFERER']);
@@ -72,7 +72,7 @@ $app->match('GET|POST', '/setting/', function () use($app, $logger) {
  */
 $app->before('GET', '/registration/', function() {
     if (!hasPermission('edit_settings')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 
     /**
@@ -81,7 +81,7 @@ $app->before('GET', '/registration/', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . DS);
+        redirect(get_base_url() . 'lock' . '/');
     }
 });
 
@@ -110,7 +110,7 @@ $app->match('GET|POST', '/registration/', function () use($app, $logger) {
             update_option($option_name, $value);
         }
         // Update more options here
-        do_action('update_options');
+        $app->hook->do_action('update_options');
         /* Write to logs */
         $logger->setLog('Update', 'Settings', 'Registration Settings', get_persondata('uname'));
     }
@@ -129,7 +129,7 @@ $app->match('GET|POST', '/registration/', function () use($app, $logger) {
  */
 $app->before('GET', '/email/', function() {
     if (!hasPermission('edit_settings')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 
     /**
@@ -138,7 +138,7 @@ $app->before('GET', '/email/', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . DS);
+        redirect(get_base_url() . 'lock' . '/');
     }
 });
 
@@ -166,7 +166,7 @@ $app->match('GET|POST', '/email/', function () use($app, $logger) {
             update_option($option_name, $value);
         }
         // Update more options here
-        do_action('update_options');
+        $app->hook->do_action('update_options');
         /* Write to logs */
         $logger->setLog('Update', 'Settings', 'Email Settings', get_persondata('uname'));
     }
@@ -185,7 +185,7 @@ $app->match('GET|POST', '/email/', function () use($app, $logger) {
  */
 $app->before('GET|POST', '/templates/', function() {
     if (!hasPermission('edit_settings')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 
     /**
@@ -194,7 +194,7 @@ $app->before('GET|POST', '/templates/', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . DS);
+        redirect(get_base_url() . 'lock' . '/');
     }
 });
 
@@ -225,7 +225,7 @@ $app->match('GET|POST', '/templates/', function () use($app, $logger) {
             update_option($option_name, $value);
         }
         // Update more options here
-        do_action('update_options');
+        $app->hook->do_action('update_options');
         /* Write to logs */
         $logger->setLog('Update', 'Settings', 'Email Templates', get_persondata('uname'));
     }

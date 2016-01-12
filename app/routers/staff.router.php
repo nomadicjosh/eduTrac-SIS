@@ -31,7 +31,7 @@ function access($attr, $path, $data, $volume) {
  */
 $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff(.*)', function() use ($app) {
     if (!isUserLoggedIn()) {
-        redirect(get_base_url() . 'login' . DS);
+        redirect(get_base_url() . 'login' . '/');
     }
     /**
      * If user is logged in and the lockscreen cookie is set, 
@@ -64,11 +64,9 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$cache = new \app\src\Cache();
-$dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
 use \app\src\elFinder\elFinderConnector;
@@ -77,7 +75,7 @@ use \app\src\elFinder\elFinderVolumeDriver;
 use \app\src\elFinder\elFinderVolumeLocalFileSystem;
 use \app\src\elFinder\elFinderVolumeS3;
 
-$app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $logger, $flashNow) {
+$app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flashNow) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
 
@@ -86,7 +84,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
          */
         $app->before('GET|POST', '/staff/', function() use ($app) {
             if (!hasPermission('access_staff_screen')) {
-                redirect(get_base_url() . 'dashboard' . DS);
+                redirect(get_base_url() . 'dashboard' . '/');
             }
         });
 
@@ -231,7 +229,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_staff_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -249,7 +247,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
                  * @since 6.1.12
                  * @param mixed $staff Staff data object.
                  */
-                do_action('post_update_staff', $staff);
+                $app->hook->do_action('post_update_staff', $staff);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Staff', get_name($id), get_persondata('uname'));
             } else {
@@ -322,11 +320,11 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
      */
     $app->before('GET|POST', '/add/(\d+)/', function($id) use ($app) {
         if (!hasPermission('create_staff_record')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $dbcache, $logger, $flashNow) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
 
         $json_p = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
         $p_decode = json_decode($json_p, true);
@@ -336,13 +334,6 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
 
         if ($app->req->isPost()) {
             $staff = $app->db->staff();
-            /**
-             * Fires during the saving/creating of a staff record.
-             * 
-             * @since 6.1.12
-             * @param array $staff Staff data object.
-             */
-            do_action('save_staff_db_table', $staff);
             $staff->staffID = $id;
             $staff->schoolCode = $_POST['schoolCode'];
             $staff->buildingCode = $_POST['buildingCode'];
@@ -352,16 +343,16 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
             $staff->status = $_POST['status'];
             $staff->addDate = $staff->NOW();
             $staff->approvedBy = get_persondata('personID');
+            
+            /**
+             * Fires during the saving/creating of a staff record.
+             *
+             * @since 6.1.12
+             * @param array $staff Staff object.
+             */
+            $app->hook->do_action('save_staff_db_table', $staff);
 
             $meta = $app->db->staff_meta();
-            /**
-             * Fires during the saving/creating of staff
-             * meta data.
-             * 
-             * @since 6.1.12
-             * @param array $meta Staff meta data object.
-             */
-            do_action('save_staff_meta_db_table', $meta);
             $meta->jobStatusCode = $_POST['jobStatusCode'];
             $meta->jobID = $_POST['jobID'];
             $meta->staffID = $id;
@@ -372,6 +363,16 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
             $meta->endDate = $_POST['endDate'];
             $meta->addDate = $meta->NOW();
             $meta->approvedBy = get_persondata('personID');
+            
+            /**
+             * Fires during the saving/creating of staff
+             * meta data.
+             *
+             * @since 6.1.12
+             * @param array $meta Staff meta object.
+             */
+            $app->hook->do_action('save_staff_meta_db_table', $meta);
+            
             if ($staff->save() && $meta->save()) {
                 /**
                  * Is triggered after staff record has been created.
@@ -379,7 +380,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
                  * @since 6.1.12
                  * @param mixed $staff Staff data object.
                  */
-                do_action('post_save_staff', $staff);
+                $app->hook->do_action('post_save_staff', $staff);
                 
                 /**
                  * Is triggered after staff meta data is saved.
@@ -387,10 +388,10 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
                  * @since 6.1.12
                  * @param mixed $staff Staff meta data object.
                  */
-                do_action('post_save_staff_meta', $meta);
+                $app->hook->do_action('post_save_staff_meta', $meta);
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Staff Member', get_name($id), get_persondata('uname'));
-                redirect(get_base_url() . 'staff' . DS . $id);
+                redirect(get_base_url() . 'staff' . '/' . $id);
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -424,7 +425,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $dbcache, $log
          * the user to the staff record.
          */ elseif (count($s_decode[0]['staffID']) > 0) {
 
-            redirect(get_base_url() . 'staff' . DS . $s_decode[0]['staffID'] . '/');
+            redirect(get_base_url() . 'staff' . '/' . $s_decode[0]['staffID'] . '/');
         }
         /**
          * If we get to this point, the all is well

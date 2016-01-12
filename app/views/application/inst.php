@@ -12,6 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$screen = 'inst';
 $message = new \app\src\Messages;
 ?>
 
@@ -31,9 +32,11 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
+    
+    <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Widget -->
-	<div class="widget widget-heading-simple widget-body-gray">
+	<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		<div class="widget-body">
 		
 			<div class="tab-pane" id="search-users">

@@ -14,9 +14,7 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
 $perms = new \app\src\ACL();
-$cache = new \app\src\Cache('permission');
 $screen = 'perm';
-if(!$cache->setCache()) :
 ?>
 
 <script type="text/javascript">
@@ -39,7 +37,7 @@ if(!$cache->setCache()) :
     <?php jstree_sidebar_menu($screen); ?>
 
     <!-- Widget -->
-    <div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+    <div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
         <div class="widget-body">
         
             <!-- Table -->
@@ -94,5 +92,4 @@ if(!$cache->setCache()) :
         
         </div>
         <!-- // Content END -->
-<?php endif; echo $cache->getCache();
-$app->view->stop();
+<?php $app->view->stop(); ?>

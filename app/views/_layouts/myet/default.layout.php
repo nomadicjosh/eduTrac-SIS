@@ -4,7 +4,10 @@ Layout Name: Default
 Layout Slug: default
 */
 
-$app = \Liten\Liten::getInstance(); ?>
+$app = \Liten\Liten::getInstance();
+ob_start();
+ob_implicit_flush(0);
+?>
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="front ie lt-ie9 lt-ie8 lt-ie7 fluid top-full"> <![endif]-->
 <!--[if IE 7]>    <html class="front ie lt-ie9 lt-ie8 fluid top-full sticky-top"> <![endif]-->
@@ -296,3 +299,4 @@ $app = \Liten\Liten::getInstance(); ?>
 
 </body>
 </html>
+<?php print_gzipped_page(); ?>

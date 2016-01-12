@@ -1,47 +1,84 @@
 <?php namespace app\src;
 
-if (!defined('BASE_PATH'))
+if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
  * API for Release and Update Checks
- *  
- * eduTrac SIS
- * Copyright (C) 2013 Joshua Parker
- * 
- * eduTrac SIS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * @since       4.5.3
- * @deprecated  since release 6.1.14
- * @package     eduTrac SIS
- * @author      Joshua Parker <joshmac3@icloud.com>
+ *
+ * @license GPLv3
+ *         
+ * @since 4.5.3
+ * @package eduTrac SIS
+ * @author Joshua Parker <joshmac3@icloud.com>
  */
 class ReleaseAPI
 {
 
-    protected $_url = 'http://edutrac.s3.amazonaws.com/';
-    protected $_json_url;
+    const version = '1.0.1';
 
     /**
-     * 
+     * URL object.
+     *
+     * @var string
+     */
+    public $url;
+
+    /**
+     * Base API url.
+     *
+     * @var string
+     */
+    protected $_baseURL = 'edutrac.s3.amazonaws.com';
+
+    /**
+     * URL of json file where array of releases are stored.
+     *
+     * @var string
+     */
+    public $patch_url;
+
+    /**
+     * The root of the installation.
+     *
+     * @var string
+     */
+    public $local_base_dir;
+
+    /**
+     * Where backups should be stored.
+     *
+     * @var string
+     */
+    public $local_backup_dir;
+
+    /**
+     *
      * @var Singleton
      */
     protected static $instance;
 
-    public function __construct(\Liten\Liten $liten = null)
+    /**
+     * Constructor is private so that another instance isn't created.
+     *
+     * @since 6.2.0
+     */
+    private function __construct()
     {
-        $this->_json_url = _file_get_contents($this->_url . 'release.json');
+        // Make sure the script can handle large folders/files for zip and API calls.
+        ini_set('max_execution_time', 600);
+        ini_set('memory_limit', '1024M');
+        
+        if (function_exists('enable_url_ssl')) {
+            $protocol = 'https://';
+        } else {
+            $protocol = 'http://';
+        }
+        
+        $this->url = $protocol . $this->_baseURL . '/';
+        $this->patch_url = $this->getReleaseJsonUrl();
+        $this->local_base_dir = BASE_PATH;
+        $this->local_backup_dir = '/tmp/';
     }
 
     public static function inst()
@@ -52,39 +89,55 @@ class ReleaseAPI
         return self::$instance;
     }
 
-    public function init($value)
+    /**
+     * The url of json file where releases array is stored.
+     *
+     * @since 6.2.0
+     */
+    public function getReleaseJsonUrl()
     {
-        $json = json_decode($this->_json_url, true);
+        $url = $this->url . 'core/1.1/update-check/update.json';
+        return $url;
+    }
+
+    /**
+     * Checks the server for online status.
+     *
+     * @since 6.2.0
+     * @return bool|\app\src\Exception\Exception
+     */
+    public function getServerStatus()
+    {
+        $status = get_http_response_code($this->getReleaseJsonUrl());
         
-        foreach ($json as $v) {
-            return $v[$value];
+        if ($status != 200) {
+            return new \app\src\Exception\Exception(_t('An unexpected error occurred. Something may be wrong with edutracsis.com or this server&#8217;s configuration. If you continue to have problems, please try the <a href="http://www.edutracsis.com/forums/forum/product-support/">support forums</a>.'), 'core_api_failed');
         }
+        
+        return true;
     }
 
-    public function currentRelease()
+    /**
+     * The url of the release to be downloaded from remote server.
+     *
+     * @since 6.2.0
+     * @param string $release
+     *            Release value.
+     */
+    public function remoteServerZip($release)
     {
-        return $this->init('CURRENT_RELEASE');
+        return $this->url . 'core/updates/' . $release . '.zip';
     }
 
-    public function releaseTag()
+    /**
+     * Where the latest release is downloaded on local server.
+     *
+     * @since 6.2.0
+     * @param string $release
+     *            Release value.
+     */
+    public function localServerZip($release)
     {
-        return $this->init('RELEASE_TAG');
-    }
-
-    public function dbVersion()
-    {
-        return $this->init('DB_VERSION');
-    }
-
-    public function getNotice()
-    {
-        $notice = $this->_url . $this->init('UPGRADE_NOTICE');
-        return $notice;
-    }
-
-    public function getSchema()
-    {
-        $sql = $this->_url . $this->init('UPGRADE_SQL') . DS . _h(get_option('dbversion')) . '.sql';
-        return $sql;
+        return $this->local_base_dir . 'updates/' . $release . '.zip';
     }
 }

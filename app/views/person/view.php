@@ -49,7 +49,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray <?=(has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -225,7 +225,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                          * @since 6.1.10
                          * @param array $nae Name and Address data object.
                          */
-                        do_action('left_nae_view_form', $nae); 
+                        $app->hook->do_action('left_nae_view_form', $nae); 
                         ?>
 						
 					</div>
@@ -345,7 +345,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                          * @since 6.1.10
                          * @param array $nae Name and Address data object.
                          */
-                        do_action('right_nae_view_form', $nae); 
+                        $app->hook->do_action('right_nae_view_form', $nae); 
                         ?>
                         
                         <!-- Group -->

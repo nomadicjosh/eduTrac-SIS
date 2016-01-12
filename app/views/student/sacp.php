@@ -126,10 +126,12 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- Group -->
 						<div class="form-group">
 						    <label class="col-md-3 control-label"><?=_t( 'Eligible to Grad?' );?> <a href="#myModal" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
-							<div class="col-md-8">
-    							<label class="checkbox">
-									<input type="checkbox"<?=sio();?> class="checkbox" name="eligible_to_graduate" value="1"<?=checked('1',_h($sacp[0]['eligible_to_graduate']),false);?> />
-								</label>
+							<div class="col-md-4">
+								<select name="eligible_to_graduate"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                                    <option value="">&nbsp;</option>
+                                    <option value="1"<?=selected('1',_h($sacp[0]['eligible_to_graduate']),false);?>><?=_t( 'Yes' );?></option>
+                                    <option value="0"<?=selected('0',_h($sacp[0]['eligible_to_graduate']),false);?>><?=_t( 'No' );?></option>
+                                </select>
 							</div>
 						</div>
 						<!-- // Group END -->

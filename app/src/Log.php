@@ -69,8 +69,8 @@ class Log
         $logs = glob(APP_PATH . 'tmp/logs/*.txt');
         if (is_array($logs)) {
             foreach ($logs as $log) {
-                $filelastmodified = filemtime($log);
-                if ((time() - $filelastmodified) > 30 * 24 * 3600 && is_file($log)) {
+                $filelastmodified = file_mod_time($log);
+                if ((time() - $filelastmodified) >= 30 * 24 * 3600 && is_file($log)) {
                     unlink($log);
                 }
             }

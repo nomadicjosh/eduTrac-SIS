@@ -16,7 +16,7 @@ if (!defined('BASE_PATH'))
  */
 $app->before('GET|POST', '/program(.*)', function() {
     if (!isUserLoggedIn()) {
-        redirect(get_base_url() . 'login' . DS);
+        redirect(get_base_url() . 'login' . '/');
     }
 
     /**
@@ -25,7 +25,7 @@ $app->before('GET|POST', '/program(.*)', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . DS);
+        redirect(get_base_url() . 'lock' . '/');
     }
 });
 
@@ -43,13 +43,12 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
-$app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+$app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {
@@ -87,18 +86,11 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
         );
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {        
-        $program = $app->db->acad_program()->where('acadProgID = ?', $id)->findOne();
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        $program = get_acad_program($id);
 
         if ($app->req->isPost()) {
             $prog = $app->db->acad_program();
-            /**
-             * Fires during the update of an academic program.
-             * 
-             * @since 6.1.10
-             * @param array $prog Academic program data object.
-             */
-            do_action('update_acad_program_db_table', $prog);
             $prog->acadProgCode = $_POST['acadProgCode'];
             $prog->acadProgTitle = $_POST['acadProgTitle'];
             $prog->programDesc = $_POST['programDesc'];
@@ -120,8 +112,17 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
             $prog->cipCode = $_POST['cipCode'];
             $prog->locationCode = $_POST['locationCode'];
             $prog->where('acadProgID = ?', $_POST['acadProgID']);
+            
+            /**
+             * Fires during the update of an academic program.
+             *
+             * @since 6.1.10
+             * @param array $prog Academic program object.
+             */
+            $app->hook->do_action('update_acad_program_db_table', $prog);
+            
             if ($prog->update()) {
-                $dbcache->clearCache("acad_program-" . $_POST['acadProgID']);
+                etsis_cache_delete($id, 'prog');
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update', 'Acad Program', $program->acadProgCode, get_persondata('uname'));
             } else {
@@ -175,7 +176,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
      */
     $app->before('GET|POST', '/add/', function() {
         if (!hasPermission('add_acad_prog')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -184,21 +185,14 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(get_base_url() . 'lock' . DS);
+            redirect(get_base_url() . 'lock' . '/');
         }
     });
 
-    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $logger, $dbcache, $flashNow) {
+    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $logger, $flashNow) {
 
         if ($app->req->isPost()) {
             $prog = $app->db->acad_program();
-            /**
-             * Fires during the saving/creating of an academic program.
-             * 
-             * @since 6.1.10
-             * @param array $prog Academic program data object.
-             */
-            do_action('save_acad_program_db_table', $prog);
             $prog->acadProgCode = $_POST['acadProgCode'];
             $prog->acadProgTitle = $_POST['acadProgTitle'];
             $prog->programDesc = $_POST['programDesc'];
@@ -219,11 +213,21 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
             $prog->acadLevelCode = $_POST['acadLevelCode'];
             $prog->cipCode = $_POST['cipCode'];
             $prog->locationCode = $_POST['locationCode'];
+            
+            /**
+             * Fires during the saving/creating of an academic program.
+             *
+             * @since 6.1.10
+             * @param array $prog Academic program object.
+             */
+            $app->hook->do_action('save_acad_program_db_table', $prog);
+            
             if ($prog->save()) {
                 $ID = $prog->lastInsertId();
+                etsis_cache_flush_namespace('prog');
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Acad Program', $_POST['acadProgCode'], get_persondata('uname'));
-                redirect(get_base_url() . 'program' . DS . $ID . '/');
+                redirect(get_base_url() . 'program' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -239,6 +243,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
     });
 
     $app->post('/year/', function() use($app) {
+        etsis_cache_flush_namespace('ayr');
         $year = $app->db->acad_year();
         foreach ($_POST as $k => $v) {
             $year->$k = $v;
@@ -259,6 +264,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
     });
 
     $app->post('/degree/', function() use($app) {
+        etsis_cache_flush_namespace('deg');
         $deg = $app->db->degree();
         foreach ($_POST as $k => $v) {
             $deg->$k = $v;
@@ -279,6 +285,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
     });
 
     $app->post('/ccd/', function() use($app) {
+        etsis_cache_flush_namespace('ccd');
         $c = $app->db->ccd();
         foreach ($_POST as $k => $v) {
             $c->$k = $v;
@@ -299,6 +306,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
     });
 
     $app->post('/major/', function() use($app) {
+        etsis_cache_flush_namespace('majr');
         $maj = $app->db->major();
         foreach ($_POST as $k => $v) {
             $maj->$k = $v;
@@ -319,6 +327,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
     });
 
     $app->post('/minor/', function() use($app) {
+        etsis_cache_flush_namespace('minr');
         $min = $app->db->minor();
         foreach ($_POST as $k => $v) {
             $min->$k = $v;
@@ -339,6 +348,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
     });
 
     $app->post('/spec/', function() use($app) {
+        etsis_cache_flush_namespace('spec');
         $spec = $app->db->specialization();
         foreach ($_POST as $k => $v) {
             $spec->$k = $v;
@@ -359,6 +369,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $db
     });
 
     $app->post('/cip/', function() use($app) {
+        etsis_cache_flush_namespace('cip');
         $c = $app->db->cip();
         foreach ($_POST as $k => $v) {
             $c->$k = $v;

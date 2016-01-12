@@ -44,11 +44,9 @@ $js = [
 ];
 
 $logger = new \app\src\Log();
-$cache = new \app\src\Cache();
-$dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
-$app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow) {
+$app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {
@@ -79,7 +77,7 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
         );
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $dbcache, $logger, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
         if ($app->req->isPost()) {
             $staff = $app->db->staff();
             $staff->schoolCode = $_POST['schoolCode'];
@@ -101,14 +99,12 @@ $app->group('/hr', function () use($app, $css, $js, $dbcache, $logger, $flashNow
             $smeta->where('sMetaID = ?', $_POST['sMetaID'])->_and_()->where('staffID = ?', $id);
 
             if ($staff->update() || $smeta->update()) {
-                // Delete db cache if data was updated successfully
-                $dbcache->clearCache("staff-$id");
                 $app->flash('success_message', $flashNow->notice(200));
             } else {
                 $app->flash('error_message', $flashNow->notice(204));
             }
 
-            redirect(get_base_url() . 'hr' . DS . $id . '/');
+            redirect(get_base_url() . 'hr' . '/' . $id . '/');
         }
 
         $empl = $app->db->staff()

@@ -30,11 +30,11 @@ $app->before('GET', '/err/screen-error.*', function() use($app) {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . DS);
+        redirect(get_base_url() . 'lock' . '/');
     }
     
     if(empty($app->req->server['HTTP_REFERER']) === true) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 });
 

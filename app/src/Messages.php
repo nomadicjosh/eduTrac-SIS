@@ -37,6 +37,8 @@ class Messages
         // get the message (they are arrays, to make multiple positive/negative messages possible)
         $success_message[] = $_COOKIE['success_message'];
         $error_message[] = $_COOKIE['error_message'];
+        $plugin_success_message[] = $_COOKIE['plugin_success_message'];
+        $plugin_error_message[] = $_COOKIE['plugin_error_message'];
 
         // echo out positive messages
         if (isset($_COOKIE['success_message'])) {
@@ -51,6 +53,22 @@ class Messages
             foreach ($error_message as $message) {
                 $this->_app->cookies->remove('error_message');
                 return '<section class="panel error-panel"><div class="alerts alerts-error center">' . $message . '</div></section>';
+            }
+        }
+        
+        // echo out positive plugin messages
+        if (isset($_COOKIE['plugin_success_message'])) {
+            foreach ($plugin_success_message as $message) {
+                $this->_app->cookies->remove('plugin_success_message');
+                return '<section class="panel success-panel"><div class="alerts alerts-success center">' . $message . '</div></section>';
+            }
+        }
+        
+        // echo out negative plugin messages
+        if (isset($_COOKIE['plugin_error_message'])) {
+            foreach ($plugin_error_message as $message) {
+                $this->_app->cookies->remove('plugin_error_message');
+                return '<section class="panel error-panel"><div class="alerts alerts-error center">' . sprintf( _t( 'Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br /> %s</div></section>' ), $message );
             }
         }
     }

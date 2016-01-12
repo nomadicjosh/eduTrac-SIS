@@ -58,4 +58,4 @@ if (APP_ENV == 'DEV') {
  * 
  * @since 6.1.09
  */
-load_default_textdomain('edutrac-sis', APP_PATH . 'lang' . DS);
+load_default_textdomain('edutrac-sis', APP_PATH . 'languages' . DS);

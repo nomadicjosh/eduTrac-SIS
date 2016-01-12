@@ -11,12 +11,10 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 $hasher = new \app\src\PasswordHash(8, FALSE);
 
 $logger = new \app\src\Log();
-$cache = new \app\src\Cache();
-$dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
 /**
@@ -29,7 +27,7 @@ $app->before('GET|POST', '/', function() {
     }
     
     if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-        redirect(get_base_url() . 'offline' . DS);
+        redirect(get_base_url() . 'offline' . '/');
     }
 });
 
@@ -40,7 +38,7 @@ $app->get('/', function () use($app) {
 
 $app->before('GET|POST', '/spam/', function() use($app) {
     if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-        redirect(get_base_url() . 'offline' . DS);
+        redirect(get_base_url() . 'offline' . '/');
     }
 
     if (empty($app->req->server['HTTP_REFERER'])) {
@@ -69,7 +67,7 @@ $app->match('GET|POST', '/component/', function() use($app, $css, $js) {
 
 $app->before('GET|POST', '/online-app/', function() {
     if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-        redirect(get_base_url() . 'offline' . DS);
+        redirect(get_base_url() . 'offline' . '/');
     }
 });
 
@@ -78,66 +76,19 @@ $app->before('GET|POST', '/online-app/', function() {
  */
 $app->before('GET|POST', '/login/', function() {
     if (isUserLoggedIn()) {
-        redirect(get_base_url() . 'profile' . DS);
+        redirect(get_base_url() . 'profile' . '/');
     }
 });
 
 $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
 
     if ($app->req->isPost()) {
-        $person = $app->db->person()
-            ->select('person.personID,person.uname,person.password')
-            ->_join('staff','person.personID = staff.staffID')
-            ->_join('student','person.personID = student.stuID')
-            ->where('person.uname = ?', $app->req->_post('uname'))->_and_()
-            ->where('(staff.status = "A" OR student.status = "A")');
-        $q = $person->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-        $a = [];
-        foreach ($q as $r) {
-            $a[] = $r;
-        }
-        
-        if(count($q) <= 0) {
-            $app->flash('error_message', 'Your account is deactivated.');
-            redirect($app->req->server['HTTP_REFERER']);
-            exit();
-        }
-
         /**
-         * Checks if the submitted username exists in
-         * the database.
+         * This function is documented in app/functions/auth-function.php.
+         * 
+         * @since 6.2.0
          */
-        if ($app->req->_post('uname') !== _h($r['uname'])) {
-            $app->flash('error_message', 'The username does not exist. Please try again.');
-            redirect(get_base_url() . 'login' . DS);
-            return;
-        }
-
-        /**
-         * Checks if the password is correct.
-         */
-        if (et_check_password($app->req->_post('password'), $r['password'], _h($r['personID']))) {
-            $ll = $app->db->person();
-            $ll->LastLogin = $ll->NOW();
-            $ll->where('personID = ?', _h($r['personID']))->update();
-            if (isset($_POST['rememberme'])) {
-                $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-                $app->cookies->setSecureCookie('ET_REMEMBER', 'rememberme', (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-            } else {
-                $app->cookies->setSecureCookie('ET_COOKNAME', _h($r['personID']), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
-            }
-            $logger->setLog('Authentication', 'Login', get_name(_h($r['personID'])), _h($r['uname']));
-            redirect(get_base_url());
-        } else {
-            $app->flash('error_message', 'The password you entered was incorrect.');
-            redirect(get_base_url() . 'login' . DS);
-        }
+        etsis_authenticate_person($app->req->_post('uname'), $app->req->_post('password'), $app->req->_post('rememberme'));
     }
 
     $app->view->display('index/login', [
@@ -151,7 +102,7 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
  */
 $app->before('GET|POST', '/profile/', function() {
     if (!isUserLoggedIn()) {
-        redirect(get_base_url() . 'login' . DS);
+        redirect(get_base_url() . 'login' . '/');
     }
 });
 
@@ -204,7 +155,7 @@ $app->get('/profile/', function () use($app) {
  */
 $app->before('GET|POST', '/password/', function() {
     if (!isUserLoggedIn()) {
-        redirect(get_base_url() . 'login' . DS);
+        redirect(get_base_url() . 'login' . '/');
     }
 });
 
@@ -223,9 +174,9 @@ $app->match('GET|POST', '/password/', function () use($app, $flashNow) {
         foreach ($q as $r) {
             $a[] = $r;
         }
-        if (et_check_password($_POST['currPass'], $r['password'], $r['personID'])) {
+        if (etsis_check_password($_POST['currPass'], $r['password'], $r['personID'])) {
             $sql = $app->db->person();
-            $sql->password = et_hash_password($_POST['newPass']);
+            $sql->password = etsis_hash_password($_POST['newPass']);
             $sql->where('personID = ?', get_persondata('personID'));
             if ($sql->update()) {
                 /**
@@ -244,7 +195,7 @@ $app->match('GET|POST', '/password/', function () use($app, $flashNow) {
                  * @since 6.1.07
                  * @param string $pass Plaintext password submitted by logged in user.
                  */
-                do_action('post_change_password', $pass);
+                $app->hook->do_action('post_change_password', $pass);
                 
                 $app->flash('success_message', $flashNow->notice(200));
             } else {
@@ -265,7 +216,7 @@ $app->match('GET|POST', '/password/', function () use($app, $flashNow) {
  */
 $app->before('GET|POST', '/permission.*', function() {
     if (!hasPermission('access_permission_screen')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -294,7 +245,7 @@ $app->match('GET|POST', '/permission/', function () use($app) {
     );
 });
 
-$app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url, $logger, $cache, $flashNow) {
+$app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url, $logger, $flashNow) {
     if ($app->req->isPost()) {
         $perm = $app->db->permission();
         foreach (_filter_input_array(INPUT_POST) as $k => $v) {
@@ -302,7 +253,6 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
         }
         $perm->where('ID = ?', $id);
         if ($perm->update()) {
-            $cache->clearCache('permission');
             $app->flash('success_message', $flashNow->notice(200));
             $logger->setLog('Update Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
         } else {
@@ -366,7 +316,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
     }
 });
 
-$app->match('GET|POST', '/permission/add/', function () use($app, $flashNow, $cache, $logger) {
+$app->match('GET|POST', '/permission/add/', function () use($app, $flashNow, $logger) {
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
     $js = [
@@ -389,10 +339,9 @@ $app->match('GET|POST', '/permission/add/', function () use($app, $flashNow, $ca
             $perm->$k = $v;
         }
         if ($perm->save()) {
-            $cache->clearCache('permission');
             $app->flash('success_message', $flashNow->notice(200));
             $logger->setLog('New Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
-            redirect( get_base_url() . 'permission' . DS );
+            redirect( get_base_url() . 'permission' . '/' );
         } else {
             $app->flash('error_message', $flashNow->notice(409));
             redirect($app->req->server['HTTP_REFERER']);
@@ -413,7 +362,7 @@ $app->match('GET|POST', '/permission/add/', function () use($app, $flashNow, $ca
  */
 $app->before('GET|POST', '/role.*', function() {
     if (!hasPermission('access_role_screen')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -518,7 +467,7 @@ $app->match('GET|POST', '/role/add/', function () use($app, $flashNow) {
         if ($strSQL) {
             $ID = $strSQL->lastInsertId();
             $app->flash('success_message', $flashNow->notice(200));
-            redirect(get_base_url() . 'role' . DS . $ID . '/');
+            redirect(get_base_url() . 'role' . '/' . $ID . '/');
         } else {
             $app->flash('error_message', $flashNow->notice(409));
             redirect($app->req->server['HTTP_REFERER']);
@@ -562,7 +511,7 @@ $app->post('/message/', function () use($app, $logger) {
      * 
      * @return mixed
      */
-    do_action('update_options');
+    $app->hook->do_action('update_options');
     /* Write to logs */
     $logger->setLog('Update', 'myeduTrac', 'Welcome Message', get_persondata('uname'));
 
@@ -574,7 +523,7 @@ $app->post('/message/', function () use($app, $logger) {
  */
 $app->before('GET|POST', '/switchUserTo/(\d+)/', function() {
     if (!hasPermission('login_as_user')) {
-        redirect(get_base_url() . 'dashboard' . DS);
+        redirect(get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -610,7 +559,7 @@ $app->get('/switchUserTo/(\d+)/', function ($id) use($app) {
         $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
     }
 
-    redirect(get_base_url() . 'dashboard' . DS);
+    redirect(get_base_url() . 'dashboard' . '/');
 });
 
 $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
@@ -661,67 +610,20 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
     } else {
         $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
     }
-    redirect(get_base_url() . 'dashboard' . DS);
+    redirect(get_base_url() . 'dashboard' . '/');
 });
 
 $app->get('/logout/', function () use($app, $logger) {
 
     $logger->setLog('Authentication', 'Logout', get_name(get_persondata('personID')), get_persondata('uname'));
-
-    $vars1 = [];
-    parse_str($app->cookies->get('ET_COOKNAME'), $vars1);
     /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
+     * This function is documented in app/functions/auth-function.php.
+     * 
+     * @since 6.2.0
      */
-    $file1 = $app->config('cookies.savepath') . 'cookies.' . $vars1['data'];
-    if (file_exists($file1)) {
-        unlink($file1);
-    }
-
-    $vars2 = [];
-    parse_str($app->cookies->get('SWITCH_USERBACK'), $vars2);
-    /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
-     */
-    $file2 = $app->config('cookies.savepath') . 'cookies.' . $vars2['data'];
-    if (file_exists($file2)) {
-        unlink($file2);
-    }
-
-    $vars3 = [];
-    parse_str($app->cookies->get('SWITCH_USERNAME'), $vars3);
-    /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
-     */
-    $file3 = $app->config('cookies.savepath') . 'cookies.' . $vars3['data'];
-    if (file_exists($file3)) {
-        unlink($file3);
-    }
-
-    $vars4 = [];
-    parse_str($app->cookies->get('ET_REMEMBER'), $vars4);
-    /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
-     */
-    $file4 = $app->config('cookies.savepath') . 'cookies.' . $vars4['data'];
-    if (file_exists($file4)) {
-        unlink($file4);
-    }
-
-    /**
-     * After the cookie is removed from the server,
-     * we know need to remove it from the browser and
-     * redirect the user to the login page.
-     */
-    $app->cookies->remove('ET_COOKNAME');
-    $app->cookies->remove('SWITCH_USERBACK');
-    $app->cookies->remove('SWITCH_USERNAME');
-    $app->cookies->remove('ET_REMEMBER');
-    redirect(get_base_url() . 'login' . DS);
+    etsis_clear_auth_cookie();
+    
+    redirect(get_base_url() . 'login' . '/');
 });
 
 $app->setError(function() use($app) {

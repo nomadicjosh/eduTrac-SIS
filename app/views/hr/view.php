@@ -13,6 +13,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$screen = 'hr';
 $message = new \app\src\Messages;
 $staffInfo = new \app\src\Staff;
 $staffInfo->Load_from_key(_h($staff->staffID));
@@ -85,12 +86,14 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <div class="separator line bottom"></div>
 	
 	<?=$message->flashMessage();?>
+	
+	<?php jstree_sidebar_menu($screen); ?>
 
     <!-- Form -->
     <form class="form-horizontal margin-none" action="<?=get_base_url();?>hr/<?=_h($staff->staffID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
         
         <!-- Widget -->
-        <div class="widget widget-heading-simple widget-body-gray">
+        <div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
         
             <!-- Widget heading -->
             <div class="widget-head">

@@ -28,14 +28,13 @@ $js = [
     'components/modules/admin/forms/elements/multiselect/assets/custom/js/multiselect.init.js?v=v2.1.0'
 ];
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$email = new \app\src\Email();
-$dbcache = new \app\src\DBCache();
+$email = _etsis_email();
 $flashNow = new \app\src\Messages();
 
-$app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow, $email) {
+$app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
 
     /**
      * Before router check.
@@ -46,7 +45,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         }
 
         if (!hasPermission('access_application_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -55,7 +54,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
          * his/her password to gain access.
          */
         if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(get_base_url() . 'lock' . DS);
+            redirect(get_base_url() . 'lock' . '/');
         }
     });
 
@@ -100,7 +99,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_application_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -176,19 +175,12 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/editAppl/(\d+)/', function() {
         if (!hasPermission('create_application')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
     $app->post('/editAppl/(\d+)/', function ($id) use($app, $logger, $flashNow, $email) {
         $appl = $app->db->application();
-        /**
-         * Fires during the update of an application.
-         * 
-         * @since 6.1.10
-         * @param array $appl Application data object.
-         */
-        do_action('update_application_db_table', $appl);
         $appl->acadProgCode = $_POST['acadProgCode'];
         $appl->startTerm = $_POST['startTerm'];
         $appl->PSAT_Verbal = $_POST['PSAT_Verbal'];
@@ -204,6 +196,14 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         $appl->acadProgCode = $_POST['acadProgCode'];
         $appl->acadProgCode = $_POST['acadProgCode'];
         $appl->where('applID = ?', $_POST['applID']);
+        
+        /**
+         * Fires during the update of an application.
+         *
+         * @since 6.1.10
+         * @param object $appl Application object.
+         */
+        $app->hook->do_action('update_application_db_table', $appl);
         
         if ($appl->update()) {
             $app->flash('success_message', $flashNow->notice(200));
@@ -242,13 +242,14 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 /**
                  * @since 6.1.07
                  */
-                $person = $app->db->person()->where('uname = ?', $_POST['uname'])->findOne();
+                $person = get_person_by('uname', $_POST['uname']);
                 /**
                  * Fires after username has been updated successfully.
                  * 
                  * @since 6.1.07
+                 * @param object $person Person data object.
                  */
-                do_action('post_update_username', $person);
+                $app->hook->do_action('post_update_username', $person);
 
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));
@@ -278,7 +279,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             ++$i;
         }
 
-        redirect(get_base_url() . 'appl' . DS . $id . '/');
+        redirect(get_base_url() . 'appl' . '/' . $id . '/');
     });
 
     /**
@@ -286,7 +287,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('create_application')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -294,13 +295,6 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
 
         if ($app->req->isPost()) {
             $appl = $app->db->application();
-            /**
-             * Fires during the saving/creating of an application.
-             * 
-             * @since 6.1.10
-             * @param array $appl Application data object.
-             */
-            do_action('save_application_db_table', $appl);
             $appl->acadProgCode = _trim($_POST['acadProgCode']);
             $appl->startTerm = $_POST['startTerm'];
             $appl->PSAT_Verbal = $_POST['PSAT_Verbal'];
@@ -314,11 +308,20 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             $appl->applDate = $_POST['applDate'];
             $appl->addedBy = get_persondata('personID');
             $appl->admitStatus = $_POST['admitStatus'];
+            
+            /**
+             * Fires during the saving/creating of an application.
+             *
+             * @since 6.1.10
+             * @param object $appl Application object.
+             */
+            $app->hook->do_action('save_application_db_table', $appl);
+            
             if ($appl->save()) {
                 $ID = $appl->lastInsertId();
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Application', get_name($id), get_persondata('uname'));
-                redirect(get_base_url() . 'appl' . DS . $ID . '/');
+                redirect(get_base_url() . 'appl' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -380,7 +383,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/inst-attended/', function() {
         if (!hasPermission('access_application_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -401,7 +404,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
             if ($inst->save()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Institution Attended', get_name($_POST['personID']), get_persondata('uname'));
-                redirect(get_base_url() . 'appl' . DS . $_POST['personID'] . '/');
+                redirect(get_base_url() . 'appl' . '/' . $_POST['personID'] . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -421,7 +424,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/inst(.*)', function() {
         if (!hasPermission('access_application_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -464,7 +467,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
                 $ID = $inst->lastInsertId();
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Institution', $_POST['instName'], get_persondata('uname'));
-                redirect(get_base_url() . 'appl/inst' . DS . $ID . '/');
+                redirect(get_base_url() . 'appl/inst' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -538,8 +541,8 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $dbcac
         );
     });
 
-    $app->post('/applicantLookup/', function() use($app, $json_url) {
-        $appl = $app->db->person()->where('personID = ?', (int) $_POST['personID'])->findOne();
+    $app->post('/applicantLookup/', function() use($app, $json_url) {        
+        $appl = get_person_by('personID', $_POST['personID']);
 
         $json = [ 'input#person' => $appl->lname . ', ' . $appl->fname];
 

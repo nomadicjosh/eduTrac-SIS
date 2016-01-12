@@ -1,18 +1,18 @@
 <?php
-if (!defined('BASE_PATH'))
+if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
  * eduTrac Auth Helper
- *  
- * @since       3.0.0
- * @package     eduTrac SIS
- * @author      Joshua Parker <joshmac3@icloud.com>
+ *
+ * @since 3.0.0
+ * @package eduTrac SIS
+ * @author Joshua Parker <joshmac3@icloud.com>
  */
 function hasPermission($perm)
 {
     $acl = new \app\src\ACL();
-
+    
     if ($acl->hasPermission($perm) && isUserLoggedIn()) {
         return true;
     } else {
@@ -27,10 +27,10 @@ function get_persondata($field)
     $value = $app->db->person()
         ->select('person.*,address.*,staff.*,student.*')
         ->_join('address', 'person.personID = address.personID')
-        ->_join('staff','person.personID = staff.staffID')
-        ->_join('student','person.personID = student.stuID')
+        ->_join('staff', 'person.personID = staff.staffID')
+        ->_join('student', 'person.personID = student.stuID')
         ->where('person.personID = ?', $personID);
-    $q = $value->find(function($data) {
+    $q = $value->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
             $array[] = $d;
@@ -46,13 +46,12 @@ function isUserLoggedIn()
 {
     $app = \Liten\Liten::getInstance();
     
-    $person = $app->db->person()
-        ->where('person.personID = ?',  get_persondata('personID'))
-        ->count('person.personID');
+    $person = get_person_by('personID', get_persondata('personID'));
     
-    if ($app->cookies->verifySecureCookie('ET_COOKNAME') && $person > 0) {
+    if ($app->cookies->verifySecureCookie('ET_COOKNAME') && count($person) > 0) {
         return true;
     }
+    
     return false;
 }
 
@@ -62,9 +61,9 @@ function isUserLoggedIn()
  * It should give a user/developer more clarity when
  * understanding what this is actually allowing or
  * not allowing a person to do or see.
- * 
+ *
  * @since 4.3
- * @param $perm string(required)
+ * @param $perm string(required)            
  * @return bool
  */
 function hasRestriction($perm)
@@ -76,9 +75,49 @@ function hasRestriction($perm)
     }
 }
 
+/**
+ * Hide element function.
+ *
+ * This is an alternative to the hl() function which may become
+ * deprecated in a later release.
+ *
+ * @since 6.2.0
+ * @param string $permission
+ *            Permission to check for.
+ * @return bool
+ */
+function _he($permission)
+{
+    if (hasPermission($permission)) {
+        return true;
+    }
+    
+    return false;
+}
+
+/**
+ * Module function.
+ *
+ * This is an alternative to the ml() function which may become
+ * depreated in a later release.
+ *
+ * @since 6.2.0
+ * @param string $function_name
+ *            Function to check for.
+ * @return bool
+ */
+function _mf($function_name)
+{
+    if (function_exists($function_name)) {
+        return true;
+    }
+    
+    return false;
+}
+
 function ae($perm)
 {
-    if (!hasPermission($perm)) {
+    if (! hasPermission($perm)) {
         return ' style="display:none !important;"';
     }
 }
@@ -335,7 +374,252 @@ function paids()
  */
 function dopt($perm)
 {
-    if (!hasPermission($perm)) {
+    if (! hasPermission($perm)) {
         return ' disabled';
     }
+}
+
+/**
+ * Retrieve person info by a given field from the person's table.
+ *
+ * @since 6.2.0
+ * @param string $field The field to retrieve the user with.
+ * @param int|string $value A value for $field (personID, altID, uname or email).
+ */
+function get_person_by($field, $value)
+{
+    $app = \Liten\Liten::getInstance();
+
+    $person = $app->db->person()
+    ->select('person.personID, person.altID, person.uname, person.email, person.lname, person.fname')
+    ->select('address.*, staff.*, student.*')
+    ->_join('address', 'person.personID = address.personID')
+    ->_join('staff', 'person.personID = staff.staffID')
+    ->_join('student', 'person.personID = student.stuID')
+    ->where("person.$field = ?", $value)
+    ->findOne();
+
+    return $person;
+}
+
+/**
+ * Logs a person in after the login information has checked out.
+ *
+ * @since 6.2.0
+ * @param string $login Person's username or email address.
+ * @param string $password Person's password.
+ * @param string $rememberme Whether to remember the person.
+ */
+function etsis_authenticate($login, $password, $rememberme)
+{
+    $app = \Liten\Liten::getInstance();
+
+    $logger = new \app\src\Log();
+
+    $person = $app->db->person()
+    ->select('person.personID,person.uname,person.password')
+    ->_join('staff', 'person.personID = staff.staffID')
+    ->_join('student', 'person.personID = student.stuID')
+    ->where('person.uname = ? OR person.email = ?', [$login,$login])
+    ->_and_()
+    ->where('(staff.status = "A" OR student.status = "A")')
+    ->findOne();
+
+    if (count($person) <= 0) {
+        $app->flash('error_message', _t('Your account is deactivated.'));
+        redirect($app->req->server['HTTP_REFERER']);
+        return;
+    }
+
+    $ll = $app->db->person();
+    $ll->LastLogin = $ll->NOW();
+    $ll->where('personID = ?', _h($person->personID))->update();
+    /**
+     * Filters the authentication cookie.
+     * 
+     * @since 6.2.0
+     * @param object $person Person data object.
+     * @param string $rememberme Whether to remember the person.
+     */
+    $app->hook->apply_filter('etsis_auth_cookie', $person, $rememberme);
+    
+    $logger->setLog('Authentication', 'Login', get_name(_h($person->personID)), _h($person->uname));
+    redirect(get_base_url());
+}
+
+/**
+ * Checks a person's login information.
+ *
+ * @since 6.2.0
+ * @param string $login Person's username or email address.
+ * @param string $password Person's password.
+ * @param string $rememberme Whether to remember the person.
+ */
+function etsis_authenticate_person($login, $password, $rememberme)
+{
+    $app = \Liten\Liten::getInstance();
+
+    if (empty($login) || empty($password)) {
+
+        if (empty($login)) {
+            $app->flash('error_message', _t('<strong>ERROR</strong>: The username/email field is empty.'));
+        }
+
+        if (empty($password)) {
+            $app->flash('error_message', _t('<strong>ERROR</strong>: The password field is empty.'));
+        }
+
+        redirect(get_base_url() . 'login' . '/');
+        return;
+    }
+
+    if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+        $person = get_person_by('email', $login);
+
+        if (false == $person->email) {
+            $app->flash('error_message', _t('<strong>ERROR</strong>: Invalid email address.'));
+
+            redirect(get_base_url() . 'login' . '/');
+            return;
+        }
+    } else {
+        $person = get_person_by('uname', $login);
+
+        if (false == $person->uname) {
+            $app->flash('error_message', _t('<strong>ERROR</strong>: Invalid username.'));
+
+            redirect(get_base_url() . 'login' . '/');
+            return;
+        }
+    }
+
+    if (! etsis_check_password($password, $person->password, _h($person->personID))) {
+        $app->flash('error_message', _t('<strong>ERROR</strong>: The password you entered is incorrect.'));
+
+        redirect(get_base_url() . 'login' . '/');
+        return;
+    }
+    
+    /**
+     * Filters log in details.
+     * 
+     * @since 6.2.0
+     * @param string $login Person's username or email address.
+     * @param string $password Person's password.
+     * @param string $rememberme Whether to remember the person.
+     */
+    $person = $app->hook->apply_filter('etsis_authenticate_person', $login, $password, $rememberme);
+
+    return $person;
+}
+
+function etsis_set_auth_cookie($person, $rememberme = '') {
+    
+    $app = \Liten\Liten::getInstance();
+    
+    if(! is_object($person)) {
+        return new \app\src\Exception\Exception(_t('$person should be a database object.'), 'set_auth_cookie');
+    }
+    
+    if(isset($rememberme)) {
+        /**
+         * Ensure the browser will continue to send the cookie until it expires.
+         * 
+         * @since 6.2.0
+         */
+        $expire = $app->hook->apply_filter('auth_cookie_expiration', (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
+        // Set remember me cookie.
+        $app->cookies->setSecureCookie('ET_REMEMBER', 'rememberme', $expire);
+    } else {
+        /**
+         * Ensure the browser will continue to send the cookie until it expires.
+         *
+         * @since 6.2.0
+         */
+        $expire = $app->hook->apply_filter('auth_cookie_expiration', ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
+    }
+    
+    $auth_cookie = _h($person->personID);
+    
+    /**
+     * Fires immediately before the secure authentication cookie is set.
+     *
+     * @since 6.2.0
+     * @param string $auth_cookie Authentication cookie.
+     * @param int    $expire  Duration in seconds the authentication cookie should be valid.
+     */
+    $app->hook->do_action( 'set_auth_cookie', $auth_cookie, $expire );
+    
+    $app->cookies->setSecureCookie('ET_COOKNAME', $auth_cookie, $expire);
+}
+
+/**
+ * Removes all cookies associated with authentication.
+ * 
+ * @since 6.2.0
+ */
+function etsis_clear_auth_cookie() {
+    
+    $app = \Liten\Liten::getInstance();
+    
+    /**
+     * Fires just before the authentication cookies are cleared.
+     *
+     * @since 6.2.0
+     */
+    $app->hook->do_action( 'clear_auth_cookie' );
+    
+    $vars1 = [];
+    parse_str($app->cookies->get('ET_COOKNAME'), $vars1);
+    /**
+     * Checks to see if the cookie is exists on the server.
+     * It it exists, we need to delete it.
+     */
+    $file1 = $app->config('cookies.savepath') . 'cookies.' . $vars1['data'];
+    if (file_exists($file1)) {
+        unlink($file1);
+    }
+    
+    $vars2 = [];
+    parse_str($app->cookies->get('SWITCH_USERBACK'), $vars2);
+    /**
+     * Checks to see if the cookie is exists on the server.
+     * It it exists, we need to delete it.
+     */
+    $file2 = $app->config('cookies.savepath') . 'cookies.' . $vars2['data'];
+    if (file_exists($file2)) {
+        unlink($file2);
+    }
+    
+    $vars3 = [];
+    parse_str($app->cookies->get('SWITCH_USERNAME'), $vars3);
+    /**
+     * Checks to see if the cookie is exists on the server.
+     * It it exists, we need to delete it.
+     */
+    $file3 = $app->config('cookies.savepath') . 'cookies.' . $vars3['data'];
+    if (file_exists($file3)) {
+        unlink($file3);
+    }
+    
+    $vars4 = [];
+    parse_str($app->cookies->get('ET_REMEMBER'), $vars4);
+    /**
+     * Checks to see if the cookie is exists on the server.
+     * It it exists, we need to delete it.
+     */
+    $file4 = $app->config('cookies.savepath') . 'cookies.' . $vars4['data'];
+    if (file_exists($file4)) {
+        unlink($file4);
+    }
+    
+    /**
+     * After the cookie is removed from the server,
+     * we know need to remove it from the browser and
+     * redirect the user to the login page.
+     */
+    $app->cookies->remove('ET_COOKNAME');
+    $app->cookies->remove('SWITCH_USERBACK');
+    $app->cookies->remove('SWITCH_USERNAME');
+    $app->cookies->remove('ET_REMEMBER');
 }

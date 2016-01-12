@@ -20,7 +20,7 @@ $app->before('GET|POST', '/sect(.*)', function() {
      * his/her password to gain access.
      */
     if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . DS);
+        redirect(get_base_url() . 'lock' . '/');
     }
 });
 
@@ -43,21 +43,19 @@ $js = [
     'components/modules/admin/forms/elements/bootstrap-maxlength/custom/js/custom.js'
 ];
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$cache = new \app\src\Cache();
-$dbcache = new \app\src\DBCache();
 $flashNow = new \app\src\Messages();
 
-$app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
+$app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
 
     /**
      * Before route check.
      */
     $app->before('GET|POST', '/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -100,35 +98,28 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        /**
-         * Fires before the course section has been updated.
-         * 
-         * @since 6.1.07
-         * @param int $id Primary key of the course section.
-         */
-        do_action('pre_update_course_sec', $id);
-
-        $section = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        $section = get_course_sec($id);
 
         $date = date("Y-m-d");
         $time = date("h:i A");
 
         if ($app->req->isPost()) {
+            /**
+             * Fires before the course section has been updated.
+             *
+             * @since 6.1.07
+             * @param int $id Primary key of the course section.
+             */
+            $app->hook->do_action('pre_update_course_sec', $id);
+            
             $term = str_replace("/", "", $_POST['termCode']);
 
             $sect = $app->db->course_sec();
-            /**
-             * Fires during the update of a course section.
-             * 
-             * @since 6.1.10
-             * @param array $sect Course section data object.
-             */
-            do_action('update_course_sec_db_table', $sect);
             $sect->locationCode = $_POST['locationCode'];
             $sect->termCode = $_POST['termCode'];
             $sect->secShortTitle = $_POST['secShortTitle'];
@@ -139,9 +130,16 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $sect->comment = $_POST['comment'];
             $sect->courseSection = $_POST['termCode'] . '-' . $_POST['courseSecCode'];
             $sect->ceu = $_POST['ceu'];
-            $sect->courseLevelCode = $_POST['courseLevelCode'];
-            $sect->acadLevelCode = $_POST['acadLevelCode'];
+            $sect->courseLevelCode = $_POST['courseLevelCode'];            
             $sect->where('courseSecID = ?', (int) $id);
+            
+            /**
+             * Fires during the update of a course section.
+             *
+             * @since 6.1.10
+             * @param array $sect Course section object.
+             */
+            $app->hook->do_action('update_course_sec_db_table', $sect);
 
             $da = $app->db->term()->where('termCode = ?', $section->termCode)->findOne();
 
@@ -195,10 +193,6 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             }
 
             if ($sect->update() || $q->update()) {
-                /** Delete db cache if the data was updated successfully */
-                $dbcache->clearCache("course_sec-$id");
-                $dbcache->clearCache("crseCatalog");
-                $dbcache->clearCache("$term-catalog");
                 $logger->setLog('Update Record', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $section->courseSecCode . ')', get_persondata('uname'));
                 $app->flash('success_message', $flashNow->notice(200));
             } else {
@@ -217,14 +211,16 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 ->_join('course', 'sect.courseID = crse.courseID', 'crse')
                 ->where('courseSecID = ?', $id)
                 ->findOne();
+            
             /**
              * Fires after the course section has been updated.
              * 
              * @since 6.1.07
              * @param array $sect Course section data object.
              */
-            do_action('post_update_course_sec', $section);
-            redirect(get_base_url() . 'sect' . DS . $id . '/');
+            $app->hook->do_action('post_update_course_sec', $section);
+            
+            redirect(get_base_url() . 'sect' . '/' . $id . '/');
         }
 
         $preReq = $app->db->course()->select('preReq')->where('courseID = ?', $section->courseID);
@@ -280,22 +276,22 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('add_course_sec')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
     $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        /**
-         * Fires before a course section has been created.
-         * 
-         * @since 6.1.07
-         * @param int $id Primary key of the course from which the course section is created.
-         */
-        do_action('pre_save_course_sec', $id);
-        
-        $crse = $app->db->course()->where('courseID = ?', $id)->findOne();
+        $crse = get_course($id);
 
         if ($app->req->isPost()) {
+            /**
+             * Fires before a course section has been created.
+             *
+             * @since 6.1.07
+             * @param int $id Primary key of the course from which the course section is created.
+             */
+            $app->hook->do_action('pre_save_course_sec', $id);
+            
             $sc = $crse->courseCode . '-' . $_POST['sectionNumber'];
             $courseSection = $_POST['termCode'] . '-' . $crse->courseCode . '-' . $_POST['sectionNumber'];
 
@@ -307,13 +303,6 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             }
 
             $sect = $app->db->course_sec();
-            /**
-             * Fires during the saving/creating of a course section.
-             * 
-             * @since 6.1.10
-             * @param array $sect Course section data object.
-             */
-            do_action('save_course_sec_db_table', $sect);
             $sect->sectionNumber = $_POST['sectionNumber'];
             $sect->courseSecCode = _trim($sc);
             $sect->courseSection = _trim($courseSection);
@@ -342,6 +331,15 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $sect->comment = $_POST['comment'];
             $sect->approvedDate = $app->db->NOW();
             $sect->approvedBy = get_persondata('personID');
+            
+            /**
+             * Fires during the saving/creating of a course section.
+             *
+             * @since 6.1.10
+             * @param array $sect Course section object.
+             */
+            $app->hook->do_action('save_course_sec_db_table', $sect);
+            
             if ($sect->save()) {
                 $ID = $sect->lastInsertId();
                 $section = [
@@ -359,13 +357,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                  * Fires after a course section has been created.
                  * 
                  * @since 6.1.07
-                 * @param array $section Course section data object.
+                 * @param array $section Course section data array.
                  */
-                do_action('post_save_course_sec', $section);
+                $app->hook->do_action('post_save_course_sec', $section);
 
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course Section', _trim($courseSection), get_persondata('uname'));
-                redirect(get_base_url() . 'sect' . DS . $ID . '/');
+                redirect(get_base_url() . 'sect' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
                 redirect($app->req->server['HTTP_REFERER']);
@@ -414,28 +412,30 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/addnl/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
     $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
-        /**
-         * Fires before course section additional
-         * information has been updated.
-         * 
-         * @since 6.1.07
-         * @param int $id Primary key of the course section.
-         */
-        do_action('pre_course_sec_addnl', $id);
-
-        $section = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
+        $section = get_course_sec($id);
 
         if ($app->req->isPost()) {
+            
             $sect = $app->db->course_sec();
             foreach (_filter_input_array(INPUT_POST) as $k => $v) {
                 $sect->$k = $v;
             }
             $sect->where('courseSecID = ?', $id);
+            
+            /**
+             * Fires before course section additional
+             * information has been updated.
+             *
+             * @since 6.1.07
+             * @param object $sect Course section additional info object.
+             */
+            $app->hook->do_action('pre_course_sec_addnl', $sect);
+            
             if ($sect->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Course Section', $section->courseSection, get_persondata('uname'));
@@ -454,6 +454,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                 ->_join('course', 'sect.courseID = crse.courseID', 'crse')
                 ->where('courseSecID = ?', $id)
                 ->findOne();
+            
             /**
              * Fires after course section additional
              * information has been updated.
@@ -461,7 +462,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
              * @since 6.1.07
              * @param array $section Course section data object.
              */
-            do_action('post_course_sec_addnl', $section);
+            $app->hook->do_action('post_course_sec_addnl', $section);
+            
             redirect($app->req->server['HTTP_REFERER']);
         }
 
@@ -508,12 +510,12 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/soff/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-        $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
+    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        $sect = get_course_sec($id);
 
         if ($app->req->isPost()) {
             $dotw = '';
@@ -534,12 +536,11 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
             if ($soff->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
-                $dbcache->clearCache("course_sec-$id");
                 $logger->setLog('Update Record', 'Course Section Offering', $sect->courseSection, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
-            redirect(get_base_url() . 'sect/soff' . DS . (int) $id . '/');
+            redirect(get_base_url() . 'sect/soff' . '/' . (int) $id . '/');
         }
 
         /**
@@ -585,7 +586,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/fgrade/(\d+)/', function() {
         if (!hasPermission('submit_final_grades')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -615,8 +616,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
-
-        $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $id)->findOne();
+        
+        $sect = get_course_sec($id);
 
         $fgrade = $app->db->course_sec()
             ->select('course_sec.courseSecID,course_sec.secShortTitle,course_sec.minCredit,course_sec.courseSection,course_sec.facID')
@@ -675,24 +676,16 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/rgn/', function() {
         if (!hasPermission('register_students')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/rgn/', function () use($app, $css, $js, $json_url, $logger, $dbcache, $flashNow) {
-
-        /**
-         * Fires before a student is registered into
-         * a course by a staff member.
-         * 
-         * @since 6.1.07
-         */
-        do_action('pre_rgn_stu_crse_reg');
-
+    $app->match('GET|POST', '/rgn/', function () use($app, $css, $js, $json_url, $logger, $flashNow) {
         $time = date("h:i A");
 
         if ($app->req->isPost()) {
-            $sect = $app->db->course_sec()->where('courseSecID = ?', (int) $_POST['courseSecID'])->findOne();
+            
+            $sect = get_course_sec($_POST['courseSecID']);
             $crse = $app->db->course()->where('courseID = ?', (int) $sect->courseID)->findOne();
             $term = $app->db->term()->where('termCode = ?', $sect->termCode)->findOne();
 
@@ -735,6 +728,17 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             $stac->endDate = $sect->endDate;
             $stac->addedBy = get_persondata('personID');
             $stac->addDate = $app->db->NOW();
+            
+            /**
+             * Fires before a student is registered into
+             * a course by a staff member.
+             *
+             * @since 6.1.07
+             * @since 6.2.0 Changed to use $app->hook->do_action_array and added $stcs and $stac objects.
+             * @param object $stcs Student course section object.
+             * @param object $stac Student academic credit object.
+             */
+            $app->hook->do_action_array('pre_rgn_stu_crse_reg', [ $stcs, $stac ]);
 
             if ($stcs->save() && $stac->save()) {
                 /**
@@ -747,6 +751,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                     ->_join('person', 'stac.stuID = nae.personID', 'nae')
                     ->where('stac.stuAcadCredID = ?', $ID)
                     ->findOne();
+                
                 /**
                  * Fires after a student has been registered into
                  * a course by a staff member.
@@ -754,7 +759,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
                  * @since 6.1.07
                  * @param array $sacd Student Academic Credit detail data object.
                  */
-                do_action('post_rgn_stu_crse_reg', $sacd);
+                $app->hook->do_action('post_rgn_stu_crse_reg', $sacd);
 
                 if (function_exists('financial_module')) {
                     /**
@@ -767,7 +772,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
-            redirect(get_base_url() . 'sect/rgn' . DS);
+            redirect(get_base_url() . 'sect/rgn' . '/');
         }
 
         $app->view->display('section/register', [
@@ -783,14 +788,14 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/sros.*', function() {
         if (!hasPermission('access_stu_roster_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
     $app->match('GET|POST', '/sros/', function () use($app, $css, $js, $logger, $flashNow) {
 
         if ($app->req->isPost()) {
-            redirect(get_base_url() . 'sect/sros' . DS . $_POST['sectionID'] . '/' . $_POST['template'] . '/');
+            redirect(get_base_url() . 'sect/sros' . '/' . $_POST['sectionID'] . '/' . $_POST['template'] . '/');
         }
 
         $app->view->display('section/sros', [
@@ -885,7 +890,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
      */
     $app->before('GET|POST', '/catalog.*', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . DS);
+            redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -990,7 +995,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
 
     $app->post('/stuLookup/', function() use($app) {
         $stu = $app->db->student()->where('stuID = ?', (int) $_POST['stuID'])->findOne();
-        $nae = $app->db->person()->where('personID = ?', (int) $stu->stuID)->findOne();
+        $nae = get_person_by('personID', $stu->stuID);
 
         $json = [ 'input#stuName' => $nae->lname . ', ' . $nae->fname];
 
@@ -1072,6 +1077,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $dbcac
     });
 
     $app->post('/loc/', function() use($app) {
+        etsis_cache_flush_namespace('loc');
         $loc = $app->db->location();
         foreach ($_POST as $k => $v) {
             $loc->$k = $v;

@@ -11,9 +11,6 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 
-include_once(APP_PATH . 'src/Gettext/autoloader.php');
-include_once(APP_PATH . 'src/Gettext/Languages/autoloader.php');
-
 $t = new \Gettext\Translator();
 $t->register();
 
@@ -25,12 +22,14 @@ $t->register();
  */
 function load_core_locale()
 {
+    $app = \Liten\Liten::getInstance();
+    
     if(is_readable(BASE_PATH . 'config.php')) {
         $locale = get_option('et_core_locale');
     } else {
         $locale = 'en_US';
     }
-    return apply_filter('core_locale', $locale);
+    return $app->hook->apply_filter('core_locale', $locale);
 }
 
 /**
@@ -45,6 +44,8 @@ function load_core_locale()
 function load_textdomain($domain, $path)
 {
     global $t;
+    
+    $app = \Liten\Liten::getInstance();
 
     /**
      * Filter text domain and/or .mo file path for loading translations.
@@ -55,7 +56,7 @@ function load_textdomain($domain, $path)
      * @param string $domain   Text domain. Unique identifier for retrieving translated strings.
      * @param string $path   Path to the .mo file.
      */
-    $plugin_override = apply_filter('override_load_textdomain', false, $domain, $path);
+    $plugin_override = $app->hook->apply_filter('override_load_textdomain', false, $domain, $path);
 
     if (true == $plugin_override) {
         return true;
@@ -69,7 +70,7 @@ function load_textdomain($domain, $path)
      * @param string $domain Text domain. Unique identifier for retrieving translated strings.
      * @param string $path Path to the .mo file.
      */
-    do_action('load_textdomain', $domain, $path);
+    $app->hook->do_action('load_textdomain', $domain, $path);
 
     /**
      * Filter .mo file path for loading translations for a specific text domain.
@@ -79,7 +80,7 @@ function load_textdomain($domain, $path)
      * @param string $path Path to the .mo file.
      * @param string $domain Text domain. Unique identifier for retrieving translated strings.
      */
-    $mofile = apply_filter('load_textdomain_mofile', $path, $domain);
+    $mofile = $app->hook->apply_filter('load_textdomain_mofile', $path, $domain);
     // Load only if the .mo file is present and readable.
     if (!is_readable($mofile)) {
         return false;
@@ -123,6 +124,8 @@ function load_default_textdomain($domain, $path)
  */
 function load_plugin_textdomain($domain, $plugin_rel_path = false)
 {
+    $app = \Liten\Liten::getInstance();
+    
     $locale = load_core_locale();
     /**
      * Filter a plugin's locale.
@@ -132,7 +135,7 @@ function load_plugin_textdomain($domain, $plugin_rel_path = false)
      * @param string $locale The plugin's current locale.
      * @param string $domain Text domain. Unique identifier for retrieving translated strings.
      */
-    $plugin_locale = apply_filter('plugin_locale', $locale, $domain);
+    $plugin_locale = $app->hook->apply_filter('plugin_locale', $locale, $domain);
 
     if ($plugin_rel_path !== false) {
         $path = PLUGINS_DIR . $plugin_rel_path . DS;
@@ -148,8 +151,14 @@ function load_plugin_textdomain($domain, $plugin_rel_path = false)
     return false;
 }
 
-function et_dropdown_languages($active = '') {
-    $locales = _file_get_contents('http://edutrac.s3.amazonaws.com/translations.json');
+/**
+ * Retrieves a list of available locales.
+ * 
+ * @since 6.1.09
+ * @param string $active
+ */
+function etsis_dropdown_languages($active = '') {
+    $locales = _file_get_contents('http://edutrac.s3.amazonaws.com/core/translations.json');
     $json = json_decode($locales, true);
     foreach($json as $locale) {
         echo '<option value="'.$locale['language'] . '"' . selected($active, $locale['language'], false) . '>'.$locale['native_name'].'</option>';

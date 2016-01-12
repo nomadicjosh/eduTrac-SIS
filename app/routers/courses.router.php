@@ -16,7 +16,7 @@ if (!defined('BASE_PATH'))
 $app->before('GET|POST', '/courses(.*)', function() {
 
     if (get_option('enable_myet_portal') == 0 && !hasPermission('edit_myet_css')) {
-        redirect(get_base_url() . 'offline' . DS);
+        redirect(get_base_url() . 'offline' . '/');
     }
 });
 
@@ -34,15 +34,13 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$json_url = get_base_url() . 'api' . DS;
+$json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$email = new \app\src\Email();
-$cache = new \app\src\Cache();
-$dbcache = new \app\src\DBCache();
+$email = _etsis_email();
 $flashNow = new \app\src\Messages();
 
-$app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $dbcache, $flashNow, $email) {
+$app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $flashNow, $email) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js, $json_url, $flashNow) {
         if ($app->req->isPost()) {
@@ -66,8 +64,8 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                 return $array;
             });
             if (bcadd(count($q1[0]['id']), count($_POST['courseSecID'])) > get_option('number_of_courses')) {
-                $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . get_option('number_of_courses') . _t(' courses</strong> per term.'));
-                redirect(get_base_url() . 'courses' . DS);
+                $app->flash('error_message', sprintf( _t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses') ) );
+                redirect(get_base_url() . 'courses' . '/');
                 exit();
             }
             /* Retrieve the dropAddEndDate from the registration term. */
@@ -88,7 +86,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                     $app->flash('error_message', $flashNow->notice(409));
                 }
                 ++$i;
-                redirect(get_base_url() . 'courses/cart' . DS);
+                redirect(get_base_url() . 'courses/cart' . '/');
             }
         }
         $terms = _escape(get_option('open_terms'));
@@ -186,7 +184,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
         });
         $counts = array_count_values($_POST['regAction']);
         if (bcadd(count($d[0]['id']), $counts['register']) > get_option('number_of_courses')) {
-            $app->flash('error_message', _t('Your institution has set a course registration limit. You are only allowed to register for <strong>') . get_option('number_of_courses') . _t(' courses</strong> per term.'));
+            $app->flash('error_message', sprintf( _t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses')) );
             redirect($app->req->server['HTTP_REFERER']);
             exit();
         }
@@ -293,7 +291,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                      * @since 6.1.05
                      * @param array $sacd Student Academic Credit detail data object.
                      */
-                    do_action('post_save_myet_reg', $sacd);
+                    $app->hook->do_action('post_save_myet_reg', $sacd);
                     /**
                      * Delete the record from the shopping cart after
                      * registration is complete.
@@ -320,7 +318,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
          * @since 6.1.00
          * @return mixed
          */
-        do_action('myet_student_course_registration');
+        $app->hook->do_action('myet_student_course_registration');
 
         // Flash messages for success or error
         if ($ID > 0) {
@@ -340,6 +338,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $db
                     $email->course_registration(get_persondata('personID'), $_POST['termCode'], get_base_url());
                 }
             }
+            etsis_cache_flush_namespace('student_account');
             $app->flash('success_message', $flashNow->notice(200));
         } else {
             $app->flash('error_message', $flashNow->notice(409));

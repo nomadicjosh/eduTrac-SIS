@@ -43,6 +43,8 @@ class Cron
      */
     public function __construct(\Liten\Liten $liten = null)
     {
+        _deprecated_class(__CLASS__, '6.0.00');
+        
         $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
     }
     
