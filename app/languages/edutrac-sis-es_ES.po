@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eduTrac SIS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-05 20:39-0500\n"
-"PO-Revision-Date: 2016-01-05 20:39-0500\n"
+"POT-Creation-Date: 2016-01-11 23:47-0500\n"
+"PO-Revision-Date: 2016-01-11 23:47-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -16,6 +16,34 @@ msgstr ""
 "X-Generator: Poedit 1.8.6\n"
 "X-Domain: edutrac-sis\n"
 
+#: functions/auth-function.php:429
+msgid "Your account is deactivated."
+msgstr ""
+
+#: functions/auth-function.php:465
+msgid "<strong>ERROR</strong>: The username/email field is empty."
+msgstr ""
+
+#: functions/auth-function.php:469
+msgid "<strong>ERROR</strong>: The password field is empty."
+msgstr ""
+
+#: functions/auth-function.php:480
+msgid "<strong>ERROR</strong>: Invalid email address."
+msgstr ""
+
+#: functions/auth-function.php:489
+msgid "<strong>ERROR</strong>: Invalid username."
+msgstr ""
+
+#: functions/auth-function.php:497
+msgid "<strong>ERROR</strong>: The password you entered is incorrect."
+msgstr ""
+
+#: functions/auth-function.php:521
+msgid "$person should be a database object."
+msgstr ""
+
 #: functions/core-function.php:48
 msgid "Invalid directory path: Empty path given."
 msgstr ""
@@ -25,30 +53,30 @@ msgstr ""
 msgid "The following directory could not be created: %s"
 msgstr ""
 
-#: functions/core-function.php:466
+#: functions/core-function.php:441
 msgid "Invalid student ID: Empty ID given."
 msgstr ""
 
-#: functions/core-function.php:472 functions/core-function.php:577
-#: functions/core-function.php:896
+#: functions/core-function.php:447 functions/core-function.php:507
+#: functions/core-function.php:705
 msgid "Invalid student ID: student id must be numeric."
 msgstr ""
 
-#: functions/core-function.php:501 functions/core-function.php:543
-#: functions/core-function.php:1022 functions/core-function.php:1057
+#: functions/core-function.php:473 functions/person-function.php:28
+#: functions/person-function.php:189 functions/person-function.php:219
 msgid "Invalid person ID: empty ID given."
 msgstr ""
 
-#: functions/core-function.php:507 functions/core-function.php:549
-#: functions/core-function.php:1028 functions/core-function.php:1063
+#: functions/core-function.php:479 functions/person-function.php:34
+#: functions/person-function.php:195 functions/person-function.php:225
 msgid "Invalid person ID: person id must be numeric."
 msgstr ""
 
-#: functions/core-function.php:571 functions/core-function.php:890
+#: functions/core-function.php:501 functions/core-function.php:699
 msgid "Invalid student ID: empty ID given."
 msgstr ""
 
-#: functions/core-function.php:921 views/course/addnl-info.php:77
+#: functions/core-function.php:730 views/course/addnl-info.php:77
 #: views/course/addnl-info.php:90 views/course/addnl-info.php:155
 #: views/course/index.php:119 views/course/view.php:314
 #: views/financial/paypal.php:55 views/financial/paypal.php:68
@@ -58,14 +86,14 @@ msgstr ""
 #: views/form/view-grade-scale.php:87 views/form/view-grade-scale.php:103
 #: views/form/view-semester.php:122 views/form/view-student-load-rule.php:114
 #: views/form/view-term.php:141 views/index/apply.php:143
-#: views/person/add.php:272 views/person/view.php:252 views/section/add.php:291
+#: views/person/add.php:272 views/person/view.php:252 views/section/add.php:289
 #: views/section/offering-info.php:170 views/setting/index.php:77
 #: views/setting/index.php:139 views/setting/registration.php:67
 #: views/student/sacp.php:132
 msgid "Yes"
 msgstr "Sí"
 
-#: functions/core-function.php:923 views/course/addnl-info.php:78
+#: functions/core-function.php:732 views/course/addnl-info.php:78
 #: views/course/addnl-info.php:91 views/course/addnl-info.php:156
 #: views/course/index.php:120 views/course/view.php:315
 #: views/financial/paypal.php:56 views/financial/paypal.php:69
@@ -75,315 +103,315 @@ msgstr "Sí"
 #: views/form/view-grade-scale.php:88 views/form/view-grade-scale.php:104
 #: views/form/view-semester.php:123 views/form/view-student-load-rule.php:115
 #: views/form/view-term.php:142 views/index/apply.php:144
-#: views/person/add.php:273 views/person/view.php:253 views/section/add.php:292
+#: views/person/add.php:273 views/person/view.php:253 views/section/add.php:290
 #: views/section/offering-info.php:171 views/setting/index.php:78
 #: views/setting/index.php:140 views/setting/registration.php:68
 #: views/student/sacp.php:133
 msgid "No"
 msgstr ""
 
-#: functions/core-function.php:1461
+#: functions/core-function.php:1159
 msgid "Invalid password: empty password given."
 msgstr ""
 
-#: functions/core-function.php:2156
+#: functions/core-function.php:1785
 msgid "Invalid file: empty file given."
 msgstr ""
 
-#: functions/core-function.php:2289 functions/core-function.php:2317
+#: functions/core-function.php:1918 functions/core-function.php:1946
 msgid "Invalid file name: empty file name given."
 msgstr ""
 
-#: functions/core-function.php:2300
+#: functions/core-function.php:1929
 #, php-format
 msgid ""
 "The following function is already defined elsewhere: <strong>%s</strong>"
 msgstr ""
 
-#: functions/core-function.php:2377
+#: functions/core-function.php:2006
 msgid "Cannot read file "
 msgstr ""
 
-#: functions/core-function.php:2431
+#: functions/core-function.php:2060
 msgid ""
 "Plugin could not be activated because it triggered a <strong>fatal error</"
 "strong>. <br /><br />"
 msgstr ""
 
-#: functions/dependency.php:74
+#: functions/dependency.php:77
 msgid "Invalid apply_filter hook: empty hook name given."
 msgstr ""
 
-#: functions/dependency.php:80
+#: functions/dependency.php:83
 msgid "Invalid apply_filter hook: hook name must be a string."
 msgstr ""
 
-#: functions/dependency.php:109
+#: functions/dependency.php:113
 msgid "Invalid add_filter hook: empty hook name given."
 msgstr ""
 
-#: functions/dependency.php:115
+#: functions/dependency.php:119
 msgid "Invalid add_filter hook: hook name must be a string."
 msgstr ""
 
-#: functions/dependency.php:140
+#: functions/dependency.php:144
 msgid "Invalid add_action hook: empty hook name given."
 msgstr ""
 
-#: functions/dependency.php:146
+#: functions/dependency.php:150
 msgid "Invalid add_action hook: hook name must be a string."
 msgstr ""
 
-#: functions/dependency.php:233
+#: functions/dependency.php:240
 msgid "Invalid do_action hook: empty hook name given."
 msgstr ""
 
-#: functions/dependency.php:239
+#: functions/dependency.php:246
 msgid "Invalid do_action hook: hook name must be a string."
 msgstr ""
 
-#: functions/dependency.php:553
+#: functions/dependency.php:566
 #, php-format
 msgid "Invalid file name: <strong>%s</strong> does not exist. <br />"
 msgstr ""
 
-#: functions/hook-function.php:260 functions/hook-function.php:321
-#: functions/hook-function.php:382
+#: functions/hook-function.php:266 functions/hook-function.php:329
+#: functions/hook-function.php:392
 #, php-format
 msgid ""
 "%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. "
 "<br />"
 msgstr ""
 
-#: functions/hook-function.php:262 functions/hook-function.php:323
-#: functions/hook-function.php:384
+#: functions/hook-function.php:268 functions/hook-function.php:331
+#: functions/hook-function.php:394
 #, php-format
 msgid ""
 "%1$s() is <strong>deprecated</strong> since release %2$s with no alternative "
 "available. <br />"
 msgstr ""
 
-#: functions/hook-function.php:450
+#: functions/hook-function.php:462
 #, php-format
 msgid ""
 "%1$s() was called with an argument that is <strong>deprecated</strong> since "
 "release %2$s! %3$s. <br />"
 msgstr ""
 
-#: functions/hook-function.php:452
+#: functions/hook-function.php:464
 #, php-format
 msgid ""
 "%1$s() was called with an argument that is <strong>deprecated</strong> since "
 "release %2$s with no alternative available. <br />"
 msgstr ""
 
-#: functions/hook-function.php:509
+#: functions/hook-function.php:522
 #, php-format
 msgid "(This message was added in release %s.) <br /><br />"
 msgstr ""
 
-#: functions/hook-function.php:511
+#: functions/hook-function.php:524
 #, php-format
 msgid ""
 "Please see <a href=\"%s\">Debugging in eduTrac SIS</a> for more information."
 msgstr ""
 
-#: functions/hook-function.php:512
+#: functions/hook-function.php:525
 #, php-format
 msgid "%1$s() was called <strong>incorrectly</strong>. %2$s %3$s <br />"
 msgstr ""
 
-#: functions/hook-function.php:529
+#: functions/hook-function.php:544
 msgid "&copy; 2013"
 msgstr ""
 
-#: functions/hook-function.php:701
+#: functions/hook-function.php:722
 msgid "Active Students"
 msgstr "Estudiantes Activos"
 
-#: functions/hook-function.php:724
+#: functions/hook-function.php:745
 msgid "Active Courses"
 msgstr "Cursos Activo"
 
-#: functions/hook-function.php:747
+#: functions/hook-function.php:768
 msgid "Active Programs"
 msgstr "Programas Activos"
 
-#: functions/hook-function.php:776
+#: functions/hook-function.php:797
 #, php-format
 msgid "eduTrac SIS release %s is available for download/upgrade."
 msgstr ""
 
-#: functions/hook-function.php:866 functions/hook-function.php:898
+#: functions/hook-function.php:897 functions/hook-function.php:933
 msgid "my"
 msgstr "mi"
 
-#: functions/hook-function.php:881 functions/hook-function.php:883
+#: functions/hook-function.php:914 functions/hook-function.php:916
 msgid "Powered by eduTrac SIS r"
 msgstr ""
 
-#: functions/hook-function.php:935 views/dashboard/core-admin-bar.php:50
+#: functions/hook-function.php:974 views/dashboard/core-admin-bar.php:50
 #: views/dashboard/menu.php:52
 msgid "Administrative"
 msgstr "Administrativo"
 
-#: functions/hook-function.php:936
+#: functions/hook-function.php:975
 msgid "Academic"
 msgstr "Académico"
 
-#: functions/hook-function.php:1114
+#: functions/hook-function.php:1169
 msgid "LEC Lecture"
 msgstr "LEC Dar Una Clase"
 
-#: functions/hook-function.php:1115
+#: functions/hook-function.php:1170
 msgid "LAB Lab"
 msgstr "LAB Laboratorio"
 
-#: functions/hook-function.php:1116
+#: functions/hook-function.php:1171
 msgid "SEM Seminar"
 msgstr "SEM Seminario"
 
-#: functions/hook-function.php:1117
+#: functions/hook-function.php:1172
 msgid "LL Lecture + Lab"
 msgstr "LL Dar Una Clase Y Laboratorio"
 
-#: functions/hook-function.php:1118
+#: functions/hook-function.php:1173
 msgid "LS Lecture + Seminar"
 msgstr "LS Dar Una Clase Y Seminario"
 
-#: functions/hook-function.php:1119
+#: functions/hook-function.php:1174
 msgid "SL Seminar + Lab"
 msgstr "SL Seminario Y Laboratorio"
 
-#: functions/hook-function.php:1120
+#: functions/hook-function.php:1175
 msgid "LLS Lecture + Lab + Seminar"
 msgstr "LLS Dar Una Clase Y Laboratorio Y Seminario"
 
-#: functions/hook-function.php:1138
+#: functions/hook-function.php:1195
 msgid "A Add"
 msgstr "A Añadir"
 
-#: functions/hook-function.php:1139
+#: functions/hook-function.php:1196
 msgid "N New"
 msgstr "N Nuevo"
 
-#: functions/hook-function.php:1140
+#: functions/hook-function.php:1197
 msgid "D Drop"
 msgstr "D Gota"
 
-#: functions/hook-function.php:1141 functions/hook-function.php:1162
+#: functions/hook-function.php:1198 functions/hook-function.php:1221
 #: views/student/add.php:199
 msgid "W Withdrawn"
 msgstr "W Retirado"
 
-#: functions/hook-function.php:1142
+#: functions/hook-function.php:1199
 msgid "C Cancelled"
 msgstr "C Anulado"
 
-#: functions/hook-function.php:1160 views/hr/view.php:313
+#: functions/hook-function.php:1219 views/hr/view.php:313
 #: views/staff/add.php:219 views/staff/view.php:209 views/student/add.php:196
 msgid "A Active"
 msgstr "A Activo"
 
-#: functions/hook-function.php:1161
+#: functions/hook-function.php:1220
 msgid "P Potential"
 msgstr "P La Posibilidad"
 
-#: functions/hook-function.php:1163
+#: functions/hook-function.php:1222
 msgid "C Changed Mind"
 msgstr "C Cambio De Opinión"
 
-#: functions/hook-function.php:1164
+#: functions/hook-function.php:1223
 msgid "G Graduated"
 msgstr "G Graduado"
 
-#: functions/hook-function.php:1182 views/course/view.php:135
+#: functions/hook-function.php:1243 views/course/view.php:135
 #: views/student/sacd.php:134
 msgid "I Institutional"
 msgstr "I Institucional"
 
-#: functions/hook-function.php:1183 functions/hook-function.php:1280
+#: functions/hook-function.php:1244 functions/hook-function.php:1345
 #: views/student/sacd.php:135
 msgid "TR Transfer"
 msgstr "TR Transladar"
 
-#: functions/hook-function.php:1184
+#: functions/hook-function.php:1245
 msgid "AP Advanced Placement"
 msgstr "AP Posición Avanzada"
 
-#: functions/hook-function.php:1185
+#: functions/hook-function.php:1246
 msgid "X Exempt"
 msgstr "X Eximen"
 
-#: functions/hook-function.php:1186
+#: functions/hook-function.php:1247
 msgid "T Test"
 msgstr "T Prueba"
 
-#: functions/hook-function.php:1204
+#: functions/hook-function.php:1267
 msgid "FR Freshman"
 msgstr "FR Estud. de primer año"
 
-#: functions/hook-function.php:1205
+#: functions/hook-function.php:1268
 msgid "SO Sophomore"
 msgstr "SO Estud. de segundo año"
 
-#: functions/hook-function.php:1206
+#: functions/hook-function.php:1269
 msgid "JR Junior"
 msgstr "JR Estud. de tercer año"
 
-#: functions/hook-function.php:1207
+#: functions/hook-function.php:1270
 msgid "SR Senior"
 msgstr "SR Estud. de último año"
 
-#: functions/hook-function.php:1208
+#: functions/hook-function.php:1271
 msgid "UG Undergraduate Student"
 msgstr ""
 
-#: functions/hook-function.php:1209
+#: functions/hook-function.php:1272
 msgid "GR Grad Student"
 msgstr ""
 
-#: functions/hook-function.php:1210
+#: functions/hook-function.php:1273
 msgid "PhD PhD Student"
 msgstr ""
 
-#: functions/hook-function.php:1279
+#: functions/hook-function.php:1344
 msgid "FF First Time Freshman"
 msgstr ""
 
-#: functions/hook-function.php:1281
+#: functions/hook-function.php:1346
 msgid "RA Readmit"
 msgstr ""
 
-#: functions/hook-function.php:1282
+#: functions/hook-function.php:1347
 msgid "NA Non-Applicable"
 msgstr ""
 
-#: functions/hook-function.php:1300
+#: functions/hook-function.php:1367
 msgid "Asset"
 msgstr "La posesión capital"
 
-#: functions/hook-function.php:1301
+#: functions/hook-function.php:1368
 msgid "Liability"
 msgstr "El Riesgo"
 
-#: functions/hook-function.php:1302
+#: functions/hook-function.php:1369
 msgid "Equity"
 msgstr "Equidad"
 
-#: functions/hook-function.php:1303
+#: functions/hook-function.php:1370
 msgid "Revenue"
 msgstr "Ingresos"
 
-#: functions/hook-function.php:1304
+#: functions/hook-function.php:1371
 msgid "Expense"
 msgstr "El Gasto"
 
-#: functions/hook-function.php:1420
+#: functions/hook-function.php:1497
 msgid "Plugin <strong>activated</strong>."
 msgstr ""
 
-#: functions/hook-function.php:1443
+#: functions/hook-function.php:1520
 msgid "Plugin <strong>deactivated</strong>."
 msgstr ""
 
@@ -525,18 +553,6 @@ msgstr ""
 msgid "The screen %s does not exist. Please try your search again."
 msgstr ""
 
-#: routers/index.router.php:105
-msgid "Your account is deactivated."
-msgstr ""
-
-#: routers/index.router.php:115
-msgid "The username does not exist. Please try again."
-msgstr ""
-
-#: routers/index.router.php:136
-msgid "The password you entered was incorrect."
-msgstr ""
-
 #: routers/install.router.php:60 routers/install.router.php:87
 msgid "Unable to establish a database connection."
 msgstr "No se puede establecer una conexión de base de datos."
@@ -599,7 +615,7 @@ msgstr "Usted tiene que seleccionar primero una imagen para subir."
 msgid "School Photo"
 msgstr "Foto de la escuela"
 
-#: routers/myet.router.php:643 routers/person.router.php:315
+#: routers/myet.router.php:643 routers/person.router.php:313
 #: routers/student.router.php:270
 msgid "myeduTrac :: "
 msgstr ""
@@ -608,41 +624,41 @@ msgstr ""
 msgid "Change of Address Request"
 msgstr "Cambio de Solicitud Dirección"
 
-#: routers/myet.router.php:696
+#: routers/myet.router.php:690
 #, php-format
 msgid ""
 "The username <strong>%s</strong> is already taken. Try again with a more "
 "unique username."
 msgstr ""
 
-#: routers/myet.router.php:773
+#: routers/myet.router.php:767
 msgid ""
 "Your application has been submitted, and you can now log in with your "
 "username and password."
 msgstr ""
 
-#: routers/myet.router.php:774
+#: routers/myet.router.php:768
 msgid "Student Application Via myeT"
 msgstr ""
 
-#: routers/myet.router.php:798
+#: routers/myet.router.php:792
 msgid "Online Application"
 msgstr ""
 
-#: routers/person.router.php:333
+#: routers/person.router.php:331
 msgid "myeduTrac Login Details"
 msgstr ""
 
-#: routers/person.router.php:889
+#: routers/person.router.php:864
 msgid "The password has been reset and an email has been sent to this user."
 msgstr ""
 
-#: routers/person.router.php:890 routers/person.router.php:891
+#: routers/person.router.php:865 routers/person.router.php:866
 #: views/person/view.php:470 views/setting/templates.php:186
 msgid "Reset Password"
 msgstr "Restablecer contraseña"
 
-#: routers/person.router.php:891
+#: routers/person.router.php:866
 msgid "Update Record"
 msgstr ""
 
@@ -758,38 +774,38 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/Cache/etsis_Cache_APC.php:38
+#: src/Cache/etsis_Cache_APC.php:48
 msgid "APC requires PHP APC extension to be installed and loaded."
 msgstr ""
 
-#: src/Cache/etsis_Cache_APC.php:258 src/Cache/etsis_Cache_Cookie.php:483
+#: src/Cache/etsis_Cache_APC.php:268 src/Cache/etsis_Cache_Cookie.php:483
 #: src/Cache/etsis_Cache_Filesystem.php:471 src/Cache/etsis_Cache_JSON.php:470
-#: src/Cache/etsis_Cache_Memcache.php:280
-#: src/Cache/etsis_Cache_Memcache.php:294 src/Cache/etsis_Cache_XCache.php:257
+#: src/Cache/etsis_Cache_Memcache.php:290
+#: src/Cache/etsis_Cache_Memcache.php:304 src/Cache/etsis_Cache_XCache.php:267
 msgid "Cache Hits:"
 msgstr ""
 
-#: src/Cache/etsis_Cache_APC.php:259 src/Cache/etsis_Cache_Cookie.php:484
+#: src/Cache/etsis_Cache_APC.php:269 src/Cache/etsis_Cache_Cookie.php:484
 #: src/Cache/etsis_Cache_Filesystem.php:472 src/Cache/etsis_Cache_JSON.php:471
-#: src/Cache/etsis_Cache_Memcache.php:281
-#: src/Cache/etsis_Cache_Memcache.php:295 src/Cache/etsis_Cache_XCache.php:258
+#: src/Cache/etsis_Cache_Memcache.php:291
+#: src/Cache/etsis_Cache_Memcache.php:305 src/Cache/etsis_Cache_XCache.php:268
 msgid "Cache Misses:"
 msgstr ""
 
-#: src/Cache/etsis_Cache_APC.php:260 src/Cache/etsis_Cache_Cookie.php:485
+#: src/Cache/etsis_Cache_APC.php:270 src/Cache/etsis_Cache_Cookie.php:485
 #: src/Cache/etsis_Cache_Filesystem.php:473 src/Cache/etsis_Cache_JSON.php:472
-#: src/Cache/etsis_Cache_Memcache.php:282
-#: src/Cache/etsis_Cache_Memcache.php:296 src/Cache/etsis_Cache_XCache.php:259
+#: src/Cache/etsis_Cache_Memcache.php:292
+#: src/Cache/etsis_Cache_Memcache.php:306 src/Cache/etsis_Cache_XCache.php:269
 msgid "Uptime:"
 msgstr ""
 
-#: src/Cache/etsis_Cache_APC.php:261 src/Cache/etsis_Cache_Memcache.php:283
-#: src/Cache/etsis_Cache_Memcache.php:297 src/Cache/etsis_Cache_XCache.php:260
+#: src/Cache/etsis_Cache_APC.php:271 src/Cache/etsis_Cache_Memcache.php:293
+#: src/Cache/etsis_Cache_Memcache.php:307 src/Cache/etsis_Cache_XCache.php:270
 msgid "Memory Usage:"
 msgstr ""
 
-#: src/Cache/etsis_Cache_APC.php:262 src/Cache/etsis_Cache_Memcache.php:284
-#: src/Cache/etsis_Cache_Memcache.php:298 src/Cache/etsis_Cache_XCache.php:261
+#: src/Cache/etsis_Cache_APC.php:272 src/Cache/etsis_Cache_Memcache.php:294
+#: src/Cache/etsis_Cache_Memcache.php:308 src/Cache/etsis_Cache_XCache.php:271
 msgid "Memory Available:"
 msgstr ""
 
@@ -808,12 +824,12 @@ msgstr ""
 msgid "Could not write to cache."
 msgstr ""
 
-#: src/Cache/etsis_Cache_Memcache.php:55 src/Cache/etsis_Cache_Memcache.php:59
+#: src/Cache/etsis_Cache_Memcache.php:65 src/Cache/etsis_Cache_Memcache.php:69
 #, php-format
 msgid "Memcached requires PHP <strong>%s</strong> extension to be loaded."
 msgstr ""
 
-#: src/Cache/etsis_Cache_XCache.php:38
+#: src/Cache/etsis_Cache_XCache.php:48
 msgid "XCache requires PHP XCache extension to be installed and loaded."
 msgstr ""
 
@@ -862,7 +878,7 @@ msgstr ""
 msgid "Created Directory %s"
 msgstr ""
 
-#: src/CoreUpdate.php:245 src/CoreUpdate/src/AutoUpdate.php:715
+#: src/CoreUpdate.php:245 src/vendor/CoreUpdate/src/AutoUpdate.php:715
 msgid "UPDATED"
 msgstr ""
 
@@ -887,20 +903,20 @@ msgstr ""
 msgid "Could not find latest releases."
 msgstr ""
 
-#: src/Email.php:227 views/section/register.php:59
+#: src/Email.php:230 views/section/register.php:59
 #: views/section/register.php:62
 msgid "Course Registration"
 msgstr "Inscripción Curso"
 
-#: src/Email.php:278 src/Email.php:318
+#: src/Email.php:281 src/Email.php:321
 msgid "myeduTrac::"
 msgstr ""
 
-#: src/Email.php:302
+#: src/Email.php:305
 msgid " Account Login Details"
 msgstr "Tu cuenta detalles"
 
-#: src/Email.php:343
+#: src/Email.php:346
 msgid "Application for Admissions"
 msgstr "Solicitud de Admisión"
 
@@ -1265,11 +1281,11 @@ msgstr ""
 #: views/person/addr-form.php:386 views/person/addr.php:390
 #: views/person/perms.php:76 views/person/role.php:91 views/person/view.php:469
 #: views/program/add.php:309 views/program/view.php:316 views/role/view.php:87
-#: views/section/add-assignment.php:92 views/section/add.php:359
+#: views/section/add-assignment.php:92 views/section/add.php:357
 #: views/section/addnl-info.php:142 views/section/billing-info.php:105
 #: views/section/offering-info.php:186 views/section/view-assignment.php:97
 #: views/section/view.php:295 views/setting/email.php:123
-#: views/setting/index.php:331 views/setting/registration.php:147
+#: views/setting/index.php:305 views/setting/registration.php:147
 #: views/sql/add-query.php:132 views/sql/view-query.php:131
 #: views/staff/add.php:244 views/staff/timesheets.php:179
 #: views/staff/view-timesheet.php:174 views/staff/view.php:261
@@ -1464,11 +1480,10 @@ msgstr "Someter"
 #: views/section/view-assignment.php:98 views/section/view.php:296
 #: views/setting/email.php:148 views/setting/email.php:168
 #: views/setting/email.php:188 views/setting/email.php:208
-#: views/setting/email.php:228 views/setting/index.php:356
-#: views/setting/index.php:375 views/setting/index.php:394
-#: views/setting/index.php:413 views/setting/index.php:432
-#: views/setting/index.php:451 views/setting/index.php:470
-#: views/setting/index.php:489 views/setting/index.php:508
+#: views/setting/email.php:228 views/setting/index.php:330
+#: views/setting/index.php:349 views/setting/index.php:368
+#: views/setting/index.php:387 views/setting/index.php:406
+#: views/setting/index.php:425 views/setting/index.php:444
 #: views/setting/templates.php:252 views/setting/templates.php:273
 #: views/setting/templates.php:294 views/setting/templates.php:315
 #: views/setting/templates.php:336 views/setting/templates.php:357
@@ -1948,7 +1963,7 @@ msgstr ""
 #: views/financial/payment-plan.php:159 views/financial/payment-plan.php:311
 #: views/financial/payment-plan.php:405 views/financial/view-bill.php:59
 #: views/financial/view-comments.php:60 views/financial/view-payments.php:60
-#: views/financial/view-refunds.php:60 views/section/add.php:341
+#: views/financial/view-refunds.php:60 views/section/add.php:339
 #: views/section/view.php:268 views/student/sacp.php:193
 #: views/student/sacp.php:202 views/student/shis.php:72
 #: views/student/shis.php:120 views/student/shis.php:208
@@ -2224,7 +2239,7 @@ msgstr ""
 #: views/calendar/booking-form.php:198 views/calendar/request-form.php:140
 #: views/calendar/view-event.php:164 views/calendar/view-request.php:216
 #: views/form/request-form.php:140 views/hr/view-timesheet.php:104
-#: views/hr/view-timesheet.php:211 views/section/add.php:263
+#: views/hr/view-timesheet.php:211 views/section/add.php:261
 #: views/section/booking-info.php:198 views/section/booking-info.php:386
 #: views/section/offering-info.php:142 views/staff/timesheets.php:142
 #: views/staff/view-timesheet.php:54 views/staff/view-timesheet.php:137
@@ -2234,7 +2249,7 @@ msgstr ""
 #: views/calendar/booking-form.php:210 views/calendar/request-form.php:133
 #: views/calendar/view-event.php:188 views/calendar/view-request.php:228
 #: views/form/request-form.php:133 views/hr/view-timesheet.php:105
-#: views/hr/view-timesheet.php:223 views/section/add.php:275
+#: views/hr/view-timesheet.php:223 views/section/add.php:273
 #: views/section/booking-info.php:210 views/section/booking-info.php:410
 #: views/section/offering-info.php:154 views/staff/timesheets.php:154
 #: views/staff/view-timesheet.php:55 views/staff/view-timesheet.php:149
@@ -2679,19 +2694,19 @@ msgid "Academic Level"
 msgstr ""
 
 #: views/course/add.php:175 views/program/add.php:88 views/program/view.php:92
-#: views/section/add.php:310 views/section/view.php:227
+#: views/section/add.php:308 views/section/view.php:227
 msgid "Status / Date"
 msgstr ""
 
 #: views/course/add.php:199 views/course/extr.php:259
 #: views/course/vextr.php:185 views/course/view.php:225
 #: views/program/add.php:101 views/program/view.php:105
-#: views/section/add.php:323 views/section/view.php:250
+#: views/section/add.php:321 views/section/view.php:250
 msgid "Approval Person"
 msgstr ""
 
 #: views/course/add.php:206 views/course/view.php:234 views/program/add.php:110
-#: views/program/view.php:114 views/section/add.php:332
+#: views/program/view.php:114 views/section/add.php:330
 #: views/section/view.php:259
 msgid "Approval Date"
 msgstr ""
@@ -3649,8 +3664,8 @@ msgstr ""
 msgid "Paypal Gateway"
 msgstr ""
 
-#: views/dashboard/core-admin-bar.php:281 views/setting/index.php:304
-#: views/setting/index.php:501
+#: views/dashboard/core-admin-bar.php:281 views/setting/index.php:278
+#: views/setting/index.php:437
 msgid "eduTrac Analytics"
 msgstr ""
 
@@ -3708,24 +3723,24 @@ msgstr ""
 msgid "Latest eduTrac SIS Updates"
 msgstr ""
 
-#: views/dashboard/index.php:94
+#: views/dashboard/index.php:98
 msgid "Students by Academic Program"
 msgstr "Estudiantes por Programa Académico"
 
-#: views/dashboard/index.php:104 views/section/gradebook.php:42
+#: views/dashboard/index.php:108 views/section/gradebook.php:42
 msgid "Students"
 msgstr "Estudiantes"
 
-#: views/dashboard/index.php:128
+#: views/dashboard/index.php:132
 msgid "Gender by Academic Departments"
 msgstr "Sexo por Departamentos Académicos"
 
-#: views/dashboard/index.php:138 views/index/apply.php:165
+#: views/dashboard/index.php:142 views/index/apply.php:165
 #: views/person/add.php:320 views/person/view.php:300
 msgid "Male"
 msgstr "Masculino"
 
-#: views/dashboard/index.php:139 views/index/apply.php:166
+#: views/dashboard/index.php:143 views/index/apply.php:166
 #: views/person/add.php:321 views/person/view.php:301
 msgid "Female"
 msgstr "Femenino"
@@ -3967,7 +3982,7 @@ msgstr ""
 "Hey administrador, la base de datos es actualmente hasta la fecha. No hay "
 "nada más para ver."
 
-#: views/dashboard/upgrade.php:44 views/setting/index.php:372
+#: views/dashboard/upgrade.php:44 views/setting/index.php:346
 msgid "Click here"
 msgstr ""
 
@@ -6151,39 +6166,39 @@ msgstr ""
 msgid "Instructor Method"
 msgstr ""
 
-#: views/section/add.php:227 views/section/offering-info.php:100
+#: views/section/add.php:225 views/section/offering-info.php:100
 msgid "Meeting Days"
 msgstr ""
 
-#: views/section/add.php:231 views/section/offering-info.php:104
+#: views/section/add.php:229 views/section/offering-info.php:104
 msgid "Sunday"
 msgstr "Domingo"
 
-#: views/section/add.php:235 views/section/offering-info.php:108
+#: views/section/add.php:233 views/section/offering-info.php:108
 msgid "Monday"
 msgstr "Lunes"
 
-#: views/section/add.php:239 views/section/offering-info.php:112
+#: views/section/add.php:237 views/section/offering-info.php:112
 msgid "Tuesday"
 msgstr "Martes"
 
-#: views/section/add.php:243 views/section/offering-info.php:116
+#: views/section/add.php:241 views/section/offering-info.php:116
 msgid "Wednesday"
 msgstr "Miércoles"
 
-#: views/section/add.php:247 views/section/offering-info.php:120
+#: views/section/add.php:245 views/section/offering-info.php:120
 msgid "Thursday"
 msgstr "Jueves"
 
-#: views/section/add.php:251 views/section/offering-info.php:124
+#: views/section/add.php:249 views/section/offering-info.php:124
 msgid "Friday"
 msgstr "Viernes"
 
-#: views/section/add.php:255 views/section/offering-info.php:128
+#: views/section/add.php:253 views/section/offering-info.php:128
 msgid "Saturday"
 msgstr "Sábado"
 
-#: views/section/add.php:287 views/section/offering-info.php:166
+#: views/section/add.php:285 views/section/offering-info.php:166
 msgid "Register Online"
 msgstr ""
 
@@ -6515,13 +6530,11 @@ msgstr ""
 msgid "Offline Message"
 msgstr ""
 
-#: views/setting/index.php:126 views/setting/index.php:152
-#: views/setting/index.php:165
+#: views/setting/index.php:126
 msgid "Enabled"
 msgstr "Activado"
 
-#: views/setting/index.php:127 views/setting/index.php:153
-#: views/setting/index.php:166
+#: views/setting/index.php:127
 msgid "Disabled"
 msgstr "Discapacitado"
 
@@ -6529,118 +6542,110 @@ msgstr "Discapacitado"
 msgid "Applicant Email"
 msgstr ""
 
-#: views/setting/index.php:148 views/setting/index.php:463
-msgid "Screen Caching"
-msgstr ""
-
-#: views/setting/index.php:161
-msgid "DB Caching"
-msgstr ""
-
-#: views/setting/index.php:174
+#: views/setting/index.php:148
 msgid "Language"
 msgstr ""
 
-#: views/setting/index.php:186
+#: views/setting/index.php:160
 msgid "Timezone"
 msgstr "Zona Horaria"
 
-#: views/setting/index.php:200
+#: views/setting/index.php:174
 msgid "Cookie TTL"
 msgstr ""
 
-#: views/setting/index.php:209
+#: views/setting/index.php:183
 msgid "Cookie Path"
 msgstr ""
 
-#: views/setting/index.php:224
+#: views/setting/index.php:198
 msgid "File Manager Driver"
 msgstr ""
 
-#: views/setting/index.php:228
+#: views/setting/index.php:202
 msgid "Local"
 msgstr ""
 
-#: views/setting/index.php:229
+#: views/setting/index.php:203
 msgid "Amazon S3"
 msgstr ""
 
-#: views/setting/index.php:237
+#: views/setting/index.php:211
 msgid "Amazon S3 Bucket"
 msgstr ""
 
-#: views/setting/index.php:246
+#: views/setting/index.php:220
 msgid "S3 Access Key"
 msgstr ""
 
-#: views/setting/index.php:255
+#: views/setting/index.php:229
 msgid "S3 Secret Key"
 msgstr ""
 
-#: views/setting/index.php:264
+#: views/setting/index.php:238
 msgid "Curl"
 msgstr ""
 
-#: views/setting/index.php:268
+#: views/setting/index.php:242
 msgid "On"
 msgstr "En"
 
-#: views/setting/index.php:269
+#: views/setting/index.php:243
 msgid "Off"
 msgstr "Apagado"
 
-#: views/setting/index.php:277 views/setting/index.php:368
+#: views/setting/index.php:251 views/setting/index.php:342
 msgid "API Key"
 msgstr ""
 
-#: views/setting/index.php:286
+#: views/setting/index.php:260
 msgid "Contact Phone"
 msgstr ""
 
-#: views/setting/index.php:295
+#: views/setting/index.php:269
 msgid "Help Desk"
 msgstr ""
 
-#: views/setting/index.php:313
+#: views/setting/index.php:287
 msgid "Mailing Address"
 msgstr ""
 
-#: views/setting/index.php:349
+#: views/setting/index.php:323
 msgid "myeduTrac Layout"
 msgstr ""
 
-#: views/setting/index.php:353
+#: views/setting/index.php:327
 msgid ""
 "You can create your own layout for myeduTrac self service portal. Make a "
 "duplicate of the default layout (/app/views/_layouts/myet/default.php), "
 "modify it and add your own css styling."
 msgstr ""
 
-#: views/setting/index.php:372
+#: views/setting/index.php:346
 msgid ""
 "Some screens in eduTrac rely on the internal REST API, so you will need and "
 "API Key."
 msgstr ""
 
-#: views/setting/index.php:372
+#: views/setting/index.php:346
 msgid "to generate an api key for your account."
 msgstr ""
 
-#: views/setting/index.php:387
+#: views/setting/index.php:361
 msgid "myeduTrac Self Service"
 msgstr ""
 
-#: views/setting/index.php:391
+#: views/setting/index.php:365
 msgid "Use this option to place myeduTrac self service into maintenance mode."
 msgstr ""
 "Utilice esta opción para colocar autoservicio myeduTrac en modo de "
 "mantenimiento."
 
-#: views/setting/index.php:406
+#: views/setting/index.php:380
 msgid "myeduTrac Offline Message"
 msgstr "myeduTrac Desconectado Mensaje"
 
-#: views/setting/index.php:410
+#: views/setting/index.php:384
 msgid ""
 "Type the message that should be shown to vistors when myeduTrac self service "
 "is in offline mode. Those who have an account can still log into the site. "
@@ -6652,54 +6657,29 @@ msgstr ""
 "puede iniciar sesión en el sitio. Si el usuario conectado no tiene acceso "
 "salpicadero, será redirigido de nuevo a el mensaje fuera de línea."
 
-#: views/setting/index.php:425
+#: views/setting/index.php:399
 msgid "myeduTrac Application Form"
 msgstr "myeduTrac Formulario de Solicitud"
 
-#: views/setting/index.php:429
+#: views/setting/index.php:403
 msgid ""
 "Enable this option to allow access to the application for admissions form."
 msgstr ""
 "Active esta opción para permitir el acceso a la solicitud de formulario de "
 "admisión."
 
-#: views/setting/index.php:444
+#: views/setting/index.php:418
 msgid "Send Applicant Email"
 msgstr ""
 
-#: views/setting/index.php:448
+#: views/setting/index.php:422
 msgid ""
 "Set this to 'Yes' if an acceptance letter email should be sent when "
 "applicant is moved to stu. Make sure to add a customized acceptance letter "
 "template on the email template's screen."
 msgstr ""
 
-#: views/setting/index.php:467
-msgid ""
-"Static screens that don't really change often can be cached to reduce page "
-"loading time. However, if you decide to disable this option, make sure to "
-"clear the screen cache."
-msgstr ""
-"Pantallas estáticas que en realidad no cambian a menudo se pueden almacenar "
-"en caché para reducir el tiempo de carga la página . Sin embargo, si decide "
-"desactivar esta opción, asegúrese de borrar la caché de pantalla."
-
-#: views/setting/index.php:482
-msgid "Database Caching"
-msgstr ""
-
-#: views/setting/index.php:486
-msgid ""
-"Along with screen caching, database caching helps with scalability, "
-"performance and greatly reduces overhead. However, if you decide to disable "
-"this option, make sure to clear the database cache."
-msgstr ""
-"Junto con el almacenamiento en caché de la pantalla, el almacenamiento en "
-"caché de base de datos ayuda a la escalabilidad, el rendimiento y reduce los "
-"gastos generales. Sin embargo, si decide desactivar esta opción, asegúrese "
-"de borrar la caché de base de datos."
-
-#: views/setting/index.php:505
+#: views/setting/index.php:441
 msgid ""
 "If you are using eduTrac Analytics, enter the base url where it is installed "
 "(i.e. http://example.com/ea/)."
@@ -7269,6 +7249,26 @@ msgid ""
 "communicate with. Nevertheless, feel free to use them in a way that is most "
 "beneficial for your institution."
 msgstr ""
+
+#~ msgid ""
+#~ "Static screens that don't really change often can be cached to reduce "
+#~ "page loading time. However, if you decide to disable this option, make "
+#~ "sure to clear the screen cache."
+#~ msgstr ""
+#~ "Pantallas estáticas que en realidad no cambian a menudo se pueden "
+#~ "almacenar en caché para reducir el tiempo de carga la página . Sin "
+#~ "embargo, si decide desactivar esta opción, asegúrese de borrar la caché "
+#~ "de pantalla."
+
+#~ msgid ""
+#~ "Along with screen caching, database caching helps with scalability, "
+#~ "performance and greatly reduces overhead. However, if you decide to "
+#~ "disable this option, make sure to clear the database cache."
+#~ msgstr ""
+#~ "Junto con el almacenamiento en caché de la pantalla, el almacenamiento en "
+#~ "caché de base de datos ayuda a la escalabilidad, el rendimiento y reduce "
+#~ "los gastos generales. Sin embargo, si decide desactivar esta opción, "
+#~ "asegúrese de borrar la caché de base de datos."
 
 #~ msgid "Current Version:"
 #~ msgstr "Versión Actual"
