@@ -145,32 +145,6 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Screen Caching' );?> <a href="#scache" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
-                            <div class="col-md-8">
-                                <select name="screen_caching" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
-                                    <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h(get_option( 'screen_caching' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
-                                    <option value="0"<?=selected( _h(get_option( 'screen_caching' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'DB Caching' );?> <a href="#dbcache" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
-                            <div class="col-md-8">
-                                <select name="db_caching" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
-                                	<option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h(get_option( 'db_caching' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
-                                    <option value="0"<?=selected( _h(get_option( 'db_caching' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Language' );?></label>
                             <div class="col-md-8">
                                 <select name="et_core_locale" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
@@ -446,44 +420,6 @@ $screen = 'setting';
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
 		            <p><?=_t("Set this to 'Yes' if an acceptance letter email should be sent when applicant is moved to stu. Make sure to add a customized acceptance letter template on the email template's screen.");?></p>
-		        </div>
-		        <div class="modal-footer">
-		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
-		        </div>
-	        </div>
-      	</div>
-    </div>
-    <div class="modal fade" id="scache">
-    	<div class="modal-dialog">
-			<div class="modal-content">
-	
-				<!-- Modal heading -->
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Screen Caching' );?></h3>
-				</div>
-				<!-- // Modal heading END -->
-		        <div class="modal-body">
-		            <p><?=_t("Static screens that don't really change often can be cached to reduce page loading time. However, if you decide to disable this option, make sure to clear the screen cache.");?></p>
-		        </div>
-		        <div class="modal-footer">
-		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
-		        </div>
-	        </div>
-      	</div>
-    </div>
-    <div class="modal fade" id="dbcache">
-    	<div class="modal-dialog">
-			<div class="modal-content">
-	
-				<!-- Modal heading -->
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Database Caching' );?></h3>
-				</div>
-				<!-- // Modal heading END -->
-		        <div class="modal-body">
-		            <p><?=_t("Along with screen caching, database caching helps with scalability, performance and greatly reduces overhead. However, if you decide to disable this option, make sure to clear the database cache.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
