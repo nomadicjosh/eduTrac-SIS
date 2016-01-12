@@ -50,7 +50,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				
 					<!-- Form -->
 					<form class="form-horizontal margin-none" method="post" action="<?=get_base_url();?>login/" id="validateSubmitForm" autocomplete="off">
-						<label><?=_t( 'Username' );?></label>
+						<label><?=_t( 'Username / Email' );?></label>
 						<input type="text" name="uname" class="form-control" placeholder="Your Username" required/> 
 						<label><?=_t( 'Password' );?></label>
 						<input type="password" name="password" class="form-control margin-none" placeholder="Your Password" required/>
