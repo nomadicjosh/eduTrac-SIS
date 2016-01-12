@@ -1077,6 +1077,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
     });
 
     $app->post('/loc/', function() use($app) {
+        etsis_cache_flush_namespace('loc');
         $loc = $app->db->location();
         foreach ($_POST as $k => $v) {
             $loc->$k = $v;

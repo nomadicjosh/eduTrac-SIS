@@ -86,8 +86,8 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
         );
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {        
-        $program = $app->db->acad_program()->where('acadProgID = ?', $id)->findOne();
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+        $program = get_acad_program($id);
 
         if ($app->req->isPost()) {
             $prog = $app->db->acad_program();
@@ -122,6 +122,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
             $app->hook->do_action('update_acad_program_db_table', $prog);
             
             if ($prog->update()) {
+                etsis_cache_delete($id, 'prog');
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update', 'Acad Program', $program->acadProgCode, get_persondata('uname'));
             } else {
@@ -223,6 +224,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
             
             if ($prog->save()) {
                 $ID = $prog->lastInsertId();
+                etsis_cache_flush_namespace('prog');
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Acad Program', $_POST['acadProgCode'], get_persondata('uname'));
                 redirect(get_base_url() . 'program' . '/' . $ID . '/');
@@ -241,6 +243,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
     });
 
     $app->post('/year/', function() use($app) {
+        etsis_cache_flush_namespace('ayr');
         $year = $app->db->acad_year();
         foreach ($_POST as $k => $v) {
             $year->$k = $v;
@@ -261,6 +264,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
     });
 
     $app->post('/degree/', function() use($app) {
+        etsis_cache_flush_namespace('deg');
         $deg = $app->db->degree();
         foreach ($_POST as $k => $v) {
             $deg->$k = $v;
@@ -281,6 +285,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
     });
 
     $app->post('/ccd/', function() use($app) {
+        etsis_cache_flush_namespace('ccd');
         $c = $app->db->ccd();
         foreach ($_POST as $k => $v) {
             $c->$k = $v;
@@ -301,6 +306,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
     });
 
     $app->post('/major/', function() use($app) {
+        etsis_cache_flush_namespace('majr');
         $maj = $app->db->major();
         foreach ($_POST as $k => $v) {
             $maj->$k = $v;
@@ -321,6 +327,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
     });
 
     $app->post('/minor/', function() use($app) {
+        etsis_cache_flush_namespace('minr');
         $min = $app->db->minor();
         foreach ($_POST as $k => $v) {
             $min->$k = $v;
@@ -341,6 +348,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
     });
 
     $app->post('/spec/', function() use($app) {
+        etsis_cache_flush_namespace('spec');
         $spec = $app->db->specialization();
         foreach ($_POST as $k => $v) {
             $spec->$k = $v;
@@ -361,6 +369,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
     });
 
     $app->post('/cip/', function() use($app) {
+        etsis_cache_flush_namespace('cip');
         $c = $app->db->cip();
         foreach ($_POST as $k => $v) {
             $c->$k = $v;

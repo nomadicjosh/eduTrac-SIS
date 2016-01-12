@@ -418,6 +418,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
     });
 
     $app->post('/dept/', function() use($app) {
+        etsis_cache_flush_namespace('dept');
         $dept = $app->db->department();
         foreach ($_POST as $k => $v) {
             $dept->$k = $v;
@@ -438,6 +439,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
     });
 
     $app->post('/subj/', function() use($app) {
+        etsis_cache_flush_namespace('subj');
         $subj = $app->db->subject();
         foreach ($_POST as $k => $v) {
             $subj->$k = $v;
