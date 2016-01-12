@@ -53,15 +53,19 @@ $screen = 'dash';
 							<div class="widget-chart bg-lightseagreen">
 								<?php  $rss1 = new \DOMDocument();
                                 $rss1->load('http://feeds.feedburner.com/eduTracSIS');
-                                $feed = array();
+                                $feed = etsis_cache_get('rss', 'rss');
+                                if(empty($feed)) {
+                                $feed = [];
                                 foreach ($rss1->getElementsByTagName('item') as $node) {
-                                $item = array (
+                                $item = [
                                 'title' => $node->getElementsByTagName('title')->item(0)->nodeValue,
                                 'desc' => $node->getElementsByTagName('description')->item(0)->nodeValue,
                                 'link' => $node->getElementsByTagName('link')->item(0)->nodeValue,
                                 'date' => $node->getElementsByTagName('pubDate')->item(0)->nodeValue,
-                                );
+                                ];
                                 array_push($feed, $item);
+                                }
+                                etsis_cache_add('rss', $feed, 'rss');
                                 }
                                 $limit = 3;
                                 for($x=0;$x<$limit;$x++) {
