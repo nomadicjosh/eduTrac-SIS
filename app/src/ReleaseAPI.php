@@ -61,7 +61,7 @@ class ReleaseAPI
     /**
      * Constructor is private so that another instance isn't created.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      */
     private function __construct()
     {
@@ -92,7 +92,7 @@ class ReleaseAPI
     /**
      * The url of json file where releases array is stored.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      */
     public function getReleaseJsonUrl()
     {
@@ -103,7 +103,7 @@ class ReleaseAPI
     /**
      * Checks the server for online status.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      * @return bool|\app\src\Exception\Exception
      */
     public function getServerStatus()
@@ -120,7 +120,7 @@ class ReleaseAPI
     /**
      * The url of the release to be downloaded from remote server.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      * @param string $release
      *            Release value.
      */
@@ -132,7 +132,7 @@ class ReleaseAPI
     /**
      * Where the latest release is downloaded on local server.
      *
-     * @since 6.1.15
+     * @since 6.2.0
      * @param string $release
      *            Release value.
      */
