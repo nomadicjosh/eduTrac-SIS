@@ -2049,10 +2049,10 @@ function etsis_validate_plugin($plugin_name)
     
     $plugin = str_replace('.plugin.php', '', $plugin_name);
     
-    if (! file_exists(PLUGINS_DIR . $plugin . '/' . $plugin_name)) {
-        $file = PLUGINS_DIR . $plugin_name;
+    if (! file_exists(ETSIS_PLUGIN_DIR . $plugin . '/' . $plugin_name)) {
+        $file = ETSIS_PLUGIN_DIR . $plugin_name;
     } else {
-        $file = PLUGINS_DIR . $plugin . '/' . $plugin_name;
+        $file = ETSIS_PLUGIN_DIR . $plugin . '/' . $plugin_name;
     }
     
     $error = etsis_php_check_syntax($file);
