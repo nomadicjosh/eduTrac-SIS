@@ -23,7 +23,7 @@ function _etsis_cache_init()
     $app = \Liten\Liten::getInstance();
     
     $driver = $app->hook->apply_filter('etsis_cache_driver', 'file');
-    $cache = new \app\src\Cache\etsis_Object_Cache($driver);
+    $cache = new \app\src\Core\Cache\etsis_Object_Cache($driver);
     return $cache;
 }
 
