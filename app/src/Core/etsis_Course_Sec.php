@@ -82,7 +82,7 @@ final class etsis_Course_Sec
      * 
      * @var string
      */
-    public $deptCode
+    public $deptCode;
     
     /**
      * The course section's faculty ID.
