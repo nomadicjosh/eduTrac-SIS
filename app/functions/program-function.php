@@ -19,7 +19,7 @@ $app = \Liten\Liten::getInstance();
  * @since 6.2.0
  * @param int|etsis_Acad_Program|null $program
  *            Academic program ID or academic program array.
- * * @param bool $object
+ * @param bool $object
  *            If set to true, data will return as an object, else as an array.
  */
 function get_acad_program($program, $object = true)
