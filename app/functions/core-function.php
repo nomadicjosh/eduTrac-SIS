@@ -2008,7 +2008,7 @@ function etsis_php_check_syntax($file_name, $check_includes = true)
     
     $dupe_function = is_duplicate_function($file_name);
     
-    if (is_et_error($dupe_function)) {
+    if (is_etsis_error($dupe_function)) {
         return new \app\src\Core\Exception\Exception($dupe_function->get_error_message(), 'php_check_syntax');
     }
     
