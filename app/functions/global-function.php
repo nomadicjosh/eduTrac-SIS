@@ -36,7 +36,7 @@ function _etsis_cache_init()
  */
 function _etsis_custom_field($location = 'dashboard')
 {
-    $field = new \app\src\CustomField($location);
+    $field = new \app\src\Core\etsis_CustomField($location);
     return $field;
 }
 

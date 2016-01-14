@@ -1,9 +1,9 @@
-<?php namespace app\src;
+<?php namespace app\src\Core;
 
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
-class CustomField
+class etsis_CustomField
 {
 
     private $_fields = [];
