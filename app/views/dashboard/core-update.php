@@ -42,7 +42,7 @@ $screen = 'update';
 				<div class="alert alert-info" style="color: #666666;">
                         <?php
                         $error = \app\src\ReleaseAPI::inst()->getServerStatus();
-                        if (is_et_exception($error)) {
+                        if (is_etsis_exception($error)) {
                             echo $error->getMessage();
                         } else {
                             $update = new \VisualAppeal\AutoUpdate(rtrim($app->config('file.savepath'), '/'), BASE_PATH, 1800);

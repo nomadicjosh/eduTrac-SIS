@@ -89,7 +89,7 @@ class etsis_Object_Cache
             $this->_cache = new \app\src\Cache\etsis_Cache_Memory();
         }
         
-        if (is_et_exception($this->_cache)) {
+        if (is_etsis_exception($this->_cache)) {
             return $this->_cache->getMessage();
         }
         

@@ -1,4 +1,4 @@
-<?php namespace app\src\Exception;
+<?php namespace app\src\Core\Exception;
 
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -7,9 +7,9 @@ if (!defined('BASE_PATH'))
  * eduTrac SIS Exception Class
  * 
  * This extends the framework `LitenException` class to allow converting
- * exceptions to and from `etError` objects.
+ * exceptions to and from `etsis_Error` objects.
  * 
- * Unfortunately, because an `etError` object may contain multiple messages and error
+ * Unfortunately, because an `etsis_Error` object may contain multiple messages and error
  * codes, only the first message for the first error code in the instance will be
  * accessible through the exception's methods.
  *  
@@ -27,56 +27,56 @@ class BaseException extends \Liten\Exception\LitenException {
 
 	/**
 	 * Error instance.
-	 * @var \app\src\etError
+	 * @var \app\src\Core\etsis_Error
 	 */
-	protected $et_error;
+	protected $etsis_error;
 
 	/**
 	 * eduTrac SIS exception constructor.
 	 *
 	 * The class constructor accepts either the framework `\Liten\Exception\LitenException` creation
-	 * parameters or an `\app\src\etError` instance in place of the previous exception.
+	 * parameters or an `\app\src\Core\etsis_Error` instance in place of the previous exception.
 	 *
-	 * If an `\app\src\etError` instance is given in this way, the `$message` and `$code`
+	 * If an `\app\src\Core\etsis_Error` instance is given in this way, the `$message` and `$code`
 	 * parameters are ignored in favour of the message and code provided by the
-	 * `\app\src\etError` instance.
+	 * `\app\src\Core\etsis_Error` instance.
 	 *
-	 * Depending on whether an `\app\src\etError` instance was received, the instance is kept
+	 * Depending on whether an `\app\src\Core\etsis_Error` instance was received, the instance is kept
 	 * or a new one is created from the provided parameters.
 	 *
 	 * @param string               $message  Exception message (optional, defaults to empty).
 	 * @param string               $code     Exception code (optional, defaults to empty).
-	 * @param \Liten\Exception\LitenException | \app\src\etError $previous Previous exception or error (optional).
+	 * @param `\Liten\Exception\LitenException` | `\app\src\Core\etsis_Error` $previous Previous exception or error (optional).
 	 *
-	 * @uses \app\src\etError
-	 * @uses \app\src\etError::get_error_code()
-	 * @uses \app\src\etError::get_error_message()
+	 * @uses \app\src\Core\etsis_Error
+	 * @uses \app\src\Core\etsis_Error::get_error_code()
+	 * @uses \app\src\Core\etsis_Error::get_error_message()
 	 */
 	public function __construct( $message = '', $code = '', $previous = null ) {
 		$exception = $previous;
-		$et_error  = null;
+		$etsis_error  = null;
 
-		if ( $previous instanceof \app\src\etError ) {
+		if ( $previous instanceof \app\src\Core\etsis_Error ) {
 			$code      = $previous->get_error_code();
 			$message   = $previous->get_error_message( $code );
-			$et_error  = $previous;
+			$etsis_error  = $previous;
 			$exception = null;
 		}
 
 		parent::__construct( $message, null, $exception );
 
 		$this->code     = $code;
-		$this->et_error = $et_error;
+		$this->etsis_error = $etsis_error;
 	}
 
 	/**
-	 * Obtain the exception's `\app\src\etError` object.
+	 * Obtain the exception's `\app\src\Core\etsis_Error` object.
 	 * 
      * @since 6.1.14
-	 * @return etError eduTrac SIS error.
+	 * @return etsis_Error eduTrac SIS error.
 	 */
-	public function get_et_error() {
-		return $this->et_error ? $this->et_error : new \app\src\etError( $this->code, $this->message, $this );
+	public function get_etsis_error() {
+		return $this->etsis_error ? $this->etsis_error : new \app\src\Core\etsis_Error( $this->code, $this->message, $this );
 	}
 
 }

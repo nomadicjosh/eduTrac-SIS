@@ -62,11 +62,11 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
         $ext = $this->useMemcached ? 'memcached' : 'memcache';
         
         if ($ext == 'memcached' && ! class_exists('memcached')) {
-            return new \app\src\Exception\Exception(sprintf(_t('Memcached requires PHP <strong>%s</strong> extension to be loaded.'), $ext), 'php_memcache_extension');
+            return new \app\src\Core\Exception\Exception(sprintf(_t('Memcached requires PHP <strong>%s</strong> extension to be loaded.'), $ext), 'php_memcache_extension');
         }
         
         if ($ext == 'memcache' && ! function_exists('memcache_connect')) {
-            return new \app\src\Exception\Exception(sprintf(_t('Memcached requires PHP <strong>%s</strong> extension to be loaded.'), $ext), 'php_memcache_extension');
+            return new \app\src\Core\Exception\Exception(sprintf(_t('Memcached requires PHP <strong>%s</strong> extension to be loaded.'), $ext), 'php_memcache_extension');
         }
         
         if ($ext == 'memcache') {

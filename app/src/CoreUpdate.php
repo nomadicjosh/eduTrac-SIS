@@ -78,7 +78,7 @@ class CoreUpdate
         $status = get_http_response_code($this->getReleaseJsonUrl());
 
         if ($status != 200) {
-            return new \app\src\Exception\Exception(_t('API server is currently unavailable.'), 'api_server');
+            return new \app\src\Core\Exception\Exception(_t('API server is currently unavailable.'), 'api_server');
         }
 
         return true;
@@ -105,12 +105,12 @@ class CoreUpdate
     /**
      * If the zip extention is not loaded, return an exception.
      * 
-     * @return \app\src\Exception\Exception
+     * @return \app\src\Core\Exception\Exception
      */
     public function zip_extention_loaded()
     {
         if (!extension_loaded('zip')) {
-            return new \app\src\Exception\Exception(_t('The PHP zip extention is not loaded. You must enable the zip extention before continuing.'), 'extention_loaded');
+            return new \app\src\Core\Exception\Exception(_t('The PHP zip extention is not loaded. You must enable the zip extention before continuing.'), 'extention_loaded');
         }
     }
 
@@ -261,7 +261,7 @@ class CoreUpdate
             }
         } else {
             //echo '<p>' . _t( 'Could not find latest releases.' ) . '</p>';
-            return new \app\src\Exception\Exception(_t('Could not find latest releases.'), 'latest_releases');
+            return new \app\src\Core\Exception\Exception(_t('Could not find latest releases.'), 'latest_releases');
         }
     }
 }

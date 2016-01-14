@@ -45,7 +45,7 @@ class etsis_Cache_APC extends \app\src\Cache\etsis_Abstract_Cache
         $this->_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
         
         if (! extension_loaded('apc') && ! ini_get('apc.enabled') || ! function_exists('apc_fetch')) {
-            return new \app\src\Exception\Exception(_t('APC requires PHP APC extension to be installed and loaded.'), 'php_apc_extension');
+            return new \app\src\Core\Exception\Exception(_t('APC requires PHP APC extension to be installed and loaded.'), 'php_apc_extension');
         }
         
         /**

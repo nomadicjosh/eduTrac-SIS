@@ -104,14 +104,14 @@ class ReleaseAPI
      * Checks the server for online status.
      *
      * @since 6.2.0
-     * @return bool|\app\src\Exception\Exception
+     * @return bool|`\app\src\Core\Exception\Exception`
      */
     public function getServerStatus()
     {
         $status = get_http_response_code($this->getReleaseJsonUrl());
         
         if ($status != 200) {
-            return new \app\src\Exception\Exception(_t('An unexpected error occurred. Something may be wrong with edutracsis.com or this server&#8217;s configuration. If you continue to have problems, please try the <a href="http://www.edutracsis.com/forums/forum/product-support/">support forums</a>.'), 'core_api_failed');
+            return new \app\src\Core\Exception\Exception(_t('An unexpected error occurred. Something may be wrong with edutracsis.com or this server&#8217;s configuration. If you continue to have problems, please try the <a href="http://www.edutracsis.com/forums/forum/product-support/">support forums</a>.'), 'core_api_failed');
         }
         
         return true;

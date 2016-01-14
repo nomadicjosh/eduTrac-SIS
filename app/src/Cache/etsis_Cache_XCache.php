@@ -45,7 +45,7 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
         $this->_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
         
         if (! extension_loaded('xcache') && ! function_exists('xcache_get')) {
-            return new \app\src\Exception\Exception(_t('XCache requires PHP XCache extension to be installed and loaded.'), 'php_xcache_extension');
+            return new \app\src\Core\Exception\Exception(_t('XCache requires PHP XCache extension to be installed and loaded.'), 'php_xcache_extension');
         }
         
         /**

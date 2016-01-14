@@ -154,7 +154,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
          * If the directory isn't writable, throw an exception.
          */
         if (! etsis_is_writable($cacheDir)) {
-            return new \app\src\Exception\Exception(_t('Could not create the file cache directory.'), 'cookie_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not create the file cache directory.'), 'cookie_cache');
         }
         
         /**
@@ -443,7 +443,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
         $h = fopen($filename, 'a+');
         // If there is an issue with the handler, throw an exception.
         if (! $h) {
-            return new \app\src\Exception\Exception(_t('Could not write to cache'), 'cookie_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not write to cache'), 'cookie_cache');
         }
         
         $this->_app->cookies->set(md5($key), $key, $ttl);
@@ -459,7 +459,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
             $data
         ));
         if (fwrite($h, $data) === false) {
-            return new \app\src\Exception\Exception(_t('Could not write to cache'), 'cookie_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not write to cache'), 'cookie_cache');
         }
         fclose($h);
         

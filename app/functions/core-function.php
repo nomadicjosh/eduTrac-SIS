@@ -1841,31 +1841,31 @@ function check_mime_type($file, $mode = 0)
 /**
  * Check whether variable is an eduTrac SIS Error.
  *
- * Returns true if $object is an object of the \app\src\etError class.
+ * Returns true if $object is an object of the \app\src\Core\etsis_Error class.
  *
  * @since 6.1.14
  * @param mixed $object
- *            Check if unknown variable is an \app\src\etError object.
- * @return bool True, if \app\src\etError. False, if not \app\src\etError.
+ *            Check if unknown variable is an \app\src\Core\etsis_Error object.
+ * @return bool True, if \app\src\Core\etsis_Error. False, if not \app\src\Core\etsis_Error.
  */
-function is_et_error($object)
+function is_etsis_error($object)
 {
-    return ($object instanceof \app\src\etError);
+    return ($object instanceof \app\src\Core\etsis_Error);
 }
 
 /**
  * Check whether variable is an eduTrac SIS Exception.
  *
- * Returns true if $object is an object of the \app\src\Exception\BaseException class.
+ * Returns true if $object is an object of the `\app\src\Core\Exception\BaseException` class.
  *
  * @since 6.1.14
  * @param mixed $object
- *            Check if unknown variable is an \app\src\Exception\BaseException object.
- * @return bool True, if \app\src\Exception\BaseException. False, if not \app\src\Exception\BaseException.
+ *            Check if unknown variable is an `\app\src\Core\Exception\BaseException` object.
+ * @return bool True, if `\app\src\Core\Exception\BaseException`. False, if not `\app\src\Core\Exception\BaseException`.
  */
-function is_et_exception($object)
+function is_etsis_exception($object)
 {
-    return ($object instanceof \app\src\Exception\BaseException);
+    return ($object instanceof \app\src\Core\Exception\BaseException);
 }
 
 /**
@@ -1997,19 +1997,19 @@ function etsis_php_check_includes($file_name)
  *            PHP script to check.
  * @param bool $check_includes
  *            If set to TRUE, will check if other files have been included.
- * @return void|\app\src\Exception\Exception
+ * @return void|\app\src\Core\Exception\Exception
  */
 function etsis_php_check_syntax($file_name, $check_includes = true)
 {
     // If it is not a file or we can't read it throw an exception
     if (! is_file($file_name) || ! is_readable($file_name)) {
-        return new \app\src\Exception\Exception(_t('Cannot read file ') . $file_name, 'php_check_syntax');
+        return new \app\src\Core\Exception\Exception(_t('Cannot read file ') . $file_name, 'php_check_syntax');
     }
     
     $dupe_function = is_duplicate_function($file_name);
     
     if (is_et_error($dupe_function)) {
-        return new \app\src\Exception\Exception($dupe_function->get_error_message(), 'php_check_syntax');
+        return new \app\src\Core\Exception\Exception($dupe_function->get_error_message(), 'php_check_syntax');
     }
     
     // Sort out the formatting of the filename
@@ -2023,7 +2023,7 @@ function etsis_php_check_syntax($file_name, $check_includes = true)
     
     // If the error text above was matched, throw an exception containing the syntax error
     if ($count > 0) {
-        return new \app\src\Exception\Exception(trim($syntaxError), 'php_check_syntax');
+        return new \app\src\Core\Exception\Exception(trim($syntaxError), 'php_check_syntax');
     }
     
     // If we are going to check the files includes
@@ -2056,7 +2056,7 @@ function etsis_validate_plugin($plugin_name)
     }
     
     $error = etsis_php_check_syntax($file);
-    if (is_et_exception($error)) {
+    if (is_etsis_exception($error)) {
         $app->flash('error_message', _t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br />') . $error->getMessage());
         return false;
     }

@@ -27,7 +27,7 @@ $message = new \app\src\Messages;
 					<!-- Alert -->
 					<div class="alerts alerts-error">
 						<strong><?=_t( 'Error!' );?></strong> 
-                            <?=(is_et_exception($error)) ? $error->getMessage() : '';?>
+                            <?=(is_etsis_exception($error)) ? $error->getMessage() : '';?>
 					</div>
 					<!-- // Alert END -->
 			

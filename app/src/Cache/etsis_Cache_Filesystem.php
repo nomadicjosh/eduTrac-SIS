@@ -154,7 +154,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
          * If the directory isn't writable, throw an exception.
          */
         if (! etsis_is_writable($cacheDir)) {
-            return new \app\src\Exception\Exception(_t('Could not create the file cache directory.'), 'file_system_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not create the file cache directory.'), 'file_system_cache');
         }
         
         /**
@@ -433,7 +433,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
         $h = fopen($filename, 'a+');
         // If there is an issue with the handler, throw an exception.
         if (! $h) {
-            return new \app\src\Exception\Exception(_t('Could not write to cache.'), 'file_system_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not write to cache.'), 'file_system_cache');
         }
         // exclusive lock, will get released when the file is closed
         flock($h, LOCK_EX);
@@ -447,7 +447,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
             $data
         ));
         if (fwrite($h, $data) === false) {
-            return new \app\src\Exception\Exception(_t('Could not write to cache.'), 'file_system_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not write to cache.'), 'file_system_cache');
         }
         fclose($h);
         

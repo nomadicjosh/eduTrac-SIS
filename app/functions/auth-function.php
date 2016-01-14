@@ -11,7 +11,7 @@ if (! defined('BASE_PATH'))
  */
 function hasPermission($perm)
 {
-    $acl = new \app\src\ACL();
+    $acl = new \app\src\ACL(get_persondata('personID'));
     
     if ($acl->hasPermission($perm) && isUserLoggedIn()) {
         return true;
@@ -419,12 +419,12 @@ function etsis_authenticate($login, $password, $rememberme)
     ->select('person.personID,person.uname,person.password')
     ->_join('staff', 'person.personID = staff.staffID')
     ->_join('student', 'person.personID = student.stuID')
-    ->where('person.uname = ? OR person.email = ?', [$login,$login])
+    ->where('(person.uname = ? OR person.email = ?)', [$login,$login])
     ->_and_()
     ->where('(staff.status = "A" OR student.status = "A")')
     ->findOne();
 
-    if (count($person) <= 0) {
+    if (false == $person) {
         $app->flash('error_message', _t('Your account is deactivated.'));
         redirect($app->req->server['HTTP_REFERER']);
         return;
@@ -517,7 +517,7 @@ function etsis_set_auth_cookie($person, $rememberme = '') {
     $app = \Liten\Liten::getInstance();
     
     if(! is_object($person)) {
-        return new \app\src\Exception\Exception(_t('$person should be a database object.'), 'set_auth_cookie');
+        return new \app\src\Core\Exception\Exception(_t('$person should be a database object.'), 'set_auth_cookie');
     }
     
     if(isset($rememberme)) {
