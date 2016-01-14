@@ -1,4 +1,4 @@
-<?php namespace app\src;
+<?php namespace app\src\Core;
 
 if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -12,10 +12,10 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-class ReleaseAPI
+class etsis_Updater
 {
 
-    const version = '1.0.1';
+    const version = '1.0.2';
 
     /**
      * URL object.

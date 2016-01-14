@@ -110,8 +110,8 @@ function redirect_upgrade_db()
     $app = \Liten\Liten::getInstance();
     $acl = new \app\src\ACL(get_persondata('personID'));
     if ($acl->userHasRole(8)) {
-        if (RELEASE_TAG == \app\src\ReleaseAPI::inst()->init('RELEASE_TAG')) {
-            if (get_option('dbversion') < \app\src\ReleaseAPI::inst()->init('DB_VERSION')) {
+        if (RELEASE_TAG == \app\src\Core\etsis_Updater::inst()->init('RELEASE_TAG')) {
+            if (get_option('dbversion') < \app\src\Core\etsis_Updater::inst()->init('DB_VERSION')) {
                 if (basename($app->req->server["REQUEST_URI"]) != "upgrade") {
                     redirect(get_base_url() . 'dashboard/upgrade/');
                 }

@@ -41,7 +41,7 @@ $screen = 'update';
 				<!-- Alert -->
 				<div class="alert alert-info" style="color: #666666;">
                         <?php
-                        $error = \app\src\ReleaseAPI::inst()->getServerStatus();
+                        $error = \app\src\Core\etsis_Updater::inst()->getServerStatus();
                         if (is_etsis_exception($error)) {
                             echo $error->getMessage();
                         } else {
