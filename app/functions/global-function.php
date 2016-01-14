@@ -60,6 +60,6 @@ function _etsis_phpmailer($bool = true)
  */
 function _etsis_email()
 {
-    $email = new \app\src\Email();
+    $email = new \app\src\Core\etsis_Email();
     return $email;
 }

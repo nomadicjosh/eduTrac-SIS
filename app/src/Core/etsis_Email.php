@@ -1,4 +1,4 @@
-<?php namespace app\src;
+<?php namespace app\src\Core;
 
 if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -12,17 +12,17 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-class Email
+class etsis_Email
 {
 
     private $_mailer;
     
-    private $_app;
+    public $app;
 
     public function __construct()
     {
         $this->_mailer = _etsis_phpmailer();
-        $this->_app = \Liten\Liten::getInstance();
+        $this->app = \Liten\Liten::getInstance();
     }
 
     /**
@@ -78,7 +78,7 @@ class Email
     {
         $charset = 'UTF-8';
         
-        extract($this->_app->hook->apply_filter('etsis_mail', compact('to', 'subject', 'message', 'headers', 'attachments')));
+        extract($this->app->hook->apply_filter('etsis_mail', compact('to', 'subject', 'message', 'headers', 'attachments')));
         
         if (! is_array($attachments)) {
             $attachments = explode("\n", str_replace("\r\n", "\n", $attachments));
@@ -101,8 +101,8 @@ class Email
         }
         
         // Plugin authors can override the default mailer
-        $this->_mailer->From = $this->_app->hook->apply_filter('etsis_mail_from', $from_email);
-        $this->_mailer->FromName = $this->_app->hook->apply_filter('etsis_mail_from_name', $from_name);
+        $this->_mailer->From = $this->app->hook->apply_filter('etsis_mail_from', $from_email);
+        $this->_mailer->FromName = $this->app->hook->apply_filter('etsis_mail_from_name', $from_name);
         
         // Set destination addresses
         if (! is_array($to)) {
@@ -138,7 +138,7 @@ class Email
             $content_type = 'text/plain';
         }
         
-        $content_type = $this->_app->hook->apply_filter('etsis_mail_content_type', $content_type);
+        $content_type = $this->app->hook->apply_filter('etsis_mail_content_type', $content_type);
         
         $this->_mailer->ContentType = $content_type;
         
@@ -148,7 +148,7 @@ class Email
         }
         
         // Set the content-type and charset
-        $this->_mailer->CharSet = $this->_app->hook->apply_filter('etsis_mail_charset', $charset);
+        $this->_mailer->CharSet = $this->app->hook->apply_filter('etsis_mail_charset', $charset);
         
         // Set custom headers
         if (! empty($headers)) {
@@ -171,7 +171,7 @@ class Email
             }
         }
         
-        $this->_app->hook->do_action_array('etsisMailer_init', array(
+        $this->app->hook->do_action_array('etsisMailer_init', array(
             $this->_mailer
         ));
         
@@ -228,7 +228,7 @@ class Email
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         
         $this->etsis_mail(_h(get_option('registrar_email_address')), _t("Course Registration"), $message, $headers);
-        return $this->_app->hook->apply_filter('course_registration', $message, $headers);
+        return $this->app->hook->apply_filter('course_registration', $message, $headers);
     }
 
     /**
@@ -256,7 +256,7 @@ class Email
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         
         $this->etsis_mail($email, $subject, $message, $headers, $attachment);
-        return $this->_app->hook->apply_filter('stu_email', $headers);
+        return $this->app->hook->apply_filter('stu_email', $headers);
     }
 
     /**
@@ -303,7 +303,7 @@ class Email
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         
         $this->etsis_mail($email, _h(get_option('institution_name')) . _t(" Account Login Details"), $message, $headers);
-        return $this->_app->hook->apply_filter('myedutrac_appl_confirm', $message, $headers);
+        return $this->app->hook->apply_filter('myedutrac_appl_confirm', $message, $headers);
     }
 
     /**
@@ -344,6 +344,6 @@ class Email
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         
         $this->etsis_mail(_h(get_option('admissions_email')), _t("Application for Admissions"), $message, $headers);
-        return $this->_app->hook->apply_filter('myedutrac_application', $message, $headers);
+        return $this->app->hook->apply_filter('myedutrac_application', $message, $headers);
     }
 }
