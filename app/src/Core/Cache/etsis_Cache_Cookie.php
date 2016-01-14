@@ -715,7 +715,7 @@ class etsis_Cache_Cookie extends \app\src\Core\Cache\etsis_Abstract_Cache
             $this->app->cookies->remove(md5($key));
         }
         
-        $stale = glob($this->_dir . $namespace . '*');
+        $stale = glob($this->_dir . $namespace . DS . '*');
         if (is_array($stale)) {
             foreach ($stale as $filename) {
                 if (file_exists($filename)) {
