@@ -1,4 +1,5 @@
-<?php namespace app\src\Core;
+<?php
+namespace app\src\Core;
 
 if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -18,6 +19,20 @@ class etsis_Updater
     const version = '1.0.2';
 
     /**
+     * Application object
+     *
+     * @var object
+     */
+    public $app;
+
+    /**
+     * Update object.
+     *
+     * @var object
+     */
+    public $update;
+
+    /**
      * URL object.
      *
      * @var string
@@ -30,6 +45,20 @@ class etsis_Updater
      * @var string
      */
     protected $_baseURL = 'edutrac.s3.amazonaws.com';
+
+    /**
+     * Holds current installation release
+     *
+     * @var string
+     */
+    public $current_release;
+
+    /**
+     * Holds current installation release value.
+     *
+     * @var string
+     */
+    public $current_release_value;
 
     /**
      * URL of json file where array of releases are stored.
@@ -63,7 +92,7 @@ class etsis_Updater
      *
      * @since 6.2.0
      */
-    private function __construct()
+    private function __construct(\Liten\Liten $liten = null)
     {
         // Make sure the script can handle large folders/files for zip and API calls.
         ini_set('max_execution_time', 600);
@@ -79,6 +108,10 @@ class etsis_Updater
         $this->patch_url = $this->getReleaseJsonUrl();
         $this->local_base_dir = BASE_PATH;
         $this->local_backup_dir = '/tmp/';
+        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+        $this->update = new \VisualAppeal\AutoUpdate(rtrim($this->app->config('file.savepath'), '/'), BASE_PATH, 1800);
+        $this->current_release = $this->getCurrentRelease();
+        $this->current_release_value = $this->current_release['current_release']['current_release_value'];
     }
 
     public static function inst()
@@ -117,6 +150,13 @@ class etsis_Updater
         return true;
     }
 
+    protected function getCurrentRelease()
+    {
+        $file = parse_ini_string(_file_get_contents(get_base_url() . 'etsis.ini'), true);
+        
+        return $file;
+    }
+
     /**
      * The url of the release to be downloaded from remote server.
      *
@@ -139,5 +179,158 @@ class etsis_Updater
     public function localServerZip($release)
     {
         return $this->local_base_dir . 'updates/' . $release . '.zip';
+    }
+
+    /**
+     * Checks if a new release is available.
+     * If so, installation along with
+     * database will be updated.
+     *
+     * @since 6.2.2
+     */
+    public function updateCheck()
+    {
+        $error = $this->getServerStatus();
+        if (is_etsis_exception($error)) {
+            echo $error->getMessage();
+        } else {
+            $this->update->setCurrentVersion(RELEASE_TAG);
+            $this->update->setUpdateUrl('http://edutrac.s3.amazonaws.com/core/1.1/update-check');
+            
+            // Optional:
+            $this->update->addLogHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp' . DS . 'logs' . DS . 'core-update.' . date('m-d-Y') . '.txt'));
+            $this->update->setCache(new \Desarrolla2\Cache\Adapter\File(APP_PATH . 'tmp/cache'), 3600);
+            
+            $cacheFile = APP_PATH . 'tmp/cache/__update-versions.php.cache';
+            
+            echo '<p>' . sprintf(_t('Last checked on %s @ %s'), date('M d, Y', file_mod_time($cacheFile)), date('h:i A', file_mod_time($cacheFile)));
+            
+            if ($this->update->checkUpdate() !== false) {
+                
+                if ($this->update->newVersionAvailable()) {
+                    // Install new update
+                    echo sprintf(_t('<p>New Release: <font color="red">r%s</font></p>'), $this->update->getLatestVersion());
+                    echo '<p>' . _t('Installing Updates: ') . '</p>';
+                    echo '<pre>';
+                    var_dump(array_map(function ($version) {
+                        return (string) $version;
+                    }, $this->update->getVersionsToUpdate()));
+                    echo '</pre>';
+                    
+                    echo '<p>' . _t( 'Database Check . . .' ) . '</p>';
+                    
+                    $this->updateDatabaseCheck();
+                    
+                    echo '<p>' . _t( 'Server File/Dir Check . . .' ) . '</p>';
+                    
+                    $this->removeFileCheck();
+                    
+                    $this->removeDirCheck();
+                    
+                    $result = $this->update->update();
+                    if ($result === true) {
+                        echo '<p>' . _t('Update successful') . '</p>';
+                    } else {
+                        echo '<p>' . sprintf(_t('Update failed: %s!'), $result) . '</p>';
+                        
+                        if ($result = \VisualAppeal\AutoUpdate::ERROR_SIMULATE) {
+                            echo '<pre>';
+                            var_dump($this->update->getSimulationResults());
+                            echo '</pre>';
+                        }
+                    }
+                } else {
+                    echo sprintf(_t('<p>You currently have the latest release of eduTrac SIS installed: <font color="green">r%s</font></p>'), RELEASE_TAG);
+                }
+            } else {
+                echo '<p>' . _t('Could not check for updates! See log file for details.') . '</p>';
+            }
+        }
+    }
+    
+    /**
+     * Checks to see if database needs to be upgraded.
+     * 
+     * @since 6.2.2
+     * @return bool
+     */
+    public function updateDatabaseCheck()
+    {
+        $query = [];
+        
+        if ($this->current_release_value) {
+            if (! empty($this->current_release[$this->current_release_value]['query'])) {
+                foreach ($this->current_release[$this->current_release_value]['query'] as $query_array) {
+                    $query[] = $query_array;
+                }
+                $this->app->db->beginTransaction();
+                foreach ($query as $q) {
+                    
+                    $sql = $this->app->db->query($q);
+                    if ($sql->rowCount() <= 0) {
+                        $this->app->db->rollback();
+                        return false;
+                    }
+                }
+                $this->app->db->commit();
+            }
+            return true;
+        }
+    }
+    
+    /**
+     * Checks to see if any files need to be removed.
+     * 
+     * @since 6.2.2
+     * @return bool
+     */
+    public function removeFileCheck()
+    {
+        $file = [];
+    
+        if ($this->current_release_value) {
+            if (! empty($this->current_release[$this->current_release_value]['file'])) {
+                foreach ($this->current_release[$this->current_release_value]['file'] as $file_array) {
+                    $file[] = $file_array;
+                }
+                foreach ($file as $f) {
+                    
+                    $_file = BASE_PATH . $f;
+                    
+                    if(file_exists( $_file )) {
+                        unlink($_file);
+                    }
+                }
+            }
+            return true;
+        }
+    }
+    
+    /**
+     * Checks to see if any directories need to be removed.
+     * 
+     * @since 6.2.2
+     * @return bool
+     */
+    public function removeDirCheck()
+    {
+        $dir = [];
+    
+        if ($this->current_release_value) {
+            if (! empty($this->current_release[$this->current_release_value]['dir'])) {
+                foreach ($this->current_release[$this->current_release_value]['dir'] as $dir_array) {
+                    $dir[] = $dir_array;
+                }
+                foreach ($dir as $d) {
+    
+                    $_dir = BASE_PATH . $d;
+    
+                    if(is_dir( $_dir )) {
+                        _rmdir($_dir);
+                    }
+                }
+            }
+            return true;
+        }
     }
 }
