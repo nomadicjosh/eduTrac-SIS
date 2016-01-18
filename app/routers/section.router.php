@@ -193,6 +193,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
             }
 
             if ($sect->update() || $q->update()) {
+                etsis_cache_delete($id, 'sect');
                 $logger->setLog('Update Record', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $section->courseSecCode . ')', get_persondata('uname'));
                 $app->flash('success_message', $flashNow->notice(200));
             } else {
@@ -360,6 +361,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
                  * @param array $section Course section data array.
                  */
                 $app->hook->do_action('post_save_course_sec', $section);
+                
+                etsis_cache_flush_namespace('sect');
 
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Course Section', _trim($courseSection), get_persondata('uname'));
@@ -437,6 +440,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
             $app->hook->do_action('pre_course_sec_addnl', $sect);
             
             if ($sect->update()) {
+                etsis_cache_delete($id, 'sect');
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Course Section', $section->courseSection, get_persondata('uname'));
             } else {
@@ -535,6 +539,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
             $soff->where('courseSecID = ?', $id);
 
             if ($soff->update()) {
+                etsis_cache_delete($id, 'sect');
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('Update Record', 'Course Section Offering', $sect->courseSection, get_persondata('uname'));
             } else {
