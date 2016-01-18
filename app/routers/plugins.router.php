@@ -152,7 +152,6 @@ $app->group('/plugins', function () use($app, $css, $js) {
                 }
             }
             
-            $dir = substr($_FILES["plugin_zip"]["name"], 0, - 15);
             $continue = strtolower($name[1]) == 'zip' ? true : false;
             
             if (! $continue) {
@@ -163,7 +162,7 @@ $app->group('/plugins', function () use($app, $css, $js) {
                 $zip = new \ZipArchive();
                 $x = $zip->open($target_path);
                 if ($x === true) {
-                    $zip->extractTo(APP_PATH . 'plugins' . DS . $dir);
+                    $zip->extractTo(APP_PATH . 'plugins' . DS);
                     $zip->close();
                     unlink($target_path);
                 }
