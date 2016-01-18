@@ -1,5 +1,4 @@
-<?php
-namespace app\src\Core;
+<?php namespace app\src\Core;
 
 if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -51,14 +50,14 @@ class etsis_Updater
      *
      * @var string
      */
-    public $current_release;
+    public $current_release = [];
 
     /**
      * Holds current installation release value.
      *
      * @var string
      */
-    public $current_release_value;
+    public $current_release_value = [];
 
     /**
      * URL of json file where array of releases are stored.
@@ -152,7 +151,7 @@ class etsis_Updater
 
     protected function getCurrentRelease()
     {
-        $file = parse_ini_string(_file_get_contents(get_base_url() . 'etsis.ini'), true);
+        $file = parse_ini_string(file_get_contents(BASE_PATH . 'etsis.ini'), true);
         
         return $file;
     }
@@ -217,19 +216,22 @@ class etsis_Updater
                     }, $this->update->getVersionsToUpdate()));
                     echo '</pre>';
                     
-                    echo '<p>' . _t( 'Database Check . . .' ) . '</p>';
+                    $result = $this->update->update();
+                    
+                    echo '<p>' . _t('Database Check . . .') . '</p>';
                     
                     $this->updateDatabaseCheck();
                     
-                    echo '<p>' . _t( 'Server File/Dir Check . . .' ) . '</p>';
-                    
-                    $this->removeFileCheck();
+                    echo '<p>' . _t('Directory Check . . .') . '</p>';
                     
                     $this->removeDirCheck();
                     
-                    $result = $this->update->update();
+                    echo '<p>' . _t('File Check . . .') . '</p>';
+                    
+                    $this->removeFileCheck();
+                    
                     if ($result === true) {
-                        echo '<p>' . _t('Update successful') . '</p>';
+                        echo '<p>' . _t('Update successful!') . '</p>';
                     } else {
                         echo '<p>' . sprintf(_t('Update failed: %s!'), $result) . '</p>';
                         
@@ -247,10 +249,10 @@ class etsis_Updater
             }
         }
     }
-    
+
     /**
      * Checks to see if database needs to be upgraded.
-     * 
+     *
      * @since 6.2.2
      * @return bool
      */
@@ -277,17 +279,17 @@ class etsis_Updater
             return true;
         }
     }
-    
+
     /**
      * Checks to see if any files need to be removed.
-     * 
+     *
      * @since 6.2.2
      * @return bool
      */
     public function removeFileCheck()
     {
         $file = [];
-    
+        
         if ($this->current_release_value) {
             if (! empty($this->current_release[$this->current_release_value]['file'])) {
                 foreach ($this->current_release[$this->current_release_value]['file'] as $file_array) {
@@ -297,7 +299,7 @@ class etsis_Updater
                     
                     $_file = BASE_PATH . $f;
                     
-                    if(file_exists( $_file )) {
+                    if (file_exists($_file)) {
                         unlink($_file);
                     }
                 }
@@ -305,27 +307,27 @@ class etsis_Updater
             return true;
         }
     }
-    
+
     /**
      * Checks to see if any directories need to be removed.
-     * 
+     *
      * @since 6.2.2
      * @return bool
      */
     public function removeDirCheck()
     {
         $dir = [];
-    
+        
         if ($this->current_release_value) {
             if (! empty($this->current_release[$this->current_release_value]['dir'])) {
                 foreach ($this->current_release[$this->current_release_value]['dir'] as $dir_array) {
                     $dir[] = $dir_array;
                 }
                 foreach ($dir as $d) {
-    
+                    
                     $_dir = BASE_PATH . $d;
-    
-                    if(is_dir( $_dir )) {
+                    
+                    if (is_dir($_dir)) {
                         _rmdir($_dir);
                     }
                 }
