@@ -1,13 +1,13 @@
-<?php namespace app\src;
+<?php namespace app\src\Core;
 
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * eduTrac SIS Error API
+ * Error API: etsis_Error Class
  * 
  * Based on WordPress error API. Container for checking for eduTrac SIS
- * errors and error messages. Return etError and use {@link is_et_error()} to
+ * errors and error messages. Return etError and use {@link is_etsis_error()} to
  * check if this class is returned. Many core eduTrac SIS functions pass this
  * class in the event of an error and if not handled properly will result in
  * code errors.
@@ -16,7 +16,7 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-class etError
+class etsis_Error
 {
     /**
 	 * Stores the list of errors.

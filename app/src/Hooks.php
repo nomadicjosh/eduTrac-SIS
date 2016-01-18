@@ -241,7 +241,7 @@ class Hooks
             }
             
             $error = etsis_php_check_syntax($file);
-            if (is_et_exception($error)) {
+            if (is_etsis_exception($error)) {
                 $this->deactivate_plugin(_h($v['location']));
                 $this->_app->flash('error_message', sprintf(_t('The plugin <strong>%s</strong> has been deactivated because your changes resulted in a <strong>fatal error</strong>. <br /><br />') . $error->getMessage(), _h($v['location'])));
                 return false;

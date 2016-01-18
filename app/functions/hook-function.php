@@ -888,7 +888,7 @@ function etsis_parse_str($string, $array)
  * @since 4.3
  * @uses $app->hook->apply_filter() Calls 'met_title' filter.
  *      
- * @return string eduTrac frontend site title.
+ * @return string eduTrac SIS frontend site title.
  */
 function get_met_title()
 {
@@ -896,6 +896,22 @@ function get_met_title()
     
     $title = '<em>' . _t('my') . '</em>' . ('eduTrac');
     return $app->hook->apply_filter('met_title', $title);
+}
+
+/**
+ * myeduTrac welcome message title.
+ *
+ * @since 6.2.2
+ * @uses $app->hook->apply_filter() Calls 'met_welcome_message_title' filter.
+ *
+ * @return string eduTrac SIS welcome message title.
+ */
+function get_met_welcome_message_title()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $title = _t( 'Welcome to myeduTrac' );
+    return $app->hook->apply_filter('met_welcome_message_title', $title);
 }
 
 /**

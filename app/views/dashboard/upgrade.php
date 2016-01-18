@@ -24,7 +24,7 @@ $app->view->block('dashboard');
 				<!-- Row -->
 				<div class="row">
 
-                    <?php if(_h(get_option('dbversion')) < \app\src\ReleaseAPI::inst()->init('DB_VERSION')) { ?>
+                    <?php if(_h(get_option('dbversion')) < \app\src\Core\etsis_Updater::inst()->init('DB_VERSION')) { ?>
 					<!-- Alert -->
 					<div class="alert alert-primary center">
 						<strong><?=_t( 'Warning!' );?></strong> <?=_t( 'Hey admin, your database is out of date and currently at version ') . _h(get_option('dbversion')) . _t('. Click the button below to upgrade your database. When the upgrade is complete,'). ' <a href="'.get_base_url(). 'dashboard' . '/' . '"><font color="orange">'._t( 'click here').'</font></a> '. _t( 'to return to the dashboard. If you are behind on a few versions, you may be redirected to this page again until the system is fully up to date.' );?>
@@ -49,7 +49,7 @@ $app->view->block('dashboard');
                     
                     <?php
                         if(isset($_POST['upgradeDB']) && $_POST['upgradeDB'] == 1) {
-                            upgradeSQL(\app\src\ReleaseAPI::inst()->getSchema());
+                            upgradeSQL(\app\src\Core\etsis_Updater::inst()->getSchema());
                         }
                     ?>
 			

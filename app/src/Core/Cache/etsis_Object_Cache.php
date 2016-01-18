@@ -1,4 +1,4 @@
-<?php namespace app\src\Cache;
+<?php namespace app\src\Core\Cache;
 
 if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -29,30 +29,30 @@ class etsis_Object_Cache
      * Application global scope.
      * 
      * @since 6.2.0
-     * @access protected
+     * @access public
      * @var object
      */
-    protected $_app;
+    public $app;
 
     public function __construct($driver, \Liten\Liten $liten = null)
     {
-        $this->_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
         
         if ($driver == 'file') {
-            $this->_cache = new \app\src\Cache\etsis_Cache_Filesystem();
+            $this->_cache = new \app\src\Core\Cache\etsis_Cache_Filesystem();
         } elseif ($driver == 'apc') {
-            $this->_cache = new \app\src\Cache\etsis_Cache_APC();
+            $this->_cache = new \app\src\Core\Cache\etsis_Cache_APC();
         } elseif ($driver == 'memcache') {
             /**
-             * Filter whether to use \Memcache|\Memcached.
+             * Filter whether to use `\Memcache`|`\Memcached`.
              *
              * @since 6.2.0
              * @param
-             *            bool false Use \Memcache|\Memcached. Default is false.
+             *            bool false Use `\Memcache`|`\Memcached`. Default is false.
              */
-            $useMemcached = $this->_app->hook->apply_filter('use_memcached', false);
+            $useMemcached = $this->app->hook->apply_filter('use_memcached', false);
             
-            $this->_cache = new \app\src\Cache\etsis_Cache_Memcache($useMemcached);
+            $this->_cache = new \app\src\Core\Cache\etsis_Cache_Memcache($useMemcached);
             
             $pool = [
                 [
@@ -62,13 +62,13 @@ class etsis_Object_Cache
                 ]
             ];
             /**
-             * Filter the \Memcache|\Memcached server pool.
+             * Filter the `\Memcache`|`\Memcached` server pool.
              *
              * @since 6.2.0
              * @param array $pool
              *            Array of servers to add to the connection pool.
              */
-            $servers = $this->_app->hook->apply_filter('memcache_server_pool', $pool);
+            $servers = $this->app->hook->apply_filter('memcache_server_pool', $pool);
             
             $this->_cache->addServer($servers);
         } elseif ($driver == 'external') {
@@ -78,18 +78,18 @@ class etsis_Object_Cache
              *
              * @since 6.2.0
              */
-            $this->_cache = $this->_app->hook->do_action('external_cache_driver');
+            $this->_cache = $this->app->hook->do_action('external_cache_driver');
         } elseif ($driver == 'xcache') {
-            $this->_cache = new \app\src\Cache\etsis_Cache_XCache();
+            $this->_cache = new \app\src\Core\Cache\etsis_Cache_XCache();
         } elseif ($driver == 'cookie') {
-            $this->_cache = new \app\src\Cache\etsis_Cache_Cookie();
+            $this->_cache = new \app\src\Core\Cache\etsis_Cache_Cookie();
         } elseif ($driver == 'json') {
-            $this->_cache = new \app\src\Cache\etsis_Cache_JSON();
+            $this->_cache = new \app\src\Core\Cache\etsis_Cache_JSON();
         } elseif ($driver == 'memory') {
-            $this->_cache = new \app\src\Cache\etsis_Cache_Memory();
+            $this->_cache = new \app\src\Core\Cache\etsis_Cache_Memory();
         }
         
-        if (is_et_exception($this->_cache)) {
+        if (is_etsis_exception($this->_cache)) {
             return $this->_cache->getMessage();
         }
         
@@ -105,9 +105,9 @@ class etsis_Object_Cache
      * @param mixed $data
      *            Data that should be cached.
      * @param string $namespace
-     *            Optional. Where the cache contents are namespaced. Default: 'default'.
+     *            Optional. Where the cache contents are namespaced.
      * @param int $ttl
-     *            Time to live sets the life of the cache file. Default: 0.
+     *            Time to live sets the life of the cache file.
      */
     public function create($key, $data, $namespace = 'default', $ttl = 0)
     {
@@ -125,7 +125,7 @@ class etsis_Object_Cache
      * @param int|string $key
      *            Unique key of the cache file.
      * @param string $namespace
-     *            Optional. Where the cache contents are namespaced. Default: 'default'.
+     *            Optional. Where the cache contents are namespaced.
      */
     public function read($key, $namespace = 'default')
     {
@@ -147,9 +147,9 @@ class etsis_Object_Cache
      * @param mixed $data
      *            Data that should be cached.
      * @param string $namespace
-     *            Optional. Where the cache contents are namespaced. Default: 'default'.
+     *            Optional. Where the cache contents are namespaced.
      * @param int $ttl
-     *            Time to live sets the life of the cache file. Default: 0.
+     *            Time to live sets the life of the cache file.
      */
     public function update($key, $data, $namespace = 'default', $ttl = 0)
     {
@@ -167,7 +167,7 @@ class etsis_Object_Cache
      * @param int|string $key
      *            Unique key of cache file.
      * @param string $namespace
-     *            Optional. Where the cache contents are namespaced. Default: 'default'.
+     *            Optional. Where the cache contents are namespaced.
      */
     public function delete($key, $namespace = 'default')
     {
@@ -193,7 +193,7 @@ class etsis_Object_Cache
      *
      * @since 6.2.0
      * @param int|string $namespace
-     *            Optional. Where the cache contents are namespaced. Default: 'default'.
+     *            Optional. Where the cache contents are namespaced.
      */
     public function flushNamespace($namespace = 'default')
     {
@@ -213,7 +213,7 @@ class etsis_Object_Cache
      * @param mixed $data
      *            Data that should be cached.
      * @param string $namespace
-     *            Optional. Where the cache contents are namespaced. Default: 'default'.
+     *            Optional. Where the cache contents are namespaced.
      * @param int $ttl
      *            Time to live sets the life of the cache file. Default: 0 = expires immediately after request.
      * @return bool Returns true if the cache was set and false otherwise.
@@ -243,9 +243,9 @@ class etsis_Object_Cache
      * @param int|string $key
      *            The cache key to increment
      * @param int $offset
-     *            Optional. The amount by which to increment the item's value. Default: 1.
+     *            Optional. The amount by which to increment the item's value.
      * @param string $namespace
-     *            Optional. The namespace the key is in. Default: 'default'.
+     *            Optional. The namespace the key is in.
      * @return false|int False on failure, the item's new value on success.
      */
     public function inc($key, $offset = 1, $namespace = 'default') {
@@ -263,9 +263,9 @@ class etsis_Object_Cache
      * @param int|string $key
      *            The cache key to decrement.
      * @param int $offset
-     *            Optional. The amount by which to decrement the item's value. Default: 1.
+     *            Optional. The amount by which to decrement the item's value.
      * @param string $namespace
-     *            Optional. The namespace the key is in. Default: 'default'.
+     *            Optional. The namespace the key is in.
      * @return false|int False on failure, the item's new value on success.
      */
     public function dec($key, $offset = 1, $namespace = 'default') {

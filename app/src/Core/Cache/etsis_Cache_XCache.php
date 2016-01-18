@@ -1,10 +1,10 @@
-<?php namespace app\src\Cache;
+<?php namespace app\src\Core\Cache;
 
 if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * eduTrac SIS \Memcache|\Memcached Class.
+ * eduTrac SIS XCache Cache Class.
  *
  * @license GPLv3
  *         
@@ -13,21 +13,8 @@ if (! defined('BASE_PATH'))
  * @subpackage Cache
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
+class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
 {
-
-    /**
-     * \Memcache|\Memcached object;
-     *
-     * @var object;
-     */
-    public $connection;
-
-    /**
-     *
-     * @var bool
-     */
-    public $useMemcached;
 
     /**
      * Holds the cached objects.
@@ -43,8 +30,8 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
      * @since 6.2.0
      * @var object
      */
-    protected $_app;
-
+    public $app;
+    
     /**
      * Sets if cache is enabled or not.
      *
@@ -53,26 +40,12 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
      */
     public $enable;
 
-    public function __construct($useMemcached, \Liten\Liten $liten = null)
+    public function __construct(\Liten\Liten $liten = null)
     {
-        $this->_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
         
-        $this->useMemcached = $useMemcached;
-        
-        $ext = $this->useMemcached ? 'memcached' : 'memcache';
-        
-        if ($ext == 'memcached' && ! class_exists('memcached')) {
-            return new \app\src\Exception\Exception(sprintf(_t('Memcached requires PHP <strong>%s</strong> extension to be loaded.'), $ext), 'php_memcache_extension');
-        }
-        
-        if ($ext == 'memcache' && ! function_exists('memcache_connect')) {
-            return new \app\src\Exception\Exception(sprintf(_t('Memcached requires PHP <strong>%s</strong> extension to be loaded.'), $ext), 'php_memcache_extension');
-        }
-        
-        if ($ext == 'memcache') {
-            $this->connection = new \Memcache();
-        } else {
-            $this->connection = new \Memcached('etsis');
+        if (! extension_loaded('xcache') && ! function_exists('xcache_get')) {
+            return new \app\src\Core\Exception\Exception(_t('XCache requires PHP XCache extension to be installed and loaded.'), 'php_xcache_extension');
         }
         
         /**
@@ -81,11 +54,11 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
          * @since 6.2.0
          * @var bool
          */
-        $this->enable = $this->_app->hook->apply_filter('enable_caching', true);
+        $this->enable = $this->app->hook->apply_filter('enable_caching', true);
     }
 
     /**
-     * Creates the \Memcache|\Memcached item.
+     * Creates the cache file.
      *
      * {@inheritDoc}
      *
@@ -93,13 +66,13 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
      *
      * @since 6.2.0
      * @param int|string $key
-     *            Unique key of the \Memcache|\Memcached item.
+     *            Unique key of the cache file.
      * @param mixed $data
      *            Data that should be cached.
      * @param string $namespace
      *            Optional. Where the cache contents are namespaced. Default: 'default'.
      * @param int $ttl
-     *            Time to live sets the life of the \Memcache|\Memcached item. Default: 0 = will persist until cleared.
+     *            Time to live sets the life of the cache file. Default: 0 = will persist until cleared.
      */
     public function create($key, $data, $namespace = 'default', $ttl = 0)
     {
@@ -110,6 +83,7 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
+        
         return $this->set($key, $data, $namespace, (int) $ttl);
     }
 
@@ -122,7 +96,7 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
      *
      * @since 6.2.0
      * @param int|string $key
-     *            Unique key of the \Memcache|\Memcached item.
+     *            Unique key of the cache file.
      * @param string $namespace
      *            Optional. Where the cache contents are namespaced. Default: 'default'.
      */
@@ -138,11 +112,13 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
         
         $unique_key = $this->uniqueKey($key, $namespace);
         
-        return $this->connection->get($unique_key);
+        return xcache_isset($unique_key) ? xcache_get($unique_key) : false;
     }
 
     /**
-     * Updates the \Memcache|\Memcached based on unique key.
+     * Updates a cache file based on unique ID.
+     * This method only exists for
+     * CRUD completeness purposes and just basically calls the create method.
      *
      * {@inheritDoc}
      *
@@ -150,13 +126,13 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
      *
      * @since 6.2.0
      * @param int|string $key
-     *            Unique key of the \Memcache|\Memcached.
+     *            Unique key of the cache file.
      * @param mixed $data
      *            Data that should be cached.
      * @param string $namespace
      *            Optional. Where the cache contents are namespaced. Default: 'default'.
      * @param int $ttl
-     *            Time to live sets the life of the \Memcache|\Memcached item. Default: 0 = will persist until cleared.
+     *            Time to live sets the life of the cache file. Default: 0 = will persist until cleared.
      */
     public function update($key, $data, $namespace = 'default', $ttl = 0)
     {
@@ -170,15 +146,11 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
         
         $unique_key = $this->uniqueKey($key, $namespace);
         
-        if ($this->_exists($unique_key, $namespace)) {
-            return false;
-        }
-        
-        return $this->useMemcached ? $this->connection->replace($unique_key, $data, (int) $ttl) : $this->connection->replace($unique_key, $data, 0, (int) $ttl);
+        return $this->create($unique_key, $data, (int) $ttl);
     }
 
     /**
-     * Deletes \Memcache|\Memcached based on unique key.
+     * Deletes a cache file based on unique key.
      *
      * {@inheritDoc}
      *
@@ -186,7 +158,7 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
      *
      * @since 6.2.0
      * @param int|string $key
-     *            Unique key of \Memcache|\Memcached.
+     *            Unique key of cache file.
      * @param string $namespace
      *            Optional. Where the cache contents are namespaced. Default: 'default'.
      */
@@ -198,11 +170,11 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
         
         $unique_key = $this->uniqueKey($key, $namespace);
         
-        return $this->connection->delete($unique_key);
+        return xcache_unset($unique_key);
     }
 
     /**
-     * Flushes \Memcache|\Memcached completely.
+     * Flushes the cache completely.
      *
      * {@inheritDoc}
      *
@@ -212,7 +184,12 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
      */
     public function flush()
     {
-        return $this->connection->flush();
+        for ($i = 0, $max = xcache_count(XC_TYPE_VAR); $i < $max; $i ++) {
+            if (xcache_clear_cache(XC_TYPE_VAR, $i) === false) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -232,9 +209,9 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
             $namespace = 'default';
         }
         
-        return $this->connection->increment($namespace, 10);
+        return xcache_inc($namespace, 10);
     }
-
+    
     /**
      * Sets the data contents into the cache.
      *
@@ -257,20 +234,20 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
         if (! $this->enable) {
             return false;
         }
-        
+    
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+    
         $unique_key = $this->uniqueKey($key, $namespace);
         
         if ($this->_exists($unique_key, $namespace)) {
             return false;
         }
         
-        return $this->useMemcached ? $this->connection->set($unique_key, $data, (int) $ttl) : $this->connection->set($unique_key, $data, 0, (int) $ttl);
+        return xcache_set($unique_key, $data, (int) $ttl);
     }
-
+    
     /**
      * Echoes the stats of the cache.
      *
@@ -283,33 +260,18 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
         if (! $this->enable) {
             return false;
         }
-        
-        if ($this->useMemcached == false) {
-            $stats = $this->connection->getStats();
-            echo "<p>";
-            echo "<strong>" . _t('Cache Hits:') . "</strong> " . $stats['get_hits'] . "<br />";
-            echo "<strong>" . _t('Cache Misses:') . "</strong> " . $stats['get_misses'] . "<br />";
-            echo "<strong>" . _t('Uptime:') . "</strong> " . $stats['uptime'] . "<br />";
-            echo "<strong>" . _t('Memory Usage:') . "</strong> " . $stats['bytes'] . "<br />";
-            echo "<strong>" . _t('Memory Available:') . "</strong> " . $stats['limit_maxbytes'] . "<br />";
-            echo "</p>";
-        }
-        
-        if ($this->useMemcached == true) {
-            $stats = $this->connection->getStats();
-            $servers = $this->connection->getServerList();
-            $key = $servers[0]['host'] . ':' . $servers[0]['port'];
-            $stats = $stats[$key];
-            echo "<p>";
-            echo "<strong>" . _t('Cache Hits:') . "</strong> " . $stats['get_hits'] . "<br />";
-            echo "<strong>" . _t('Cache Misses:') . "</strong> " . $stats['get_misses'] . "<br />";
-            echo "<strong>" . _t('Uptime:') . "</strong> " . $stats['uptime'] . "<br />";
-            echo "<strong>" . _t('Memory Usage:') . "</strong> " . $stats['bytes'] . "<br />";
-            echo "<strong>" . _t('Memory Available:') . "</strong> " . $stats['limit_maxbytes'] . "<br />";
-            echo "</p>";
-        }
+    
+        $info = xcache_info(XC_TYPE_VAR, 0);
+    
+        echo "<p>";
+        echo "<strong>" . _t('Cache Hits:') . "</strong> " . $info['hits'] . "<br />";
+        echo "<strong>" . _t('Cache Misses:') . "</strong> " . $info['misses'] . "<br />";
+        echo "<strong>" . _t('Uptime:') . "</strong> " . null . "<br />";
+        echo "<strong>" . _t('Memory Usage:') . "</strong> " . $info['size'] . "<br />";
+        echo "<strong>" . _t('Memory Available:') . "</strong> " . $sma['avail'] . "<br />";
+        echo "</p>";
     }
-
+    
     /**
      * Increments numeric cache item's value.
      *
@@ -329,10 +291,10 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
     public function inc($key, $offset = 1, $namespace = 'default')
     {
         $unique_key = $this->uniqueKey($key, $namespace);
-        
-        return $this->connection->increment($unique_key, (int) $offset);
+    
+        return xcache_inc($unique_key, (int) $offset);
     }
-
+    
     /**
      * Decrements numeric cache item's value.
      *
@@ -352,38 +314,8 @@ class etsis_Cache_Memcache extends \app\src\Cache\etsis_Abstract_Cache
     public function dec($key, $offset = 1, $namespace = 'default')
     {
         $unique_key = $this->uniqueKey($key, $namespace);
-        
-        return $this->connection->decrement($unique_key, (int) $offset);
-    }
-
-    /**
-     * Add \Memcache|\Memcached servers.
-     *
-     * @since 6.2.0
-     * @param array $servers
-     *            An array of \Memcache|\Memcached servers.
-     */
-    public function addServer($servers)
-    {
-        if ($this->useMemcached == true) {
-            $existingServers = [];
-            
-            foreach ($this->connection->getServerList() as $s) {
-                $existingServers[$s['host'] . ':' . $s['port']] = true;
-            }
-            
-            foreach ($servers as $server) {
-                if (empty($existingServers) || ! isset($existingServers[$server->host . ':' . $server->port])) {
-                    $this->connection->addServer($server->$host, $server->$port, $server->$weight);
-                }
-            }
-        }
-        
-        if ($this->useMemcached == false) {
-            foreach ($servers as $server) {
-                $this->connection->addServer($server['host'], $server['port'], true, $server['weight']);
-            }
-        }
+    
+        return xcache_dec($unique_key, (int) $offset);
     }
 
     /**

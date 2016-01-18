@@ -42,7 +42,7 @@ function convertCourseSec($sect)
  * @since 6.2.0
  * @param int|etsis_Course_Sec|null $section
  *            Course section ID or course section array.
- * * @param bool $object
+ * @param bool $object
  *            If set to true, data will return as an object, else as an array.
  */
 function get_course_sec($section, $object = true)

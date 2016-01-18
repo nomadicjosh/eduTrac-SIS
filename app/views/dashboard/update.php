@@ -40,7 +40,7 @@ $screen = 'update';
                         <?php
                             $update = \app\src\CoreUpdate::inst();
                             $zip = $update->zip_extention_loaded();
-                            if(is_et_exception($zip)) {
+                            if(is_etsis_exception($zip)) {
                                 echo $zip->getMessage();
                                 exit();
                             }

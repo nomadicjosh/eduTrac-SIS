@@ -23,7 +23,7 @@ function _etsis_cache_init()
     $app = \Liten\Liten::getInstance();
     
     $driver = $app->hook->apply_filter('etsis_cache_driver', 'file');
-    $cache = new \app\src\Cache\etsis_Object_Cache($driver);
+    $cache = new \app\src\Core\Cache\etsis_Object_Cache($driver);
     return $cache;
 }
 
@@ -36,7 +36,7 @@ function _etsis_cache_init()
  */
 function _etsis_custom_field($location = 'dashboard')
 {
-    $field = new \app\src\CustomField($location);
+    $field = new \app\src\Core\etsis_CustomField($location);
     return $field;
 }
 
@@ -60,6 +60,6 @@ function _etsis_phpmailer($bool = true)
  */
 function _etsis_email()
 {
-    $email = new \app\src\Email();
+    $email = new \app\src\Core\etsis_Email();
     return $email;
 }

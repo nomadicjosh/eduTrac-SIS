@@ -1,10 +1,10 @@
-<?php namespace app\src\Cache;
+<?php namespace app\src\Core\Cache;
 
 if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * eduTrac SIS Filesystem Cache Class.
+ * eduTrac SIS JSON Cache Class.
  *
  * @license GPLv3
  *         
@@ -13,7 +13,7 @@ if (! defined('BASE_PATH'))
  * @subpackage Cache
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
+class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
 {
 
     /**
@@ -22,7 +22,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
      * @since 6.2.0
      * @var object
      */
-    protected $_app;
+    public $app;
 
     /**
      * Cache directory object.
@@ -74,7 +74,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
 
     public function __construct(\Liten\Liten $liten = null)
     {
-        $this->_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
         
         if (ETSIS_FILE_CACHE_LOW_RAM && function_exists('memory_get_usage')) {
             $limit = _trim(ini_get('memory_limit'));
@@ -123,14 +123,14 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
          * @since 6.2.0
          * @var bool
          */
-        $this->enable = $this->_app->hook->apply_filter('enable_caching', true);
+        $this->enable = $this->app->hook->apply_filter('enable_caching', true);
         
         $this->persist = $this->enable && true;
         
         /**
          * File system cache directory.
          */
-        $dir = $this->_app->config('file.savepath') . 'cache';
+        $dir = $this->app->config('file.savepath') . 'cache';
         
         /**
          * Filter the file cache directory in order to override it
@@ -140,7 +140,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
          * @param string $dir
          *            The directory where file system cache files are saved.
          */
-        $cacheDir = $this->_app->hook->apply_filter('filesystem_cache_dir', $dir);
+        $cacheDir = $this->app->hook->apply_filter('filesystem_cache_dir', $dir);
         
         /**
          * If the cache directory does not exist, the create it first
@@ -154,7 +154,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
          * If the directory isn't writable, throw an exception.
          */
         if (! etsis_is_writable($cacheDir)) {
-            return new \app\src\Exception\Exception(_t('Could not create the file cache directory.'), 'file_system_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not create the file cache directory.'), 'json_cache');
         }
         
         /**
@@ -230,7 +230,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
         
         $get_data = file_get_contents($filename, LOCK_EX);
         
-        $data = maybe_unserialize($get_data);
+        $data = json_decode($get_data, true);
         
         if ($this->persist) {
             if ($this->_memory_limit) {
@@ -381,7 +381,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
      *
      * {@inheritDoc}
      *
-     * @see \app\src\Cache\etsis_Abstract_Cache::set()
+     * @see \app\src\Cache\etsis_Abstract_Cache::create()
      *
      * @since 6.2.0
      * @param int|string $key
@@ -392,7 +392,6 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
      *            Optional. Where the cache contents are namespaced. Default: 'default'.
      * @param int $ttl
      *            Time to live sets the life of the cache file. Default: 0 = expires immediately after request.
-     * @return bool Returns true if the cache was set and false otherwise.
      */
     public function set($key, $data, $namespace = 'default', $ttl = 0)
     {
@@ -433,7 +432,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
         $h = fopen($filename, 'a+');
         // If there is an issue with the handler, throw an exception.
         if (! $h) {
-            return new \app\src\Exception\Exception(_t('Could not write to cache.'), 'file_system_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not write to cache.'), 'json_cache');
         }
         // exclusive lock, will get released when the file is closed
         flock($h, LOCK_EX);
@@ -442,12 +441,12 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
         // truncate the file
         ftruncate($h, 0);
         // Serializing along with the TTL
-        $data = maybe_serialize(array(
+        $data = json_encode(array(
             time() + (int) $ttl,
             $data
         ));
         if (fwrite($h, $data) === false) {
-            return new \app\src\Exception\Exception(_t('Could not write to cache.'), 'file_system_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not write to cache.'), 'json_cache');
         }
         fclose($h);
         
@@ -476,12 +475,14 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
 
     /**
      * Increments numeric cache item's value.
-     *
+     * 
      * {@inheritDoc}
      *
      * @see \app\src\Cache\etsis_Abstract_Cache::inc()
      *
      * @since 6.2.0
+     * @access public
+     *        
      * @param int|string $key
      *            The cache key to increment
      * @param int $offset
@@ -517,12 +518,13 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
 
     /**
      * Decrements numeric cache item's value.
-     *
+     * 
      * {@inheritDoc}
      *
      * @see \app\src\Cache\etsis_Abstract_Cache::dec()
      *
      * @since 6.2.0
+     *       
      * @param int|string $key
      *            The cache key to decrement.
      * @param int $offset
@@ -636,7 +638,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
         
         if (! is_readable($filename)) {
             $fp = fopen($filename, 'w');
-            fwrite($fp, 1);
+            fwrite($fp, 0);
             fclose($fp);
             return false;
         }
@@ -665,7 +667,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
         
         if (! is_readable($filename)) {
             $fp = fopen($filename, 'w');
-            fwrite($fp, 1);
+            fwrite($fp, 0);
             fclose($fp);
             return false;
         }
@@ -697,7 +699,7 @@ class etsis_Cache_Filesystem extends \app\src\Cache\etsis_Abstract_Cache
             $namespace = 'default';
         }
         
-        $stale = glob($this->_dir . $namespace . '*');
+        $stale = glob($this->_dir . $namespace . DS . '*');
         if (is_array($stale)) {
             foreach ($stale as $filename) {
                 if (file_exists($filename)) {

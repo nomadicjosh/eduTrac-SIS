@@ -1,10 +1,10 @@
-<?php namespace app\src\Cache;
+<?php namespace app\src\Core\Cache;
 
 if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * eduTrac SIS XCache Cache Class.
+ * eduTrac SIS APC Cache Class.
  *
  * @license GPLv3
  *         
@@ -13,7 +13,7 @@ if (! defined('BASE_PATH'))
  * @subpackage Cache
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
+class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
 {
 
     /**
@@ -26,11 +26,11 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
     
     /**
      * Holds the application object
-     *
+     * 
      * @since 6.2.0
      * @var object
      */
-    protected $_app;
+    public $app;
     
     /**
      * Sets if cache is enabled or not.
@@ -42,10 +42,10 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
 
     public function __construct(\Liten\Liten $liten = null)
     {
-        $this->_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
         
-        if (! extension_loaded('xcache') && ! function_exists('xcache_get')) {
-            return new \app\src\Exception\Exception(_t('XCache requires PHP XCache extension to be installed and loaded.'), 'php_xcache_extension');
+        if (! extension_loaded('apc') && ! ini_get('apc.enabled') || ! function_exists('apc_fetch')) {
+            return new \app\src\Core\Exception\Exception(_t('APC requires PHP APC extension to be installed and loaded.'), 'php_apc_extension');
         }
         
         /**
@@ -54,11 +54,11 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
          * @since 6.2.0
          * @var bool
          */
-        $this->enable = $this->_app->hook->apply_filter('enable_caching', true);
+        $this->enable = $this->app->hook->apply_filter('enable_caching', true);
     }
 
     /**
-     * Creates the cache file.
+     * Creates the APC cache item.
      *
      * {@inheritDoc}
      *
@@ -66,13 +66,13 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
      *
      * @since 6.2.0
      * @param int|string $key
-     *            Unique key of the cache file.
+     *            Unique key of the APC cached item.
      * @param mixed $data
      *            Data that should be cached.
      * @param string $namespace
      *            Optional. Where the cache contents are namespaced. Default: 'default'.
      * @param int $ttl
-     *            Time to live sets the life of the cache file. Default: 0 = will persist until cleared.
+     *            Time to live sets the life of the APC cached item. Default: 0 = will persist until cleared.
      */
     public function create($key, $data, $namespace = 'default', $ttl = 0)
     {
@@ -84,7 +84,13 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
             $namespace = 'default';
         }
         
-        return $this->set($key, $data, $namespace, (int) $ttl);
+        $unique_key = $this->uniqueKey($key, $namespace);
+        
+        if ($this->_exists($unique_key, $namespace)) {
+            return false;
+        }
+        
+        return set($key, $data, $namespace, (int) $ttl);
     }
 
     /**
@@ -96,7 +102,7 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
      *
      * @since 6.2.0
      * @param int|string $key
-     *            Unique key of the cache file.
+     *            Unique key of the APC cached item.
      * @param string $namespace
      *            Optional. Where the cache contents are namespaced. Default: 'default'.
      */
@@ -112,13 +118,11 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
         
         $unique_key = $this->uniqueKey($key, $namespace);
         
-        return xcache_isset($unique_key) ? xcache_get($unique_key) : false;
+        return apc_fetch($unique_key);
     }
 
     /**
-     * Updates a cache file based on unique ID.
-     * This method only exists for
-     * CRUD completeness purposes and just basically calls the create method.
+     * Updates the APC cache based on unique key.
      *
      * {@inheritDoc}
      *
@@ -126,13 +130,13 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
      *
      * @since 6.2.0
      * @param int|string $key
-     *            Unique key of the cache file.
+     *            Unique key of the APC cache.
      * @param mixed $data
      *            Data that should be cached.
      * @param string $namespace
      *            Optional. Where the cache contents are namespaced. Default: 'default'.
      * @param int $ttl
-     *            Time to live sets the life of the cache file. Default: 0 = will persist until cleared.
+     *            Time to live sets the life of the APC cached item. Default: 0 = will persist until cleared.
      */
     public function update($key, $data, $namespace = 'default', $ttl = 0)
     {
@@ -146,11 +150,11 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
         
         $unique_key = $this->uniqueKey($key, $namespace);
         
-        return $this->create($unique_key, $data, (int) $ttl);
+        return apc_store($unique_key, $data, (int) $ttl);
     }
 
     /**
-     * Deletes a cache file based on unique key.
+     * Deletes cache based on unique key.
      *
      * {@inheritDoc}
      *
@@ -158,7 +162,7 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
      *
      * @since 6.2.0
      * @param int|string $key
-     *            Unique key of cache file.
+     *            Unique key of APC cache.
      * @param string $namespace
      *            Optional. Where the cache contents are namespaced. Default: 'default'.
      */
@@ -170,11 +174,11 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
         
         $unique_key = $this->uniqueKey($key, $namespace);
         
-        return xcache_unset($unique_key);
+        return apc_delete($unique_key);
     }
 
     /**
-     * Flushes the cache completely.
+     * Flushes the APC cache completely.
      *
      * {@inheritDoc}
      *
@@ -184,12 +188,8 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
      */
     public function flush()
     {
-        for ($i = 0, $max = xcache_count(XC_TYPE_VAR); $i < $max; $i ++) {
-            if (xcache_clear_cache(XC_TYPE_VAR, $i) === false) {
-                return false;
-            }
-        }
-        return true;
+        apc_clear_cache();
+        apc_clear_cache('user');
     }
 
     /**
@@ -209,7 +209,7 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
             $namespace = 'default';
         }
         
-        return xcache_inc($namespace, 10);
+        return $this->flush();
     }
     
     /**
@@ -238,14 +238,8 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-    
-        $unique_key = $this->uniqueKey($key, $namespace);
         
-        if ($this->_exists($unique_key, $namespace)) {
-            return false;
-        }
-        
-        return xcache_set($unique_key, $data, (int) $ttl);
+        return apc_store($key, $data, (int) $ttl);
     }
     
     /**
@@ -260,15 +254,22 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
         if (! $this->enable) {
             return false;
         }
-    
-        $info = xcache_info(XC_TYPE_VAR, 0);
-    
+        
+        $info = apc_cache_info('', true);
+        $sma  = apc_sma_info();
+        
+        if (PHP_VERSION_ID >= 50500) {
+            $info['num_hits']   = isset($info['num_hits'])   ? $info['num_hits']   : $info['nhits'];
+            $info['num_misses'] = isset($info['num_misses']) ? $info['num_misses'] : $info['nmisses'];
+            $info['start_time'] = isset($info['start_time']) ? $info['start_time'] : $info['stime'];
+        }
+        
         echo "<p>";
-        echo "<strong>" . _t('Cache Hits:') . "</strong> " . $info['hits'] . "<br />";
-        echo "<strong>" . _t('Cache Misses:') . "</strong> " . $info['misses'] . "<br />";
-        echo "<strong>" . _t('Uptime:') . "</strong> " . null . "<br />";
-        echo "<strong>" . _t('Memory Usage:') . "</strong> " . $info['size'] . "<br />";
-        echo "<strong>" . _t('Memory Available:') . "</strong> " . $sma['avail'] . "<br />";
+        echo "<strong>" . _t('Cache Hits:') . "</strong> " . $info['num_hits'] . "<br />";
+        echo "<strong>" . _t('Cache Misses:') . "</strong> " . $info['num_misses'] . "<br />";
+        echo "<strong>" . _t('Uptime:') . "</strong> " . $info['start_time'] . "<br />";
+        echo "<strong>" . _t('Memory Usage:') . "</strong> " . $info['mem_size'] . "<br />";
+        echo "<strong>" . _t('Memory Available:') . "</strong> " . $sma['avail_mem'] . "<br />";
         echo "</p>";
     }
     
@@ -291,8 +292,8 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
     public function inc($key, $offset = 1, $namespace = 'default')
     {
         $unique_key = $this->uniqueKey($key, $namespace);
-    
-        return xcache_inc($unique_key, (int) $offset);
+        
+        return apc_inc($unique_key, (int) $offset);
     }
     
     /**
@@ -314,8 +315,8 @@ class etsis_Cache_XCache extends \app\src\Cache\etsis_Abstract_Cache
     public function dec($key, $offset = 1, $namespace = 'default')
     {
         $unique_key = $this->uniqueKey($key, $namespace);
-    
-        return xcache_dec($unique_key, (int) $offset);
+        
+        return apc_dec($unique_key, (int) $offset);
     }
 
     /**

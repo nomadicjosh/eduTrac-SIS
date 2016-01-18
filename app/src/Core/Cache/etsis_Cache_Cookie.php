@@ -1,4 +1,4 @@
-<?php namespace app\src\Cache;
+<?php namespace app\src\Core\Cache;
 
 if (! defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -13,7 +13,7 @@ if (! defined('BASE_PATH'))
  * @subpackage Cache
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
+class etsis_Cache_Cookie extends \app\src\Core\Cache\etsis_Abstract_Cache
 {
 
     /**
@@ -22,7 +22,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
      * @since 6.2.0
      * @var object
      */
-    protected $_app;
+    public $app;
 
     /**
      * Cache directory object.
@@ -74,7 +74,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
 
     public function __construct(\Liten\Liten $liten = null)
     {
-        $this->_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
         
         if (ETSIS_FILE_CACHE_LOW_RAM && function_exists('memory_get_usage')) {
             $limit = _trim(ini_get('memory_limit'));
@@ -123,14 +123,14 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
          * @since 6.2.0
          * @var bool
          */
-        $this->enable = $this->_app->hook->apply_filter('enable_caching', true);
+        $this->enable = $this->app->hook->apply_filter('enable_caching', true);
         
         $this->persist = $this->enable && true;
         
         /**
          * File system cache directory.
          */
-        $dir = $this->_app->config('file.savepath') . 'cache';
+        $dir = $this->app->config('file.savepath') . 'cache';
         
         /**
          * Fiter the file cache directory in order to override it
@@ -140,7 +140,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
          * @param string $dir
          *            The directory where file system cache files are saved.
          */
-        $cacheDir = $this->_app->hook->apply_filter('filesystem_cache_dir', $dir);
+        $cacheDir = $this->app->hook->apply_filter('filesystem_cache_dir', $dir);
         
         /**
          * If the cache directory does not exist, the create it first
@@ -154,7 +154,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
          * If the directory isn't writable, throw an exception.
          */
         if (! etsis_is_writable($cacheDir)) {
-            return new \app\src\Exception\Exception(_t('Could not create the file cache directory.'), 'cookie_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not create the file cache directory.'), 'cookie_cache');
         }
         
         /**
@@ -272,7 +272,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
                     return is_object($result) ? clone ($result) : $result;
                 }
             }
-            $this->_app->cookies->remove(md5($key));
+            $this->app->cookies->remove(md5($key));
             unlink($files[0]);
         }
     }
@@ -335,7 +335,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
             return false;
         }
         
-        $this->_app->cookies->remove(md5($key));
+        $this->app->cookies->remove(md5($key));
         
         $filename = $this->keyToPath($key, $namespace);
         
@@ -421,7 +421,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
         if ($this->_memory_limit) {
             $usage = memory_get_usage();
             if ($this->_memory_limit - $usage < $this->_memory_low) {
-                $this->_app->cookies->remove(md5($key));
+                $this->app->cookies->remove(md5($key));
                 unlink($this->keyToPath($key, $namespace));
                 return false;
             }
@@ -443,10 +443,10 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
         $h = fopen($filename, 'a+');
         // If there is an issue with the handler, throw an exception.
         if (! $h) {
-            return new \app\src\Exception\Exception(_t('Could not write to cache'), 'cookie_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not write to cache'), 'cookie_cache');
         }
         
-        $this->_app->cookies->set(md5($key), $key, $ttl);
+        $this->app->cookies->set(md5($key), $key, $ttl);
         // exclusive lock, will get released when the file is closed
         flock($h, LOCK_EX);
         // go to the start of the file
@@ -459,7 +459,7 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
             $data
         ));
         if (fwrite($h, $data) === false) {
-            return new \app\src\Exception\Exception(_t('Could not write to cache'), 'cookie_cache');
+            return new \app\src\Core\Exception\Exception(_t('Could not write to cache'), 'cookie_cache');
         }
         fclose($h);
         
@@ -712,10 +712,10 @@ class etsis_Cache_Cookie extends \app\src\Cache\etsis_Abstract_Cache
         }
         
         if (! $this->_exists($key, $namespace)) {
-            $this->_app->cookies->remove(md5($key));
+            $this->app->cookies->remove(md5($key));
         }
         
-        $stale = glob($this->_dir . $namespace . '*');
+        $stale = glob($this->_dir . $namespace . DS . '*');
         if (is_array($stale)) {
             foreach ($stale as $filename) {
                 if (file_exists($filename)) {

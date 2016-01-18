@@ -118,7 +118,7 @@ function load_default_textdomain($domain, $path)
  *
  * @since 6.1.09
  * @param string $domain          Unique identifier for retrieving translated strings
- * @param string $plugin_rel_path Optional. Relative path to PLUGINS_DIR where the locale directory resides.
+ * @param string $plugin_rel_path Optional. Relative path to ETSIS_PLUGIN_DIR where the locale directory resides.
  *                                Default false.
  * @return bool True when textdomain is successfully loaded, false otherwise.
  */
@@ -138,9 +138,9 @@ function load_plugin_textdomain($domain, $plugin_rel_path = false)
     $plugin_locale = $app->hook->apply_filter('plugin_locale', $locale, $domain);
 
     if ($plugin_rel_path !== false) {
-        $path = PLUGINS_DIR . $plugin_rel_path . DS;
+        $path = ETSIS_PLUGIN_DIR . $plugin_rel_path . DS;
     } else {
-        $path = PLUGINS_DIR;
+        $path = ETSIS_PLUGIN_DIR;
     }
     
     $mofile = $path . $domain . '-' . $plugin_locale . '.mo';
