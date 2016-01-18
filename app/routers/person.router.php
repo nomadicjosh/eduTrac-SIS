@@ -117,6 +117,10 @@ $app->group('/nae',
                 $app->hook->do_action('pre_update_person', $nae);
                 
                 if ($nae->update()) {
+                    $email = $app->db->address();
+                    $email->email1 = $_POST['email'];
+                    $email->where('personID = ?', $id)->update();
+                    
                     $app->flash('success_message', $flashNow->notice(200));
                     $logger->setLog('Update Record', 'Person (NAE)', get_name($id), get_persondata('uname'));
                 } else {
