@@ -614,6 +614,10 @@ class etsis_Cache_Filesystem extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     protected function remove_dir($dir)
     {
+        if(! is_dir($dir)) {
+            return;
+        }
+        
         $dh = opendir($dir);
         if (! is_resource($dh)) {
             return;
