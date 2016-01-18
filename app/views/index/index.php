@@ -37,7 +37,7 @@ tinymce.init({
 				<div class="widget-body">
 					<div class="row">	
 						<div class="col-md-12">
-							<h5 class="strong"><?=_t( 'Welcome to myeduTrac' );?></h5>
+							<h5 class="strong"><?=get_met_welcome_message_title();?></h5>
 							<div class="separator bottom"></div>
 							<?=_escape(the_myet_welcome_message());?>
 							<p<?=ae('edit_myet_welcome_message');?> class="margin-none strong">
