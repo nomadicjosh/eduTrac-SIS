@@ -221,7 +221,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
                 $host = strtolower($_SERVER['SERVER_NAME']);
                 $site = _h(get_option('institution_name'));
 
-                $message = _h(get_option('update_username'));
+                $message = _escape(get_option('update_username'));
                 $message = str_replace('#uname#', getUserValue($_POST['personID'], 'uname'), $message);
                 $message = str_replace('#fname#', getUserValue($_POST['personID'], 'fname'), $message);
                 $message = str_replace('#lname#', getUserValue($_POST['personID'], 'lname'), $message);
@@ -237,7 +237,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
                 $headers .= "X-Mailer: PHP/" . phpversion();
                 $headers .= "MIME-Version: 1.0" . "\r\n";
                 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                $email->et_mail(getUserValue($_POST['personID'], 'email'), _t("myeduTrac Username Change"), $message, $headers);
+                $email->etsis_mail(getUserValue($_POST['personID'], 'email'), _t("myeduTrac Username Change"), $message, $headers);
 
                 /**
                  * @since 6.1.07

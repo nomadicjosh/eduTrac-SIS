@@ -315,7 +315,7 @@ $app->group('/nae',
                         }
                         $host = strtolower($_SERVER['SERVER_NAME']);
                         $site = _t('myeduTrac :: ') . _h(get_option('institution_name'));
-                        $message = get_option('person_login_details');
+                        $message = _escape(get_option('person_login_details'));
                         $message = str_replace('#uname#', $_POST['uname'], $message);
                         $message = str_replace('#fname#', $_POST['fname'], $message);
                         $message = str_replace('#lname#', $_POST['lname'], $message);
@@ -332,7 +332,7 @@ $app->group('/nae',
                         $headers .= "X-Mailer: PHP/" . phpversion();
                         $headers .= "MIME-Version: 1.0" . "\r\n";
                         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                        $email->et_mail($_POST['email'], _t("myeduTrac Login Details"), $message, $headers);
+                        $email->etsis_mail($_POST['email'], _t("myeduTrac Login Details"), $message, $headers);
                     }
                     if ($addr->save()) {
                         
@@ -822,7 +822,7 @@ $app->group('/nae',
             $url = get_base_url();
             $host = $app->req->server['HTTP_HOST'];
             $helpDesk = _h(get_option('help_desk'));
-            $body = _h(get_option('reset_password_text'));
+            $body = _escape(get_option('reset_password_text'));
             $body = str_replace('#instname#', _h(get_option('institution_name')), $body);
             $body = str_replace('#mailaddr#', _h(get_option('mailing_address')), $body);
             $body = str_replace('#url#', $url, $body);
@@ -866,7 +866,7 @@ $app->group('/nae',
                 $app->hook->do_action('post_reset_password', $pass);
                 
                 $app->flash('success_message', _t('The password has been reset and an email has been sent to this user.'));
-                $email->et_mail($person->email, _t("Reset Password"), $body, $headers);
+                $email->etsis_mail($person->email, _t("Reset Password"), $body, $headers);
                 $logger->setLog(_t('Update Record'), _t('Reset Password'), get_name($id), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));

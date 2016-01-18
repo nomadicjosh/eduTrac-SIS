@@ -290,7 +290,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                     $headers .= "X-Mailer: PHP/" . phpversion();
                     $headers .= "MIME-Version: 1.0" . "\r\n";
                     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                    $email->et_mail(_h(get_option('admissions_email')), _t("Student Acceptance Letter"), $message, $headers);
+                    $email->etsis_mail(_h(get_option('admissions_email')), _t("Student Acceptance Letter"), $message, $headers);
                 }
                 /**
                  * @since 6.1.07

@@ -504,7 +504,7 @@ $app->group('/cron',
 
                                 <?php
                                     $message = ob_get_clean();
-                                    $mail_sent = $email->et_mail($cronjob['maillogaddress'], 'Cronjob log ' . date('Y-m-d H:i:s') . ' for ' . htmlspecialchars($cronjob['url']), $message, $headers);
+                                    $mail_sent = $email->etsis_mail($cronjob['maillogaddress'], 'Cronjob log ' . date('Y-m-d H:i:s') . ' for ' . htmlspecialchars($cronjob['url']), $message, $headers);
                                     
                                     saveLogs($mail_sent ? 'Mail sent' : 'Mail failed');
                                 }
