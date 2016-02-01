@@ -238,502 +238,6 @@ function _bool($num)
 }
 
 /**
- * Faculty dropdown: shows general list of faculty and
- * if $facID is not NULL, shows the faculty attached
- * to a particular record.
- *
- * @since 1.0.0
- * @param string $facID
- *            - optional
- * @return string Returns the record id if selected is true.
- */
-function facID_dropdown($facID = NULL)
-{
-    $app = \Liten\Liten::getInstance();
-    $fac = $app->db->staff_meta()
-        ->select('staffID')
-        ->where('staffType = "FAC"')
-        ->orderBy('staffID');
-    $q = $fac->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    
-    foreach ($q as $v) {
-        echo '<option value="' . _h($v['staffID']) . '"' . selected($facID, _h($v['staffID']), false) . '>' . get_name(_h($v['staffID'])) . '</option>' . "\n";
-    }
-}
-
-/**
- * Payment type dropdown: shows general list of payment types and
- * if $typeID is not NULL, shows the payment type attached
- * to a particular record.
- *
- * @since 1.0.3
- * @param string $typeID
- *            - optional
- * @return string Returns the record id if selected is true.
- */
-function payment_type_dropdown($typeID = NULL)
-{
-    $app = \Liten\Liten::getInstance();
-    $pay = $app->db->payment_type();
-    $q = $pay->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $v) {
-        echo '<option value="' . _h($v['ptID']) . '"' . selected($typeID, _h($v['ptID']), false) . '>' . _h($v['type']) . '</option>' . "\n";
-    }
-}
-
-/**
- * Table dropdown: pulls dropdown list from specified table
- * if $tableID is not NULL, shows the record attached
- * to a particular record.
- *
- * @since 1.0.0
- * @param string $table
- *            Name of database table that is being queried.
- * @param string $where
- *            Partial where clause (id = '1').
- * @param string $code
- *            Unique code from table.
- * @param string $name
- *            Name or title of record retrieving.
- * @param string $activeID
- *            Field to compare to.
- * @param string $bind
- *            Bind parameters to avoid SQL injection.
- * @return mixed
- */
-function table_dropdown($table, $where = null, $id, $code, $name, $activeID = null, $bind = null)
-{
-    $app = \Liten\Liten::getInstance();
-    if ($where !== null && $bind == null) {
-        $table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where");
-    } elseif ($bind !== null) {
-        $table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where", $bind);
-    } else {
-        $table = $app->db->query("SELECT $id, $code, $name FROM $table");
-    }
-    $q = $table->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    
-    foreach ($q as $r) {
-        echo '<option value="' . _h($r[$code]) . '"' . selected($activeID, _h($r[$code]), false) . '>' . _h($r[$code]) . ' ' . _h($r[$name]) . '</option>' . "\n";
-    }
-}
-
-/**
- * Retrieve a list af staff members who
- * have active accounts.
- *
- * @since 4.5
- */
-function get_staff_email()
-{
-    $app = \Liten\Liten::getInstance();
-    $email = $app->db->person()
-        ->select('person.email,person.personID')
-        ->_join('staff', 'person.personID = staff.staffID')
-        ->where('staff.status = "A"')
-        ->orderBy('person.lname');
-    $q = $email->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $v) {
-        echo '<option value="' . _h($v['email']) . '">' . get_name(_h($v['personID'])) . '</option>' . "\n";
-    }
-}
-
-/**
- * Date dropdown
- */
-function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = '', $field = '', $bool = '')
-{
-    $app = \Liten\Liten::getInstance();
-    if ($id != '') {
-        $date_select = $app->db->query("SELECT * FROM $table WHERE $column = ?", [
-            $id
-        ]);
-        $q = $date_select->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-        foreach ($q as $r) {
-            $date = explode('-', $r[$field]);
-        }
-    }
-    
-    /* years */
-    $html_output = '           <select name="' . $name . 'Year"' . $bool . ' class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">' . "\n";
-    $html_output .= '               <option value="">&nbsp;</option>' . "\n";
-    for ($year = 2000; $year <= (date("Y") - $limit); $year ++) {
-        $html_output .= '               <option value="' . sprintf("%04s", $year) . '"' . selected(sprintf("%04s", $year), $date[0], false) . '>' . sprintf("%04s", $year) . '</option>' . "\n";
-    }
-    $html_output .= '           </select>' . "\n";
-    
-    /* months */
-    $html_output .= '           <select name="' . $name . 'Month"' . $bool . ' class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">' . "\n";
-    $html_output .= '               <option value="">&nbsp;</option>' . "\n";
-    $months = array(
-        "",
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-    );
-    for ($month = 1; $month <= 12; $month ++) {
-        $html_output .= '               <option value="' . sprintf("%02s", $month) . '"' . selected(sprintf("%02s", $month), $date[1], false) . '>' . $months[$month] . '</option>' . "\n";
-    }
-    $html_output .= '           </select>' . "\n";
-    
-    /* days */
-    $html_output .= '           <select name="' . $name . 'Day"' . $bool . ' class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">' . "\n";
-    $html_output .= '               <option value="">&nbsp;</option>' . "\n";
-    for ($day = 1; $day <= 31; $day ++) {
-        $html_output .= '               <option value="' . sprintf("%02s", $day) . '"' . selected(sprintf("%02s", $day), $date[2], false) . '>' . sprintf("%02s", $day) . '</option>' . "\n";
-    }
-    $html_output .= '           </select>' . "\n";
-    
-    return $html_output;
-}
-
-/**
- * A function which returns true if the logged in user
- * is a student in the system.
- *
- * @since 4.3
- * @param int $id
- *            Student's ID.
- * @return bool
- */
-function isStudent($id)
-{
-    if ('' == _trim($id)) {
-        $message = _t('Invalid student ID: Empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    if (! is_numeric($id)) {
-        $message = _t('Invalid student ID: student id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    $stu = get_person_by('personID', $id);
-    
-    if ($stu->stuID != '') {
-        return true;
-    }
-    return false;
-}
-
-/**
- * If the logged in user is not a student,
- * hide the menu item.
- * For myeduTrac usage.
- *
- * @since 4.3
- * @param int $id
- *            Person ID
- * @return string
- */
-function checkStuMenuAccess($id)
-{
-    if ('' == _trim($id)) {
-        $message = _t('Invalid person ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    if (! is_numeric($id)) {
-        $message = _t('Invalid person ID: person id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    if (! isStudent($id)) {
-        return ' style="display:none !important;"';
-    }
-}
-
-/**
- * If the logged in user is not a student,
- * redirect the user to his/her profile.
- *
- * @since 4.3
- * @param int $id
- *            Person ID.
- * @return mixed
- */
-function checkStuAccess($id)
-{
-    if ('' == _trim($id)) {
-        $message = _t('Invalid student ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    if (! is_numeric($id)) {
-        $message = _t('Invalid student ID: student id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    return isStudent($id);
-}
-
-function studentsExist($id)
-{
-    $app = \Liten\Liten::getInstance();
-    $stu = $app->db->query("SELECT * FROM stu_course_sec WHERE courseSecID = ?", [
-        $id
-    ]);
-    $q = $stu->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    if (count($q[0]['id']) > 0) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-/**
- *
- * @since 4.0.7
- */
-function getstudentload($term, $creds, $level)
-{
-    $app = \Liten\Liten::getInstance();
-    $t = explode("/", $term);
-    $newTerm1 = $t[0];
-    $newTerm2 = $t[1];
-    $sql = $app->db->query("SELECT 
-                        status 
-                    FROM student_load_rule 
-                    WHERE term REGEXP CONCAT('[[:<:]]', ?, '[[:>:]]') 
-                    OR term REGEXP CONCAT('[[:<:]]', ?, '[[:>:]]') 
-                    AND acadLevelCode REGEXP CONCAT('[[:<:]]', ?, '[[:>:]]') 
-                    AND ? 
-                    BETWEEN min_cred 
-                    AND max_cred 
-                    AND active = '1'", [
-        $newTerm1,
-        $newTerm2,
-        $level,
-        $creds
-    ]);
-    $q = $sql->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $r) {
-        return $r['status'];
-    }
-}
-
-function supervisor($id, $active = NULL)
-{
-    $app = \Liten\Liten::getInstance();
-    
-    $s = $app->db->staff()
-        ->select('staff.staffID')
-        ->whereNot('staff.staffID', $id);
-    
-    $q = $s->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    
-    foreach ($q as $v) {
-        echo '<option value="' . _h($v['staffID']) . '"' . selected($active, _h($v['staffID']), false) . '>' . get_name(_h($v['staffID'])) . '</option>' . "\n";
-    }
-}
-
-function getJobID()
-{
-    $app = \Liten\Liten::getInstance();
-    $job = $app->db->staff_meta()
-        ->select('jobID')
-        ->where('staffID = ?', get_persondata('personID'))
-        ->_and_()
-        ->where('endDate = "NULL"')
-        ->_or_()
-        ->where('endDate = "0000-00-00"')
-        ->findOne();
-    
-    return _h($job->jobID);
-}
-
-function getJobTitle()
-{
-    $app = \Liten\Liten::getInstance();
-    $job = $app->db->job()
-        ->select('job.title')
-        ->_join('staff_meta', 'job.ID = staff_meta.jobID')
-        ->where('job.ID = ?', getJobID())
-        ->findOne();
-    
-    return _h($job->title);
-}
-
-function getStaffJobTitle($id)
-{
-    $app = \Liten\Liten::getInstance();
-    $title = $app->db->job()
-        ->select('job.title')
-        ->_join('staff_meta', 'job.ID = staff_meta.jobID')
-        ->where('staff_meta.staffID = ?', $id)
-        ->_and_()
-        ->where('staff_meta.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id)
-        ->findOne();
-    
-    return _h($title->title);
-}
-
-function student_has_restriction()
-{
-    $app = \Liten\Liten::getInstance();
-    $rest = $app->db->query("SELECT 
-        				GROUP_CONCAT(DISTINCT c.deptName SEPARATOR ',') AS 'Restriction' 
-    				FROM restriction a 
-					LEFT JOIN restriction_code b ON a.rstrCode = b.rstrCode 
-					LEFT JOIN department c ON b.deptCode = c.deptCode 
-					WHERE a.severity = '99' 
-					AND a.endDate <= '0000-00-00' 
-					AND a.stuID = ? 
-					GROUP BY a.stuID 
-					HAVING a.stuID = ?", [
-        get_persondata('personID'),
-        get_persondata('personID')
-    ]);
-    $q = $rest->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    if (count($q[0]['Restriction']) > 0) {
-        foreach ($q as $r) {
-            return '<strong>' . $r['Restriction'] . '</strong>';
-        }
-    } else {
-        return false;
-    }
-}
-
-/**
- *
- * @since 4.5
- */
-function is_count_zero($table, $field, $ID)
-{
-    $app = \Liten\Liten::getInstance();
-    $zero = $app->db->query("SELECT $field FROM $table WHERE $field = ?", [
-        $ID
-    ]);
-    $q = $zero->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    if (count($q) > 0) {
-        return 'X';
-    }
-}
-
-/**
- * is_ferpa function added to check for
- * active FERPA restrictions for students.
- *
- * @since 4.5
- * @param int $id
- *            Student's ID.
- */
-function is_ferpa($id)
-{
-    if ('' == _trim($id)) {
-        $message = _t('Invalid student ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    if (! is_numeric($id)) {
-        $message = _t('Invalid student ID: student id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-    
-    $app = \Liten\Liten::getInstance();
-    
-    $ferpa = $app->db->query("SELECT 
-                        rstrID 
-                    FROM restriction 
-                    WHERE stuID = ? 
-                    AND rstrCode = 'FERPA' 
-                    AND (endDate = '' OR endDate = '0000-00-00')", [
-        $id
-    ]);
-    
-    $q = $ferpa->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    
-    if (count($q) > 0) {
-        return _t('Yes');
-    } else {
-        return _t('No');
-    }
-}
-
-/**
  * Function wrapper for the setError log method.
  */
 function logError($type, $string, $file, $line)
@@ -818,91 +322,6 @@ function translate_addr_type($type)
 }
 
 /**
- * Returns the ID of the person if he/she has an application.
- *
- * @param int $id
- *            Person ID
- * @return int
- */
-function hasAppl($id)
-{
-    $app = \Liten\Liten::getInstance();
-    
-    $appl = $app->db->application()
-        ->where('personID = ?', $id)
-        ->findOne();
-    
-    return _h($appl->personID);
-}
-
-function getStuSec($code, $term)
-{
-    $app = \Liten\Liten::getInstance();
-    $stcs = $app->db->stu_course_sec()
-        ->where('stuID = ?', get_persondata('personID'))
-        ->_and_()
-        ->where('courseSecCode = ?', $code)
-        ->_and_()
-        ->where('termCode = ?', $term)
-        ->findOne();
-    
-    if ($stcs !== false) {
-        return ' style="display:none;"';
-    }
-}
-
-function isRegistrationOpen()
-{
-    if (get_option('open_registration') == 0 || ! isStudent(get_persondata('personID'))) {
-        return ' style="display:none !important;"';
-    }
-}
-
-/**
- * Graduated Status: if the status on a student's program
- * is "G", then the status and status dates are disabled.
- *
- * @since 1.0.0
- * @param
- *            string
- * @return mixed
- */
-function gs($s)
-{
-    if ($s == 'G') {
-        return ' readonly="readonly"';
-    }
-}
-
-/**
- * Calculates grade points for stu_acad_cred.
- *
- * @param string $grade
- *            Letter grade.
- * @param float $credits
- *            Number of course credits.
- * @return mixed
- */
-function acadCredGradePoints($grade, $credits)
-{
-    $app = \Liten\Liten::getInstance();
-    $gp = $app->db->grade_scale()
-        ->select('points')
-        ->where('grade = ?', $grade);
-    $q = $gp->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $r) {
-        $gradePoints = $r['points'] * $credits;
-    }
-    return $gradePoints;
-}
-
-/**
  * Function to help with SQL injection when using SQL terminal
  * and the saved query screens.
  */
@@ -945,150 +364,6 @@ function print_gzipped_page()
     } else {
         ob_end_flush();
         exit();
-    }
-}
-
-/**
- * Checks to see if the logged in student can
- * register for courses.
- *
- * @return bool
- */
-function student_can_register()
-{
-    $app = \Liten\Liten::getInstance();
-    $stcs = $app->db->query("SELECT 
-                        COUNT(courseSecCode) AS Courses 
-                    FROM stu_course_sec 
-                    WHERE stuID = ? 
-                    AND termCode = ? 
-                    AND status IN('A','N') 
-                    GROUP BY stuID,termCode", [
-        get_persondata('personID'),
-        get_option('registration_term')
-    ]);
-    $q = $stcs->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q as $r) {
-        $courses = $r['Courses'];
-    }
-    
-    $rstr = $app->db->query("SELECT * 
-                    FROM restriction 
-                    WHERE severity = '99' 
-                    AND stuID = ? 
-                    AND endDate = '0000-00-00' 
-                    OR endDate > ?", [
-        get_persondata('personID'),
-        date('Y-m-d')
-    ]);
-    $sql1 = $rstr->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    
-    $stu = $app->db->query("SELECT 
-        				a.ID 
-    				FROM 
-    					student a 
-					LEFT JOIN 
-						stu_program b 
-					ON 
-						a.stuID = b.stuID 
-					WHERE 
-						a.stuID = ? 
-					AND 
-						a.status = 'A' 
-					AND 
-						b.currStatus = 'A'", [
-        get_persondata('personID')
-    ]);
-    
-    $sql2 = $stu->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    
-    if ($courses != NULL && $courses >= get_option('number_of_courses')) {
-        return false;
-    } elseif (count($sql1[0]['rstrID']) > 0) {
-        return false;
-    } elseif (count($sql2[0]['ID']) <= 0) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-/**
- * Checks to see if there is a preReq on
- * the course the student is registering for.
- * If there is one, then we do a check to see
- * if the student has meet the preReq.
- *
- * @param int $stuID
- *            Student ID.
- * @param int $courseSecID
- *            ID of course section.
- * @return bool
- */
-function prerequisite($stuID, $courseSecID)
-{
-    $app = \Liten\Liten::getInstance();
-    $crse = $app->db->query("SELECT 
-    					a.preReq 
-					FROM course a 
-					LEFT JOIN course_sec b ON a.courseID = b.courseID 
-					WHERE b.courseSecID = ?", [
-        $courseSecID
-    ]);
-    $q1 = $crse->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    $array = [];
-    foreach ($q1 as $r1) {
-        $array[] = $r1;
-    }
-    $req = explode(",", $r1['preReq']);
-    if (count($q1[0]['preReq']) > 0) {
-        $stac = $app->db->query("SELECT 
-	    					stuAcadCredID 
-						FROM stu_acad_cred 
-						WHERE courseCode IN('" . str_replace(",", "', '", $r1['preReq']) . "')
-						AND stuID = ? 
-						AND status IN('A','N') 
-						AND grade <> '' 
-						AND grade <> 'W' 
-						AND grade <> 'I' 
-						AND grade <> 'F' 
-						GROUP BY stuID,courseCode", [
-            $stuID
-        ]);
-        $q2 = $stac->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-    }
-    if (empty($r1['preReq']) || count($req) == count($q2)) {
-        return true;
     }
 }
 
@@ -1458,51 +733,6 @@ function the_myet_welcome_message()
 }
 
 /**
- *
- * @since 4.4
- */
-function shoppingCart()
-{
-    $app = \Liten\Liten::getInstance();
-    $cart = $app->db->stu_rgn_cart()->where('stuID = ?', get_persondata('personID'));
-    $q = $cart->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    if (count($q[0]['stuID']) > 0) {
-        return true;
-    }
-}
-
-/**
- *
- * @since 4.4
- */
-function removeFromCart($section)
-{
-    $app = \Liten\Liten::getInstance();
-    $cart = $app->db->stu_rgn_cart()
-        ->where('stuID = ?', get_persondata('personID'))
-        ->_and_()
-        ->whereGte('deleteDate', $app->db->NOW())
-        ->_and_()
-        ->where('courseSecID = ?', $section);
-    $q = $cart->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    if (count($q[0]['stuID']) > 0) {
-        return true;
-    }
-}
-
-/**
  * Returns the template header information
  *
  * @since 6.0.00
@@ -1607,100 +837,6 @@ function get_layouts_header($layout_dir = '')
 }
 
 /**
- * Custom function to query any eduTrac SIS
- * database table.
- *
- * @since 6.0.00
- * @param string $table            
- * @param mixed $field            
- * @param mixed $where            
- * @return mixed
- */
-function qt($table, $field, $where = null)
-{
-    $app = \Liten\Liten::getInstance();
-    if ($where !== null) {
-        $query = $app->db->query("SELECT * FROM $table WHERE $where");
-    } else {
-        $query = $app->db->query("SELECT * FROM $table");
-    }
-    $result = $query->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($result as $r) {
-        return $r[$field];
-    }
-}
-
-/**
- * Shows a button to navigate to the previous terms
- * student account bill.
- *
- * @since 6.0.00
- * @param int $id            
- * @param int $stuID            
- * @return int
- */
-function prev_stu_acct_record($id, $stuID)
-{
-    $app = \Liten\Liten::getInstance();
-    $query = $app->db->stu_acct_bill()
-        ->setTableAlias('sab')
-        ->select('sab.billID')
-        ->where('sab.stuID = ?', $stuID)
-        ->_and_()
-        ->where('sab.ID < ?', $id)
-        ->orderBy('sab.ID')
-        ->limit(1);
-    $result = $query->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($result as $r) {
-        return $r['billID'];
-    }
-}
-
-/**
- * Shows a button to navigate to the next terms
- * student account bill.
- *
- * @since 6.0.00
- * @param int $id            
- * @param int $stuID            
- * @return int
- */
-function next_stu_acct_record($id, $stuID)
-{
-    $app = \Liten\Liten::getInstance();
-    $query = $app->db->stu_acct_bill()
-        ->setTableAlias('sab')
-        ->select('sab.billID')
-        ->where('sab.stuID = ?', $stuID)
-        ->_and_()
-        ->where('sab.ID > ?', $id)
-        ->orderBy('sab.ID')
-        ->limit(1);
-    $result = $query->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($result as $r) {
-        return $r['billID'];
-    }
-}
-
-/**
  * Subdomain as directory function uses the subdomain
  * of the install as a directory.
  *
@@ -1746,37 +882,6 @@ function array_unique_compact($a)
         $i ++;
     }
     return $newarr;
-}
-
-/**
- * Retrieves all the tags from every student
- * and removes duplicates.
- *
- * @since 6.0.04
- * @return mixed
- */
-function tagList()
-{
-    $app = \Liten\Liten::getInstance();
-    $tagging = $app->db->query('SELECT tags FROM student');
-    $q = $tagging->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    $tags = [];
-    foreach ($q as $r) {
-        $tags = array_merge($tags, explode(",", $r['tags']));
-    }
-    $tags = array_unique_compact($tags);
-    foreach ($tags as $key => $value) {
-        if ($value == "" || strlen($value) <= 0) {
-            unset($tags[$key]);
-        }
-    }
-    return $tags;
 }
 
 function check_mime_type($file, $mode = 0)
@@ -1926,7 +1031,7 @@ function is_duplicate_function($file_name)
     if (count($merge) !== count(array_unique($merge))) {
         $dupe = array_unique(array_diff_assoc($merge, array_unique($merge)));
         foreach ($dupe as $key => $value) {
-            return new \app\src\etError('duplicate_function_error', sprintf(_t('The following function is already defined elsewhere: <strong>%s</strong>'), $value));
+            return new \app\src\Core\etsis_Error('duplicate_function_error', sprintf(_t('The following function is already defined elsewhere: <strong>%s</strong>'), $value));
         }
     }
     return false;
@@ -2172,6 +1277,135 @@ function array_to_object(array $array)
         }
     }
     return (object) $array;
+}
+
+/**
+ * Strip close comment and close php tags from file headers.
+ *
+ * @since 6.2.3
+ * @param string $str Header comment to clean up.
+ * @return string
+ */
+function _etsis_cleanup_file_header_comment( $str ) {
+    return trim(preg_replace("/\s*(?:\*\/|\?>).*/", '', $str));
+}
+
+/**
+ * Retrieve metadata from a file.
+ *
+ * Searches for metadata in the first 8kB of a file, such as a plugin or layout.
+ * Each piece of metadata must be on its own line. Fields can not span multiple
+ * lines, the value will get cut at the end of the first line.
+ *
+ * If the file data is not within that first 8kB, then the author should correct
+ * their plugin file and move the data headers to the top.
+ *
+ * @since 6.2.3
+ * @param string $file            Path to the file.
+ * @param array  $default_headers List of headers, in the format array('HeaderKey' => 'Header Name').
+ * @param string $context         Optional. If specified adds filter hook "extra_{$context}_headers".
+ *                                Default empty.
+ * @return array Array of file headers in `HeaderKey => Header Value` format.
+ */
+function etsis_get_file_data( $file, $default_headers, $context = '' ) {
+    $app = \Liten\Liten::getInstance();
+    // We don't need to write to the file, so just open for reading.
+    $fp = fopen( $file, 'r' );
+    // Pull only the first 8kB of the file in.
+    $file_data = fread( $fp, 8192 );
+    // PHP will close file handle.
+    fclose( $fp );
+    // Make sure we catch CR-only line endings.
+    $file_data = str_replace( "\r", "\n", $file_data );
+    /**
+     * Filter extra file headers by context.
+     *
+     * The dynamic portion of the hook name, `$context`, refers to
+     * the context where extra headers might be loaded.
+     *
+     * @since 6.2.3
+     *
+     * @param array $extra_context_headers Empty array by default.
+     */
+    if ( $context && $extra_headers = $app->hook->apply_filter( "extra_{$context}_headers", [] ) ) {
+        $extra_headers = array_combine( $extra_headers, $extra_headers ); // keys equal values
+        $all_headers = array_merge( $extra_headers, (array) $default_headers );
+    } else {
+        $all_headers = $default_headers;
+    }
+    foreach ( $all_headers as $field => $regex ) {
+        if ( preg_match( '/^[ \t\/*#@]*' . preg_quote( $regex, '/' ) . ':(.*)$/mi', $file_data, $match ) && $match[1] )
+            $all_headers[ $field ] = _etsis_cleanup_file_header_comment( $match[1] );
+            else
+                $all_headers[ $field ] = '';
+    }
+    return $all_headers;
+}
+
+/**
+ * Parses the plugin contents to retrieve plugin's metadata.
+ *
+ * The metadata of the plugin's data searches for the following in the plugin's
+ * header. All plugin data must be on its own line. For plugin description, it
+ * must not have any newlines or only parts of the description will be displayed
+ * and the same goes for the plugin data. The below is formatted for printing.
+ *
+ *     /*
+ *     Plugin Name: Name of Plugin
+ *     Plugin URI: Link to plugin information
+ *     Description: Plugin Description
+ *     Author: Plugin author's name
+ *     Author URI: Link to the author's web site
+ *     Version: Plugin version value.
+ *     Text Domain: Optional. Unique identifier, should be same as the one used in
+ *    		load_plugin_textdomain()
+ *
+ * The first 8kB of the file will be pulled in and if the plugin data is not
+ * within that first 8kB, then the plugin author should correct their plugin
+ * and move the plugin data headers to the top.
+ *
+ * The plugin file is assumed to have permissions to allow for scripts to read
+ * the file. This is not checked however and the file is only opened for
+ * reading.
+ *
+ * @since 6.2.3
+ *
+ * @param string $plugin_file Path to the plugin file
+ * @param bool   $markup      Optional. If the returned data should have HTML markup applied.
+ *                            Default true.
+ * @param bool   $translate   Optional. If the returned data should be translated. Default true.
+ * @return array {
+ *     Plugin data. Values will be empty if not supplied by the plugin.
+ *
+ *     @type string $Name        Name of the plugin. Should be unique.
+ *     @type string $Title       Title of the plugin and link to the plugin's site (if set).
+ *     @type string $Description Plugin description.
+ *     @type string $Author      Author's name.
+ *     @type string $AuthorURI   Author's website address (if set).
+ *     @type string $Version     Plugin version.
+ *     @type string $TextDomain  Plugin textdomain.
+ *     @type string $DomainPath  Plugins relative directory path to .mo files.
+ *     @type bool   $Network     Whether the plugin can only be activated network-wide.
+ * }
+ */
+function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
+    $default_headers = array(
+        'Name' => 'Plugin Name',
+        'PluginURI' => 'Plugin URI',
+        'Version' => 'Version',
+        'Description' => 'Description',
+        'Author' => 'Author',
+        'AuthorURI' => 'Author URI',
+        'TextDomain' => 'Text Domain'
+    );
+    $plugin_data = etsis_get_file_data( $plugin_file, $default_headers, 'plugin' );
+    if ( $markup || $translate ) {
+        $plugin_data = _get_plugin_data_markup_translate( $plugin_file, $plugin_data, $markup, $translate );
+    } else {
+        $plugin_data['Title']      = $plugin_data['Name'];
+        $plugin_data['AuthorName'] = $plugin_data['Author'];
+    }
+    return $plugin_data;
 }
 
 /**
