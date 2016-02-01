@@ -15,8 +15,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
-$stuInfo = new \app\src\Student;
-$stuInfo->Load_from_key(_h($prog[0]['stuID']));
+$stu = get_student(_h($prog[0]['stuID']));
 $list = '"'.implode('","', tagList()).'"';
 ?>
 
@@ -38,19 +37,19 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <li class="divider"></li>
     <li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><?=get_name(_h($prog[0]['stuID']));?> <?=_t( '(SPRO)' );?></li>
+    <li><?=get_name(_h($stu->stuID));?> <?=_t( '(SPRO)' );?></li>
 </ul>
 
 <div class="innerLR">
     
-    <?php $stuInfo->getStuHeader(); ?>
+    <?php get_stu_header(_h($stu->stuID)); ?>
     
     <div class="separator line bottom"></div>
     
     <?=$message->flashMessage();?>
 
     <!-- Form -->
-    <form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/<?=$prog[0]['stuID'];?>/" id="validateSubmitForm" method="post" autocomplete="off">
+    <form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/<?=$stu->stuID;?>/" id="validateSubmitForm" method="post" autocomplete="off">
         
         <!-- Widget -->
         <div class="widget widget-heading-simple widget-body-gray">
@@ -58,11 +57,11 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons user active"><a href="<?=get_base_url();?>stu/<?=_h($prog[0]['stuID']);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-                    <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-                    <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-                    <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
-                    <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($prog[0]['stuID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+                    <li class="glyphicons user active"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+                    <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+                    <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+                    <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
+                    <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -141,8 +140,8 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="col-md-8">
                             <select name="status"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 <option value="">&nbsp;</option>
-                                <option value="A"<?=selected('A',_h($stuInfo->getStatus()),false);?>><?=_t( 'Active' );?></option>
-                                <option value="I"<?=selected('I',_h($stuInfo->getStatus()),false);?>><?=_t( 'Inactive' );?></option>
+                                <option value="A"<?=selected('A',_h($stu->stuStatus),false);?>><?=_t( 'Active' );?></option>
+                                <option value="I"<?=selected('I',_h($stu->stuStatus),false);?>><?=_t( 'Inactive' );?></option>
                             </select>
                         </div>
                     </div>

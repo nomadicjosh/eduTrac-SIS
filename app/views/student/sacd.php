@@ -13,8 +13,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
-$stuInfo = new \app\src\Student;
-$stuInfo->Load_from_key(_h($sacd[0]['stuID']));
+$stu = get_student(_h($sacd[0]['stuID']));
 ?>
 
 <script type="text/javascript">
@@ -28,18 +27,18 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <li class="divider"></li>
     <li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/stac/<?=_h($sacd[0]['stuID']);?>/<?=bm();?>" class="glyphicons coins"><i></i> <?=_t( 'Academic Credits' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>" class="glyphicons coins"><i></i> <?=_t( 'Academic Credits' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'View Academic Credits (SACD)' );?></li>
 </ul>
 
 <div class="innerLR">
-    
-    <?=$message->flashMessage();?>
-    
-    <?php $stuInfo->getStuHeader(); ?>
+
+	<?php get_stu_header($stu->stuID); ?>
     
     <div class="separator line bottom"></div>
+    
+    <?=$message->flashMessage();?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacd/<?=_h($sacd[0]['stuAcadCredID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
@@ -242,7 +241,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/stac/<?=_h($sacd[0]['stuID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

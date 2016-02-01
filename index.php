@@ -76,6 +76,7 @@ require( APP_PATH . 'functions' . DS . 'core-function.php' );
 require( APP_PATH . 'functions' . DS . 'course-function.php' );
 require( APP_PATH . 'functions' . DS . 'section-function.php' );
 require( APP_PATH . 'functions' . DS . 'person-function.php' );
+require( APP_PATH . 'functions' . DS . 'student-function.php' );
 require( APP_PATH . 'functions' . DS . 'program-function.php' );
 require( APP_PATH . 'functions' . DS . 'parsecode-function.php' );
 if (file_exists(BASE_PATH . 'config.php')) {

@@ -13,8 +13,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
-$stuInfo = new \app\src\Student;
-$stuInfo->Load_from_key(_h($sacp[0]['stuID']));
+$stu = get_student(_h($sacp[0]['stuID']));
 ?>
 
 <script type="text/javascript">
@@ -31,14 +30,14 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<li class="divider"></li>
 	<li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=$stuInfo->getStuID();?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name($stuInfo->getStuID());?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=$stu->stuID;?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name($stu->stuID);?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Edit Student Program (SACP)' );?></li>
 </ul>
 
 <div class="innerLR">
     
-    <?php $stuInfo->getStuHeader(); ?>
+    <?php get_stu_header($stu->stuID); ?>
     
     <div class="separator line bottom"></div>
 	
@@ -191,9 +190,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Comments' );?></label>
-                            &nbsp;&nbsp;&nbsp;<a href="#comment-<?=_h($sacp[0]['stuID']);?>" data-toggle="modal" title="Edit Comment" class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                            &nbsp;&nbsp;&nbsp;<a href="#comment-<?=_h($stu->stuID);?>" data-toggle="modal" title="Edit Comment" class="btn btn-warning"><i class="fa fa-edit"></i></a>
                         </div>
-                        <div class="modal fade" id="comment-<?=_h($sacp[0]['stuID']);?>">
+                        <div class="modal fade" id="comment-<?=_h($stu->stuID);?>">
                         	<div class="modal-dialog">
 								<div class="modal-content">
 									<!-- Modal heading -->
@@ -203,8 +202,8 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 									</div>
 									<!-- // Modal heading END -->
                                     <div class="modal-body">
-                                        <textarea id="<?=_h($sacp[0]['stuID']);?>" name="comments" class="form-control" rows="5"><?=_h($sacp[0]['comments']);?></textarea>
-                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=date('D, M d, o @ h:i A',strtotime(date('Y-m-d h:i A')));?> <?=get_name(get_persondata('personID'));?>','<?=_h($sacp[0]['stuID']);?>'); return false;" />
+                                        <textarea id="<?=_h($stu->stuID);?>" name="comments" class="form-control" rows="5"><?=_h($sacp[0]['comments']);?></textarea>
+                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=date('D, M d, o @ h:i A',strtotime(date('Y-m-d h:i A')));?> <?=get_name(get_persondata('personID'));?>','<?=_h($stu->stuID);?>'); return false;" />
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></button>
@@ -241,10 +240,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				
 				<!-- Form actions -->
 				<div class="form-actions">
-				    <input type="hidden" name="stuID" value="<?=_h($sacp[0]['stuID']);?>" />
+				    <input type="hidden" name="stuID" value="<?=_h($stu->stuID);?>" />
 					<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" onclick="window.location='<?=get_base_url();?>stu/add-prog/<?=_h($sacp[0]['stuID']);?>/<?=bm();?>'"><i></i><?=_t( 'Add' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_h($sacp[0]['stuID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" onclick="window.location='<?=get_base_url();?>stu/add-prog/<?=_h($stu->stuID);?>/<?=bm();?>'"><i></i><?=_t( 'Add' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

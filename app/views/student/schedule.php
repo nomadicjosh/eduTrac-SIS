@@ -12,13 +12,12 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
-$stuInfo = new \app\src\Student;
-$stuInfo->Load_from_key(get_persondata('personID'));
+$stu = get_student(get_persondata('personID'));
 ?>
 
 <div class="col-md-12">
     
-    <?php $stuInfo->getStuHeader(); ?>
+    <?php get_stu_header($stu->stuID); ?>
     
     <div class="separator line bottom"></div>
 
