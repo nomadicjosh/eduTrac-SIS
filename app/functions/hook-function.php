@@ -794,7 +794,7 @@ function show_update_message()
         if ($update->checkUpdate() !== false) {
             if ($update->newVersionAvailable()) {
                 $alert = '<div class="alerts alerts-warn center">';
-                $alert .= sprintf(_t('eduTrac SIS release %s is available for download/upgrade.'), $update->getLatestVersion());
+                $alert .= sprintf(_t('eduTrac SIS release %s is available for download/upgrade. Before upgrading, make sure to <a href="%s">backup your system</a>.'), $update->getLatestVersion(), 'http://www.edutracsis.com/manual/edutrac-sis-backups/');
                 $alert .= '</div>';
             }
         }
