@@ -33,6 +33,21 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <div class="innerLR">
     
     <?=$message->flashMessage();?>
+    
+    <div class="tab-pane" id="search-users">
+        <div class="widget widget-heading-simple widget-body-white margin-none">
+            <div class="widget-body">
+
+                <div class="alerts alerts-info center">
+                    <p><?=sprintf( _t('Use this screen to install/upgrade plugins. If you need to install a module, you need to visit <a href="%s"><strong>this screen</strong></a>.'), get_base_url() . 'dashboard/install-module/');?></p>
+                </div>
+
+            </div>
+        </div>
+        <div class="separator bottom"></div>
+    </div>
+    
+    <div class="separator bottom"></div>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>plugins/install/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
