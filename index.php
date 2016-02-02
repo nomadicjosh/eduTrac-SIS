@@ -73,6 +73,7 @@ require( APP_PATH . 'functions' . DS . 'auth-function.php' );
 require( APP_PATH . 'functions' . DS . 'cache-function.php' );
 require( APP_PATH . 'functions' . DS . 'textdomain-function.php' );
 require( APP_PATH . 'functions' . DS . 'core-function.php' );
+require( APP_PATH . 'functions' . DS . 'db-function.php' );
 require( APP_PATH . 'functions' . DS . 'course-function.php' );
 require( APP_PATH . 'functions' . DS . 'section-function.php' );
 require( APP_PATH . 'functions' . DS . 'person-function.php' );
