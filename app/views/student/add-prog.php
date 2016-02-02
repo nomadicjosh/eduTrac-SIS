@@ -13,9 +13,8 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
-$stuInfo = new \app\src\Student;
-$stuInfo->Load_from_key(_h($stu[0]['stuID']));
-$antGradDate = "05/".date("y",strtotime("+4 years"));
+$stu = get_student(_h($stu[0]['stuID']));
+$antGradDate = date("05/d/y",strtotime("+4 years"));
 ?>
 
 <script type="text/javascript">
@@ -45,21 +44,21 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<li class="divider"></li>
 	<li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=_h($stu[0]['stuID']);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name(_h($stu[0]['stuID']));?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name(_h($stu->stuID));?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Add Student Program' );?></li>
 </ul>
 
 <div class="innerLR">
+
+	<?php get_stu_header($stu->stuID); ?>
+	
+	<div class="separator line bottom"></div>
     
     <?=$message->flashMessage();?>
-    
-    <?php $stuInfo->getStuHeader(); ?>
-    
-    <div class="separator line bottom"></div>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/add-prog/<?=_h($stu[0]['stuID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/add-prog/<?=_h($stu->stuID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -189,7 +188,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=$stu[0]['stuID'];?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=$stu->stuID;?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

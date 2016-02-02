@@ -12,8 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$stuInfo = new \app\src\Student;
-$stuInfo->Load_from_key(_h($stu));
+$stu = get_student(_h($stu));
 ?>
 
 <ul class="breadcrumb">
@@ -22,14 +21,14 @@ $stuInfo->Load_from_key(_h($stu));
 	<li class="divider"></li>
 	<li><a href="<?=get_base_url();?>student/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=_h($stu);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Student Terms Summary (STRS)' );?></li>
 </ul>
 
 <div class="innerLR">
     
-    <?php $stuInfo->getStuHeader(); ?>
+    <?php get_stu_header(_h($stu->stuID)); ?>
     
     <div class="separator line bottom"></div>
 
@@ -39,11 +38,11 @@ $stuInfo->Load_from_key(_h($stu));
         <!-- Tabs Heading -->
         <div class="tabsbar">
             <ul>
-                <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu);?>/<?=bm();?>"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-                <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-                <li class="glyphicons tags tab-stacked active"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-                <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
-                <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+                <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+                <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+                <li class="glyphicons tags tab-stacked active"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+                <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
+                <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
             </ul>
         </div>
         <!-- // Tabs Heading END -->
@@ -97,7 +96,7 @@ $stuInfo->Load_from_key(_h($stu));
             
             <!-- Form actions -->
             <div class="form-actions">
-                <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_h($stu);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
             </div>
             <!-- // Form actions END -->
 			

@@ -35,6 +35,21 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<?=$message->flashMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
+    
+    <div class="tab-pane <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>" id="search-users">
+        <div class="widget widget-heading-simple widget-body-white margin-none">
+            <div class="widget-body">
+
+                <div class="alerts alerts-info center">
+                    <p><?=sprintf( _t('Use this screen to install/upgrade modules. If you need to install a plugin, you need to visit <a href="%s"><strong>this screen</strong></a>.'), get_base_url() . 'plugins/install/');?></p>
+                </div>
+
+            </div>
+        </div>
+        <div class="separator bottom"></div>
+    </div>
+    
+    <div class="separator bottom"></div>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>dashboard/install-module/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">

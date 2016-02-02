@@ -188,7 +188,7 @@ function jstree_sidebar_menu($screen, $crse = '', $sect = '', $nae = '', $staff 
     
     $menu = APP_PATH . 'views/dashboard/menu.php';
     if (! $app->hook->has_filter('core_sidebar_menu')) {
-        require($menu);
+        require ($menu);
     }
     return $app->hook->apply_filter('core_sidebar_menu', $menu, $screen, $crse, $sect, $nae, $staff, $spro, $prog);
 }
@@ -794,7 +794,7 @@ function show_update_message()
         if ($update->checkUpdate() !== false) {
             if ($update->newVersionAvailable()) {
                 $alert = '<div class="alerts alerts-warn center">';
-                $alert .= sprintf(_t('eduTrac SIS release %s is available for download/upgrade.'), $update->getLatestVersion());
+                $alert .= sprintf(_t('eduTrac SIS release %s is available for download/upgrade. Before upgrading, make sure to <a href="%s">backup your system</a>.'), $update->getLatestVersion(), 'http://www.edutracsis.com/manual/edutrac-sis-backups/');
                 $alert .= '</div>';
             }
         }
@@ -903,14 +903,14 @@ function get_met_title()
  *
  * @since 6.2.2
  * @uses $app->hook->apply_filter() Calls 'met_welcome_message_title' filter.
- *
+ *      
  * @return string eduTrac SIS welcome message title.
  */
 function get_met_welcome_message_title()
 {
     $app = \Liten\Liten::getInstance();
-
-    $title = _t( 'Welcome to myeduTrac' );
+    
+    $title = _t('Welcome to myeduTrac');
     return $app->hook->apply_filter('met_welcome_message_title', $title);
 }
 
@@ -1544,6 +1544,34 @@ function etsis_plugin_deactivate_message($plugin_name)
      *            The name of the plugin that was just deactivated.
      */
     return $app->hook->apply_filter('etsis_plugin_deactivate_message', $success, $plugin_name);
+}
+
+/**
+ * Dropdown list of active academic programs.
+ *
+ * @since 6.2.3
+ * @param string $progCode
+ *            Academic program code.
+ */
+function acad_program_select($progCode = null)
+{
+    $app = \Liten\Liten::getInstance();
+    $prog = $app->db->acad_program()
+        ->where('currStatus = "A"')
+        ->orderBy('deptCode');
+    $query = $prog->find(function ($data) {
+        $array = [];
+        foreach ($data as $d) {
+            $array[] = $d;
+        }
+        return $array;
+    });
+    
+    foreach ($query as $r) {
+        echo '<option value="' . _h($r['acadProgCode']) . '"' . selected($progCode, _h($r['acadProgCode']), false) . '>' . _h($r['acadProgCode']) . ' ' . _h($r['acadProgTitle']) . '</option>' . "\n";
+    }
+    
+    return $app->hook->apply_filter('academic_program', $query, $progCode);
 }
 
 $app->hook->add_action('admin_head', 'head_release_meta', 5);

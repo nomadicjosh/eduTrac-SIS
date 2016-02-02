@@ -48,7 +48,15 @@ function isUserLoggedIn()
     
     $person = get_person_by('personID', get_persondata('personID'));
     
-    if ($app->cookies->verifySecureCookie('ET_COOKNAME') && count($person) > 0) {
+    $vars = [];
+    parse_str($app->cookies->get('ET_COOKNAME'), $vars);
+    /**
+     * Checks to see if the cookie is exists on the server.
+     * It it exists, we need to delete it.
+     */
+    $file = $app->config('cookies.savepath') . 'cookies.' . $vars['data'];
+    
+    if (file_exists($file) && $app->cookies->verifySecureCookie('ET_COOKNAME') && count($person) > 0) {
         return true;
     }
     

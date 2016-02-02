@@ -13,8 +13,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $message = new \app\src\Messages;
-$stuInfo = new \app\src\Student;
-$stuInfo->Load_from_key(_h($stu[0]['stuID']));
+$stu = get_student(_h($stu[0]['stuID']));
 ?>
 
 <script type="text/javascript">
@@ -34,12 +33,14 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <li class="divider"></li>
     <li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
+    <li class="divider"></li>
     <li><?=_t( 'Student Restriction (STRC)' );?></li>
 </ul>
 
 <div class="innerLR">
     
-    <?php $stuInfo->getStuHeader(); ?>
+    <?php get_stu_header($stu->stuID); ?>
     
     <div class="separator line bottom"></div>
     
@@ -48,17 +49,17 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <!-- Tabs Heading -->
     <div class="tabsbar">
         <ul>
-            <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-            <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-            <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-            <li class="glyphicons disk_remove tab-stacked active"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu[0]['stuID']);?>/<?=bm();?>" data-toggle="tab"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
-            <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu[0]['stuID']);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+            <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+            <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+            <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+            <li class="glyphicons disk_remove tab-stacked active"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu->stuID);?>/<?=bm();?>" data-toggle="tab"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
+            <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
         </ul>
     </div>
     <!-- // Tabs Heading END -->
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/strc/<?=_h($stu[0]['stuID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/strc/<?=_h($stu->stuID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Table -->
 		<table class="table table-striped table-responsive swipe-horizontal table-primary">
@@ -164,7 +165,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	
 	<!-- Modal -->
 	<div class="modal fade" id="md-ajax">
-		<form class="form-horizontal" data-collabel="3" data-alignlabel="left" action="<?=get_base_url();?>stu/strc/<?=_h($stu[0]['stuID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal" data-collabel="3" data-alignlabel="left" action="<?=get_base_url();?>stu/strc/<?=_h($stu->stuID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 	
@@ -226,7 +227,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				
 				<!-- Modal footer -->
 				<div class="modal-footer">
-					<input type="hidden" name="stuID" value="<?=_h($stu[0]['stuID']);?>" />
+					<input type="hidden" name="stuID" value="<?=_h($stu->stuID);?>" />
                     <input type="hidden" name="addDate" value="<?=date('Y-m-d');?>" />
                     <input type="hidden" name="addedBy" value="<?=get_persondata('personID');?>" />
 					<button type="submit" class="btn btn-default"><?=_t( 'Submit' );?></button>

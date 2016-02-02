@@ -1424,7 +1424,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
         $js = [ 'plugins/fullcalendar/fullcalendar.js'];
 
         $app->view->display('student/timetable', [
-            'title' => 'Transcript',
+            'title' => 'Timetable',
             'cssArray' => $css,
             'jsArray' => $js
             ]
