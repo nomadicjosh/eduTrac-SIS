@@ -75,7 +75,7 @@ sed -i "s|{product}|eduTrac SIS|g" config.php
 
 sed -i "s|{company}|7 Media Web Solutions, LLC|g" config.php
 
-sed -i "s|{version}|6.2.2|g" config.php
+sed -i "s|{version}|6.2.3|g" config.php
 
 sed -i "s|{datenow}|$TODAY $HOUR|g" config.php
 
