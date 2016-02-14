@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the eduTrac SIS package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2016-02-14 02:22-0300\n"
+"PO-Revision-Date: 2016-02-14 03:11-0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -4369,7 +4369,7 @@ msgstr ""
 #: views/financial/index.php:63 views/financial/view-bill.php:80
 #: views/financial/view-comments.php:72 views/student/vbill.php:53
 msgid "Invoice #"
-msgstr ""
+msgstr "Fatura #"
 
 #: views/course/add.php:140 views/course/view.php:143
 #: views/program/add.php:173 views/program/view.php:178
@@ -4383,7 +4383,7 @@ msgstr ""
 #: views/person/view.php:130 views/staff/index.php:57
 #: views/student/index.php:57
 msgid "Last Name"
-msgstr "Sobrenome"
+msgstr "Último nome"
 
 #: views/course/add.php:159 views/course/atceq.php:91
 #: views/course/atceq.php:126 views/course/extr.php:188
@@ -4415,7 +4415,7 @@ msgstr "Nível acadêmico"
 
 #: views/financial/index.php:114
 msgid "Bill Search"
-msgstr ""
+msgstr "Pesquisar boleto"
 
 #: views/course/add.php:175 views/program/add.php:88 views/program/view.php:92
 #: views/section/add.php:310 views/section/view.php:227
@@ -4424,7 +4424,7 @@ msgstr ""
 
 #: views/financial/issue-refund.php:126 views/financial/view-refunds.php:248
 msgid "Refund Amount"
-msgstr ""
+msgstr "Quantidade de devolução"
 
 #: views/course/add.php:199 views/course/extr.php:259
 #: views/course/vextr.php:185 views/course/view.php:225
@@ -4435,7 +4435,7 @@ msgstr "Pessoa aprovação"
 
 #: views/financial/issue-refund.php:135 views/financial/view-refunds.php:257
 msgid "Refund Date"
-msgstr ""
+msgstr "Data de devolução"
 
 #: views/course/add.php:206 views/course/view.php:234
 #: views/program/add.php:110 views/program/view.php:114
@@ -4457,11 +4457,11 @@ msgstr ""
 
 #: views/course/addnl-info.php:66 views/section/view.php:240
 msgid "Prerequisites"
-msgstr ""
+msgstr "Pré-requisitos"
 
 #: views/financial/jentries.php:61 views/financial/view-jentry.php:66
 msgid "Posted by"
-msgstr ""
+msgstr "Postado por"
 
 #: views/course/addnl-info.php:73
 msgid "Allow Audit"
@@ -4469,7 +4469,7 @@ msgstr ""
 
 #: views/financial/jentries.php:81
 msgid "Total Amount"
-msgstr ""
+msgstr "Quantidade total"
 
 #: views/_layouts/dashboard.php:236
 msgid "(INST) - Institution"
@@ -4498,7 +4498,7 @@ msgstr ""
 
 #: views/_layouts/dashboard.php:237
 msgid "(AINST) - New Institution"
-msgstr ""
+msgstr "(AINST) - Nova Instituição"
 
 #: core-function.php:822 views/course/addnl-info.php:78
 #: views/course/addnl-info.php:91 views/course/addnl-info.php:156
@@ -4515,11 +4515,11 @@ msgstr ""
 #: views/setting/index.php:78 views/setting/index.php:140
 #: views/setting/registration.php:68
 msgid "No"
-msgstr ""
+msgstr "Não"
 
 #: views/financial/journal-entries.php:59 views/financial/payment-plan.php:321
 msgid "Posted By"
-msgstr ""
+msgstr "Postado por"
 
 #: views/_layouts/dashboard.php:242
 msgid "Communication Mgmt"
@@ -4531,16 +4531,16 @@ msgstr ""
 
 #: views/financial/payment-plan.php:97 views/financial/payment-plan.php:264
 msgid "Payment Frequency"
-msgstr ""
+msgstr "Frequência de pagamento"
 
 #: views/_layouts/dashboard.php:245 views/comm-mgmt/add.php:69
 #: views/comm-mgmt/add.php:72
 msgid "Add Email Template"
-msgstr "Adicionar E-mail Template"
+msgstr "Adicionar template de email"
 
 #: views/course/addnl-info.php:105
 msgid "Minimum Enrollment"
-msgstr "Inscrição mínimo"
+msgstr "Mínimo para inscrição"
 
 #: views/financial/payment-plan.php:101 views/financial/payment-plan.php:268
 msgid "Daily"
@@ -4549,7 +4549,7 @@ msgstr "Diariamente"
 #: views/_layouts/dashboard.php:246 views/comm-mgmt/schedule.php:29
 #: views/comm-mgmt/schedule.php:32
 msgid "Schedule Email"
-msgstr "Marcar Email"
+msgstr ""
 
 #: views/course/addnl-info.php:112 views/form/room.php:92
 #: views/form/room.php:132 views/form/view-room.php:94
@@ -4563,7 +4563,7 @@ msgstr ""
 #: views/_layouts/dashboard.php:247 views/comm-mgmt/queue.php:29
 #: views/comm-mgmt/queue.php:32
 msgid "Email Queue"
-msgstr ""
+msgstr "Fila de email"
 
 #: views/course/addnl-info.php:150 views/course/index.php:114
 #: views/course/view.php:309
@@ -4572,7 +4572,7 @@ msgstr "Tem certeza de que deseja criar uma cópia deste curso?"
 
 #: views/financial/payment-plan.php:104 views/financial/payment-plan.php:271
 msgid "Monthly"
-msgstr ""
+msgstr "Mensalmente"
 
 #: views/_layouts/dashboard.php:248 views/comm-mgmt/mailmerge.php:21
 #: views/comm-mgmt/mailmerge.php:24
@@ -4600,7 +4600,7 @@ msgstr ""
 #: views/course/ajax.php:72 views/program/ajax.php:80
 #: views/section/ajax.php:72
 msgid "The Department was created successfully."
-msgstr ""
+msgstr "O departamento foi criado com sucesso."
 
 #: views/financial/payment-plan.php:113
 msgid "Frequency Amount"
@@ -4614,11 +4614,11 @@ msgstr ""
 #: views/form/view-department.php:62 views/program/ajax.php:86
 #: views/section/ajax.php:78
 msgid "Department Code"
-msgstr ""
+msgstr "Código do departamento"
 
 #: views/financial/payment-plan.php:205
 msgid "Pay Frequency"
-msgstr ""
+msgstr "Frequência de pagamento"
 
 #: views/_layouts/dashboard.php:256
 msgid "(NSCS) Setup"
@@ -4628,7 +4628,7 @@ msgstr ""
 #: views/form/view-department.php:69 views/program/ajax.php:95
 #: views/section/ajax.php:87
 msgid "Department Type"
-msgstr ""
+msgstr "Tipo de departamento"
 
 #: views/financial/payment-plan.php:357
 msgid "Start and End Date"
@@ -4642,7 +4642,7 @@ msgstr ""
 #: views/form/view-department.php:78 views/program/ajax.php:104
 #: views/section/ajax.php:96
 msgid "Department Name"
-msgstr ""
+msgstr "Nome do departamento"
 
 #: views/financial/payment-plan.php:362
 msgid "The start date will act as the date the student and the institution agreed upon said payment plan. Start date is a required field but End date is optional."
@@ -4650,13 +4650,13 @@ msgstr ""
 
 #: views/_layouts/dashboard.php:258
 msgid "(NSCE) Verification"
-msgstr ""
+msgstr "(NSCE) Verificação"
 
 #: views/course/ajax.php:105 views/form/department.php:82
 #: views/form/view-department.php:91 views/program/ajax.php:113
 #: views/section/ajax.php:105
 msgid "Department Email"
-msgstr ""
+msgstr "Email do departamento"
 
 #: views/financial/payment-plan.php:386
 msgid "Ignore this field if the payment plan is not associated with a particular term."
@@ -4669,7 +4669,7 @@ msgstr ""
 #: views/course/ajax.php:114 views/program/ajax.php:122
 #: views/section/ajax.php:114
 msgid "Department Phone"
-msgstr ""
+msgstr "Telefone do departamento"
 
 #: views/financial/payment-plan.php:410
 msgid "Place any notes and or instructions for the student. This will appear on the account history screen for both the student as well as student accounts."
@@ -4685,15 +4685,15 @@ msgstr ""
 #: views/program/ajax.php:131 views/program/view.php:83
 #: views/section/ajax.php:123
 msgid "Short Description"
-msgstr ""
+msgstr "Descrição curta"
 
 #: views/financial/payment-plan.php:430
 msgid "Payment Plan:"
-msgstr ""
+msgstr "Plano de pagamento:"
 
 #: views/_layouts/dashboard.php:266
 msgid "Person Management"
-msgstr ""
+msgstr "Gerenciamento de pessoa"
 
 #: views/course/ajax.php:131 views/course/ajax.php:222
 #: views/person/adsu.php:101 views/program/ajax.php:139
@@ -4731,7 +4731,7 @@ msgstr ""
 #: views/course/ajax.php:204 views/form/subject.php:53
 #: views/form/subject.php:98 views/form/view-subject.php:62
 msgid "Subject Code"
-msgstr ""
+msgstr "Código da Disciplina"
 
 #: views/financial/paypal-ipn.php:130 views/student/paypal-ipn.php:130
 msgid "Invalid IPN"
@@ -4739,16 +4739,16 @@ msgstr ""
 
 #: views/_layouts/dashboard.php:272
 msgid "(APER) Add Person"
-msgstr ""
+msgstr "(APER) Adicionar Pessoa"
 
 #: views/course/ajax.php:213 views/form/subject.php:60
 #: views/form/subject.php:99 views/form/view-subject.php:69
 msgid "Subject Name"
-msgstr ""
+msgstr "Nome da disciplina"
 
 #: views/financial/paypal.php:21 views/financial/paypal.php:24
 msgid "Paypal Settings"
-msgstr ""
+msgstr "Paypal Configurações"
 
 #: views/_layouts/dashboard.php:276
 msgid "(STAF) Staff"
@@ -4756,11 +4756,11 @@ msgstr "(STAF) Pessoal"
 
 #: views/course/atceq.php:59 views/course/atceq.php:62
 msgid "New Transfer Course Equivalency"
-msgstr "Novo Curso de Transferência de Equivalência"
+msgstr ""
 
 #: views/financial/paypal.php:48
 msgid "Enable?"
-msgstr ""
+msgstr "Habilitar?"
 
 #: views/_layouts/dashboard.php:279 views/_layouts/myet/default.layout.php:148
 #: views/financial/view-payments.php:236 views/financial/view-refunds.php:227
@@ -4782,15 +4782,15 @@ msgstr ""
 
 #: views/_layouts/dashboard.php:281
 msgid "(SPRO) Student Profile"
-msgstr ""
+msgstr "(SPRO) Perfil de Estudante"
 
 #: views/course/atceq.php:92 views/course/vtceq.php:60
 msgid "Min Grade"
-msgstr ""
+msgstr "Nota mínima"
 
 #: views/financial/paypal.php:74 views/financial/paypal.php:147
 msgid "Business Email"
-msgstr ""
+msgstr "Email corporativo"
 
 #: views/_layouts/dashboard.php:282 views/student/graduation.php:27
 #: views/student/graduation.php:30
@@ -4814,11 +4814,11 @@ msgstr ""
 #: views/financial/payment-plan.php:122 views/financial/payment-plan.php:280
 #: views/section/view.php:116 views/student/sacp.php:168
 msgid "Start / End Date"
-msgstr ""
+msgstr "Data de início / encerramento"
 
 #: views/financial/paypal.php:93
 msgid "US Dollar"
-msgstr ""
+msgstr "Dólar Americado"
 
 #: views/_layouts/dashboard.php:290 views/application/index.php:21
 #: views/form/import.php:105 views/setting/index.php:122
@@ -4835,11 +4835,11 @@ msgstr "Aplicação"
 #: views/student/fgrades.php:40 views/student/stac.php:71
 #: views/student/templates/transcript/default.template.php:88
 msgid "Grade"
-msgstr ""
+msgstr "Nota"
 
 #: views/financial/paypal.php:94
 msgid "Austrailian Dollar"
-msgstr ""
+msgstr "Dólar Australiano"
 
 #: views/_layouts/dashboard.php:292
 msgid "(APPL) Application"
@@ -4855,7 +4855,7 @@ msgstr "Comentário"
 
 #: views/financial/paypal.php:95
 msgid "Euro"
-msgstr ""
+msgstr "Euro"
 
 #: views/_layouts/dashboard.php:293 views/application/inst-attended.php:45
 #: views/application/inst-attended.php:48 views/form/import.php:107
@@ -4869,11 +4869,11 @@ msgstr "Curso externo"
 
 #: views/financial/paypal.php:103
 msgid "Testing?"
-msgstr ""
+msgstr "Tentando?"
 
 #: views/_layouts/dashboard.php:298
 msgid "Financials"
-msgstr ""
+msgstr "Financeiro"
 
 #: views/course/extr.php:67 views/course/extr.php:148
 #: views/course/vextr.php:75 views/student/stac.php:65
@@ -4886,7 +4886,7 @@ msgstr ""
 
 #: views/_layouts/dashboard.php:301
 msgid "General Ledger"
-msgstr ""
+msgstr "Contabilidade geral"
 
 #: views/course/extr.php:71 views/course/index.php:59
 #: views/program/index.php:59
@@ -4899,15 +4899,15 @@ msgstr ""
 
 #: views/_layouts/dashboard.php:303
 msgid "Account Chart"
-msgstr "Conta Gráfico"
+msgstr "Gráfico de Conta"
 
 #: views/course/extr.php:195 views/course/vextr.php:121
 msgid "Minimum Grade"
-msgstr "Mínimo Grade"
+msgstr "Nota mínima"
 
 #: views/financial/paypal.php:152
 msgid "Set this to the email that is specified on your Paypal account. If you are in testing mode, make sure to set this to the email address in your Sandbox account."
-msgstr "Defina esta opção para o e-mail especificado na sua conta Paypal. Se você está em modo de teste, certifique-se de definir isso para o endereço de e-mail em sua conta Sandbox."
+msgstr "Defina esta opção para o email especificado na sua conta Paypal. Se você está em modo de teste, certifique-se de definir isso para o endereço de email em sua conta Sandbox."
 
 #: views/_layouts/dashboard.php:304 views/financial/gl-accounts.php:45
 #: views/financial/gl-filter.php:37 views/financial/jentry-filter.php:37
@@ -4938,16 +4938,16 @@ msgstr "Trimestre"
 
 #: views/financial/paypal.php:171
 msgid "Sandbox Mode"
-msgstr ""
+msgstr "Modo Sandbox"
 
 #: views/_layouts/dashboard.php:309
 msgid "Student Accounts"
-msgstr "Contas de estud."
+msgstr "Contas de estudantes."
 
 #: views/course/extr.php:252 views/course/vextr.php:178
 #: views/student/view.php:87
 msgid "Status Date"
-msgstr "Estado Data"
+msgstr "Status Data"
 
 #: views/financial/paypal.php:176
 msgid "If you are testing to make sure that the communication between your site and Paypal is working, set this to 'Yes' otherwise set it to 'No' for Live production."
@@ -4955,7 +4955,7 @@ msgstr "Se você estiver testando para se certificar de que a comunicação entr
 
 #: views/_layouts/dashboard.php:311
 msgid "Billing Tables"
-msgstr ""
+msgstr "Tabelas de faturamentos"
 
 #: views/course/extr.php:266 views/course/vextr.php:192 views/hr/view.php:319
 #: views/person/addr-form.php:211 views/person/addr.php:215
@@ -4965,14 +4965,14 @@ msgstr "Adicionar Data"
 
 #: views/financial/view-bill.php:33 views/financial/view-comments.php:34
 msgid "View Bill"
-msgstr ""
+msgstr "Visualizar Boleto"
 
 #: views/_layouts/dashboard.php:312 views/financial/account-history.php:28
 #: views/financial/index.php:30 views/financial/view-bill.php:31
 #: views/financial/view-comments.php:32 views/financial/view-payments.php:32
 #: views/financial/view-refunds.php:32
 msgid "Search Bill"
-msgstr "Pesquisa Bill"
+msgstr "Pesquisa Boleto"
 
 #: views/course/index.php:21 views/section/catalog.php:42
 #: views/student/terms.php:38
@@ -4982,30 +4982,30 @@ msgstr "Cursos"
 #: views/financial/view-bill.php:55 views/financial/view-comments.php:56
 #: views/financial/view-payments.php:56 views/financial/view-refunds.php:56
 msgid "Refunds"
-msgstr ""
+msgstr "Devoluções"
 
 #: views/_layouts/dashboard.php:313
 msgid "Create Bill/Add Fees"
-msgstr ""
+msgstr "Criar Boleto/Adicionar Fatura"
 
 #: views/course/index.php:56 views/student/schedule.php:37
 msgid "Course Code"
-msgstr ""
+msgstr "Código de curso"
 
 #: views/financial/view-bill.php:71
 msgid "Delete Bill / Invoice"
-msgstr ""
+msgstr "Deletar Boleto / Fatura"
 
 #: views/_layouts/dashboard.php:314 views/financial/add-payment.php:70
 #: views/financial/batch.php:39 views/financial/batch.php:42
 #: views/financial/batch.php:63 views/financial/create-bill.php:70
 #: views/financial/issue-refund.php:68 views/financial/payment-plan.php:70
 msgid "Batch Fees"
-msgstr ""
+msgstr "Taxas de Turmas"
 
 #: views/course/index.php:84
 msgid "Clone"
-msgstr ""
+msgstr "Clonar"
 
 #: views/financial/view-bill.php:89
 msgid "Invoice Date / Term"
@@ -5017,11 +5017,11 @@ msgstr ""
 #: views/financial/issue-refund.php:69 views/financial/payment-plan.php:71
 #: views/financial/view-payments.php:177 views/financial/view-payments.php:228
 msgid "Add Payment"
-msgstr "Adicione Pagamento"
+msgstr "Adicionar Pagamento"
 
 #: views/course/index.php:85
 msgid "A"
-msgstr ""
+msgstr "A"
 
 #: views/financial/view-bill.php:109 views/student/vbill.php:81
 msgid "Tuition / Adjusted"
@@ -5034,7 +5034,7 @@ msgstr ""
 #: views/course/index.php:86 views/dashboard/menu.php:170
 #: views/dashboard/menu.php:196 views/section/add.php:51
 msgid "Create Section"
-msgstr ""
+msgstr "Criar Seção"
 
 #: views/financial/view-bill.php:122 views/financial/view-bill.php:132
 #: views/form/import.php:84 views/student/vbill.php:93
@@ -5053,7 +5053,7 @@ msgstr ""
 
 #: views/course/tceq.php:22 views/course/tceq.php:25
 msgid "Search Transfer Course Equivalency"
-msgstr "Pesquisa transferência de curso Equivalência"
+msgstr ""
 
 #: views/financial/view-bill.php:158
 msgid "Are you sure you want to delete this fee?"
@@ -5087,7 +5087,7 @@ msgstr ""
 
 #: views/_layouts/dashboard.php:367 views/_layouts/myet/default.layout.php:201
 msgid "Profile"
-msgstr ""
+msgstr "Perfil"
 
 #: views/course/tcre.php:194 views/student/sacd.php:106
 msgid "Acad Lvl/Crse Lvl"
@@ -5109,7 +5109,7 @@ msgstr ""
 
 #: views/financial/view-bill.php:262
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
 #: views/_layouts/dashboard.php:378 views/_layouts/myet/default.layout.php:121
 msgid "Switch Back to"
@@ -5121,11 +5121,11 @@ msgstr ""
 
 #: views/financial/view-bill.php:265
 msgid "Next"
-msgstr ""
+msgstr "Próximo"
 
 #: views/_layouts/dashboard.php:382
 msgid "Lock Screen"
-msgstr ""
+msgstr "Bloquear tela"
 
 #: views/course/tcre.php:247 views/student/sacd.php:184
 msgid "Att/Comp Cred"
@@ -5133,11 +5133,11 @@ msgstr ""
 
 #: views/financial/view-bill.php:284
 msgid "Delete Invoice: "
-msgstr ""
+msgstr "Deletar fatura:"
 
 #: views/_layouts/dashboard.php:386
 msgid "Sign Out"
-msgstr ""
+msgstr "Sair"
 
 #: views/course/tcre.php:260 views/student/sacd.php:196
 msgid "Grade/Grd Pts"
@@ -5149,7 +5149,7 @@ msgstr ""
 
 #: views/_layouts/dashboard.php:406
 msgid "&copy; 2013"
-msgstr ""
+msgstr "&copy; 2013"
 
 #: views/course/tcre.php:273 views/student/sacd.php:218
 msgid "Status Date/Time"
@@ -5162,11 +5162,11 @@ msgstr ""
 #: views/_layouts/myet/default.layout.php:76 views/dashboard/index.php:21
 #: views/index/apply.php:196
 msgid "Get Help"
-msgstr ""
+msgstr "Obter Ajuda"
 
 #: views/course/tcre.php:286
 msgid "Student ID/Name"
-msgstr ""
+msgstr "ID/Nome Aluno"
 
 #: views/financial/view-bill.php:315
 msgid "A bill/invoice is connected to a term and there is ONE bill per/term, per/student. It is strongly encouraged to not change the term on a student's bill. If you do change the term, make sure to change it to a term where a bill does not currently exists. If you update the bill to a term where a bill already exists for a student, this will have disastrous effects and it cannot be undone."
@@ -5175,11 +5175,11 @@ msgstr ""
 #: views/_layouts/myet/default.layout.php:80 views/index/login.php:32
 #: views/index/login.php:62
 msgid "Sign in"
-msgstr ""
+msgstr "Login"
 
 #: views/course/vextr.php:30
 msgid "Search / Add External Course"
-msgstr ""
+msgstr "Pesquisar / Adicionar Curso Externo"
 
 #: views/financial/view-bill.php:316
 msgid "Moreover, if you created the bill using the wrong term, and you need to move the bill to a term where a current bill <strong>*does not*</strong> exist for the student, you first need to change/update the term on fees, payments, and refunds first, and then change/update the term on the bill."
@@ -5191,21 +5191,21 @@ msgstr "Aplicar"
 
 #: views/course/vextr.php:84 views/student/sacd.php:149
 msgid "Start/End Date"
-msgstr ""
+msgstr "Data de Início/Encerramento"
 
 #: views/financial/view-comments.php:81
 msgid "Invoice Date"
-msgstr ""
+msgstr "Data da fatura"
 
 #: views/_layouts/myet/default.layout.php:107 views/admin/index.php:28
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: views/course/view.php:252 views/section/addnl-info.php:57
 #: views/section/billing-info.php:51 views/section/booking-info.php:89
 #: views/section/offering-info.php:57 views/section/view.php:76
 msgid "Additional Info"
-msgstr ""
+msgstr "Informações adicionais"
 
 #: views/financial/view-jentry.php:22 views/financial/view-jentry.php:33
 msgid "General Journal Entry"
@@ -5213,11 +5213,11 @@ msgstr ""
 
 #: views/_layouts/myet/default.layout.php:113
 msgid "Howdy,"
-msgstr ""
+msgstr "Olá, "
 
 #: views/course/vtceq.php:27 views/course/vtceq.php:30
 msgid "View Transfer Course Equivalency"
-msgstr "Ver Transferência Curso de Equivalência"
+msgstr ""
 
 #: views/financial/view-jentry.php:45
 msgid "Journal ID"
@@ -5239,7 +5239,7 @@ msgstr ""
 
 #: views/_layouts/myet/default.layout.php:145
 msgid "My Menu"
-msgstr ""
+msgstr "Meu Menu"
 
 #: views/courses/cart.php:44 views/courses/index.php:80
 #: views/section/booking-info.php:141
@@ -5252,7 +5252,7 @@ msgstr ""
 
 #: views/_layouts/myet/default.layout.php:151 views/student/bill.php:25
 msgid "My Bills"
-msgstr ""
+msgstr "Minhas faturas"
 
 #: views/courses/cart.php:47 views/courses/index.php:83
 #: views/form/building.php:80 views/form/import.php:94
@@ -5271,7 +5271,7 @@ msgstr ""
 
 #: views/_layouts/myet/default.layout.php:152
 msgid "Class Schedule"
-msgstr ""
+msgstr "Horário de aula"
 
 #: views/courses/cart.php:68 views/dashboard/install-module.php:64
 #: views/form/import.php:63 views/form/photo.php:50
@@ -5281,12 +5281,12 @@ msgstr "Remover"
 
 #: views/financial/view-payments.php:127
 msgid "Payment Note:"
-msgstr ""
+msgstr "Nota de pagamento:"
 
 #: views/_layouts/myet/default.layout.php:153 views/dashboard/menu.php:230
 #: views/section/view.php:277 views/student/fgrades.php:25
 msgid "Final Grades"
-msgstr ""
+msgstr "Nota final"
 
 #: views/courses/cart.php:70 views/courses/cart.php:90
 #: views/section/register.php:138
@@ -5299,7 +5299,7 @@ msgstr "Tem certeza de que deseja excluir este pagamento?"
 
 #: views/_layouts/myet/default.layout.php:171 views/form/address.php:27
 msgid "Change of Address Form"
-msgstr "Mudança de Endereço Form"
+msgstr "Formulário de alteração de endereço"
 
 #: views/courses/index.php:60
 msgid "You have a hold on your account which is currently restricting you from registering for a course(s). Please contact the following office(s)/department(s) to inquire about the hold(s) on your account: "
@@ -5307,7 +5307,7 @@ msgstr "Você tem um porão em sua conta, que está actualmente a restringir -lo
 
 #: views/financial/view-refunds.php:34
 msgid "View Bill Refunds"
-msgstr ""
+msgstr "Visualizar taxas de devoluções"
 
 #: views/_layouts/myet/default.layout.php:172
 msgid "Booking Request Form"
@@ -5315,7 +5315,7 @@ msgstr ""
 
 #: views/courses/index.php:84
 msgid "Info"
-msgstr ""
+msgstr "Info"
 
 #: views/financial/view-refunds.php:95
 msgid "Date / Term / Refund"
@@ -5331,7 +5331,7 @@ msgstr "Selecionar"
 
 #: views/financial/view-refunds.php:118
 msgid "Refund Note:"
-msgstr ""
+msgstr "Nota de devolução:"
 
 #: views/_layouts/myet/default.layout.php:200
 msgid "Applications"
@@ -5339,19 +5339,19 @@ msgstr "Aplicações"
 
 #: views/courses/index.php:111
 msgid "Section Info"
-msgstr ""
+msgstr "Informação de seção"
 
 #: views/financial/view-refunds.php:139 views/form/import.php:82
 msgid "Refund"
-msgstr "Reembolso"
+msgstr "Devolução"
 
 #: views/_layouts/myet/default.layout.php:202 views/index/password.php:28
 msgid "Change Password"
-msgstr ""
+msgstr "Mudar senha"
 
 #: views/courses/index.php:119
 msgid "Instructor:"
-msgstr ""
+msgstr "Instrutor:"
 
 #: views/financial/view-refunds.php:143
 msgid "Are you sure you want to delete this refund?"
@@ -5374,7 +5374,7 @@ msgstr "Ano letivo"
 
 #: views/_layouts/myet/default.layout.php:210
 msgid "Info Pages"
-msgstr ""
+msgstr "Páginas de informações"
 
 #: views/courses/index.php:127
 msgid "Comment:"
@@ -5399,7 +5399,7 @@ msgstr ""
 
 #: views/_layouts/myet/default.layout.php:219
 msgid "Quick Links"
-msgstr ""
+msgstr "Links rápidos"
 
 #: views/courses/index.php:135
 msgid "Lab Fee:"
@@ -5410,7 +5410,7 @@ msgstr "Taxa de Laboratório:"
 #: views/person/addr-form.php:103 views/person/addr.php:103
 #: views/person/view.php:148
 msgid "Address1"
-msgstr ""
+msgstr "Endereço1"
 
 #: views/_layouts/myet/default.layout.php:237 views/courses/index.php:39
 msgid "Search Courses"
@@ -5425,24 +5425,24 @@ msgstr "Taxa de Material:"
 #: views/person/addr-form.php:112 views/person/addr.php:112
 #: views/person/view.php:157
 msgid "Address2"
-msgstr ""
+msgstr "Endereço2"
 
 #: views/_layouts/myet/default.layout.php:239
 msgid "Cart"
-msgstr "Caçamba"
+msgstr "Carrinho"
 
 #: views/courses/index.php:178
 msgid "Add to Cart"
-msgstr ""
+msgstr "Adicionar ao Carrinho"
 
 #: views/form/address.php:62 views/index/apply.php:126
 #: views/index/profile.php:107
 msgid "Zip"
-msgstr ""
+msgstr "Zip"
 
 #: views/admin/csseditor.php:51 views/admin/index.php:43
 msgid "CSS Editor"
-msgstr ""
+msgstr "CSS Editor"
 
 #: views/cron/index.php:46 views/cron/log.php:48 views/cron/new.php:67
 #: views/cron/setting.php:47 views/cron/view.php:65
@@ -5451,7 +5451,7 @@ msgstr ""
 
 #: views/form/address.php:66 views/index/apply.php:85
 msgid "Phone #"
-msgstr ""
+msgstr "Telefone #"
 
 #: views/admin/csseditor.php:55 views/application/view.php:495
 #: views/calendar/setting.php:114 views/course/add.php:230
@@ -5509,7 +5509,7 @@ msgstr ""
 #: views/setting/index.php:49 views/setting/registration.php:48
 #: views/setting/templates.php:155 views/staff/view.php:215
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: views/admin/index.php:31 views/admin/pages.php:29
 msgid "Manage Pages"
@@ -5518,7 +5518,7 @@ msgstr "Gerenciar Páginas"
 #: views/cron/index.php:48 views/cron/log.php:50 views/cron/new.php:69
 #: views/cron/setting.php:49 views/cron/view.php:67
 msgid "Log"
-msgstr ""
+msgstr "Log"
 
 #: views/form/building.php:28 views/form/building.php:31
 #: views/form/import.php:95 views/form/room.php:60 views/form/room.php:130
@@ -5538,12 +5538,12 @@ msgstr "Gerenciar vínculos"
 #: views/cron/index.php:50 views/cron/log.php:52 views/cron/new.php:71
 #: views/cron/setting.php:51 views/cron/view.php:69
 msgid "About"
-msgstr ""
+msgstr "Sobre"
 
 #: views/form/building.php:60 views/form/building.php:121
 #: views/form/view-building.php:62
 msgid "Building Code"
-msgstr ""
+msgstr "Código do prédio"
 
 #: views/admin/index.php:39
 msgid "Manage News"
@@ -5551,12 +5551,12 @@ msgstr "Gerencie Notícias"
 
 #: views/cron/index.php:64
 msgid "Cronjob"
-msgstr ""
+msgstr "Cronjob"
 
 #: views/form/building.php:67 views/form/building.php:122
 #: views/form/view-building.php:69
 msgid "Building Name"
-msgstr ""
+msgstr "Nome do prédio"
 
 #: views/admin/index.php:46
 msgid "If you are having issues with results not updating after changes have been made, click the clear cache button below."
@@ -5571,11 +5571,11 @@ msgstr ""
 #: views/program/ajax.php:402 views/program/view.php:210
 #: views/student/templates/transcript/default.template.php:167
 msgid "CCD"
-msgstr ""
+msgstr "CCD"
 
 #: views/admin/index.php:48
 msgid "Clear Cache"
-msgstr ""
+msgstr "Limpar Cache"
 
 #: views/cron/index.php:66
 msgid "Last Run"
@@ -5583,7 +5583,7 @@ msgstr ""
 
 #: views/form/ccd.php:60 views/form/ccd.php:105 views/form/view-ccd.php:62
 msgid "CCD Code"
-msgstr ""
+msgstr "CCD Código"
 
 #: hook-function.php:365
 msgid "Active Students"
@@ -5595,7 +5595,7 @@ msgstr "Cursos ativos"
 
 #: hook-function.php:425
 msgid "Active Programs"
-msgstr ""
+msgstr "Programas ativos"
 
 #: hook-function.php:531 hook-function.php:563
 msgid "my"
@@ -5603,7 +5603,7 @@ msgstr "meu"
 
 #: hook-function.php:546 hook-function.php:548
 msgid "Powered by eduTrac SIS r"
-msgstr ""
+msgstr "Powered by eduTrac SIS r"
 
 #: hook-function.php:600 views/_layouts/dashboard.php:99
 #: views/dashboard/menu.php:52
@@ -5681,7 +5681,7 @@ msgstr "G Formado"
 
 #: hook-function.php:847 views/course/view.php:135 views/student/sacd.php:134
 msgid "I Institutional"
-msgstr ""
+msgstr "I Institucional"
 
 #: hook-function.php:848 hook-function.php:942 views/student/sacd.php:135
 msgid "TR Transfer"
@@ -5693,7 +5693,7 @@ msgstr ""
 
 #: hook-function.php:850
 msgid "X Exempt"
-msgstr "X Isento"
+msgstr ""
 
 #: hook-function.php:851
 msgid "T Test"
@@ -5705,7 +5705,7 @@ msgstr "FR Calouro"
 
 #: hook-function.php:870
 msgid "SO Sophomore"
-msgstr "SO estud. de 2 ano Univ"
+msgstr "SO Secundarista"
 
 #: hook-function.php:871
 msgid "JR Junior"
@@ -5769,15 +5769,15 @@ msgstr "Erro!"
 
 #: installer-function.php:18
 msgid "Minimum PHP version required in order to run eduTrac ERP is PHP 5.4. Your PHP version: "
-msgstr "PHP versão mínima necessária para executar eduTrac ERP é PHP 5.4. A sua versão do PHP:"
+msgstr "A versão mínima necessária do PHP para executar eduTrac ERP é PHP 5.4. A sua versão é:"
 
 #: installer-function.php:21
 msgid "Your PHP version is "
-msgstr ""
+msgstr "Sua versão do PHP é:"
 
 #: installer-function.php:33
 msgid "Your memory limit is: "
-msgstr ""
+msgstr "Seu limite de memória é: "
 
 #: installer-function.php:36
 msgid "Your memory is too low to complete the installation. Minimal value is 64MB, and you have it set to "
@@ -5785,25 +5785,25 @@ msgstr ""
 
 #: modules/booking.module.php:433
 msgid "Room Request: "
-msgstr ""
+msgstr "Solicitação de Sala: "
 
 #: modules/financial.module.php:418
 msgid "Pay Bill"
-msgstr ""
+msgstr "Pagar fatura"
 
 #: modules/financial.module.php:424 views/financial/view-bill.php:53
 #: views/financial/view-comments.php:54 views/financial/view-payments.php:54
 #: views/financial/view-refunds.php:54
 msgid "Student Bill"
-msgstr ""
+msgstr "Fatura de aluno"
 
 #: modules/financial.module.php:433
 msgid "Pay Now"
-msgstr ""
+msgstr "Pagar Agora"
 
 #: routers/appl.router.php:240
 msgid "myeduTrac Username Change"
-msgstr ""
+msgstr "Mudar nome de usuário do meuEduTrac"
 
 #: routers/courses.router.php:69 routers/courses.router.php:189
 msgid "Your institution has set a course registration limit. You are only allowed to register for <strong>"
@@ -5815,7 +5815,7 @@ msgstr "cursos</strong> por termo."
 
 #: routers/cron.router.php:110
 msgid "Database saved."
-msgstr ""
+msgstr "Banco de dado salvo."
 
 #: routers/cron.router.php:115
 msgid "Database not saved, could not create database file on server, please check write rights of this script."
@@ -5827,7 +5827,7 @@ msgstr ""
 
 #: routers/cron.router.php:256
 msgid "Email address is invalid!"
-msgstr ""
+msgstr "Endereço de email inválido!"
 
 #: routers/cron.router.php:272
 msgid "Cronjob already known in this system."
@@ -5835,7 +5835,7 @@ msgstr ""
 
 #: routers/cron.router.php:276
 msgid "Cronjob URL is wrong."
-msgstr ""
+msgstr "Cronjob URL está errada."
 
 #: routers/cron.router.php:294
 msgid "Your cronjob script cannot run without a password, Your cronjob password contains wrong characters, minimum of 4 letters and numbers."
@@ -5847,7 +5847,7 @@ msgstr ""
 
 #: routers/cron.router.php:357
 msgid "Cronjob log cleaned."
-msgstr ""
+msgstr "Log do Cronjob limpo."
 
 #: routers/dashboard.router.php:228 routers/plugins.router.php:185
 msgid "The file you are trying to upload is not the accepted file type. Please try again."
