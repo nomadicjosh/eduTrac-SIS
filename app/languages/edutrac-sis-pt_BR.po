@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the eduTrac SIS package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2016-02-14 01:56-0300\n"
+"PO-Revision-Date: 2016-02-14 02:22-0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -243,7 +243,7 @@ msgstr ""
 
 #: views/section/add.php:190 views/section/addnl-info.php:92
 msgid "ONL Online"
-msgstr ""
+msgstr "ONL Online"
 
 #: views/section/add.php:191 views/section/addnl-info.php:93
 msgid "HB Hybrid"
@@ -291,7 +291,7 @@ msgstr "Sábado"
 
 #: views/section/add.php:287 views/section/offering-info.php:166
 msgid "Register Online"
-msgstr ""
+msgstr "Registrar Online"
 
 #: views/section/addnl-info.php:31
 msgid "View Section"
@@ -805,7 +805,7 @@ msgstr ""
 
 #: views/setting/index.php:104
 msgid "Online"
-msgstr "Conectado"
+msgstr "Online"
 
 #: views/hr/positions.php:166
 msgid "Edit Position"
@@ -3254,7 +3254,7 @@ msgstr ""
 
 #: views/dashboard/support.php:26 views/dashboard/support.php:29
 msgid "Online Documenation"
-msgstr ""
+msgstr "Documentação Online"
 
 #: views/application/appls.php:111 views/course/extr.php:226
 #: views/course/extr.php:235 views/course/vextr.php:152
@@ -5855,11 +5855,11 @@ msgstr "O arquivo que você está tentando fazer upload não é o tipo de arquiv
 
 #: routers/dashboard.router.php:239
 msgid "The module was uploaded and installed properly."
-msgstr "O módulo foi carregado e instalado corretamente."
+msgstr "O módulo foi carregado e instalado com sucesso."
 
 #: routers/dashboard.router.php:241
 msgid "There was a problem uploading the module. Please try again or check the module package."
-msgstr "Houve um problema ao carregar o módulo. Por favor, tente novamente ou verifique a embalagem do módulo."
+msgstr "Houve um problema ao carregar o módulo. Por favor, tente novamente ou verifique o pacote do módulo."
 
 #: routers/install.router.php:60 routers/install.router.php:87
 msgid "Unable to establish a database connection."
@@ -5884,15 +5884,15 @@ msgstr "Você tem que primeiro selecionar uma imagem para upload."
 #: routers/myet.router.php:604 routers/person.router.php:288
 #: routers/student.router.php:268
 msgid "myeduTrac :: "
-msgstr ""
+msgstr "meuEduTrac :: "
 
 #: routers/myet.router.php:631
 msgid "Change of Address Request"
-msgstr "Mudança de Endereço Pedido"
+msgstr "Solicitação de Mudança de Endereço"
 
 #: routers/person.router.php:306
 msgid "myeduTrac Login Details"
-msgstr ""
+msgstr "myeduTrac Detalhes de Login"
 
 #: routers/plugins.router.php:196
 msgid "Your plugin was uploaded and installed properly."
@@ -5908,11 +5908,11 @@ msgstr "CSV para e-mail anexos"
 
 #: routers/savedquery.router.php:249
 msgid "The attached report can be opened with OpenOffice.org Calc, Google Docs, Microsoft Excel, or Apple Numbers."
-msgstr "O relatório anexo pode ser aberto com o OpenOffice.org Calc, Google Docs, Microsoft Excel, ou Números da Apple."
+msgstr "O relatório anexo pode ser aberto com o OpenOffice.org Calc, Google Docs, Microsoft Excel, ou Apple Numbers."
 
 #: routers/student.router.php:291
 msgid "Student Acceptance Letter"
-msgstr ""
+msgstr "Carta de aceitação de estudante"
 
 #: src/Email.php:217 views/section/register.php:59
 #: views/section/register.php:62
@@ -5921,11 +5921,11 @@ msgstr "Matrícula do Curso"
 
 #: src/Email.php:258 src/Email.php:296
 msgid "myeduTrac::"
-msgstr ""
+msgstr "meuEduTrac::"
 
 #: src/Email.php:282
 msgid " Account Login Details"
-msgstr "Conta Utilizador Detalhes"
+msgstr "Detalhes de Login"
 
 #: src/Email.php:321
 msgid "Application for Admissions"
@@ -5933,37 +5933,37 @@ msgstr "Pedido de Admissão"
 
 #: src/Messages.php:60
 msgid "200 - Success: Ok"
-msgstr ""
+msgstr "200 - Sucesso: Ok"
 
 #: src/Messages.php:61
 msgid "201 - Success: Created"
-msgstr ""
+msgstr "201 - Sucesso: Registrado"
 
 #: src/Messages.php:62
 msgid "204 - Error: No Content"
-msgstr ""
+msgstr "204 - Erro: Nenhum conteúdo"
 
 #: src/Messages.php:63
 msgid "409 - Error: Conflict"
-msgstr ""
+msgstr "409 - Erro: Conflito"
 
 #: src/Student.php:223 views/dashboard/menu.php:113
 msgid "Switch To"
-msgstr ""
+msgstr "Mudar para"
 
 #: src/Student.php:245 views/hr/add.php:57 views/hr/positions.php:58
 #: views/hr/view-timesheet.php:57 views/hr/view.php:58 views/staff/view.php:57
 msgid "Phone:"
-msgstr ""
+msgstr "Telefone:"
 
 #: src/Student.php:251 views/hr/add.php:72 views/hr/positions.php:73
 #: views/hr/view-timesheet.php:72 views/hr/view.php:73 views/staff/view.php:72
 msgid "Email:"
-msgstr ""
+msgstr "Email:"
 
 #: src/Student.php:252
 msgid "Birth Date:"
-msgstr ""
+msgstr "Data de nascimento:"
 
 #: src/Student.php:253 views/hr/add.php:73 views/hr/positions.php:74
 #: views/hr/view-timesheet.php:73 views/hr/view.php:74 views/staff/view.php:73
@@ -6125,7 +6125,7 @@ msgstr "Painel de Controle"
 #: views/plugins/index.php:22 views/plugins/index.php:25
 #: views/plugins/install.php:27
 msgid "Plugins"
-msgstr ""
+msgstr "Plugins"
 
 #: views/_layouts/dashboard.php:80
 msgid "Install Plugins"
@@ -6161,7 +6161,7 @@ msgstr "Modelos de e-mail"
 
 #: views/_layouts/dashboard.php:106
 msgid "Campuses"
-msgstr ""
+msgstr "Campus"
 
 #: views/_layouts/dashboard.php:108 views/dashboard/menu.php:56
 msgid "Importer"
@@ -6170,7 +6170,7 @@ msgstr "Importador"
 #: views/_layouts/dashboard.php:109 views/cron/index.php:28
 #: views/cron/index.php:31 views/dashboard/menu.php:58
 msgid "Cronjob Handler"
-msgstr ""
+msgstr "Gerenciador Cron"
 
 #: views/_layouts/dashboard.php:110
 msgid "(MPRM) Manage Perm"
@@ -6178,17 +6178,17 @@ msgstr "(MPRM) Gerenciar Permissões"
 
 #: views/_layouts/dashboard.php:111
 msgid "(MRLE) Manage Role"
-msgstr ""
+msgstr "(MRLE) Gerenciar Funções"
 
 #: views/_layouts/dashboard.php:112 views/dashboard/menu.php:66
 #: views/error/logs.php:23 views/error/logs.php:26
 msgid "Error Log"
-msgstr ""
+msgstr "Registro de erro"
 
 #: views/_layouts/dashboard.php:113 views/dashboard/menu.php:69
 #: views/error/audit.php:22 views/error/audit.php:25
 msgid "Audit Trail"
-msgstr ""
+msgstr "Logs"
 
 #: views/_layouts/dashboard.php:114 views/dashboard/update.php:22
 #: views/dashboard/update.php:25
@@ -6265,7 +6265,7 @@ msgstr ""
 
 #: views/_layouts/dashboard.php:141
 msgid "(RSTR) - Restriction Codes"
-msgstr ""
+msgstr "(RSTR) - Códigos de restrição"
 
 #: views/_layouts/dashboard.php:142 views/dashboard/menu.php:90
 msgid "(LOC) - Location"
@@ -6277,7 +6277,7 @@ msgstr "(BLDG) - Construção"
 
 #: views/_layouts/dashboard.php:144 views/dashboard/menu.php:92
 msgid "(ROOM) - Room"
-msgstr ""
+msgstr "(ROOM) - Sala"
 
 #: views/_layouts/dashboard.php:145 views/dashboard/menu.php:93
 msgid "(SCH) - School"
@@ -6285,16 +6285,16 @@ msgstr "(SCH) - Escola"
 
 #: views/_layouts/dashboard.php:146 views/dashboard/menu.php:94
 msgid "(GRSC) - Grade Scale"
-msgstr ""
+msgstr "(GRSC) - Grade de classificação"
 
 #: views/_layouts/dashboard.php:150
 msgid "Online Documentation"
-msgstr ""
+msgstr "Documentação Online"
 
 #: views/_layouts/dashboard.php:152 views/dashboard/menu.php:241
 #: views/staff/file-manager.php:37 views/staff/file-manager.php:40
 msgid "File Manager"
-msgstr ""
+msgstr "Gerenciador de Arquivos"
 
 #: views/_layouts/dashboard.php:155 views/calendar/booking-form.php:61
 #: views/calendar/events.php:27 views/calendar/index.php:77
@@ -6302,7 +6302,7 @@ msgstr ""
 #: views/calendar/setting.php:27 views/calendar/view-event.php:28
 #: views/calendar/view-request.php:79
 msgid "Events Calendar"
-msgstr ""
+msgstr "Calendário de Eventos"
 
 #: views/_layouts/dashboard.php:157
 msgid "Calendar"
@@ -6310,7 +6310,7 @@ msgstr "Calendário"
 
 #: views/_layouts/dashboard.php:158
 msgid "Room Booking Form"
-msgstr ""
+msgstr "Formulário de reserva de sala"
 
 #: views/_layouts/dashboard.php:159
 msgid "Manage Events"
@@ -6319,7 +6319,7 @@ msgstr "Gerenciar Eventos"
 #: views/_layouts/dashboard.php:160 views/calendar/requests.php:30
 #: views/calendar/requests.php:33
 msgid "Pending Requests"
-msgstr ""
+msgstr "Solicitações Pendentes"
 
 #: views/_layouts/dashboard.php:161 views/cron/index.php:49
 #: views/cron/log.php:51 views/cron/new.php:70 views/cron/setting.php:50
@@ -6338,7 +6338,7 @@ msgstr "Funcionários"
 #: views/_layouts/dashboard.php:169 views/hr/grades.php:27
 #: views/hr/grades.php:31
 msgid "Pay Grades"
-msgstr ""
+msgstr "Grandes de Pagamentos"
 
 #: views/_layouts/dashboard.php:170 views/hr/jobs.php:27 views/hr/jobs.php:31
 msgid "Job Titles"
@@ -6349,35 +6349,35 @@ msgstr "Cargos"
 #: views/hr/view-timesheet.php:29 views/staff/timesheets.php:27
 #: views/staff/timesheets.php:31 views/staff/view-timesheet.php:27
 msgid "Timesheets"
-msgstr ""
+msgstr "Folha de ponto"
 
 #: views/_layouts/dashboard.php:180
 msgid "SQL"
-msgstr ""
+msgstr "SQL"
 
 #: views/_layouts/dashboard.php:182 views/sql/add-query.php:60
 #: views/sql/csv-email.php:50 views/sql/index.php:51 views/sql/index.php:54
 #: views/sql/index.php:86 views/sql/saved-queries.php:41
 #: views/sql/view-query.php:60
 msgid "SQL Interface"
-msgstr ""
+msgstr "SQL Interface"
 
 #: views/_layouts/dashboard.php:183
 msgid "Create Query"
-msgstr ""
+msgstr "Criar Consulta"
 
 #: views/_layouts/dashboard.php:184
 msgid "Queries"
-msgstr ""
+msgstr "Consultas"
 
 #: views/_layouts/dashboard.php:185 views/sql/csv-email.php:27
 #: views/sql/csv-email.php:30
 msgid "CSV to Email Report"
-msgstr ""
+msgstr "CSV para Email Relatório"
 
 #: views/_layouts/dashboard.php:190
 msgid "Academics"
-msgstr ""
+msgstr "Acadêmicos"
 
 #: views/_layouts/dashboard.php:193 views/application/add.php:171
 #: views/application/appls.php:33 views/application/appls.php:69
@@ -6385,15 +6385,15 @@ msgstr ""
 #: views/financial/batch.php:99 views/form/import.php:100
 #: views/index/apply.php:172 views/student/view.php:84
 msgid "Academic Program"
-msgstr ""
+msgstr "Programas Acadêmicos"
 
 #: views/_layouts/dashboard.php:195
 msgid "(PROG) - Program"
-msgstr ""
+msgstr "(PROG) - Programa"
 
 #: views/_layouts/dashboard.php:196
 msgid "(APRG) - New Program"
-msgstr ""
+msgstr "(APRG) - Novo Programa "
 
 #: views/_layouts/dashboard.php:201 views/dashboard/menu.php:160
 #: views/form/import.php:98
@@ -6407,7 +6407,7 @@ msgstr "(CRSE) - Curso"
 
 #: views/_layouts/dashboard.php:204
 msgid "(ACRS) - New Course"
-msgstr ""
+msgstr "(ACRS) - Novo Curso"
 
 #: views/_layouts/dashboard.php:209 views/courses/cart.php:42
 #: views/courses/index.php:78 views/form/import.php:99
@@ -6416,11 +6416,11 @@ msgstr ""
 #: views/section/final-grade.php:53 views/section/register.php:121
 #: views/section/section-fgrade.php:55 views/student/fgrades.php:38
 msgid "Course Section"
-msgstr ""
+msgstr "Seção de Curso"
 
 #: views/_layouts/dashboard.php:211
 msgid "(SECT) - Section"
-msgstr ""
+msgstr "(SECT) - Seção"
 
 #: views/_layouts/dashboard.php:212 views/dashboard/menu.php:199
 msgid "(RGN) - Register"
@@ -6428,7 +6428,7 @@ msgstr "(RGN) - Registro"
 
 #: views/_layouts/dashboard.php:213
 msgid "(BRGN) - Batch Register"
-msgstr ""
+msgstr "(BRGN) - Registrar Turma"
 
 #: views/_layouts/dashboard.php:214
 msgid "(SROS) - Student Roster"
@@ -6438,18 +6438,18 @@ msgstr ""
 #: views/dashboard/menu.php:206 views/section/timetable.php:77
 #: views/section/timetable.php:80 views/student/timetable.php:80
 msgid "Timetable"
-msgstr ""
+msgstr "Horário acadêmico"
 
 #: views/_layouts/dashboard.php:216 views/dashboard/menu.php:208
 #: views/section/catalog.php:21 views/section/catalog.php:24
 msgid "Course Catalogs"
-msgstr ""
+msgstr "Catálogo de Curso"
 
 #: views/_layouts/dashboard.php:217 views/dashboard/menu.php:213
 #: views/section/attendance.php:22 views/section/attendance_report.php:22
 #: views/section/courses.php:24
 msgid "My Course Sections"
-msgstr ""
+msgstr "Minhas Seções de Cursos"
 
 #: views/_layouts/dashboard.php:222
 msgid "Transfers"
@@ -6457,7 +6457,7 @@ msgstr "Transferências"
 
 #: views/_layouts/dashboard.php:224
 msgid "(EXTR) - External Course"
-msgstr ""
+msgstr "(EXTR) - Curso Externo"
 
 #: views/_layouts/dashboard.php:225
 msgid "(ATCEQ) - New Transfer Eq."
@@ -6469,7 +6469,7 @@ msgstr ""
 
 #: views/_layouts/dashboard.php:227
 msgid "(TCRE) - Transfer Credit"
-msgstr ""
+msgstr "(TCRE) - Transferência de Créditos"
 
 #: views/_layouts/dashboard.php:234 views/application/inst-attended.php:85
 #: views/application/inst.php:27 views/application/inst.php:30
