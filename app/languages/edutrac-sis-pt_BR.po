@@ -11,7 +11,7 @@ msgstr ""
 "X-Domain: edutrac-sis\n"
 "Project-Id-Version: eduTrac SIS\n"
 "POT-Creation-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Fábio Assunção da Silva <fabio@fabioassuncao.com.br>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
 
