@@ -353,3 +353,35 @@ function get_person($person, $object = true)
     
     return $_person;
 }
+
+/**
+ * Checks whether the given username exists.
+ *
+ * @since 6.2.4
+ * @param string $username
+ *            Username to check.
+ * @return int|false The person's ID on success, and false on failure.
+ */
+function username_exists($username)
+{
+    if ($person = get_person_by('uname', $username)) {
+        return $person->personID;
+    }
+    return false;
+}
+
+/**
+ * Checks whether the given email exists.
+ *
+ * @since 6.2.4
+ * @param string $email
+ *            Email to check.
+ * @return int|false The person's ID on success, and false on failure.
+ */
+function email_exists($email)
+{
+    if ($person = get_person_by('email', $email)) {
+        return $person->personID;
+    }
+    return false;
+}
