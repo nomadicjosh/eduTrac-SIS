@@ -14,8 +14,8 @@ defined('ETSIS_DROPIN_DIR') or define('ETSIS_DROPIN_DIR', BASE_PATH . 'app' . DS
 defined('ETSIS_PLUGIN_DIR') or define('ETSIS_PLUGIN_DIR', BASE_PATH . 'app' . DS . 'plugins' . DS);
 defined('DROPINS_DIR') or define('DROPINS_DIR', ETSIS_DROPIN_DIR);
 defined('PLUGINS_DIR') or define('PLUGINS_DIR', ETSIS_PLUGIN_DIR);
-defined('CACHE_PATH') or define('CACHE_PATH', APP_PATH . 'tmp/cache' . DS);
-defined('K_PATH_IMAGES') or define('K_PATH_IMAGES', BASE_PATH . 'static/images/');
+defined('CACHE_PATH') or define('CACHE_PATH', APP_PATH . 'tmp' . DS . 'cache' . DS);
+defined('K_PATH_IMAGES') or define('K_PATH_IMAGES', BASE_PATH . 'static' . DS . 'images' . DS);
 
 /**
  * Step 1: Require the Bootstrap
@@ -43,8 +43,8 @@ if (count($domain_parts) == 3) {
 $app = new \Liten\Liten(
     [
     'cookies.lifetime' => '86400',
-    'cookies.savepath' => ini_get('session.save_path') . DS . $subdomain . '/',
-    'file.savepath' => ini_get('session.save_path') . DS . $subdomain . '/files/'
+    'cookies.savepath' => ini_get('session.save_path') . DS . $subdomain . DS,
+    'file.savepath' => ini_get('session.save_path') . DS . $subdomain . DS . 'files' . DS
     ]
 );
 
@@ -67,19 +67,6 @@ if (file_exists(BASE_PATH . 'config.php')) {
  */
 require( APP_PATH . 'functions.php' );
 require( APP_PATH . 'functions' . DS . 'dependency.php' );
-require( APP_PATH . 'functions' . DS . 'global-function.php' );
-require( APP_PATH . 'functions' . DS . 'deprecated-function.php' );
-require( APP_PATH . 'functions' . DS . 'auth-function.php' );
-require( APP_PATH . 'functions' . DS . 'cache-function.php' );
-require( APP_PATH . 'functions' . DS . 'textdomain-function.php' );
-require( APP_PATH . 'functions' . DS . 'core-function.php' );
-require( APP_PATH . 'functions' . DS . 'db-function.php' );
-require( APP_PATH . 'functions' . DS . 'course-function.php' );
-require( APP_PATH . 'functions' . DS . 'section-function.php' );
-require( APP_PATH . 'functions' . DS . 'person-function.php' );
-require( APP_PATH . 'functions' . DS . 'student-function.php' );
-require( APP_PATH . 'functions' . DS . 'program-function.php' );
-require( APP_PATH . 'functions' . DS . 'parsecode-function.php' );
 if (file_exists(BASE_PATH . 'config.php')) {
     require( APP_PATH . 'functions' . DS . 'hook-function.php' );
 }
