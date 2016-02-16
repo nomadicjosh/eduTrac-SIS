@@ -410,6 +410,11 @@ class etsis_Email
      */
     public function course_registration($id, $term, $host)
     {
+        $sitename = strtolower($_SERVER['SERVER_NAME']);
+        if (substr($sitename, 0, 4) == 'www.') {
+            $sitename = substr($sitename, 4);
+        }
+        
         $name = get_name($id);
         $site = _h(get_option('institution_name'));
         $message = "<p>Dear Registrar:</p>
@@ -434,7 +439,7 @@ class etsis_Email
         ***DO NOT RESPOND TO THIS EMAIL****</p>
         ";
         
-        $headers = "From: $site <auto-reply@$host>\r\n";
+        $headers = "From: $site <auto-reply@$sitename>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
@@ -489,6 +494,11 @@ class etsis_Email
      */
     public function myetRegConfirm($email, $id, $username, $password, $host)
     {
+        $sitename = strtolower($_SERVER['SERVER_NAME']);
+        if (substr($sitename, 0, 4) == 'www.') {
+            $sitename = substr($sitename, 4);
+        }
+        
         $name = get_name($id);
         $site = _t('myeduTrac::') . _h(get_option('institution_name'));
         $message = "<p>Hello $name:</p>
@@ -509,7 +519,7 @@ class etsis_Email
         ***DO NOT RESPOND TO THIS EMAIL****</p>
         ";
         
-        $headers = "From: $site <auto-reply@$host>\r\n";
+        $headers = "From: $site <auto-reply@$sitename>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
@@ -529,6 +539,11 @@ class etsis_Email
      */
     public function myetApplication($id, $host)
     {
+        $sitename = strtolower($_SERVER['SERVER_NAME']);
+        if (substr($sitename, 0, 4) == 'www.') {
+            $sitename = substr($sitename, 4);
+        }
+        
         $name = get_name($id);
         $site = _t('myeduTrac::') . _h(get_option('institution_name'));
         $message = "<p>Dear Admissions:</p>
@@ -550,7 +565,7 @@ class etsis_Email
         ***DO NOT RESPOND TO THIS EMAIL****</p>
         ";
         
-        $headers = "From: $site <auto-reply@$host>\r\n";
+        $headers = "From: $site <auto-reply@$sitename>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";

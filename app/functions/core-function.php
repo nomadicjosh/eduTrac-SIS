@@ -90,21 +90,66 @@ function getPathInfo($relative)
 }
 
 /**
- * Custom function to use curl or use file_get_contents
+ * Custom function to use curl, fopen, or use file_get_contents
  * if curl is not available.
+ *
+ * @since 5.0.1
+ * @param string $filename
+ *            Resource to read.
+ * @param bool $use_include_path
+ *            Whether or not to use include path.
+ * @param bool $context
+ *            Whether or not to use a context resource.
  */
-function _file_get_contents($url)
+function _file_get_contents($filename, $use_include_path = false, $context = true)
 {
-    $context = stream_context_create(array(
-        'http' => array(
+    $app = \Liten\Liten::getInstance();
+    
+    /**
+     * Filter the boolean for include path.
+     *
+     * @since 6.2.4
+     * @var bool $use_include_path
+     * @return bool
+     */
+    $use_include_path = $app->hook->apply_filter('trigger_include_path_search', $use_include_path);
+    
+    /**
+     * Filter the context resource.
+     *
+     * @since 6.2.4
+     * @var bool $context
+     * @return bool
+     */
+    $context = $app->hook->apply_filter('resource_context', $context);
+    
+    $opts = [
+        'http' => [
             'timeout' => 360.0
-        )
-    ));
-    $result = file_get_contents($url);
+        ]
+    ];
+    
+    /**
+     * Filters the stream context create options.
+     *
+     * @since 6.2.4
+     * @param array $opts Array of options.
+     * @return mixed
+     */
+    $opts = $app->hook->apply_filter('stream_context_create_options', $opts);
+    
+    if ($context === true) {
+        $context = stream_context_create($opts);
+    } else {
+        $context = null;
+    }
+    
+    $result = file_get_contents($filename, $use_include_path, $context);
+    
     if ($result) {
         return $result;
     } else {
-        $handle = fopen($url, "r", false, $context);
+        $handle = fopen($filename, "r", $use_include_path, $context);
         $contents = stream_get_contents($handle);
         fclose($handle);
         if ($contents) {
@@ -114,7 +159,7 @@ function _file_get_contents($url)
                 return false;
             } else {
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_URL, $filename);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 360);
                 $output = curl_exec($ch);
@@ -1267,7 +1312,8 @@ function etsis_is_writable($path)
 /**
  * Takes an array and turns it into an object.
  *
- * @param array $array Array of data.
+ * @param array $array
+ *            Array of data.
  */
 function array_to_object(array $array)
 {
@@ -1283,10 +1329,12 @@ function array_to_object(array $array)
  * Strip close comment and close php tags from file headers.
  *
  * @since 6.2.3
- * @param string $str Header comment to clean up.
+ * @param string $str
+ *            Header comment to clean up.
  * @return string
  */
-function _etsis_cleanup_file_header_comment( $str ) {
+function _etsis_cleanup_file_header_comment($str)
+{
     return trim(preg_replace("/\s*(?:\*\/|\?>).*/", '', $str));
 }
 
@@ -1301,22 +1349,26 @@ function _etsis_cleanup_file_header_comment( $str ) {
  * their plugin file and move the data headers to the top.
  *
  * @since 6.2.3
- * @param string $file            Path to the file.
- * @param array  $default_headers List of headers, in the format array('HeaderKey' => 'Header Name').
- * @param string $context         Optional. If specified adds filter hook "extra_{$context}_headers".
- *                                Default empty.
+ * @param string $file
+ *            Path to the file.
+ * @param array $default_headers
+ *            List of headers, in the format array('HeaderKey' => 'Header Name').
+ * @param string $context
+ *            Optional. If specified adds filter hook "extra_{$context}_headers".
+ *            Default empty.
  * @return array Array of file headers in `HeaderKey => Header Value` format.
  */
-function etsis_get_file_data( $file, $default_headers, $context = '' ) {
+function etsis_get_file_data($file, $default_headers, $context = '')
+{
     $app = \Liten\Liten::getInstance();
     // We don't need to write to the file, so just open for reading.
-    $fp = fopen( $file, 'r' );
+    $fp = fopen($file, 'r');
     // Pull only the first 8kB of the file in.
-    $file_data = fread( $fp, 8192 );
+    $file_data = fread($fp, 8192);
     // PHP will close file handle.
-    fclose( $fp );
+    fclose($fp);
     // Make sure we catch CR-only line endings.
-    $file_data = str_replace( "\r", "\n", $file_data );
+    $file_data = str_replace("\r", "\n", $file_data);
     /**
      * Filter extra file headers by context.
      *
@@ -1324,20 +1376,21 @@ function etsis_get_file_data( $file, $default_headers, $context = '' ) {
      * the context where extra headers might be loaded.
      *
      * @since 6.2.3
-     *
-     * @param array $extra_context_headers Empty array by default.
+     *       
+     * @param array $extra_context_headers
+     *            Empty array by default.
      */
-    if ( $context && $extra_headers = $app->hook->apply_filter( "extra_{$context}_headers", [] ) ) {
-        $extra_headers = array_combine( $extra_headers, $extra_headers ); // keys equal values
-        $all_headers = array_merge( $extra_headers, (array) $default_headers );
+    if ($context && $extra_headers = $app->hook->apply_filter("extra_{$context}_headers", [])) {
+        $extra_headers = array_combine($extra_headers, $extra_headers); // keys equal values
+        $all_headers = array_merge($extra_headers, (array) $default_headers);
     } else {
         $all_headers = $default_headers;
     }
-    foreach ( $all_headers as $field => $regex ) {
-        if ( preg_match( '/^[ \t\/*#@]*' . preg_quote( $regex, '/' ) . ':(.*)$/mi', $file_data, $match ) && $match[1] )
-            $all_headers[ $field ] = _etsis_cleanup_file_header_comment( $match[1] );
-            else
-                $all_headers[ $field ] = '';
+    foreach ($all_headers as $field => $regex) {
+        if (preg_match('/^[ \t\/*#@]*' . preg_quote($regex, '/') . ':(.*)$/mi', $file_data, $match) && $match[1])
+            $all_headers[$field] = _etsis_cleanup_file_header_comment($match[1]);
+        else
+            $all_headers[$field] = '';
     }
     return $all_headers;
 }
@@ -1350,15 +1403,15 @@ function etsis_get_file_data( $file, $default_headers, $context = '' ) {
  * must not have any newlines or only parts of the description will be displayed
  * and the same goes for the plugin data. The below is formatted for printing.
  *
- *     /*
- *     Plugin Name: Name of Plugin
- *     Plugin URI: Link to plugin information
- *     Description: Plugin Description
- *     Author: Plugin author's name
- *     Author URI: Link to the author's web site
- *     Version: Plugin version value.
- *     Text Domain: Optional. Unique identifier, should be same as the one used in
- *    		load_plugin_textdomain()
+ * /*
+ * Plugin Name: Name of Plugin
+ * Plugin URI: Link to plugin information
+ * Description: Plugin Description
+ * Author: Plugin author's name
+ * Author URI: Link to the author's web site
+ * Version: Plugin version value.
+ * Text Domain: Optional. Unique identifier, should be same as the one used in
+ * load_plugin_textdomain()
  *
  * The first 8kB of the file will be pulled in and if the plugin data is not
  * within that first 8kB, then the plugin author should correct their plugin
@@ -1369,26 +1422,30 @@ function etsis_get_file_data( $file, $default_headers, $context = '' ) {
  * reading.
  *
  * @since 6.2.3
- *
- * @param string $plugin_file Path to the plugin file
- * @param bool   $markup      Optional. If the returned data should have HTML markup applied.
- *                            Default true.
- * @param bool   $translate   Optional. If the returned data should be translated. Default true.
+ *       
+ * @param string $plugin_file
+ *            Path to the plugin file
+ * @param bool $markup
+ *            Optional. If the returned data should have HTML markup applied.
+ *            Default true.
+ * @param bool $translate
+ *            Optional. If the returned data should be translated. Default true.
  * @return array {
- *     Plugin data. Values will be empty if not supplied by the plugin.
- *
- *     @type string $Name        Name of the plugin. Should be unique.
- *     @type string $Title       Title of the plugin and link to the plugin's site (if set).
- *     @type string $Description Plugin description.
- *     @type string $Author      Author's name.
- *     @type string $AuthorURI   Author's website address (if set).
- *     @type string $Version     Plugin version.
- *     @type string $TextDomain  Plugin textdomain.
- *     @type string $DomainPath  Plugins relative directory path to .mo files.
- *     @type bool   $Network     Whether the plugin can only be activated network-wide.
- * }
+ *         Plugin data. Values will be empty if not supplied by the plugin.
+ *        
+ *         @type string $Name Name of the plugin. Should be unique.
+ *         @type string $Title Title of the plugin and link to the plugin's site (if set).
+ *         @type string $Description Plugin description.
+ *         @type string $Author Author's name.
+ *         @type string $AuthorURI Author's website address (if set).
+ *         @type string $Version Plugin version.
+ *         @type string $TextDomain Plugin textdomain.
+ *         @type string $DomainPath Plugins relative directory path to .mo files.
+ *         @type bool $Network Whether the plugin can only be activated network-wide.
+ *         }
  */
-function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
+function get_plugin_data($plugin_file, $markup = true, $translate = true)
+{
     $default_headers = array(
         'Name' => 'Plugin Name',
         'PluginURI' => 'Plugin URI',
@@ -1398,11 +1455,11 @@ function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
         'AuthorURI' => 'Author URI',
         'TextDomain' => 'Text Domain'
     );
-    $plugin_data = etsis_get_file_data( $plugin_file, $default_headers, 'plugin' );
-    if ( $markup || $translate ) {
-        $plugin_data = _get_plugin_data_markup_translate( $plugin_file, $plugin_data, $markup, $translate );
+    $plugin_data = etsis_get_file_data($plugin_file, $default_headers, 'plugin');
+    if ($markup || $translate) {
+        $plugin_data = _get_plugin_data_markup_translate($plugin_file, $plugin_data, $markup, $translate);
     } else {
-        $plugin_data['Title']      = $plugin_data['Name'];
+        $plugin_data['Title'] = $plugin_data['Name'];
         $plugin_data['AuthorName'] = $plugin_data['Author'];
     }
     return $plugin_data;

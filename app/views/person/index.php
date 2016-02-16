@@ -130,7 +130,7 @@ $screen = 'nae';
 				<!-- // Modal heading END -->
 				<!-- Modal body -->
 				<div class="modal-body">
-					<?=file_get_contents( APP_PATH . 'Info/person-search.txt' );?>
+					<?=_file_get_contents( APP_PATH . 'Info/person-search.txt' );?>
 				</div>
 				<!-- // Modal body END -->
 				<!-- Modal footer -->

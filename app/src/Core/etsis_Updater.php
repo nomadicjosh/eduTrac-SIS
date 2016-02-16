@@ -151,7 +151,7 @@ class etsis_Updater
 
     protected function getCurrentRelease()
     {
-        $file = parse_ini_string(file_get_contents(BASE_PATH . 'etsis.ini'), true);
+        $file = parse_ini_string(_file_get_contents(BASE_PATH . 'etsis.ini'), true);
         
         return $file;
     }

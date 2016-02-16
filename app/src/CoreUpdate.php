@@ -134,11 +134,11 @@ class CoreUpdate
                         if (is_dir($file)) {
                             $zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
                         } else if (is_file($file)) {
-                            $zip->addFromString(str_replace($source . '/', '', $file), file_get_contents($file));
+                            $zip->addFromString(str_replace($source . '/', '', $file), _file_get_contents($file));
                         }
                     }
                 } else if (is_file($source)) {
-                    $zip->addFromString(basename($source), file_get_contents($source));
+                    $zip->addFromString(basename($source), _file_get_contents($source));
                 }
             }
             return $zip->close();

@@ -228,7 +228,7 @@ class etsis_Cache_Filesystem extends \app\src\Core\Cache\etsis_Abstract_Cache
         
         $filename = $this->keyToPath($key, $namespace);
         
-        $get_data = file_get_contents($filename, LOCK_EX);
+        $get_data = _file_get_contents($filename, LOCK_EX);
         
         $data = maybe_unserialize($get_data);
         
@@ -614,6 +614,10 @@ class etsis_Cache_Filesystem extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     protected function remove_dir($dir)
     {
+        if(! is_dir($dir)) {
+            return;
+        }
+        
         $dh = opendir($dir);
         if (! is_resource($dh)) {
             return;

@@ -437,7 +437,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 							</div>
 							<!-- // Modal heading END -->
 		                    <div class="modal-body">
-		                        <?=file_get_contents( APP_PATH . 'Info/person-type.txt' );?>
+		                        <?=_file_get_contents( APP_PATH . 'Info/person-type.txt' );?>
 		                    </div>
 		                    <div class="modal-footer">
 		                        <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
