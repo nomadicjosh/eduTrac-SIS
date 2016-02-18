@@ -26,3 +26,4 @@ Tests
 phpunit
 composer.json
 composer.lock
+install-develop.sh
