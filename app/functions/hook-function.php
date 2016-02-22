@@ -786,7 +786,7 @@ function show_update_message()
     if ($acl->userHasRole(8)) {
         $update = new \VisualAppeal\AutoUpdate(rtrim($app->config('file.savepath'), '/'), BASE_PATH, 1800);
         $update->setCurrentVersion(RELEASE_TAG);
-        $update->setUpdateUrl('http://edutrac.s3.amazonaws.com/core/1.1/update-check');
+        $update->setUpdateUrl('http://etsis.s3.amazonaws.com/core/1.1/update-check');
         
         // Optional:
         $update->addLogHandler(new Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/core-update.' . date('m-d-Y') . '.txt'));

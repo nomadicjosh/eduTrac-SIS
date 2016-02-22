@@ -27,7 +27,7 @@ class CoreUpdate
      * 
      * @var string 
      */
-    protected $_baseURL = 'edutrac.s3.amazonaws.com';
+    protected $_baseURL = 'etsis.s3.amazonaws.com';
     private $patch_url = '';
     private $local_base_dir = '';
     private $local_backup_dir = '';
