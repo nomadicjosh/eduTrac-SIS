@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: eduTrac SIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-14 13:45-0500\n"
-"PO-Revision-Date: 2016-02-23 00:53-0300\n"
+"PO-Revision-Date: 2016-02-23 01:16-0300\n"
 "Last-Translator: Fábio Assunção da Silva <fabio@fabioassuncao.com.br>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -3020,7 +3020,7 @@ msgstr "Data de início / encerramento"
 #: views/student/fgrades.php:39 views/student/stac.php:72
 #: views/student/templates/transcript/default.template.php:88
 msgid "Grade"
-msgstr "Nota"
+msgstr "Grade"
 
 #: views/course/atceq.php:198 views/course/vtceq.php:156
 #: views/financial/add-payment.php:176 views/financial/create-bill.php:163
@@ -3577,7 +3577,7 @@ msgstr "Funcionários"
 #: views/dashboard/core-admin-bar.php:120 views/dashboard/menu.php:123
 #: views/hr/grades.php:28 views/hr/grades.php:32
 msgid "Pay Grades"
-msgstr "Folhas de Pagamentos"
+msgstr "Folhas de pagamento"
 
 #: views/dashboard/core-admin-bar.php:121 views/dashboard/menu.php:124
 #: views/hr/jobs.php:28 views/hr/jobs.php:32
@@ -3758,7 +3758,7 @@ msgstr "(SPRO) Perfil de Aluno"
 #: views/dashboard/core-admin-bar.php:233 views/student/graduation.php:28
 #: views/student/graduation.php:31
 msgid "Graduate Student(s)"
-msgstr "Aluno(s) de Graduação"
+msgstr "Alunos Graduados"
 
 #: views/dashboard/core-admin-bar.php:234
 msgid "(TRAN) Transcript"
@@ -3920,7 +3920,7 @@ msgstr "(ROLE) - Perfis"
 
 #: views/dashboard/menu.php:88
 msgid "(SLR) - Stu Load Rules"
-msgstr ""
+msgstr "(SLR) - Regras de carregamentos de alunos"
 
 #: views/dashboard/menu.php:95
 msgid "(RSTR) - Restrict. Codes"
@@ -3930,11 +3930,11 @@ msgstr "(RSTR) - Código de Restrições"
 #: views/person/addr.php:30 views/person/adsu.php:24 views/person/index.php:27
 #: views/person/perms.php:29 views/person/role.php:29 views/person/view.php:30
 msgid "Search Person"
-msgstr "Pesquisar Pessoa"
+msgstr "Pesquisar usuário"
 
 #: views/dashboard/menu.php:164
 msgid "New Person"
-msgstr "Nova pessoa"
+msgstr "Novo usuário"
 
 #: views/dashboard/menu.php:174 views/staff/add.php:27
 #: views/staff/index.php:25 views/staff/view.php:30
@@ -3972,11 +3972,11 @@ msgstr ""
 
 #: views/dashboard/menu.php:212
 msgid "Graduate Students"
-msgstr ""
+msgstr "Alunos Graduados"
 
 #: views/dashboard/menu.php:215
 msgid "(TRAN) - Transcript"
-msgstr "(TRAN) - HIstórico"
+msgstr "(TRAN) - Histórico"
 
 #: views/dashboard/menu.php:223 views/program/add.php:28
 #: views/program/index.php:24 views/program/view.php:28
@@ -5456,7 +5456,7 @@ msgstr ""
 #: views/staff/add.php:104 views/staff/timesheets.php:52
 #: views/staff/timesheets.php:109 views/staff/view-timesheet.php:104
 msgid "Job Title"
-msgstr ""
+msgstr "Designação"
 
 #: views/hr/add.php:178 views/hr/positions.php:119 views/hr/positions.php:230
 #: views/hr/view.php:269 views/staff/add.php:179
@@ -5480,7 +5480,7 @@ msgstr "Salário final"
 
 #: views/hr/grades.php:89 views/hr/grades.php:145
 msgid "Add Pay Grade"
-msgstr ""
+msgstr "Adicionar folha de pagamento"
 
 #: views/hr/index.php:23 views/hr/timesheets.php:41
 msgid "Employee"
@@ -5506,11 +5506,11 @@ msgstr "Folha de pagamento"
 #: views/hr/jobs.php:53 views/hr/jobs.php:121 views/hr/jobs.php:193
 #: views/hr/positions.php:116 views/hr/view.php:230
 msgid "Hourly Wage"
-msgstr ""
+msgstr "Salário por hora"
 
 #: views/hr/jobs.php:54 views/hr/jobs.php:130 views/hr/jobs.php:202
 msgid "Hours Per Week"
-msgstr ""
+msgstr "Horas por semana"
 
 #: views/hr/positions.php:33
 msgid "Positions"
@@ -7418,11 +7418,11 @@ msgstr ""
 
 #: views/student/tran.php:45 views/student/tran.php:48
 msgid "Transcript"
-msgstr ""
+msgstr "Histórico"
 
 #: views/student/tran.php:92
 msgid "Tran Type"
-msgstr ""
+msgstr "Tipo"
 
 #: views/student/vbill.php:61
 msgid "Billing Date"
