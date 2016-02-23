@@ -228,7 +228,7 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
         
         $filename = $this->keyToPath($key, $namespace);
         
-        $get_data = file_get_contents($filename, LOCK_EX);
+        $get_data = _file_get_contents($filename, LOCK_EX);
         
         $data = json_decode($get_data, true);
         

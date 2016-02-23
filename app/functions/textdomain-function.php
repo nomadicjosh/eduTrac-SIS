@@ -158,7 +158,7 @@ function load_plugin_textdomain($domain, $plugin_rel_path = false)
  * @param string $active
  */
 function etsis_dropdown_languages($active = '') {
-    $locales = _file_get_contents('http://edutrac.s3.amazonaws.com/core/translations.json');
+    $locales = _file_get_contents('http://etsis.s3.amazonaws.com/core/translations.json');
     $json = json_decode($locales, true);
     foreach($json as $locale) {
         echo '<option value="'.$locale['language'] . '"' . selected($active, $locale['language'], false) . '>'.$locale['native_name'].'</option>';

@@ -27,7 +27,7 @@ class CoreUpdate
      * 
      * @var string 
      */
-    protected $_baseURL = 'edutrac.s3.amazonaws.com';
+    protected $_baseURL = 'etsis.s3.amazonaws.com';
     private $patch_url = '';
     private $local_base_dir = '';
     private $local_backup_dir = '';
@@ -134,11 +134,11 @@ class CoreUpdate
                         if (is_dir($file)) {
                             $zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
                         } else if (is_file($file)) {
-                            $zip->addFromString(str_replace($source . '/', '', $file), file_get_contents($file));
+                            $zip->addFromString(str_replace($source . '/', '', $file), _file_get_contents($file));
                         }
                     }
                 } else if (is_file($source)) {
-                    $zip->addFromString(basename($source), file_get_contents($source));
+                    $zip->addFromString(basename($source), _file_get_contents($source));
                 }
             }
             return $zip->close();

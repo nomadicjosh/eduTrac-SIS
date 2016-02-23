@@ -71,7 +71,7 @@ foreach ($regions as $name => $mask) {
 function getCronjobs()
 {
     $cronDir = cronDir() . 'cron/';
-    return unserialize(base64_decode(substr(file_get_contents($cronDir . 'cronjobs.dat.php'), 7, - 2)));
+    return unserialize(base64_decode(substr(_file_get_contents($cronDir . 'cronjobs.dat.php'), 7, - 2)));
 }
 
 /**
@@ -95,7 +95,7 @@ function saveCronjobs($data)
 function saveLogs($text)
 {
     $cronDir = cronDir() . 'cron/';
-    if (! file_put_contents($cronDir . 'logs/cronjobs.log', date('Y-m-d H:i:s') . ' - ' . $text . PHP_EOL . file_get_contents($cronDir . 'logs/cronjobs.log'))) {
+    if (! file_put_contents($cronDir . 'logs/cronjobs.log', date('Y-m-d H:i:s') . ' - ' . $text . PHP_EOL . _file_get_contents($cronDir . 'logs/cronjobs.log'))) {
         _error_log('cron', _t( 'cannot write to cronjobs database file, please check file rights' ));
     }
 }
@@ -136,7 +136,7 @@ function updateCronjobs($id = '')
     exit();
 }
 if (file_exists(cronDir() . 'cron/' . 'cronjobs.dat.php')) {
-    $data = unserialize(base64_decode(substr(file_get_contents(cronDir() . 'cron/' . 'cronjobs.dat.php'), 7, - 2)));
+    $data = unserialize(base64_decode(substr(_file_get_contents(cronDir() . 'cron/' . 'cronjobs.dat.php'), 7, - 2)));
     if (is_array($data)) {
         $_SESSION['cronjobs'] = $data;
     }

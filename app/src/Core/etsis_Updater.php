@@ -43,7 +43,7 @@ class etsis_Updater
      *
      * @var string
      */
-    protected $_baseURL = 'edutrac.s3.amazonaws.com';
+    protected $_baseURL = 'etsis.s3.amazonaws.com';
 
     /**
      * Holds current installation release
@@ -151,7 +151,7 @@ class etsis_Updater
 
     protected function getCurrentRelease()
     {
-        $file = parse_ini_string(file_get_contents(BASE_PATH . 'etsis.ini'), true);
+        $file = parse_ini_string(_file_get_contents(BASE_PATH . 'etsis.ini'), true);
         
         return $file;
     }
@@ -194,7 +194,7 @@ class etsis_Updater
             echo $error->getMessage();
         } else {
             $this->update->setCurrentVersion(RELEASE_TAG);
-            $this->update->setUpdateUrl('http://edutrac.s3.amazonaws.com/core/1.1/update-check');
+            $this->update->setUpdateUrl('http://etsis.s3.amazonaws.com/core/1.1/update-check');
             
             // Optional:
             $this->update->addLogHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp' . DS . 'logs' . DS . 'core-update.' . date('m-d-Y') . '.txt'));
