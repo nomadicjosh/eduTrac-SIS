@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: eduTrac SIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-14 13:45-0500\n"
-"PO-Revision-Date: 2016-02-23 00:16-0300\n"
+"PO-Revision-Date: 2016-02-23 00:53-0300\n"
 "Last-Translator: Fábio Assunção da Silva <fabio@fabioassuncao.com.br>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -2136,7 +2136,7 @@ msgstr "Comentários"
 #: views/dashboard/menu.php:335 views/form/import.php:105
 #: views/setting/index.php:122
 msgid "Application"
-msgstr "Inscrição"
+msgstr "Inscrições"
 
 #: views/application/index.php:58 views/hr/index.php:59
 #: views/person/index.php:60 views/staff/index.php:58
@@ -3420,7 +3420,7 @@ msgstr "Configurações Gerais"
 #: views/dashboard/core-admin-bar.php:53 views/setting/registration.php:23
 #: views/setting/registration.php:26
 msgid "Registration Settings"
-msgstr "Configurações de inscrição"
+msgstr "Configuração de inscrições"
 
 #: views/dashboard/core-admin-bar.php:54 views/setting/email.php:23
 #: views/setting/email.php:26
@@ -3495,7 +3495,7 @@ msgstr "(SUBJ) - Disciplinas"
 
 #: views/dashboard/core-admin-bar.php:85
 msgid "(SLR) - Student Load Rules"
-msgstr ""
+msgstr "(SLR) - Regras de carregamentos de alunos"
 
 #: views/dashboard/core-admin-bar.php:86 views/dashboard/menu.php:89
 msgid "(DEG) - Degree"
@@ -3766,7 +3766,7 @@ msgstr "(TRAN) Histórico"
 
 #: views/dashboard/core-admin-bar.php:243
 msgid "(APPL) Application"
-msgstr "(APPL) Inscrição"
+msgstr "(APPL) Inscrições"
 
 #: views/dashboard/core-admin-bar.php:249 views/dashboard/menu.php:343
 msgid "Financials"
@@ -4053,7 +4053,7 @@ msgstr "(AINST) - Adicionar Instituição"
 
 #: views/dashboard/menu.php:337
 msgid "(APPL) - Application"
-msgstr "(APPL) - Inscrição"
+msgstr "(APPL) - Inscrições"
 
 #: views/dashboard/menu.php:365
 msgid "Files"
@@ -5226,7 +5226,7 @@ msgstr "Nome"
 #: views/form/student-load-rule.php:22 views/form/student-load-rule.php:25
 #: views/form/view-student-load-rule.php:28
 msgid "Student Load Rules"
-msgstr ""
+msgstr "Regras de carregamentos de alunos"
 
 #: views/form/student-load-rule.php:56
 #: views/form/view-student-load-rule.php:66
@@ -5251,19 +5251,19 @@ msgstr ""
 #: views/form/student-load-rule.php:67 views/form/student-load-rule.php:144
 #: views/form/view-student-load-rule.php:77
 msgid "Minimum Credits"
-msgstr ""
+msgstr "Mínimo Créditos"
 
 #: views/form/student-load-rule.php:74 views/form/student-load-rule.php:145
 #: views/form/view-student-load-rule.php:84
 msgid "Maximum Credits"
-msgstr ""
+msgstr "Máximo Créditos"
 
 #: views/form/student-load-rule.php:86 views/form/student-load-rule.php:146
 #: views/form/student-load-rule.php:194
 #: views/form/view-student-load-rule.php:96
 #: views/form/view-student-load-rule.php:147
 msgid "Term(s)"
-msgstr ""
+msgstr "Período(s)"
 
 #: views/form/student-load-rule.php:93 views/form/student-load-rule.php:147
 #: views/form/student-load-rule.php:208
@@ -5278,6 +5278,8 @@ msgid ""
 "In this field, you will only enter your term designation without the two "
 "digit year separated by a backslash \"\\\" (i.e. FA\\FAM1\\SP)."
 msgstr ""
+"Neste campo, você só vai entrar na sua designação períodos sem o ano de dois "
+"dígitos separados por uma barra invertida \"\\\" (exemplo: FA\\FAM1\\SP)."
 
 #: views/form/student-load-rule.php:211
 #: views/form/view-student-load-rule.php:164
@@ -6113,7 +6115,7 @@ msgstr "Criar registro de funcionário"
 #: views/person/index.php:101 views/person/role.php:57
 #: views/person/view.php:389
 msgid "Role"
-msgstr "Função / Permissão"
+msgstr "Perfil"
 
 #: views/person/index.php:128
 msgid "Person Search"
@@ -6273,11 +6275,11 @@ msgstr "Adicionar Função"
 
 #: views/role/add.php:56 views/role/view.php:57
 msgid "Role Name"
-msgstr "Nome da Função"
+msgstr "Nome do perfil"
 
 #: views/role/index.php:75
 msgid "New Role"
-msgstr "Nova Função"
+msgstr "Novo Perfil"
 
 #: views/role/view.php:31 views/role/view.php:34
 msgid "Edit Role"
@@ -6620,7 +6622,7 @@ msgstr "Geral"
 #: views/setting/email.php:47 views/setting/index.php:48
 #: views/setting/registration.php:47 views/setting/templates.php:154
 msgid "Registration"
-msgstr "Inscrição"
+msgstr "Inscrições"
 
 #: views/setting/email.php:63 views/setting/email.php:141
 msgid "System Email"
@@ -7223,7 +7225,7 @@ msgstr "Seu pagamento foi realizado com sucesso e foi postada em sua conta."
 
 #: views/student/sacd.php:30
 msgid "Academic Credits"
-msgstr ""
+msgstr "Créditos acadêmicos"
 
 #: views/student/sacd.php:32
 msgid "View Academic Credits (SACD)"
@@ -7408,7 +7410,7 @@ msgstr ""
 
 #: views/student/templates/transcript/default.template.php:206
 msgid "Transfer Credits"
-msgstr ""
+msgstr "Transferir  créditos"
 
 #: views/student/terms.php:24
 msgid "Registered Terms"
