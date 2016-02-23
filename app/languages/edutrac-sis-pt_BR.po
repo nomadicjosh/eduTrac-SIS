@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: eduTrac SIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-14 13:45-0500\n"
-"PO-Revision-Date: 2016-02-18 00:43-0300\n"
+"PO-Revision-Date: 2016-02-22 21:06-0300\n"
 "Last-Translator: Fábio Assunção da Silva <fabio@fabioassuncao.com.br>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -702,7 +702,9 @@ msgstr ""
 #: routers/error.router.php:43
 #, php-format
 msgid "The screen %s does not exist. Please try your search again."
-msgstr "A tele %s não existe. Por favor, teste pesquisar novamente. "
+msgstr ""
+"A tela %s não existe. Por favor, teste novamente utilizando outro termo para "
+"a busca."
 
 #: routers/install.router.php:60 routers/install.router.php:87
 msgid "Unable to establish a database connection."
@@ -798,7 +800,7 @@ msgid ""
 "Your application has been submitted, and you can now log in with your "
 "username and password."
 msgstr ""
-"A sua aplicação foi enviada com sucesso. Agora você pode fazer login com seu "
+"A sua inscrição foi enviada com sucesso. Agora você pode fazer login com seu "
 "nome de usuário e senha."
 
 #: routers/myet.router.php:773
@@ -1048,7 +1050,7 @@ msgstr "Detalhes de Login"
 
 #: src/Core/etsis_Email.php:573
 msgid "Application for Admissions"
-msgstr "Aplicação para Admissão"
+msgstr "Inscrição para Admissão"
 
 #: src/Core/etsis_Messages.php:67 src/Messages.php:71
 #, php-format
@@ -1983,7 +1985,7 @@ msgstr "País"
 #: views/application/add.php:23 views/application/index.php:25
 #: views/application/inst-attended.php:44 views/application/view.php:31
 msgid "Search Application"
-msgstr "Pesquisa Aplicação"
+msgstr "Pesquisa Inscrição"
 
 #: views/application/add.php:25 views/application/add.php:28
 #: views/person/index.php:98
@@ -2029,7 +2031,7 @@ msgstr "Endereço de email"
 
 #: views/application/add.php:162 views/application/view.php:181
 msgid "Application Date"
-msgstr "Data de aplicação"
+msgstr "Data de inscrição"
 
 #: views/application/add.php:174 views/application/appls.php:33
 #: views/application/appls.php:69 views/application/view.php:197
@@ -2134,7 +2136,7 @@ msgstr "Comentários"
 #: views/dashboard/menu.php:335 views/form/import.php:105
 #: views/setting/index.php:122
 msgid "Application"
-msgstr "Aplicação"
+msgstr "Inscrição"
 
 #: views/application/index.php:58 views/hr/index.php:59
 #: views/person/index.php:60 views/staff/index.php:58
@@ -2158,7 +2160,7 @@ msgstr "Registrar Aluno"
 
 #: views/application/index.php:111
 msgid "Application Search"
-msgstr "Aplicação Pesquisa"
+msgstr "Pesquisa Inscrição"
 
 #: views/application/inst-attended.php:46
 #: views/application/inst-attended.php:49
@@ -2238,7 +2240,7 @@ msgstr "UNIV Universidade"
 
 #: views/application/view.php:33 views/application/view.php:36
 msgid "View Application"
-msgstr "Visualizar aplicação"
+msgstr "Visualizar inscrição"
 
 #: views/application/view.php:158 views/error/audit.php:43
 #: views/index/apply.php:51 views/index/profile.php:35
@@ -3764,7 +3766,7 @@ msgstr "(TRAN) Histórico"
 
 #: views/dashboard/core-admin-bar.php:243
 msgid "(APPL) Application"
-msgstr "(APPL) Aplicação"
+msgstr "(APPL) Inscrição"
 
 #: views/dashboard/core-admin-bar.php:249 views/dashboard/menu.php:343
 msgid "Financials"
@@ -3889,8 +3891,8 @@ msgid ""
 "Use this screen to install/upgrade modules. If you need to install a plugin, "
 "you need to visit <a href=\"%s\"><strong>this screen</strong></a>."
 msgstr ""
-"Utilize esta tela para instalar/atualizar módulos. Se você precisa instalar "
-"um plugin, você deve acessar <a href=\"%s\"><strong>essa tela</strong></a>."
+"Utilize esta tela para instalar ou atualizar módulos. Se você precisa "
+"instalar um plugin acesse <a href=\"%s\"><strong>essa tela</strong></a>."
 
 #: views/dashboard/install-module.php:79 views/form/import.php:63
 #: views/form/photo.php:50 views/plugins/install.php:77
@@ -4051,7 +4053,7 @@ msgstr "(AINST) - Adicionar Instituição"
 
 #: views/dashboard/menu.php:337
 msgid "(APPL) - Application"
-msgstr "(APPL) - Aplicação"
+msgstr "(APPL) - Inscrição"
 
 #: views/dashboard/menu.php:365
 msgid "Files"
@@ -6708,7 +6710,7 @@ msgstr "Desabilitado"
 
 #: views/setting/index.php:135
 msgid "Applicant Email"
-msgstr ""
+msgstr "Email de inscrição"
 
 #: views/setting/index.php:148
 msgid "Language"
@@ -6834,9 +6836,7 @@ msgstr ""
 #: views/setting/index.php:403
 msgid ""
 "Enable this option to allow access to the application for admissions form."
-msgstr ""
-"Ative essa opção para permitir o acesso ao aplicativo formulário de "
-"admissões."
+msgstr "Ative essa opção para permitir o acesso ao formulário de inscrição."
 
 #: views/setting/index.php:418
 msgid "Send Applicant Email"
