@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: eduTrac SIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-14 13:45-0500\n"
-"PO-Revision-Date: 2016-02-22 23:08-0300\n"
+"PO-Revision-Date: 2016-02-23 00:16-0300\n"
 "Last-Translator: Fábio Assunção da Silva <fabio@fabioassuncao.com.br>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1957,7 +1957,7 @@ msgstr "Universidade"
 #: views/application/view-inst.php:83 views/install/index.php:213
 #: views/setting/index.php:64
 msgid "Institution Name"
-msgstr "Nome da Instituição"
+msgstr "Nome"
 
 #: views/application/add-inst.php:96 views/application/view-inst.php:96
 #: views/form/address.php:51 views/index/apply.php:91
@@ -2204,7 +2204,7 @@ msgstr "Graduação"
 #: views/application/inst-attended.php:139 views/application/view.php:385
 #: views/student/sttr.php:64
 msgid "GPA"
-msgstr "GPA"
+msgstr "Média de notas"
 
 #: views/application/inst-attended.php:148 views/application/view.php:386
 #: views/form/degree.php:23 views/form/degree.php:26 views/form/import.php:88
@@ -2635,7 +2635,7 @@ msgstr "Editar Meta Evento"
 #: views/student/strc.php:72 views/student/strc.php:199
 #: views/student/sttr.php:65
 msgid "Start Date"
-msgstr "Data de início"
+msgstr "Início"
 
 #: views/calendar/view-event.php:176 views/course/extr.php:72
 #: views/course/extr.php:169 views/course/index.php:60
@@ -2651,7 +2651,7 @@ msgstr "Data de início"
 #: views/student/shis.php:240 views/student/strc.php:73
 #: views/student/strc.php:209 views/student/sttr.php:66
 msgid "End Date"
-msgstr "Data de encerramento"
+msgstr "Encerramento"
 
 #: views/calendar/view-request.php:99
 msgid ""
@@ -2901,7 +2901,7 @@ msgstr "Mínimo para inscrição"
 #: views/course/addnl-info.php:112 views/form/room.php:92
 #: views/form/room.php:132 views/form/view-room.php:94
 msgid "Seating Capacity"
-msgstr ""
+msgstr "Capacidade assentos"
 
 #: views/course/addnl-info.php:150 views/course/index.php:114
 #: views/course/view.php:309
@@ -2927,30 +2927,30 @@ msgstr "O departamento foi criado com sucesso."
 #: views/form/view-department.php:62 views/program/ajax.php:86
 #: views/section/ajax.php:78
 msgid "Department Code"
-msgstr "Código do departamento"
+msgstr "Código"
 
 #: views/course/ajax.php:87 views/form/department.php:60
 #: views/form/view-department.php:69 views/program/ajax.php:95
 #: views/section/ajax.php:87
 msgid "Department Type"
-msgstr "Tipo de departamento"
+msgstr "Tipo"
 
 #: views/course/ajax.php:96 views/form/department.php:69
 #: views/form/view-department.php:78 views/program/ajax.php:104
 #: views/section/ajax.php:96
 msgid "Department Name"
-msgstr "Nome do departamento"
+msgstr "Nome"
 
 #: views/course/ajax.php:105 views/form/department.php:82
 #: views/form/view-department.php:91 views/program/ajax.php:113
 #: views/section/ajax.php:105
 msgid "Department Email"
-msgstr "Email do departamento"
+msgstr "Email"
 
 #: views/course/ajax.php:114 views/program/ajax.php:122
 #: views/section/ajax.php:114
 msgid "Department Phone"
-msgstr "Telefone do departamento"
+msgstr "Telefone"
 
 #: views/course/ajax.php:123 views/form/department.php:96
 #: views/form/grade-scale.php:107 views/form/view-department.php:105
@@ -2979,12 +2979,12 @@ msgstr ""
 #: views/course/ajax.php:204 views/form/subject.php:53
 #: views/form/subject.php:98 views/form/view-subject.php:62
 msgid "Subject Code"
-msgstr "Código da Disciplina"
+msgstr "Código"
 
 #: views/course/ajax.php:213 views/form/subject.php:60
 #: views/form/subject.php:99 views/form/view-subject.php:69
 msgid "Subject Name"
-msgstr "Nome da disciplina"
+msgstr "Nome"
 
 #: views/course/atceq.php:59 views/course/atceq.php:62
 msgid "New Transfer Course Equivalency"
@@ -3038,7 +3038,7 @@ msgstr "Curso Externo"
 #: views/course/extr.php:67 views/course/extr.php:148
 #: views/course/vextr.php:75 views/student/stac.php:66
 msgid "Course Name"
-msgstr "Nome do Curso"
+msgstr "Nome"
 
 #: views/course/extr.php:71 views/course/index.php:59
 #: views/program/index.php:59
@@ -3189,7 +3189,7 @@ msgstr ""
 #: views/section/ajax.php:192 views/section/catalog-pdf.php:55
 #: views/section/view.php:204 views/student/add.php:114
 msgid "Location"
-msgstr "Localização"
+msgstr "Campus"
 
 #: views/courses/cart.php:68 views/dashboard/install-module.php:79
 #: views/form/import.php:63 views/form/photo.php:50
@@ -3527,11 +3527,11 @@ msgstr "(RSTR) - Códigos de restrição"
 
 #: views/dashboard/core-admin-bar.php:93 views/dashboard/menu.php:96
 msgid "(LOC) - Location"
-msgstr "(LOC) - Localização"
+msgstr "(LOC) - Campus"
 
 #: views/dashboard/core-admin-bar.php:94 views/dashboard/menu.php:97
 msgid "(BLDG) - Building"
-msgstr "(BLDG) - Construção"
+msgstr "(BLDG) - Unidade"
 
 #: views/dashboard/core-admin-bar.php:95 views/dashboard/menu.php:98
 msgid "(ROOM) - Room"
@@ -4948,17 +4948,17 @@ msgstr "Email"
 #: views/staff/add.php:116 views/staff/view.php:142
 #: views/student/schedule.php:38
 msgid "Building"
-msgstr "Construção"
+msgstr "Unidade"
 
 #: views/form/building.php:60 views/form/building.php:121
 #: views/form/view-building.php:62
 msgid "Building Code"
-msgstr "Código do prédio"
+msgstr "Código"
 
 #: views/form/building.php:67 views/form/building.php:122
 #: views/form/view-building.php:69
 msgid "Building Name"
-msgstr "Nome do prédio"
+msgstr "Nome"
 
 #: views/form/ccd.php:28 views/form/ccd.php:31 views/form/import.php:91
 #: views/form/view-ccd.php:28 views/program/add.php:205
@@ -4969,11 +4969,11 @@ msgstr "Certificados, Credenciais e Diplomas"
 
 #: views/form/ccd.php:60 views/form/ccd.php:105 views/form/view-ccd.php:62
 msgid "CCD Code"
-msgstr "CCD Código"
+msgstr "Código"
 
 #: views/form/ccd.php:67 views/form/ccd.php:106 views/form/view-ccd.php:69
 msgid "CCD Name"
-msgstr "CCD Nome"
+msgstr "Nome"
 
 #: views/form/cip.php:28 views/form/cip.php:31 views/form/import.php:93
 #: views/form/view-cip.php:28 views/program/add.php:266
@@ -4994,12 +4994,12 @@ msgstr "Nome"
 #: views/form/degree.php:53 views/form/degree.php:96
 #: views/form/view-degree.php:62 views/program/ajax.php:315
 msgid "Degree Code"
-msgstr "Código grau acadêmico"
+msgstr "Código"
 
 #: views/form/degree.php:60 views/form/degree.php:97
 #: views/form/view-degree.php:69 views/program/ajax.php:324
 msgid "Degree Name"
-msgstr "Nome do grau acadêmico"
+msgstr "Nome"
 
 #: views/form/department.php:89 views/form/view-department.php:98
 msgid "Department Phone #"
@@ -5020,7 +5020,7 @@ msgstr "Telefone"
 
 #: views/form/grade-scale.php:23 views/form/grade-scale.php:31
 msgid "Grade Scale"
-msgstr ""
+msgstr "Grade de classificação"
 
 #: views/form/grade-scale.php:67 views/form/grade-scale.php:170
 #: views/form/view-grade-scale.php:69
@@ -5034,16 +5034,16 @@ msgstr "Pontos"
 #: views/form/grade-scale.php:81 views/form/grade-scale.php:141
 #: views/form/view-grade-scale.php:83 views/form/view-grade-scale.php:142
 msgid "Count in GPA"
-msgstr ""
+msgstr "Contar em média de notas"
 
 #: views/form/grade-scale.php:146 views/form/view-grade-scale.php:147
 msgid "Should this be applied and calculated in the GPA?"
-msgstr "Isso deve ser aplicada e calculado no GPA?"
+msgstr "Isso deve ser aplicada e calculado na média de notas?"
 
 #: views/form/grade-scale.php:171
 #: views/student/templates/transcript/default.template.php:91
 msgid "Grade Points"
-msgstr ""
+msgstr "Grade de pontos"
 
 #: views/form/import.php:28 views/form/import.php:31
 msgid "Quick Importer"
@@ -5132,7 +5132,7 @@ msgstr ""
 
 #: views/form/import.php:114
 msgid "Student Term GPA"
-msgstr ""
+msgstr "Média de notas do aluno no período"
 
 #: views/form/import.php:115
 msgid "Student Term Load"
@@ -5142,33 +5142,33 @@ msgstr ""
 #: views/form/view-location.php:62 views/program/ajax.php:414
 #: views/program/ajax.php:880 views/section/ajax.php:204
 msgid "Location Code"
-msgstr ""
+msgstr "Código"
 
 #: views/form/location.php:67 views/form/location.php:106
 #: views/form/view-location.php:69 views/program/ajax.php:421
 #: views/program/ajax.php:887 views/section/ajax.php:211
 msgid "Location Name"
-msgstr ""
+msgstr "Nome"
 
 #: views/form/major.php:60 views/form/major.php:105
 #: views/form/view-major.php:62 views/program/ajax.php:508
 msgid "Major Code"
-msgstr "Código da graduação"
+msgstr "Código"
 
 #: views/form/major.php:67 views/form/major.php:106
 #: views/form/view-major.php:69 views/program/ajax.php:515
 msgid "Major Name"
-msgstr "Nome da graduação"
+msgstr "Nome"
 
 #: views/form/minor.php:60 views/form/minor.php:105
 #: views/form/view-minor.php:62 views/program/ajax.php:601
 msgid "Minor Code"
-msgstr "Código do curso"
+msgstr "Código"
 
 #: views/form/minor.php:67 views/form/minor.php:106
 #: views/form/view-minor.php:69 views/program/ajax.php:608
 msgid "Minor Name"
-msgstr "Nome do curso"
+msgstr "Nome"
 
 #: views/form/photo.php:27
 msgid "Upload School Photo"
@@ -5184,7 +5184,7 @@ msgstr ""
 
 #: views/form/room.php:72 views/form/view-room.php:74
 msgid "Room Code"
-msgstr "Código da sala"
+msgstr "Código"
 
 #: views/form/room.php:85 views/form/room.php:131 views/form/view-room.php:87
 msgid "Room Number"
@@ -5197,21 +5197,21 @@ msgstr "Códigos de restrição"
 
 #: views/form/rstr-code.php:115
 msgid "Restriction Code"
-msgstr "Código de Restrição"
+msgstr "Código"
 
 #: views/form/school.php:60 views/form/school.php:118
 #: views/form/view-school.php:62
 msgid "School Code"
-msgstr "Código da escola"
+msgstr "Código"
 
 #: views/form/school.php:67 views/form/school.php:119
 #: views/form/view-school.php:69
 msgid "School Name"
-msgstr "Nome da escola"
+msgstr "Nome"
 
 #: views/form/semester.php:72 views/form/view-semester.php:74
 msgid "Semester Code"
-msgstr "Código do semestre"
+msgstr "Código"
 
 #: views/form/specialization.php:60 views/form/specialization.php:105
 #: views/form/view-specialization.php:62 views/program/ajax.php:694
@@ -5288,7 +5288,7 @@ msgstr ""
 
 #: views/form/term.php:65 views/form/view-term.php:74
 msgid "Term Code"
-msgstr "Código do período"
+msgstr "Código"
 
 #: views/form/term.php:79 views/form/view-term.php:88
 msgid "Reporting Term"
@@ -5304,7 +5304,7 @@ msgstr ""
 
 #: views/form/view-building.php:30
 msgid "View Building"
-msgstr ""
+msgstr "Visualizar Unidade"
 
 #: views/form/view-building.php:33 views/form/view-ccd.php:33
 #: views/form/view-cip.php:33 views/form/view-location.php:33
@@ -5340,7 +5340,7 @@ msgstr "Editar nota"
 
 #: views/form/view-location.php:30
 msgid "View Location"
-msgstr "Visualizar localização"
+msgstr "Visualizar campus"
 
 #: views/form/view-major.php:30
 msgid "View Major"
@@ -6204,7 +6204,7 @@ msgstr "Adicionar Programa Acadêmico"
 #: views/program/add.php:61 views/program/index.php:56
 #: views/program/view.php:65
 msgid "Program Code"
-msgstr "Código do Programa"
+msgstr "Código"
 
 #: views/program/add.php:144 views/program/view.php:148
 msgid "Effective Catalog Year"
@@ -6557,7 +6557,7 @@ msgstr ""
 
 #: views/section/index.php:57
 msgid "Section Code"
-msgstr "Código da seção"
+msgstr "Código"
 
 #: views/section/offering-info.php:88
 msgid "Class Room"
