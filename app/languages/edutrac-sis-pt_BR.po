@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: eduTrac SIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-14 13:45-0500\n"
-"PO-Revision-Date: 2016-02-22 21:06-0300\n"
+"PO-Revision-Date: 2016-02-22 23:08-0300\n"
 "Last-Translator: Fábio Assunção da Silva <fabio@fabioassuncao.com.br>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -2185,7 +2185,7 @@ msgstr "Instituição"
 
 #: views/application/inst-attended.php:100
 msgid "Attend From Date"
-msgstr "Participar De Data"
+msgstr ""
 
 #: views/application/inst-attended.php:112
 msgid "Attend To Date"
@@ -2199,7 +2199,7 @@ msgstr ""
 #: views/student/add.php:105
 #: views/student/templates/transcript/default.template.php:164
 msgid "Major"
-msgstr ""
+msgstr "Graduação"
 
 #: views/application/inst-attended.php:139 views/application/view.php:385
 #: views/student/sttr.php:64
@@ -2212,7 +2212,7 @@ msgstr "GPA"
 #: views/program/ajax.php:303 views/program/view.php:197
 #: views/student/templates/transcript/default.template.php:163
 msgid "Degree"
-msgstr "Diploma"
+msgstr "Grau acadêmico"
 
 #: views/application/inst-attended.php:157
 msgid "Conferral Date"
@@ -2635,7 +2635,7 @@ msgstr "Editar Meta Evento"
 #: views/student/strc.php:72 views/student/strc.php:199
 #: views/student/sttr.php:65
 msgid "Start Date"
-msgstr "Data Inicial"
+msgstr "Data de início"
 
 #: views/calendar/view-event.php:176 views/course/extr.php:72
 #: views/course/extr.php:169 views/course/index.php:60
@@ -2651,7 +2651,7 @@ msgstr "Data Inicial"
 #: views/student/shis.php:240 views/student/strc.php:73
 #: views/student/strc.php:209 views/student/sttr.php:66
 msgid "End Date"
-msgstr "Data Final"
+msgstr "Data de encerramento"
 
 #: views/calendar/view-request.php:99
 msgid ""
@@ -3067,7 +3067,7 @@ msgstr "Nota mínima"
 #: views/student/templates/transcript/default.template.php:92
 #: views/student/terms.php:36 views/student/vbill.php:70
 msgid "Term"
-msgstr "Trimestre"
+msgstr "Período"
 
 #: views/course/extr.php:252 views/course/vextr.php:178
 #: views/student/view.php:86
@@ -3479,7 +3479,7 @@ msgstr "(SEM) - Semestre"
 
 #: views/dashboard/core-admin-bar.php:81 views/dashboard/menu.php:85
 msgid "(TERM) - Term"
-msgstr "(TERM) - Trimestre"
+msgstr "(TERM) - Período"
 
 #: views/dashboard/core-admin-bar.php:82 views/dashboard/menu.php:83
 msgid "(AYR) - Academic Year"
@@ -3499,19 +3499,19 @@ msgstr ""
 
 #: views/dashboard/core-admin-bar.php:86 views/dashboard/menu.php:89
 msgid "(DEG) - Degree"
-msgstr "(DEG) - Diploma"
+msgstr "(DEG) - Grau acadêmico"
 
 #: views/dashboard/core-admin-bar.php:87 views/dashboard/menu.php:90
 msgid "(MAJR) - Major"
-msgstr ""
+msgstr "(MAJR) - Graduação"
 
 #: views/dashboard/core-admin-bar.php:88 views/dashboard/menu.php:91
 msgid "(MINR) - Minor"
-msgstr ""
+msgstr "(MINR) - Cursos eletivos"
 
 #: views/dashboard/core-admin-bar.php:89 views/dashboard/menu.php:92
 msgid "(CCD) - CCD"
-msgstr "(CCD) - CCD"
+msgstr "(CCD) - Certificados, Credenciais e Diplomas"
 
 #: views/dashboard/core-admin-bar.php:90 views/dashboard/menu.php:93
 msgid "(SPEC) - Specialization"
@@ -3519,7 +3519,7 @@ msgstr "(SPEC) - Especialização"
 
 #: views/dashboard/core-admin-bar.php:91 views/dashboard/menu.php:94
 msgid "(CIP) - CIP"
-msgstr "(CIP) - CIP"
+msgstr "(CIP) - Classificação dos Programas de Instrução"
 
 #: views/dashboard/core-admin-bar.php:92
 msgid "(RSTR) - Restriction Codes"
@@ -3916,7 +3916,7 @@ msgstr "(PERM) - Permissões"
 
 #: views/dashboard/menu.php:66
 msgid "(ROLE) - Roles"
-msgstr "(ROLE) - Funções"
+msgstr "(ROLE) - Perfis"
 
 #: views/dashboard/menu.php:88
 msgid "(SLR) - Stu Load Rules"
@@ -3939,15 +3939,15 @@ msgstr "Nova pessoa"
 #: views/dashboard/menu.php:174 views/staff/add.php:27
 #: views/staff/index.php:25 views/staff/view.php:30
 msgid "Search Staff"
-msgstr ""
+msgstr "Pesquisar funcionário"
 
 #: views/dashboard/menu.php:179
 msgid "Create Staff"
-msgstr ""
+msgstr "Criar funcionário"
 
 #: views/dashboard/menu.php:181
 msgid "(STAF) - Staff"
-msgstr ""
+msgstr "(STAF) - Funcionário"
 
 #: views/dashboard/menu.php:187
 msgid "(SPRO) - Stu. Profile"
@@ -4902,11 +4902,11 @@ msgstr "Ano letivo"
 #: views/form/acad-year.php:53 views/form/acad-year.php:60
 #: views/form/view-acad-year.php:62 views/form/view-acad-year.php:69
 msgid "Acad Year"
-msgstr ""
+msgstr "Ano letivo"
 
 #: views/form/acad-year.php:98
 msgid "Academic Year Code"
-msgstr ""
+msgstr "Código do ano letivo"
 
 #: views/form/address.php:43 views/index/apply.php:87
 #: views/index/profile.php:91 views/person/add.php:163
@@ -4965,7 +4965,7 @@ msgstr "Nome do prédio"
 #: views/program/ajax.php:402 views/program/view.php:210
 #: views/student/templates/transcript/default.template.php:167
 msgid "CCD"
-msgstr "CCD"
+msgstr "Certificados, Credenciais e Diplomas"
 
 #: views/form/ccd.php:60 views/form/ccd.php:105 views/form/view-ccd.php:62
 msgid "CCD Code"
@@ -4973,37 +4973,37 @@ msgstr "CCD Código"
 
 #: views/form/ccd.php:67 views/form/ccd.php:106 views/form/view-ccd.php:69
 msgid "CCD Name"
-msgstr ""
+msgstr "CCD Nome"
 
 #: views/form/cip.php:28 views/form/cip.php:31 views/form/import.php:93
 #: views/form/view-cip.php:28 views/program/add.php:266
 #: views/program/ajax.php:775 views/program/view.php:271
 msgid "CIP"
-msgstr "CIP"
+msgstr "Classificação dos Programas de Instrução"
 
 #: views/form/cip.php:60 views/form/cip.php:103 views/form/view-cip.php:62
 #: views/program/ajax.php:787
 msgid "CIP Code"
-msgstr ""
+msgstr "Código"
 
 #: views/form/cip.php:67 views/form/cip.php:104 views/form/view-cip.php:69
 #: views/program/ajax.php:794
 msgid "CIP Name"
-msgstr ""
+msgstr "Nome"
 
 #: views/form/degree.php:53 views/form/degree.php:96
 #: views/form/view-degree.php:62 views/program/ajax.php:315
 msgid "Degree Code"
-msgstr ""
+msgstr "Código grau acadêmico"
 
 #: views/form/degree.php:60 views/form/degree.php:97
 #: views/form/view-degree.php:69 views/program/ajax.php:324
 msgid "Degree Name"
-msgstr ""
+msgstr "Nome do grau acadêmico"
 
 #: views/form/department.php:89 views/form/view-department.php:98
 msgid "Department Phone #"
-msgstr ""
+msgstr "Telefone"
 
 #: views/form/department.php:134 views/form/rstr-code.php:60
 #: views/form/view-rstr-code.php:62
@@ -5078,7 +5078,7 @@ msgstr "Carga de crédito"
 #: views/program/ajax.php:589 views/program/view.php:236
 #: views/student/templates/transcript/default.template.php:165
 msgid "Minor"
-msgstr ""
+msgstr "Cursos eletivos"
 
 #: views/form/import.php:92 views/form/specialization.php:28
 #: views/form/specialization.php:31 views/program/add.php:244
@@ -5104,7 +5104,7 @@ msgstr "Residência"
 #: views/hr/view.php:141 views/staff/add.php:58 views/staff/add.php:84
 #: views/staff/index.php:22
 msgid "Staff"
-msgstr "Colaboradores"
+msgstr "Funcionário"
 
 #: views/form/import.php:104
 msgid "Staff Meta"
@@ -5153,22 +5153,22 @@ msgstr ""
 #: views/form/major.php:60 views/form/major.php:105
 #: views/form/view-major.php:62 views/program/ajax.php:508
 msgid "Major Code"
-msgstr ""
+msgstr "Código da graduação"
 
 #: views/form/major.php:67 views/form/major.php:106
 #: views/form/view-major.php:69 views/program/ajax.php:515
 msgid "Major Name"
-msgstr ""
+msgstr "Nome da graduação"
 
 #: views/form/minor.php:60 views/form/minor.php:105
 #: views/form/view-minor.php:62 views/program/ajax.php:601
 msgid "Minor Code"
-msgstr ""
+msgstr "Código do curso"
 
 #: views/form/minor.php:67 views/form/minor.php:106
 #: views/form/view-minor.php:69 views/program/ajax.php:608
 msgid "Minor Name"
-msgstr ""
+msgstr "Nome do curso"
 
 #: views/form/photo.php:27
 msgid "Upload School Photo"
@@ -5216,12 +5216,12 @@ msgstr "Código do semestre"
 #: views/form/specialization.php:60 views/form/specialization.php:105
 #: views/form/view-specialization.php:62 views/program/ajax.php:694
 msgid "Specialization Code"
-msgstr ""
+msgstr "Código"
 
 #: views/form/specialization.php:67 views/form/specialization.php:106
 #: views/form/view-specialization.php:69 views/program/ajax.php:701
 msgid "Specialization Name"
-msgstr ""
+msgstr "Nome"
 
 #: views/form/student-load-rule.php:22 views/form/student-load-rule.php:25
 #: views/form/view-student-load-rule.php:28
@@ -5288,7 +5288,7 @@ msgstr ""
 
 #: views/form/term.php:65 views/form/view-term.php:74
 msgid "Term Code"
-msgstr ""
+msgstr "Código do período"
 
 #: views/form/term.php:79 views/form/view-term.php:88
 msgid "Reporting Term"
@@ -5316,15 +5316,15 @@ msgstr "Vendo"
 
 #: views/form/view-ccd.php:30
 msgid "View CCD"
-msgstr "Ver CCD"
+msgstr "Visualizar CCD"
 
 #: views/form/view-cip.php:30
 msgid "View CIP"
-msgstr "Ver CIP"
+msgstr "Visualizar CIP"
 
 #: views/form/view-degree.php:30 views/form/view-degree.php:33
 msgid "View Degree"
-msgstr ""
+msgstr "Visualizar grau acadêmico"
 
 #: views/form/view-department.php:30 views/form/view-department.php:33
 msgid "View Department"
@@ -5344,11 +5344,11 @@ msgstr "Visualizar localização"
 
 #: views/form/view-major.php:30
 msgid "View Major"
-msgstr ""
+msgstr "Visualizar graduação"
 
 #: views/form/view-minor.php:30
 msgid "View Minor"
-msgstr ""
+msgstr "Visualizar curso"
 
 #: views/form/view-room.php:30
 msgid "View Room"
@@ -5368,7 +5368,7 @@ msgstr "Visualizar semestre"
 
 #: views/form/view-specialization.php:28
 msgid "Specialization List"
-msgstr ""
+msgstr "Lista"
 
 #: views/form/view-specialization.php:30
 msgid "View Specialization"
@@ -5421,7 +5421,7 @@ msgstr ""
 #: views/hr/add.php:107 views/hr/positions.php:99 views/hr/view.php:108
 #: views/staff/view.php:107
 msgid "Staff Record"
-msgstr ""
+msgstr "Registro de funcionário"
 
 #: views/hr/add.php:108 views/hr/index.php:90 views/hr/positions.php:100
 #: views/hr/view.php:109 views/staff/view.php:108
@@ -5436,7 +5436,7 @@ msgstr "Tipo de funcionário"
 #: views/hr/add.php:135 views/hr/positions.php:193 views/hr/view.php:136
 #: views/staff/add.php:79
 msgid "Staff Type"
-msgstr ""
+msgstr "Tipo de funcionário"
 
 #: views/hr/add.php:139 views/hr/positions.php:197 views/hr/view.php:140
 #: views/staff/add.php:83
@@ -6108,7 +6108,7 @@ msgstr "Mudar para usuário"
 
 #: views/person/index.php:94
 msgid "Create Staff Record"
-msgstr ""
+msgstr "Criar registro de funcionário"
 
 #: views/person/index.php:101 views/person/role.php:57
 #: views/person/view.php:389
@@ -6224,27 +6224,27 @@ msgstr ""
 
 #: views/program/ajax.php:309
 msgid "The Degree was created successfully."
-msgstr ""
+msgstr "O grau acadêmico foi criado com sucesso."
 
 #: views/program/ajax.php:408
 msgid "The CCD was created successfully."
-msgstr ""
+msgstr "O CCD foi criado com sucesso."
 
 #: views/program/ajax.php:502
 msgid "The Major was created successfully."
-msgstr ""
+msgstr "A graduação foi criada com sucesso."
 
 #: views/program/ajax.php:595
 msgid "The Minor was created successfully."
-msgstr ""
+msgstr "O curso eletivo foi criado com sucesso."
 
 #: views/program/ajax.php:688
 msgid "The Specialization was created successfully."
-msgstr ""
+msgstr "A especialização foi criada com sucesso."
 
 #: views/program/ajax.php:781
 msgid "The CIP was created successfully."
-msgstr ""
+msgstr "A CIP foi criada com sucesso."
 
 #: views/program/ajax.php:874 views/section/ajax.php:198
 msgid "The Location was created successfully."
@@ -6628,11 +6628,11 @@ msgstr "Email do Sistema"
 
 #: views/setting/email.php:72 views/setting/email.php:161
 msgid "Registrar's Email"
-msgstr "Email do Registrador"
+msgstr "Email da secretaria"
 
 #: views/setting/email.php:81 views/setting/email.php:181
 msgid "Room Request Email"
-msgstr "Email de solicitação de sala"
+msgstr "Email para solicitações de salas"
 
 #: views/setting/email.php:96 views/setting/email.php:201
 msgid "Contact Email"
@@ -6640,7 +6640,7 @@ msgstr "Email de Contato"
 
 #: views/setting/email.php:105 views/setting/email.php:221
 msgid "Admissions Email"
-msgstr ""
+msgstr "Email de inscrições"
 
 #: views/setting/email.php:145
 msgid "All system and error related emails will be sent to this email address."
@@ -6866,23 +6866,23 @@ msgstr "Abrir Inscrição"
 
 #: views/setting/registration.php:76
 msgid "Current Term"
-msgstr "Prazo / Termo / Período Corrente"
+msgstr "Período atual"
 
 #: views/setting/registration.php:88 views/setting/registration.php:165
 msgid "# of Courses"
-msgstr "# de cursos"
+msgstr "Número de cursos"
 
 #: views/setting/registration.php:97 views/setting/registration.php:189
 msgid "Account Balance"
-msgstr ""
+msgstr "Saldo de conta"
 
 #: views/setting/registration.php:112 views/setting/registration.php:213
 msgid "Open Terms"
-msgstr "Prazos / Termos / Períodos Abertos"
+msgstr "Períodos abertos"
 
 #: views/setting/registration.php:121 views/setting/registration.php:237
 msgid "Registration Term"
-msgstr ""
+msgstr "Prazo de inscrições"
 
 #: views/setting/registration.php:133
 msgid "Instructions"
@@ -6906,8 +6906,8 @@ msgid ""
 "`Account Balance`, then the student is not eligible to register for courses "
 "(i.e. -100). Set to 0 to disable."
 msgstr ""
-"Se o saldo atual de um aluno menos o prazo atual é maior do que o `Account "
-"Balance`, o aluno não é elegível para se inscrever para cursos (i.e, -100). "
+"Se o saldo atual de um aluno menos o prazo atual é maior do que o `Saldo de "
+"conta`, o aluno não é elegível para se inscrever para cursos (i.e, -100). "
 "Defina como 0 para desativar."
 
 #: views/setting/registration.php:218
@@ -6915,16 +6915,16 @@ msgid ""
 "Enter a comma delimited list of course terms that can be viewed on the "
 "course registration screen (i.e. \"13/FA\",\"14/SP\")."
 msgstr ""
-"Insira uma lista delimitada por vírgulas de termos/prazos/durações/períodos "
-"de cursos que podem ser visualizados na tela de registro de curso"
+"Insira uma lista delimitada por vírgulas de períodos de cursos que podem ser "
+"visualizados na tela de registro de curso  (i.e. \"13/FA\",\"14/SP\")."
 
 #: views/setting/registration.php:242
 msgid ""
 "If `Open Registration` is set to yes, then choose the term for which a "
 "student can register into courses."
 msgstr ""
-"Se `Abrir Inscrição` está definido para SIM, em seguida, escolher o Prazo / "
-"Termo / Período para o qual um aluno pode se cadastrar em cursos."
+"Se `Abrir Inscrição` está definido para SIM, em seguida, escolher o prazo "
+"para o qual um estudante pode se cadastrar em cursos."
 
 #: views/setting/registration.php:261
 msgid "Registration Instructions"
@@ -7121,15 +7121,15 @@ msgstr "Visualizar consulta salva"
 
 #: views/staff/add.php:29 views/staff/add.php:32
 msgid "Add Staff"
-msgstr ""
+msgstr "Adicionar funcionário"
 
 #: views/staff/index.php:108
 msgid "Staff Search"
-msgstr ""
+msgstr "Pesquisar funcionário"
 
 #: views/staff/view.php:32
 msgid "View Staff"
-msgstr ""
+msgstr "Visualizar funcionário"
 
 #: views/student/account-history.php:24
 msgid "Student Account History"
@@ -7354,7 +7354,7 @@ msgstr ""
 
 #: views/student/sttr.php:58
 msgid "Terms"
-msgstr "Trimestres"
+msgstr "Períodos"
 
 #: views/student/sttr.php:59
 msgid "Att Creds"
