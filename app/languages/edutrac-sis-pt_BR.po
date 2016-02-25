@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: eduTrac SIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-14 13:45-0500\n"
-"PO-Revision-Date: 2016-02-25 00:20-0300\n"
+"PO-Revision-Date: 2016-02-25 01:48-0300\n"
 "Last-Translator: Fábio Assunção da Silva <fabio@fabioassuncao.com.br>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1158,7 +1158,7 @@ msgstr "Release atual: r%s"
 
 #: src/CoreUpdate.php:189
 msgid "Reading Current Releases List"
-msgstr ""
+msgstr "Lendo lista de releases atuais"
 
 #: src/CoreUpdate.php:192
 #, php-format
@@ -1167,7 +1167,7 @@ msgstr "Nova atualização encontrada: r%s"
 
 #: src/CoreUpdate.php:197
 msgid "Downloading New Update "
-msgstr ""
+msgstr "Baixando nova atualização"
 
 #: src/CoreUpdate.php:205
 msgid "Could not save new update. Operation aborted."
@@ -1179,7 +1179,7 @@ msgstr "Atualização baixada e salva"
 
 #: src/CoreUpdate.php:211
 msgid "Update already downloaded."
-msgstr ""
+msgstr "Atualização já baixou."
 
 #: src/CoreUpdate.php:229
 #, php-format
@@ -1205,7 +1205,7 @@ msgstr "eduTrac SIS atualizado para r%s"
 
 #: src/CoreUpdate.php:260
 msgid "No update is available."
-msgstr ""
+msgstr "Nenhuma atualização disponível."
 
 #: src/CoreUpdate.php:264
 msgid "Could not find latest releases."
@@ -1922,7 +1922,7 @@ msgstr "Você está aqui"
 
 #: views/application/add-inst.php:28 views/application/view-inst.php:28
 msgid "Search Institution"
-msgstr ""
+msgstr "Pesquisar instituição"
 
 #: views/application/add-inst.php:30 views/application/add-inst.php:33
 msgid "Add Institution"
@@ -2046,12 +2046,12 @@ msgstr "Programas Acadêmicos"
 #: views/application/view.php:209 views/index/apply.php:93
 #: views/student/add.php:159
 msgid "Start Term"
-msgstr ""
+msgstr "Iniciar período"
 
 #: views/application/add.php:198 views/application/view.php:221
 #: views/index/apply.php:177 views/student/view.php:87
 msgid "Admit Status"
-msgstr ""
+msgstr "Status de admissão"
 
 #: views/application/add.php:226 views/application/view.php:265
 msgid "PSAT Verbal/Math"
@@ -2171,7 +2171,7 @@ msgstr ""
 
 #: views/application/inst-attended.php:78
 msgid "Applicant ID"
-msgstr ""
+msgstr "ID Inscrição"
 
 #: views/application/inst-attended.php:88 views/application/inst.php:28
 #: views/application/inst.php:31 views/application/view.php:381
@@ -2260,7 +2260,7 @@ msgstr "Pendente"
 
 #: views/application/view.php:235
 msgid "Under Review"
-msgstr ""
+msgstr "Em revisão"
 
 #: views/application/view.php:236
 msgid "Accepted"
@@ -2278,7 +2278,7 @@ msgstr "Comentários candidatos"
 #: views/application/view.php:307 views/financial/view-bill.php:242
 #: views/financial/view-comments.php:117
 msgid "Staff Comments"
-msgstr ""
+msgstr "Comentários de funcionários"
 
 #: views/application/view.php:337
 msgid "Internal Comments"
@@ -3109,7 +3109,7 @@ msgstr ""
 #: views/course/tcre.php:75 views/course/tcre.php:78
 #: views/dashboard/menu.php:251 views/student/stac.php:131
 msgid "Transfer Credit"
-msgstr ""
+msgstr "Transferir crédito"
 
 #: views/course/tcre.php:154
 msgid "CRSE ID/Name"
@@ -3200,7 +3200,7 @@ msgstr "Remover"
 #: views/courses/cart.php:70 views/courses/cart.php:90
 #: views/section/register.php:138
 msgid "Register"
-msgstr "Registro"
+msgstr "Registrar"
 
 #: views/courses/index.php:60
 msgid ""
@@ -4019,16 +4019,16 @@ msgstr "Pesquisar seção"
 
 #: views/dashboard/menu.php:272
 msgid "(BRGN) - Batch Reg."
-msgstr ""
+msgstr "(BRGN) - Registro de turmas"
 
 #: views/dashboard/menu.php:275
 msgid "(SROS) - Stu. Roster"
-msgstr ""
+msgstr "(SROS) - Lista de alunos"
 
 #: views/dashboard/menu.php:283 views/dashboard/menu.php:297
 #: views/section/courses.php:65 views/section/gradebook.php:23
 msgid "Gradebook"
-msgstr ""
+msgstr "Boletim de notas"
 
 #: views/dashboard/menu.php:288 views/section/add-assignment.php:29
 #: views/section/courses.php:63
@@ -6543,7 +6543,7 @@ msgstr "Nota final para"
 
 #: views/section/gradebook.php:26
 msgid "Gradebook for "
-msgstr ""
+msgstr "Boletim de notas para "
 
 #: views/section/gradebook.php:52
 msgid "FG"
