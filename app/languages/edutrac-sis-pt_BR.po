@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: eduTrac SIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-14 13:45-0500\n"
-"PO-Revision-Date: 2016-02-25 01:48-0300\n"
+"PO-Revision-Date: 2016-02-25 02:11-0300\n"
 "Last-Translator: Fábio Assunção da Silva <fabio@fabioassuncao.com.br>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -805,7 +805,7 @@ msgstr ""
 
 #: routers/myet.router.php:773
 msgid "Student Application Via myeT"
-msgstr ""
+msgstr "Inscrição de aluno via myeT"
 
 #: routers/myet.router.php:797
 msgid "Online Application"
@@ -2252,7 +2252,7 @@ msgstr "Nome de usuário"
 
 #: views/application/view.php:230
 msgid "Application Status"
-msgstr ""
+msgstr "Status de inscrição"
 
 #: views/application/view.php:234 views/hr/view-timesheet.php:129
 msgid "Pending"
@@ -2594,7 +2594,7 @@ msgstr "Editar Categoria"
 #: views/calendar/view-event.php:51 views/calendar/view-event.php:106
 #: views/section/booking-info.php:276 views/section/booking-info.php:328
 msgid "Meeting Day"
-msgstr ""
+msgstr "Dia da reunião"
 
 #: views/calendar/view-event.php:52 views/courses/cart.php:45
 #: views/courses/index.php:81 views/section/booking-info.php:277
@@ -2714,7 +2714,7 @@ msgstr "Template"
 #: views/comm-mgmt/mailmerge.php:22 views/comm-mgmt/mailmerge.php:25
 #: views/dashboard/core-admin-bar.php:199 views/dashboard/menu.php:330
 msgid "Mail Merge"
-msgstr ""
+msgstr "Mala direta"
 
 #: views/comm-mgmt/mailmerge.php:52 views/comm-mgmt/schedule.php:101
 #: views/section/batch-register.php:106 views/sql/csv-email.php:90
@@ -2756,7 +2756,7 @@ msgstr "Tem certeza de que deseja excluir este item da fila?"
 #: views/comm-mgmt/schedule.php:30 views/comm-mgmt/schedule.php:33
 #: views/dashboard/core-admin-bar.php:197 views/dashboard/menu.php:328
 msgid "Schedule Email"
-msgstr ""
+msgstr "Email Horário de aula"
 
 #: views/comm-mgmt/schedule.php:62 views/section/students.php:150
 #: views/section/students.php:229
@@ -3178,7 +3178,7 @@ msgstr "Seção de Curso"
 #: views/courses/cart.php:44 views/courses/index.php:80
 #: views/section/booking-info.php:141
 msgid "Meeting Day(s)"
-msgstr ""
+msgstr "Dia(s) de reunião(ões)"
 
 #: views/courses/cart.php:47 views/courses/index.php:83
 #: views/form/building.php:80 views/form/import.php:94
@@ -3295,7 +3295,7 @@ msgstr ""
 
 #: views/cron/index.php:66
 msgid "Last Run"
-msgstr ""
+msgstr "Última execução"
 
 #: views/cron/index.php:67
 msgid "# Runs"
@@ -3303,11 +3303,11 @@ msgstr ""
 
 #: views/cron/index.php:68
 msgid "Logs/Run"
-msgstr ""
+msgstr "Logs/Execução"
 
 #: views/cron/index.php:83
 msgid "Run"
-msgstr ""
+msgstr "Executar"
 
 #: views/cron/index.php:100
 msgid "Delete selected handler(s)"
@@ -3319,7 +3319,7 @@ msgstr ""
 
 #: views/cron/log.php:83
 msgid "Clear Log"
-msgstr ""
+msgstr "Limpar log"
 
 #: views/cron/new.php:91 views/cron/view.php:89
 msgid "Cronjob URL"
@@ -3993,7 +3993,7 @@ msgstr "(ACRS) - Adicionar curso"
 
 #: views/dashboard/menu.php:246
 msgid "Transfer"
-msgstr ""
+msgstr "Tranferir"
 
 #: views/dashboard/menu.php:249
 msgid "New Tran. Equiv."
@@ -4635,7 +4635,7 @@ msgstr "Mensalmente"
 
 #: views/financial/payment-plan.php:105 views/financial/payment-plan.php:272
 msgid "Yearly"
-msgstr ""
+msgstr "Anual"
 
 #: views/financial/payment-plan.php:113
 msgid "Frequency Amount"
@@ -5047,7 +5047,7 @@ msgstr "Grade de pontos"
 
 #: views/form/import.php:28 views/form/import.php:31
 msgid "Quick Importer"
-msgstr ""
+msgstr "Importação rápida"
 
 #: views/form/import.php:71
 msgid "Database Table"
@@ -5334,7 +5334,7 @@ msgstr "Visualizar departamento"
 
 #: views/form/view-grade-scale.php:28
 msgid "Grading Scale"
-msgstr ""
+msgstr "Escala de classificação"
 
 #: views/form/view-grade-scale.php:30 views/form/view-grade-scale.php:33
 msgid "Edit Grade"
@@ -5535,7 +5535,7 @@ msgstr "Editar Posição"
 #: views/hr/timesheets.php:40 views/hr/view-timesheet.php:103
 #: views/staff/timesheets.php:51 views/staff/view-timesheet.php:53
 msgid "Work Week"
-msgstr ""
+msgstr "Semana de trabalho"
 
 #: views/hr/timesheets.php:43
 msgid "Hours"
@@ -5554,7 +5554,7 @@ msgstr "Visualizar folha de ponto"
 #: views/staff/timesheets.php:101 views/staff/view-timesheet.php:56
 #: views/staff/view-timesheet.php:96
 msgid "Work Hours"
-msgstr ""
+msgstr "Horas de trabalho"
 
 #: views/hr/view-timesheet.php:107 views/hr/view-timesheet.php:235
 #: views/staff/timesheets.php:166 views/staff/view-timesheet.php:57
@@ -5886,7 +5886,7 @@ msgstr ""
 
 #: views/install/index.php:103
 msgid "error"
-msgstr ""
+msgstr "erro"
 
 #: views/install/index.php:103
 msgid "eduTrac SIS requires this feature and can't work without it"
@@ -5979,7 +5979,7 @@ msgstr ""
 
 #: views/install/index.php:266
 msgid "How to enable javascript"
-msgstr ""
+msgstr "Como habilitar o javascript"
 
 #: views/install/index.php:268
 msgid "Upgrade Browser"
@@ -6075,7 +6075,7 @@ msgstr "Tipo de Endereço"
 
 #: views/person/addr-form.php:220 views/person/addr.php:224
 msgid "Added By"
-msgstr ""
+msgstr "Adicionado por"
 
 #: views/person/addr-form.php:257 views/person/addr-form.php:310
 #: views/person/addr.php:261 views/person/addr.php:314
@@ -6098,7 +6098,7 @@ msgstr ""
 
 #: views/person/addr-form.php:370 views/person/addr.php:374
 msgid "Secondary Email"
-msgstr ""
+msgstr "Email secundário"
 
 #: views/person/adsu.php:31
 msgid "ID: "
@@ -6144,11 +6144,11 @@ msgstr "Gerenciar Funções de Pessoas"
 
 #: views/person/role.php:58
 msgid "Member"
-msgstr ""
+msgstr "Membro"
 
 #: views/person/role.php:59
 msgid "Not Member"
-msgstr ""
+msgstr "Não membro"
 
 #: views/person/view.php:32
 msgid "View Person"
@@ -6164,7 +6164,7 @@ msgstr "Último login"
 
 #: views/person/view.php:454
 msgid "Person Status"
-msgstr ""
+msgstr "Status pessoa"
 
 #: views/person/view.php:458
 msgid ""
@@ -6182,7 +6182,7 @@ msgstr "Plugin"
 
 #: views/plugins/index.php:64
 msgid "Visit plugin site"
-msgstr ""
+msgstr "Visitar site do plugin"
 
 #: views/plugins/install.php:29 views/plugins/install.php:32
 msgid "Install Plugin"
@@ -6194,6 +6194,8 @@ msgid ""
 "Use this screen to install/upgrade plugins. If you need to install a module, "
 "you need to visit <a href=\"%s\"><strong>this screen</strong></a>."
 msgstr ""
+"Use essa tela para instalar ou atualizar plugins. Se você precisa instalar "
+"um módulo, acesse <a href=\"%s\"><strong>essa tela</strong></a>."
 
 #: views/program/add.php:30
 msgid "Create Program"
@@ -6422,11 +6424,11 @@ msgstr ""
 
 #: views/section/attendance.php:24 views/section/attendance_report.php:24
 msgid "Attendance"
-msgstr ""
+msgstr "Frequência"
 
 #: views/section/attendance.php:27
 msgid "Attendance for "
-msgstr ""
+msgstr "Frequência para "
 
 #: views/section/attendance.php:54 views/section/students.php:98
 #: views/section/students.php:132 views/student/add.php:75
@@ -6531,7 +6533,7 @@ msgstr "Digite Notas Finais"
 #: views/section/export-grades.php:25 views/section/grading.php:31
 #: views/student/schedule.php:45
 msgid "Grades"
-msgstr ""
+msgstr "Notas"
 
 #: views/section/final-grade.php:29 views/section/gradebook.php:51
 msgid "Final Grade"
@@ -6600,11 +6602,11 @@ msgstr "Upload de arquivo"
 #: views/section/templates/roster/default.template.php:83
 #: views/student/sttr.php:63
 msgid "Acad Level"
-msgstr ""
+msgstr "Nível acadêmico"
 
 #: views/section/templates/roster/default.template.php:84
 msgid "Acad Program"
-msgstr ""
+msgstr "Programa acadêmico"
 
 #: views/section/templates/roster/default.template.php:85
 msgid "Acad Credit Status"
@@ -6724,11 +6726,11 @@ msgstr "Fuso Horário"
 
 #: views/setting/index.php:174
 msgid "Cookie TTL"
-msgstr ""
+msgstr "Cookie TTL"
 
 #: views/setting/index.php:183
 msgid "Cookie Path"
-msgstr ""
+msgstr "Cookie Path"
 
 #: views/setting/index.php:198
 msgid "File Manager Driver"
@@ -6801,10 +6803,12 @@ msgid ""
 "Some screens in eduTrac rely on the internal REST API, so you will need and "
 "API Key."
 msgstr ""
+"Algumas telas em eduTrac contar com a API REST interna, de modo que você vai "
+"precisar e chave de API."
 
 #: views/setting/index.php:346
 msgid "to generate an api key for your account."
-msgstr ""
+msgstr "para gerar uma chave de API para a sua conta."
 
 #: views/setting/index.php:361
 msgid "myeduTrac Self Service"
@@ -6817,7 +6821,7 @@ msgstr ""
 
 #: views/setting/index.php:380
 msgid "myeduTrac Offline Message"
-msgstr ""
+msgstr "myeduTrac mensagem offline"
 
 #: views/setting/index.php:384
 msgid ""
@@ -7043,13 +7047,13 @@ msgstr "Consultas salvas"
 
 #: views/sql/add-query.php:38 views/sql/add-query.php:41
 msgid "Create Save Query"
-msgstr ""
+msgstr "Criar consulta salva"
 
 #: views/sql/add-query.php:64 views/sql/csv-email.php:54
 #: views/sql/index.php:91 views/sql/saved-queries.php:45
 #: views/sql/view-query.php:64
 msgid "Create Saved Query"
-msgstr ""
+msgstr "Criar consulta salva"
 
 #: views/sql/add-query.php:66 views/sql/csv-email.php:56
 #: views/sql/index.php:93 views/sql/saved-queries.php:47
@@ -7087,7 +7091,7 @@ msgstr ""
 
 #: views/sql/csv-email.php:72
 msgid "Recipient"
-msgstr ""
+msgstr "Destinatário"
 
 #: views/sql/index.php:68
 msgid "Choose a saved query from the drop down list or enter a custom query."
@@ -7099,11 +7103,11 @@ msgstr "Executado com sucesso - "
 
 #: views/sql/index.php:174
 msgid "Query is : "
-msgstr ""
+msgstr "Consulta: "
 
 #: views/sql/saved-queries.php:60
 msgid "Saved Query Name"
-msgstr ""
+msgstr "Nome da consulta salva"
 
 #: views/sql/saved-queries.php:61
 msgid "Creation Date"
@@ -7398,7 +7402,7 @@ msgstr ""
 
 #: views/student/templates/transcript/default.template.php:90
 msgid "Completed Credits"
-msgstr ""
+msgstr "Créditos concluídos"
 
 #: views/student/templates/transcript/default.template.php:112
 msgid "Transfer Cum. Totals"
@@ -7414,7 +7418,7 @@ msgstr "Transferir  créditos"
 
 #: views/student/terms.php:24
 msgid "Registered Terms"
-msgstr ""
+msgstr "Períodos registrados"
 
 #: views/student/tran.php:45 views/student/tran.php:48
 msgid "Transcript"
@@ -7434,7 +7438,7 @@ msgstr "(SPRO)"
 
 #: views/student/view.php:124 views/student/view.php:208
 msgid "Tags"
-msgstr ""
+msgstr "Tags"
 
 #: views/student/view.php:212
 msgid ""
