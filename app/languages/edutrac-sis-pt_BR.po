@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: eduTrac SIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-14 13:45-0500\n"
-"PO-Revision-Date: 2016-02-23 01:16-0300\n"
+"PO-Revision-Date: 2016-02-25 00:20-0300\n"
 "Last-Translator: Fábio Assunção da Silva <fabio@fabioassuncao.com.br>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -2839,7 +2839,7 @@ msgstr "Número Curso"
 #: views/course/add.php:140 views/course/view.php:143
 #: views/program/add.php:173 views/program/view.php:178
 msgid "Effective / End Date"
-msgstr ""
+msgstr "Início / Encerramento"
 
 #: views/course/add.php:159 views/course/atceq.php:91
 #: views/course/atceq.php:126 views/course/extr.php:188
@@ -2863,14 +2863,14 @@ msgstr "Nível acadêmico"
 #: views/course/add.php:175 views/program/add.php:88 views/program/view.php:92
 #: views/section/add.php:308 views/section/view.php:227
 msgid "Status / Date"
-msgstr ""
+msgstr "Status / Data"
 
 #: views/course/add.php:199 views/course/extr.php:259
 #: views/course/vextr.php:185 views/course/view.php:225
 #: views/program/add.php:101 views/program/view.php:105
 #: views/section/add.php:321 views/section/view.php:250
 msgid "Approval Person"
-msgstr "Aprovação Usuário"
+msgstr "Aprovado por"
 
 #: views/course/add.php:206 views/course/view.php:234
 #: views/program/add.php:110 views/program/view.php:114
@@ -6210,7 +6210,7 @@ msgstr "Código"
 
 #: views/program/add.php:144 views/program/view.php:148
 msgid "Effective Catalog Year"
-msgstr ""
+msgstr "Ano letivo de vigência"
 
 #: views/program/ajax.php:212
 msgid "The Academic Year was created successfully."
@@ -6218,11 +6218,11 @@ msgstr ""
 
 #: views/program/ajax.php:218
 msgid "Acad Year Code"
-msgstr ""
+msgstr "Código"
 
 #: views/program/ajax.php:227
 msgid "Acad Year Description"
-msgstr ""
+msgstr "Descrição"
 
 #: views/program/ajax.php:309
 msgid "The Degree was created successfully."
