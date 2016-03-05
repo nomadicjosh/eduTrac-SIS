@@ -1,5 +1,5 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 /**
  * eduTrac SIS Hooks Helper & Wrapper
@@ -185,9 +185,9 @@ function delete_option($name)
 function jstree_sidebar_menu($screen, $crse = '', $sect = '', $nae = '', $staff = '', $spro = '', $prog = '')
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $menu = APP_PATH . 'views/dashboard/menu.php';
-    if (! $app->hook->has_filter('core_sidebar_menu')) {
+    if (!$app->hook->has_filter('core_sidebar_menu')) {
         require ($menu);
     }
     return $app->hook->apply_filter('core_sidebar_menu', $menu, $screen, $crse, $sect, $nae, $staff, $spro, $prog);
@@ -201,14 +201,14 @@ function jstree_sidebar_menu($screen, $crse = '', $sect = '', $nae = '', $staff 
 function core_admin_bar()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $filename = APP_PATH . 'views/dashboard/core-admin-bar.php';
-    
-    if (! is_readable($filename)) {
+
+    if (!is_readable($filename)) {
         __return_false();
     }
-    
-    if (! $app->hook->has_filter('core_admin_bar')) {
+
+    if (!$app->hook->has_filter('core_admin_bar')) {
         include ($filename);
     }
     return $app->hook->apply_filter('core_admin_bar', $filename);
@@ -237,7 +237,7 @@ function core_admin_bar()
 function _deprecated_function($function_name, $release, $replacement = null)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     /**
      * Fires when a deprecated function is called.
      *
@@ -251,7 +251,7 @@ function _deprecated_function($function_name, $release, $replacement = null)
      *            The release of eduTrac SIS that deprecated the function.
      */
     $app->hook->do_action('deprecated_function_run', $function_name, $replacement, $release);
-    
+
     /**
      * Filter whether to trigger an error for deprecated functions.
      *
@@ -262,13 +262,13 @@ function _deprecated_function($function_name, $release, $replacement = null)
      */
     if (APP_ENV == 'DEV' && $app->hook->apply_filter('deprecated_function_trigger_error', true)) {
         if (function_exists('_t')) {
-            if (! is_null($replacement)) {
+            if (!is_null($replacement)) {
                 _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />'), $function_name, $release, $replacement));
             } else {
                 _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $function_name, $release));
             }
         } else {
-            if (! is_null($replacement)) {
+            if (!is_null($replacement)) {
                 _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />', $function_name, $release, $replacement));
             } else {
                 _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $function_name, $release));
@@ -300,7 +300,7 @@ function _deprecated_function($function_name, $release, $replacement = null)
 function _deprecated_class($class_name, $release, $replacement = null)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     /**
      * Fires when a deprecated class is called.
      *
@@ -314,7 +314,7 @@ function _deprecated_class($class_name, $release, $replacement = null)
      *            The release of eduTrac SIS that deprecated the class.
      */
     $app->hook->do_action('deprecated_class_run', $class_name, $replacement, $release);
-    
+
     /**
      * Filter whether to trigger an error for deprecated classes.
      *
@@ -325,13 +325,13 @@ function _deprecated_class($class_name, $release, $replacement = null)
      */
     if (APP_ENV == 'DEV' && $app->hook->apply_filter('deprecated_class_trigger_error', true)) {
         if (function_exists('_t')) {
-            if (! is_null($replacement)) {
+            if (!is_null($replacement)) {
                 _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />'), $class_name, $release, $replacement));
             } else {
                 _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $class_name, $release));
             }
         } else {
-            if (! is_null($replacement)) {
+            if (!is_null($replacement)) {
                 _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />', $class_name, $release, $replacement));
             } else {
                 _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $class_name, $release));
@@ -363,7 +363,7 @@ function _deprecated_class($class_name, $release, $replacement = null)
 function _deprecated_class_method($method_name, $release, $replacement = null)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     /**
      * Fires when a deprecated class method is called.
      *
@@ -377,7 +377,7 @@ function _deprecated_class_method($method_name, $release, $replacement = null)
      *            The release of eduTrac SIS that deprecated the class's method.
      */
     $app->hook->do_action('deprecated_class_method_run', $method_name, $replacement, $release);
-    
+
     /**
      * Filter whether to trigger an error for deprecated class methods.
      *
@@ -388,13 +388,13 @@ function _deprecated_class_method($method_name, $release, $replacement = null)
      */
     if (APP_ENV == 'DEV' && $app->hook->apply_filter('deprecated_class_method_trigger_error', true)) {
         if (function_exists('_t')) {
-            if (! is_null($replacement)) {
+            if (!is_null($replacement)) {
                 _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />'), $method_name, $release, $replacement));
             } else {
                 _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $method_name, $release));
             }
         } else {
-            if (! is_null($replacement)) {
+            if (!is_null($replacement)) {
                 _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />', $method_name, $release, $replacement));
             } else {
                 _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $method_name, $release));
@@ -434,7 +434,7 @@ function _deprecated_class_method($method_name, $release, $replacement = null)
 function _deprecated_argument($function_name, $release, $message = null)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     /**
      * Fires when a deprecated argument is called.
      *
@@ -458,13 +458,13 @@ function _deprecated_argument($function_name, $release, $message = null)
      */
     if (APP_ENV == 'DEV' && $app->hook->apply_filter('deprecated_argument_trigger_error', true)) {
         if (function_exists('_t')) {
-            if (! is_null($message)) {
+            if (!is_null($message)) {
                 _trigger_error(sprintf(_t('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s! %3$s. <br />'), $function_name, $release, $message));
             } else {
                 _trigger_error(sprintf(_t('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $function_name, $release));
             }
         } else {
-            if (! is_null($message)) {
+            if (!is_null($message)) {
                 _trigger_error(sprintf('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s! %3$s. <br />', $function_name, $release, $message));
             } else {
                 _trigger_error(sprintf('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $function_name, $release));
@@ -494,7 +494,7 @@ function _deprecated_argument($function_name, $release, $message = null)
 function _incorrectly_called($function_name, $message, $release)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     /**
      * Fires when the given function is being used incorrectly.
      *
@@ -508,7 +508,7 @@ function _incorrectly_called($function_name, $message, $release)
      *            The release of eduTrac SIS where the message was added.
      */
     $app->hook->do_action('incorrectly_called_run', $function_name, $message, $release);
-    
+
     /**
      * Filter whether to trigger an error for _incorrectly_called() calls.
      *
@@ -539,11 +539,11 @@ function _incorrectly_called($function_name, $message, $release)
 function etsis_dashboard_copyright_footer()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $copyright = '<!--  Copyright Line -->' . "\n";
     $copyright .= '<div class="copy">' . _t('&copy; 2013') . ' - ' . foot_release() . ' &nbsp; <a href="http://www.litenframework.com/"><img src="' . get_base_url() . 'static/assets/images/button.png" alt="Built with Liten Framework"/></a></div>' . "\n";
     $copyright .= '<!--  End Copyright Line -->' . "\n";
-    
+
     return $app->hook->apply_filter('dashboard_copyright_footer', $copyright);
 }
 /**
@@ -735,11 +735,11 @@ function dashboard_student_count()
 function dashboard_course_count()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $count = $app->db->course()
         ->where('course.currStatus = "A" AND course.endDate = "0000-00-00"')
         ->count('course.courseID');
-    
+
     $crseCount = '<div class="col-md-4">';
     $crseCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
     $crseCount .= '<span class="glyphicons book"><i></i><span class="txt">' . _t('Active Courses') . '</span></span>';
@@ -758,11 +758,11 @@ function dashboard_course_count()
 function dashboard_acadProg_count()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $count = $app->db->acad_program()
         ->where('acad_program.currStatus = "A" AND acad_program.endDate = "0000-00-00"')
         ->count('acad_program.acadProgID');
-    
+
     $progCount = '<div class="col-md-4">';
     $progCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
     $progCount .= '<span class="glyphicons keynote"><i></i><span class="txt">' . _t('Active Programs') . '</span></span>';
@@ -787,7 +787,7 @@ function show_update_message()
         $update = new \VisualAppeal\AutoUpdate(rtrim($app->config('file.savepath'), '/'), BASE_PATH, 1800);
         $update->setCurrentVersion(RELEASE_TAG);
         $update->setUpdateUrl('http://etsis.s3.amazonaws.com/core/1.1/update-check');
-        
+
         // Optional:
         $update->addLogHandler(new Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/core-update.' . date('m-d-Y') . '.txt'));
         $update->setCache(new Desarrolla2\Cache\Adapter\File(APP_PATH . 'tmp/cache'), 3600);
@@ -813,7 +813,7 @@ function show_update_message()
 function get_javascript_directory_uri()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $directory = 'static/assets/components';
     $javascript_root_uri = get_base_url();
     $javascript_dir_uri = "$javascript_root_uri$directory/";
@@ -831,7 +831,7 @@ function get_javascript_directory_uri()
 function get_less_directory_uri()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $directory = 'static/assets/less';
     $less_root_uri = get_base_url();
     $less_dir_uri = "$less_root_uri$directory/";
@@ -849,7 +849,7 @@ function get_less_directory_uri()
 function get_css_directory_uri()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $directory = 'static/assets/css';
     $css_root_uri = get_base_url();
     $css_dir_uri = "$css_root_uri$directory/";
@@ -870,7 +870,7 @@ function get_css_directory_uri()
 function etsis_parse_str($string, $array)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     parse_str($string, $array);
     /**
      * Filter the array of variables derived from a parsed string.
@@ -893,7 +893,7 @@ function etsis_parse_str($string, $array)
 function get_met_title()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $title = '<em>' . _t('my') . '</em>' . ('eduTrac');
     return $app->hook->apply_filter('met_title', $title);
 }
@@ -909,7 +909,7 @@ function get_met_title()
 function get_met_welcome_message_title()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $title = _t('Welcome to myeduTrac');
     return $app->hook->apply_filter('met_welcome_message_title', $title);
 }
@@ -925,7 +925,7 @@ function get_met_welcome_message_title()
 function get_met_footer_release()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     if (CURRENT_RELEASE != RELEASE_TAG) {
         $release = _t('Powered by eduTrac SIS r') . CURRENT_RELEASE . ' (t' . RELEASE_TAG . ')';
     } else {
@@ -945,7 +945,7 @@ function get_met_footer_release()
 function get_met_footer_title()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $title = '<em>' . _t('my') . '</em>' . ('eduTrac');
     return $app->hook->apply_filter('met_footer_title', $title);
 }
@@ -962,7 +962,7 @@ function get_met_footer_title()
 function address_type_select($typeCode = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="addressType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
             <option value="">&nbsp;</option>
             <option value="B"' . selected($typeCode, 'B', false) . '>Business</option>
@@ -984,7 +984,7 @@ function address_type_select($typeCode = NULL)
 function dept_type_select($typeCode = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="deptTypeCode" id="deptType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
             <option value="">&nbsp;</option>
             <option value="ADMIN"' . selected($typeCode, 'ADMIN', false) . '>' . _t('Administrative') . '</option>
@@ -1005,7 +1005,7 @@ function dept_type_select($typeCode = NULL)
 function address_status_select($status = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="addressStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 			<option value="">&nbsp;</option>
 	    	<option value="C"' . selected($status, 'C', false) . '>Current</option>
@@ -1026,7 +1026,7 @@ function address_status_select($status = NULL)
 function acad_level_select($levelCode = null, $readonly = null, $required = '')
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"' . $readonly . $required . '>
             <option value="">&nbsp;</option>
             <option value="NA"' . selected($levelCode, 'NA', false) . '>N/A Not Applicable</option>
@@ -1053,7 +1053,7 @@ function acad_level_select($levelCode = null, $readonly = null, $required = '')
 function fee_acad_level_select($levelCode = null)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="acadLevelCode" class="form-control">
             <option value="">&nbsp;</option>
             <option value="NA"' . selected($levelCode, 'NA', false) . '>N/A Not Applicable</option>
@@ -1080,7 +1080,7 @@ function fee_acad_level_select($levelCode = null)
 function status_select($status = NULL, $readonly = '')
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="currStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"' . $readonly . ' required>
     			<option value="">&nbsp;</option>
     	    	<option value="A"' . selected($status, 'A', false) . '>A Active</option>
@@ -1103,7 +1103,7 @@ function status_select($status = NULL, $readonly = '')
 function course_sec_status_select($status = NULL, $readonly = '')
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="currStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required' . $readonly . '>
     			<option value="">&nbsp;</option>
     	    	<option' . dopt('activate_course_sec') . ' value="A"' . selected($status, 'A', false) . '>A Active</option>
@@ -1127,7 +1127,7 @@ function course_sec_status_select($status = NULL, $readonly = '')
 function person_type_select($type = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="personType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                 <option value="">&nbsp;</option>
                 <option value="FAC"' . selected($type, 'FAC', false) . '>FAC Faculty</option>
@@ -1151,7 +1151,7 @@ function person_type_select($type = NULL)
 function course_level_select($levelCode = NULL, $readonly = null)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="courseLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required' . $readonly . '>
 			<option value="">&nbsp;</option>
 	    	<option value="100"' . selected($levelCode, '100', false) . '>100 Course Level</option>
@@ -1179,7 +1179,7 @@ function course_level_select($levelCode = NULL, $readonly = null)
 function instructor_method($method = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="instructorMethod" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                 <option value="">&nbsp;</option>
                 <option value="LEC"' . selected($method, 'LEC', false) . '>' . _t('LEC Lecture') . '</option>
@@ -1205,7 +1205,7 @@ function instructor_method($method = NULL)
 function stu_course_sec_status_select($status = NULL, $readonly = '')
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required' . $readonly . '>
                 <option value="">&nbsp;</option>
                 <option value="A"' . selected($status, 'A', false) . '>' . _t('A Add') . '</option>
@@ -1229,7 +1229,7 @@ function stu_course_sec_status_select($status = NULL, $readonly = '')
 function stu_prog_status_select($status = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="currStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                 <option value="">&nbsp;</option>
                 <option value="A"' . selected($status, 'A', false) . '>' . _t('A Active') . '</option>
@@ -1253,7 +1253,7 @@ function stu_prog_status_select($status = NULL)
 function credit_type($status = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                 <option value="">&nbsp;</option>
                 <option value="I"' . selected($status, 'I', false) . '>' . _t('I Institutional') . '</option>
@@ -1277,7 +1277,7 @@ function credit_type($status = NULL)
 function class_year($year = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="classYear" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                 <option value="">&nbsp;</option>
                 <option value="FR"' . selected($year, 'FR', false) . '>' . _t('FR Freshman') . '</option>
@@ -1354,7 +1354,7 @@ function grades($id, $aID)
 function admit_status_select($status = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="admitStatus" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                 <option value="">&nbsp;</option>
                 <option value="FF"' . selected($status, 'FF', false) . '>' . _t('FF First Time Freshman') . '</option>
@@ -1377,7 +1377,7 @@ function admit_status_select($status = NULL)
 function general_ledger_type_select($type = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $select = '<select name="gl_acct_type" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                 <option value="">&nbsp;</option>
                 <option value="' . _t('Asset') . '"' . selected($type, _t('Asset'), false) . '>' . _t('Asset') . '</option>
@@ -1392,7 +1392,7 @@ function general_ledger_type_select($type = NULL)
 function get_user_avatar($email, $s = 80, $class = '', $d = 'mm', $r = 'g', $img = false)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $url = 'http://www.gravatar.com/avatar/';
     $url .= md5(strtolower(trim($email)));
     $url .= "?s=200&d=$d&r=$r";
@@ -1404,7 +1404,7 @@ function get_user_avatar($email, $s = 80, $class = '', $d = 'mm', $r = 'g', $img
 function nocache_headers()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $headers = [
         'Expires' => 'Sun, 01 Jan 2014 00:00:00 GMT',
         'Cache-Control' => 'no-cache, no-store, must-revalidate',
@@ -1425,7 +1425,7 @@ function nocache_headers()
 function myet_wysiwyg_editor()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $editor = '<script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>' . "\n";
     $editor .= '<script type="text/javascript">
     tinymce.init({
@@ -1457,7 +1457,7 @@ function myet_wysiwyg_editor()
 function compare_releases($current, $latest, $operator = '>')
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $php_function = version_compare($latest, $current, $operator);
     /**
      * Filters the comparison between two release.
@@ -1467,7 +1467,7 @@ function compare_releases($current, $latest, $operator = '>')
      *            function for comparing two release values.
      */
     $release = $app->hook->apply_filter('compare_releases', $php_function);
-    
+
     if ($release) {
         return $latest;
     } else {
@@ -1487,7 +1487,7 @@ function compare_releases($current, $latest, $operator = '>')
 function get_http_response_code($url)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $headers = get_headers($url);
     $status = substr($headers[0], 9, 3);
     /**
@@ -1566,14 +1566,13 @@ function acad_program_select($progCode = null)
         }
         return $array;
     });
-    
+
     foreach ($query as $r) {
         echo '<option value="' . _h($r['acadProgCode']) . '"' . selected($progCode, _h($r['acadProgCode']), false) . '>' . _h($r['acadProgCode']) . ' ' . _h($r['acadProgTitle']) . '</option>' . "\n";
     }
-    
+
     return $app->hook->apply_filter('academic_program', $query, $progCode);
 }
-
 $app->hook->add_action('admin_head', 'head_release_meta', 5);
 $app->hook->add_action('myet_head', 'head_release_meta', 5);
 $app->hook->add_action('release', 'foot_release', 5);
@@ -1584,6 +1583,7 @@ $app->hook->add_action('dashboard_right_widgets', 'dashboard_clock', 5);
 $app->hook->add_action('dashboard_right_widgets', 'dashboard_weather', 5);
 $app->hook->add_action('activated_plugin', 'etsis_plugin_activate_message', 5, 1);
 $app->hook->add_action('deactivated_plugin', 'etsis_plugin_deactivate_message', 5, 1);
+$app->hook->add_action('login_form_top', 'etsis_login_form_show_message', 5);
 $app->hook->add_filter('the_myet_page_content', 'etsis_autop');
 $app->hook->add_filter('the_myet_page_content', 'parsecode_unautop');
 $app->hook->add_filter('the_myet_page_content', 'do_parsecode', 5);

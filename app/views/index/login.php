@@ -12,7 +12,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
-$message = new \app\src\Messages;
 ?>
 
 <script type="text/javascript">
@@ -30,8 +29,6 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 		<div class="wrapper">
 		
 			<h1 class="glyphicons unlock"><?=_t( 'Sign in' );?> <i></i></h1>
-			
-			<?=$message->flashMessage();?>
             
             <?php 
             /**

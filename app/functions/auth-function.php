@@ -1,5 +1,5 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
@@ -12,7 +12,7 @@ if (! defined('BASE_PATH'))
 function hasPermission($perm)
 {
     $acl = new \app\src\ACL(get_persondata('personID'));
-    
+
     if ($acl->hasPermission($perm) && isUserLoggedIn()) {
         return true;
     } else {
@@ -45,9 +45,9 @@ function get_persondata($field)
 function isUserLoggedIn()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $person = get_person_by('personID', get_persondata('personID'));
-    
+
     $vars = [];
     parse_str($app->cookies->get('ET_COOKNAME'), $vars);
     /**
@@ -55,11 +55,11 @@ function isUserLoggedIn()
      * It it exists, we need to delete it.
      */
     $file = $app->config('cookies.savepath') . 'cookies.' . $vars['data'];
-    
+
     if (file_exists($file) && $app->cookies->verifySecureCookie('ET_COOKNAME') && count($person) > 0) {
         return true;
     }
-    
+
     return false;
 }
 
@@ -99,7 +99,7 @@ function _he($permission)
     if (hasPermission($permission)) {
         return true;
     }
-    
+
     return false;
 }
 
@@ -119,13 +119,13 @@ function _mf($function_name)
     if (function_exists($function_name)) {
         return true;
     }
-    
+
     return false;
 }
 
 function ae($perm)
 {
-    if (! hasPermission($perm)) {
+    if (!hasPermission($perm)) {
         return ' style="display:none !important;"';
     }
 }
@@ -382,7 +382,7 @@ function paids()
  */
 function dopt($perm)
 {
-    if (! hasPermission($perm)) {
+    if (!hasPermission($perm)) {
         return ' disabled';
     }
 }
@@ -399,12 +399,12 @@ function get_person_by($field, $value)
     $app = \Liten\Liten::getInstance();
 
     $person = $app->db->person()
-    ->select('person.*, address.*, staff.*, student.*')
-    ->_join('address', 'person.personID = address.personID')
-    ->_join('staff', 'person.personID = staff.staffID')
-    ->_join('student', 'person.personID = student.stuID')
-    ->where("person.$field = ?", $value)
-    ->findOne();
+        ->select('person.*, address.*, staff.*, student.*')
+        ->_join('address', 'person.personID = address.personID')
+        ->_join('staff', 'person.personID = staff.staffID')
+        ->_join('student', 'person.personID = student.stuID')
+        ->where("person.$field = ?", $value)
+        ->findOne();
 
     return $person;
 }
@@ -424,13 +424,13 @@ function etsis_authenticate($login, $password, $rememberme)
     $logger = new \app\src\Log();
 
     $person = $app->db->person()
-    ->select('person.personID,person.uname,person.password')
-    ->_join('staff', 'person.personID = staff.staffID')
-    ->_join('student', 'person.personID = student.stuID')
-    ->where('(person.uname = ? OR person.email = ?)', [$login,$login])
-    ->_and_()
-    ->where('(staff.status = "A" OR student.status = "A")')
-    ->findOne();
+        ->select('person.personID,person.uname,person.password')
+        ->_join('staff', 'person.personID = staff.staffID')
+        ->_join('student', 'person.personID = student.stuID')
+        ->where('(person.uname = ? OR person.email = ?)', [$login, $login])
+        ->_and_()
+        ->where('(staff.status = "A" OR student.status = "A")')
+        ->findOne();
 
     if (false == $person) {
         $app->flash('error_message', _t('Your account is deactivated.'));
@@ -449,7 +449,7 @@ function etsis_authenticate($login, $password, $rememberme)
      * @param string $rememberme Whether to remember the person.
      */
     $app->hook->apply_filter('etsis_auth_cookie', $person, $rememberme);
-    
+
     $logger->setLog('Authentication', 'Login', get_name(_h($person->personID)), _h($person->uname));
     redirect(get_base_url());
 }
@@ -500,13 +500,13 @@ function etsis_authenticate_person($login, $password, $rememberme)
         }
     }
 
-    if (! etsis_check_password($password, $person->password, _h($person->personID))) {
+    if (!etsis_check_password($password, $person->password, _h($person->personID))) {
         $app->flash('error_message', _t('<strong>ERROR</strong>: The password you entered is incorrect.'));
 
         redirect(get_base_url() . 'login' . '/');
         return;
     }
-    
+
     /**
      * Filters log in details.
      * 
@@ -520,15 +520,16 @@ function etsis_authenticate_person($login, $password, $rememberme)
     return $person;
 }
 
-function etsis_set_auth_cookie($person, $rememberme = '') {
-    
+function etsis_set_auth_cookie($person, $rememberme = '')
+{
+
     $app = \Liten\Liten::getInstance();
-    
-    if(! is_object($person)) {
+
+    if (!is_object($person)) {
         return new \app\src\Core\Exception\Exception(_t('$person should be a database object.'), 'set_auth_cookie');
     }
-    
-    if(isset($rememberme)) {
+
+    if (isset($rememberme)) {
         /**
          * Ensure the browser will continue to send the cookie until it expires.
          * 
@@ -545,9 +546,9 @@ function etsis_set_auth_cookie($person, $rememberme = '') {
          */
         $expire = $app->hook->apply_filter('auth_cookie_expiration', ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
     }
-    
+
     $auth_cookie = _h($person->personID);
-    
+
     /**
      * Fires immediately before the secure authentication cookie is set.
      *
@@ -555,8 +556,8 @@ function etsis_set_auth_cookie($person, $rememberme = '') {
      * @param string $auth_cookie Authentication cookie.
      * @param int    $expire  Duration in seconds the authentication cookie should be valid.
      */
-    $app->hook->do_action( 'set_auth_cookie', $auth_cookie, $expire );
-    
+    $app->hook->do_action('set_auth_cookie', $auth_cookie, $expire);
+
     $app->cookies->setSecureCookie('ET_COOKNAME', $auth_cookie, $expire);
 }
 
@@ -565,17 +566,18 @@ function etsis_set_auth_cookie($person, $rememberme = '') {
  * 
  * @since 6.2.0
  */
-function etsis_clear_auth_cookie() {
-    
+function etsis_clear_auth_cookie()
+{
+
     $app = \Liten\Liten::getInstance();
-    
+
     /**
      * Fires just before the authentication cookies are cleared.
      *
      * @since 6.2.0
      */
-    $app->hook->do_action( 'clear_auth_cookie' );
-    
+    $app->hook->do_action('clear_auth_cookie');
+
     $vars1 = [];
     parse_str($app->cookies->get('ET_COOKNAME'), $vars1);
     /**
@@ -586,7 +588,7 @@ function etsis_clear_auth_cookie() {
     if (file_exists($file1)) {
         unlink($file1);
     }
-    
+
     $vars2 = [];
     parse_str($app->cookies->get('SWITCH_USERBACK'), $vars2);
     /**
@@ -597,7 +599,7 @@ function etsis_clear_auth_cookie() {
     if (file_exists($file2)) {
         unlink($file2);
     }
-    
+
     $vars3 = [];
     parse_str($app->cookies->get('SWITCH_USERNAME'), $vars3);
     /**
@@ -608,7 +610,7 @@ function etsis_clear_auth_cookie() {
     if (file_exists($file3)) {
         unlink($file3);
     }
-    
+
     $vars4 = [];
     parse_str($app->cookies->get('ET_REMEMBER'), $vars4);
     /**
@@ -619,7 +621,7 @@ function etsis_clear_auth_cookie() {
     if (file_exists($file4)) {
         unlink($file4);
     }
-    
+
     /**
      * After the cookie is removed from the server,
      * we know need to remove it from the browser and
@@ -629,4 +631,16 @@ function etsis_clear_auth_cookie() {
     $app->cookies->remove('SWITCH_USERBACK');
     $app->cookies->remove('SWITCH_USERNAME');
     $app->cookies->remove('ET_REMEMBER');
+}
+
+/**
+ * Shows error messages on login form.
+ * 
+ * @since 6.2.5
+ */
+function etsis_login_form_show_message()
+{
+    $app = \Liten\Liten::getInstance();
+    $message = new \app\src\Core\etsis_Messages();
+    echo $app->hook->apply_filter('login_form_show_message', $message->showMessage());
 }
