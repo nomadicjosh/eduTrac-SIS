@@ -44,19 +44,9 @@ function get_persondata($field)
 
 function isUserLoggedIn()
 {
-    $app = \Liten\Liten::getInstance();
-
     $person = get_person_by('personID', get_persondata('personID'));
 
-    $vars = [];
-    parse_str($app->cookies->get('ET_COOKNAME'), $vars);
-    /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
-     */
-    $file = $app->config('cookies.savepath') . 'cookies.' . $vars['data'];
-
-    if (file_exists($file) && $app->cookies->verifySecureCookie('ET_COOKNAME') && count($person) > 0) {
+    if (count($person) > 0) {
         return true;
     }
 
@@ -641,6 +631,6 @@ function etsis_clear_auth_cookie()
 function etsis_login_form_show_message()
 {
     $app = \Liten\Liten::getInstance();
-    $message = new \app\src\Core\etsis_Messages();
-    echo $app->hook->apply_filter('login_form_show_message', $message->showMessage());
+    $flash = new \app\src\Core\etsis_Messages();
+    echo $app->hook->apply_filter('login_form_show_message', $flash->showMessage());
 }
