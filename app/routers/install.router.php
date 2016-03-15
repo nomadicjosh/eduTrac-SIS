@@ -225,7 +225,7 @@ $app->match('GET|POST', '/install/finishInstall/', function () use($app) {
         $config = _file_get_contents($file);
         
         $config = str_replace('{product}', 'eduTrac SIS', $config);
-        $config = str_replace('{release}', CURRENT_RELEASE, $config);
+        $config = str_replace('{release}', RELEASE_TAG, $config);
         $config = str_replace('{datenow}', date('Y-m-d h:m:s'), $config);
         $config = str_replace('{hostname}', Session::get('dbhost'), $config);
         $config = str_replace('{database}', Session::get('dbname'), $config);
