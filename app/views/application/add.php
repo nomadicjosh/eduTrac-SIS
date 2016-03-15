@@ -13,7 +13,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'appl';
-$message = new \app\src\Messages;
+$flash = new \app\src\Core\etsis_Messages();
 ?>
 
 <ul class="breadcrumb">
@@ -27,6 +27,8 @@ $message = new \app\src\Messages;
 
 <h3><?=_t( 'Create Application' );?></h3>
 <div class="innerLR">
+    
+    <?=$flash->showMessage();?>
 
 	<?php jstree_sidebar_menu($screen); ?>
 

@@ -12,7 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
-$message = new \app\src\Messages();
+$flash = new \app\src\Core\etsis_Messages();
 ?>
 
 <script type='text/javascript'>//<![CDATA[ 
@@ -39,7 +39,7 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
 	<h3 class="glyphicons search"><i></i><?=_t( 'Search Courses' );?></h3>
 	<div class="separator bottom"></div>
 	
-	<?=$message->flashMessage();?>
+	<?=$flash->showMessage();?>
 	
     <?php $app->hook->do_action('course_reg_message'); ?>
 	

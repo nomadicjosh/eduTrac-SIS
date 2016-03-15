@@ -12,7 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$message = new \app\src\Messages;
+$flash = new \app\src\Core\etsis_Messages();
 $ePerm = new \app\src\ACL();
 $screen = 'perm';
 ?>
@@ -34,7 +34,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'View Permission' );?></h3>
 <div class="innerLR">
     
-    <?=$message->flashMessage();?>
+    <?=$flash->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 

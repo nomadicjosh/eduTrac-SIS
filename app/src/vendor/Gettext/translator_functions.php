@@ -1,6 +1,6 @@
 <?php
 
-use \Gettext\BaseTranslator;
+use Gettext\BaseTranslator;
 
 /**
  * Returns the translation of a string.

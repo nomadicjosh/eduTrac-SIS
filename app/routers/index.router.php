@@ -10,12 +10,11 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 $json_url = get_base_url() . 'api' . '/';
 $hasher = new \app\src\PasswordHash(8, FALSE);
 
 $logger = new \app\src\Log();
-$flashNow = new \app\src\Messages();
+$flashNow = new \app\src\Core\etsis_Messages();
 
 /**
  * Before route check.
@@ -25,7 +24,7 @@ $app->before('GET|POST', '/', function() {
         redirect(get_base_url() . 'install/?step=1');
         exit();
     }
-    
+
     if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
         redirect(get_base_url() . 'offline' . '/');
     }
@@ -57,13 +56,13 @@ $app->get('/offline/', function () use($app) {
 });
 
 $app->match('GET|POST', '/component/', function() use($app, $css, $js) {
-        $app->view->display('index/component', [
-            'title' => COMPONENT_TITLE,
-            'cssArray' => $css,
-            'jsArray' => $js
-            ]
-        );
-    });
+    $app->view->display('index/component', [
+        'title' => COMPONENT_TITLE,
+        'cssArray' => $css,
+        'jsArray' => $js
+        ]
+    );
+});
 
 $app->before('GET|POST', '/online-app/', function() {
     if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
@@ -196,7 +195,7 @@ $app->match('GET|POST', '/password/', function () use($app, $flashNow) {
                  * @param string $pass Plaintext password submitted by logged in user.
                  */
                 $app->hook->do_action('post_change_password', $pass);
-                
+
                 $app->flash('success_message', $flashNow->notice(200));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -260,7 +259,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
         }
         redirect($app->req->server['HTTP_REFERER']);
     }
-    
+
     $perm = $app->db->permission()->where('ID = ?', $id)->findOne();
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
@@ -332,7 +331,7 @@ $app->match('GET|POST', '/permission/add/', function () use($app, $flashNow, $lo
         'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
         'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
     ];
-    
+
     if ($app->req->isPost()) {
         $perm = $app->db->permission();
         foreach (_filter_input_array(INPUT_POST) as $k => $v) {
@@ -341,7 +340,7 @@ $app->match('GET|POST', '/permission/add/', function () use($app, $flashNow, $lo
         if ($perm->save()) {
             $app->flash('success_message', $flashNow->notice(200));
             $logger->setLog('New Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
-            redirect( get_base_url() . 'permission' . '/' );
+            redirect(get_base_url() . 'permission' . '/');
         } else {
             $app->flash('error_message', $flashNow->notice(409));
             redirect($app->req->server['HTTP_REFERER']);
@@ -391,7 +390,7 @@ $app->match('GET|POST', '/role/', function () use($app) {
     );
 });
 
-$app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {    
+$app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
     $role = $app->db->role()->where('ID = ?', $id)->findOne();
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
@@ -622,7 +621,7 @@ $app->get('/logout/', function () use($app, $logger) {
      * @since 6.2.0
      */
     etsis_clear_auth_cookie();
-    
+
     redirect(get_base_url() . 'login' . '/');
 });
 

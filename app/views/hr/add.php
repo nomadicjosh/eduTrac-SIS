@@ -13,7 +13,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'hr';
-$message = new \app\src\Messages;
+$flash = new \app\src\Core\etsis_Messages();
 $staffInfo = new \app\src\Staff;
 $staffInfo->Load_from_key(_h($job[0]['staffID']));
 ?>
@@ -84,7 +84,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     
     <div class="separator line bottom"></div>
     
-    <?=$message->flashMessage();?>
+    <?=$flash->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 

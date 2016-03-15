@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: eduTrac SIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-14 13:45-0500\n"
-"PO-Revision-Date: 2016-02-18 00:43-0300\n"
+"PO-Revision-Date: 2016-02-25 02:11-0300\n"
 "Last-Translator: Fábio Assunção da Silva <fabio@fabioassuncao.com.br>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -702,7 +702,9 @@ msgstr ""
 #: routers/error.router.php:43
 #, php-format
 msgid "The screen %s does not exist. Please try your search again."
-msgstr "A tele %s não existe. Por favor, teste pesquisar novamente. "
+msgstr ""
+"A tela %s não existe. Por favor, teste novamente utilizando outro termo para "
+"a busca."
 
 #: routers/install.router.php:60 routers/install.router.php:87
 msgid "Unable to establish a database connection."
@@ -798,12 +800,12 @@ msgid ""
 "Your application has been submitted, and you can now log in with your "
 "username and password."
 msgstr ""
-"A sua aplicação foi enviada com sucesso. Agora você pode fazer login com seu "
+"A sua inscrição foi enviada com sucesso. Agora você pode fazer login com seu "
 "nome de usuário e senha."
 
 #: routers/myet.router.php:773
 msgid "Student Application Via myeT"
-msgstr ""
+msgstr "Inscrição de aluno via myeT"
 
 #: routers/myet.router.php:797
 msgid "Online Application"
@@ -1048,7 +1050,7 @@ msgstr "Detalhes de Login"
 
 #: src/Core/etsis_Email.php:573
 msgid "Application for Admissions"
-msgstr "Aplicação para Admissão"
+msgstr "Inscrição para Admissão"
 
 #: src/Core/etsis_Messages.php:67 src/Messages.php:71
 #, php-format
@@ -1156,7 +1158,7 @@ msgstr "Release atual: r%s"
 
 #: src/CoreUpdate.php:189
 msgid "Reading Current Releases List"
-msgstr ""
+msgstr "Lendo lista de releases atuais"
 
 #: src/CoreUpdate.php:192
 #, php-format
@@ -1165,7 +1167,7 @@ msgstr "Nova atualização encontrada: r%s"
 
 #: src/CoreUpdate.php:197
 msgid "Downloading New Update "
-msgstr ""
+msgstr "Baixando nova atualização"
 
 #: src/CoreUpdate.php:205
 msgid "Could not save new update. Operation aborted."
@@ -1177,7 +1179,7 @@ msgstr "Atualização baixada e salva"
 
 #: src/CoreUpdate.php:211
 msgid "Update already downloaded."
-msgstr ""
+msgstr "Atualização já baixou."
 
 #: src/CoreUpdate.php:229
 #, php-format
@@ -1203,7 +1205,7 @@ msgstr "eduTrac SIS atualizado para r%s"
 
 #: src/CoreUpdate.php:260
 msgid "No update is available."
-msgstr ""
+msgstr "Nenhuma atualização disponível."
 
 #: src/CoreUpdate.php:264
 msgid "Could not find latest releases."
@@ -1920,7 +1922,7 @@ msgstr "Você está aqui"
 
 #: views/application/add-inst.php:28 views/application/view-inst.php:28
 msgid "Search Institution"
-msgstr ""
+msgstr "Pesquisar instituição"
 
 #: views/application/add-inst.php:30 views/application/add-inst.php:33
 msgid "Add Institution"
@@ -1955,7 +1957,7 @@ msgstr "Universidade"
 #: views/application/view-inst.php:83 views/install/index.php:213
 #: views/setting/index.php:64
 msgid "Institution Name"
-msgstr "Nome da Instituição"
+msgstr "Nome"
 
 #: views/application/add-inst.php:96 views/application/view-inst.php:96
 #: views/form/address.php:51 views/index/apply.php:91
@@ -1983,7 +1985,7 @@ msgstr "País"
 #: views/application/add.php:23 views/application/index.php:25
 #: views/application/inst-attended.php:44 views/application/view.php:31
 msgid "Search Application"
-msgstr "Pesquisa Aplicação"
+msgstr "Pesquisa Inscrição"
 
 #: views/application/add.php:25 views/application/add.php:28
 #: views/person/index.php:98
@@ -2029,7 +2031,7 @@ msgstr "Endereço de email"
 
 #: views/application/add.php:162 views/application/view.php:181
 msgid "Application Date"
-msgstr "Data de aplicação"
+msgstr "Data de inscrição"
 
 #: views/application/add.php:174 views/application/appls.php:33
 #: views/application/appls.php:69 views/application/view.php:197
@@ -2044,12 +2046,12 @@ msgstr "Programas Acadêmicos"
 #: views/application/view.php:209 views/index/apply.php:93
 #: views/student/add.php:159
 msgid "Start Term"
-msgstr ""
+msgstr "Iniciar período"
 
 #: views/application/add.php:198 views/application/view.php:221
 #: views/index/apply.php:177 views/student/view.php:87
 msgid "Admit Status"
-msgstr ""
+msgstr "Status de admissão"
 
 #: views/application/add.php:226 views/application/view.php:265
 msgid "PSAT Verbal/Math"
@@ -2134,7 +2136,7 @@ msgstr "Comentários"
 #: views/dashboard/menu.php:335 views/form/import.php:105
 #: views/setting/index.php:122
 msgid "Application"
-msgstr "Aplicação"
+msgstr "Inscrições"
 
 #: views/application/index.php:58 views/hr/index.php:59
 #: views/person/index.php:60 views/staff/index.php:58
@@ -2158,7 +2160,7 @@ msgstr "Registrar Aluno"
 
 #: views/application/index.php:111
 msgid "Application Search"
-msgstr "Aplicação Pesquisa"
+msgstr "Pesquisa Inscrição"
 
 #: views/application/inst-attended.php:46
 #: views/application/inst-attended.php:49
@@ -2169,7 +2171,7 @@ msgstr ""
 
 #: views/application/inst-attended.php:78
 msgid "Applicant ID"
-msgstr ""
+msgstr "ID Inscrição"
 
 #: views/application/inst-attended.php:88 views/application/inst.php:28
 #: views/application/inst.php:31 views/application/view.php:381
@@ -2183,7 +2185,7 @@ msgstr "Instituição"
 
 #: views/application/inst-attended.php:100
 msgid "Attend From Date"
-msgstr "Participar De Data"
+msgstr ""
 
 #: views/application/inst-attended.php:112
 msgid "Attend To Date"
@@ -2197,12 +2199,12 @@ msgstr ""
 #: views/student/add.php:105
 #: views/student/templates/transcript/default.template.php:164
 msgid "Major"
-msgstr ""
+msgstr "Graduação"
 
 #: views/application/inst-attended.php:139 views/application/view.php:385
 #: views/student/sttr.php:64
 msgid "GPA"
-msgstr "GPA"
+msgstr "Média de notas"
 
 #: views/application/inst-attended.php:148 views/application/view.php:386
 #: views/form/degree.php:23 views/form/degree.php:26 views/form/import.php:88
@@ -2210,7 +2212,7 @@ msgstr "GPA"
 #: views/program/ajax.php:303 views/program/view.php:197
 #: views/student/templates/transcript/default.template.php:163
 msgid "Degree"
-msgstr "Diploma"
+msgstr "Grau acadêmico"
 
 #: views/application/inst-attended.php:157
 msgid "Conferral Date"
@@ -2238,7 +2240,7 @@ msgstr "UNIV Universidade"
 
 #: views/application/view.php:33 views/application/view.php:36
 msgid "View Application"
-msgstr "Visualizar aplicação"
+msgstr "Visualizar inscrição"
 
 #: views/application/view.php:158 views/error/audit.php:43
 #: views/index/apply.php:51 views/index/profile.php:35
@@ -2250,7 +2252,7 @@ msgstr "Nome de usuário"
 
 #: views/application/view.php:230
 msgid "Application Status"
-msgstr ""
+msgstr "Status de inscrição"
 
 #: views/application/view.php:234 views/hr/view-timesheet.php:129
 msgid "Pending"
@@ -2258,7 +2260,7 @@ msgstr "Pendente"
 
 #: views/application/view.php:235
 msgid "Under Review"
-msgstr ""
+msgstr "Em revisão"
 
 #: views/application/view.php:236
 msgid "Accepted"
@@ -2276,7 +2278,7 @@ msgstr "Comentários candidatos"
 #: views/application/view.php:307 views/financial/view-bill.php:242
 #: views/financial/view-comments.php:117
 msgid "Staff Comments"
-msgstr ""
+msgstr "Comentários de funcionários"
 
 #: views/application/view.php:337
 msgid "Internal Comments"
@@ -2592,7 +2594,7 @@ msgstr "Editar Categoria"
 #: views/calendar/view-event.php:51 views/calendar/view-event.php:106
 #: views/section/booking-info.php:276 views/section/booking-info.php:328
 msgid "Meeting Day"
-msgstr ""
+msgstr "Dia da reunião"
 
 #: views/calendar/view-event.php:52 views/courses/cart.php:45
 #: views/courses/index.php:81 views/section/booking-info.php:277
@@ -2633,7 +2635,7 @@ msgstr "Editar Meta Evento"
 #: views/student/strc.php:72 views/student/strc.php:199
 #: views/student/sttr.php:65
 msgid "Start Date"
-msgstr "Data Inicial"
+msgstr "Início"
 
 #: views/calendar/view-event.php:176 views/course/extr.php:72
 #: views/course/extr.php:169 views/course/index.php:60
@@ -2649,7 +2651,7 @@ msgstr "Data Inicial"
 #: views/student/shis.php:240 views/student/strc.php:73
 #: views/student/strc.php:209 views/student/sttr.php:66
 msgid "End Date"
-msgstr "Data Final"
+msgstr "Encerramento"
 
 #: views/calendar/view-request.php:99
 msgid ""
@@ -2712,7 +2714,7 @@ msgstr "Template"
 #: views/comm-mgmt/mailmerge.php:22 views/comm-mgmt/mailmerge.php:25
 #: views/dashboard/core-admin-bar.php:199 views/dashboard/menu.php:330
 msgid "Mail Merge"
-msgstr ""
+msgstr "Mala direta"
 
 #: views/comm-mgmt/mailmerge.php:52 views/comm-mgmt/schedule.php:101
 #: views/section/batch-register.php:106 views/sql/csv-email.php:90
@@ -2754,7 +2756,7 @@ msgstr "Tem certeza de que deseja excluir este item da fila?"
 #: views/comm-mgmt/schedule.php:30 views/comm-mgmt/schedule.php:33
 #: views/dashboard/core-admin-bar.php:197 views/dashboard/menu.php:328
 msgid "Schedule Email"
-msgstr ""
+msgstr "Email Horário de aula"
 
 #: views/comm-mgmt/schedule.php:62 views/section/students.php:150
 #: views/section/students.php:229
@@ -2837,7 +2839,7 @@ msgstr "Número Curso"
 #: views/course/add.php:140 views/course/view.php:143
 #: views/program/add.php:173 views/program/view.php:178
 msgid "Effective / End Date"
-msgstr ""
+msgstr "Início / Encerramento"
 
 #: views/course/add.php:159 views/course/atceq.php:91
 #: views/course/atceq.php:126 views/course/extr.php:188
@@ -2861,14 +2863,14 @@ msgstr "Nível acadêmico"
 #: views/course/add.php:175 views/program/add.php:88 views/program/view.php:92
 #: views/section/add.php:308 views/section/view.php:227
 msgid "Status / Date"
-msgstr ""
+msgstr "Status / Data"
 
 #: views/course/add.php:199 views/course/extr.php:259
 #: views/course/vextr.php:185 views/course/view.php:225
 #: views/program/add.php:101 views/program/view.php:105
 #: views/section/add.php:321 views/section/view.php:250
 msgid "Approval Person"
-msgstr "Aprovação Usuário"
+msgstr "Aprovado por"
 
 #: views/course/add.php:206 views/course/view.php:234
 #: views/program/add.php:110 views/program/view.php:114
@@ -2899,7 +2901,7 @@ msgstr "Mínimo para inscrição"
 #: views/course/addnl-info.php:112 views/form/room.php:92
 #: views/form/room.php:132 views/form/view-room.php:94
 msgid "Seating Capacity"
-msgstr ""
+msgstr "Capacidade assentos"
 
 #: views/course/addnl-info.php:150 views/course/index.php:114
 #: views/course/view.php:309
@@ -2925,30 +2927,30 @@ msgstr "O departamento foi criado com sucesso."
 #: views/form/view-department.php:62 views/program/ajax.php:86
 #: views/section/ajax.php:78
 msgid "Department Code"
-msgstr "Código do departamento"
+msgstr "Código"
 
 #: views/course/ajax.php:87 views/form/department.php:60
 #: views/form/view-department.php:69 views/program/ajax.php:95
 #: views/section/ajax.php:87
 msgid "Department Type"
-msgstr "Tipo de departamento"
+msgstr "Tipo"
 
 #: views/course/ajax.php:96 views/form/department.php:69
 #: views/form/view-department.php:78 views/program/ajax.php:104
 #: views/section/ajax.php:96
 msgid "Department Name"
-msgstr "Nome do departamento"
+msgstr "Nome"
 
 #: views/course/ajax.php:105 views/form/department.php:82
 #: views/form/view-department.php:91 views/program/ajax.php:113
 #: views/section/ajax.php:105
 msgid "Department Email"
-msgstr "Email do departamento"
+msgstr "Email"
 
 #: views/course/ajax.php:114 views/program/ajax.php:122
 #: views/section/ajax.php:114
 msgid "Department Phone"
-msgstr "Telefone do departamento"
+msgstr "Telefone"
 
 #: views/course/ajax.php:123 views/form/department.php:96
 #: views/form/grade-scale.php:107 views/form/view-department.php:105
@@ -2977,12 +2979,12 @@ msgstr ""
 #: views/course/ajax.php:204 views/form/subject.php:53
 #: views/form/subject.php:98 views/form/view-subject.php:62
 msgid "Subject Code"
-msgstr "Código da Disciplina"
+msgstr "Código"
 
 #: views/course/ajax.php:213 views/form/subject.php:60
 #: views/form/subject.php:99 views/form/view-subject.php:69
 msgid "Subject Name"
-msgstr "Nome da disciplina"
+msgstr "Nome"
 
 #: views/course/atceq.php:59 views/course/atceq.php:62
 msgid "New Transfer Course Equivalency"
@@ -3018,7 +3020,7 @@ msgstr "Data de início / encerramento"
 #: views/student/fgrades.php:39 views/student/stac.php:72
 #: views/student/templates/transcript/default.template.php:88
 msgid "Grade"
-msgstr "Nota"
+msgstr "Grade"
 
 #: views/course/atceq.php:198 views/course/vtceq.php:156
 #: views/financial/add-payment.php:176 views/financial/create-bill.php:163
@@ -3036,7 +3038,7 @@ msgstr "Curso Externo"
 #: views/course/extr.php:67 views/course/extr.php:148
 #: views/course/vextr.php:75 views/student/stac.php:66
 msgid "Course Name"
-msgstr "Nome do Curso"
+msgstr "Nome"
 
 #: views/course/extr.php:71 views/course/index.php:59
 #: views/program/index.php:59
@@ -3065,7 +3067,7 @@ msgstr "Nota mínima"
 #: views/student/templates/transcript/default.template.php:92
 #: views/student/terms.php:36 views/student/vbill.php:70
 msgid "Term"
-msgstr "Trimestre"
+msgstr "Período"
 
 #: views/course/extr.php:252 views/course/vextr.php:178
 #: views/student/view.php:86
@@ -3107,7 +3109,7 @@ msgstr ""
 #: views/course/tcre.php:75 views/course/tcre.php:78
 #: views/dashboard/menu.php:251 views/student/stac.php:131
 msgid "Transfer Credit"
-msgstr ""
+msgstr "Transferir crédito"
 
 #: views/course/tcre.php:154
 msgid "CRSE ID/Name"
@@ -3176,7 +3178,7 @@ msgstr "Seção de Curso"
 #: views/courses/cart.php:44 views/courses/index.php:80
 #: views/section/booking-info.php:141
 msgid "Meeting Day(s)"
-msgstr ""
+msgstr "Dia(s) de reunião(ões)"
 
 #: views/courses/cart.php:47 views/courses/index.php:83
 #: views/form/building.php:80 views/form/import.php:94
@@ -3187,7 +3189,7 @@ msgstr ""
 #: views/section/ajax.php:192 views/section/catalog-pdf.php:55
 #: views/section/view.php:204 views/student/add.php:114
 msgid "Location"
-msgstr "Localização"
+msgstr "Campus"
 
 #: views/courses/cart.php:68 views/dashboard/install-module.php:79
 #: views/form/import.php:63 views/form/photo.php:50
@@ -3198,7 +3200,7 @@ msgstr "Remover"
 #: views/courses/cart.php:70 views/courses/cart.php:90
 #: views/section/register.php:138
 msgid "Register"
-msgstr "Registro"
+msgstr "Registrar"
 
 #: views/courses/index.php:60
 msgid ""
@@ -3293,7 +3295,7 @@ msgstr ""
 
 #: views/cron/index.php:66
 msgid "Last Run"
-msgstr ""
+msgstr "Última execução"
 
 #: views/cron/index.php:67
 msgid "# Runs"
@@ -3301,11 +3303,11 @@ msgstr ""
 
 #: views/cron/index.php:68
 msgid "Logs/Run"
-msgstr ""
+msgstr "Logs/Execução"
 
 #: views/cron/index.php:83
 msgid "Run"
-msgstr ""
+msgstr "Executar"
 
 #: views/cron/index.php:100
 msgid "Delete selected handler(s)"
@@ -3317,7 +3319,7 @@ msgstr ""
 
 #: views/cron/log.php:83
 msgid "Clear Log"
-msgstr ""
+msgstr "Limpar log"
 
 #: views/cron/new.php:91 views/cron/view.php:89
 msgid "Cronjob URL"
@@ -3418,7 +3420,7 @@ msgstr "Configurações Gerais"
 #: views/dashboard/core-admin-bar.php:53 views/setting/registration.php:23
 #: views/setting/registration.php:26
 msgid "Registration Settings"
-msgstr "Configurações de inscrição"
+msgstr "Configuração de inscrições"
 
 #: views/dashboard/core-admin-bar.php:54 views/setting/email.php:23
 #: views/setting/email.php:26
@@ -3477,7 +3479,7 @@ msgstr "(SEM) - Semestre"
 
 #: views/dashboard/core-admin-bar.php:81 views/dashboard/menu.php:85
 msgid "(TERM) - Term"
-msgstr "(TERM) - Trimestre"
+msgstr "(TERM) - Período"
 
 #: views/dashboard/core-admin-bar.php:82 views/dashboard/menu.php:83
 msgid "(AYR) - Academic Year"
@@ -3493,23 +3495,23 @@ msgstr "(SUBJ) - Disciplinas"
 
 #: views/dashboard/core-admin-bar.php:85
 msgid "(SLR) - Student Load Rules"
-msgstr ""
+msgstr "(SLR) - Regras de carregamentos de alunos"
 
 #: views/dashboard/core-admin-bar.php:86 views/dashboard/menu.php:89
 msgid "(DEG) - Degree"
-msgstr "(DEG) - Diploma"
+msgstr "(DEG) - Grau acadêmico"
 
 #: views/dashboard/core-admin-bar.php:87 views/dashboard/menu.php:90
 msgid "(MAJR) - Major"
-msgstr ""
+msgstr "(MAJR) - Graduação"
 
 #: views/dashboard/core-admin-bar.php:88 views/dashboard/menu.php:91
 msgid "(MINR) - Minor"
-msgstr ""
+msgstr "(MINR) - Cursos eletivos"
 
 #: views/dashboard/core-admin-bar.php:89 views/dashboard/menu.php:92
 msgid "(CCD) - CCD"
-msgstr "(CCD) - CCD"
+msgstr "(CCD) - Certificados, Credenciais e Diplomas"
 
 #: views/dashboard/core-admin-bar.php:90 views/dashboard/menu.php:93
 msgid "(SPEC) - Specialization"
@@ -3517,7 +3519,7 @@ msgstr "(SPEC) - Especialização"
 
 #: views/dashboard/core-admin-bar.php:91 views/dashboard/menu.php:94
 msgid "(CIP) - CIP"
-msgstr "(CIP) - CIP"
+msgstr "(CIP) - Classificação dos Programas de Instrução"
 
 #: views/dashboard/core-admin-bar.php:92
 msgid "(RSTR) - Restriction Codes"
@@ -3525,11 +3527,11 @@ msgstr "(RSTR) - Códigos de restrição"
 
 #: views/dashboard/core-admin-bar.php:93 views/dashboard/menu.php:96
 msgid "(LOC) - Location"
-msgstr "(LOC) - Localização"
+msgstr "(LOC) - Campus"
 
 #: views/dashboard/core-admin-bar.php:94 views/dashboard/menu.php:97
 msgid "(BLDG) - Building"
-msgstr "(BLDG) - Construção"
+msgstr "(BLDG) - Unidade"
 
 #: views/dashboard/core-admin-bar.php:95 views/dashboard/menu.php:98
 msgid "(ROOM) - Room"
@@ -3575,7 +3577,7 @@ msgstr "Funcionários"
 #: views/dashboard/core-admin-bar.php:120 views/dashboard/menu.php:123
 #: views/hr/grades.php:28 views/hr/grades.php:32
 msgid "Pay Grades"
-msgstr "Folhas de Pagamentos"
+msgstr "Folhas de pagamento"
 
 #: views/dashboard/core-admin-bar.php:121 views/dashboard/menu.php:124
 #: views/hr/jobs.php:28 views/hr/jobs.php:32
@@ -3756,7 +3758,7 @@ msgstr "(SPRO) Perfil de Aluno"
 #: views/dashboard/core-admin-bar.php:233 views/student/graduation.php:28
 #: views/student/graduation.php:31
 msgid "Graduate Student(s)"
-msgstr "Aluno(s) de Graduação"
+msgstr "Alunos Graduados"
 
 #: views/dashboard/core-admin-bar.php:234
 msgid "(TRAN) Transcript"
@@ -3764,7 +3766,7 @@ msgstr "(TRAN) Histórico"
 
 #: views/dashboard/core-admin-bar.php:243
 msgid "(APPL) Application"
-msgstr "(APPL) Aplicação"
+msgstr "(APPL) Inscrições"
 
 #: views/dashboard/core-admin-bar.php:249 views/dashboard/menu.php:343
 msgid "Financials"
@@ -3889,8 +3891,8 @@ msgid ""
 "Use this screen to install/upgrade modules. If you need to install a plugin, "
 "you need to visit <a href=\"%s\"><strong>this screen</strong></a>."
 msgstr ""
-"Utilize esta tela para instalar/atualizar módulos. Se você precisa instalar "
-"um plugin, você deve acessar <a href=\"%s\"><strong>essa tela</strong></a>."
+"Utilize esta tela para instalar ou atualizar módulos. Se você precisa "
+"instalar um plugin acesse <a href=\"%s\"><strong>essa tela</strong></a>."
 
 #: views/dashboard/install-module.php:79 views/form/import.php:63
 #: views/form/photo.php:50 views/plugins/install.php:77
@@ -3914,11 +3916,11 @@ msgstr "(PERM) - Permissões"
 
 #: views/dashboard/menu.php:66
 msgid "(ROLE) - Roles"
-msgstr "(ROLE) - Funções"
+msgstr "(ROLE) - Perfis"
 
 #: views/dashboard/menu.php:88
 msgid "(SLR) - Stu Load Rules"
-msgstr ""
+msgstr "(SLR) - Regras de carregamentos de alunos"
 
 #: views/dashboard/menu.php:95
 msgid "(RSTR) - Restrict. Codes"
@@ -3928,24 +3930,24 @@ msgstr "(RSTR) - Código de Restrições"
 #: views/person/addr.php:30 views/person/adsu.php:24 views/person/index.php:27
 #: views/person/perms.php:29 views/person/role.php:29 views/person/view.php:30
 msgid "Search Person"
-msgstr "Pesquisar Pessoa"
+msgstr "Pesquisar usuário"
 
 #: views/dashboard/menu.php:164
 msgid "New Person"
-msgstr "Nova pessoa"
+msgstr "Novo usuário"
 
 #: views/dashboard/menu.php:174 views/staff/add.php:27
 #: views/staff/index.php:25 views/staff/view.php:30
 msgid "Search Staff"
-msgstr ""
+msgstr "Pesquisar funcionário"
 
 #: views/dashboard/menu.php:179
 msgid "Create Staff"
-msgstr ""
+msgstr "Criar funcionário"
 
 #: views/dashboard/menu.php:181
 msgid "(STAF) - Staff"
-msgstr ""
+msgstr "(STAF) - Funcionário"
 
 #: views/dashboard/menu.php:187
 msgid "(SPRO) - Stu. Profile"
@@ -3970,11 +3972,11 @@ msgstr ""
 
 #: views/dashboard/menu.php:212
 msgid "Graduate Students"
-msgstr ""
+msgstr "Alunos Graduados"
 
 #: views/dashboard/menu.php:215
 msgid "(TRAN) - Transcript"
-msgstr "(TRAN) - HIstórico"
+msgstr "(TRAN) - Histórico"
 
 #: views/dashboard/menu.php:223 views/program/add.php:28
 #: views/program/index.php:24 views/program/view.php:28
@@ -3991,7 +3993,7 @@ msgstr "(ACRS) - Adicionar curso"
 
 #: views/dashboard/menu.php:246
 msgid "Transfer"
-msgstr ""
+msgstr "Tranferir"
 
 #: views/dashboard/menu.php:249
 msgid "New Tran. Equiv."
@@ -4017,16 +4019,16 @@ msgstr "Pesquisar seção"
 
 #: views/dashboard/menu.php:272
 msgid "(BRGN) - Batch Reg."
-msgstr ""
+msgstr "(BRGN) - Registro de turmas"
 
 #: views/dashboard/menu.php:275
 msgid "(SROS) - Stu. Roster"
-msgstr ""
+msgstr "(SROS) - Lista de alunos"
 
 #: views/dashboard/menu.php:283 views/dashboard/menu.php:297
 #: views/section/courses.php:65 views/section/gradebook.php:23
 msgid "Gradebook"
-msgstr ""
+msgstr "Boletim de notas"
 
 #: views/dashboard/menu.php:288 views/section/add-assignment.php:29
 #: views/section/courses.php:63
@@ -4051,7 +4053,7 @@ msgstr "(AINST) - Adicionar Instituição"
 
 #: views/dashboard/menu.php:337
 msgid "(APPL) - Application"
-msgstr "(APPL) - Aplicação"
+msgstr "(APPL) - Inscrições"
 
 #: views/dashboard/menu.php:365
 msgid "Files"
@@ -4633,7 +4635,7 @@ msgstr "Mensalmente"
 
 #: views/financial/payment-plan.php:105 views/financial/payment-plan.php:272
 msgid "Yearly"
-msgstr ""
+msgstr "Anual"
 
 #: views/financial/payment-plan.php:113
 msgid "Frequency Amount"
@@ -4900,11 +4902,11 @@ msgstr "Ano letivo"
 #: views/form/acad-year.php:53 views/form/acad-year.php:60
 #: views/form/view-acad-year.php:62 views/form/view-acad-year.php:69
 msgid "Acad Year"
-msgstr ""
+msgstr "Ano letivo"
 
 #: views/form/acad-year.php:98
 msgid "Academic Year Code"
-msgstr ""
+msgstr "Código do ano letivo"
 
 #: views/form/address.php:43 views/index/apply.php:87
 #: views/index/profile.php:91 views/person/add.php:163
@@ -4946,62 +4948,62 @@ msgstr "Email"
 #: views/staff/add.php:116 views/staff/view.php:142
 #: views/student/schedule.php:38
 msgid "Building"
-msgstr "Construção"
+msgstr "Unidade"
 
 #: views/form/building.php:60 views/form/building.php:121
 #: views/form/view-building.php:62
 msgid "Building Code"
-msgstr "Código do prédio"
+msgstr "Código"
 
 #: views/form/building.php:67 views/form/building.php:122
 #: views/form/view-building.php:69
 msgid "Building Name"
-msgstr "Nome do prédio"
+msgstr "Nome"
 
 #: views/form/ccd.php:28 views/form/ccd.php:31 views/form/import.php:91
 #: views/form/view-ccd.php:28 views/program/add.php:205
 #: views/program/ajax.php:402 views/program/view.php:210
 #: views/student/templates/transcript/default.template.php:167
 msgid "CCD"
-msgstr "CCD"
+msgstr "Certificados, Credenciais e Diplomas"
 
 #: views/form/ccd.php:60 views/form/ccd.php:105 views/form/view-ccd.php:62
 msgid "CCD Code"
-msgstr "CCD Código"
+msgstr "Código"
 
 #: views/form/ccd.php:67 views/form/ccd.php:106 views/form/view-ccd.php:69
 msgid "CCD Name"
-msgstr ""
+msgstr "Nome"
 
 #: views/form/cip.php:28 views/form/cip.php:31 views/form/import.php:93
 #: views/form/view-cip.php:28 views/program/add.php:266
 #: views/program/ajax.php:775 views/program/view.php:271
 msgid "CIP"
-msgstr "CIP"
+msgstr "Classificação dos Programas de Instrução"
 
 #: views/form/cip.php:60 views/form/cip.php:103 views/form/view-cip.php:62
 #: views/program/ajax.php:787
 msgid "CIP Code"
-msgstr ""
+msgstr "Código"
 
 #: views/form/cip.php:67 views/form/cip.php:104 views/form/view-cip.php:69
 #: views/program/ajax.php:794
 msgid "CIP Name"
-msgstr ""
+msgstr "Nome"
 
 #: views/form/degree.php:53 views/form/degree.php:96
 #: views/form/view-degree.php:62 views/program/ajax.php:315
 msgid "Degree Code"
-msgstr ""
+msgstr "Código"
 
 #: views/form/degree.php:60 views/form/degree.php:97
 #: views/form/view-degree.php:69 views/program/ajax.php:324
 msgid "Degree Name"
-msgstr ""
+msgstr "Nome"
 
 #: views/form/department.php:89 views/form/view-department.php:98
 msgid "Department Phone #"
-msgstr ""
+msgstr "Telefone"
 
 #: views/form/department.php:134 views/form/rstr-code.php:60
 #: views/form/view-rstr-code.php:62
@@ -5018,7 +5020,7 @@ msgstr "Telefone"
 
 #: views/form/grade-scale.php:23 views/form/grade-scale.php:31
 msgid "Grade Scale"
-msgstr ""
+msgstr "Grade de classificação"
 
 #: views/form/grade-scale.php:67 views/form/grade-scale.php:170
 #: views/form/view-grade-scale.php:69
@@ -5032,20 +5034,20 @@ msgstr "Pontos"
 #: views/form/grade-scale.php:81 views/form/grade-scale.php:141
 #: views/form/view-grade-scale.php:83 views/form/view-grade-scale.php:142
 msgid "Count in GPA"
-msgstr ""
+msgstr "Contar em média de notas"
 
 #: views/form/grade-scale.php:146 views/form/view-grade-scale.php:147
 msgid "Should this be applied and calculated in the GPA?"
-msgstr "Isso deve ser aplicada e calculado no GPA?"
+msgstr "Isso deve ser aplicada e calculado na média de notas?"
 
 #: views/form/grade-scale.php:171
 #: views/student/templates/transcript/default.template.php:91
 msgid "Grade Points"
-msgstr ""
+msgstr "Grade de pontos"
 
 #: views/form/import.php:28 views/form/import.php:31
 msgid "Quick Importer"
-msgstr ""
+msgstr "Importação rápida"
 
 #: views/form/import.php:71
 msgid "Database Table"
@@ -5076,7 +5078,7 @@ msgstr "Carga de crédito"
 #: views/program/ajax.php:589 views/program/view.php:236
 #: views/student/templates/transcript/default.template.php:165
 msgid "Minor"
-msgstr ""
+msgstr "Cursos eletivos"
 
 #: views/form/import.php:92 views/form/specialization.php:28
 #: views/form/specialization.php:31 views/program/add.php:244
@@ -5102,7 +5104,7 @@ msgstr "Residência"
 #: views/hr/view.php:141 views/staff/add.php:58 views/staff/add.php:84
 #: views/staff/index.php:22
 msgid "Staff"
-msgstr "Colaboradores"
+msgstr "Funcionário"
 
 #: views/form/import.php:104
 msgid "Staff Meta"
@@ -5130,7 +5132,7 @@ msgstr ""
 
 #: views/form/import.php:114
 msgid "Student Term GPA"
-msgstr ""
+msgstr "Média de notas do aluno no período"
 
 #: views/form/import.php:115
 msgid "Student Term Load"
@@ -5140,33 +5142,33 @@ msgstr ""
 #: views/form/view-location.php:62 views/program/ajax.php:414
 #: views/program/ajax.php:880 views/section/ajax.php:204
 msgid "Location Code"
-msgstr ""
+msgstr "Código"
 
 #: views/form/location.php:67 views/form/location.php:106
 #: views/form/view-location.php:69 views/program/ajax.php:421
 #: views/program/ajax.php:887 views/section/ajax.php:211
 msgid "Location Name"
-msgstr ""
+msgstr "Nome"
 
 #: views/form/major.php:60 views/form/major.php:105
 #: views/form/view-major.php:62 views/program/ajax.php:508
 msgid "Major Code"
-msgstr ""
+msgstr "Código"
 
 #: views/form/major.php:67 views/form/major.php:106
 #: views/form/view-major.php:69 views/program/ajax.php:515
 msgid "Major Name"
-msgstr ""
+msgstr "Nome"
 
 #: views/form/minor.php:60 views/form/minor.php:105
 #: views/form/view-minor.php:62 views/program/ajax.php:601
 msgid "Minor Code"
-msgstr ""
+msgstr "Código"
 
 #: views/form/minor.php:67 views/form/minor.php:106
 #: views/form/view-minor.php:69 views/program/ajax.php:608
 msgid "Minor Name"
-msgstr ""
+msgstr "Nome"
 
 #: views/form/photo.php:27
 msgid "Upload School Photo"
@@ -5182,7 +5184,7 @@ msgstr ""
 
 #: views/form/room.php:72 views/form/view-room.php:74
 msgid "Room Code"
-msgstr "Código da sala"
+msgstr "Código"
 
 #: views/form/room.php:85 views/form/room.php:131 views/form/view-room.php:87
 msgid "Room Number"
@@ -5195,36 +5197,36 @@ msgstr "Códigos de restrição"
 
 #: views/form/rstr-code.php:115
 msgid "Restriction Code"
-msgstr "Código de Restrição"
+msgstr "Código"
 
 #: views/form/school.php:60 views/form/school.php:118
 #: views/form/view-school.php:62
 msgid "School Code"
-msgstr "Código da escola"
+msgstr "Código"
 
 #: views/form/school.php:67 views/form/school.php:119
 #: views/form/view-school.php:69
 msgid "School Name"
-msgstr "Nome da escola"
+msgstr "Nome"
 
 #: views/form/semester.php:72 views/form/view-semester.php:74
 msgid "Semester Code"
-msgstr "Código do semestre"
+msgstr "Código"
 
 #: views/form/specialization.php:60 views/form/specialization.php:105
 #: views/form/view-specialization.php:62 views/program/ajax.php:694
 msgid "Specialization Code"
-msgstr ""
+msgstr "Código"
 
 #: views/form/specialization.php:67 views/form/specialization.php:106
 #: views/form/view-specialization.php:69 views/program/ajax.php:701
 msgid "Specialization Name"
-msgstr ""
+msgstr "Nome"
 
 #: views/form/student-load-rule.php:22 views/form/student-load-rule.php:25
 #: views/form/view-student-load-rule.php:28
 msgid "Student Load Rules"
-msgstr ""
+msgstr "Regras de carregamentos de alunos"
 
 #: views/form/student-load-rule.php:56
 #: views/form/view-student-load-rule.php:66
@@ -5249,19 +5251,19 @@ msgstr ""
 #: views/form/student-load-rule.php:67 views/form/student-load-rule.php:144
 #: views/form/view-student-load-rule.php:77
 msgid "Minimum Credits"
-msgstr ""
+msgstr "Mínimo Créditos"
 
 #: views/form/student-load-rule.php:74 views/form/student-load-rule.php:145
 #: views/form/view-student-load-rule.php:84
 msgid "Maximum Credits"
-msgstr ""
+msgstr "Máximo Créditos"
 
 #: views/form/student-load-rule.php:86 views/form/student-load-rule.php:146
 #: views/form/student-load-rule.php:194
 #: views/form/view-student-load-rule.php:96
 #: views/form/view-student-load-rule.php:147
 msgid "Term(s)"
-msgstr ""
+msgstr "Período(s)"
 
 #: views/form/student-load-rule.php:93 views/form/student-load-rule.php:147
 #: views/form/student-load-rule.php:208
@@ -5276,6 +5278,8 @@ msgid ""
 "In this field, you will only enter your term designation without the two "
 "digit year separated by a backslash \"\\\" (i.e. FA\\FAM1\\SP)."
 msgstr ""
+"Neste campo, você só vai entrar na sua designação períodos sem o ano de dois "
+"dígitos separados por uma barra invertida \"\\\" (exemplo: FA\\FAM1\\SP)."
 
 #: views/form/student-load-rule.php:211
 #: views/form/view-student-load-rule.php:164
@@ -5286,7 +5290,7 @@ msgstr ""
 
 #: views/form/term.php:65 views/form/view-term.php:74
 msgid "Term Code"
-msgstr ""
+msgstr "Código"
 
 #: views/form/term.php:79 views/form/view-term.php:88
 msgid "Reporting Term"
@@ -5302,7 +5306,7 @@ msgstr ""
 
 #: views/form/view-building.php:30
 msgid "View Building"
-msgstr ""
+msgstr "Visualizar Unidade"
 
 #: views/form/view-building.php:33 views/form/view-ccd.php:33
 #: views/form/view-cip.php:33 views/form/view-location.php:33
@@ -5314,15 +5318,15 @@ msgstr "Vendo"
 
 #: views/form/view-ccd.php:30
 msgid "View CCD"
-msgstr "Ver CCD"
+msgstr "Visualizar CCD"
 
 #: views/form/view-cip.php:30
 msgid "View CIP"
-msgstr "Ver CIP"
+msgstr "Visualizar CIP"
 
 #: views/form/view-degree.php:30 views/form/view-degree.php:33
 msgid "View Degree"
-msgstr ""
+msgstr "Visualizar grau acadêmico"
 
 #: views/form/view-department.php:30 views/form/view-department.php:33
 msgid "View Department"
@@ -5330,7 +5334,7 @@ msgstr "Visualizar departamento"
 
 #: views/form/view-grade-scale.php:28
 msgid "Grading Scale"
-msgstr ""
+msgstr "Escala de classificação"
 
 #: views/form/view-grade-scale.php:30 views/form/view-grade-scale.php:33
 msgid "Edit Grade"
@@ -5338,15 +5342,15 @@ msgstr "Editar nota"
 
 #: views/form/view-location.php:30
 msgid "View Location"
-msgstr "Visualizar localização"
+msgstr "Visualizar campus"
 
 #: views/form/view-major.php:30
 msgid "View Major"
-msgstr ""
+msgstr "Visualizar graduação"
 
 #: views/form/view-minor.php:30
 msgid "View Minor"
-msgstr ""
+msgstr "Visualizar curso"
 
 #: views/form/view-room.php:30
 msgid "View Room"
@@ -5366,7 +5370,7 @@ msgstr "Visualizar semestre"
 
 #: views/form/view-specialization.php:28
 msgid "Specialization List"
-msgstr ""
+msgstr "Lista"
 
 #: views/form/view-specialization.php:30
 msgid "View Specialization"
@@ -5419,7 +5423,7 @@ msgstr ""
 #: views/hr/add.php:107 views/hr/positions.php:99 views/hr/view.php:108
 #: views/staff/view.php:107
 msgid "Staff Record"
-msgstr ""
+msgstr "Registro de funcionário"
 
 #: views/hr/add.php:108 views/hr/index.php:90 views/hr/positions.php:100
 #: views/hr/view.php:109 views/staff/view.php:108
@@ -5434,7 +5438,7 @@ msgstr "Tipo de funcionário"
 #: views/hr/add.php:135 views/hr/positions.php:193 views/hr/view.php:136
 #: views/staff/add.php:79
 msgid "Staff Type"
-msgstr ""
+msgstr "Tipo de funcionário"
 
 #: views/hr/add.php:139 views/hr/positions.php:197 views/hr/view.php:140
 #: views/staff/add.php:83
@@ -5452,7 +5456,7 @@ msgstr ""
 #: views/staff/add.php:104 views/staff/timesheets.php:52
 #: views/staff/timesheets.php:109 views/staff/view-timesheet.php:104
 msgid "Job Title"
-msgstr ""
+msgstr "Designação"
 
 #: views/hr/add.php:178 views/hr/positions.php:119 views/hr/positions.php:230
 #: views/hr/view.php:269 views/staff/add.php:179
@@ -5476,7 +5480,7 @@ msgstr "Salário final"
 
 #: views/hr/grades.php:89 views/hr/grades.php:145
 msgid "Add Pay Grade"
-msgstr ""
+msgstr "Adicionar folha de pagamento"
 
 #: views/hr/index.php:23 views/hr/timesheets.php:41
 msgid "Employee"
@@ -5502,11 +5506,11 @@ msgstr "Folha de pagamento"
 #: views/hr/jobs.php:53 views/hr/jobs.php:121 views/hr/jobs.php:193
 #: views/hr/positions.php:116 views/hr/view.php:230
 msgid "Hourly Wage"
-msgstr ""
+msgstr "Salário por hora"
 
 #: views/hr/jobs.php:54 views/hr/jobs.php:130 views/hr/jobs.php:202
 msgid "Hours Per Week"
-msgstr ""
+msgstr "Horas por semana"
 
 #: views/hr/positions.php:33
 msgid "Positions"
@@ -5531,7 +5535,7 @@ msgstr "Editar Posição"
 #: views/hr/timesheets.php:40 views/hr/view-timesheet.php:103
 #: views/staff/timesheets.php:51 views/staff/view-timesheet.php:53
 msgid "Work Week"
-msgstr ""
+msgstr "Semana de trabalho"
 
 #: views/hr/timesheets.php:43
 msgid "Hours"
@@ -5550,7 +5554,7 @@ msgstr "Visualizar folha de ponto"
 #: views/staff/timesheets.php:101 views/staff/view-timesheet.php:56
 #: views/staff/view-timesheet.php:96
 msgid "Work Hours"
-msgstr ""
+msgstr "Horas de trabalho"
 
 #: views/hr/view-timesheet.php:107 views/hr/view-timesheet.php:235
 #: views/staff/timesheets.php:166 views/staff/view-timesheet.php:57
@@ -5882,7 +5886,7 @@ msgstr ""
 
 #: views/install/index.php:103
 msgid "error"
-msgstr ""
+msgstr "erro"
 
 #: views/install/index.php:103
 msgid "eduTrac SIS requires this feature and can't work without it"
@@ -5975,7 +5979,7 @@ msgstr ""
 
 #: views/install/index.php:266
 msgid "How to enable javascript"
-msgstr ""
+msgstr "Como habilitar o javascript"
 
 #: views/install/index.php:268
 msgid "Upgrade Browser"
@@ -6071,7 +6075,7 @@ msgstr "Tipo de Endereço"
 
 #: views/person/addr-form.php:220 views/person/addr.php:224
 msgid "Added By"
-msgstr ""
+msgstr "Adicionado por"
 
 #: views/person/addr-form.php:257 views/person/addr-form.php:310
 #: views/person/addr.php:261 views/person/addr.php:314
@@ -6094,7 +6098,7 @@ msgstr ""
 
 #: views/person/addr-form.php:370 views/person/addr.php:374
 msgid "Secondary Email"
-msgstr ""
+msgstr "Email secundário"
 
 #: views/person/adsu.php:31
 msgid "ID: "
@@ -6106,12 +6110,12 @@ msgstr "Mudar para usuário"
 
 #: views/person/index.php:94
 msgid "Create Staff Record"
-msgstr ""
+msgstr "Criar registro de funcionário"
 
 #: views/person/index.php:101 views/person/role.php:57
 #: views/person/view.php:389
 msgid "Role"
-msgstr "Função / Permissão"
+msgstr "Perfil"
 
 #: views/person/index.php:128
 msgid "Person Search"
@@ -6140,11 +6144,11 @@ msgstr "Gerenciar Funções de Pessoas"
 
 #: views/person/role.php:58
 msgid "Member"
-msgstr ""
+msgstr "Membro"
 
 #: views/person/role.php:59
 msgid "Not Member"
-msgstr ""
+msgstr "Não membro"
 
 #: views/person/view.php:32
 msgid "View Person"
@@ -6160,7 +6164,7 @@ msgstr "Último login"
 
 #: views/person/view.php:454
 msgid "Person Status"
-msgstr ""
+msgstr "Status pessoa"
 
 #: views/person/view.php:458
 msgid ""
@@ -6178,7 +6182,7 @@ msgstr "Plugin"
 
 #: views/plugins/index.php:64
 msgid "Visit plugin site"
-msgstr ""
+msgstr "Visitar site do plugin"
 
 #: views/plugins/install.php:29 views/plugins/install.php:32
 msgid "Install Plugin"
@@ -6190,6 +6194,8 @@ msgid ""
 "Use this screen to install/upgrade plugins. If you need to install a module, "
 "you need to visit <a href=\"%s\"><strong>this screen</strong></a>."
 msgstr ""
+"Use essa tela para instalar ou atualizar plugins. Se você precisa instalar "
+"um módulo, acesse <a href=\"%s\"><strong>essa tela</strong></a>."
 
 #: views/program/add.php:30
 msgid "Create Program"
@@ -6202,11 +6208,11 @@ msgstr "Adicionar Programa Acadêmico"
 #: views/program/add.php:61 views/program/index.php:56
 #: views/program/view.php:65
 msgid "Program Code"
-msgstr "Código do Programa"
+msgstr "Código"
 
 #: views/program/add.php:144 views/program/view.php:148
 msgid "Effective Catalog Year"
-msgstr ""
+msgstr "Ano letivo de vigência"
 
 #: views/program/ajax.php:212
 msgid "The Academic Year was created successfully."
@@ -6214,35 +6220,35 @@ msgstr ""
 
 #: views/program/ajax.php:218
 msgid "Acad Year Code"
-msgstr ""
+msgstr "Código"
 
 #: views/program/ajax.php:227
 msgid "Acad Year Description"
-msgstr ""
+msgstr "Descrição"
 
 #: views/program/ajax.php:309
 msgid "The Degree was created successfully."
-msgstr ""
+msgstr "O grau acadêmico foi criado com sucesso."
 
 #: views/program/ajax.php:408
 msgid "The CCD was created successfully."
-msgstr ""
+msgstr "O CCD foi criado com sucesso."
 
 #: views/program/ajax.php:502
 msgid "The Major was created successfully."
-msgstr ""
+msgstr "A graduação foi criada com sucesso."
 
 #: views/program/ajax.php:595
 msgid "The Minor was created successfully."
-msgstr ""
+msgstr "O curso eletivo foi criado com sucesso."
 
 #: views/program/ajax.php:688
 msgid "The Specialization was created successfully."
-msgstr ""
+msgstr "A especialização foi criada com sucesso."
 
 #: views/program/ajax.php:781
 msgid "The CIP was created successfully."
-msgstr ""
+msgstr "A CIP foi criada com sucesso."
 
 #: views/program/ajax.php:874 views/section/ajax.php:198
 msgid "The Location was created successfully."
@@ -6271,11 +6277,11 @@ msgstr "Adicionar Função"
 
 #: views/role/add.php:56 views/role/view.php:57
 msgid "Role Name"
-msgstr "Nome da Função"
+msgstr "Nome do perfil"
 
 #: views/role/index.php:75
 msgid "New Role"
-msgstr "Nova Função"
+msgstr "Novo Perfil"
 
 #: views/role/view.php:31 views/role/view.php:34
 msgid "Edit Role"
@@ -6418,11 +6424,11 @@ msgstr ""
 
 #: views/section/attendance.php:24 views/section/attendance_report.php:24
 msgid "Attendance"
-msgstr ""
+msgstr "Frequência"
 
 #: views/section/attendance.php:27
 msgid "Attendance for "
-msgstr ""
+msgstr "Frequência para "
 
 #: views/section/attendance.php:54 views/section/students.php:98
 #: views/section/students.php:132 views/student/add.php:75
@@ -6527,7 +6533,7 @@ msgstr "Digite Notas Finais"
 #: views/section/export-grades.php:25 views/section/grading.php:31
 #: views/student/schedule.php:45
 msgid "Grades"
-msgstr ""
+msgstr "Notas"
 
 #: views/section/final-grade.php:29 views/section/gradebook.php:51
 msgid "Final Grade"
@@ -6539,7 +6545,7 @@ msgstr "Nota final para"
 
 #: views/section/gradebook.php:26
 msgid "Gradebook for "
-msgstr ""
+msgstr "Boletim de notas para "
 
 #: views/section/gradebook.php:52
 msgid "FG"
@@ -6555,7 +6561,7 @@ msgstr ""
 
 #: views/section/index.php:57
 msgid "Section Code"
-msgstr "Código da seção"
+msgstr "Código"
 
 #: views/section/offering-info.php:88
 msgid "Class Room"
@@ -6596,11 +6602,11 @@ msgstr "Upload de arquivo"
 #: views/section/templates/roster/default.template.php:83
 #: views/student/sttr.php:63
 msgid "Acad Level"
-msgstr ""
+msgstr "Nível acadêmico"
 
 #: views/section/templates/roster/default.template.php:84
 msgid "Acad Program"
-msgstr ""
+msgstr "Programa acadêmico"
 
 #: views/section/templates/roster/default.template.php:85
 msgid "Acad Credit Status"
@@ -6618,7 +6624,7 @@ msgstr "Geral"
 #: views/setting/email.php:47 views/setting/index.php:48
 #: views/setting/registration.php:47 views/setting/templates.php:154
 msgid "Registration"
-msgstr "Inscrição"
+msgstr "Inscrições"
 
 #: views/setting/email.php:63 views/setting/email.php:141
 msgid "System Email"
@@ -6626,11 +6632,11 @@ msgstr "Email do Sistema"
 
 #: views/setting/email.php:72 views/setting/email.php:161
 msgid "Registrar's Email"
-msgstr "Email do Registrador"
+msgstr "Email da secretaria"
 
 #: views/setting/email.php:81 views/setting/email.php:181
 msgid "Room Request Email"
-msgstr "Email de solicitação de sala"
+msgstr "Email para solicitações de salas"
 
 #: views/setting/email.php:96 views/setting/email.php:201
 msgid "Contact Email"
@@ -6638,7 +6644,7 @@ msgstr "Email de Contato"
 
 #: views/setting/email.php:105 views/setting/email.php:221
 msgid "Admissions Email"
-msgstr ""
+msgstr "Email de inscrições"
 
 #: views/setting/email.php:145
 msgid "All system and error related emails will be sent to this email address."
@@ -6708,7 +6714,7 @@ msgstr "Desabilitado"
 
 #: views/setting/index.php:135
 msgid "Applicant Email"
-msgstr ""
+msgstr "Email de inscrição"
 
 #: views/setting/index.php:148
 msgid "Language"
@@ -6720,11 +6726,11 @@ msgstr "Fuso Horário"
 
 #: views/setting/index.php:174
 msgid "Cookie TTL"
-msgstr ""
+msgstr "Cookie TTL"
 
 #: views/setting/index.php:183
 msgid "Cookie Path"
-msgstr ""
+msgstr "Cookie Path"
 
 #: views/setting/index.php:198
 msgid "File Manager Driver"
@@ -6797,10 +6803,12 @@ msgid ""
 "Some screens in eduTrac rely on the internal REST API, so you will need and "
 "API Key."
 msgstr ""
+"Algumas telas em eduTrac contar com a API REST interna, de modo que você vai "
+"precisar e chave de API."
 
 #: views/setting/index.php:346
 msgid "to generate an api key for your account."
-msgstr ""
+msgstr "para gerar uma chave de API para a sua conta."
 
 #: views/setting/index.php:361
 msgid "myeduTrac Self Service"
@@ -6813,7 +6821,7 @@ msgstr ""
 
 #: views/setting/index.php:380
 msgid "myeduTrac Offline Message"
-msgstr ""
+msgstr "myeduTrac mensagem offline"
 
 #: views/setting/index.php:384
 msgid ""
@@ -6834,9 +6842,7 @@ msgstr ""
 #: views/setting/index.php:403
 msgid ""
 "Enable this option to allow access to the application for admissions form."
-msgstr ""
-"Ative essa opção para permitir o acesso ao aplicativo formulário de "
-"admissões."
+msgstr "Ative essa opção para permitir o acesso ao formulário de inscrição."
 
 #: views/setting/index.php:418
 msgid "Send Applicant Email"
@@ -6866,23 +6872,23 @@ msgstr "Abrir Inscrição"
 
 #: views/setting/registration.php:76
 msgid "Current Term"
-msgstr "Prazo / Termo / Período Corrente"
+msgstr "Período atual"
 
 #: views/setting/registration.php:88 views/setting/registration.php:165
 msgid "# of Courses"
-msgstr "# de cursos"
+msgstr "Número de cursos"
 
 #: views/setting/registration.php:97 views/setting/registration.php:189
 msgid "Account Balance"
-msgstr ""
+msgstr "Saldo de conta"
 
 #: views/setting/registration.php:112 views/setting/registration.php:213
 msgid "Open Terms"
-msgstr "Prazos / Termos / Períodos Abertos"
+msgstr "Períodos abertos"
 
 #: views/setting/registration.php:121 views/setting/registration.php:237
 msgid "Registration Term"
-msgstr ""
+msgstr "Prazo de inscrições"
 
 #: views/setting/registration.php:133
 msgid "Instructions"
@@ -6906,8 +6912,8 @@ msgid ""
 "`Account Balance`, then the student is not eligible to register for courses "
 "(i.e. -100). Set to 0 to disable."
 msgstr ""
-"Se o saldo atual de um aluno menos o prazo atual é maior do que o `Account "
-"Balance`, o aluno não é elegível para se inscrever para cursos (i.e, -100). "
+"Se o saldo atual de um aluno menos o prazo atual é maior do que o `Saldo de "
+"conta`, o aluno não é elegível para se inscrever para cursos (i.e, -100). "
 "Defina como 0 para desativar."
 
 #: views/setting/registration.php:218
@@ -6915,16 +6921,16 @@ msgid ""
 "Enter a comma delimited list of course terms that can be viewed on the "
 "course registration screen (i.e. \"13/FA\",\"14/SP\")."
 msgstr ""
-"Insira uma lista delimitada por vírgulas de termos/prazos/durações/períodos "
-"de cursos que podem ser visualizados na tela de registro de curso"
+"Insira uma lista delimitada por vírgulas de períodos de cursos que podem ser "
+"visualizados na tela de registro de curso  (i.e. \"13/FA\",\"14/SP\")."
 
 #: views/setting/registration.php:242
 msgid ""
 "If `Open Registration` is set to yes, then choose the term for which a "
 "student can register into courses."
 msgstr ""
-"Se `Abrir Inscrição` está definido para SIM, em seguida, escolher o Prazo / "
-"Termo / Período para o qual um aluno pode se cadastrar em cursos."
+"Se `Abrir Inscrição` está definido para SIM, em seguida, escolher o prazo "
+"para o qual um estudante pode se cadastrar em cursos."
 
 #: views/setting/registration.php:261
 msgid "Registration Instructions"
@@ -7041,13 +7047,13 @@ msgstr "Consultas salvas"
 
 #: views/sql/add-query.php:38 views/sql/add-query.php:41
 msgid "Create Save Query"
-msgstr ""
+msgstr "Criar consulta salva"
 
 #: views/sql/add-query.php:64 views/sql/csv-email.php:54
 #: views/sql/index.php:91 views/sql/saved-queries.php:45
 #: views/sql/view-query.php:64
 msgid "Create Saved Query"
-msgstr ""
+msgstr "Criar consulta salva"
 
 #: views/sql/add-query.php:66 views/sql/csv-email.php:56
 #: views/sql/index.php:93 views/sql/saved-queries.php:47
@@ -7085,7 +7091,7 @@ msgstr ""
 
 #: views/sql/csv-email.php:72
 msgid "Recipient"
-msgstr ""
+msgstr "Destinatário"
 
 #: views/sql/index.php:68
 msgid "Choose a saved query from the drop down list or enter a custom query."
@@ -7097,11 +7103,11 @@ msgstr "Executado com sucesso - "
 
 #: views/sql/index.php:174
 msgid "Query is : "
-msgstr ""
+msgstr "Consulta: "
 
 #: views/sql/saved-queries.php:60
 msgid "Saved Query Name"
-msgstr ""
+msgstr "Nome da consulta salva"
 
 #: views/sql/saved-queries.php:61
 msgid "Creation Date"
@@ -7121,15 +7127,15 @@ msgstr "Visualizar consulta salva"
 
 #: views/staff/add.php:29 views/staff/add.php:32
 msgid "Add Staff"
-msgstr ""
+msgstr "Adicionar funcionário"
 
 #: views/staff/index.php:108
 msgid "Staff Search"
-msgstr ""
+msgstr "Pesquisar funcionário"
 
 #: views/staff/view.php:32
 msgid "View Staff"
-msgstr ""
+msgstr "Visualizar funcionário"
 
 #: views/student/account-history.php:24
 msgid "Student Account History"
@@ -7223,7 +7229,7 @@ msgstr "Seu pagamento foi realizado com sucesso e foi postada em sua conta."
 
 #: views/student/sacd.php:30
 msgid "Academic Credits"
-msgstr ""
+msgstr "Créditos acadêmicos"
 
 #: views/student/sacd.php:32
 msgid "View Academic Credits (SACD)"
@@ -7354,7 +7360,7 @@ msgstr ""
 
 #: views/student/sttr.php:58
 msgid "Terms"
-msgstr "Trimestres"
+msgstr "Períodos"
 
 #: views/student/sttr.php:59
 msgid "Att Creds"
@@ -7396,7 +7402,7 @@ msgstr ""
 
 #: views/student/templates/transcript/default.template.php:90
 msgid "Completed Credits"
-msgstr ""
+msgstr "Créditos concluídos"
 
 #: views/student/templates/transcript/default.template.php:112
 msgid "Transfer Cum. Totals"
@@ -7408,19 +7414,19 @@ msgstr ""
 
 #: views/student/templates/transcript/default.template.php:206
 msgid "Transfer Credits"
-msgstr ""
+msgstr "Transferir  créditos"
 
 #: views/student/terms.php:24
 msgid "Registered Terms"
-msgstr ""
+msgstr "Períodos registrados"
 
 #: views/student/tran.php:45 views/student/tran.php:48
 msgid "Transcript"
-msgstr ""
+msgstr "Histórico"
 
 #: views/student/tran.php:92
 msgid "Tran Type"
-msgstr ""
+msgstr "Tipo"
 
 #: views/student/vbill.php:61
 msgid "Billing Date"
@@ -7432,7 +7438,7 @@ msgstr "(SPRO)"
 
 #: views/student/view.php:124 views/student/view.php:208
 msgid "Tags"
-msgstr ""
+msgstr "Tags"
 
 #: views/student/view.php:212
 msgid ""

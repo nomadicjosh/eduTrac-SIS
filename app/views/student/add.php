@@ -12,7 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$message = new \app\src\Messages;
+$flash = new \app\src\Core\etsis_Messages();
 $antGradDate = date("05/d/y",strtotime("+4 years"));
 ?>
 
@@ -49,7 +49,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Add Student' );?></h3>
 <div class="innerLR">
     
-    <?=$message->flashMessage();?>
+    <?=$flash->showMessage();?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/add/<?=_h($student[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">

@@ -47,49 +47,25 @@ class Po extends Generator implements GeneratorInterface
             }
 
             if ($translation->hasContext()) {
-                $lines[] = 'msgctxt '.self::quote($translation->getContext());
+                $lines[] = 'msgctxt '.self::convertString($translation->getContext());
             }
 
-            self::addLines($lines, 'msgid', self::removeEOT($translation->getOriginal()));
+            self::addLines($lines, 'msgid', $translation->getOriginal());
             if ($translation->hasPlural()) {
-                self::addLines($lines, 'msgid_plural', self::removeEOT($translation->getPlural()));
-                self::addLines($lines, 'msgstr[0]', self::removeEOT($translation->getTranslation()));
+                self::addLines($lines, 'msgid_plural', $translation->getPlural());
+                self::addLines($lines, 'msgstr[0]', $translation->getTranslation());
 
                 foreach ($translation->getPluralTranslation() as $k => $v) {
                     self::addLines($lines, 'msgstr['.($k + 1).']', $v);
                 }
             } else {
-                self::addLines($lines, 'msgstr', self::removeEOT($translation->getTranslation()));
+                self::addLines($lines, 'msgstr', $translation->getTranslation());
             }
 
             $lines[] = '';
         }
 
         return implode("\n", $lines);
-    }
-
-    /**
-     * Escape Control Characters like EOT from strings.
-     * 
-     * @param string $text
-     * 
-     * @return string
-     */
-    private static function removeEOT($text)
-    {
-        return  preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/', '', $text);
-    }
-
-    /**
-     * Escapes and adds double quotes to a string.
-     *
-     * @param string $string
-     *
-     * @return string
-     */
-    private static function quote($string)
-    {
-        return '"'.str_replace(array('\\', "\r", "\n", "\t", '"'), array('\\\\', '', '\n', '\t', '\\"'), $string).'"';
     }
 
     /**
@@ -106,9 +82,9 @@ class Po extends Generator implements GeneratorInterface
 
         foreach ($lines as $k => $line) {
             if ($k === $last) {
-                $lines[$k] = self::quote($line);
+                $lines[$k] = self::convertString($line);
             } else {
-                $lines[$k] = self::quote($line."\n");
+                $lines[$k] = self::convertString($line."\n");
             }
         }
 
@@ -135,5 +111,26 @@ class Po extends Generator implements GeneratorInterface
                 $lines[] = $line;
             }
         }
+    }
+
+    /**
+     * Convert a string to its PO representation.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    public static function convertString($value)
+    {
+        return '"'.strtr(
+            $value,
+            array(
+                "\x00" => '',
+                '\\' => '\\\\',
+                "\t" => '\t',
+                "\n" => '\n',
+                '"' => '\\"',
+            )
+        ).'"';
     }
 }
