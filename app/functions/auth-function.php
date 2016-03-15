@@ -46,7 +46,7 @@ function isUserLoggedIn()
 {
     $person = get_person_by('personID', get_persondata('personID'));
 
-    if (count($person) > 0) {
+    if (count($person->personID) > 0) {
         return true;
     }
 
