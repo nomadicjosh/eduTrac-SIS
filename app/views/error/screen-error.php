@@ -11,7 +11,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$message = new \app\src\Messages;
+$message = new \app\src\Core\etsis_Messages();
 ?>
 
 <div class="innerLR errorView">

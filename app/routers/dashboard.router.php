@@ -1,5 +1,5 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 /**
  * Dashboard Router
@@ -10,19 +10,18 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-
 /**
  * Before route check.
  */
 $app->before('GET|POST', '/dashboard(.*)', function () {
-    if (! file_exists(BASE_PATH . 'config.php')) {
+    if (!file_exists(BASE_PATH . 'config.php')) {
         redirect(get_base_url() . 'install/?step=1');
     }
-    
-    if (! hasPermission('access_dashboard')) {
+
+    if (!hasPermission('access_dashboard')) {
         redirect(get_base_url());
     }
-    
+
     /**
      * If user is logged in and the lockscreen cookie is set,
      * redirect user to the lock screen until he/she enters
@@ -34,14 +33,14 @@ $app->before('GET|POST', '/dashboard(.*)', function () {
 });
 
 $logger = new \app\src\Log();
-$flashNow = new \app\src\Messages();
+$flashNow = new \app\src\Core\etsis_Messages();
 
 $app->get('/dashboard', function () use($app) {
-    
+
     $css = [
         'css/admin/module.admin.page.index.min.css'
     ];
-    
+
     $js = [
         'components/modules/admin/charts/flot/assets/lib/jquery.flot.js?v=v2.1.0',
         'components/modules/admin/charts/flot/assets/lib/jquery.flot.resize.js?v=v2.1.0',
@@ -51,7 +50,7 @@ $app->get('/dashboard', function () use($app) {
         'components/modules/admin/charts/flot/custom/chart.js',
         'components/modules/admin/charts/flot/custom/js/custom-flot.js'
     ];
-    
+
     $stuProg = $app->db->stu_program()
         ->select('COUNT(stu_program.stuProgID) as ProgCount,stu_program.acadProgCode')
         ->_join('acad_program', 'stu_program.acadProgCode = b.acadProgCode', 'b')
@@ -59,7 +58,7 @@ $app->get('/dashboard', function () use($app) {
         ->groupBy('stu_program.acadProgCode')
         ->orderBY('stu_program.acadProgCode', 'DESC')
         ->limit(10);
-    
+
     $prog = $stuProg->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
@@ -67,7 +66,7 @@ $app->get('/dashboard', function () use($app) {
         }
         return $array;
     });
-    
+
     $stuDept = $app->db->person()
         ->select('SUM(person.gender="M") AS Male,SUM(person.gender="F") AS Female,d.deptCode')
         ->_join('stu_program', 'person.personID = b.stuID', 'b')
@@ -81,7 +80,7 @@ $app->get('/dashboard', function () use($app) {
         ->groupBy('d.deptCode')
         ->orderBy('d.deptCode', 'DESC')
         ->limit(10);
-    
+
     $dept = $stuDept->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
@@ -89,7 +88,7 @@ $app->get('/dashboard', function () use($app) {
         }
         return $array;
     });
-    
+
     $app->view->display('dashboard/index', [
         'title' => 'Dashboard',
         'cssArray' => $css,
@@ -102,7 +101,7 @@ $app->get('/dashboard', function () use($app) {
 $app->post('/dashboard/search/', function () use($app) {
     $acro = $_POST['screen'];
     $screen = explode(" ", $acro);
-    
+
     $acryn = $app->db->screen()
         ->where('code = ?', $screen[0])
         ->limit(1);
@@ -113,13 +112,13 @@ $app->post('/dashboard/search/', function () use($app) {
         }
         return $array;
     });
-    
+
     $a = [];
     foreach ($q as $r) {
         $a[] = $r;
     }
-    
-    if (! $r['relativeURL']) {
+
+    if (!$r['relativeURL']) {
         redirect(get_base_url() . 'err/screen-error?code=' . _h($screen[0]));
     } else {
         redirect(get_base_url() . $r['relativeURL']);
@@ -136,7 +135,7 @@ $app->get('/dashboard/support/', function () use($app) {
  * Before route check.
  */
 $app->before('GET|POST', '/dashboard/update/', function () {
-    if (! hasPermission('edit_settings')) {
+    if (!hasPermission('edit_settings')) {
         redirect(get_base_url() . 'dashboard' . '/');
     }
 });
@@ -151,7 +150,7 @@ $app->match('GET|POST', '/dashboard/update/', function () use($app) {
  * Before route check.
  */
 $app->before('GET|POST', '/dashboard/core-update/', function () {
-    if (! hasPermission('edit_settings')) {
+    if (!hasPermission('edit_settings')) {
         redirect(get_base_url() . 'dashboard' . '/');
     }
 });
@@ -166,7 +165,7 @@ $app->match('GET|POST', '/dashboard/core-update/', function () use($app) {
  * Before route check.
  */
 $app->before('GET|POST', '/dashboard/upgrade/', function () {
-    if (! hasPermission('edit_settings')) {
+    if (!hasPermission('edit_settings')) {
         redirect(url('/dashboard/'));
     }
 });
@@ -181,7 +180,7 @@ $app->match('GET|POST', '/dashboard/upgrade/', function () use($app) {
  * Before route check.
  */
 $app->before('GET|POST', '/dashboard/modules/', function () {
-    if (! hasPermission('access_plugin_screen')) {
+    if (!hasPermission('access_plugin_screen')) {
         redirect(get_base_url() . 'dashboard' . '/');
     }
 });
@@ -206,7 +205,7 @@ $app->get('/dashboard/modules/', function () use($app) {
         'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
         'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js'
     ];
-    
+
     $app->view->display('dashboard/modules', [
         'title' => 'System Modules',
         'cssArray' => $css,
@@ -218,13 +217,13 @@ $app->get('/dashboard/modules/', function () use($app) {
  * Before route check.
  */
 $app->before('GET|POST', '/dashboard/install-module/', function () {
-    if (! hasPermission('access_plugin_admin_page')) {
+    if (!hasPermission('access_plugin_admin_page')) {
         redirect(get_base_url() . 'dashboard' . '/');
     }
 });
 
 $app->match('GET|POST', '/dashboard/install-module/', function () use($app) {
-    
+
     $css = [
         'css/admin/module.admin.page.form_elements.min.css'
     ];
@@ -235,7 +234,7 @@ $app->match('GET|POST', '/dashboard/install-module/', function () use($app) {
         'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
         'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
     ];
-    
+
     if ($app->req->isPost()) {
         $name = explode(".", $_FILES["module_zip"]["name"]);
         $accepted_types = [
@@ -244,17 +243,17 @@ $app->match('GET|POST', '/dashboard/install-module/', function () use($app) {
             'multipart/x-zip',
             'application/x-compressed'
         ];
-        
+
         foreach ($accepted_types as $mime_type) {
             if ($mime_type == $type) {
                 $okay = true;
                 break;
             }
         }
-        
+
         $continue = strtolower($name[1]) == 'zip' ? true : false;
-        
-        if (! $continue) {
+
+        if (!$continue) {
             $app->flash('error_message', _t('The file you are trying to upload is not the accepted file type. Please try again.'));
         }
         $target_path = BASE_PATH . $_FILES["module_zip"]["name"];
@@ -272,7 +271,7 @@ $app->match('GET|POST', '/dashboard/install-module/', function () use($app) {
         }
         redirect($app->req->server['HTTP_REFERER']);
     }
-    
+
     $app->view->display('dashboard/install-module', [
         'title' => 'Install Modules',
         'cssArray' => $css,
@@ -286,7 +285,7 @@ $app->get('/dashboard/flushCache/', function () use($app) {
 });
 
 $app->setError(function () use($app) {
-    
+
     $app->view->display('error/404', [
         'title' => '404 Error'
     ]);

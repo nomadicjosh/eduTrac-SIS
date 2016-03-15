@@ -46,7 +46,7 @@ $js = [
 $json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$flashNow = new \app\src\Messages();
+$flashNow = new \app\src\Core\etsis_Messages();
 
 $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
 
@@ -112,7 +112,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
             $prog->cipCode = $_POST['cipCode'];
             $prog->locationCode = $_POST['locationCode'];
             $prog->where('acadProgID = ?', $_POST['acadProgID']);
-            
+
             /**
              * Fires during the update of an academic program.
              *
@@ -120,7 +120,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
              * @param array $prog Academic program object.
              */
             $app->hook->do_action('update_acad_program_db_table', $prog);
-            
+
             if ($prog->update()) {
                 etsis_cache_delete($id, 'prog');
                 $app->flash('success_message', $flashNow->notice(200));
@@ -213,7 +213,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
             $prog->acadLevelCode = $_POST['acadLevelCode'];
             $prog->cipCode = $_POST['cipCode'];
             $prog->locationCode = $_POST['locationCode'];
-            
+
             /**
              * Fires during the saving/creating of an academic program.
              *
@@ -221,7 +221,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
              * @param array $prog Academic program object.
              */
             $app->hook->do_action('save_acad_program_db_table', $prog);
-            
+
             if ($prog->save()) {
                 $ID = $prog->lastInsertId();
                 etsis_cache_flush_namespace('prog');

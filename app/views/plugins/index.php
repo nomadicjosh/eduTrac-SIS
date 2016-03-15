@@ -12,7 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$message = new \app\src\Messages;
+$flash = new \app\src\Core\etsis_Messages();
 $plugins_header = $app->hook->get_plugins_header(APP_PATH . 'plugins/');
 ?>
 
@@ -26,7 +26,7 @@ $plugins_header = $app->hook->get_plugins_header(APP_PATH . 'plugins/');
 <h3><?=_t( 'Plugins' );?></h3>
 <div class="innerLR">
 
-	<?=$message->flashMessage();?>
+	<?=$flash->showMessage();?>
 
 	<!-- Widget -->
 	<div class="widget widget-heading-simple widget-body-gray">

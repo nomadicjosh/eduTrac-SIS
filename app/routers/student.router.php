@@ -32,7 +32,7 @@ $json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
 $email = _etsis_email();
-$flashNow = new \app\src\Messages();
+$flashNow = new \app\src\Core\etsis_Messages();
 
 $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashNow, $email) {
 
@@ -108,9 +108,9 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
             $spro = $app->db->student();
             foreach (_filter_input_array(INPUT_POST) as $k => $v) {
                 $spro->$k = $v;
-            }            
+            }
             $spro->where('stuID = ?', $id);
-            
+
             /**
              * Triggers before SPRO record is updated.
              *
@@ -118,7 +118,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
              * @param object $spro Student profile object.
              */
             $app->hook->do_action('pre_update_spro', $spro);
-            
+
             if ($spro->update()) {
                 /**
                  * Triggers after SPRO record is updated.
@@ -221,7 +221,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
     });
 
     $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
-        if ($app->req->isPost()) {            
+        if ($app->req->isPost()) {
             $nae = get_person_by('personID', $id);
             if ($nae->ssn > 0) {
                 $pass = str_replace('-', '', $nae->ssn);
@@ -255,7 +255,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
             $al->acadProgCode = _trim($_POST['acadProgCode']);
             $al->acadLevelCode = _trim($_POST['acadLevelCode']);
             $al->addDate = $app->db->NOW();
-            
+
             /**
              * Fires before new student record is created.
              *
@@ -311,7 +311,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                  * @param array $spro Student data object.
                  */
                 $app->hook->do_action('post_save_stu', $spro);
-                
+
                 $app->flash('success_message', $flashNow->notice(200));
                 $logger->setLog('New Record', 'Student', get_name($id), get_persondata('uname'));
                 redirect(get_base_url() . 'stu/' . $id . '/' . bm());
@@ -917,7 +917,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
             $sacd = $app->db->stu_acad_cred()
                 ->setTableAlias('sacd')
                 ->select('sacd.*,nae.uname,nae.fname,nae.lname,nae.email')
-                ->_join('person','sacd.stuID = nae.personID','nae')
+                ->_join('person', 'sacd.stuID = nae.personID', 'nae')
                 ->where('stuAcadCredID = ?', $id)
                 ->findOne();
             /**
@@ -927,7 +927,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
              * @param array $sacd Student Academic Credit Detail data object.
              */
             $app->hook->do_action('post_update_sacd', $sacd);
-            
+
             redirect($app->req->server['HTTP_REFERER']);
         }
 

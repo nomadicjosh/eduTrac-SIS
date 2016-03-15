@@ -46,7 +46,7 @@ $js = [
 $json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$flashNow = new \app\src\Messages();
+$flashNow = new \app\src\Core\etsis_Messages;
 
 $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
 
@@ -116,7 +116,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @param int $id Primary key of the course section.
              */
             $app->hook->do_action('pre_update_course_sec', $id);
-            
+
             $term = str_replace("/", "", $_POST['termCode']);
 
             $sect = $app->db->course_sec();
@@ -130,9 +130,9 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
             $sect->comment = $_POST['comment'];
             $sect->courseSection = $_POST['termCode'] . '-' . $_POST['courseSecCode'];
             $sect->ceu = $_POST['ceu'];
-            $sect->courseLevelCode = $_POST['courseLevelCode'];            
+            $sect->courseLevelCode = $_POST['courseLevelCode'];
             $sect->where('courseSecID = ?', (int) $id);
-            
+
             /**
              * Fires during the update of a course section.
              *
@@ -212,7 +212,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
                 ->_join('course', 'sect.courseID = crse.courseID', 'crse')
                 ->where('courseSecID = ?', $id)
                 ->findOne();
-            
+
             /**
              * Fires after the course section has been updated.
              * 
@@ -220,7 +220,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @param array $sect Course section data object.
              */
             $app->hook->do_action('post_update_course_sec', $section);
-            
+
             redirect(get_base_url() . 'sect' . '/' . $id . '/');
         }
 
@@ -292,7 +292,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @param int $id Primary key of the course from which the course section is created.
              */
             $app->hook->do_action('pre_save_course_sec', $id);
-            
+
             $sc = $crse->courseCode . '-' . $_POST['sectionNumber'];
             $courseSection = $_POST['termCode'] . '-' . $crse->courseCode . '-' . $_POST['sectionNumber'];
 
@@ -332,7 +332,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
             $sect->comment = $_POST['comment'];
             $sect->approvedDate = $app->db->NOW();
             $sect->approvedBy = get_persondata('personID');
-            
+
             /**
              * Fires during the saving/creating of a course section.
              *
@@ -340,7 +340,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @param array $sect Course section object.
              */
             $app->hook->do_action('save_course_sec_db_table', $sect);
-            
+
             if ($sect->save()) {
                 $ID = $sect->lastInsertId();
                 $section = [
@@ -361,7 +361,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
                  * @param array $section Course section data array.
                  */
                 $app->hook->do_action('post_save_course_sec', $section);
-                
+
                 etsis_cache_flush_namespace('sect');
 
                 $app->flash('success_message', $flashNow->notice(200));
@@ -423,13 +423,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
         $section = get_course_sec($id);
 
         if ($app->req->isPost()) {
-            
+
             $sect = $app->db->course_sec();
             foreach (_filter_input_array(INPUT_POST) as $k => $v) {
                 $sect->$k = $v;
             }
             $sect->where('courseSecID = ?', $id);
-            
+
             /**
              * Fires before course section additional
              * information has been updated.
@@ -438,7 +438,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @param object $sect Course section additional info object.
              */
             $app->hook->do_action('pre_course_sec_addnl', $sect);
-            
+
             if ($sect->update()) {
                 etsis_cache_delete($id, 'sect');
                 $app->flash('success_message', $flashNow->notice(200));
@@ -458,7 +458,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
                 ->_join('course', 'sect.courseID = crse.courseID', 'crse')
                 ->where('courseSecID = ?', $id)
                 ->findOne();
-            
+
             /**
              * Fires after course section additional
              * information has been updated.
@@ -467,7 +467,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @param array $section Course section data object.
              */
             $app->hook->do_action('post_course_sec_addnl', $section);
-            
+
             redirect($app->req->server['HTTP_REFERER']);
         }
 
@@ -621,7 +621,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
-        
+
         $sect = get_course_sec($id);
 
         $fgrade = $app->db->course_sec()
@@ -689,7 +689,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
         $time = date("h:i A");
 
         if ($app->req->isPost()) {
-            
+
             $sect = get_course_sec($_POST['courseSecID']);
             $crse = $app->db->course()->where('courseID = ?', (int) $sect->courseID)->findOne();
             $term = $app->db->term()->where('termCode = ?', $sect->termCode)->findOne();
@@ -733,7 +733,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
             $stac->endDate = $sect->endDate;
             $stac->addedBy = get_persondata('personID');
             $stac->addDate = $app->db->NOW();
-            
+
             /**
              * Fires before a student is registered into
              * a course by a staff member.
@@ -743,7 +743,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
              * @param object $stcs Student course section object.
              * @param object $stac Student academic credit object.
              */
-            $app->hook->do_action_array('pre_rgn_stu_crse_reg', [ $stcs, $stac ]);
+            $app->hook->do_action_array('pre_rgn_stu_crse_reg', [ $stcs, $stac]);
 
             if ($stcs->save() && $stac->save()) {
                 /**
@@ -756,7 +756,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
                     ->_join('person', 'stac.stuID = nae.personID', 'nae')
                     ->where('stac.stuAcadCredID = ?', $ID)
                     ->findOne();
-                
+
                 /**
                  * Fires after a student has been registered into
                  * a course by a staff member.

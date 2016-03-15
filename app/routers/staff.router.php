@@ -18,13 +18,13 @@ if (!defined('BASE_PATH'))
  * @param  string  $attr  attribute name (read|write|locked|hidden)
  * @param  string  $path  file path relative to volume root directory started with directory separator
  * @return bool|null
- **/
-function access($attr, $path, $data, $volume) {
-	return strpos(basename($path), '.') === 0       // if file/folder begins with '.' (dot)
-		? !($attr == 'read' || $attr == 'write')    // set read+write to false, other (locked+hidden) set to true
-		:  null;                                    // else elFinder decide it itself
+ * */
+function access($attr, $path, $data, $volume)
+{
+    return strpos(basename($path), '.') === 0       // if file/folder begins with '.' (dot)
+        ? !($attr == 'read' || $attr == 'write')    // set read+write to false, other (locked+hidden) set to true
+        : null;                                    // else elFinder decide it itself
 }
-
 /**
  * Before router middleware checks to see
  * if the user is logged in.
@@ -67,8 +67,7 @@ $js = [
 $json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
-$flashNow = new \app\src\Messages();
-
+$flashNow = new \app\src\Core\etsis_Messages();
 use \app\src\elFinder\elFinderConnector;
 use \app\src\elFinder\elFinder;
 use \app\src\elFinder\elFinderVolumeDriver;
@@ -206,7 +205,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
             ]
         );
     });
-    
+
     /**
      * Before route middleware check.
      */
@@ -215,11 +214,11 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
             redirect(get_base_url());
         }
     });
-    $app->match('GET|POST','/elfinder/', function () use($app) {
+    $app->match('GET|POST', '/elfinder/', function () use($app) {
         $app->view->display('staff/elfinder', [
             'title' => 'elfinder 2.0',
-            'cssArray' => ['plugins/elfinder/css/elfinder.min.css','plugins/elfinder/css/theme.css'],
-            'jsArray' => ['plugins/elfinder/js/elfinder.min.js','plugins/elfinder/js/tinymce.plugin.js']
+            'cssArray' => ['plugins/elfinder/css/elfinder.min.css', 'plugins/elfinder/css/theme.css'],
+            'jsArray' => ['plugins/elfinder/js/elfinder.min.js', 'plugins/elfinder/js/tinymce.plugin.js']
             ]
         );
     });
@@ -343,7 +342,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
             $staff->status = $_POST['status'];
             $staff->addDate = $staff->NOW();
             $staff->approvedBy = get_persondata('personID');
-            
+
             /**
              * Fires during the saving/creating of a staff record.
              *
@@ -363,7 +362,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
             $meta->endDate = $_POST['endDate'];
             $meta->addDate = $meta->NOW();
             $meta->approvedBy = get_persondata('personID');
-            
+
             /**
              * Fires during the saving/creating of staff
              * meta data.
@@ -372,7 +371,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
              * @param array $meta Staff meta object.
              */
             $app->hook->do_action('save_staff_meta_db_table', $meta);
-            
+
             if ($staff->save() && $meta->save()) {
                 /**
                  * Is triggered after staff record has been created.
@@ -381,7 +380,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
                  * @param mixed $staff Staff data object.
                  */
                 $app->hook->do_action('post_save_staff', $staff);
-                
+
                 /**
                  * Is triggered after staff meta data is saved.
                  * 

@@ -12,7 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$message = new \app\src\Messages;
+$flash = new \app\src\Core\etsis_Messages();
 $screen = 'sem';
 ?>
 
@@ -31,7 +31,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 <h3><?=_t( 'Semester' );?></h3>
 <div class="innerLR">
     
-    <?=$message->flashMessage();?>
+    <?=$flash->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 

@@ -38,7 +38,7 @@ $json_url = get_base_url() . 'api' . '/';
 
 $logger = new \app\src\Log();
 $email = _etsis_email();
-$flashNow = new \app\src\Messages();
+$flashNow = new \app\src\Core\etsis_Messages();
 
 $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $flashNow, $email) {
 
@@ -64,7 +64,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $fl
                 return $array;
             });
             if (bcadd(count($q1[0]['id']), count($_POST['courseSecID'])) > get_option('number_of_courses')) {
-                $app->flash('error_message', sprintf( _t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses') ) );
+                $app->flash('error_message', sprintf(_t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses')));
                 redirect(get_base_url() . 'courses' . '/');
                 exit();
             }
@@ -184,7 +184,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $fl
         });
         $counts = array_count_values($_POST['regAction']);
         if (bcadd(count($d[0]['id']), $counts['register']) > get_option('number_of_courses')) {
-            $app->flash('error_message', sprintf( _t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses')) );
+            $app->flash('error_message', sprintf(_t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses')));
             redirect($app->req->server['HTTP_REFERER']);
             exit();
         }
@@ -281,7 +281,7 @@ $app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $fl
                     $sacd = $app->db->stu_acad_cred()
                         ->setTableAlias('stac')
                         ->select('stac.*,nae.uname,nae.fname,nae.lname,nae.email')
-                        ->_join('person','stac.stuID = nae.personID','nae')
+                        ->_join('person', 'stac.stuID = nae.personID', 'nae')
                         ->where('stac.stuAcadCredID = ?', $ID)
                         ->findOne();
                     /**

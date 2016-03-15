@@ -10,7 +10,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 /**
  * Before router middleware checks to see
  * if the user is logged in.
@@ -44,7 +43,7 @@ $js = [
 ];
 
 $logger = new \app\src\Log();
-$flashNow = new \app\src\Messages();
+$flashNow = new \app\src\Core\etsis_Messages();
 
 $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
 

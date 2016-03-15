@@ -1,38 +1,34 @@
-<?php namespace app\src;
+<?php namespace app\src\Core;
 
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * Messages Library
+ * eduTrac SIS Flash Messages Library
  *  
- * PHP 5.4+
- *
- * eduTrac(tm) : College Management System (http://www.7mediaws.org/)
- * @copyright (c) 2013 7 Media Web Solutions, LLC
- * 
- * @link        http://www.7mediaws.org/
- * @since       3.0.0
- * @package     eduTrac ERP
- * @author      Joshua Parker <josh@7mediaws.org>
+ * @license GPLv3
+ *         
+ * @since 6.2.4
+ * @package eduTrac SIS
+ * @author Joshua Parker <joshmac3@icloud.com>
  */
-class Messages
+class etsis_Messages
 {
 
-    protected $_app;
+    public $app;
 
     public function __construct()
     {
-        $this->_app = \Liten\Liten::getInstance();
+        $this->app = \Liten\Liten::getInstance();
     }
 
     public function init($name, $value)
     {
         /** Set the session values */
-        $this->_app->cookies->set($name, $value);
+        $this->app->cookies->set($name, $value);
     }
 
-    public function flashMessage()
+    public function showMessage()
     {
         // get the message (they are arrays, to make multiple positive/negative messages possible)
         $success_message[] = $_COOKIE['success_message'];
@@ -43,7 +39,7 @@ class Messages
         // echo out positive messages
         if (isset($_COOKIE['success_message'])) {
             foreach ($success_message as $message) {
-                $this->_app->cookies->remove('success_message');
+                $this->app->cookies->remove('success_message');
                 return '<section class="panel success-panel"><div class="alerts alerts-success center">' . $message . '</div></section>';
             }
         }
@@ -51,24 +47,24 @@ class Messages
         // echo out negative messages
         if (isset($_COOKIE['error_message'])) {
             foreach ($error_message as $message) {
-                $this->_app->cookies->remove('error_message');
+                $this->app->cookies->remove('error_message');
                 return '<section class="panel error-panel"><div class="alerts alerts-error center">' . $message . '</div></section>';
             }
         }
-        
+
         // echo out positive plugin messages
         if (isset($_COOKIE['plugin_success_message'])) {
             foreach ($plugin_success_message as $message) {
-                $this->_app->cookies->remove('plugin_success_message');
+                $this->app->cookies->remove('plugin_success_message');
                 return '<section class="panel success-panel"><div class="alerts alerts-success center">' . $message . '</div></section>';
             }
         }
-        
+
         // echo out negative plugin messages
         if (isset($_COOKIE['plugin_error_message'])) {
             foreach ($plugin_error_message as $message) {
-                $this->_app->cookies->remove('plugin_error_message');
-                return '<section class="panel error-panel"><div class="alerts alerts-error center">' . sprintf( _t( 'Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br /> %s</div></section>' ), $message );
+                $this->app->cookies->remove('plugin_error_message');
+                return '<section class="panel error-panel"><div class="alerts alerts-error center">' . sprintf(_t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br /> %s</div></section>'), $message);
             }
         }
     }

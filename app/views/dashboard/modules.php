@@ -11,7 +11,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$message = new \app\src\Messages;
+$flash = new \app\src\Core\etsis_Messages();
 $modules_header = $app->module->{'get_modules_header'}(APP_PATH . 'modules/');
 $screen = 'mods';
 ?>
@@ -26,7 +26,7 @@ $screen = 'mods';
 <h3><?=_t( 'Modules' );?></h3>
 <div class="innerLR">
 
-	<?=$message->flashMessage();?>
+	<?=$flash->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
     
