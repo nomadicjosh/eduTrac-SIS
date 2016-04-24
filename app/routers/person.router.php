@@ -139,7 +139,8 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
              *            Person data object.
              */
             $app->hook->do_action('post_update_person', $person);
-
+            etsis_cache_delete($id, 'stu');
+            etsis_cache_delete($id, 'person');
             redirect($app->req->server['HTTP_REFERER']);
         }
 
@@ -485,6 +486,8 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
                 $ID = $addr->lastInsertId();
                 $logger->setLog('New Record', 'Address', get_name($decode[0]['personID']), get_persondata('uname'));
                 $app->flash('success_message', $flashNow->notice(200));
+                etsis_cache_delete($id, 'stu');
+                etsis_cache_delete($id, 'person');
                 redirect(get_base_url() . 'nae/addr' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -566,6 +569,8 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
+            etsis_cache_delete($a_decode[0]['personID'], 'stu');
+            etsis_cache_delete($a_decode[0]['personID'], 'person');
             redirect($app->req->server['HTTP_REFERER']);
         }
 
