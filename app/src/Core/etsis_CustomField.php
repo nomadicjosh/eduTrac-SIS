@@ -198,35 +198,37 @@ class etsis_CustomField
     {
         switch ($field['type']) {
             case 'text':
-                echo '<label class="strong">' . ($field['required'] == true ? '<font color="red">*</font> ' : '') . $field['label'] . '</label>';
-                echo '<input type="text" class="form-control" name="' . $field['column'] . '" value="' . (isset($this->_request_variables[$key]) ? $this->_request_variables[$key] : $field['value']) . '"' . ($field['required'] == true ? ' required' : ' ') . '/>';
+                echo '<div class="col-md-6"><label class="strong">' . ($field['required'] == true ? '<font color="red">*</font> ' : '') . $field['label'] . '</label>';
+                echo '<input type="text" class="form-control" name="' . $field['column'] . '" readonly value="' . (isset($this->_request_variables[$key]) ? $this->_request_variables[$key] : $field['value']) . '"' . ($field['required'] == true ? ' required' : ' ') . '/></div>';
                 break;
             case 'textarea':
-                echo '<label class="strong">' . ($field['required'] == true ? '<font color="red">*</font> ' : '') . $field['label'] . '</label>';
-                echo '<textarea name="' . $field['column'] . '" class="form-control"' . ($field['required'] == true ? ' required' : '') . '>' . (isset($this->_request_variables[$key]) ? $this->_request_variables[$key] : $field['value']) . '</textarea>';
+                echo '<div class="col-md-6"><label class="strong">' . ($field['required'] == true ? '<font color="red">*</font> ' : '') . $field['label'] . '</label>';
+                echo '<textarea name="' . $field['column'] . '" readonly class="form-control"' . ($field['required'] == true ? ' required' : '') . '>' . (isset($this->_request_variables[$key]) ? $this->_request_variables[$key] : $field['value']) . '</textarea></div>';
                 break;
             case 'select':
-                echo '<label class="strong">' . ($field['required'] == true ? '<font color="red">*</font> ' : '') . $field['label'] . '</label>';
-                echo '<select name="' . $field['column'] . '" class="select"' . ($field['required'] == true ? ' required' : '') . '>';
+                echo '<div class="col-md-6"><label class="strong">' . ($field['required'] == true ? '<font color="red">*</font> ' : '') . $field['label'] . '</label>';
+                echo '<select name="' . $field['column'] . '" readonly class="select"' . ($field['required'] == true ? ' required' : '') . '>';
                 $selected = (isset($this->_request_variables[$key]) ? $this->_request_variables[$key] : $field['value']);
                 foreach ($field['options'] as $ikey => $ival) {
                     echo '<option value="' . $ikey . '" ' . ($ikey == $selected ? 'selected' : '') . '>' . $ival . '</option>';
                 }
-                echo '</select>';
+                echo '</select></div>';
                 break;
             case 'radio':
-                echo '<label class="strong">' . ($field['required'] == true ? '<font color="red">*</font> ' : '') . $field['label'] . '</label>';
+                echo '<div class="col-md-6"><label class="strong">' . ($field['required'] == true ? '<font color="red">*</font> ' : '') . $field['label'] . '</label>';
                 $selected = (isset($this->_request_variables[$key]) ? $this->_request_variables[$key] : $field['value']);
                 foreach ($field['options'] as $ikey => $ival) {
-                    echo '<input type="radio" name="' . $field['column'] . '" class="radio" value="' . $ikey . '" ' . ($ikey == $selected ? 'checked' : '') . ' /> ' . $ival . '<br />';
+                    echo '<input type="radio" name="' . $field['column'] . '" class="radio" readonly value="' . $ikey . '" ' . ($ikey == $selected ? 'checked' : '') . ' /> ' . $ival . '<br />';
                 }
+                echo '</div>';
                 break;
             case 'checkbox':
-                echo '<label class="strong">' . ($field['required'] == true ? '<font color="red">*</font> ' : '') . $field['label'] . '</label>';
+                echo '<div class="col-md-6"><label class="strong">' . ($field['required'] == true ? '<font color="red">*</font> ' : '') . $field['label'] . '</label>';
                 $selected = (array) (isset($this->_request_variables[$key]) ? $this->_request_variables[$key] : $field['value']);
                 foreach ($field['options'] as $ikey => $ival) {
-                    echo '<input type="checkbox" name="' . $field['column'] . '[]" class="checkbox" value="' . $ikey . '" ' . (in_array($ikey, $selected) ? 'checked' : '') . ' /> ' . $ival . '<br />';
+                    echo '<input type="checkbox" name="' . $field['column'] . '[]" class="checkbox" readonly value="' . $ikey . '" ' . (in_array($ikey, $selected) ? 'checked' : '') . ' /> ' . $ival . '<br />';
                 }
+                echo '</div>';
                 break;
         }
     }

@@ -1,6 +1,7 @@
 <?php $app = \Liten\Liten::getInstance();
 ob_start();
 ob_implicit_flush(0);
+\PHPBenchmark\Monitor::instance()->snapshot('eduTrac SIS Loaded');
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="ie lt-ie9 lt-ie8 lt-ie7 fluid top-full"> <![endif]-->
@@ -66,7 +67,7 @@ ob_implicit_flush(0);
                  * 
                  * @since 6.2.0
                  */
-                do_action('admin_bar');
+                $app->hook->do_action('admin_bar');
                 ?>
                 
                 <?=show_update_message();?>
@@ -78,7 +79,7 @@ ob_implicit_flush(0);
                  * 
                  * @since 6.2.0
                  */
-                do_action('dashboard_admin_notices');
+                $app->hook->do_action('dashboard_admin_notices');
                 ?>
                 
                 <?= $app->view->show('dashboard'); ?>
@@ -131,4 +132,7 @@ ob_implicit_flush(0);
 	<?php footer(); ?>
     </body>
 </html>
-<?php print_gzipped_page(); ?>
+<?php 
+\PHPBenchmark\Monitor::instance()->snapshot('eduTrac SIS Fully Loaded');
+print_gzipped_page();
+?>

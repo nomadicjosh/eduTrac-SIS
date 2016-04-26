@@ -17,6 +17,7 @@ etsis_load_file(APP_PATH . 'src/vendor/Gettext/Languages/autoloader.php');
 etsis_load_file(APP_PATH . 'src/vendor/Httpful/autoload.php');
 etsis_load_file(APP_PATH . 'src/vendor/CoreUpdate/vendor/autoload.php');
 etsis_load_file(APP_PATH . 'src/vendor/PHPMailer/vendor/autoload.php');
+etsis_load_file(APP_PATH . 'src/vendor/PHP-Benchmark/vendor/autoload.php');
 
 $app->inst->singleton('hook', function () {
     return new \app\src\Hooks();

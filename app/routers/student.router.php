@@ -120,6 +120,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
             $app->hook->do_action('pre_update_spro', $spro);
 
             if ($spro->update()) {
+                etsis_cache_delete($id, 'stu');
                 /**
                  * Triggers after SPRO record is updated.
                  * 
@@ -565,6 +566,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                     $app->flash('error_message', $flashNow->notice(409));
                 }
             }
+            etsis_cache_delete($id, 'stu');
             redirect($app->req->server['HTTP_REFERER']);
         }
 
@@ -684,6 +686,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                     $app->flash('error_message', $flashNow->notice(409));
                 }
             }
+            etsis_cache_delete($id, 'stu');
             redirect($app->req->server['HTTP_REFERER']);
         }
 
@@ -927,7 +930,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
              * @param array $sacd Student Academic Credit Detail data object.
              */
             $app->hook->do_action('post_update_sacd', $sacd);
-
+            etsis_cache_delete($id, 'stu');
             redirect($app->req->server['HTTP_REFERER']);
         }
 
@@ -1001,6 +1004,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
+            etsis_cache_delete($id, 'stu');
             redirect($app->req->server['HTTP_REFERER']);
         }
         $sacp = $app->db->acad_program()
@@ -1120,6 +1124,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                 $app->flash('error_message', $flashNow->notice(409));
                 $app->req->server['HTTP_REFERER'];
             }
+            etsis_cache_delete($id, 'stu');
         }
         $stu = $app->db->student()->where('stuID = ?', $id);
         $q = $stu->find(function($data) {
