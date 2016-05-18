@@ -24,7 +24,7 @@ $screen = 'nae';
 	<li><?=_t( 'Person' );?></li>
 </ul>
 
-<h3><?=_t( 'Search Person' );?></h3>
+<h3><?=_t( 'Person Lookup' );?></h3>
 <div class="innerLR">
     
     <?php jstree_sidebar_menu($screen); ?>

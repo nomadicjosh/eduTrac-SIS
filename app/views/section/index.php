@@ -21,7 +21,7 @@ $screen = 'sect';
 	<li><?=_t( 'Sections' );?></li>
 </ul>
 
-<h3><?=_t( 'Search Section' );?></h3>
+<h3><?=_t( 'Section Lookup' );?></h3>
 <div class="innerLR">
     
     <?php jstree_sidebar_menu($screen); ?>

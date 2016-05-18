@@ -22,7 +22,7 @@ $screen = 'staff';
 	<li><?=_t( 'Staff' );?></li>
 </ul>
 
-<h3><?=_t( 'Search Staff' );?></h3>
+<h3><?=_t( 'Staff Lookup' );?></h3>
 <div class="innerLR">
 
 	<?php jstree_sidebar_menu($screen); ?>

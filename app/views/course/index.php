@@ -21,7 +21,7 @@ $screen = 'crse';
 	<li><?=_t( 'Courses' );?></li>
 </ul>
 
-<h3><?=_t( 'Search Course' );?></h3>
+<h3><?=_t( 'Course Lookup' );?></h3>
 <div class="innerLR">
     
     <?php jstree_sidebar_menu($screen); ?>

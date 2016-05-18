@@ -154,7 +154,7 @@
                         <?php if(_he('access_person_screen')) : ?>
                         <li><?=_t( 'Person' );?>
                             <ul>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_47"><a<?=($screen === 'nae') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>nae/<?= bm(); ?>"><?=_t( 'Search Person' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_47"><a<?=($screen === 'nae') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>nae/<?= bm(); ?>"><?=_t( 'Person Lookup' );?></a></li>
                                 
                                 <?php if($nae !== '') : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_57"><a<?=($screen === 'vnae') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>nae/<?=_h($nae[0]['personID']);?>/<?= bm(); ?>"><?=get_name(_h($nae[0]['personID']));?></a></li>
@@ -171,7 +171,7 @@
                                 <?php endif; ?>
                                 
                                 <?php if(_he('access_staff_screen')) : ?>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_80"><a<?=($screen === 'staff') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>staff/<?= bm(); ?>"><?=_t( 'Search Staff' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_80"><a<?=($screen === 'staff') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>staff/<?= bm(); ?>"><?=_t( 'Staff Lookup' );?></a></li>
                                 <?php endif; ?>
                                 
                                 <?php if($nae !== '') : ?>
@@ -220,7 +220,7 @@
                         <?php if(_he('access_acad_prog_screen')) : ?>
                         <li><?=_t( 'Academic Program' );?>
                             <ul>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_22"><a<?=($screen === 'prog') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>program/<?= bm(); ?>"><?=_t( 'Search Program' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_22"><a<?=($screen === 'prog') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>program/<?= bm(); ?>"><?=_t( 'Program Lookup' );?></a></li>
                                 <?php if($prog !== '') : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_23"><a<?=($screen === 'vprog') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>program/<?=_h( $prog->acadProgID );?>"><?=_h( $prog->acadProgCode );?></a></li>
                                 <?php endif; ?>
@@ -234,7 +234,7 @@
                                 <?php if($crse !== '') : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_25"><a<?=($screen === 'vcrse') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>crse/<?=_h($crse->courseID);?>/<?= bm(); ?>"><?=_h($crse->courseCode);?></a></li>
                                 <?php endif; ?>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_26"><a<?=($screen === 'crse') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>crse/<?= bm(); ?>"><?=_t( 'Search Course' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_26"><a<?=($screen === 'crse') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>crse/<?= bm(); ?>"><?=_t( 'Course Lookup' );?></a></li>
                                 <?php if(_he('add_course')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_27"><a<?=($screen === 'acrse') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>crse/add/<?= bm(); ?>"><?=_t( '(ACRS) - Add Course' );?></a></li>
                                 <?php endif; ?>
@@ -258,7 +258,7 @@
                         <?php if(_he('access_course_sec_screen')) : ?>
                         <li><?=_t( 'Section' );?>
                             <ul>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_33"><a<?=($screen === 'sect') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?= bm(); ?>"><?=_t( 'Search Section' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_33"><a<?=($screen === 'sect') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?= bm(); ?>"><?=_t( 'Section Lookup' );?></a></li>
                                 <?php if($sect !== '') : ?>
                                 <?php if(count($sect->courseSecID) > 0) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_34"><a<?=($screen === 'vsect') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>sect/<?=_h($sect->courseSecID);?>/<?= bm(); ?>"><?=_h($sect->courseSection);?></a></li>
@@ -355,7 +355,7 @@
                                 <li><?=_t( 'Student Accounts' );?>
                                     <ul>
                                         <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_95"><a<?=($screen === 'btbl') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>financial/billing-table/<?= bm(); ?>"><?=_t( 'Billing Tables' );?></a></li>
-                                		<li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_96"><a<?=($screen === 'inv') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>financial/<?= bm(); ?>"><?=_t( 'Search Bill' );?></a></li>
+                                		<li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_96"><a<?=($screen === 'inv') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>financial/<?= bm(); ?>"><?=_t( 'Bill Lookup' );?></a></li>
                                     </ul>
                                 </li>
                                 <?php endif; ?>

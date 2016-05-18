@@ -21,7 +21,7 @@ $screen = 'prog';
 	<li><?=_t( 'Programs' );?></li>
 </ul>
 
-<h3><?=_t( 'Search Program' );?></h3>
+<h3><?=_t( 'Program Lookup' );?></h3>
 <div class="innerLR">
     
     <?php jstree_sidebar_menu($screen); ?>
