@@ -1573,6 +1573,132 @@ function acad_program_select($progCode = null)
 
     return $app->hook->apply_filter('academic_program', $query, $progCode);
 }
+
+/**
+ * Dashboard router function.
+ * 
+ * Includes dashboard router filter (dashboard_router).
+ *
+ * @since 6.2.7
+ */
+function _etsis_dashboard_router()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $router = $app->config('routers_dir') . 'dashboard.router.php';
+    if (!$app->hook->has_filter('dashboard_router')) {
+        require($router);
+    }
+    return $app->hook->apply_filter('dashboard_router', $router);
+}
+
+/**
+ * Application (APPL) router function.
+ * 
+ * Includes application router filter (appl_router).
+ *
+ * @since 6.2.7
+ */
+function _etsis_appl_router()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $router = $app->config('routers_dir') . 'appl.router.php';
+    if (!$app->hook->has_filter('appl_router')) {
+        require($router);
+    }
+    return $app->hook->apply_filter('appl_router', $router);
+}
+
+/**
+ * Course (CRSE) router function.
+ * 
+ * Includes course router filter (crse_router).
+ *
+ * @since 6.2.7
+ */
+function _etsis_crse_router()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $router = $app->config('routers_dir') . 'course.router.php';
+    if (!$app->hook->has_filter('crse_router')) {
+        require($router);
+    }
+    return $app->hook->apply_filter('crse_router', $router);
+}
+
+/**
+ * Name and address (NAE) router function.
+ * 
+ * Includes name and address router filter (nae_router).
+ *
+ * @since 6.2.7
+ */
+function _etsis_nae_router()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $router = $app->config('routers_dir') . 'person.router.php';
+    if (!$app->hook->has_filter('nae_router')) {
+        require($router);
+    }
+    return $app->hook->apply_filter('nae_router', $router);
+}
+
+/**
+ * Course section (SECT) router function.
+ * 
+ * Includes course section router filter (sect_router).
+ *
+ * @since 6.2.7
+ */
+function _etsis_sect_router()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $router = $app->config('routers_dir') . 'section.router.php';
+    if (!$app->hook->has_filter('sect_router')) {
+        require($router);
+    }
+    return $app->hook->apply_filter('sect_router', $router);
+}
+
+/**
+ * Academic program (PROG) router function.
+ * 
+ * Includes academic program router filter (prog_router).
+ *
+ * @since 6.2.7
+ */
+function _etsis_prog_router()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $router = $app->config('routers_dir') . 'program.router.php';
+    if (!$app->hook->has_filter('prog_router')) {
+        require($router);
+    }
+    return $app->hook->apply_filter('prog_router', $router);
+}
+
+/**
+ * Student router function.
+ * 
+ * Includes student router filter (student_router).
+ *
+ * @since 6.2.7
+ */
+function _etsis_student_router()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $router = $app->config('routers_dir') . 'student.router.php';
+    if (!$app->hook->has_filter('student_router')) {
+        require($router);
+    }
+    return $app->hook->apply_filter('student_router', $router);
+}
 $app->hook->add_action('admin_head', 'head_release_meta', 5);
 $app->hook->add_action('myet_head', 'head_release_meta', 5);
 $app->hook->add_action('release', 'foot_release', 5);

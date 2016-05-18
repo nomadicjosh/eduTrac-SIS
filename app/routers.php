@@ -12,12 +12,12 @@ if (strpos(getPathInfo('/api'), "/api") === 0)
 
 elseif (strpos(getPathInfo('/dashboard'), "/dashboard") === 0)
 {
-    require($app->config('routers_dir') . 'dashboard.router.php');
+    _etsis_dashboard_router();
 }
 
 elseif (strpos(getPathInfo('/appl'), "/appl") === 0)
 {
-    require($app->config('routers_dir') . 'appl.router.php');
+    _etsis_appl_router();
 }
 
 elseif (strpos(getPathInfo('/calendar'), "/calendar") === 0)
@@ -31,8 +31,8 @@ elseif (strpos(getPathInfo('/cmgmt'), "/cmgmt") === 0)
 }
 
 elseif (strpos(getPathInfo('/crse'), "/crse") === 0)
-{
-    require($app->config('routers_dir') . 'course.router.php');
+{    
+    _etsis_crse_router();
     
     if(file_exists($app->config('routers_dir') . 'transfer.router.php')) {
         require($app->config('routers_dir') . 'transfer.router.php');
@@ -82,7 +82,7 @@ elseif (strpos(getPathInfo('/hr'), "/hr") === 0)
 
 elseif (strpos(getPathInfo('/nae'), "/nae") === 0)
 {
-    require($app->config('routers_dir') . 'person.router.php');
+    _etsis_nae_router();
 }
 
 elseif (strpos(getPathInfo('/plugins'), "/plugins") === 0)
@@ -92,7 +92,7 @@ elseif (strpos(getPathInfo('/plugins'), "/plugins") === 0)
 
 elseif (strpos(getPathInfo('/program'), "/program") === 0)
 {
-    require($app->config('routers_dir') . 'program.router.php');
+    _etsis_prog_router();
 }
 
 elseif (strpos(getPathInfo('/sect/brgn'), "/sect/brgn") === 0)
@@ -102,7 +102,7 @@ elseif (strpos(getPathInfo('/sect/brgn'), "/sect/brgn") === 0)
 
 elseif (strpos(getPathInfo('/sect'), "/sect") === 0)
 {
-    require($app->config('routers_dir') . 'section.router.php');
+    _etsis_sect_router();
     
     if(file_exists($app->config('routers_dir') . 'gradebook.router.php')) {
         require($app->config('routers_dir') . 'gradebook.router.php');
@@ -162,7 +162,7 @@ elseif (strpos(getPathInfo('/staff'), "/staff") === 0)
 
 elseif (strpos(getPathInfo('/stu'), "/stu") === 0)
 {
-    require($app->config('routers_dir') . 'student.router.php');
+    _etsis_student_router();
     
     if(file_exists($app->config('routers_dir') . 'financial.router.php')) {
         require($app->config('routers_dir') . 'financial.router.php');
