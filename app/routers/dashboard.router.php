@@ -54,7 +54,9 @@ $app->get('/dashboard', function () use($app) {
     $stuProg = $app->db->stu_program()
         ->select('COUNT(stu_program.stuProgID) as ProgCount,stu_program.acadProgCode')
         ->_join('acad_program', 'stu_program.acadProgCode = b.acadProgCode', 'b')
-        ->where('stu_program.currStatus <> "G"')
+        ->_join('student', 'stu_program.stuID = student.stuID')
+        ->where('stu_program.currStatus <> "G"')->_and_()
+        ->where('student.status = "A"')
         ->groupBy('stu_program.acadProgCode')
         ->orderBY('stu_program.acadProgCode', 'DESC')
         ->limit(10);
@@ -69,18 +71,18 @@ $app->get('/dashboard', function () use($app) {
 
     $stuDept = $app->db->person()
         ->select('SUM(person.gender="M") AS Male,SUM(person.gender="F") AS Female,d.deptCode')
-        ->_join('stu_program', 'person.personID = b.stuID', 'b')
+        ->_join('student', 'person.personID = student.stuID')
+        ->_join('stu_program', 'student.stuID = b.stuID', 'b')
         ->_join('acad_program', 'b.acadProgCode = c.acadProgCode', 'c')
         ->_join('department', 'c.deptCode = d.deptCode', 'd')
-        ->where('b.startDate = (SELECT MAX(startDate) FROM stu_program WHERE stuID = b.stuID)')
-        ->_and_()
-        ->where('b.currStatus = "A"')
-        ->_and_()
+        ->where('b.startDate = (SELECT MAX(startDate) FROM stu_program WHERE stuID = b.stuID)')->_and_()
+        ->where('student.status = "A"')->_and_()
+        ->where('b.currStatus = "A"')->_and_()
         ->where('d.deptTypeCode = "ACAD"')
         ->groupBy('d.deptCode')
         ->orderBy('d.deptCode', 'DESC')
         ->limit(10);
-
+    
     $dept = $stuDept->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
