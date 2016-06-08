@@ -11,7 +11,7 @@ if (!defined('BASE_PATH'))
  * @author Joshua Parker <joshmac3@icloud.com>
  */
 define('CURRENT_RELEASE', '6.2.0');
-define('RELEASE_TAG', '6.2.7');
+define('RELEASE_TAG', '6.2.8');
 
 $app = \Liten\Liten::getInstance();
 use \League\Event\Event;
@@ -1471,6 +1471,23 @@ function get_plugin_data($plugin_file, $markup = true, $translate = true)
         $plugin_data['AuthorName'] = $plugin_data['Author'];
     }
     return $plugin_data;
+}
+
+/**
+ * Hide fields function.
+ * 
+ * Hides or unhides fields based on html element.
+ * 
+ * @param string $element .
+ * @return string
+ */
+function etsis_field_css_class($element)
+{
+    $app = \Liten\Liten::getInstance();
+    
+    if (_h(get_option($element)) == 'hide') {
+        return $app->hook->apply_filter('field_css_class', " $element");
+    }
 }
 
 /**
