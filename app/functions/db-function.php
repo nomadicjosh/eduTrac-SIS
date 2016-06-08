@@ -205,13 +205,9 @@ function getJobID()
     $app = \Liten\Liten::getInstance();
     $job = $app->db->staff_meta()
         ->select('jobID')
-        ->where('staffID = ?', get_persondata('personID'))
-        ->_and_()
-        ->where('endDate = "NULL"')
-        ->_or_()
-        ->where('endDate = "0000-00-00"')
+        ->where('staffID = ?', get_persondata('personID'))->_and_()
+        ->where('hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', get_persondata('personID'))
         ->findOne();
-    
     return _h($job->jobID);
 }
 
@@ -233,8 +229,7 @@ function getStaffJobTitle($id)
     $title = $app->db->job()
         ->select('job.title')
         ->_join('staff_meta', 'job.ID = staff_meta.jobID')
-        ->where('staff_meta.staffID = ?', $id)
-        ->_and_()
+        ->where('staff_meta.staffID = ?', $id)->_and_()
         ->where('staff_meta.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id)
         ->findOne();
     
