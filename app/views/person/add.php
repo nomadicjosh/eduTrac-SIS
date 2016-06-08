@@ -98,7 +98,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- // Group END -->
                         
                         <!-- Group -->
-                        <div class="form-group">
+                        <div class="form-group<?=etsis_field_css_class('nae_altID');?>">
                             <label class="col-md-3 control-label"><?=_t( 'Alternate ID' );?> <a href="#altID" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input class="form-control" type="text" name="altID" value="<?=_h($nae[0]['altID']);?>" />
@@ -116,7 +116,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- // Group END -->
 					
 						<!-- Group -->
-						<div class="form-group">
+						<div class="form-group<?=etsis_field_css_class('nae_prefix');?>">
 							<label class="col-md-3 control-label"><?=_t( 'Prefix' );?></label>
 							<div class="col-md-8">
 								<select name="prefix" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
@@ -150,7 +150,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- // Group END -->
                         
                         <!-- Group -->
-                        <div class="form-group">
+                        <div class="form-group<?=etsis_field_css_class('nae_mname');?>">
                             <label class="col-md-3 control-label"><?=_t( 'Middle Initial' );?></label>
                             <div class="col-md-2">
                                 <input class="form-control" type="text" name="mname" value="<?=(isset($_POST['mname'])) ? $_POST['mname'] : '';?>" />
@@ -255,7 +255,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- // Group END -->
                         
                         <!-- Group -->
-                        <div class="form-group">
+                        <div class="form-group<?=etsis_field_css_class('nae_ssn');?>">
                             <label class="col-md-3 control-label"><?=_t( 'Social Security #' );?></label>
                             <div class="col-md-6">
                                 <input class="form-control" type="text" name="ssn" value="<?=(isset($_POST['ssn'])) ? $_POST['ssn'] : '';?>" />
@@ -264,7 +264,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- // Group END -->
                         
                         <!-- Group -->
-                        <div class="form-group">
+                        <div class="form-group<?=etsis_field_css_class('nae_veteran');?>">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Veteran?' );?></label>
                             <div class="col-md-8">
                                 <select name="veteran" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
@@ -277,7 +277,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- // Group END -->
                         
                         <!-- Group -->
-                        <div class="form-group">
+                        <div class="form-group<?=etsis_field_css_class('nae_ethnicity');?>">
                             <label class="col-md-3 control-label"><?=_t( 'Ethnicity?' );?></label>
                             <div class="col-md-8">
                                 <select name="ethnicity" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" >

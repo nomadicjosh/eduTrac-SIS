@@ -1474,6 +1474,23 @@ function get_plugin_data($plugin_file, $markup = true, $translate = true)
 }
 
 /**
+ * Hide fields function.
+ * 
+ * Hides or unhides fields based on html element.
+ * 
+ * @param string $element .
+ * @return string
+ */
+function etsis_field_css_class($element)
+{
+    $app = \Liten\Liten::getInstance();
+    
+    if (_h(get_option($element)) == 'hide') {
+        return $app->hook->apply_filter('field_css_class', " $element");
+    }
+}
+
+/**
  * Added htmLawed functions
  *
  * @since 5.0.1

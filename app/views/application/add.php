@@ -224,7 +224,7 @@ $flash = new \app\src\Core\etsis_Messages();
 					<div class="col-md-6">
                         
                         <!-- Group -->
-                        <div class="form-group">
+                        <div class="form-group<?=etsis_field_css_class('appl_psat_verbal');?>">
                             <label class="col-md-3 control-label"><?=_t( 'PSAT Verbal/Math' );?></label>
                             <div class="col-md-4">
                                 <input class="form-control" type="text" name="PSAT_Verbal" />
@@ -236,7 +236,7 @@ $flash = new \app\src\Core\etsis_Messages();
                         <!-- // Group END -->
                         
                         <!-- Group -->
-                        <div class="form-group">
+                        <div class="form-group<?=etsis_field_css_class('appl_sat_verbal');?>">
                             <label class="col-md-3 control-label"><?=_t( 'SAT Verbal/Math' );?></label>
                             <div class="col-md-4">
                                 <input class="form-control" type="text" name="SAT_Verbal" />
@@ -248,7 +248,7 @@ $flash = new \app\src\Core\etsis_Messages();
                         <!-- // Group END -->
                         
                         <!-- Group -->
-                        <div class="form-group">
+                        <div class="form-group<?=etsis_field_css_class('appl_act_english');?>">
                             <label class="col-md-3 control-label"><?=_t( 'ACT English/Math' );?></label>
                             <div class="col-md-4">
                                 <input class="form-control" type="text" name="ACT_English" />
