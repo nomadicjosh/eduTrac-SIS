@@ -145,6 +145,7 @@ $app = \Liten\Liten::getInstance();
                                             <ul class="dropdown-menu submenu-show submenu-hide pull-right">
                                                 <li class=""><a href="<?= get_base_url(); ?>program/<?= bm(); ?>"><?= _t('(PROG) - Program'); ?></a></li>
                                                 <li<?= ae('add_acad_prog'); ?> class=""><a href="<?= get_base_url(); ?>program/add/<?= bm(); ?>"><?= _t('(APRG) - New Program'); ?></a></li>
+                                                <?= $app->hook->do_action('acad_prog_nav'); ?>
                                             </ul>
                                         </li>
 

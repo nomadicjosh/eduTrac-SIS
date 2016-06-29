@@ -14,7 +14,7 @@ $app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout')
 $app->view->block('myet');
 ?>
 
-<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 <script type="text/javascript">
 tinymce.init({
 	selector: "textarea",
