@@ -1426,7 +1426,7 @@ function myet_wysiwyg_editor()
 {
     $app = \Liten\Liten::getInstance();
 
-    $editor = '<script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>' . "\n";
+    $editor = '<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>' . "\n";
     $editor .= '<script type="text/javascript">
     tinymce.init({
         selector: "textarea",
