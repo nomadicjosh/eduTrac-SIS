@@ -25,4 +25,3 @@ $app->inst->singleton('db', function () {
     $pdo->query('SET CHARACTER SET utf8');
     return new \Liten\Orm($pdo);
 });
-$orm = $app->inst->db;
