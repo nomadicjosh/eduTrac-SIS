@@ -554,6 +554,48 @@ function get_stu_restriction($stu_id)
     return $q;
 }
 
+/**
+ * Student hiatuses.
+ *
+ * @since 6.2.10
+ * @return Hiatus proper name.
+ */
+function get_shis_name($code) {
+     switch ($code) {
+         case "W":
+             $hiatus = "Withdrawal";
+             break;
+         case "LOA":
+             $hiatus = "Leave of Absence";
+             break;
+         case "SA":
+             $hiatus = "Study Abroad";
+             break;
+         case "ILLN":
+             $hiatus = "Illness";
+             break;
+         case "DISM":
+             $hiatus = "Dismissal";
+             break;
+     }
+     return $hiatus;
+}
+
+/**
+ * Retrieve student's hiatus status.
+ *
+ * @since 6.2.10
+ * @return Student's hiatus status.
+ */
+function get_stu_shis($stu_id, $field) {
+    $app = \Liten\Liten::getInstance();
+    $shis = $app->db->hiatus()
+        ->where('endDate <= "0000-00-00"')->_and_()
+        ->where('stuID = ?', $stu_id)
+        ->findOne();
+    return _h($shis->$field);
+}
+
 function get_stu_header($stu_id)
 {
     $student = get_student($stu_id);
@@ -575,32 +617,32 @@ function get_stu_header($stu_id)
             <?php endif; ?>
         </div>
         <div class="widget-body">
-            <!-- 3 Column Grid / One Third -->
+            <!-- 4 Column Grid / One Third -->
             <div class="row">
 
-                <!-- One Third Column -->
+                <!-- One Fourth Column -->
                 <div class="col-md-2">
                     <?= getSchoolPhoto($student->stuID, $student->email1, '90'); ?>
                 </div>
-                <!-- // One Third Column END -->
+                <!-- // One Fourth Column END -->
 
-                <!-- One Third Column -->
+                <!-- Two Fourth's Column -->
                 <div class="col-md-3">
                     <p><?= _h($student->address1); ?> <?= _h($student->address2); ?></p>
                     <p><?= _h($student->city); ?> <?= _h($student->state); ?> <?= _h($student->zip); ?></p>
                     <p><strong><?= _t('Phone:'); ?></strong> <?= _h($student->phone1); ?></p>
                 </div>
-                <!-- // One Third Column END -->
+                <!-- // Two Fourth's Column END -->
 
-                <!-- One Third Column -->
+                <!-- Three Fourth's Column -->
                 <div class="col-md-3">
                     <p><strong><?= _t('Email:'); ?></strong> <a href="mailto:<?= _h($student->email1); ?>"><?= _h($student->email1); ?></a></p>
-                    <p><strong><?= _t('Birth Date:'); ?></strong> <?= (_h($student->dob) > '0000-00-00' ? date('D, M d, o', strtotime(_h($student->dob))) : ''); ?></p>
+                    <p><strong><?= _t('Entry Date:'); ?></strong> <?= date('D, M d, o', strtotime(_h($student->stuAddDate))); ?></p>
                     <p><strong><?= _t('Status:'); ?></strong> <?=(_h($student->stuStatus) == 'A') ? _t( 'Active' ) : _t( 'Inactive' );?></p>
                 </div>
-                <!-- // One Third Column END -->
+                <!-- // Three Fourth's Column END -->
 
-                <!-- One Third Column -->
+                <!-- Four Fourth's Column -->
                 <div class="col-md-3">
                     <p><strong><?= _t('FERPA:'); ?></strong> <?= is_ferpa(_h($student->stuID)); ?> 
                             <?php if (is_ferpa(_h($student->stuID)) == 'Yes') : ?>
@@ -614,12 +656,14 @@ function get_stu_header($stu_id)
                             <?=$prefix;?><span data-toggle="popover" data-title="<?= _h($v['description']); ?>" data-content="Contact: <?= _h($v['deptName']); ?> <?= (_h($v['deptEmail']) != '') ? ' | ' . $v['deptEmail'] : ''; ?><?= (_h($v['deptPhone']) != '') ? ' | ' . $v['deptPhone'] : ''; ?><?= (_h($v['severity']) == 99) ? _t(' | Restricted from registering for courses.') : ''; ?>" data-placement="bottom"><a href="#"><?= _h($v['Restriction']); ?></a></span>
                         <?php $prefix = ', '; endforeach; ?>
                     </p>
-                    <p><strong><?= _t('Entry Date:'); ?></strong> <?= date('D, M d, o', strtotime(_h($student->stuAddDate))); ?></p>
+                    <p><strong><?= _t('Hiatus:'); ?></strong> 
+                        <span data-toggle="popover" data-title="<?= get_shis_name(get_stu_shis(_h($student->stuID), 'shisCode')); ?>" data-content="Start Date: <?= get_stu_shis(_h($student->stuID), 'startDate'); ?> | End Date: <?=(get_stu_shis(_h($student->stuID), 'endDate') <= '0000-00-00' ? '' : get_stu_shis(_h($student->stuID), 'endDate')); ?>" data-placement="bottom"><a href="#"><?= get_stu_shis(_h($student->stuID), 'shisCode'); ?></a></span>
+                    </p>
                 </div>
-                <!-- // One Third Column END -->
+                <!-- // Four Fourth's Column END -->
 
             </div>
-            <!-- // 3 Column Grid / One Third END -->
+            <!-- // 4 Column Grid / One Third END -->
         </div>
     </div>
 </div>
