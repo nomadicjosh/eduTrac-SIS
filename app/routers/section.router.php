@@ -830,7 +830,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
 					WHERE c.courseSecID = ? 
 					AND c.termCode = a.termCode 
 					AND a.status IN('A','N','D') 
-					AND b.addDate = (SELECT MAX(addDate) FROM stu_program WHERE stuID = a.stuID) 
+					AND b.addDate = (SELECT MAX(addDate) FROM stu_acad_level WHERE stuID = a.stuID) 
 					GROUP BY a.stuID,a.courseSecCode,a.termCode", [ $id]);
         $q = $sros->find(function($data) {
             $array = [];
