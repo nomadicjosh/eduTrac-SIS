@@ -28,8 +28,8 @@ $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetHeaderData('', '', 'Section Roster', '', '', '');
 
 // set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+$pdf->setHeaderFont(Array('freesans', '', PDF_FONT_SIZE_MAIN));
+$pdf->setFooterFont(Array('freesans', '', PDF_FONT_SIZE_DATA));
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -48,7 +48,7 @@ $pdf->SetTitle($sros[0]['courseSection']);
 // ---------------------------------------------------------
 
 // set font
-$pdf->SetFont('times', '', 10);
+$pdf->SetFont('freesans', '', 10);
 
 // add a page
 $pdf->AddPage();

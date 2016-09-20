@@ -24,8 +24,8 @@ $pdf->SetTitle($catalog[0]['termCode'].' Course Catalog');
 $pdf->SetHeaderData("", "", $catalog[0]['termCode'].' Course Catalog', "");
 
 // set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+$pdf->setHeaderFont(Array('freesans', '', PDF_FONT_SIZE_MAIN));
+$pdf->setFooterFont(Array('freesans', '', PDF_FONT_SIZE_DATA));
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -41,7 +41,7 @@ $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 // ---------------------------------------------------------
 
 // set font
-$pdf->SetFont('helvetica', '', 8);
+$pdf->SetFont('freesans', '', 8);
 
 // column titles
 $table = '<table cellpadding="2" cellspacing="2" border="0" class="table table-striped" id="table-example">';
