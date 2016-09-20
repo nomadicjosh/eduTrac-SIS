@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the eduTrac SIS package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2016-04-05 13:42:21+0000\n"
+"PO-Revision-Date: 2016-09-19 15:18:33+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,7 +33,7 @@ msgstr ""
 
 #: views/index/login.php:53
 msgid "Username / Email"
-msgstr ""
+msgstr "Κωδικός Χρήστη / eMail"
 
 #: views/plugins/install.php:42
 msgid "Use this screen to install/upgrade plugins. If you need to install a module, you need to visit <a href=\"%s\"><strong>this screen</strong></a>."
@@ -93,7 +93,7 @@ msgstr "Διαχείριση"
 
 #: routers/myet.router.php:237
 msgid "myeduTrac CSS Editor"
-msgstr ""
+msgstr "myeduSIS CSS Editor"
 
 #: routers/myet.router.php:687
 msgid "The username <strong>%s</strong> is already taken. Try again with a more unique username."
@@ -105,11 +105,11 @@ msgstr ""
 
 #: routers/myet.router.php:773
 msgid "Student Application Via myeT"
-msgstr ""
+msgstr "Αίτηση Φοιτητή μέσω myeT"
 
 #: routers/myet.router.php:797
 msgid "Online Application"
-msgstr ""
+msgstr "Ηλεκτρονική Αίτηση"
 
 #: routers/savedquery.router.php:44
 msgid "Your query contained a forbidden keyword(s). Please try again."
@@ -139,11 +139,13 @@ msgstr ""
 msgid ""
 "Step 4: No data found for query. Email NOT sent. \n"
 "\n"
-msgstr "\n"
+msgstr ""
+"Βήμα 4: Δεν βρέθηκαν δεδομένω για το ερώτημα. Δεν έγινε η αποστολή του eMail. \n"
+"\n"
 
 #: src/CSVEmail.php:260
 msgid "FINISHED."
-msgstr ""
+msgstr "ΟΛΟΚΛΗΡΩΗΘΗΚΕ."
 
 #: src/CSVEmail.php:272
 msgid ""
@@ -151,31 +153,43 @@ msgid ""
 " MySQL error: (%s)%s \n"
 " Your query: %s"
 msgstr ""
+"Σφάλμα: Λανθασμένο ερώτημα \n"
+" MySQL σφάλμα: (%s)%s \n"
+" Το ερώτημα σας: %s"
 
 #: src/CSVEmail.php:278
 msgid ""
 "Step 2 (repeats for each attachment): MySQL query ran successfully. \n"
 "\n"
-msgstr "\n"
+msgstr ""
+"Βήμα 2 (επανάληψη για κάθε επισυναπτόμενο): Το ερώτημα της MySQL εκτελέστηκε επιτυχώς. \n"
+"\n"
 
 #: src/CSVEmail.php:309
 msgid ""
 "Step 3 (repeats for each attachment): CSV file built. \n"
 "\n"
-msgstr "\n"
+msgstr ""
+"Βήμα 3 (επανάληψη για κάθε επισυναπτόμενο): Δημιουργήθηκε το αρχείο CSV. \n"
+"\n"
 
 #: src/CSVEmail.php:312
 msgid ""
 "Step 2 (repeats for each attachment): MySQL query ran successfully \n"
 "\n"
-msgstr "\n"
+msgstr ""
+"Βήμα 2 (επανάληψη για κάθε επισυναπτόμενο): Το ερώτημα της MySQL εκτελέστηκε επιτυχώς \n"
+"\n"
 
 #: src/CSVEmail.php:313
 msgid ""
 "Step 3 (repeats for each attachment): NO results were returned for this query. No file will be sent for the following query: \n"
 " %s \n"
 "\n"
-msgstr "\n"
+msgstr ""
+"Βήμα 3 (επανάληψη για κάθε επισυναπτόμενο): ΔΕΝ επιστράφηκαν αποτελέσματα για το επιλεγμένο ερώτημα. Δεν έγινε αποστολή αρχείου για το ακόλουθο ερώτημα: \n"
+" %s \n"
+"\n"
 
 #: src/Core/etsis_Messages.php:67 src/Messages.php:71
 msgid "Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br /> %s</div></section>"
@@ -219,11 +233,11 @@ msgstr "Αδυναμία ελέγχου για ενημερώσεις! Συμβ�
 
 #: views/dashboard/menu.php:212
 msgid "Graduate Students"
-msgstr ""
+msgstr "Αποφοίτηση Φοιτητών"
 
 #: views/dashboard/menu.php:215
 msgid "(TRAN) - Transcript"
-msgstr ""
+msgstr "(TRAN) - Χειρόγραφο"
 
 #: views/dashboard/menu.php:318
 msgid "(AINST) - Add Institution"
@@ -231,11 +245,11 @@ msgstr "(AINST) - Προσθήκη Ιδρύματος"
 
 #: views/dashboard/menu.php:337
 msgid "(APPL) - Application"
-msgstr ""
+msgstr "(APPL) - Αίτηση"
 
 #: views/plugins/index.php:64
 msgid "Visit plugin site"
-msgstr ""
+msgstr "Δικτυακός Τόπος για Plugins"
 
 #: functions/core-function.php:55
 msgid "The following directory could not be created: %s"
@@ -266,11 +280,11 @@ msgstr "Λανθασμένο ID Φοιτητή: Δόθηκε κενό ID "
 
 #: functions/core-function.php:479
 msgid "Invalid password: empty password given."
-msgstr ""
+msgstr "Λανθασμένος Κωδικός: Δόθηκε κενός κωδικός"
 
 #: functions/core-function.php:935
 msgid "Invalid file: empty file given."
-msgstr ""
+msgstr "Λανθασμένο Αρχείο: Δόθηκε κενό αρχείο"
 
 #: functions/core-function.php:1068 functions/core-function.php:1096
 msgid "Invalid file name: empty file name given."
@@ -344,7 +358,7 @@ msgstr ""
 
 #: functions/hook-function.php:522
 msgid "(This message was added in release %s.) <br /><br />"
-msgstr ""
+msgstr "(Το μύνημα προστέθηκε στην έκδοση %s.) <br /><br />"
 
 #: functions/hook-function.php:524
 msgid "Please see <a href=\"%s\">Debugging in eduTrac SIS</a> for more information."
@@ -356,11 +370,11 @@ msgstr ""
 
 #: functions/hook-function.php:1513
 msgid "Plugin <strong>activated</strong>."
-msgstr ""
+msgstr "Plugin <strong>ενεργοποιήθηκε</strong>."
 
 #: functions/hook-function.php:1536
 msgid "Plugin <strong>deactivated</strong>."
-msgstr ""
+msgstr "Plugin <strong>απενεργοποιήθηκε</strong>."
 
 #: functions/parsecode-function.php:35 functions/parsecode-function.php:64
 msgid "Invalid parsecode name: empty name given."
@@ -372,11 +386,11 @@ msgstr ""
 
 #: routers/error.router.php:43
 msgid "The screen %s does not exist. Please try your search again."
-msgstr ""
+msgstr "Η οθόνη %s δεν υπάρχει. Παρακαλούμε προσπαθήστε την αναζήτηση ξανά."
 
 #: routers/person.router.php:868
 msgid "The password has been reset and an email has been sent to this user."
-msgstr ""
+msgstr "Έγινε επαναφοράς του Κωδικού Ασφαλείας και ένα eMail στάλθηκε στον χρήστη."
 
 #: routers/person.router.php:870
 msgid "Update Record"
@@ -384,11 +398,11 @@ msgstr "Ενημέρωση Εγγραφής"
 
 #: routers/plugins.router.php:69
 msgid "The plugin generated unexpected output."
-msgstr ""
+msgstr "Το plugin δημιούργησε ένα απροσδόκητο αποτέλεσμα."
 
 #: routers/plugins.router.php:122
 msgid "Plugin Options"
-msgstr ""
+msgstr "Επιλογές Plugin"
 
 #: src/Core/Cache/etsis_Cache_APC.php:48
 msgid "APC requires PHP APC extension to be installed and loaded."
@@ -402,7 +416,7 @@ msgstr ""
 #: src/Core/Cache/etsis_Cache_Memcache.php:304
 #: src/Core/Cache/etsis_Cache_XCache.php:267
 msgid "Cache Hits:"
-msgstr ""
+msgstr "Cache Hits:"
 
 #: src/Core/Cache/etsis_Cache_APC.php:269
 #: src/Core/Cache/etsis_Cache_Cookie.php:484
@@ -412,7 +426,7 @@ msgstr ""
 #: src/Core/Cache/etsis_Cache_Memcache.php:305
 #: src/Core/Cache/etsis_Cache_XCache.php:268
 msgid "Cache Misses:"
-msgstr ""
+msgstr "Cache Misses:"
 
 #: src/Core/Cache/etsis_Cache_APC.php:270
 #: src/Core/Cache/etsis_Cache_Cookie.php:485
@@ -422,27 +436,27 @@ msgstr ""
 #: src/Core/Cache/etsis_Cache_Memcache.php:306
 #: src/Core/Cache/etsis_Cache_XCache.php:269
 msgid "Uptime:"
-msgstr ""
+msgstr "Ώρα Λειτουργίας:"
 
 #: src/Core/Cache/etsis_Cache_APC.php:271
 #: src/Core/Cache/etsis_Cache_Memcache.php:293
 #: src/Core/Cache/etsis_Cache_Memcache.php:307
 #: src/Core/Cache/etsis_Cache_XCache.php:270
 msgid "Memory Usage:"
-msgstr ""
+msgstr "Χρήση Μνήμης:"
 
 #: src/Core/Cache/etsis_Cache_APC.php:272
 #: src/Core/Cache/etsis_Cache_Memcache.php:294
 #: src/Core/Cache/etsis_Cache_Memcache.php:308
 #: src/Core/Cache/etsis_Cache_XCache.php:271
 msgid "Memory Available:"
-msgstr ""
+msgstr "Διαθέσιμη Μνήμη:"
 
 #: src/Core/Cache/etsis_Cache_Cookie.php:157
 #: src/Core/Cache/etsis_Cache_Filesystem.php:157
 #: src/Core/Cache/etsis_Cache_JSON.php:157
 msgid "Could not create the file cache directory."
-msgstr ""
+msgstr "Αδυναμία δημιουργίας φακέλου αρχείων cache."
 
 #: src/Core/Cache/etsis_Cache_Cookie.php:446
 #: src/Core/Cache/etsis_Cache_Cookie.php:462
@@ -467,11 +481,11 @@ msgstr ""
 
 #: src/CoreUpdate.php:81
 msgid "API server is currently unavailable."
-msgstr ""
+msgstr "Εξυπηρετητής API είναι προσωρινά μη διαθέσιμος."
 
 #: src/CoreUpdate.php:113
 msgid "The PHP zip extention is not loaded. You must enable the zip extention before continuing."
-msgstr ""
+msgstr "The PHP zip extention is not loaded. You must enable the zip extention before continuing."
 
 #: src/CoreUpdate.php:188
 msgid "Current Release: r%s"
@@ -483,27 +497,27 @@ msgstr ""
 
 #: src/CoreUpdate.php:192
 msgid "New Update Found: r%s"
-msgstr ""
+msgstr "Βρέθηκε Νέα Ενημέρωση: r%s"
 
 #: src/CoreUpdate.php:197
 msgid "Downloading New Update "
-msgstr ""
+msgstr "Κατέβασμα Νέα Eνημέρωση"
 
 #: src/CoreUpdate.php:205
 msgid "Could not save new update. Operation aborted."
-msgstr ""
+msgstr "Αδυναμία αποθήκευσης νέας ενημέρωσης. Διαδικασία απορρίφθηκε."
 
 #: src/CoreUpdate.php:209
 msgid "Update Downloaded and Saved"
-msgstr ""
+msgstr "Έγινε Λήψη της Ενημέρωσης και Αποθηκεύτηκε"
 
 #: src/CoreUpdate.php:211
 msgid "Update already downloaded."
-msgstr ""
+msgstr "Ενημέρωση έχει ήδη ληφθεί."
 
 #: src/CoreUpdate.php:229
 msgid "Created Directory %s"
-msgstr ""
+msgstr "Δημιουργούμενος Φάκελος %s"
 
 #: src/CoreUpdate.php:245 src/vendor/CoreUpdate/src/AutoUpdate.php:715
 msgid "UPDATED"
@@ -519,7 +533,7 @@ msgstr "Άμεση Εγκατάσταση?"
 
 #: src/CoreUpdate.php:258
 msgid "eduTrac SIS updated to r%s"
-msgstr ""
+msgstr "SIS ενημερώθηκε σε έκδοση  r%s"
 
 #: src/CoreUpdate.php:260
 msgid "No update is available."
@@ -535,11 +549,11 @@ msgstr ""
 
 #: functions/core-function.php:48
 msgid "Invalid directory path: Empty path given."
-msgstr ""
+msgstr "Λανθασμένη Διαδρομή Φακέλου: Δόθηκε κενή διαδρομή φακέλου."
 
 #: views/plugins/index.php:41
 msgid "Plugin"
-msgstr ""
+msgstr "Plugin"
 
 #: views/student/shis.php:36 views/student/stac.php:30
 #: views/student/strc.php:36 views/student/sttr.php:24
@@ -548,7 +562,7 @@ msgstr "Προφιλ Φοιτητή"
 
 #: views/plugins/install.php:29 views/plugins/install.php:32
 msgid "Install Plugin"
-msgstr ""
+msgstr "Εγκατάσταση Plugin"
 
 #: views/student/sttr.php:26
 msgid "Student Terms Summary (STRS)"
@@ -560,7 +574,7 @@ msgstr "Δημιουργία Προγράμματος"
 
 #: views/student/sttr.php:58
 msgid "Terms"
-msgstr ""
+msgstr "Τρίμηνα"
 
 #: views/program/add.php:33
 msgid "Add Academic Program"
@@ -568,7 +582,7 @@ msgstr "Δημιουργία Ακαδημαϊκού Προγράμματος"
 
 #: views/student/sttr.php:59
 msgid "Att Creds"
-msgstr ""
+msgstr "Μονάδες από Παρακολούθηση"
 
 #: views/program/add.php:61 views/program/index.php:56
 #: views/program/view.php:65
@@ -577,7 +591,7 @@ msgstr "Κωδικός Προγράμματος"
 
 #: views/student/sttr.php:60
 msgid "Cmpl Creds"
-msgstr ""
+msgstr "Ολοκληρωμένες Μονάδες"
 
 #: views/program/add.php:144 views/program/view.php:148
 msgid "Effective Catalog Year"
@@ -614,20 +628,20 @@ msgstr "Κοινωνική Ασφάλιση #:"
 
 #: views/program/ajax.php:309
 msgid "The Degree was created successfully."
-msgstr ""
+msgstr "Το Πτυχίο δημιουργήθηκε επιτυχώς."
 
 #: views/student/templates/transcript/default.template.php:74
 #: views/student/templates/transcript/default.template.php:76
 msgid "Graduation Date: "
-msgstr ""
+msgstr "Ημερομηνία Αποφοίτησης:"
 
 #: views/program/ajax.php:408
 msgid "The CCD was created successfully."
-msgstr ""
+msgstr "Το CCD δημιουργήθηκε επιτυχώς."
 
 #: views/student/templates/transcript/default.template.php:87
 msgid "Course Title"
-msgstr ""
+msgstr "Τίτλος Μαθήματος"
 
 #: views/program/ajax.php:502
 msgid "The Major was created successfully."
@@ -635,7 +649,7 @@ msgstr ""
 
 #: views/student/templates/transcript/default.template.php:89
 msgid "Attempted Credits"
-msgstr ""
+msgstr "Μονάδες από Προσπάθεια"
 
 #: views/program/ajax.php:595
 msgid "The Minor was created successfully."
@@ -643,11 +657,11 @@ msgstr ""
 
 #: views/student/templates/transcript/default.template.php:90
 msgid "Completed Credits"
-msgstr ""
+msgstr "Ολοκληρωμένες Μονάδες"
 
 #: views/program/ajax.php:688
 msgid "The Specialization was created successfully."
-msgstr ""
+msgstr "Η ειδίκευση δημιουργήθηκε επιτυχώς."
 
 #: views/student/templates/transcript/default.template.php:112
 msgid "Transfer Cum. Totals"
@@ -655,7 +669,7 @@ msgstr ""
 
 #: views/program/ajax.php:781
 msgid "The CIP was created successfully."
-msgstr ""
+msgstr "Η Εγγραφή CIP δημιουργήθηκε επιτυχώς."
 
 #: views/student/templates/transcript/default.template.php:148
 msgid "Cum. Totals"
@@ -667,7 +681,7 @@ msgstr "Η Τοποθεσία δημιουργήθηκε επιτυχώς."
 
 #: views/student/templates/transcript/default.template.php:206
 msgid "Transfer Credits"
-msgstr ""
+msgstr "Μεταφορά Μονάδων"
 
 #: views/program/index.php:21
 msgid "Programs"
@@ -675,7 +689,7 @@ msgstr "Προγράμματα"
 
 #: views/student/terms.php:24
 msgid "Registered Terms"
-msgstr ""
+msgstr "Εγγεγραμμένες Περίοδοι"
 
 #: views/program/index.php:57 views/student/add.php:96
 msgid "Program Title"
@@ -683,7 +697,7 @@ msgstr "Τίτλος Προγράμματος"
 
 #: views/student/tran.php:45 views/student/tran.php:48
 msgid "Transcript"
-msgstr ""
+msgstr "Αντίγραφο"
 
 #: views/program/view.php:30
 msgid "View Program"
@@ -700,7 +714,7 @@ msgstr "Διχείριση Ρόλων"
 
 #: views/student/vbill.php:61
 msgid "Billing Date"
-msgstr ""
+msgstr "Ημερομηνία Χρέωσης"
 
 #: views/role/add.php:30 views/role/add.php:33
 msgid "Add Role"
@@ -708,7 +722,7 @@ msgstr "Προσθήκη Ρόλου"
 
 #: views/student/view.php:40
 msgid "(SPRO)"
-msgstr ""
+msgstr "(SPRO)"
 
 #: views/role/add.php:56 views/role/view.php:57
 msgid "Role Name"
@@ -716,7 +730,7 @@ msgstr "Όνομα Ρόλου"
 
 #: views/student/view.php:124 views/student/view.php:208
 msgid "Tags"
-msgstr ""
+msgstr "Ετικέτες"
 
 #: views/role/index.php:75
 msgid "New Role"
@@ -736,17 +750,17 @@ msgstr "Επεξεργασία Ρόλου"
 #: views/section/grading.php:27 views/section/students.php:71
 #: views/section/view-assignment.php:27
 msgid "Course Sections"
-msgstr ""
+msgstr "Ενότητες Μαθήματος"
 
 #: views/section/add-assignment.php:60 views/section/add-assignment.php:109
 #: views/section/assignments.php:50 views/section/view-assignment.php:62
 msgid "Short Name"
-msgstr ""
+msgstr "Όνομα"
 
 #: views/section/add-assignment.php:78 views/section/assignments.php:52
 #: views/section/view-assignment.php:80
 msgid "Due Date"
-msgstr ""
+msgstr "Ημερομηνία Λήξης"
 
 #: views/section/add-assignment.php:113
 msgid "Short Name should be no more than 6 characters. This is used as column heading on the gradebook. Once you have submitted the form, you will not be able to change this later."
@@ -758,31 +772,31 @@ msgstr "Έναρξη / Λήξη"
 
 #: views/section/add.php:133 views/section/view.php:147
 msgid "Credits / CEU's"
-msgstr ""
+msgstr "Μονάδες / CEU's"
 
 #: views/section/add.php:186 views/section/addnl-info.php:88
 msgid "Section Type"
-msgstr ""
+msgstr "Τύπος Ενότητας Μαθήματος"
 
 #: views/section/add.php:190 views/section/addnl-info.php:92
 msgid "ONL Online"
-msgstr ""
+msgstr "ONL Συνδεδεμένο (Online) "
 
 #: views/section/add.php:191 views/section/addnl-info.php:93
 msgid "HB Hybrid"
-msgstr ""
+msgstr "HB Hybrid"
 
 #: views/section/add.php:192 views/section/addnl-info.php:94
 msgid "ONC On-Campus"
-msgstr ""
+msgstr "ONC Στο Ίδρυμα"
 
 #: views/section/add.php:200 views/section/addnl-info.php:102
 msgid "Instructor Method"
-msgstr ""
+msgstr "Μέθοδος Εκπαιδευτή"
 
 #: views/section/add.php:225 views/section/offering-info.php:100
 msgid "Meeting Days"
-msgstr ""
+msgstr "Ημέρες Συναντήσεων"
 
 #: views/section/add.php:229 views/section/offering-info.php:104
 msgid "Sunday"
@@ -814,38 +828,38 @@ msgstr "Σάββατο"
 
 #: views/section/add.php:285 views/section/offering-info.php:166
 msgid "Register Online"
-msgstr ""
+msgstr "Ηλεκτρονική Εγγραφή"
 
 #: views/section/addnl-info.php:31
 msgid "View Section"
-msgstr ""
+msgstr "Προβολή Ενότητας Μαθήματος"
 
 #: views/section/addnl-info.php:58 views/section/billing-info.php:52
 #: views/section/booking-info.php:90 views/section/offering-info.php:31
 #: views/section/offering-info.php:58 views/section/view.php:77
 msgid "Offering Info"
-msgstr ""
+msgstr "Πληροφορίες Προσφορών"
 
 #: views/section/addnl-info.php:59 views/section/billing-info.php:31
 #: views/section/billing-info.php:53 views/section/booking-info.php:91
 #: views/section/offering-info.php:59 views/section/view.php:78
 msgid "Billing Info"
-msgstr ""
+msgstr "Πληροφορίες Χρεώσεων"
 
 #: views/section/addnl-info.php:61 views/section/billing-info.php:55
 #: views/section/booking-info.php:93 views/section/offering-info.php:61
 #: views/section/view.php:80
 msgid "Booking Info"
-msgstr ""
+msgstr "Πληροφορίες Κρατήσεων"
 
 #: views/section/addnl-info.php:76 views/section/catalog-pdf.php:51
 #: views/student/schedule.php:42
 msgid "Instructor"
-msgstr ""
+msgstr "Εκπαιδευτής"
 
 #: views/section/addnl-info.php:117
 msgid "Contact Hours"
-msgstr ""
+msgstr "Ώρες Επικοινωνίας"
 
 #: views/section/addnl-info.php:126
 msgid "Instructor Load"
@@ -853,24 +867,24 @@ msgstr ""
 
 #: views/section/assignments.php:74
 msgid "Grading"
-msgstr ""
+msgstr "Βαθμολόγηση"
 
 #: views/section/assignments.php:75
 msgid "Export Grades"
-msgstr ""
+msgstr "Εξαγωγή Βαθμολογιών"
 
 #: views/section/attendance.php:24 views/section/attendance_report.php:24
 msgid "Attendance"
-msgstr ""
+msgstr "Παρουσίες"
 
 #: views/section/attendance.php:27
 msgid "Attendance for "
-msgstr ""
+msgstr "Παρουσία για"
 
 #: views/section/attendance.php:54 views/section/students.php:98
 #: views/section/students.php:132 views/student/add.php:75
 msgid "Student Name"
-msgstr ""
+msgstr "Όνομα Φοιτητή"
 
 #: views/section/attendance.php:75
 msgid "Absent"
@@ -883,11 +897,11 @@ msgstr "Παρουσία"
 #: views/section/attendance_report.php:26
 #: views/section/attendance_report.php:29
 msgid "Attendance Report"
-msgstr ""
+msgstr "Αναφορά Παρουσιών"
 
 #: views/section/batch-register.php:42 views/section/batch-register.php:45
 msgid "Batch Registration"
-msgstr ""
+msgstr "Μαζική Εγγραφή"
 
 #: views/section/batch-register.php:71
 msgid "Use the batch registration process if you need to register a group of students into a particular course section. This screen comes in handy when you need to create a saved query from a course section you need to cancel. The best way is to create your saved query by selecting the student id's in the old course section with an 'A' or 'N' status. Register them into the new course section and then cancel the old course section."
@@ -895,15 +909,15 @@ msgstr ""
 
 #: views/section/billing-info.php:70
 msgid "Course Fee"
-msgstr ""
+msgstr "Τίμημα Μαθήματος"
 
 #: views/section/billing-info.php:79
 msgid "Lab Fee"
-msgstr ""
+msgstr "Τίμημα Εργαστηρίου"
 
 #: views/section/billing-info.php:88
 msgid "Course Materials Fee"
-msgstr ""
+msgstr "Τίμημα Υλικού Μαθήματος"
 
 #: views/section/booking-info.php:65
 msgid "Classroom Booking"
@@ -924,47 +938,47 @@ msgstr "Αίθουσα Διδασκαλίας"
 #: views/form/view-room.php:33 views/form/view-specialization.php:33
 #: views/form/view-subject.php:33
 msgid "Viewing "
-msgstr ""
+msgstr "Προβολή"
 
 #: views/section/booking-info.php:150
 msgid "Meeting Time"
-msgstr ""
+msgstr "Ώρα Συνάντησης"
 
 #: views/form/view-ccd.php:30
 msgid "View CCD"
-msgstr ""
+msgstr "Προβολή CCD"
 
 #: views/section/booking-info.php:159
 msgid "Term Dates"
-msgstr ""
+msgstr "Ημερομηνίες Περιόδου"
 
 #: views/form/view-cip.php:30
 msgid "View CIP"
-msgstr ""
+msgstr "Προβολή CIP"
 
 #: views/section/booking-info.php:161
 msgid "to"
-msgstr ""
+msgstr "σε"
 
 #: views/form/view-degree.php:30 views/form/view-degree.php:33
 msgid "View Degree"
-msgstr ""
+msgstr "Προβολή Πτυχίου"
 
 #: views/section/booking-info.php:304
 msgid "Are you sure you want to delete this classroom booking?"
-msgstr ""
+msgstr "Είστε σίγουροι ότι επιθυμείτε να διαγράψετε την κράτηση αίθουσας;"
 
 #: views/form/view-department.php:30 views/form/view-department.php:33
 msgid "View Department"
-msgstr ""
+msgstr "Προβολή Τμήματος"
 
 #: views/section/booking-info.php:468
 msgid "Are you sure you want to delete this entry?"
-msgstr ""
+msgstr "Είστε σίγουροι ότι επιθυμείτε να διαγράψετε την εγγραφή;"
 
 #: views/form/view-grade-scale.php:28
 msgid "Grading Scale"
-msgstr ""
+msgstr "Κλίμακα Βαθμών"
 
 #: views/section/catalog-pdf.php:53
 msgid "Days"
@@ -972,11 +986,11 @@ msgstr "Ημέρες"
 
 #: views/form/view-grade-scale.php:30 views/form/view-grade-scale.php:33
 msgid "Edit Grade"
-msgstr "Ενημέρωση Βαθμού"
+msgstr "Ενημέρωση Βαθμολογίας"
 
 #: views/section/catalog.php:41
 msgid "Term Name"
-msgstr ""
+msgstr "Όνομα Περιόδου"
 
 #: views/form/view-location.php:30
 msgid "View Location"
@@ -984,7 +998,7 @@ msgstr "Προβολή Τοποθεσίας"
 
 #: views/section/catalog.php:63
 msgid "PDF Export"
-msgstr ""
+msgstr "Εξαγωγή σε PDF"
 
 #: views/form/view-major.php:30
 msgid "View Major"
@@ -992,7 +1006,7 @@ msgstr ""
 
 #: views/section/courses.php:72
 msgid "Enter Final Grades"
-msgstr "Καταχώρηση Τελικής Βαθμολογίας"
+msgstr "Καταχώρηση Τελικών Βαθμολογιών"
 
 #: views/form/view-minor.php:30
 msgid "View Minor"
@@ -1013,7 +1027,7 @@ msgstr "Τελική Βαθμολογία"
 
 #: views/form/view-rstr-code.php:30 views/form/view-rstr-code.php:33
 msgid "Edit Restriction Code"
-msgstr ""
+msgstr "Επεξεργασία Κωδικού Περιορισμού"
 
 #: views/section/final-grade.php:32
 msgid "Final Grade for "
@@ -1021,15 +1035,15 @@ msgstr "Τελική Βαθμολογία για"
 
 #: views/form/view-school.php:30 views/form/view-school.php:33
 msgid "View School"
-msgstr ""
+msgstr "Προβολή Σχολής"
 
 #: views/section/gradebook.php:26
 msgid "Gradebook for "
-msgstr ""
+msgstr "Βιβλίο Βαθμολογιών για"
 
 #: views/form/view-semester.php:30 views/form/view-semester.php:33
 msgid "View Semester"
-msgstr ""
+msgstr "Προβολή Εξαμήνου"
 
 #: views/section/gradebook.php:52
 msgid "FG"
@@ -1037,19 +1051,19 @@ msgstr ""
 
 #: views/form/view-specialization.php:28
 msgid "Specialization List"
-msgstr ""
+msgstr "Λίστα Ειδικοτήτων"
 
 #: views/section/index.php:21
 msgid "Sections"
-msgstr ""
+msgstr "Στοιχεία Μαθημάτων"
 
 #: views/form/view-specialization.php:30
 msgid "View Specialization"
-msgstr ""
+msgstr "Προβολή Ειδικότητας"
 
 #: views/section/index.php:56
 msgid "Course Sec ID"
-msgstr ""
+msgstr "Εντότητα Μαθήματος ID"
 
 #: views/form/view-student-load-rule.php:30
 #: views/form/view-student-load-rule.php:33
@@ -1058,11 +1072,11 @@ msgstr ""
 
 #: views/section/index.php:57
 msgid "Section Code"
-msgstr ""
+msgstr "Κωδικός Στοιχείων Μαθημάτων"
 
 #: views/form/view-subject.php:30
 msgid "View Subject"
-msgstr "Προβολή Θέματος"
+msgstr "Προβολή Κατεύθυνσης"
 
 #: views/section/offering-info.php:88
 msgid "Class Room"
@@ -1070,16 +1084,16 @@ msgstr "Αίθουσα Διδασκαλίας"
 
 #: views/form/view-term.php:30 views/form/view-term.php:33
 msgid "View Term"
-msgstr ""
+msgstr "Προβολή Περιόδου"
 
 #: views/section/section-fgrade.php:32
 msgid "Course Section Final Grades"
-msgstr ""
+msgstr "Τελικές Βαθμολογίες Στοιχείων Μαθημάτων"
 
 #: views/hr/add.php:30 views/hr/index.php:26 views/hr/positions.php:31
 #: views/hr/view.php:31
 msgid "Search Employee"
-msgstr ""
+msgstr "Αναζήτηση Εργαζόμενου"
 
 #: views/section/section-fgrade.php:35
 msgid "Final Grades for "
@@ -1093,12 +1107,12 @@ msgstr "Προσθήκη Θέσης"
 
 #: views/section/sros.php:43 views/section/sros.php:46
 msgid "Student Roster"
-msgstr ""
+msgstr "Λίστα Φοιτητών"
 
 #: views/hr/add.php:64 views/hr/positions.php:65 views/hr/view-timesheet.php:64
 #: views/hr/view.php:65 views/staff/view.php:64
 msgid "Title:"
-msgstr ""
+msgstr "Τίτλος:"
 
 #: views/section/students.php:77 views/section/students.php:220
 msgid "Email Students in"
@@ -1107,7 +1121,7 @@ msgstr ""
 #: views/hr/add.php:65 views/hr/positions.php:66 views/hr/view-timesheet.php:65
 #: views/hr/view.php:66 views/staff/view.php:65
 msgid "Dept:"
-msgstr ""
+msgstr "Τμήμα:"
 
 #: views/section/students.php:99
 msgid "Send Email"
@@ -1116,16 +1130,16 @@ msgstr "Αποστολή eMail"
 #: views/hr/add.php:66 views/hr/positions.php:67 views/hr/view-timesheet.php:66
 #: views/hr/view.php:67 views/staff/view.php:66
 msgid "Office:"
-msgstr ""
+msgstr "Γραφείο:"
 
 #: views/section/students.php:141
 msgid "Student Email"
-msgstr ""
+msgstr "eMail Φοιτητή"
 
 #: views/hr/add.php:72 views/hr/positions.php:73 views/hr/view-timesheet.php:72
 #: views/hr/view.php:73 views/staff/view.php:72
 msgid "Office Phone:"
-msgstr ""
+msgstr "Τηλέφωνο Γραφείου:"
 
 #: views/section/students.php:159 views/section/students.php:238
 msgid "Message"
@@ -1134,26 +1148,26 @@ msgstr "Μύνημα"
 #: views/hr/add.php:107 views/hr/positions.php:99 views/hr/view.php:108
 #: views/staff/view.php:107
 msgid "Staff Record"
-msgstr ""
+msgstr "Εγγραφή Προσωπικού"
 
 #: views/section/students.php:168 views/section/students.php:247
 msgid "File Upload"
-msgstr ""
+msgstr "Μεταφόρτωση Αρχείου"
 
 #: views/hr/add.php:108 views/hr/index.php:90 views/hr/positions.php:100
 #: views/hr/view.php:109 views/staff/view.php:108
 msgid "View Positions"
-msgstr ""
+msgstr "Προβολή Θέσεων"
 
 #: views/section/templates/roster/default.template.php:83
 #: views/student/sttr.php:63
 msgid "Acad Level"
-msgstr ""
+msgstr "Ακαημαϊκό Επίπεδο"
 
 #: views/hr/add.php:123 views/hr/positions.php:181 views/hr/view.php:124
 #: views/staff/add.php:67
 msgid "Employment Type"
-msgstr ""
+msgstr "Τύπος Εργαζόμενου"
 
 #: views/section/templates/roster/default.template.php:84
 msgid "Acad Program"
@@ -1162,25 +1176,25 @@ msgstr "Ακαδημαϊκό Πρόγραμμα"
 #: views/hr/add.php:135 views/hr/positions.php:193 views/hr/view.php:136
 #: views/staff/add.php:79
 msgid "Staff Type"
-msgstr ""
+msgstr "Τύπος Προσωπικού"
 
 #: views/section/templates/roster/default.template.php:85
 msgid "Acad Credit Status"
-msgstr ""
+msgstr "Κατάσταση Ακαδημαϊκών Μονάδων"
 
 #: views/hr/add.php:139 views/hr/positions.php:197 views/hr/view.php:140
 #: views/staff/add.php:83
 msgid "Faculty"
-msgstr ""
+msgstr "Εκπαιδευτής"
 
 #: views/section/view-assignment.php:31
 msgid "Assignment"
-msgstr ""
+msgstr "Ανάθεση"
 
 #: views/hr/add.php:148 views/hr/positions.php:206 views/hr/view.php:149
 #: views/staff/add.php:92
 msgid "Supervisor"
-msgstr ""
+msgstr "Επιβλέπων"
 
 #: views/setting/email.php:46 views/setting/index.php:47
 #: views/setting/registration.php:46 views/setting/templates.php:153
@@ -1193,12 +1207,12 @@ msgstr "Γενικά"
 #: views/staff/add.php:104 views/staff/timesheets.php:52
 #: views/staff/timesheets.php:109 views/staff/view-timesheet.php:104
 msgid "Job Title"
-msgstr ""
+msgstr "Τίτλος Εργασίας"
 
 #: views/setting/email.php:47 views/setting/index.php:48
 #: views/setting/registration.php:47 views/setting/templates.php:154
 msgid "Registration"
-msgstr ""
+msgstr "Εγγραφή"
 
 #: views/hr/add.php:178 views/hr/positions.php:119 views/hr/positions.php:230
 #: views/hr/view.php:269 views/staff/add.php:179
@@ -1207,7 +1221,7 @@ msgstr "Ημερομηνία Πρόσληψης"
 
 #: views/setting/email.php:63 views/setting/email.php:141
 msgid "System Email"
-msgstr ""
+msgstr "eMail Συστήματος"
 
 #: views/hr/add.php:214 views/hr/view.php:331 views/person/add.php:391
 #: views/person/view.php:362 views/staff/add.php:228 views/staff/view.php:236
@@ -1218,23 +1232,23 @@ msgstr "Έγκριση από"
 
 #: views/setting/email.php:72 views/setting/email.php:161
 msgid "Registrar's Email"
-msgstr ""
+msgstr "eMail Υπευθύνου Εγγραφών"
 
 #: views/hr/grades.php:52 views/hr/grades.php:105 views/hr/grades.php:161
 msgid "Starting Salary"
-msgstr ""
+msgstr "Μισθός (Έναρξη)"
 
 #: views/setting/email.php:81 views/setting/email.php:181
 msgid "Room Request Email"
-msgstr ""
+msgstr "eMail Γραφείου Αιτήσεων Αίθουσας"
 
 #: views/hr/grades.php:53 views/hr/grades.php:114 views/hr/grades.php:170
 msgid "Ending Salary"
-msgstr ""
+msgstr "Μισθός (Λήξη)"
 
 #: views/setting/email.php:96 views/setting/email.php:201
 msgid "Contact Email"
-msgstr ""
+msgstr "eMail Επαφής"
 
 #: views/hr/grades.php:89 views/hr/grades.php:145
 msgid "Add Pay Grade"
@@ -1250,7 +1264,7 @@ msgstr "Εργαζόμενος"
 
 #: views/setting/email.php:145
 msgid "All system and error related emails will be sent to this email address."
-msgstr ""
+msgstr "Όλα τα eMail σχετικά με το σύστημα και τα σφάλματα του θα αποστέλλονται στο παρούσα διεύθυνση."
 
 #: views/hr/index.php:60 views/index/profile.php:31
 #: views/permission/index.php:49 views/person/index.php:61
@@ -1266,11 +1280,11 @@ msgstr ""
 
 #: views/hr/index.php:117
 msgid "Employee Search"
-msgstr ""
+msgstr "Αναζήτηση Εργαζόμενου"
 
 #: views/setting/email.php:185
 msgid "This is the email where all room requests are sent."
-msgstr ""
+msgstr "Αυτό είναι το eMail στο οποίο αποστέλλονται όλες οι αιτήσεις κράτησης αιθουσών."
 
 #: views/hr/jobs.php:51 views/hr/jobs.php:100 views/hr/jobs.php:172
 #: views/hr/positions.php:114
@@ -1284,7 +1298,7 @@ msgstr ""
 #: views/hr/jobs.php:53 views/hr/jobs.php:121 views/hr/jobs.php:193
 #: views/hr/positions.php:116 views/hr/view.php:230
 msgid "Hourly Wage"
-msgstr ""
+msgstr "Ωριαία Αποζημίωση"
 
 #: views/setting/email.php:225
 msgid "New applications submitted via the myeduTrac portal will be sent to this email adddress."
@@ -1292,7 +1306,7 @@ msgstr ""
 
 #: views/hr/jobs.php:54 views/hr/jobs.php:130 views/hr/jobs.php:202
 msgid "Hours Per Week"
-msgstr ""
+msgstr "Ώρες ανά Εβδομάδα"
 
 #: views/setting/index.php:24 views/setting/index.php:27
 msgid "System Settings"
@@ -1304,31 +1318,31 @@ msgstr "Θέσεις"
 
 #: views/setting/index.php:73
 msgid "Enable Benchmark"
-msgstr ""
+msgstr "Ενεργοποίηση Αναφοράς Μετρήσεων"
 
 #: views/hr/positions.php:117 views/hr/view.php:248
 msgid "Weekly Hours"
-msgstr ""
+msgstr "Εβδομαδιαίες Ώρες"
 
 #: views/setting/index.php:86
 msgid "myeT Layout"
-msgstr ""
+msgstr "myeduSIS Περιβάλλον"
 
 #: views/hr/positions.php:118 views/hr/view.php:257
 msgid "Monthly Salary"
-msgstr ""
+msgstr "Μηνιαίος Μισθός"
 
 #: views/setting/index.php:100
 msgid "myeT Mode"
-msgstr ""
+msgstr "Κατάσταση myeT"
 
 #: views/hr/positions.php:140
 msgid "Not Set"
-msgstr ""
+msgstr "Άνευ Τοποθέτησης"
 
 #: views/setting/index.php:104
 msgid "Online"
-msgstr ""
+msgstr "Συνδεδεμένο (Online)"
 
 #: views/hr/positions.php:169
 msgid "Edit Position"
@@ -1336,16 +1350,16 @@ msgstr "Επεξεργασία Θέσης"
 
 #: views/setting/index.php:113
 msgid "Offline Message"
-msgstr ""
+msgstr "Μύνημα Αποσύνδεσης (Offline)"
 
 #: views/hr/timesheets.php:40 views/hr/view-timesheet.php:103
 #: views/staff/timesheets.php:51 views/staff/view-timesheet.php:53
 msgid "Work Week"
-msgstr ""
+msgstr "Εργάσιμη Εβδομάδα"
 
 #: views/setting/index.php:126
 msgid "Enabled"
-msgstr ""
+msgstr "Ενεργοποιημένο"
 
 #: views/hr/timesheets.php:43
 msgid "Hours"
@@ -1353,32 +1367,32 @@ msgstr "Ώρες"
 
 #: views/setting/index.php:127
 msgid "Disabled"
-msgstr ""
+msgstr "Απενεργοποιημένο"
 
 #: views/hr/timesheets.php:44
 msgid "Pay"
-msgstr ""
+msgstr "Πληρωμή"
 
 #: views/setting/index.php:135
 msgid "Applicant Email"
-msgstr ""
+msgstr "eMail Αιτούντα"
 
 #: views/hr/view-timesheet.php:32 views/staff/view-timesheet.php:30
 #: views/staff/view-timesheet.php:34
 msgid "View Timesheet"
-msgstr ""
+msgstr "Προβολή Δελτίων Εργασίας"
 
 #: views/hr/view-timesheet.php:106 views/staff/timesheets.php:53
 #: views/staff/timesheets.php:101 views/staff/view-timesheet.php:56
 #: views/staff/view-timesheet.php:96
 msgid "Work Hours"
-msgstr ""
+msgstr "Ώρες Εργασίας"
 
 #: views/hr/view-timesheet.php:107 views/hr/view-timesheet.php:235
 #: views/staff/timesheets.php:166 views/staff/view-timesheet.php:57
 #: views/staff/view-timesheet.php:161
 msgid "Note"
-msgstr ""
+msgstr "Σημείωση"
 
 #: views/setting/index.php:148
 msgid "Language"
@@ -1386,49 +1400,49 @@ msgstr "Γλώσσα"
 
 #: views/hr/view-timesheet.php:130
 msgid "Rejected"
-msgstr ""
+msgstr "Απορρίφθηκε"
 
 #: views/hr/view-timesheet.php:131
 msgid "Approved"
-msgstr ""
+msgstr "Εγκεκριμένο"
 
 #: views/hr/view-timesheet.php:171
 msgid "Timesheet Entry"
-msgstr ""
+msgstr "Καταχώρηση Δελτίου Εργασίας"
 
 #: views/hr/view-timesheet.php:187 views/staff/timesheets.php:118
 #: views/staff/view-timesheet.php:113
 msgid "Work Week Start"
-msgstr ""
+msgstr "Ημέρα Έναρξης Εβδομάδας"
 
 #: views/hr/view-timesheet.php:199 views/staff/timesheets.php:130
 #: views/staff/view-timesheet.php:125
 msgid "Work Day"
-msgstr ""
+msgstr "Εργάσιμη Ημέρα"
 
 #: views/setting/index.php:160
 msgid "Timezone"
-msgstr ""
+msgstr "Ζώνη Ώρας"
 
 #: views/hr/view.php:33
 msgid "View Employee"
-msgstr ""
+msgstr "Προβολή Εργαζόμενου"
 
 #: views/setting/index.php:174
 msgid "Cookie TTL"
-msgstr ""
+msgstr "Cookie TTL"
 
 #: views/hr/view.php:185 views/staff/add.php:128 views/staff/view.php:154
 msgid "Office"
-msgstr ""
+msgstr "Γραφείο"
 
 #: views/setting/index.php:183
 msgid "Cookie Path"
-msgstr ""
+msgstr "Φάκελος Cookie"
 
 #: views/hr/view.php:197 views/staff/add.php:140 views/staff/view.php:166
 msgid "Office Phone"
-msgstr ""
+msgstr "Τηλέφωνο Γραφείου"
 
 #: views/setting/index.php:198
 msgid "File Manager Driver"
@@ -1436,19 +1450,19 @@ msgstr ""
 
 #: views/hr/view.php:314 views/staff/add.php:220 views/staff/view.php:210
 msgid "I Inactive"
-msgstr ""
+msgstr "I Αδρανής"
 
 #: views/setting/index.php:202
 msgid "Local"
-msgstr ""
+msgstr "Τοπικό"
 
 #: views/index/apply.php:32
 msgid "Apply for Admissions"
-msgstr ""
+msgstr "Αίτηση Εγγραφής"
 
 #: views/setting/index.php:203
 msgid "Amazon S3"
-msgstr ""
+msgstr "Amazon S3"
 
 #: views/index/apply.php:53 views/index/login.php:55
 #: views/install/index.php:140 views/install/index.php:198
@@ -1458,7 +1472,7 @@ msgstr "Κωδικός"
 
 #: views/setting/index.php:211
 msgid "Amazon S3 Bucket"
-msgstr ""
+msgstr "Amazon S3 Bucket"
 
 #: views/index/apply.php:68 views/index/profile.php:39 views/person/add.php:120
 #: views/person/view.php:105
@@ -1467,7 +1481,7 @@ msgstr "Πρόθεμα"
 
 #: views/setting/index.php:220
 msgid "S3 Access Key"
-msgstr ""
+msgstr "S3 Access Key"
 
 #: views/index/apply.php:71 views/person/add.php:124 views/person/view.php:109
 msgid "Ms."
@@ -1475,7 +1489,7 @@ msgstr "Κα."
 
 #: views/setting/index.php:229
 msgid "S3 Secret Key"
-msgstr ""
+msgstr "S3 Secret Key"
 
 #: views/index/apply.php:72 views/person/add.php:125 views/person/view.php:110
 msgid "Miss."
@@ -1483,7 +1497,7 @@ msgstr "Κα."
 
 #: views/setting/index.php:238
 msgid "Curl"
-msgstr ""
+msgstr "Curl"
 
 #: views/index/apply.php:73 views/person/add.php:126 views/person/view.php:111
 msgid "Mrs."
@@ -1491,7 +1505,7 @@ msgstr "Κα."
 
 #: views/setting/index.php:242
 msgid "On"
-msgstr ""
+msgstr "Ενεργό"
 
 #: views/index/apply.php:74 views/person/add.php:127 views/person/view.php:112
 msgid "Mr."
@@ -1499,7 +1513,7 @@ msgstr "Κ."
 
 #: views/setting/index.php:243
 msgid "Off"
-msgstr ""
+msgstr "Ανενεργό"
 
 #: views/index/apply.php:75 views/person/add.php:128 views/person/view.php:113
 msgid "Dr."
@@ -1525,15 +1539,15 @@ msgstr "SSN"
 
 #: views/setting/index.php:269
 msgid "Help Desk"
-msgstr ""
+msgstr "Γραφείο Υποστήριξης"
 
 #: views/index/apply.php:140 views/index/profile.php:67
 msgid "Veteran"
-msgstr ""
+msgstr "Έμπειρος"
 
 #: views/setting/index.php:287
 msgid "Mailing Address"
-msgstr ""
+msgstr "Διεύθυνση Ταχυδρόμησης"
 
 #: views/index/apply.php:146 views/index/profile.php:71
 msgid "Ethnicity"
@@ -1541,11 +1555,11 @@ msgstr "Εθνικότητα"
 
 #: views/setting/index.php:323
 msgid "myeduTrac Layout"
-msgstr ""
+msgstr "Περιβάλλον myeduTrac"
 
 #: views/index/apply.php:149 views/person/add.php:285 views/person/view.php:265
 msgid "White, Non-Hispanic"
-msgstr ""
+msgstr "Καυκάσιος"
 
 #: views/setting/index.php:327
 msgid "You can create your own layout for myeduTrac self service portal. Make a duplicate of the default layout (/app/views/_layouts/myet/default.php), modify it and add your own css styling."
@@ -1553,15 +1567,15 @@ msgstr ""
 
 #: views/index/apply.php:150 views/person/add.php:286 views/person/view.php:266
 msgid "Black, Non-Hispanic"
-msgstr ""
+msgstr "Έγχρωμος, Όχι Ισπανόφωνος"
 
 #: views/setting/index.php:346
 msgid "Some screens in eduTrac rely on the internal REST API, so you will need and API Key."
-msgstr ""
+msgstr "Ορισμένες οθόνες της εφαρμογής απαιτούν την ύπαρξη ενός εσωτερικού REST API, έτσι θα χρειαστείται ένα κλειδί API."
 
 #: views/index/apply.php:151 views/person/add.php:287 views/person/view.php:267
 msgid "Hispanic"
-msgstr ""
+msgstr "Ισπανόφωνος"
 
 #: views/setting/index.php:346
 msgid "to generate an api key for your account."
@@ -1577,7 +1591,7 @@ msgstr ""
 
 #: views/index/apply.php:153 views/person/add.php:289 views/person/view.php:269
 msgid "Native Alaskan"
-msgstr ""
+msgstr "Καταγωγή Αλάσκα"
 
 #: views/setting/index.php:365
 msgid "Use this option to place myeduTrac self service into maintenance mode."
@@ -1585,11 +1599,11 @@ msgstr ""
 
 #: views/index/apply.php:154 views/person/add.php:290 views/person/view.php:270
 msgid "Pacific Islander"
-msgstr ""
+msgstr "Καταγωγή από Ειρηνικό"
 
 #: views/setting/index.php:380
 msgid "myeduTrac Offline Message"
-msgstr ""
+msgstr "myTrac Μύνημα Αποσύνδεσης (Offline)"
 
 #: views/index/apply.php:155 views/person/add.php:291 views/person/view.php:271
 msgid "Asian"
@@ -1605,11 +1619,11 @@ msgstr "Ινδός/ή"
 
 #: views/setting/index.php:399
 msgid "myeduTrac Application Form"
-msgstr ""
+msgstr "myeduTrac Φόρμα Αίτησης"
 
 #: views/index/apply.php:157 views/person/add.php:293 views/person/view.php:273
 msgid "Middle Eastern"
-msgstr ""
+msgstr "Καταγωγή από Μέση Ανατολή"
 
 #: views/setting/index.php:403
 msgid "Enable this option to allow access to the application for admissions form."
@@ -1621,7 +1635,7 @@ msgstr "Αφρικανός/ή"
 
 #: views/setting/index.php:418
 msgid "Send Applicant Email"
-msgstr ""
+msgstr "Αποστολή eMail Αιτούντα"
 
 #: views/index/apply.php:159 views/person/add.php:295 views/person/view.php:275
 msgid "Mixed Race"
@@ -1638,15 +1652,15 @@ msgstr "Άλλος/η"
 #: views/index/apply.php:168 views/index/profile.php:83
 #: views/person/add.php:329 views/person/view.php:309
 msgid "Emergency Contact"
-msgstr ""
+msgstr "Επαφή Άμεσης Ανάγκης"
 
 #: views/index/apply.php:170 views/person/add.php:338 views/person/view.php:318
 msgid "Emergency Contact Phone"
-msgstr ""
+msgstr "Τηλεφωνικός Αριθμός Ανάγκης "
 
 #: views/index/apply.php:196
 msgid "Having troubles?"
-msgstr ""
+msgstr "Έχετε κάποιο πρόβλημα;"
 
 #: views/setting/index.php:441
 msgid "If you are using eduTrac Analytics, enter the base url where it is installed (i.e. http://example.com/ea/)."
@@ -1654,27 +1668,27 @@ msgstr ""
 
 #: functions/hook-function.php:913
 msgid "Welcome to myeduTrac"
-msgstr ""
+msgstr "Καλώς ήλθατε στο myeduTrac"
 
 #: views/setting/registration.php:63
 msgid "Open Registration"
-msgstr ""
+msgstr "Ανοικτό σε Εγγραφές"
 
 #: views/index/index.php:52
 msgid "News &amp; Announcements"
-msgstr ""
+msgstr "Νέα &amp; Ανακοινώσεις"
 
 #: views/setting/registration.php:76
 msgid "Current Term"
-msgstr ""
+msgstr "Τρέχουσα Περίοδος"
 
 #: views/index/index.php:61 views/index/view-news.php:27
 msgid "by"
-msgstr ""
+msgstr "από"
 
 #: views/setting/registration.php:88 views/setting/registration.php:165
 msgid "# of Courses"
-msgstr ""
+msgstr "# Μαθημάτων"
 
 #: views/index/index.php:65
 msgid "read more"
@@ -1682,35 +1696,35 @@ msgstr "περισσότερα"
 
 #: views/setting/registration.php:97 views/setting/registration.php:189
 msgid "Account Balance"
-msgstr ""
+msgstr "Ανοικτό Υπόλοιπο"
 
 #: views/index/index.php:84
 msgid "Welcome Message"
-msgstr ""
+msgstr "Μύνημα Καλοσωρίσματος"
 
 #: views/setting/registration.php:112 views/setting/registration.php:213
 msgid "Open Terms"
-msgstr ""
+msgstr "Ανοικτές Περίοδοι"
 
 #: views/index/login.php:59
 msgid "Remember me"
-msgstr ""
+msgstr "Να με θυμάσαι"
 
 #: views/setting/registration.php:121 views/setting/registration.php:237
 msgid "Registration Term"
-msgstr ""
+msgstr "Περίοδος Εγγραφής"
 
 #: routers/myet.router.php:356 views/index/news.php:21
 msgid "News & Announcements"
-msgstr ""
+msgstr "Νέα & Ανακοινώσεις"
 
 #: views/setting/registration.php:133
 msgid "Instructions"
-msgstr ""
+msgstr "Οδηγίες"
 
 #: views/index/offline.php:29 views/setting/index.php:105
 msgid "Offline"
-msgstr ""
+msgstr "Αποσυνδεδεμένο (Offline)"
 
 #: views/setting/registration.php:170
 msgid "Set the number of courses a student is able to register into for any given term. There should only be one open term and it must match the registration term. Depending how long your course offering list is, this may not work 100%."
@@ -1734,7 +1748,7 @@ msgstr ""
 
 #: views/index/profile.php:21
 msgid "My Profile"
-msgstr ""
+msgstr "Το Προφίλ μου"
 
 #: views/setting/registration.php:242
 msgid "If `Open Registration` is set to yes, then choose the term for which a student can register into courses."
@@ -1746,7 +1760,7 @@ msgstr "Μεσαίο Όνομα"
 
 #: views/setting/registration.php:261
 msgid "Registration Instructions"
-msgstr ""
+msgstr "Οδηγίες Εγγραφής"
 
 #: views/index/profile.php:75 views/person/add.php:304
 #: views/person/view.php:284
@@ -1759,19 +1773,19 @@ msgstr ""
 
 #: views/index/profile.php:87
 msgid "Emergency Contact's Phone"
-msgstr ""
+msgstr "Τηλεφωνικός Αριθμός Ανάγκης "
 
 #: views/setting/templates.php:169
 msgid "Template Name"
-msgstr ""
+msgstr "Όνομα Προτύπου"
 
 #: views/index/spam.php:26
 msgid "Spam Registration"
-msgstr ""
+msgstr "Εγγραφή Spam"
 
 #: views/setting/templates.php:179
 msgid "Change of Address"
-msgstr ""
+msgstr "Αλλαγή Διεύθυνσης"
 
 #: views/index/spam.php:28
 msgid "We don't allows spammers the ability to apply for admissions."
@@ -1791,16 +1805,16 @@ msgstr ""
 
 #: views/install/index.php:23
 msgid "eduTrac SIS Installer"
-msgstr ""
+msgstr "eduTrac SIS Installer"
 
 #: views/setting/templates.php:193 views/setting/templates.php:286
 #: views/setting/templates.php:307
 msgid "Room Request Text"
-msgstr ""
+msgstr "Κείμενο Αιτήματος Αίθουσας"
 
 #: views/install/index.php:42
 msgid "eduTrac SIS Installation Wizard"
-msgstr ""
+msgstr "eduTrac SIS Installation Wizard"
 
 #: views/setting/templates.php:194
 msgid "This email template is used when the room request form is filled out and submitted."
@@ -1808,11 +1822,11 @@ msgstr ""
 
 #: views/install/index.php:52
 msgid "Step 1 - Introduction"
-msgstr ""
+msgstr "Βήμα 1 - Εισαγωγή"
 
 #: views/setting/templates.php:200
 msgid "Room Request Confirmation"
-msgstr ""
+msgstr "επιβεβαίωση Αιτησης Αίθουσας"
 
 #: views/install/index.php:54
 msgid "Welcome to the eduTrac Student Information System. Before getting started, we need some information on the database. You will need to know the following items before proceeding."
@@ -1828,7 +1842,7 @@ msgstr "Όνομα Βάσης Δεδομένων"
 
 #: views/setting/templates.php:207 views/setting/templates.php:328
 msgid "Acceptance Letter"
-msgstr ""
+msgstr "Γράμμα Αποδοχής"
 
 #: views/install/index.php:58
 msgid "Database username"
@@ -1844,11 +1858,11 @@ msgstr "Κωδικός Βάσης Δεδομένων"
 
 #: views/setting/templates.php:214
 msgid "Login Details"
-msgstr ""
+msgstr "Λεπτομέρειες Σύνδεσης"
 
 #: views/install/index.php:60
 msgid "Database host"
-msgstr ""
+msgstr "Εξυπηρετητής Βάσης Δεδομένων"
 
 #: views/setting/templates.php:215
 msgid "This email template is used when a new person record is created and the \"Send username & password to user\" is checked."
@@ -1877,15 +1891,15 @@ msgstr "Επόμενο"
 
 #: views/setting/templates.php:244
 msgid "Change of Address Email Template"
-msgstr ""
+msgstr "Πρότυπο αλλαγής Διεύθυνσης eMail"
 
 #: views/install/index.php:78
 msgid "Step 2 - Environment Test"
-msgstr ""
+msgstr "Βήμα 2 - Έλεγχος Περιβάλλοντος"
 
 #: views/setting/templates.php:265
 msgid "Reset Password Email Template"
-msgstr ""
+msgstr "Πρότυπο eMail Επαναφοράς Κωδικού"
 
 #: views/install/index.php:80
 msgid "If your system fails any of the tests to the right, then you need to correct them, refresh your browser to make sure all have a green 'ok' or an orange 'warning' and then proceed with the install. If you proceed without correcting the errors, the install may fail and/or eduTrac may not function properly."
@@ -1893,7 +1907,7 @@ msgstr ""
 
 #: views/setting/templates.php:349
 msgid "User Login Details"
-msgstr ""
+msgstr "Στοιχεία Σύνδεσης Χρήστη"
 
 #: views/install/index.php:99
 msgid "Legend"
@@ -1916,7 +1930,7 @@ msgstr "Δημιουργία Ερωτήματος"
 
 #: views/install/index.php:101
 msgid "All OK"
-msgstr ""
+msgstr "Όλα ΟΚ"
 
 #: views/sql/add-query.php:64 views/sql/csv-email.php:54 views/sql/index.php:91
 #: views/sql/saved-queries.php:45 views/sql/view-query.php:64
@@ -1925,12 +1939,12 @@ msgstr "Δημιουργία Ερωτήματος"
 
 #: views/install/index.php:102
 msgid "warning"
-msgstr ""
+msgstr "προειδιοποίηση"
 
 #: views/sql/add-query.php:66 views/sql/csv-email.php:56 views/sql/index.php:93
 #: views/sql/saved-queries.php:47 views/sql/view-query.php:66
 msgid "CSV to Email"
-msgstr ""
+msgstr "CSV σε eMail"
 
 #: views/install/index.php:102
 msgid "Not a deal breaker and is only a recommendation"
@@ -1951,7 +1965,7 @@ msgstr ""
 
 #: views/install/index.php:103
 msgid "eduTrac SIS requires this feature and can't work without it"
-msgstr ""
+msgstr "eduTrac SIS απαιτεί αυτή το χαρακτηριστικό και δεν μπορεί να λειτουργήσει χωρίς αυτό"
 
 #: views/sql/add-query.php:115 views/sql/add-query.php:172
 #: views/sql/view-query.php:116
@@ -1976,11 +1990,11 @@ msgstr ""
 
 #: views/install/index.php:125
 msgid "Step 3 - Database Connection"
-msgstr ""
+msgstr "Βήμα 3 - Σύνδεση Βάσης Δεδομένων"
 
 #: views/sql/csv-email.php:72
 msgid "Recipient"
-msgstr ""
+msgstr "Παραλήπτης"
 
 #: views/install/index.php:127
 msgid "On the right, you should enter your database connection details. If you're not sure about these, contact your host."
@@ -1992,19 +2006,19 @@ msgstr ""
 
 #: views/install/index.php:143
 msgid "Database Host"
-msgstr ""
+msgstr "εξυπηρετητής Βάσης Δεδομένων"
 
 #: views/sql/index.php:169
 msgid "Successly Executed - "
-msgstr ""
+msgstr "Επιτυχής Εκτέλεση - "
 
 #: views/install/index.php:164
 msgid "Step 4 - Install Database Tables"
-msgstr ""
+msgstr "Βήμα 4 - Εγκατάσταση Πινάκων Βάσης Δεδομένων"
 
 #: views/sql/index.php:174
 msgid "Query is : "
-msgstr ""
+msgstr "Το Ερώτημα:"
 
 #: views/install/index.php:166
 msgid "It will take at least 30 seconds to a minute to install the tables. So please be patient."
@@ -2036,11 +2050,11 @@ msgstr ""
 
 #: views/sql/saved-queries.php:90
 msgid "Are you sure you want to delete this saved query?"
-msgstr ""
+msgstr "Είστε σίγουροι ότι επιθυμείτε να διαγράψετε το αποθηκευμένο ερώτημα;"
 
 #: views/install/index.php:205
 msgid "Step 5 - Admin Account"
-msgstr ""
+msgstr "Βήμα 5 - Λογαριασμός Διαχειριστή"
 
 #: views/sql/view-query.php:38 views/sql/view-query.php:41
 msgid "View Saved Query"
@@ -2053,23 +2067,23 @@ msgstr ""
 #: views/dashboard/menu.php:174 views/staff/add.php:27 views/staff/index.php:25
 #: views/staff/view.php:30
 msgid "Search Staff"
-msgstr ""
+msgstr "Αναζήτηση Προσωπικού"
 
 #: views/install/index.php:228
 msgid "Your E-mail"
-msgstr ""
+msgstr "Το eMail σας"
 
 #: views/staff/add.php:29 views/staff/add.php:32
 msgid "Add Staff"
-msgstr ""
+msgstr "Προσθήκη Προσωπικού"
 
 #: views/install/index.php:234
 msgid "Create Admin"
-msgstr ""
+msgstr "Δημιουργία Διαχειριστή"
 
 #: views/staff/index.php:108
 msgid "Staff Search"
-msgstr ""
+msgstr "Αναζήτηση Προσωπικού"
 
 #: views/install/index.php:251
 msgid "eduTrac SIS has been installed. Click the button below in order to create the config file, flush the installer and be redirected to the login page."
@@ -2077,19 +2091,19 @@ msgstr ""
 
 #: views/staff/view.php:32
 msgid "View Staff"
-msgstr ""
+msgstr "Προβολή Προσωπικού"
 
 #: views/install/index.php:253
 msgid "Finish Installer"
-msgstr ""
+msgstr "Ολοκλήρωση Εγκατάστασης"
 
 #: views/student/account-history.php:24
 msgid "Student Account History"
-msgstr ""
+msgstr "Ιστορικό Λογαριασμού Φοιτητή"
 
 #: views/install/index.php:265
 msgid "Javascript is required in order to use this installer."
-msgstr ""
+msgstr "Η Javascript απαιτείται για την εκτέλεση της εγκατάστασης."
 
 #: views/student/add-prog.php:45 views/student/add.php:44
 #: views/student/index.php:24 views/student/sacd.php:28
@@ -2097,24 +2111,24 @@ msgstr ""
 #: views/student/stac.php:28 views/student/strc.php:34
 #: views/student/sttr.php:22 views/student/view.php:38
 msgid "Search Student"
-msgstr ""
+msgstr "Αναζήτηση Φοιτητή"
 
 #: views/install/index.php:266
 msgid "How to enable javascript"
-msgstr ""
+msgstr "Πως να ενεργοποιήσετε την javascript"
 
 #: views/student/add-prog.php:49
 msgid "Add Student Program"
-msgstr ""
+msgstr "Προσθήκη Προγράμματος Φοιτητή"
 
 #: views/install/index.php:268
 msgid "Upgrade Browser"
-msgstr ""
+msgstr "Αναβάθμιση Φυλλομετρητή"
 
 #: views/student/add-prog.php:111 views/student/add.php:180
 #: views/student/sacp.php:94
 msgid "Advisor"
-msgstr ""
+msgstr "Σύμβουλος"
 
 #: views/permission/add.php:29 views/permission/index.php:32
 #: views/permission/view.php:29
@@ -2149,7 +2163,7 @@ msgstr "Δικαιώματα"
 
 #: views/student/add.php:132
 msgid "Prog Start Date"
-msgstr ""
+msgstr "Ημερομηνία Έναρξης Προγράμματος"
 
 #: views/permission/index.php:86
 msgid "New Permision"
@@ -2157,7 +2171,7 @@ msgstr "Νέο Δικαίωμα"
 
 #: views/student/add.php:197
 msgid "H Hiatus"
-msgstr ""
+msgstr "H Παύση"
 
 #: views/permission/view.php:31 views/permission/view.php:34
 msgid "View Permission"
@@ -2165,7 +2179,7 @@ msgstr "Προβολή Προβολή Δικαιώματος"
 
 #: views/student/add.php:198
 msgid "L Leave of Absence"
-msgstr ""
+msgstr "L Άδεια Απουσίας"
 
 #: views/person/add.php:62 views/person/add.php:65
 msgid "Name & Address"
@@ -2173,12 +2187,12 @@ msgstr "Όνομα & Διεύθυνση"
 
 #: views/student/bill.php:37
 msgid "Bill ID"
-msgstr ""
+msgstr "ID Λογαριασμού"
 
 #: views/person/add.php:102 views/person/add.php:411 views/person/index.php:62
 #: views/person/view.php:87 views/person/view.php:418
 msgid "Alternate ID"
-msgstr ""
+msgstr "Εναλλακτικό ID (Αριθμός Μητρώου)"
 
 #: views/student/grades.php:24
 msgid "Grades for "
@@ -2200,15 +2214,15 @@ msgstr "ΤΚ"
 
 #: views/student/index.php:81
 msgid "Academic Credits (STAC)"
-msgstr ""
+msgstr "Ακαδημαϊκές Μονάδες Φοιτητή (STAC)"
 
 #: views/person/add.php:250 views/person/view.php:211
 msgid "Preferred Email"
-msgstr ""
+msgstr "Προτεινόμενο eMail"
 
 #: views/student/index.php:82
 msgid "Restriction (RSTR)"
-msgstr ""
+msgstr "Περιορισμός (RSTR)"
 
 #: views/person/add.php:259 views/person/view.php:239
 msgid "Social Security #"
@@ -2216,11 +2230,11 @@ msgstr "Κοινωνική Ασφάλιση #"
 
 #: views/student/index.php:83
 msgid "Hiatus (SHIS)"
-msgstr ""
+msgstr "Παύση (SHIS)"
 
 #: views/person/add.php:268 views/person/view.php:248
 msgid "Veteran?"
-msgstr ""
+msgstr "Βετεράνος?"
 
 #: views/student/index.php:108
 msgid "Student Search"
@@ -2232,15 +2246,15 @@ msgstr "Εθνικότητα;"
 
 #: views/student/payment-cancel.php:26
 msgid "Cancelled Payment"
-msgstr ""
+msgstr "Ακυρωμένη Πληρωμή"
 
 #: views/person/add.php:363
 msgid "Send username & password to the user"
-msgstr ""
+msgstr "Αποστολή Ονομάτος και Κωδικού στον χρήστη"
 
 #: views/student/payment-cancel.php:28
 msgid "Your payment was cancelled and nothing was posted to your account."
-msgstr ""
+msgstr "Η πληρωμή σας ακυρώθηκε και δεν μεταφέρθηκε στο λογαριασμό σας."
 
 #: views/person/add.php:382 views/person/view.php:353
 msgid "Approved Date"
@@ -2248,7 +2262,7 @@ msgstr "Ημερομηνία Έγκρισης"
 
 #: views/student/payment-success.php:26
 msgid "Payment Success"
-msgstr ""
+msgstr "Επιτυχής Πληρωμή"
 
 #: views/person/add.php:415 views/person/view.php:422
 msgid "The unique ID for each person is autogenerated by the system. However, some institutions have their own format for person/student ID's. If this is the case for your institution, you can use this alternate ID field."
@@ -2256,7 +2270,7 @@ msgstr ""
 
 #: views/student/payment-success.php:28
 msgid "Your payment went through successfully and was posted to your account."
-msgstr ""
+msgstr "Η πληρωμή σας ολοκληρώθηκε επιτυχώς και μεταφέρθηκε στο λογαριασμό σας."
 
 #: views/person/addr-form.php:36 views/person/addr.php:36
 msgid "Edit Address"
@@ -2264,7 +2278,7 @@ msgstr "Ενημέρωση Διεύθυνσης"
 
 #: views/student/sacd.php:30
 msgid "Academic Credits"
-msgstr ""
+msgstr "Ακαδημαϊκές Μονάδες Φοιτητή"
 
 #: views/person/addr-form.php:169 views/person/addr.php:169
 msgid "Address Type"
@@ -2272,33 +2286,33 @@ msgstr "Τύπος Διεύθυνσης"
 
 #: views/student/sacd.php:32
 msgid "View Academic Credits (SACD)"
-msgstr ""
+msgstr "Προβολή Ακαδημαϊκών Μονάδων Φοιτητή (SACD)"
 
 #: views/person/addr-form.php:220 views/person/addr.php:224
 msgid "Added By"
-msgstr ""
+msgstr "Προστέθηκε από"
 
 #: views/student/sacd.php:58
 msgid "CRSE ID/Name/Sec"
-msgstr ""
+msgstr "Κωδικός Μαθήματος / Όνομα / Ενότητα"
 
 #: views/person/addr-form.php:257 views/person/addr-form.php:310
 #: views/person/addr.php:261 views/person/addr.php:314
 msgid "Extension"
-msgstr ""
+msgstr "Επέκταση"
 
 #: views/student/sacp.php:35
 msgid "Edit Student Program (SACP)"
-msgstr ""
+msgstr "Επεξεργασία Προγράμματος Φοιτητή (SACP)"
 
 #: views/person/addr-form.php:276 views/person/addr-form.php:329
 #: views/person/addr.php:280 views/person/addr.php:333
 msgid "Business"
-msgstr ""
+msgstr "Εργασία"
 
 #: views/student/sacp.php:127
 msgid "Eligible to Grad?"
-msgstr ""
+msgstr "Επιλέξιμος για Αποφοίτηση;"
 
 #: views/person/addr-form.php:277 views/person/addr-form.php:330
 #: views/person/addr.php:281 views/person/addr.php:334
@@ -2307,7 +2321,7 @@ msgstr "Κινητό"
 
 #: views/student/sacp.php:260
 msgid "Eligible to Graduate"
-msgstr ""
+msgstr "Επιλέξιμος για Αποφοίτηση"
 
 #: views/person/addr-form.php:352 views/person/addr.php:356
 msgid "Primary Email"
@@ -2315,7 +2329,7 @@ msgstr "Κύριο Email"
 
 #: views/student/sacp.php:265
 msgid "Select the checkbox if the student is eligible to graduate from this particular program."
-msgstr ""
+msgstr "Επιλέξτε το κουτί ελέγχου εάν ο φοιτητής επιτρέπεται να αποφοιτήσει από το συγκεκριμένο πρόγραμμα."
 
 #: views/person/addr-form.php:370 views/person/addr.php:374
 msgid "Secondary Email"
@@ -2323,7 +2337,7 @@ msgstr "Δευτερεύον eMail"
 
 #: views/student/schedule.php:24 views/student/terms.php:38
 msgid "Schedule"
-msgstr ""
+msgstr "Χρονοδιάγραμμα"
 
 #: views/person/adsu.php:31
 msgid "ID: "
@@ -2335,23 +2349,23 @@ msgstr "Ημέρα(ες) της Εβδομάδας"
 
 #: views/person/index.php:90
 msgid "Switch to User"
-msgstr ""
+msgstr "Εναλλαγή σε Χρήστη"
 
 #: views/student/shis.php:38 views/student/shis.php:56
 #: views/student/stac.php:53 views/student/strc.php:56
 #: views/student/sttr.php:45 views/student/view.php:64
 msgid "Student Hiatus (SHIS)"
-msgstr ""
+msgstr "Παύση Φοιτητή (SHIS)"
 
 #: views/person/index.php:94
 msgid "Create Staff Record"
-msgstr ""
+msgstr "Δημιουργία Εγγραφής Προσωπικού"
 
 #: views/student/shis.php:52 views/student/stac.php:49
 #: views/student/strc.php:52 views/student/sttr.php:41
 #: views/student/view.php:60
 msgid "Student Profile (SPRO)"
-msgstr ""
+msgstr "Προφίλ Φοιτητή (SPRO)"
 
 #: views/person/index.php:101 views/person/role.php:57
 #: views/person/view.php:389
@@ -2362,7 +2376,7 @@ msgstr "Ρόλος"
 #: views/student/stac.php:50 views/student/strc.php:53
 #: views/student/sttr.php:42 views/student/view.php:61
 msgid "Student Academic Credits (STAC)"
-msgstr ""
+msgstr "Ακαδημαϊκές Μονάδες Φοιτητή  (STAC)"
 
 #: views/person/index.php:128
 msgid "Person Search"
@@ -2372,7 +2386,7 @@ msgstr "Αναζήτηση Προσώπου"
 #: views/student/strc.php:54 views/student/sttr.php:43
 #: views/student/view.php:62
 msgid "Student Terms (STTR)"
-msgstr ""
+msgstr "Περίοδοι Φοιτητή (STTR)"
 
 #: views/person/perms.php:33
 msgid "Manage Person Permissions"
@@ -2382,7 +2396,7 @@ msgstr "Διαχείριση Δικαιωμάτων Προσώπου"
 #: views/student/strc.php:38 views/student/strc.php:55
 #: views/student/sttr.php:44 views/student/view.php:63
 msgid "Student Restriction (STRC)"
-msgstr ""
+msgstr "Περιορισμός Φοιτητή (STRC)"
 
 #: views/person/perms.php:36 views/person/role.php:36
 msgid "ID#"
@@ -2390,7 +2404,7 @@ msgstr "ID#"
 
 #: views/student/shis.php:70 views/student/shis.php:216
 msgid "Hiatus"
-msgstr ""
+msgstr "Παύση"
 
 #: views/person/perms.php:57 views/person/view.php:398 views/role/add.php:67
 #: views/role/view.php:68
@@ -2399,15 +2413,15 @@ msgstr "Δικαίωμα"
 
 #: views/student/shis.php:87 views/student/shis.php:220
 msgid "Withdrawal"
-msgstr ""
+msgstr "Απόρριψη"
 
 #: views/person/perms.php:58 views/role/add.php:68 views/role/view.php:69
 msgid "Allow"
-msgstr ""
+msgstr "Επιτρέπεται"
 
 #: views/student/shis.php:88 views/student/shis.php:221
 msgid "Leave of Absence"
-msgstr ""
+msgstr "Άδεια Απουσίας"
 
 #: views/person/role.php:33
 msgid "Manage Person Role"
@@ -2415,7 +2429,7 @@ msgstr "Διαχείριση Ρόλου Προσώπου"
 
 #: views/student/shis.php:89 views/student/shis.php:222
 msgid "Study Abroad"
-msgstr ""
+msgstr "Σποουδές στο εξωτερικό"
 
 #: views/person/role.php:58
 msgid "Member"
@@ -2423,7 +2437,7 @@ msgstr "Μέλος"
 
 #: views/student/shis.php:90 views/student/shis.php:223
 msgid "Illness"
-msgstr ""
+msgstr "Αρρώστια"
 
 #: views/person/role.php:59
 msgid "Not Member"
@@ -2439,7 +2453,7 @@ msgstr "Προβολή Προσώπου"
 
 #: views/student/shis.php:161
 msgid "Are you sure you want to delete this student's hiatus status?"
-msgstr ""
+msgstr "Είστε σίγουροι ότι επιθυμείτε να διαγράψετε την κατάσταση παύσης του Φοιτητή;"
 
 #: views/person/view.php:35
 msgid "Person:"
@@ -2455,7 +2469,7 @@ msgstr "Τελευταία Σύνδεση"
 
 #: views/student/stac.php:97
 msgid "View (SACD)"
-msgstr ""
+msgstr "Προβολή ΑκαδημαΙκών Μονάδων Φοιτητή (SACD)"
 
 #: views/person/view.php:454
 msgid "Person Status"
@@ -2471,7 +2485,7 @@ msgstr ""
 
 #: views/student/strc.php:70 views/student/strc.php:182
 msgid "Restriction"
-msgstr ""
+msgstr "Περιορισμός"
 
 #: routers/person.router.php:869 routers/person.router.php:870
 #: views/person/view.php:470 views/setting/templates.php:186
@@ -2480,23 +2494,23 @@ msgstr "Επαναφορά Κωδικού"
 
 #: views/student/strc.php:71 views/student/strc.php:192
 msgid "Severity"
-msgstr ""
+msgstr "Σοβαρότητα"
 
 #: routers/myet.router.php:218 views/admin/links.php:27
 msgid "Manage Quick Links"
-msgstr ""
+msgstr "Διαχείριση Σύντομων Συνδέσμων"
 
 #: views/cron/index.php:67
 msgid "# Runs"
-msgstr ""
+msgstr "# Εκτελέσεις"
 
 #: views/form/ccd.php:67 views/form/ccd.php:106 views/form/view-ccd.php:69
 msgid "CCD Name"
-msgstr ""
+msgstr "Όνομα CCD"
 
 #: views/admin/links.php:27 views/admin/links.php:40
 msgid "Add Link"
-msgstr ""
+msgstr "Προσθήκη Συνδέσμου"
 
 #: views/cron/index.php:68
 msgid "Logs/Run"
@@ -2506,7 +2520,7 @@ msgstr ""
 #: views/form/view-cip.php:28 views/program/add.php:266
 #: views/program/ajax.php:775 views/program/view.php:271
 msgid "CIP"
-msgstr ""
+msgstr "CIP"
 
 #: views/admin/links.php:45 views/admin/links.php:145 views/admin/news.php:47
 #: views/admin/news.php:148 views/admin/pages.php:47 views/admin/pages.php:154
@@ -2519,7 +2533,7 @@ msgstr ""
 #: views/form/view-school.php:48 views/form/view-semester.php:48
 #: views/index/apply.php:34
 msgid "Indicates field is required."
-msgstr ""
+msgstr "Το σημειωμένο πεδίο είναι υποχρεωτικό."
 
 #: views/cron/index.php:83
 msgid "Run"
@@ -2528,11 +2542,11 @@ msgstr "Εκτέλεση"
 #: views/form/cip.php:60 views/form/cip.php:103 views/form/view-cip.php:62
 #: views/program/ajax.php:787
 msgid "CIP Code"
-msgstr ""
+msgstr "Κωδικός CIP"
 
 #: views/admin/links.php:49 views/admin/links.php:93 views/admin/links.php:149
 msgid "Link Title"
-msgstr ""
+msgstr "Τίτλος Συνδέσμου"
 
 #: views/cron/index.php:100
 msgid "Delete selected handler(s)"
@@ -2541,20 +2555,20 @@ msgstr ""
 #: views/form/cip.php:67 views/form/cip.php:104 views/form/view-cip.php:69
 #: views/program/ajax.php:794
 msgid "CIP Name"
-msgstr ""
+msgstr "Όνομα CIP"
 
 #: views/admin/links.php:53 views/admin/links.php:94 views/admin/links.php:153
 msgid "Link Source"
-msgstr ""
+msgstr "Πηγή Συνδέσμου"
 
 #: views/cron/log.php:29 views/cron/log.php:32
 msgid "Cronjob Handler Log"
-msgstr ""
+msgstr "Cronjob Handler Log"
 
 #: views/form/degree.php:53 views/form/degree.php:96
 #: views/form/view-degree.php:62 views/program/ajax.php:315
 msgid "Degree Code"
-msgstr ""
+msgstr "Κωδικός Πτυχίου"
 
 #: views/admin/links.php:57 views/admin/links.php:95 views/admin/links.php:157
 #: views/admin/news.php:59 views/admin/news.php:96 views/admin/news.php:160
@@ -2581,12 +2595,12 @@ msgstr "Κατάσταση"
 
 #: views/cron/log.php:83
 msgid "Clear Log"
-msgstr ""
+msgstr "Clear Log"
 
 #: views/form/degree.php:60 views/form/degree.php:97
 #: views/form/view-degree.php:69 views/program/ajax.php:324
 msgid "Degree Name"
-msgstr ""
+msgstr "Όνομα Πτυχίου"
 
 #: functions/student-function.php:599 views/admin/links.php:60
 #: views/admin/links.php:160 views/financial/billing-table.php:80
@@ -2601,11 +2615,11 @@ msgstr "Ενεργό"
 
 #: views/cron/new.php:91 views/cron/view.php:89
 msgid "Cronjob URL"
-msgstr ""
+msgstr "Cronjob URL"
 
 #: views/form/department.php:89 views/form/view-department.php:98
 msgid "Department Phone #"
-msgstr ""
+msgstr "Τηλέφωνο Τμήματος #"
 
 #: functions/student-function.php:599 views/admin/links.php:61
 #: views/admin/links.php:161 views/financial/billing-table.php:81
@@ -2622,7 +2636,7 @@ msgstr "Log Αποθήκευσης"
 #: views/form/department.php:134 views/form/rstr-code.php:60
 #: views/form/view-rstr-code.php:62
 msgid "Code"
-msgstr ""
+msgstr "Κωδικός"
 
 #: views/admin/links.php:65 views/admin/links.php:165 views/admin/pages.php:67
 #: views/admin/pages.php:174
@@ -2631,7 +2645,7 @@ msgstr "Ταξινόμηση"
 
 #: views/cron/new.php:109 views/cron/new.php:212 views/cron/view.php:210
 msgid "Mail Log"
-msgstr ""
+msgstr "Mail Log"
 
 #: views/form/department.php:137 views/hr/index.php:63
 #: views/index/profile.php:59 views/person/add.php:241
@@ -2667,11 +2681,11 @@ msgstr "Τηλέφωνο"
 #: views/student/shis.php:264 views/student/strc.php:233
 #: views/student/tran.php:129
 msgid "Submit"
-msgstr ""
+msgstr "Καταχώρηση"
 
 #: views/cron/new.php:124 views/cron/new.php:232 views/cron/view.php:230
 msgid "Mail Log Email"
-msgstr ""
+msgstr "Mail Log Email"
 
 #: views/form/grade-scale.php:23 views/form/grade-scale.php:31
 msgid "Grade Scale"
@@ -2903,7 +2917,7 @@ msgstr ""
 
 #: views/admin/links.php:197
 msgid "Are you sure you want to delete this quick link?"
-msgstr ""
+msgstr "Είστε σίγουροι ότι επιθυμείται να διαγράψετε τον σύντομο σύνδεσμο;"
 
 #: views/cron/new.php:256 views/cron/view.php:254
 msgid "Set the time in seconds (Each) of how often the cronjob should run (i.e. 2 minute, Hour or every Day / 07:00.)"
@@ -2915,11 +2929,11 @@ msgstr ""
 
 #: routers/myet.router.php:166
 msgid "Manage News & Announcements"
-msgstr ""
+msgstr "Διαχείριση Νέων & Ανακοινώσεων"
 
 #: views/cron/setting.php:28 views/cron/setting.php:31
 msgid "Cronjob Handler Settings"
-msgstr ""
+msgstr "Ρυθμίσεις Cronjob Handler"
 
 #: views/form/import.php:71
 msgid "Database Table"
@@ -2931,7 +2945,7 @@ msgstr "Προσθήκη Νέων"
 
 #: views/cron/setting.php:71 views/cron/setting.php:122
 msgid "Cronjob Password"
-msgstr ""
+msgstr "Cronjob Κωδικός"
 
 #: views/form/import.php:75 views/form/semester.php:28
 #: views/form/semester.php:31 views/form/semester.php:79
@@ -2939,19 +2953,19 @@ msgstr ""
 #: views/form/view-semester.php:28 views/form/view-semester.php:81
 #: views/form/view-term.php:62
 msgid "Semester"
-msgstr ""
+msgstr "Εξάμηνο"
 
 #: views/admin/news.php:42
 msgid "Add News & Annoucement"
-msgstr ""
+msgstr "Προσθήκη Νέων & Ανακοινώσεων"
 
 #: views/cron/setting.php:86 views/cron/setting.php:142
 msgid "Cronjob Timeout"
-msgstr ""
+msgstr "Cronjob Timeout"
 
 #: views/form/import.php:78
 msgid "Student Bill/Invoice"
-msgstr ""
+msgstr "Λογαριασμός/Τιμολόγιο Φοιτητή"
 
 #: views/admin/news.php:51 views/admin/pages.php:51 views/admin/pages.php:158
 #: views/calendar/view-event.php:200 views/comm-mgmt/index.php:41
@@ -2976,7 +2990,7 @@ msgstr ""
 
 #: views/form/import.php:83
 msgid "Student Fee"
-msgstr ""
+msgstr "Τίμημα Φοιτητή"
 
 #: views/admin/news.php:55 views/admin/news.php:156 views/admin/pages.php:55
 #: views/admin/pages.php:162
@@ -2994,11 +3008,11 @@ msgstr ""
 #: views/admin/news.php:62 views/admin/news.php:163 views/admin/pages.php:62
 #: views/admin/pages.php:169
 msgid "Draft"
-msgstr ""
+msgstr "Πρόχειρο"
 
 #: views/cron/view.php:46 views/cron/view.php:49
 msgid "View Cronjob Handler"
-msgstr ""
+msgstr "Προβολή Cronjob Handler"
 
 #: views/form/import.php:90 views/form/minor.php:28 views/form/minor.php:31
 #: views/form/view-minor.php:28 views/program/add.php:231
@@ -3010,26 +3024,26 @@ msgstr ""
 #: views/admin/news.php:63 views/admin/news.php:164 views/admin/pages.php:63
 #: views/admin/pages.php:170
 msgid "Publish"
-msgstr ""
+msgstr "Δημοσίευση"
 
 #: views/cron/view.php:107
 msgid "MailLog"
-msgstr ""
+msgstr "MailLog"
 
 #: views/form/import.php:92 views/form/specialization.php:28
 #: views/form/specialization.php:31 views/program/add.php:244
 #: views/program/ajax.php:682 views/program/view.php:249
 #: views/student/templates/transcript/default.template.php:166
 msgid "Specialization"
-msgstr ""
+msgstr "Ειδικότητα"
 
 #: views/admin/news.php:92 views/admin/news.php:152 views/index/news.php:33
 msgid "News Title"
-msgstr ""
+msgstr "Τίτλος Νέων"
 
 #: views/cron/view.php:122
 msgid "MailLog Email"
-msgstr ""
+msgstr "MailLog Email"
 
 #: views/form/import.php:97 views/form/school.php:28 views/form/school.php:31
 #: views/form/view-school.php:28 views/hr/view.php:206
@@ -3037,16 +3051,16 @@ msgstr ""
 #: views/staff/view.php:175 views/student/add-prog.php:93
 #: views/student/add.php:123 views/student/sacp.php:76
 msgid "School"
-msgstr ""
+msgstr "Σχολή"
 
 #: views/admin/news.php:93 views/admin/pages.php:99
 #: views/dashboard/modules.php:60 views/index/news.php:34
 msgid "Author"
-msgstr ""
+msgstr "Συγγραφέας"
 
 #: views/dashboard/index.php:48
 msgid "Latest eduTrac SIS Updates"
-msgstr ""
+msgstr "Τελευταίες ενημερώσεις Trac SIS"
 
 #: views/form/import.php:102 views/person/adsu.php:49 views/staff/view.php:123
 msgid "Address"
@@ -3054,7 +3068,7 @@ msgstr "Διεύθυνση"
 
 #: views/admin/news.php:94 views/admin/pages.php:100
 msgid "Created"
-msgstr ""
+msgstr "Δημιουργήθηκε"
 
 #: views/dashboard/index.php:98
 msgid "Students by Academic Program"
@@ -3064,11 +3078,11 @@ msgstr "Φοιτητές ανά Ακαδημαϊκό Έτος"
 #: views/hr/view.php:141 views/staff/add.php:58 views/staff/add.php:84
 #: views/staff/index.php:22
 msgid "Staff"
-msgstr ""
+msgstr "Προσωπικό"
 
 #: views/admin/news.php:95 views/admin/pages.php:101
 msgid "Last Modified"
-msgstr ""
+msgstr "Τελευταία Ενημέρωθηκε"
 
 #: views/dashboard/index.php:108 views/section/gradebook.php:42
 msgid "Students"
@@ -3088,11 +3102,11 @@ msgstr ""
 
 #: views/form/import.php:109
 msgid "Student Acad Cred"
-msgstr ""
+msgstr "Ακαδημαϊκές Μονάδες Φοιτητή"
 
 #: views/admin/pages.php:29 views/admin/pages.php:42
 msgid "Add Page"
-msgstr ""
+msgstr "Προσθήκη Σελίδας"
 
 #: views/dashboard/index.php:142 views/index/apply.php:165
 #: views/person/add.php:320 views/person/view.php:300
@@ -3101,11 +3115,11 @@ msgstr "Άνδρας"
 
 #: views/form/import.php:110
 msgid "Student Acad Level"
-msgstr ""
+msgstr "Ακαδημαϊκό Επίπεδο Φοιτητή"
 
 #: views/admin/pages.php:98
 msgid "Page Title"
-msgstr ""
+msgstr "Τίτλος Σελίδας"
 
 #: views/dashboard/index.php:143 views/index/apply.php:166
 #: views/person/add.php:321 views/person/view.php:301
@@ -3114,7 +3128,7 @@ msgstr "Γυναίκα"
 
 #: views/form/import.php:111
 msgid "Student Course Section"
-msgstr ""
+msgstr "Ενότητα Μαθήματος Φοιτητή"
 
 #: views/admin/pages.php:206
 msgid "Are you sure you want to delete this page?"
@@ -3128,7 +3142,7 @@ msgstr "Επιλογή Αρχείου"
 
 #: views/form/import.php:112
 msgid "Student Program"
-msgstr ""
+msgstr "Πρόγραμμα Φοιτητή"
 
 #: views/application/add-inst.php:25 views/application/add.php:20
 #: views/application/index.php:19 views/application/inst-attended.php:41
@@ -3223,15 +3237,15 @@ msgstr "Αλλαγή"
 
 #: views/form/import.php:113
 msgid "Student Term"
-msgstr ""
+msgstr "Περίοδος Φοιτητή"
 
 #: views/application/add-inst.php:28 views/application/view-inst.php:28
 msgid "Search Institution"
-msgstr "Αναζήτηση Ινστιτούτου"
+msgstr "Αναζήτηση Ιδρύματος"
 
 #: views/dashboard/menu.php:47
 msgid "Install Module"
-msgstr ""
+msgstr "Εγκατάσταση Υποσυστήματος"
 
 #: views/form/import.php:114
 msgid "Student Term GPA"
@@ -3239,7 +3253,7 @@ msgstr ""
 
 #: views/application/add-inst.php:30 views/application/add-inst.php:33
 msgid "Add Institution"
-msgstr "Προσθήκη Ινστιτούτου"
+msgstr "Προσθήκη Ιδρύματος"
 
 #: views/dashboard/menu.php:63
 msgid "(PERM) - Permissions"
@@ -3252,7 +3266,7 @@ msgstr ""
 #: views/application/add-inst.php:62 views/application/inst.php:65
 #: views/application/view-inst.php:62
 msgid "FICE/CEEB Code"
-msgstr ""
+msgstr "Κωδικός FICE/CEEB"
 
 #: views/dashboard/menu.php:66
 msgid "(ROLE) - Roles"
@@ -3283,11 +3297,11 @@ msgstr "Όνομα Τοποθεσίας"
 
 #: views/application/add-inst.php:73
 msgid "High School"
-msgstr ""
+msgstr "Γυμνάσιο"
 
 #: views/dashboard/menu.php:95
 msgid "(RSTR) - Restrict. Codes"
-msgstr ""
+msgstr "(RSTR) - Κωδικοί Περιορισμών"
 
 #: views/form/major.php:60 views/form/major.php:105
 #: views/form/view-major.php:62 views/program/ajax.php:508
@@ -3296,7 +3310,7 @@ msgstr ""
 
 #: views/application/add-inst.php:74
 msgid "College"
-msgstr ""
+msgstr "Κολλέγιο"
 
 #: views/dashboard/menu.php:157 views/person/addr-form.php:30
 #: views/person/addr.php:30 views/person/adsu.php:24 views/person/index.php:27
@@ -3326,11 +3340,11 @@ msgstr ""
 #: views/application/view-inst.php:83 views/install/index.php:213
 #: views/setting/index.php:64
 msgid "Institution Name"
-msgstr "Όνομα Ινστιτούτου"
+msgstr "Όνομα Ιδρύματος"
 
 #: views/dashboard/menu.php:179
 msgid "Create Staff"
-msgstr ""
+msgstr "Δημιουργία Προσωπικού"
 
 #: views/form/minor.php:67 views/form/minor.php:106
 #: views/form/view-minor.php:69 views/program/ajax.php:608
@@ -3347,11 +3361,11 @@ msgstr "Πόλη"
 
 #: views/dashboard/menu.php:181
 msgid "(STAF) - Staff"
-msgstr ""
+msgstr "(STAF) - Προσωπικό"
 
 #: views/form/photo.php:27
 msgid "Upload School Photo"
-msgstr ""
+msgstr "Μεταφόρτωση Φωτογραφίας Σχολής"
 
 #: views/application/add-inst.php:103 views/application/view-inst.php:103
 #: views/form/address.php:55 views/index/apply.php:121
@@ -3363,7 +3377,7 @@ msgstr "Περιφέρεια"
 
 #: views/dashboard/menu.php:187
 msgid "(SPRO) - Stu. Profile"
-msgstr ""
+msgstr "(SPRO) - Προφίλ Φοιτητή"
 
 #: views/form/photo.php:40
 msgid "If you decide later on that you'd rather use the Gravatar service instead of the photo you uploaded, click the photo to delete it."
@@ -3379,7 +3393,7 @@ msgstr "Χώρα"
 #: views/dashboard/menu.php:192 views/person/addr-form.php:34
 #: views/person/addr.php:34 views/person/adsu.php:28
 msgid "Address Summary"
-msgstr ""
+msgstr "Περίληψη Διεύθυνσης"
 
 #: views/form/room.php:72 views/form/view-room.php:74
 msgid "Room Code"
@@ -3388,11 +3402,11 @@ msgstr "Κωδικός Δωματίου"
 #: views/application/add.php:23 views/application/index.php:25
 #: views/application/inst-attended.php:44 views/application/view.php:31
 msgid "Search Application"
-msgstr ""
+msgstr "Αναζήτηση Αίτησης"
 
 #: views/dashboard/menu.php:194
 msgid "Address Form"
-msgstr ""
+msgstr "Φόρμα Διεύθυνσης"
 
 #: views/form/room.php:85 views/form/room.php:131 views/form/view-room.php:87
 msgid "Room Number"
@@ -3401,7 +3415,7 @@ msgstr "Αριθμός Δωματίου"
 #: views/application/add.php:25 views/application/add.php:28
 #: views/person/index.php:98
 msgid "Create Application"
-msgstr ""
+msgstr "Δημιουργία Αίτησης"
 
 #: views/dashboard/menu.php:198 views/person/add.php:347
 msgid "Person Role"
@@ -3410,7 +3424,7 @@ msgstr "Ρόλος Προσώπου"
 #: views/form/rstr-code.php:28 views/form/rstr-code.php:31
 #: views/form/view-rstr-code.php:28
 msgid "Restriction Codes"
-msgstr ""
+msgstr "Κωδικοί Περιορισμών"
 
 #: views/application/add.php:55 views/application/index.php:59
 #: views/application/view.php:65 views/person/addr-form.php:67
@@ -3424,25 +3438,25 @@ msgstr "Δικαιώματα Προσώπου"
 
 #: views/form/rstr-code.php:115
 msgid "Restriction Code"
-msgstr ""
+msgstr "Κωδικός Περιορισμού"
 
 #: views/application/add.php:64 views/application/view.php:74
 msgid "First/Mid/Last Name"
-msgstr ""
+msgstr "Όνομα/Μεσαίο/Επώνυμο"
 
 #: views/dashboard/menu.php:223 views/program/add.php:28
 #: views/program/index.php:24 views/program/view.php:28
 msgid "Search Program"
-msgstr ""
+msgstr "Αναζήτηση Προγράμματος"
 
 #: views/form/school.php:60 views/form/school.php:118
 #: views/form/view-school.php:62
 msgid "School Code"
-msgstr ""
+msgstr "Κωδικός Σχολής"
 
 #: views/application/add.php:79 views/application/view.php:89
 msgid "Permanent Address"
-msgstr ""
+msgstr "Μόνιμη Διεύθυνση"
 
 #: views/dashboard/menu.php:227
 msgid "(APRG) - Add Program"
@@ -3451,20 +3465,20 @@ msgstr "(APRG) - Προσθήκη Προγράμματος"
 #: views/form/school.php:67 views/form/school.php:119
 #: views/form/view-school.php:69
 msgid "School Name"
-msgstr ""
+msgstr "Όνομα Σχολής"
 
 #: views/application/add.php:89 views/application/view.php:99
 #: views/index/apply.php:133
 msgid "DOB"
-msgstr ""
+msgstr "Ημερομηνία Γέννησης"
 
 #: views/dashboard/menu.php:239
 msgid "(ACRS) - Add Course"
-msgstr ""
+msgstr "(ACRS) - Προσθήκη Μαθήματος"
 
 #: views/form/semester.php:72 views/form/view-semester.php:74
 msgid "Semester Code"
-msgstr ""
+msgstr "Κωδικός Εξαμήνου"
 
 #: views/application/add.php:108 views/application/view.php:118
 msgid "Age"
@@ -3472,12 +3486,12 @@ msgstr "Ηλικία"
 
 #: views/dashboard/menu.php:246
 msgid "Transfer"
-msgstr ""
+msgstr "Μεταφορά"
 
 #: views/form/specialization.php:60 views/form/specialization.php:105
 #: views/form/view-specialization.php:62 views/program/ajax.php:694
 msgid "Specialization Code"
-msgstr ""
+msgstr "Κωδικός Ειδικότητας"
 
 #: views/application/add.php:121 views/application/view.php:131
 #: views/index/apply.php:162 views/index/profile.php:79
@@ -3492,7 +3506,7 @@ msgstr ""
 #: views/form/specialization.php:67 views/form/specialization.php:106
 #: views/form/view-specialization.php:69 views/program/ajax.php:701
 msgid "Specialization Name"
-msgstr ""
+msgstr "Όνομα Ειδικότητας"
 
 #: views/application/add.php:130 views/application/view.php:140
 msgid "Phone Number"
@@ -3515,15 +3529,15 @@ msgstr "Διεύθυνση Email"
 #: views/section/courses.php:41 views/section/sros.php:89
 #: views/section/view.php:95
 msgid "Section"
-msgstr ""
+msgstr "Ενότητα"
 
 #: views/form/student-load-rule.php:56 views/form/view-student-load-rule.php:66
 msgid "Full Time"
-msgstr ""
+msgstr "Πλήρης Απασχόλησης"
 
 #: views/application/add.php:162 views/application/view.php:181
 msgid "Application Date"
-msgstr ""
+msgstr "Ημερομηνία Αίτησης"
 
 #: views/dashboard/menu.php:261 views/section/add.php:49
 #: views/section/addnl-info.php:27 views/section/billing-info.php:27
@@ -3531,18 +3545,18 @@ msgstr ""
 #: views/section/offering-info.php:27 views/section/section-fgrade.php:28
 #: views/section/view.php:48
 msgid "Search Section"
-msgstr ""
+msgstr "Αναζήτηση Ενότητας"
 
 #: views/form/student-load-rule.php:57 views/form/view-student-load-rule.php:67
 msgid "3/4 Time"
-msgstr ""
+msgstr "3/4 του Χρόνου"
 
 #: views/application/add.php:186 views/application/appls.php:34
 #: views/application/appls.php:65 views/application/index.php:61
 #: views/application/view.php:209 views/index/apply.php:93
 #: views/student/add.php:159
 msgid "Start Term"
-msgstr ""
+msgstr "Έναρξη Περιόδου"
 
 #: views/dashboard/menu.php:272
 msgid "(BRGN) - Batch Reg."
@@ -3550,7 +3564,7 @@ msgstr ""
 
 #: views/form/student-load-rule.php:58 views/form/view-student-load-rule.php:68
 msgid "Half Time"
-msgstr ""
+msgstr "Ημιαπασχόληση"
 
 #: views/application/add.php:198 views/application/view.php:221
 #: views/index/apply.php:177 views/student/view.php:87
@@ -3559,29 +3573,29 @@ msgstr ""
 
 #: views/dashboard/menu.php:275
 msgid "(SROS) - Stu. Roster"
-msgstr ""
+msgstr "(SROS) - Λίστα Φοιτητών"
 
 #: views/form/student-load-rule.php:59 views/form/view-student-load-rule.php:69
 msgid "Less Than Half Time"
-msgstr ""
+msgstr "Λιγότερο από Ημιαπασχόληση"
 
 #: views/application/add.php:226 views/application/view.php:265
 msgid "PSAT Verbal/Math"
-msgstr ""
+msgstr "PSAT Verbal/Math"
 
 #: views/dashboard/menu.php:283 views/dashboard/menu.php:297
 #: views/section/courses.php:65 views/section/gradebook.php:23
 msgid "Gradebook"
-msgstr ""
+msgstr "Βαθμολόγιο"
 
 #: views/form/student-load-rule.php:67 views/form/student-load-rule.php:144
 #: views/form/view-student-load-rule.php:77
 msgid "Minimum Credits"
-msgstr ""
+msgstr "Ελάχιστες Μονάδες"
 
 #: views/application/add.php:238 views/application/view.php:277
 msgid "SAT Verbal/Math"
-msgstr ""
+msgstr "SAT Verbal/Math"
 
 #: views/dashboard/menu.php:288 views/section/add-assignment.php:29
 #: views/section/courses.php:63
@@ -3591,11 +3605,11 @@ msgstr ""
 #: views/form/student-load-rule.php:74 views/form/student-load-rule.php:145
 #: views/form/view-student-load-rule.php:84
 msgid "Maximum Credits"
-msgstr ""
+msgstr "Μέγιστες Μονάδες"
 
 #: views/application/add.php:250 views/application/view.php:289
 msgid "ACT English/Math"
-msgstr ""
+msgstr "ACT English/Math"
 
 #: views/dashboard/menu.php:291 views/section/assignments.php:29
 #: views/section/assignments.php:32 views/section/courses.php:68
@@ -3609,11 +3623,11 @@ msgstr ""
 #: views/form/view-student-load-rule.php:96
 #: views/form/view-student-load-rule.php:147
 msgid "Term(s)"
-msgstr ""
+msgstr "Περίοδος/οι"
 
 #: views/application/appls.php:21
 msgid "My Applications"
-msgstr ""
+msgstr "Οι Αιτήσεις μου"
 
 #: views/dashboard/menu.php:303 views/section/courses.php:71
 #: views/section/students.php:73
@@ -3625,7 +3639,7 @@ msgstr "eMail Φοιτητών"
 #: views/form/view-student-load-rule.php:103
 #: views/form/view-student-load-rule.php:161
 msgid "Academic Level(s)"
-msgstr ""
+msgstr "Ακαδημαϊκό Επίπεδο"
 
 #: views/application/appls.php:49 views/application/index.php:83
 #: views/application/inst.php:88 views/comm-mgmt/index.php:61
@@ -3671,31 +3685,31 @@ msgstr ""
 
 #: views/application/appls.php:77 views/index/apply.php:98
 msgid "PSAT Verbal"
-msgstr ""
+msgstr "PSAT Verbal"
 
 #: views/dashboard/modules.php:38
 msgid "Marketplace"
-msgstr ""
+msgstr "Ηλεκτρονικό Κατάστημα"
 
 #: views/form/term.php:65 views/form/view-term.php:74
 msgid "Term Code"
-msgstr ""
+msgstr "Κωδικός Περιόδου"
 
 #: views/application/appls.php:81 views/index/apply.php:179
 msgid "PSAT Math"
-msgstr ""
+msgstr "PSAT Math"
 
 #: views/dashboard/modules.php:58
 msgid "Module"
-msgstr ""
+msgstr "Υποσύστημα"
 
 #: views/form/term.php:79 views/form/view-term.php:88
 msgid "Reporting Term"
-msgstr ""
+msgstr "Περίοδος Αναφοράς"
 
 #: views/application/appls.php:85 views/index/apply.php:100
 msgid "SAT Verbal"
-msgstr ""
+msgstr "SAT Verbal"
 
 #: views/dashboard/modules.php:61
 msgid "Module URI"
@@ -3707,7 +3721,7 @@ msgstr ""
 
 #: views/application/appls.php:89 views/index/apply.php:181
 msgid "SAT Math"
-msgstr ""
+msgstr "SAT Math"
 
 #: views/dashboard/modules.php:62
 msgid "Version"
@@ -3719,11 +3733,11 @@ msgstr "Προβολή Ακαδημαϊκού Έτους"
 
 #: views/application/appls.php:93 views/index/apply.php:102
 msgid "ACT English"
-msgstr ""
+msgstr "ACT English"
 
 #: views/dashboard/modules.php:74
 msgid "Visit module site"
-msgstr ""
+msgstr "Επίσκεψη Δικτυακού Τόπου Υποσυστημάτων"
 
 #: views/form/view-building.php:30
 msgid "View Building"
@@ -3731,11 +3745,11 @@ msgstr "Προβολή Κτιρίου"
 
 #: views/application/appls.php:97 views/index/apply.php:183
 msgid "ACT Math"
-msgstr ""
+msgstr "ACT Math"
 
 #: views/dashboard/support.php:26 views/dashboard/support.php:29
 msgid "Online Documenation"
-msgstr ""
+msgstr "Ηλεκτρονικό Εγχειρίδιο "
 
 #: views/application/appls.php:111 views/course/extr.php:226
 #: views/course/extr.php:235 views/course/vextr.php:152
@@ -3750,7 +3764,7 @@ msgstr ""
 #: views/student/strc.php:75 views/student/strc.php:120
 #: views/student/strc.php:175
 msgid "Comments"
-msgstr ""
+msgstr "Σχόλια"
 
 #: views/dashboard/support.php:38
 msgid "Your browser does not support iframes."
@@ -3778,11 +3792,11 @@ msgstr "Δημιουργία Φοιτητή"
 
 #: views/application/index.php:111
 msgid "Application Search"
-msgstr ""
+msgstr "Αναζήτηση Αιτήσεων"
 
 #: views/application/inst-attended.php:78
 msgid "Applicant ID"
-msgstr ""
+msgstr "ID Αιτούντα"
 
 #: views/application/inst-attended.php:100
 msgid "Attend From Date"
@@ -3813,7 +3827,7 @@ msgstr ""
 #: views/program/ajax.php:303 views/program/view.php:197
 #: views/student/templates/transcript/default.template.php:163
 msgid "Degree"
-msgstr ""
+msgstr "Πτυχίο"
 
 #: views/application/inst-attended.php:157
 msgid "Conferral Date"
@@ -3821,39 +3835,39 @@ msgstr ""
 
 #: views/application/inst.php:66
 msgid "Institution Type"
-msgstr "Τύπος Ινστιτούτου "
+msgstr "Τύπος Ιδρύματος"
 
 #: views/dashboard/upgrade.php:30
 msgid "Warning!"
-msgstr ""
+msgstr "Προειδοποίηση!"
 
 #: views/application/view-inst.php:30
 msgid "View Institution"
-msgstr "Προβολή Ινστιτούτου"
+msgstr "Προβολή Ιδρύματος"
 
 #: views/dashboard/upgrade.php:30
 msgid "Hey admin, your database is out of date and currently at version "
-msgstr ""
+msgstr "Η Βάση Δεδομένων είναι σε παλαιότερη έκδοση και συγκεκριμένα στην έκδοση "
 
 #: views/application/view-inst.php:73
 msgid "HS High School"
-msgstr ""
+msgstr "HS Γυμνάσιο"
 
 #: views/dashboard/upgrade.php:30
 msgid ". Click the button below to upgrade your database. When the upgrade is complete,"
-msgstr ""
+msgstr ". Πατήστε στο κουμπί παρακάτω για να αναβαθμίσετε την Βάση Δεδομένων. Μόλις η αναβάθμιση ολοκληρωθεί,"
 
 #: views/application/view-inst.php:74
 msgid "COL College"
-msgstr ""
+msgstr "COL Κολλέγιο"
 
 #: views/dashboard/upgrade.php:30
 msgid "click here"
-msgstr ""
+msgstr "πατήστε εδώ"
 
 #: views/application/view-inst.php:75
 msgid "UNIV University"
-msgstr ""
+msgstr "UNIV Πανεπιστήμιο"
 
 #: views/dashboard/upgrade.php:30
 msgid "to return to the dashboard. If you are behind on a few versions, you may be redirected to this page again until the system is fully up to date."
@@ -3861,11 +3875,11 @@ msgstr ""
 
 #: views/application/view.php:33 views/application/view.php:36
 msgid "View Application"
-msgstr ""
+msgstr "Προβολή Αίτησης"
 
 #: views/dashboard/upgrade.php:44
 msgid "Hey admin, you database is currently up to date. There is nothing else here to see. "
-msgstr ""
+msgstr "Η Βάση Δεδομένων είναι ενημερωμένη. Δεν υπάρχει κάτι άλλο να δείτε. "
 
 #: views/application/view.php:158 views/error/audit.php:43
 #: views/index/apply.php:51 views/index/profile.php:35
@@ -3876,15 +3890,15 @@ msgstr "Όνομα Χρήστη"
 
 #: views/dashboard/upgrade.php:44 views/setting/index.php:346
 msgid "Click here"
-msgstr ""
+msgstr "Πατήστε εδώ"
 
 #: views/application/view.php:230
 msgid "Application Status"
-msgstr ""
+msgstr "Κατάσταση Αίτησης"
 
 #: views/dashboard/upgrade.php:44
 msgid "to return to the dashboard."
-msgstr ""
+msgstr "για επιστροφή στον Πίνακα Ελέγχου"
 
 #: views/application/view.php:234 views/hr/view-timesheet.php:129
 msgid "Pending"
@@ -3896,7 +3910,7 @@ msgstr "Ωχ!"
 
 #: views/application/view.php:235
 msgid "Under Review"
-msgstr ""
+msgstr "Υπό Αξιολόγηση"
 
 #: views/error/404.php:27
 msgid "404 error"
@@ -3904,7 +3918,7 @@ msgstr "Σφάλμα 404"
 
 #: views/application/view.php:236
 msgid "Accepted"
-msgstr ""
+msgstr "Αποδοχή"
 
 #: views/error/404.php:32
 msgid "It seems the page you are looking for is not here anymore. The page might have moved to another address or just removed by our staff."
@@ -3912,7 +3926,7 @@ msgstr ""
 
 #: views/application/view.php:237
 msgid "Not Accepted"
-msgstr ""
+msgstr "Μη Αποδοχή"
 
 #: views/error/404.php:40
 msgid "Is this a serious error?"
@@ -3921,16 +3935,16 @@ msgstr ""
 #: views/application/view.php:301 views/application/view.php:318
 #: views/application/view.php:517
 msgid "Applicant Comments"
-msgstr ""
+msgstr "Σχόλια Αιτούντα"
 
 #: views/error/404.php:40
 msgid "Let us know"
-msgstr ""
+msgstr "Γνωστοποιήστε μας"
 
 #: views/application/view.php:307 views/financial/view-bill.php:242
 #: views/financial/view-comments.php:117
 msgid "Staff Comments"
-msgstr ""
+msgstr "Σχόλια Προσωπικού"
 
 #: views/error/audit.php:41
 msgid "Process"
@@ -3938,11 +3952,11 @@ msgstr ""
 
 #: views/application/view.php:337
 msgid "Internal Comments"
-msgstr ""
+msgstr "Εσωτερικά Σχόλια"
 
 #: views/error/audit.php:42
 msgid "Record"
-msgstr ""
+msgstr "Εγγραφή"
 
 #: views/application/view.php:382
 msgid "From Date"
@@ -3958,11 +3972,11 @@ msgstr "Σε Ημερομηνία"
 
 #: views/error/audit.php:45
 msgid "Expire Date"
-msgstr ""
+msgstr "Ημερομηνία Λήξης"
 
 #: views/application/view.php:387 views/student/add.php:207
 msgid "Grad Date"
-msgstr ""
+msgstr "Ημερομηνία Αποφοίτησης"
 
 #: views/error/logs.php:41
 msgid "Error Type"
@@ -3989,11 +4003,11 @@ msgstr "Αρχείο"
 
 #: views/calendar/booking-form.php:64 views/calendar/booking-form.php:67
 msgid "Room / Event Booking Form"
-msgstr ""
+msgstr "Φόρμα Κράτησης Αίθουσας / Εκδήλωσης"
 
 #: views/error/logs.php:44
 msgid "Line Number"
-msgstr ""
+msgstr "Αριθμός Γραμμής"
 
 #: views/calendar/booking-form.php:81
 msgid "It is recommended that you check the availability of a room before submitting the form. An email will be sent to the requestor confirming the booking of a room or event."
@@ -4002,26 +4016,26 @@ msgstr ""
 #: views/calendar/booking-form.php:101 views/calendar/events.php:54
 #: views/calendar/requests.php:55 views/calendar/view-request.php:119
 msgid "Requestor"
-msgstr ""
+msgstr "Αιτών"
 
 #: views/calendar/booking-form.php:113 views/calendar/request-form.php:89
 #: views/calendar/view-request.php:131 views/form/request-form.php:89
 msgid "Request Type"
-msgstr ""
+msgstr "Τύπος Αίτησης"
 
 #: views/financial/account-history.php:29 views/financial/index.php:92
 #: views/student/bill.php:59
 msgid "Account History"
-msgstr ""
+msgstr "Ιστορικό Λογαριασμού"
 
 #: views/calendar/booking-form.php:117 views/calendar/request-form.php:92
 #: views/calendar/view-request.php:135 views/form/request-form.php:92
 msgid "Meeting"
-msgstr ""
+msgstr "Συνάντηση"
 
 #: views/financial/account-history.php:50 views/student/account-history.php:38
 msgid "Print history"
-msgstr ""
+msgstr "Εκτύπωση Ιστορικού"
 
 #: views/calendar/booking-form.php:118 views/calendar/request-form.php:93
 #: views/calendar/view-request.php:136 views/form/request-form.php:93
@@ -4095,7 +4109,7 @@ msgstr "eMail:"
 #: views/calendar/view-request.php:192 views/form/request-form.php:126
 #: views/section/booking-info.php:168
 msgid "First Day"
-msgstr ""
+msgstr "Πρώτη Ημέρα"
 
 #: views/financial/account-history.php:90 views/financial/add-jentry.php:137
 #: views/financial/ah-pdf.php:102 views/financial/jentries.php:57
@@ -4109,12 +4123,12 @@ msgstr "Ημερομηνία"
 #: views/calendar/view-request.php:204 views/form/request-form.php:119
 #: views/section/booking-info.php:186
 msgid "Last Day"
-msgstr ""
+msgstr "Τελευταία Ημέρα"
 
 #: views/financial/account-history.php:92 views/financial/ah-pdf.php:104
 #: views/student/account-history.php:80
 msgid "Charges"
-msgstr ""
+msgstr "Χρεώσεις"
 
 #: views/calendar/booking-form.php:198 views/calendar/request-form.php:140
 #: views/calendar/view-event.php:164 views/calendar/view-request.php:216
@@ -4165,7 +4179,7 @@ msgstr "Υπόλοιπο"
 #: views/calendar/view-request.php:249 views/form/request-form.php:153
 #: views/section/booking-info.php:231
 msgid "Repeat Occurrence"
-msgstr ""
+msgstr "Επαναλήψεις"
 
 #: views/financial/account-history.php:113 views/financial/ah-pdf.php:125
 #: views/student/account-history.php:101
@@ -4181,7 +4195,7 @@ msgstr "Κάθε Ημέρα"
 #: views/financial/account-history.php:133
 #: views/student/account-history.php:121
 msgid "Agreement Date:"
-msgstr ""
+msgstr "Ημερομηνία Συμφωνίας:"
 
 #: views/calendar/booking-form.php:237 views/calendar/request-form.php:158
 #: views/calendar/view-request.php:255 views/financial/payment-plan.php:102
@@ -4199,12 +4213,12 @@ msgstr "Πληρωμή:"
 #: views/calendar/view-request.php:258 views/form/request-form.php:161
 #: views/section/booking-info.php:240
 msgid "Biweekly"
-msgstr ""
+msgstr "Ανά Δύο Εβδομάδες"
 
 #: views/financial/account-history.php:135
 #: views/student/account-history.php:123
 msgid "Agreement Ends:"
-msgstr ""
+msgstr "Συμφωνία Ολοκληρώνεται:"
 
 #: views/calendar/booking-form.php:256 views/calendar/request-form.php:169
 #: views/calendar/view-request.php:275 views/form/request-form.php:169
@@ -4219,7 +4233,7 @@ msgstr "Ανοικτό"
 
 #: views/calendar/booking-form.php:257 views/calendar/view-request.php:276
 msgid "Book It"
-msgstr ""
+msgstr "Κράτησε το"
 
 #: views/financial/account-history.php:136
 #: views/student/account-history.php:124
@@ -4246,7 +4260,7 @@ msgstr ""
 
 #: views/calendar/events.php:51 views/calendar/requests.php:52
 msgid "Event Type"
-msgstr ""
+msgstr "Τύπος Εκδήλωσης"
 
 #: views/financial/account-history.php:163 views/financial/view-bill.php:346
 #: views/financial/view-comments.php:162 views/financial/view-payments.php:206
@@ -4277,7 +4291,7 @@ msgstr "Μήνας"
 
 #: views/financial/add-jentry.php:115 views/financial/journal-entries.php:44
 msgid "Entries"
-msgstr ""
+msgstr "Καταχωρήσεις"
 
 #: views/calendar/index.php:96 views/section/timetable.php:96
 #: views/student/timetable.php:90
@@ -4286,7 +4300,7 @@ msgstr "Εβδομάδα"
 
 #: views/financial/add-jentry.php:116 views/financial/journal-entries.php:45
 msgid "Add Entry"
-msgstr ""
+msgstr "Προσθήκη Καταχώρησης"
 
 #: views/calendar/index.php:97 views/section/timetable.php:97
 #: views/student/timetable.php:91
@@ -4295,7 +4309,7 @@ msgstr "Ημέρα"
 
 #: views/financial/add-jentry.php:149
 msgid "Entry Title"
-msgstr ""
+msgstr "Τίτλος Καταχώρησης"
 
 #: views/calendar/index.php:98 views/section/timetable.php:98
 #: views/student/timetable.php:92
@@ -4305,11 +4319,11 @@ msgstr "Σήμερα"
 #: views/financial/add-jentry.php:164 views/financial/jentries.php:58
 #: views/financial/journal-entries.php:59 views/financial/view-jentry.php:49
 msgid "Manual ID"
-msgstr ""
+msgstr "ID Εγχειριδίου"
 
 #: views/calendar/request-form.php:61 views/form/request-form.php:61
 msgid "Room/Event Request Form"
-msgstr ""
+msgstr "Φόρμα Αίτησης Αίθουσας/Εκδήλωσης"
 
 #: views/financial/add-jentry.php:197
 msgid "Include -(minus) symbol before the credit amount."
@@ -4321,7 +4335,7 @@ msgstr ""
 
 #: views/financial/add-jentry.php:202
 msgid "GL Account"
-msgstr ""
+msgstr "Λογαριασμός Γεν. Λογιστικής"
 
 #: views/calendar/request-form.php:170 views/form/request-form.php:170
 #: views/section/students.php:183 views/section/students.php:264
@@ -4336,7 +4350,7 @@ msgstr "Σημείωση"
 
 #: views/calendar/requests.php:87
 msgid "Are you sure you want to delete this booking request?"
-msgstr ""
+msgstr "Είστε σίγουροι ότι επιθυμείτε να διαγράψετε την αίτηση κράτησης;"
 
 #: views/financial/add-jentry.php:204 views/financial/billing-table.php:67
 #: views/financial/billing-table.php:121 views/financial/billing-table.php:173
@@ -4347,11 +4361,11 @@ msgstr "Ποσό"
 
 #: views/calendar/setting.php:30 views/calendar/setting.php:33
 msgid "Room Request Settings"
-msgstr ""
+msgstr "Ρυθμίσεις Αίτησης Αίθουσας"
 
 #: views/financial/add-jentry.php:234
 msgid "Debit: "
-msgstr ""
+msgstr "Χρέωση:"
 
 #: views/calendar/setting.php:43
 msgid "If you would like to change the background colors, please refer to the <a href=\"http://www.colorpicker.com/\">online color picker</a>."
@@ -4359,7 +4373,7 @@ msgstr ""
 
 #: views/financial/add-jentry.php:235
 msgid "Credit: "
-msgstr ""
+msgstr "Πίστωση:"
 
 #: views/calendar/setting.php:53 views/comm-mgmt/add.php:86
 #: views/comm-mgmt/mailmerge.php:38 views/comm-mgmt/schedule.php:48
@@ -4404,7 +4418,7 @@ msgstr ""
 #: views/student/graduation.php:46 views/student/sacp.php:54
 #: views/student/tran.php:63
 msgid "Indicates field is required"
-msgstr ""
+msgstr "Το σημειωμένο πεδίο είναι υποχρεωτικό"
 
 #: views/financial/add-jentry.php:236
 msgid "Balance:"
@@ -4412,7 +4426,7 @@ msgstr "Υπόλοιπο:"
 
 #: views/calendar/setting.php:68 views/calendar/setting.php:106
 msgid "Background Color"
-msgstr ""
+msgstr "Χρώμα Background"
 
 #: views/financial/add-payment.php:69 views/financial/batch.php:62
 #: views/financial/create-bill.php:69 views/financial/issue-refund.php:67
@@ -4430,7 +4444,7 @@ msgstr "Ενημέρωση Κατηγορίας"
 #: views/financial/payment-plan.php:72 views/financial/view-refunds.php:170
 #: views/financial/view-refunds.php:221
 msgid "Issue Refund"
-msgstr ""
+msgstr "Έκδοση Επιστροφής"
 
 #: views/calendar/view-event.php:51 views/calendar/view-event.php:106
 #: views/section/booking-info.php:276 views/section/booking-info.php:328
@@ -4559,7 +4573,7 @@ msgstr "Ενημέρωση"
 
 #: views/financial/create-bill.php:46 views/financial/create-bill.php:49
 msgid "Create Bill"
-msgstr ""
+msgstr "Δημιουργία Λογαριασμού"
 
 #: views/financial/create-bill.php:204
 msgid "Comments will only be posted when a bill is initially created. If you are adding a fee to an already existing bill and want to add a comment about the new addition, you can do so when viewing the student's bill. Unlike other system comments, these comments will be seen by students."
@@ -4573,7 +4587,7 @@ msgstr ""
 #: views/financial/gl-accounts.php:28 views/financial/gl-accounts.php:47
 #: views/financial/gl-filter.php:39 views/financial/jentry-filter.php:39
 msgid "GL Accounts"
-msgstr ""
+msgstr "Λογαριασμοί Γενικής Λογιστικής"
 
 #: views/comm-mgmt/add.php:106 views/comm-mgmt/index.php:40
 #: views/comm-mgmt/view.php:113
@@ -4586,22 +4600,22 @@ msgstr ""
 
 #: views/comm-mgmt/add.php:113 views/comm-mgmt/view.php:120
 msgid "Email Name"
-msgstr ""
+msgstr "Όνομα eMail"
 
 #: views/financial/gl-accounts.php:49 views/financial/gl-filter.php:41
 #: views/financial/gl-summary.php:22 views/financial/gl-summary.php:33
 #: views/financial/jentry-filter.php:41
 msgid "General Ledger Summary"
-msgstr ""
+msgstr "Επισκόπηση Γενικής Λογιστικής"
 
 #: views/comm-mgmt/add.php:121 views/comm-mgmt/view.php:128
 #: views/section/sros.php:105 views/student/tran.php:107
 msgid "Template"
-msgstr ""
+msgstr "Πρότυπο"
 
 #: views/financial/gl-accounts.php:62
 msgid "Account Number"
-msgstr ""
+msgstr "Αριθμός Λογαριασμού"
 
 #: views/comm-mgmt/mailmerge.php:52 views/comm-mgmt/schedule.php:101
 #: views/section/batch-register.php:106 views/sql/csv-email.php:90
@@ -4613,35 +4627,35 @@ msgstr "Αποθηκευμένο Ερώτημα"
 #: views/financial/gl-accounts.php:108 views/financial/gl-accounts.php:167
 #: views/financial/view-jentry.php:82
 msgid "Account"
-msgstr ""
+msgstr "Λογαριασμός"
 
 #: views/comm-mgmt/mailmerge.php:70
 msgid "Avery Label"
-msgstr ""
+msgstr "Ετικέτα Avery"
 
 #: views/financial/gl-accounts.php:114 views/financial/gl-accounts.php:173
 msgid "Account #"
-msgstr ""
+msgstr "Λογαριασμός #"
 
 #: views/comm-mgmt/queue.php:50 views/course/add.php:79
 #: views/course/ajax.php:192 views/course/tcre.php:185 views/course/view.php:82
 #: views/form/import.php:86 views/form/subject.php:23 views/form/subject.php:26
 #: views/form/view-subject.php:28 views/student/sacd.php:93
 msgid "Subject"
-msgstr "Θέμα"
+msgstr "Κατεύθυνση"
 
 #: views/financial/gl-accounts.php:123 views/financial/gl-accounts.php:182
 msgid "Account Name"
-msgstr ""
+msgstr "Όνομα Λογαριασμού"
 
 #: views/comm-mgmt/queue.php:51 views/sql/add-query.php:90
 #: views/sql/index.php:120 views/sql/view-query.php:91
 msgid "Query"
-msgstr ""
+msgstr "Ερώτημα"
 
 #: views/financial/gl-accounts.php:132 views/financial/gl-accounts.php:191
 msgid "Account Type"
-msgstr ""
+msgstr "Τύπος Λογαριασμού"
 
 #: views/comm-mgmt/queue.php:52
 msgid "Processed"
@@ -4649,7 +4663,7 @@ msgstr ""
 
 #: views/financial/gl-filter.php:22 views/financial/gl-filter.php:25
 msgid "Search General Ledger"
-msgstr ""
+msgstr "Αναζήτηση Γενικής Λογιστικής"
 
 #: views/comm-mgmt/queue.php:95
 msgid "Are you sure you want to delete this item from the queue?"
@@ -4670,7 +4684,7 @@ msgstr "Από"
 
 #: views/comm-mgmt/schedule.php:69
 msgid "From Name"
-msgstr ""
+msgstr "Όνομα Από"
 
 #: views/financial/gl-filter.php:79 views/financial/jentry-filter.php:79
 msgid "To"
@@ -4678,7 +4692,7 @@ msgstr "Προς"
 
 #: views/comm-mgmt/schedule.php:76
 msgid "From Email"
-msgstr ""
+msgstr "eMail Από"
 
 #: views/financial/gl-summary.php:41 views/financial/jentries.php:41
 #: views/section/attendance.php:39
@@ -4695,7 +4709,7 @@ msgstr ""
 
 #: views/comm-mgmt/view.php:75 views/comm-mgmt/view.php:78
 msgid "View Email Template"
-msgstr ""
+msgstr "Προβολή προτύπου eMail"
 
 #: views/financial/gl-summary.php:57
 msgid "GL Number"
@@ -4706,37 +4720,37 @@ msgstr ""
 #: views/hr/view.php:340 views/person/view.php:380 views/staff/view.php:245
 #: views/student/sacp.php:227
 msgid "Last Update"
-msgstr ""
+msgstr "Τελευταία Ενημέρωση"
 
 #: views/financial/gl-summary.php:58
 msgid "Account Title"
-msgstr ""
+msgstr "Τίτλος Λογαριασμού"
 
 #: views/course/add.php:33 views/course/addnl-info.php:31
 #: views/course/index.php:24 views/course/view.php:31
 #: views/dashboard/menu.php:237
 msgid "Search Course"
-msgstr ""
+msgstr "Αναζήτηση Μαθήματος"
 
 #: views/financial/gl-summary.php:60
 msgid "Opening"
-msgstr ""
+msgstr "Άνοιγμα"
 
 #: views/course/add.php:35
 msgid "Create Course"
-msgstr ""
+msgstr "Δημιουργία Μαθήματος"
 
 #: views/financial/gl-summary.php:61 views/financial/view-jentry.php:104
 msgid "Debit"
-msgstr ""
+msgstr "Χρέωση"
 
 #: views/course/add.php:38
 msgid "Add Course"
-msgstr ""
+msgstr "Προσθήκη Μαθήματος"
 
 #: views/financial/gl-summary.php:62 views/financial/view-jentry.php:108
 msgid "Credit"
-msgstr ""
+msgstr "Πίστωση"
 
 #: views/course/add.php:66 views/course/ajax.php:66 views/course/tcre.php:207
 #: views/course/view.php:69 views/form/department.php:23
@@ -4749,17 +4763,17 @@ msgstr ""
 #: views/section/view.php:135 views/staff/add.php:167 views/staff/view.php:193
 #: views/student/sacd.php:117 views/student/strc.php:74
 msgid "Department"
-msgstr ""
+msgstr "Τμήμα"
 
 #: views/financial/gl-summary.php:63
 msgid "Closing"
-msgstr ""
+msgstr "Κλείσιμο"
 
 #: views/course/add.php:92 views/course/atceq.php:127 views/course/view.php:104
 #: views/course/vtceq.php:90 views/section/add.php:146
 #: views/section/view.php:160
 msgid "Course Level"
-msgstr ""
+msgstr "Επίπεδο Μαθήματος"
 
 #: views/financial/gl-summary.php:84
 msgid "Total"
@@ -4784,11 +4798,11 @@ msgstr ""
 
 #: views/financial/index.php:28 views/student/vbill.php:26
 msgid "Bill"
-msgstr ""
+msgstr "Λογαριασμός"
 
 #: views/course/add.php:115 views/course/view.php:95
 msgid "Course Number"
-msgstr ""
+msgstr "Αριθμός Μαθήματος"
 
 #: views/financial/index.php:66 views/financial/view-bill.php:82
 #: views/financial/view-comments.php:74 views/student/vbill.php:52
@@ -4816,7 +4830,7 @@ msgstr "Επώνυμο"
 #: views/courses/index.php:82 views/section/catalog-pdf.php:52
 #: views/student/stac.php:69
 msgid "Credits"
-msgstr ""
+msgstr "Μονάδες"
 
 #: views/financial/index.php:68 views/index/apply.php:77
 #: views/index/profile.php:43 views/install/index.php:219
@@ -4833,37 +4847,37 @@ msgstr "Όνομα"
 #: views/student/add.php:144 views/student/sacp.php:106
 #: views/student/view.php:84
 msgid "Academic Level"
-msgstr ""
+msgstr "Ακαδημαϊκό Επίπεδο"
 
 #: views/financial/index.php:117
 msgid "Bill Search"
-msgstr ""
+msgstr "Αναζήτηση Λογαριασμού"
 
 #: views/course/add.php:175 views/program/add.php:88 views/program/view.php:92
 #: views/section/add.php:308 views/section/view.php:227
 msgid "Status / Date"
-msgstr ""
+msgstr "Κατάσταση / Ημερομηνία"
 
 #: views/financial/issue-refund.php:126 views/financial/view-refunds.php:250
 msgid "Refund Amount"
-msgstr ""
+msgstr "Ποσό Επιστροφής"
 
 #: views/course/add.php:199 views/course/extr.php:259
 #: views/course/vextr.php:185 views/course/view.php:225
 #: views/program/add.php:101 views/program/view.php:105
 #: views/section/add.php:321 views/section/view.php:250
 msgid "Approval Person"
-msgstr ""
+msgstr "Πρόσωπο Αποδοχής"
 
 #: views/financial/issue-refund.php:135 views/financial/view-refunds.php:259
 msgid "Refund Date"
-msgstr ""
+msgstr "Ημερομηνία Επιστροφής"
 
 #: views/course/add.php:206 views/course/view.php:234 views/program/add.php:110
 #: views/program/view.php:114 views/section/add.php:330
 #: views/section/view.php:259
 msgid "Approval Date"
-msgstr ""
+msgstr "Ημερομηνία Αποδοχής"
 
 #: views/financial/jentries.php:22
 msgid "General Journal Entries"
@@ -4883,7 +4897,7 @@ msgstr "Προαπαιτούμενα"
 
 #: views/financial/jentries.php:61 views/financial/view-jentry.php:66
 msgid "Posted by"
-msgstr ""
+msgstr "Καταχωρήθηκε από"
 
 #: views/course/addnl-info.php:73
 msgid "Allow Audit"
@@ -4895,7 +4909,7 @@ msgstr "Συνολικό Ποσό"
 
 #: views/dashboard/core-admin-bar.php:187 views/dashboard/menu.php:316
 msgid "(INST) - Institution"
-msgstr "(INST) - Ινστιτούτο"
+msgstr "(INST) - Ίδρυμα"
 
 #: functions/student-function.php:233 views/course/addnl-info.php:77
 #: views/course/addnl-info.php:90 views/course/addnl-info.php:155
@@ -4920,7 +4934,7 @@ msgstr ""
 
 #: views/dashboard/core-admin-bar.php:188
 msgid "(AINST) - New Institution"
-msgstr "(AINST) - Νέο Ινστιτούτο"
+msgstr "(AINST) - Νέο Ίδρυμα"
 
 #: functions/student-function.php:235 views/course/addnl-info.php:78
 #: views/course/addnl-info.php:91 views/course/addnl-info.php:156
@@ -4941,7 +4955,7 @@ msgstr "Όχι"
 
 #: views/financial/journal-entries.php:62 views/financial/payment-plan.php:321
 msgid "Posted By"
-msgstr ""
+msgstr "Καταχωρήθηκε από"
 
 #: views/dashboard/core-admin-bar.php:193 views/dashboard/menu.php:324
 msgid "Communication Mgmt"
@@ -4949,16 +4963,16 @@ msgstr ""
 
 #: views/course/addnl-info.php:86
 msgid "Allow Waitlist"
-msgstr ""
+msgstr "Επιτρέπεται Λίστα Αναμονής"
 
 #: views/financial/payment-plan.php:97 views/financial/payment-plan.php:264
 msgid "Payment Frequency"
-msgstr ""
+msgstr "Συχνότητα Πληρωμών"
 
 #: views/comm-mgmt/add.php:70 views/comm-mgmt/add.php:73
 #: views/dashboard/core-admin-bar.php:196 views/dashboard/menu.php:327
 msgid "Add Email Template"
-msgstr ""
+msgstr "Προσθήκη Προτύπου eMail"
 
 #: views/course/addnl-info.php:105
 msgid "Minimum Enrollment"
@@ -4971,16 +4985,16 @@ msgstr "Καθημερινά"
 #: views/comm-mgmt/schedule.php:30 views/comm-mgmt/schedule.php:33
 #: views/dashboard/core-admin-bar.php:197 views/dashboard/menu.php:328
 msgid "Schedule Email"
-msgstr ""
+msgstr "Προγραμματισμός eMail"
 
 #: views/course/addnl-info.php:112 views/form/room.php:92
 #: views/form/room.php:132 views/form/view-room.php:94
 msgid "Seating Capacity"
-msgstr ""
+msgstr "Χωρητικότητα"
 
 #: views/financial/payment-plan.php:103 views/financial/payment-plan.php:270
 msgid "Bi-Weekly"
-msgstr ""
+msgstr "Ανά Δύο Εβδομάδες"
 
 #: views/comm-mgmt/queue.php:30 views/comm-mgmt/queue.php:33
 #: views/dashboard/core-admin-bar.php:198 views/dashboard/menu.php:329
@@ -5020,7 +5034,7 @@ msgstr ""
 
 #: views/course/ajax.php:72 views/program/ajax.php:80 views/section/ajax.php:72
 msgid "The Department was created successfully."
-msgstr ""
+msgstr "Το Τμήμα δημιουργήθηκε επιτχώς."
 
 #: views/financial/payment-plan.php:113
 msgid "Frequency Amount"
@@ -5034,7 +5048,7 @@ msgstr ""
 #: views/form/view-department.php:62 views/program/ajax.php:86
 #: views/section/ajax.php:78
 msgid "Department Code"
-msgstr ""
+msgstr "Κωδικός Τμήματος"
 
 #: views/financial/payment-plan.php:205
 msgid "Pay Frequency"
@@ -5048,7 +5062,7 @@ msgstr ""
 #: views/form/view-department.php:69 views/program/ajax.php:95
 #: views/section/ajax.php:87
 msgid "Department Type"
-msgstr ""
+msgstr "Τύπος Τμήματος"
 
 #: views/financial/payment-plan.php:357
 msgid "Start and End Date"
@@ -5062,7 +5076,7 @@ msgstr ""
 #: views/form/view-department.php:78 views/program/ajax.php:104
 #: views/section/ajax.php:96
 msgid "Department Name"
-msgstr ""
+msgstr "Όνομα Τμήματος"
 
 #: views/financial/payment-plan.php:362
 msgid "The start date will act as the date the student and the institution agreed upon said payment plan. Start date is a required field but End date is optional."
@@ -5076,7 +5090,7 @@ msgstr ""
 #: views/form/view-department.php:91 views/program/ajax.php:113
 #: views/section/ajax.php:105
 msgid "Department Email"
-msgstr ""
+msgstr "eMail Τμήματος"
 
 #: views/financial/payment-plan.php:386
 msgid "Ignore this field if the payment plan is not associated with a particular term."
@@ -5089,7 +5103,7 @@ msgstr ""
 #: views/course/ajax.php:114 views/program/ajax.php:122
 #: views/section/ajax.php:114
 msgid "Department Phone"
-msgstr ""
+msgstr "Τηλέφωνο Τμήματος"
 
 #: views/financial/payment-plan.php:410
 msgid "Place any notes and or instructions for the student. This will appear on the account history screen for both the student as well as student accounts."
@@ -5138,7 +5152,7 @@ msgstr "Πρόσωπο"
 
 #: views/course/ajax.php:198
 msgid "The Subject was created successfully."
-msgstr ""
+msgstr "Η Κατεύθυνση δημιουργήθηκε επιτυχώς."
 
 #: views/financial/paypal-ipn.php:110 views/student/paypal-ipn.php:106
 msgid "IPN Fraud Warning"
@@ -5151,11 +5165,11 @@ msgstr ""
 #: views/course/ajax.php:204 views/form/subject.php:53
 #: views/form/subject.php:98 views/form/view-subject.php:62
 msgid "Subject Code"
-msgstr ""
+msgstr "Κωδικός Κατεύθυνσης"
 
 #: views/financial/paypal-ipn.php:130 views/student/paypal-ipn.php:130
 msgid "Invalid IPN"
-msgstr ""
+msgstr "Άκυρο IPN"
 
 #: views/dashboard/core-admin-bar.php:223
 msgid "(APER) Add Person"
@@ -5164,15 +5178,15 @@ msgstr "(APER) Προσθήκη Προσώπου"
 #: views/course/ajax.php:213 views/form/subject.php:60
 #: views/form/subject.php:99 views/form/view-subject.php:69
 msgid "Subject Name"
-msgstr ""
+msgstr "Όνομα Μαθήματος"
 
 #: views/financial/paypal.php:22 views/financial/paypal.php:25
 msgid "Paypal Settings"
-msgstr ""
+msgstr "Ρυθμίσεις PayPal"
 
 #: views/dashboard/core-admin-bar.php:227
 msgid "(STAF) Staff"
-msgstr ""
+msgstr "(STAF) Προσωπικό"
 
 #: views/course/atceq.php:59 views/course/atceq.php:62
 msgid "New Transfer Course Equivalency"
@@ -5180,7 +5194,7 @@ msgstr ""
 
 #: views/financial/paypal.php:51
 msgid "Enable?"
-msgstr ""
+msgstr "Ενεργοποίηση;"
 
 #: views/_layouts/myet/default.layout.php:151
 #: views/dashboard/core-admin-bar.php:230 views/dashboard/menu.php:209
@@ -5195,7 +5209,7 @@ msgstr "Φοιτητής"
 #: views/course/atceq.php:89 views/course/tcre.php:105
 #: views/course/vtceq.php:57
 msgid "Transfer Course"
-msgstr ""
+msgstr "Μεταφορά Μαθήματος"
 
 #: views/financial/paypal.php:64
 msgid "Post Over SSL?"
@@ -5203,7 +5217,7 @@ msgstr ""
 
 #: views/dashboard/core-admin-bar.php:232
 msgid "(SPRO) Student Profile"
-msgstr ""
+msgstr "(SPRO) Προφίλ Φοιτητή"
 
 #: views/course/atceq.php:92 views/course/vtceq.php:60
 msgid "Min Grade"
@@ -5211,12 +5225,12 @@ msgstr ""
 
 #: views/financial/paypal.php:77 views/financial/paypal.php:150
 msgid "Business Email"
-msgstr ""
+msgstr "eMail Εργασίας"
 
 #: views/dashboard/core-admin-bar.php:233 views/student/graduation.php:28
 #: views/student/graduation.php:31
 msgid "Graduate Student(s)"
-msgstr ""
+msgstr "Αποφοίτηση Μαθητή(ών)"
 
 #: views/course/atceq.php:124 views/course/tceq.php:58
 #: views/course/tcre.php:106 views/course/vtceq.php:87
@@ -5225,11 +5239,11 @@ msgstr ""
 
 #: views/financial/paypal.php:92
 msgid "Currency Code"
-msgstr ""
+msgstr "Κωδικός Νομίσματος"
 
 #: views/dashboard/core-admin-bar.php:234
 msgid "(TRAN) Transcript"
-msgstr ""
+msgstr "(TRAN) Χειρόγραφο"
 
 #: views/course/atceq.php:164 views/course/vtceq.php:122
 #: views/financial/payment-plan.php:122 views/financial/payment-plan.php:280
@@ -5245,7 +5259,7 @@ msgstr "Δολλάριο ΗΠΑ"
 #: views/dashboard/menu.php:335 views/form/import.php:105
 #: views/setting/index.php:122
 msgid "Application"
-msgstr ""
+msgstr "Αίτηση"
 
 #: views/course/atceq.php:183 views/course/tceq.php:61
 #: views/course/tcre.php:108 views/course/vtceq.php:141
@@ -5265,7 +5279,7 @@ msgstr "Δολλάριο Αυστραλίας"
 
 #: views/dashboard/core-admin-bar.php:243
 msgid "(APPL) Application"
-msgstr ""
+msgstr "(APPL) Αίτηση"
 
 #: views/course/atceq.php:198 views/course/vtceq.php:156
 #: views/financial/add-payment.php:176 views/financial/create-bill.php:163
@@ -5289,7 +5303,7 @@ msgstr ""
 #: views/course/extr.php:30 views/course/extr.php:33 views/course/tceq.php:57
 #: views/dashboard/menu.php:248
 msgid "External Course"
-msgstr ""
+msgstr "Εξωτερικό Μάθημα"
 
 #: views/financial/paypal.php:106
 msgid "Testing?"
@@ -5302,7 +5316,7 @@ msgstr "Οικονομικά"
 #: views/course/extr.php:67 views/course/extr.php:148 views/course/vextr.php:75
 #: views/student/stac.php:66
 msgid "Course Name"
-msgstr ""
+msgstr "Όνομα Μαθήματος"
 
 #: views/financial/paypal.php:132
 msgid "IPN URL to enter into PayPal settings:"
@@ -5358,7 +5372,7 @@ msgstr ""
 #: views/student/templates/transcript/default.template.php:92
 #: views/student/terms.php:36 views/student/vbill.php:70
 msgid "Term"
-msgstr ""
+msgstr "Περίοδος"
 
 #: views/financial/paypal.php:174
 msgid "Sandbox Mode"
@@ -5366,7 +5380,7 @@ msgstr ""
 
 #: views/dashboard/core-admin-bar.php:260 views/dashboard/menu.php:355
 msgid "Student Accounts"
-msgstr ""
+msgstr "Λογαριασμοί Φοιτητών"
 
 #: views/course/extr.php:252 views/course/vextr.php:178
 #: views/student/view.php:86
@@ -5389,36 +5403,36 @@ msgstr "Προσθήκη Ημερομηνίας"
 
 #: views/financial/view-bill.php:33 views/financial/view-comments.php:34
 msgid "View Bill"
-msgstr ""
+msgstr "Προβολή Λογαριασμού"
 
 #: views/dashboard/core-admin-bar.php:263 views/dashboard/menu.php:358
 #: views/financial/account-history.php:27 views/financial/index.php:31
 #: views/financial/view-bill.php:31 views/financial/view-comments.php:32
 #: views/financial/view-payments.php:32 views/financial/view-refunds.php:32
 msgid "Search Bill"
-msgstr ""
+msgstr "Αναζήτηση Λογαριασμού"
 
 #: views/course/index.php:21 views/section/catalog.php:42
 #: views/student/terms.php:37
 msgid "Courses"
-msgstr ""
+msgstr "Μαθήματα"
 
 #: views/financial/view-bill.php:57 views/financial/view-comments.php:58
 #: views/financial/view-payments.php:58 views/financial/view-refunds.php:58
 msgid "Refunds"
-msgstr ""
+msgstr "Επιστροφές"
 
 #: views/dashboard/core-admin-bar.php:264
 msgid "Create Bill/Add Fees"
-msgstr ""
+msgstr "Δημιουργία Λογαριασμού / Προσθήκη Τιμημάτων"
 
 #: views/course/index.php:56 views/student/schedule.php:36
 msgid "Course Code"
-msgstr ""
+msgstr "Κωδικός Μαθήματος"
 
 #: views/financial/view-bill.php:73
 msgid "Delete Bill / Invoice"
-msgstr ""
+msgstr "Διαγραφή Λογαριασμού / Τιμολογίου"
 
 #: views/dashboard/core-admin-bar.php:265 views/financial/add-payment.php:70
 #: views/financial/batch.php:39 views/financial/batch.php:42
@@ -5429,11 +5443,11 @@ msgstr ""
 
 #: views/course/index.php:84
 msgid "Clone"
-msgstr ""
+msgstr "Αντιγραφή"
 
 #: views/financial/view-bill.php:91
 msgid "Invoice Date / Term"
-msgstr ""
+msgstr "Ημερομηνία / Περίοδος Τιμολογίου"
 
 #: views/dashboard/core-admin-bar.php:266 views/financial/add-payment.php:46
 #: views/financial/add-payment.php:49 views/financial/add-payment.php:71
@@ -5445,7 +5459,7 @@ msgstr "Προσθήκη Πληρωμής"
 
 #: views/course/index.php:85
 msgid "A"
-msgstr ""
+msgstr "A"
 
 #: views/financial/view-bill.php:111 views/student/vbill.php:80
 msgid "Tuition / Adjusted"
@@ -5453,18 +5467,18 @@ msgstr ""
 
 #: views/dashboard/core-admin-bar.php:267
 msgid "Issue a Refund"
-msgstr ""
+msgstr "Έκδοση Επιστροφής"
 
 #: views/course/index.php:86 views/dashboard/menu.php:242
 #: views/dashboard/menu.php:268 views/section/add.php:51
 msgid "Create Section"
-msgstr ""
+msgstr "Δημιουργία Ενότητας Μαθήματος"
 
 #: views/financial/view-bill.php:124 views/financial/view-bill.php:134
 #: views/form/import.php:84 views/student/vbill.php:92
 #: views/student/vbill.php:101
 msgid "Tuition"
-msgstr ""
+msgstr "Δίδακτρα"
 
 #: views/dashboard/core-admin-bar.php:268
 #: views/financial/account-history.php:132 views/financial/add-payment.php:73
@@ -5481,16 +5495,16 @@ msgstr ""
 
 #: views/financial/view-bill.php:160
 msgid "Are you sure you want to delete this fee?"
-msgstr ""
+msgstr "Είστε σίγουροι ότι επιθυμείτε να διαγράψετε το τίμημα;"
 
 #: views/dashboard/core-admin-bar.php:272 views/dashboard/menu.php:56
 msgid "Paypal Gateway"
-msgstr ""
+msgstr "Paypal Gateway"
 
 #: views/course/tcre.php:75 views/course/tcre.php:78
 #: views/dashboard/menu.php:251 views/student/stac.php:131
 msgid "Transfer Credit"
-msgstr ""
+msgstr "Μεταφορά Μονάδων"
 
 #: views/financial/view-bill.php:194 views/student/vbill.php:129
 msgid "Begin / End Balance"
@@ -5499,29 +5513,29 @@ msgstr ""
 #: views/dashboard/core-admin-bar.php:281 views/setting/index.php:278
 #: views/setting/index.php:437
 msgid "eduTrac Analytics"
-msgstr ""
+msgstr "eduSIS Analytics"
 
 #: views/course/tcre.php:154
 msgid "CRSE ID/Name"
-msgstr ""
+msgstr "Κωδικός Μαθήματος / Όνομα"
 
 #: views/financial/view-bill.php:206 views/student/vbill.php:141
 msgid "Credit / Refund Totals"
-msgstr ""
+msgstr "Σύνολα Πίστωσης / Επιστροφών"
 
 #: views/_layouts/myet/default.layout.php:204
 #: views/dashboard/core-admin-bar.php:317
 msgid "Profile"
-msgstr ""
+msgstr "Προφίλ"
 
 #: views/course/tcre.php:194 views/student/sacd.php:105
 msgid "Acad Lvl/Crse Lvl"
-msgstr ""
+msgstr "Ακαδημαϊκό Επίπεδο  / Επίπεδο Μαθήματος"
 
 #: views/financial/view-bill.php:231 views/financial/view-comments.php:107
 #: views/student/vbill.php:166
 msgid "Student Comments"
-msgstr ""
+msgstr "Σχόλια Φοιτητών"
 
 #: views/dashboard/core-admin-bar.php:317
 msgid "edit"
@@ -5530,7 +5544,7 @@ msgstr "ενημέρωση"
 #: views/course/tcre.php:222 views/course/view.php:131
 #: views/student/sacd.php:129
 msgid "Credit Type"
-msgstr ""
+msgstr "Τύπος Μονάδων"
 
 #: views/financial/view-bill.php:264
 msgid "Previous"
@@ -5539,7 +5553,7 @@ msgstr "Προηγούμενο"
 #: views/_layouts/myet/default.layout.php:124
 #: views/dashboard/core-admin-bar.php:328
 msgid "Switch Back to"
-msgstr ""
+msgstr "Επιστροφή / Εναλλαγή σε"
 
 #: views/course/tcre.php:231 views/student/sacd.php:167
 msgid "Term/Rpt Term"
@@ -5551,19 +5565,19 @@ msgstr "Επόμενο"
 
 #: views/dashboard/core-admin-bar.php:332
 msgid "Lock Screen"
-msgstr ""
+msgstr "Κλείδωμα Οθόνης"
 
 #: views/course/tcre.php:247 views/student/sacd.php:183
 msgid "Att/Comp Cred"
-msgstr ""
+msgstr "Προσπάθειας/Ολοκληρωμένες Μονάδες"
 
 #: views/financial/view-bill.php:286
 msgid "Delete Invoice: "
-msgstr ""
+msgstr "Διαγραφή Τιμολογίου:"
 
 #: views/dashboard/core-admin-bar.php:336
 msgid "Sign Out"
-msgstr ""
+msgstr "Αποσύνδεση:"
 
 #: views/course/tcre.php:260 views/student/sacd.php:195
 msgid "Grade/Grd Pts"
@@ -5579,7 +5593,7 @@ msgstr ""
 
 #: views/course/tcre.php:273 views/student/sacd.php:217
 msgid "Status Date/Time"
-msgstr ""
+msgstr "Κατάσταση Ημερομηνία/Ώρα"
 
 #: views/financial/view-bill.php:312
 msgid "Bill / Invoice Term"
@@ -5588,7 +5602,7 @@ msgstr ""
 #: views/_layouts/myet/default.layout.php:79 views/dashboard/index.php:21
 #: views/index/apply.php:196
 msgid "Get Help"
-msgstr ""
+msgstr "Βοήθεια"
 
 #: views/course/tcre.php:286
 msgid "Student ID/Name"
@@ -5601,7 +5615,7 @@ msgstr ""
 #: views/_layouts/myet/default.layout.php:83 views/index/login.php:32
 #: views/index/login.php:62
 msgid "Sign in"
-msgstr ""
+msgstr "Σύνδεση"
 
 #: views/course/vextr.php:30
 msgid "Search / Add External Course"
@@ -5613,7 +5627,7 @@ msgstr ""
 
 #: views/_layouts/myet/default.layout.php:96 views/index/apply.php:200
 msgid "Apply"
-msgstr ""
+msgstr "Αίτηση"
 
 #: views/course/vextr.php:84 views/student/sacd.php:148
 msgid "Start/End Date"
@@ -5621,25 +5635,25 @@ msgstr "Ημερομηνία Έναρξης/Λήξης"
 
 #: views/financial/view-comments.php:83
 msgid "Invoice Date"
-msgstr ""
+msgstr "Ημερομηνία Τιμολογίου"
 
 #: views/_layouts/myet/default.layout.php:110 views/admin/index.php:26
 msgid "Admin"
-msgstr ""
+msgstr "Διαχειριστής"
 
 #: views/course/view.php:252 views/section/addnl-info.php:57
 #: views/section/billing-info.php:51 views/section/booking-info.php:89
 #: views/section/offering-info.php:57 views/section/view.php:76
 msgid "Additional Info"
-msgstr ""
+msgstr "Πρόσθετες Πληροφορίες"
 
 #: views/financial/view-jentry.php:22 views/financial/view-jentry.php:33
 msgid "General Journal Entry"
-msgstr ""
+msgstr "Καταχώρηση Γενικού Ημερολογίου"
 
 #: views/_layouts/myet/default.layout.php:116
 msgid "Howdy,"
-msgstr ""
+msgstr "Καλημέρα,"
 
 #: views/course/vtceq.php:27 views/course/vtceq.php:30
 msgid "View Transfer Course Equivalency"
@@ -5653,11 +5667,11 @@ msgstr ""
 #: views/person/addr-form.php:331 views/person/addr.php:282
 #: views/person/addr.php:335
 msgid "Home"
-msgstr ""
+msgstr "Αρχική"
 
 #: views/courses/cart.php:25
 msgid "Shopping Cart"
-msgstr ""
+msgstr "Κάρτα Αγοράς"
 
 #: views/financial/view-payments.php:34
 msgid "View Bill Payments"
@@ -5670,15 +5684,15 @@ msgstr ""
 #: views/courses/cart.php:44 views/courses/index.php:80
 #: views/section/booking-info.php:141
 msgid "Meeting Day(s)"
-msgstr ""
+msgstr "Ημέρα(ες) Συναντήσεων"
 
 #: views/financial/view-payments.php:74 views/financial/view-refunds.php:74
 msgid "Invoice # / Date / Term"
-msgstr ""
+msgstr "Τιμολόγιο # / Ημεροηνία / Περίοδος"
 
 #: views/_layouts/myet/default.layout.php:154 views/student/bill.php:24
 msgid "My Bills"
-msgstr ""
+msgstr "Οι Λογαριασμοί μου"
 
 #: views/courses/cart.php:47 views/courses/index.php:83
 #: views/form/building.php:80 views/form/import.php:94
@@ -5697,17 +5711,17 @@ msgstr ""
 
 #: views/_layouts/myet/default.layout.php:155
 msgid "Class Schedule"
-msgstr ""
+msgstr "Πρόγραμμα Αίθουσας"
 
 #: views/courses/cart.php:68 views/dashboard/install-module.php:79
 #: views/form/import.php:63 views/form/photo.php:50
 #: views/plugins/install.php:77
 msgid "Remove"
-msgstr ""
+msgstr "Αφαίρεση"
 
 #: views/financial/view-payments.php:129
 msgid "Payment Note:"
-msgstr ""
+msgstr "Σημείωμα Πληρωμής:"
 
 #: views/_layouts/myet/default.layout.php:156 views/dashboard/menu.php:304
 #: views/section/view.php:277 views/student/fgrades.php:24
@@ -5717,16 +5731,16 @@ msgstr "Τελικές Βαθμολογίες"
 #: views/courses/cart.php:70 views/courses/cart.php:90
 #: views/section/register.php:138
 msgid "Register"
-msgstr ""
+msgstr "Εγγραφή"
 
 #: views/financial/view-payments.php:154
 msgid "Are you sure you want to delete this payment?"
-msgstr ""
+msgstr "Είστε σίγουροι ότι επιθυμείτε να διαγράψετε την πληρωμή;"
 
 #: routers/myet.router.php:531 views/_layouts/myet/default.layout.php:174
 #: views/form/address.php:27
 msgid "Change of Address Form"
-msgstr ""
+msgstr "Φόρμα Αλλαγής Διεύθυνσης"
 
 #: views/courses/index.php:60
 msgid "You have a hold on your account which is currently restricting you from registering for a course(s). Please contact the following office(s)/department(s) to inquire about the hold(s) on your account: "
@@ -5738,59 +5752,59 @@ msgstr ""
 
 #: views/_layouts/myet/default.layout.php:175
 msgid "Booking Request Form"
-msgstr ""
+msgstr "Φόρμα Αιτήσεων Κράτησης"
 
 #: views/courses/index.php:84
 msgid "Info"
-msgstr ""
+msgstr "Πληροφορίες"
 
 #: views/financial/view-refunds.php:97
 msgid "Date / Term / Refund"
-msgstr ""
+msgstr "Ημερομηνία / Περίοδος / Επιστροφή"
 
 #: routers/myet.router.php:606 views/_layouts/myet/default.layout.php:176
 msgid "School Photo"
-msgstr ""
+msgstr "Φωτογραφία Σχολής"
 
 #: views/courses/index.php:85
 msgid "Select"
-msgstr ""
+msgstr "Επιλογή"
 
 #: views/financial/view-refunds.php:120
 msgid "Refund Note:"
-msgstr ""
+msgstr "Σημειώσεις Επιστροφής"
 
 #: views/_layouts/myet/default.layout.php:203
 msgid "Applications"
-msgstr ""
+msgstr "Αιτήσεις"
 
 #: views/courses/index.php:111
 msgid "Section Info"
-msgstr ""
+msgstr "Πληροφορίες Ενότητας Μαθημάτων"
 
 #: views/financial/view-refunds.php:141 views/form/import.php:82
 msgid "Refund"
-msgstr ""
+msgstr "Επιστροφή"
 
 #: views/_layouts/myet/default.layout.php:205 views/index/password.php:28
 msgid "Change Password"
-msgstr ""
+msgstr "Αλλαγή Κωδικού Χρήστη"
 
 #: views/courses/index.php:119
 msgid "Instructor:"
-msgstr ""
+msgstr "Εκπαιδευτής:"
 
 #: views/financial/view-refunds.php:145
 msgid "Are you sure you want to delete this refund?"
-msgstr ""
+msgstr "είστε σίγουροι ότι επιθυμείτε να διαγράψετε την εγγραφή επιστροφής χρημάτων;"
 
 #: views/_layouts/myet/default.layout.php:206
 msgid "Logout"
-msgstr ""
+msgstr "Αποσύνδεση"
 
 #: views/courses/index.php:123
 msgid "Description:"
-msgstr ""
+msgstr "Περιγραφή:"
 
 #: views/form/acad-year.php:23 views/form/acad-year.php:26
 #: views/form/acad-year.php:99 views/form/import.php:77
@@ -5801,7 +5815,7 @@ msgstr "Ακαδημαικό Έτος"
 
 #: views/_layouts/myet/default.layout.php:213
 msgid "Info Pages"
-msgstr ""
+msgstr "Σελίδες Πληροφοριών"
 
 #: views/courses/index.php:127
 msgid "Comment:"
@@ -5810,7 +5824,7 @@ msgstr "Σχόλιο:"
 #: views/form/acad-year.php:53 views/form/acad-year.php:60
 #: views/form/view-acad-year.php:62 views/form/view-acad-year.php:69
 msgid "Acad Year"
-msgstr ""
+msgstr "Ακαδημαϊκό Έτος"
 
 #: views/_layouts/myet/default.layout.php:219
 msgid "News"
@@ -5818,7 +5832,7 @@ msgstr "Νέα"
 
 #: views/courses/index.php:131
 msgid "Course Fee:"
-msgstr ""
+msgstr "Τίμημα Μαθήματος:"
 
 #: views/form/acad-year.php:98
 msgid "Academic Year Code"
@@ -5826,11 +5840,11 @@ msgstr "Κωδικός Ακαδημαϊκού Έτους"
 
 #: views/_layouts/myet/default.layout.php:222
 msgid "Quick Links"
-msgstr ""
+msgstr "Σύντομοι Σύνδεσμοι"
 
 #: views/courses/index.php:135
 msgid "Lab Fee:"
-msgstr ""
+msgstr "Τίμημα Εργαστηρίου:"
 
 #: views/form/address.php:43 views/index/apply.php:87
 #: views/index/profile.php:91 views/person/add.php:163
@@ -5841,11 +5855,11 @@ msgstr "Διεύθυνση1"
 
 #: views/_layouts/myet/default.layout.php:240 views/courses/index.php:39
 msgid "Search Courses"
-msgstr ""
+msgstr "Αναζήτηση Μαθημάτων"
 
 #: views/courses/index.php:139
 msgid "Material Fee:"
-msgstr ""
+msgstr "Τίμημα Εκπαιδευτικού Υλικού:"
 
 #: views/form/address.php:47 views/index/apply.php:89
 #: views/index/profile.php:95 views/person/add.php:172
@@ -5869,12 +5883,12 @@ msgstr "ΤΚ"
 
 #: views/admin/csseditor.php:51 views/admin/index.php:41
 msgid "CSS Editor"
-msgstr ""
+msgstr "CSS Editor"
 
 #: views/cron/index.php:46 views/cron/log.php:48 views/cron/new.php:67
 #: views/cron/setting.php:47 views/cron/view.php:65
 msgid "Handler Dashboard"
-msgstr ""
+msgstr "Πίνακας Ελέγχου Handler"
 
 #: views/form/address.php:66 views/index/apply.php:85
 msgid "Phone #"
@@ -5927,7 +5941,7 @@ msgstr "Αποθήκευση"
 #: views/cron/new.php:51 views/cron/new.php:68 views/cron/setting.php:48
 #: views/cron/view.php:66
 msgid "New Cronjob Handler"
-msgstr ""
+msgstr "Νέος Cronjob Handler"
 
 #: views/form/address.php:77 views/form/department.php:136
 #: views/index/apply.php:83 views/index/profile.php:55
@@ -5960,7 +5974,7 @@ msgstr "Κτίριο"
 
 #: views/admin/index.php:33
 msgid "Manage Links"
-msgstr ""
+msgstr "Διαχείριση Συνδέσμων"
 
 #: views/cron/index.php:50 views/cron/log.php:52 views/cron/new.php:71
 #: views/cron/setting.php:51 views/cron/view.php:69
@@ -5978,7 +5992,7 @@ msgstr "Διαχείριση Νέων"
 
 #: views/cron/index.php:64
 msgid "Cronjob"
-msgstr ""
+msgstr "Cronjob"
 
 #: views/form/building.php:67 views/form/building.php:122
 #: views/form/view-building.php:69
@@ -6006,7 +6020,7 @@ msgstr "Εκκαθάριση Cache"
 
 #: views/cron/index.php:66
 msgid "Last Run"
-msgstr ""
+msgstr "Τελευταία Εκτέλεση"
 
 #: views/form/ccd.php:60 views/form/ccd.php:105 views/form/view-ccd.php:62
 msgid "CCD Code"
@@ -6018,19 +6032,19 @@ msgstr "Ενεργοί Φοιτητές"
 
 #: functions/hook-function.php:745
 msgid "Active Courses"
-msgstr ""
+msgstr "Ενεργά Μαθήματα"
 
 #: functions/hook-function.php:768
 msgid "Active Programs"
-msgstr ""
+msgstr "Ενεργά Προγράμματα"
 
 #: functions/hook-function.php:897 functions/hook-function.php:949
 msgid "my"
-msgstr ""
+msgstr "my"
 
 #: functions/hook-function.php:930 functions/hook-function.php:932
 msgid "Powered by eduTrac SIS r"
-msgstr ""
+msgstr "Powered by eduTracSIS r"
 
 #: functions/hook-function.php:990 views/dashboard/core-admin-bar.php:50
 #: views/dashboard/menu.php:52
@@ -6043,31 +6057,31 @@ msgstr "Ακαδημαϊκό"
 
 #: functions/hook-function.php:1185
 msgid "LEC Lecture"
-msgstr ""
+msgstr "LEC Διάλεξη"
 
 #: functions/hook-function.php:1186
 msgid "LAB Lab"
-msgstr ""
+msgstr "LAB Εργαστήριο"
 
 #: functions/hook-function.php:1187
 msgid "SEM Seminar"
-msgstr ""
+msgstr "SEM Σεμινάριο"
 
 #: functions/hook-function.php:1188
 msgid "LL Lecture + Lab"
-msgstr ""
+msgstr "LL Διάλεξη + Εργαστήριο"
 
 #: functions/hook-function.php:1189
 msgid "LS Lecture + Seminar"
-msgstr ""
+msgstr "LS Διάλεξη + Σεμινάριο"
 
 #: functions/hook-function.php:1190
 msgid "SL Seminar + Lab"
-msgstr ""
+msgstr "SL Σεμινάριο + Εργαστήριο"
 
 #: functions/hook-function.php:1191
 msgid "LLS Lecture + Lab + Seminar"
-msgstr ""
+msgstr "LLS Διάλεξη + Εργαστήριο + Σεμινάριο"
 
 #: functions/hook-function.php:1211
 msgid "A Add"
@@ -6115,7 +6129,7 @@ msgstr ""
 #: functions/hook-function.php:1260 functions/hook-function.php:1361
 #: views/student/sacd.php:134
 msgid "TR Transfer"
-msgstr ""
+msgstr "TR Μεταφορά"
 
 #: functions/hook-function.php:1261
 msgid "AP Advanced Placement"
@@ -6187,7 +6201,7 @@ msgstr ""
 
 #: functions/hook-function.php:1387
 msgid "Expense"
-msgstr ""
+msgstr "Έξοδο"
 
 #: views/install/index.php:249
 msgid "Success!"
@@ -6203,11 +6217,11 @@ msgstr ""
 
 #: functions/installer-function.php:21
 msgid "Your PHP version is "
-msgstr ""
+msgstr "Η έκδοση PHP είναι"
 
 #: functions/installer-function.php:33
 msgid "Your memory limit is: "
-msgstr ""
+msgstr "Το όριο Μνήμης είναι:"
 
 #: functions/installer-function.php:36
 msgid "Your memory is too low to complete the installation. Minimal value is 64MB, and you have it set to "
@@ -6215,7 +6229,7 @@ msgstr ""
 
 #: modules/booking.module.php:464
 msgid "Room Request: "
-msgstr ""
+msgstr "Αίτημα Αίθουσας:"
 
 #: modules/financial.module.php:474
 msgid "Pay Bill"
@@ -6225,7 +6239,7 @@ msgstr ""
 #: views/financial/view-comments.php:56 views/financial/view-payments.php:56
 #: views/financial/view-refunds.php:56
 msgid "Student Bill"
-msgstr ""
+msgstr "Λογαριασμός Φοιτητή"
 
 #: modules/financial.module.php:498
 msgid "Pay Now"
@@ -6233,7 +6247,7 @@ msgstr "Πληρωμή τώρα"
 
 #: routers/appl.router.php:240
 msgid "myeduTrac Username Change"
-msgstr ""
+msgstr "Αλλαγή Όνοματός Χρήστη myeduTrac"
 
 #: routers/cron.router.php:113
 msgid "Database saved."
@@ -6245,19 +6259,19 @@ msgstr ""
 
 #: routers/cron.router.php:258
 msgid "Time settings missing, please add time settings"
-msgstr ""
+msgstr "Οι ρυθμίσεις της Ώρας λείπουν. Παρακαλώ προσθέστε τις. "
 
 #: routers/cron.router.php:261
 msgid "Email address is invalid!"
-msgstr ""
+msgstr "Η Διεύθυνση eMail είναι λανθασμένη!"
 
 #: routers/cron.router.php:279
 msgid "Cronjob already known in this system."
-msgstr ""
+msgstr "Το Cronjob υπάρχει ήδη στο σύστημα."
 
 #: routers/cron.router.php:283
 msgid "Cronjob URL is wrong."
-msgstr ""
+msgstr "Είναι Λανθασμένο το Cronjob URL."
 
 #: routers/cron.router.php:300
 msgid "Your cronjob script cannot run without a password, Your cronjob password contains wrong characters, minimum of 4 letters and numbers."
@@ -6269,7 +6283,7 @@ msgstr ""
 
 #: routers/cron.router.php:363
 msgid "Cronjob log cleaned."
-msgstr ""
+msgstr "Εκκαθαρίστηκε το Cronjob log."
 
 #: routers/dashboard.router.php:258 routers/plugins.router.php:158
 msgid "The file you are trying to upload is not the accepted file type. Please try again."
@@ -6277,7 +6291,7 @@ msgstr ""
 
 #: routers/dashboard.router.php:269
 msgid "The module was uploaded and installed properly."
-msgstr ""
+msgstr "Το υποσύστημα μεταφορτώθηκε και εγκαταστάθηκε επιτυχώς."
 
 #: routers/dashboard.router.php:271
 msgid "There was a problem uploading the module. Please try again or check the module package."
@@ -6285,7 +6299,7 @@ msgstr ""
 
 #: routers/install.router.php:60 routers/install.router.php:87
 msgid "Unable to establish a database connection."
-msgstr ""
+msgstr "Αποτυχία δημιουργίας σύνδεσης με την Βάση Δεδομένων."
 
 #: routers/myet.router.php:590
 msgid "The system could not move the uploaded file. Please check with your system administrator."
@@ -6306,15 +6320,15 @@ msgstr ""
 #: routers/myet.router.php:641 routers/person.router.php:317
 #: routers/student.router.php:270
 msgid "myeduTrac :: "
-msgstr ""
+msgstr "myeduTrac :: "
 
 #: routers/myet.router.php:668
 msgid "Change of Address Request"
-msgstr ""
+msgstr "Αίτημα Αλλαγής Διεύθυνσης"
 
 #: routers/person.router.php:335
 msgid "myeduTrac Login Details"
-msgstr ""
+msgstr "myeduTrac Λεπτομέρειες Σύνδεσης"
 
 #: routers/plugins.router.php:169
 msgid "Your plugin was uploaded and installed properly."
@@ -6326,7 +6340,7 @@ msgstr ""
 
 #: routers/savedquery.router.php:249
 msgid "CSV to Email Attachment"
-msgstr ""
+msgstr "Επισυναπτόμενο CSV σε eMail"
 
 #: routers/savedquery.router.php:249
 msgid "The attached report can be opened with OpenOffice.org Calc, Google Docs, Microsoft Excel, or Apple Numbers."
@@ -6339,15 +6353,15 @@ msgstr ""
 #: src/Core/etsis_Email.php:447 views/section/register.php:59
 #: views/section/register.php:62
 msgid "Course Registration"
-msgstr ""
+msgstr "Εγγραφή Μαθήματος"
 
 #: src/Core/etsis_Email.php:503 src/Core/etsis_Email.php:548
 msgid "myeduTrac::"
-msgstr ""
+msgstr "myeduTrac::"
 
 #: src/Core/etsis_Email.php:527
 msgid " Account Login Details"
-msgstr ""
+msgstr "Λεπτομέρειες Λογαριασμού Σύνδεσης"
 
 #: src/Core/etsis_Email.php:573
 msgid "Application for Admissions"
@@ -6355,23 +6369,23 @@ msgstr ""
 
 #: src/Core/etsis_Messages.php:74 src/Messages.php:78
 msgid "200 - Success: Ok"
-msgstr ""
+msgstr "200 - Επιτυχία: Ok"
 
 #: src/Core/etsis_Messages.php:75 src/Messages.php:79
 msgid "201 - Success: Created"
-msgstr ""
+msgstr "201 - Επιτυχία: Δημιουργήθηκε"
 
 #: src/Core/etsis_Messages.php:76 src/Messages.php:80
 msgid "204 - Error: No Content"
-msgstr ""
+msgstr "204 - Σφάλμα: Χωρίς Περιεχόμενο"
 
 #: src/Core/etsis_Messages.php:77 src/Messages.php:81
 msgid "409 - Error: Conflict"
-msgstr ""
+msgstr "409 - Σφάλμα: Conflict"
 
 #: functions/student-function.php:569 views/dashboard/menu.php:169
 msgid "Switch To"
-msgstr ""
+msgstr "Εναλλαγή σε"
 
 #: functions/student-function.php:591 views/hr/add.php:58
 #: views/hr/positions.php:59 views/hr/view-timesheet.php:58
@@ -6397,11 +6411,11 @@ msgstr "Κατάσταση:"
 
 #: functions/student-function.php:605
 msgid "FERPA:"
-msgstr ""
+msgstr "FERPA:"
 
 #: functions/student-function.php:612
 msgid "Restriction(s):"
-msgstr ""
+msgstr "Περιορισμός (οι):"
 
 #: functions/student-function.php:614
 msgid " | Restricted from registering for courses."
@@ -6543,17 +6557,17 @@ msgstr "Κλείσε"
 #: views/student/strc.php:32 views/student/sttr.php:20
 #: views/student/tran.php:43 views/student/view.php:36
 msgid "Dashboard"
-msgstr ""
+msgstr "Πίνακας Ελέγχου"
 
 #: routers/plugins.router.php:48 views/dashboard/core-admin-bar.php:29
 #: views/dashboard/core-admin-bar.php:32 views/plugins/index.php:23
 #: views/plugins/index.php:26 views/plugins/install.php:27
 msgid "Plugins"
-msgstr ""
+msgstr "Plugins"
 
 #: routers/plugins.router.php:177 views/dashboard/core-admin-bar.php:31
 msgid "Install Plugins"
-msgstr ""
+msgstr "Εγκατάσταση Plugins"
 
 #: views/dashboard/core-admin-bar.php:46
 msgid "Screens"
@@ -6595,7 +6609,7 @@ msgstr ""
 #: views/cron/index.php:28 views/cron/index.php:31
 #: views/dashboard/core-admin-bar.php:60 views/dashboard/menu.php:61
 msgid "Cronjob Handler"
-msgstr ""
+msgstr "Cronjob Handler"
 
 #: views/dashboard/core-admin-bar.php:61
 msgid "(MPRM) Manage Perm"
@@ -6608,7 +6622,7 @@ msgstr ""
 #: views/dashboard/core-admin-bar.php:63 views/dashboard/menu.php:69
 #: views/error/logs.php:23 views/error/logs.php:26
 msgid "Error Log"
-msgstr ""
+msgstr "Error Log"
 
 #: views/dashboard/core-admin-bar.php:64 views/dashboard/menu.php:72
 #: views/error/audit.php:22 views/error/audit.php:25
@@ -6618,22 +6632,22 @@ msgstr ""
 #: views/dashboard/core-admin-bar.php:65 views/dashboard/menu.php:75
 #: views/dashboard/update.php:22 views/dashboard/update.php:25
 msgid "Automatic Update"
-msgstr ""
+msgstr "Αυτόματη Ενημέρωση"
 
 #: views/dashboard/core-admin-bar.php:70 views/dashboard/install-module.php:27
 #: views/dashboard/menu.php:44
 msgid "System Modules"
-msgstr ""
+msgstr "Υποσυστήματα Εφαρμογής"
 
 #: views/dashboard/core-admin-bar.php:72 views/dashboard/modules.php:23
 #: views/dashboard/modules.php:26
 msgid "Modules"
-msgstr ""
+msgstr "Υποσυστήματα"
 
 #: views/dashboard/core-admin-bar.php:73 views/dashboard/install-module.php:29
 #: views/dashboard/install-module.php:32
 msgid "Install Modules"
-msgstr ""
+msgstr "Εγκατάσταση Υποσυστημάτων"
 
 #: views/_layouts/myet/default.layout.php:172
 #: views/dashboard/core-admin-bar.php:78 views/dashboard/menu.php:81
@@ -6642,11 +6656,11 @@ msgstr "Φόρμες"
 
 #: views/dashboard/core-admin-bar.php:80 views/dashboard/menu.php:84
 msgid "(SEM) - Semester"
-msgstr ""
+msgstr "(SEM) - Εξάμηνο"
 
 #: views/dashboard/core-admin-bar.php:81 views/dashboard/menu.php:85
 msgid "(TERM) - Term"
-msgstr ""
+msgstr "(TERM) - Περίοδος"
 
 #: views/dashboard/core-admin-bar.php:82 views/dashboard/menu.php:83
 msgid "(AYR) - Academic Year"
@@ -6654,11 +6668,11 @@ msgstr "(AYR) - Ακαδημαϊκό Έτος"
 
 #: views/dashboard/core-admin-bar.php:83 views/dashboard/menu.php:86
 msgid "(DEPT) - Department"
-msgstr ""
+msgstr "(DEPT) - Τμημα"
 
 #: views/dashboard/core-admin-bar.php:84 views/dashboard/menu.php:87
 msgid "(SUBJ) - Subject"
-msgstr ""
+msgstr "(SUBJ) - Κατεύθυνση"
 
 #: views/dashboard/core-admin-bar.php:85
 msgid "(SLR) - Student Load Rules"
@@ -6666,7 +6680,7 @@ msgstr ""
 
 #: views/dashboard/core-admin-bar.php:86 views/dashboard/menu.php:89
 msgid "(DEG) - Degree"
-msgstr ""
+msgstr "(DEG) - Πτυχίο"
 
 #: views/dashboard/core-admin-bar.php:87 views/dashboard/menu.php:90
 msgid "(MAJR) - Major"
@@ -6678,19 +6692,19 @@ msgstr ""
 
 #: views/dashboard/core-admin-bar.php:89 views/dashboard/menu.php:92
 msgid "(CCD) - CCD"
-msgstr ""
+msgstr "(CCD) - CCD"
 
 #: views/dashboard/core-admin-bar.php:90 views/dashboard/menu.php:93
 msgid "(SPEC) - Specialization"
-msgstr ""
+msgstr "(SPEC) - Ειδικότητα"
 
 #: views/dashboard/core-admin-bar.php:91 views/dashboard/menu.php:94
 msgid "(CIP) - CIP"
-msgstr ""
+msgstr "(CIP) - CIP"
 
 #: views/dashboard/core-admin-bar.php:92
 msgid "(RSTR) - Restriction Codes"
-msgstr ""
+msgstr "(RSTR) - Κωδικοί Περιορισμού"
 
 #: views/dashboard/core-admin-bar.php:93 views/dashboard/menu.php:96
 msgid "(LOC) - Location"
@@ -6706,7 +6720,7 @@ msgstr "(ROOM) - Δωμάτιο"
 
 #: views/dashboard/core-admin-bar.php:96 views/dashboard/menu.php:99
 msgid "(SCH) - School"
-msgstr ""
+msgstr "(SCH) - Σχολή"
 
 #: views/dashboard/core-admin-bar.php:97 views/dashboard/menu.php:100
 msgid "(GRSC) - Grade Scale"
@@ -6714,12 +6728,12 @@ msgstr ""
 
 #: views/dashboard/core-admin-bar.php:101
 msgid "Online Documentation"
-msgstr ""
+msgstr "Ηλεκτρονικό Εγχειρίδιο"
 
 #: views/dashboard/core-admin-bar.php:103 views/dashboard/menu.php:367
 #: views/staff/file-manager.php:37 views/staff/file-manager.php:40
 msgid "File Manager"
-msgstr ""
+msgstr "Διαχείριση Αρχείων"
 
 #: views/calendar/booking-form.php:62 views/calendar/events.php:28
 #: views/calendar/index.php:78 views/calendar/index.php:81
@@ -6735,7 +6749,7 @@ msgstr "Ημερολόγιο"
 
 #: views/dashboard/core-admin-bar.php:109 views/dashboard/menu.php:109
 msgid "Room Booking Form"
-msgstr ""
+msgstr "Φόρμα Κράτησης Αίθουσας"
 
 #: views/dashboard/core-admin-bar.php:110 views/dashboard/menu.php:110
 msgid "Manage Events"
@@ -6744,7 +6758,7 @@ msgstr "Διαχείριση Εκδηλώσεων"
 #: views/calendar/requests.php:31 views/calendar/requests.php:34
 #: views/dashboard/core-admin-bar.php:111 views/dashboard/menu.php:111
 msgid "Pending Requests"
-msgstr ""
+msgstr "Εκκρεμείς Αιτήσεις"
 
 #: views/cron/index.php:49 views/cron/log.php:51 views/cron/new.php:70
 #: views/cron/setting.php:50 views/cron/view.php:68
@@ -6755,7 +6769,7 @@ msgstr "Ρυθμίσεις"
 
 #: views/dashboard/core-admin-bar.php:117 views/dashboard/menu.php:120
 msgid "Human Resources"
-msgstr ""
+msgstr "Ανθρώπινοι Πόροι"
 
 #: views/dashboard/core-admin-bar.php:119 views/dashboard/menu.php:122
 msgid "Employees"
@@ -6769,7 +6783,7 @@ msgstr ""
 #: views/dashboard/core-admin-bar.php:121 views/dashboard/menu.php:124
 #: views/hr/jobs.php:28 views/hr/jobs.php:32
 msgid "Job Titles"
-msgstr ""
+msgstr "Τίτλοι Εργασιών"
 
 #: views/dashboard/core-admin-bar.php:122
 #: views/dashboard/core-admin-bar.php:126 views/dashboard/menu.php:126
@@ -6778,7 +6792,7 @@ msgstr ""
 #: views/hr/view-timesheet.php:30 views/staff/timesheets.php:28
 #: views/staff/timesheets.php:32 views/staff/view-timesheet.php:28
 msgid "Timesheets"
-msgstr ""
+msgstr "Δελτία Εργασίας"
 
 #: views/dashboard/core-admin-bar.php:131 views/dashboard/menu.php:139
 msgid "SQL"
@@ -6789,7 +6803,7 @@ msgstr "SQL"
 #: views/sql/index.php:55 views/sql/index.php:90 views/sql/saved-queries.php:44
 #: views/sql/view-query.php:63
 msgid "SQL Interface"
-msgstr ""
+msgstr "Περιβάλλον SQL"
 
 #: views/dashboard/core-admin-bar.php:134 views/dashboard/menu.php:146
 msgid "Create Query"
@@ -6802,11 +6816,11 @@ msgstr "Ερωτήματα"
 #: views/dashboard/core-admin-bar.php:136 views/dashboard/menu.php:148
 #: views/sql/csv-email.php:28 views/sql/csv-email.php:31
 msgid "CSV to Email Report"
-msgstr ""
+msgstr "Αναφορά CSV σε eMail"
 
 #: views/dashboard/core-admin-bar.php:141
 msgid "Academics"
-msgstr ""
+msgstr "Ακαδημαϊκά"
 
 #: views/application/add.php:174 views/application/appls.php:33
 #: views/application/appls.php:69 views/application/view.php:197
@@ -6818,25 +6832,25 @@ msgstr "Ακαδημαϊκό Πρόγραμμα"
 
 #: views/dashboard/core-admin-bar.php:146
 msgid "(PROG) - Program"
-msgstr ""
+msgstr "(PROG) - Πρόγραμμα"
 
 #: views/dashboard/core-admin-bar.php:147
 msgid "(APRG) - New Program"
-msgstr ""
+msgstr "(APRG) - Νέο Πρόγραμμα"
 
 #: views/dashboard/core-admin-bar.php:152 views/dashboard/menu.php:232
 #: views/form/import.php:98
 #: views/student/templates/transcript/default.template.php:86
 msgid "Course"
-msgstr ""
+msgstr "Μάθημα"
 
 #: views/dashboard/core-admin-bar.php:154
 msgid "(CRSE) - Course"
-msgstr ""
+msgstr "(CRSE) - Μάθημα"
 
 #: views/dashboard/core-admin-bar.php:155
 msgid "(ACRS) - New Course"
-msgstr ""
+msgstr "(ACRS) - Νέο Μάθημα"
 
 #: views/courses/cart.php:42 views/courses/index.php:78
 #: views/dashboard/core-admin-bar.php:160 views/form/import.php:99
@@ -6845,49 +6859,49 @@ msgstr ""
 #: views/section/final-grade.php:53 views/section/register.php:121
 #: views/section/section-fgrade.php:56 views/student/fgrades.php:37
 msgid "Course Section"
-msgstr ""
+msgstr "Ενότητα Μαθήματος"
 
 #: views/dashboard/core-admin-bar.php:162
 msgid "(SECT) - Section"
-msgstr ""
+msgstr "(SECT) - Ενότητα Μαθημάτων"
 
 #: views/dashboard/core-admin-bar.php:163 views/dashboard/menu.php:271
 msgid "(RGN) - Register"
-msgstr ""
+msgstr "(RGN) - Εγγραφή"
 
 #: views/dashboard/core-admin-bar.php:164
 msgid "(BRGN) - Batch Register"
-msgstr ""
+msgstr "(BRGN) - Μαζική Εγγραφή"
 
 #: views/dashboard/core-admin-bar.php:165
 msgid "(SROS) - Student Roster"
-msgstr ""
+msgstr "(SROS) - Λίστα Φοιτητών"
 
 #: views/_layouts/myet/default.layout.php:153
 #: views/dashboard/core-admin-bar.php:166 views/dashboard/menu.php:278
 #: views/section/timetable.php:77 views/section/timetable.php:80
 #: views/student/timetable.php:79
 msgid "Timetable"
-msgstr ""
+msgstr "Ωρολόγιο Πρόγραμμα"
 
 #: views/dashboard/core-admin-bar.php:167 views/dashboard/menu.php:280
 #: views/section/catalog.php:21 views/section/catalog.php:24
 msgid "Course Catalogs"
-msgstr ""
+msgstr "Κατάλογος Μαθημάτων"
 
 #: views/dashboard/core-admin-bar.php:168 views/dashboard/menu.php:285
 #: views/section/attendance.php:22 views/section/attendance_report.php:22
 #: views/section/courses.php:24
 msgid "My Course Sections"
-msgstr ""
+msgstr "Η Ενότητες Μαθημάτων Μου"
 
 #: views/dashboard/core-admin-bar.php:173
 msgid "Transfers"
-msgstr ""
+msgstr "Ματαφορές"
 
 #: views/dashboard/core-admin-bar.php:175
 msgid "(EXTR) - External Course"
-msgstr ""
+msgstr "(EXTR) - Εξωτερικά Μαθήματα"
 
 #: views/dashboard/core-admin-bar.php:176
 msgid "(ATCEQ) - New Transfer Eq."
@@ -6908,4 +6922,4 @@ msgstr ""
 #: views/financial/account-history.php:63 views/financial/ah-pdf.php:75
 #: views/form/import.php:106 views/student/account-history.php:51
 msgid "Institution"
-msgstr "Ινστιτούτο"
+msgstr "Ίδρυμα"
