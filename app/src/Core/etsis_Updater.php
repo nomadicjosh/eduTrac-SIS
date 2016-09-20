@@ -108,7 +108,7 @@ class etsis_Updater
         $this->local_base_dir = BASE_PATH;
         $this->local_backup_dir = '/tmp/';
         $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
-        $this->update = new \VisualAppeal\AutoUpdate(rtrim($this->app->config('file.savepath'), '/'), BASE_PATH, 1800);
+        $this->update = new \VisualAppeal\AutoUpdate(rtrim($this->app->config('file.savepath'), '/'), rtrim(BASE_PATH, '/'), 1800);
         $this->current_release = $this->getCurrentRelease();
         $this->current_release_value = $this->current_release['current_release']['current_release_value'];
     }
@@ -151,7 +151,7 @@ class etsis_Updater
 
     protected function getCurrentRelease()
     {
-        $file = parse_ini_string(_file_get_contents(BASE_PATH . 'etsis.ini'), true);
+        $file = parse_ini_string(_file_get_contents($this->url . 'core/1.1/update-check/etsis.ini'), true);
         
         return $file;
     }
