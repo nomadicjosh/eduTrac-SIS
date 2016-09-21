@@ -28,3 +28,4 @@ composer.json
 composer.lock
 app/plugins/etsis-smtp/
 app/plugins/amazonS3Backup/
+etmigrate.php

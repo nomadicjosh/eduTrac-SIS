@@ -15,7 +15,7 @@ if (!defined('BASE_PATH'))
  * us allowed to manage options/settings.
  */
 $app->before('GET|POST', '/program(.*)', function() {
-    if (!isUserLoggedIn()) {
+    if (!is_user_logged_in()) {
         redirect(get_base_url() . 'login' . '/');
     }
 

@@ -30,7 +30,7 @@ function access($attr, $path, $data, $volume)
  * if the user is logged in.
  */
 $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff(.*)', function() use ($app) {
-    if (!isUserLoggedIn()) {
+    if (!is_user_logged_in()) {
         redirect(get_base_url() . 'login' . '/');
     }
     /**

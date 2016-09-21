@@ -24,7 +24,7 @@ $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/api(.*)', function() use ($app)
 });
 
 // RESTful API
-$app->group('/api', function() use ($app, $orm) {
+$app->group('/api', function() use ($app) {
 
     /**
      * Will result in /api/ which is the root
@@ -37,27 +37,28 @@ $app->group('/api', function() use ($app, $orm) {
     /**
      * Will result in /api/dbtable/
      */
-    $app->get('/(\w+)', function ($table) use($app, $orm) {
+    $app->get('/(\w+)', function ($table) use($app) {
+        
+        $t = $app->db->$table();
         
         if(isset($_GET['by']) === true) {
             if(isset($_GET['order']) !== true) {
                 $_GET['order'] = 'ASC';
             }
-            $table->orderBy($_GET['by'], $_GET['order']);
+            $t->orderBy($_GET['by'], $_GET['order']);
         }
         
         if(isset($_GET['limit']) === true) {
-            $table->limit($_GET['limit']);
+            $t->limit($_GET['limit']);
             if(isset($_GET['offset']) === true) {
-                $table->offset($_GET['offset']);
+                $t->offset($_GET['offset']);
             }
         }
         
-        $table = $orm->$table();
         /**
          * Use closure as callback.
          */
-        $q = $table->find(function($data) {
+        $q = $t->find(function($data) {
             $array = [];
             foreach ($data as $d) {
                 $array[] = $d;
@@ -92,9 +93,9 @@ $app->group('/api', function() use ($app, $orm) {
     /**
      * Will result in /api/dbtable/columnname/data/
      */
-    $app->get('/(\w+)/(\w+)/(.+)', function ($table, $field, $any) use($app, $orm) {
-        $table = $orm->$table();
-        $q = $table->select()->where("$field = ?", $any);
+    $app->get('/(\w+)/(\w+)/(.+)', function ($table, $field, $any) use($app) {
+        $t = $app->db->$table();
+        $q = $t->select()->where("$field = ?", $any);
         /**
          * Use closure as callback.
          */
@@ -130,14 +131,14 @@ $app->group('/api', function() use ($app, $orm) {
         }
     });
 
-    $app->delete('/(\w+)/(\w+)/(\d+)', function($table, $field, $id) use($app, $orm) {
+    $app->delete('/(\w+)/(\w+)/(\d+)', function($table, $field, $id) use($app) {
 
         $query = [
                 sprintf('DELETE FROM %s WHERE %s = ?', $table, $field),
         ];
 
         $query = sprintf('%s;', implode(' ', $query));
-        $result = $orm->query($query, [$id]);
+        $result = $app->db->query($query, [$id]);
 
         if ($result === false) {
             $app->res->_format('json', 404);
@@ -165,7 +166,7 @@ $app->group('/api', function() use ($app, $orm) {
         unset($data);
     }
 
-    $app->post('/(\w+)/', function($table) use($app, $orm) {
+    $app->post('/(\w+)/', function($table) use($app) {
 
         if (empty($_POST) === true) {
             $app->res->_format('json', 204);
@@ -194,20 +195,20 @@ $app->group('/api', function() use ($app, $orm) {
             }
 
             if (count($queries) > 1) {
-                $orm->query()->beginTransaction();
+                $app->db->query()->beginTransaction();
 
                 while (is_null($query = array_shift($queries)) !== true) {
-                    if (($result = $orm->query($query[0], array_values($query[1]))) === false) {
-                        $orm->query->rollBack();
+                    if (($result = $app->db->query($query[0], array_values($query[1]))) === false) {
+                        $app->db->query->rollBack();
                         break;
                     }
                 }
 
-                if (($result !== false) && ($orm->query->inTransaction() === true)) {
-                    $result = $orm->query()->commit();
+                if (($result !== false) && ($app->db->query->inTransaction() === true)) {
+                    $result = $app->db->query()->commit();
                 }
             } else if (is_null($query = array_shift($queries)) !== true) {
-                $result = $orm->query($query[0], array_values($query[1]));
+                $result = $app->db->query($query[0], array_values($query[1]));
             }
 
             if ($result === false) {
@@ -218,7 +219,7 @@ $app->group('/api', function() use ($app, $orm) {
         }
     });
 
-    $app->put('/(\w+)/(\w+)/(\d+)', function($table, $field, $id) use($app, $orm) {
+    $app->put('/(\w+)/(\w+)/(\d+)', function($table, $field, $id) use($app) {
 
         if (empty($GLOBALS['_PUT']) === true) {
             $app->res->_format('json', 204);
@@ -235,7 +236,7 @@ $app->group('/api', function() use ($app, $orm) {
 
             $query = sprintf('%s;', implode(' ', $query));
             $values = array_values($GLOBALS['_PUT']);
-            $result = $orm->query($query, array_merge($values, [$id]));
+            $result = $app->db->query($query, array_merge($values, [$id]));
 
             if ($result === false) {
                 $app->res->_format('json', 409);

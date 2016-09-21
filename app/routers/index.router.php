@@ -74,7 +74,7 @@ $app->before('GET|POST', '/online-app/', function() {
  * Before route check.
  */
 $app->before('GET|POST', '/login/', function() {
-    if (isUserLoggedIn()) {
+    if (is_user_logged_in()) {
         redirect(get_base_url() . 'profile' . '/');
     }
 });
@@ -100,7 +100,7 @@ $app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
  * Before route check.
  */
 $app->before('GET|POST', '/profile/', function() {
-    if (!isUserLoggedIn()) {
+    if (!is_user_logged_in()) {
         redirect(get_base_url() . 'login' . '/');
     }
 });
@@ -153,7 +153,7 @@ $app->get('/profile/', function () use($app) {
  * Before route check.
  */
 $app->before('GET|POST', '/password/', function() {
-    if (!isUserLoggedIn()) {
+    if (!is_user_logged_in()) {
         redirect(get_base_url() . 'login' . '/');
     }
 });
