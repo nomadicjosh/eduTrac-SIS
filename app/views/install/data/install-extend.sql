@@ -2855,7 +2855,7 @@ ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`courseID`) REFERENCES `cours
 
 ALTER TABLE `transfer_equivalent` ADD FOREIGN KEY (`addedBy`) REFERENCES `person` (`personID`) ON UPDATE CASCADE;
                   
-INSERT INTO `options_meta` VALUES(1, 'dbversion', '00050');
+INSERT INTO `options_meta` VALUES(1, 'etsis_release', '6.2.10');
         
 INSERT INTO `options_meta` VALUES(2, 'system_email', '{email}');
         
