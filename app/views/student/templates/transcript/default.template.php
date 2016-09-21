@@ -28,8 +28,8 @@ $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetHeaderData('', '', _h($stuInfo[0]['Level']) . ' Transcript', '', '', '');
 
 // set header and footer fonts
-$pdf->setHeaderFont([ PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN ]);
-$pdf->setFooterFont([ PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA ]);
+$pdf->setHeaderFont([ 'freesans', '', PDF_FONT_SIZE_MAIN ]);
+$pdf->setFooterFont([ 'freesans', '', PDF_FONT_SIZE_DATA ]);
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -45,7 +45,7 @@ $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 // ---------------------------------------------------------
 
 // set font
-$pdf->SetFont('times', '', 8);
+$pdf->SetFont('freesans', '', 8);
 
 // add a page
 $pdf->AddPage();
