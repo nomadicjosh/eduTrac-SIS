@@ -13,7 +13,7 @@ function hasPermission($perm)
 {
     $acl = new \app\src\ACL(get_persondata('personID'));
 
-    if ($acl->hasPermission($perm) && isUserLoggedIn()) {
+    if ($acl->hasPermission($perm) && is_user_logged_in()) {
         return true;
     } else {
         return false;
@@ -42,11 +42,17 @@ function get_persondata($field)
     }
 }
 
-function isUserLoggedIn()
+/**
+ * Checks if a visitor is logged in or not.
+ * 
+ * @since 6.2.10
+ * @return boolean
+ */
+function is_user_logged_in()
 {
     $person = get_person_by('personID', get_persondata('personID'));
 
-    if (count($person->personID) > 0) {
+    if ('' != $person->personID) {
         return true;
     }
 
@@ -423,7 +429,7 @@ function etsis_authenticate($login, $password, $rememberme)
         ->findOne();
 
     if (false == $person) {
-        $app->flash('error_message', _t('Your account is deactivated.'));
+        $app->flash('error_message', sprintf(_t('Your account is not active. <a href="%s">More info.</a>'), 'https://www.edutracsis.com/manual/troubleshooting/#Your_Account_is_Deactivated'));
         redirect($app->req->server['HTTP_REFERER']);
         return;
     }
