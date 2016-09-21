@@ -230,9 +230,9 @@ function get_initials($ID, $initials = 2)
     $name = get_person_by('personID', $ID);
     
     if ($initials == 2) {
-        return substr(_h($name->fname), 0, 1) . '. ' . substr(_h($name->lname), 0, 1) . '.';
+        return mb_substr(_h($name->fname), 0, 1, 'UTF-8') . '. ' . mb_substr(_h($name->lname), 0, 1, 'UTF-8') . '.';
     } else {
-        return _h($name->lname) . ', ' . substr(_h($name->fname), 0, 1) . '.';
+        return _h($name->lname) . ', ' . mb_substr(_h($name->fname), 0, 1, 'UTF-8') . '.';
     }
 }
 
