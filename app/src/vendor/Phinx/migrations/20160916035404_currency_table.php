@@ -29,9 +29,9 @@ class CurrencyTable extends AbstractMigration
     public function change()
     {
         // Migration for table currency_code
-        $table = $this->table('currency_code');
+        $table = $this->table('currency_code', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('limit' => 11))
+            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('country_currency', 'string', array('limit' => 180))
             ->addColumn('currency_code', 'string', array('limit' => 3))
             ->addColumn('code_2000', 'string', array('limit' => 6))

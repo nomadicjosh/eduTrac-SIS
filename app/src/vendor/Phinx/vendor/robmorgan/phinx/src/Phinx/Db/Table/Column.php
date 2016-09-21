@@ -93,6 +93,11 @@ class Column
      * @var boolean
      */
     protected $signed = true;
+    
+    /**
+     * @var boolean
+     */
+    protected $zerofill = false;
 
     /**
      * @var boolean
@@ -402,6 +407,37 @@ class Column
     {
         return $this->getSigned();
     }
+    
+    /**
+     * Sets whether field should be filled with zero.
+     *
+     * @param  boolean $zerofill
+     *
+     * @return Column
+     */
+    public function setZerofill($zerofill)
+    {
+        $this->zerofill = (boolean) $zerofill;
+        return $this;
+    }
+    /**
+     * Gets whether field should be filled with zero.
+     *
+     * @return boolean
+     */
+    public function getZerofill()
+    {
+        return $this->zerofill;
+    }
+    /**
+     * Should the column be zerofill?
+     * 
+     * @return boolean
+     */
+    public function isZerofill()
+    {
+        return $this->getZerofill();
+    }
 
     /**
      * Sets whether the field should have a timezone identifier.
@@ -503,6 +539,7 @@ class Column
             'update',
             'comment',
             'signed',
+            'zerofill',
             'timezone',
             'properties',
             'values',
