@@ -11,7 +11,7 @@ if (!defined('BASE_PATH'))
  * @author Joshua Parker <joshmac3@icloud.com>
  */
 define('CURRENT_RELEASE', '6.2.0');
-define('RELEASE_TAG', '6.2.9');
+define('RELEASE_TAG', trim( _file_get_contents(BASE_PATH . 'RELEASE') ));
 
 $app = \Liten\Liten::getInstance();
 use \League\Event\Event;
