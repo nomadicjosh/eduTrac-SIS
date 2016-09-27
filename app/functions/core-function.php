@@ -11,7 +11,7 @@ if (!defined('BASE_PATH'))
  * @author Joshua Parker <joshmac3@icloud.com>
  */
 define('CURRENT_RELEASE', '6.2.0');
-define('RELEASE_TAG', trim( _file_get_contents(BASE_PATH . 'RELEASE') ));
+define('RELEASE_TAG', trim(_file_get_contents(BASE_PATH . 'RELEASE')));
 
 $app = \Liten\Liten::getInstance();
 use \League\Event\Event;
@@ -56,7 +56,7 @@ function _mkdir($path)
 
     if (!is_dir($path)) {
         if (!mkdir($path, 0755, true)) {
-            _error_log('core_function', sprintf(_t('The following directory could not be created: %s'), $path));
+            etsis_monolog('core_function', sprintf(_t('The following directory could not be created: %s'), $path), 'addError');
 
             return;
         }
@@ -184,6 +184,9 @@ function _file_get_contents($filename, $use_include_path = false, $context = tru
  */
 function benchmark_init()
 {
+    if (!file_exists(BASE_PATH . 'config.php')) {
+        return false;
+    }
     if (_h(get_option('enable_benchmark')) == 1) {
         Monitor::instance()
             ->init()
@@ -288,31 +291,6 @@ function _bool($num)
             return 'No';
             break;
     }
-}
-
-/**
- * Function wrapper for the setError log method.
- */
-function logError($type, $string, $file, $line)
-{
-    $log = new \app\src\Log();
-    return $log->setError($type, $string, $file, $line);
-}
-
-/**
- * Custom error log function for better PHP logging.
- *
- * @since 6.2.0
- * @param string $name
- *            Log channel and log file prefix.
- * @param string $message
- *            Message printed to log.
- */
-function _error_log($name, $message)
-{
-    $log = new \Monolog\Logger(_trim($name));
-    $log->pushHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/' . _trim($name) . '.' . date('m-d-Y') . '.txt'), \Monolog\Logger::CRITICAL);
-    $log->addInfo($message);
 }
 
 function translate_class_year($year)
@@ -1484,7 +1462,7 @@ function get_plugin_data($plugin_file, $markup = true, $translate = true)
 function etsis_field_css_class($element)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     if (_h(get_option($element)) == 'hide') {
         return $app->hook->apply_filter('field_css_class', " $element");
     }
