@@ -24,7 +24,7 @@ defined('DB_PORT') or define('DB_PORT', 3306); // Database port.
     
 return array(
     "paths" => array(
-        "migrations" => "app/src/vendor/Phinx/migrations"
+        "migrations" => "app/migrations"
     ),
     "environments" => array(
         "default_migration_table" => "migrations",
