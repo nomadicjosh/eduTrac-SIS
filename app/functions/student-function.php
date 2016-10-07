@@ -555,6 +555,38 @@ function get_stu_restriction($stu_id)
 }
 
 /**
+ * Get SACP
+ * 
+ * Retrieve the student's active and gradutated programs.
+ *
+ * @since 6.2.11
+ * @return array
+ */
+function get_sacp($stu_id)
+{
+    $app = \Liten\Liten::getInstance();
+    $rest = $app->db->query("SELECT
+                        a.acadProgCode,a.currStatus,b.acadProgTitle,b.programDesc,
+        				GROUP_CONCAT(DISTINCT a.acadProgCode SEPARATOR ',') AS 'SACP'
+    				FROM stu_program a
+					LEFT JOIN acad_program b ON a.acadProgCode = b.acadProgCode
+					WHERE a.stuID = ?
+                    AND a.currStatus IN('A','G')
+					GROUP BY a.acadProgCode,a.stuID
+					HAVING a.stuID = ?", [ $stu_id, $stu_id]
+        );
+    $q = $rest->find(function($data) {
+        $array = [];
+        foreach ($data as $d) {
+            $array[] = $d;
+        }
+        return $array;
+    });
+    
+    return $q;
+}
+
+/**
  * Student hiatuses.
  *
  * @since 6.2.10
@@ -620,30 +652,30 @@ function get_stu_header($stu_id)
             <!-- 4 Column Grid / One Third -->
             <div class="row">
 
-                <!-- One Fourth Column -->
+                <!-- One Fifth's Column -->
                 <div class="col-md-2">
                     <?= getSchoolPhoto($student->stuID, $student->email1, '90'); ?>
                 </div>
-                <!-- // One Fourth Column END -->
+                <!-- // One Fifth's Column END -->
 
-                <!-- Two Fourth's Column -->
-                <div class="col-md-3">
+                <!-- Two Fifth's Column -->
+                <div class="col-md-2">
                     <p><?= _h($student->address1); ?> <?= _h($student->address2); ?></p>
                     <p><?= _h($student->city); ?> <?= _h($student->state); ?> <?= _h($student->zip); ?></p>
                     <p><strong><?= _t('Phone:'); ?></strong> <?= _h($student->phone1); ?></p>
                 </div>
-                <!-- // Two Fourth's Column END -->
+                <!-- // Two Fifth's Column END -->
 
-                <!-- Three Fourth's Column -->
-                <div class="col-md-3">
+                <!-- Three Fifth's Column -->
+                <div class="col-md-2">
                     <p><strong><?= _t('Email:'); ?></strong> <a href="mailto:<?= _h($student->email1); ?>"><?= _h($student->email1); ?></a></p>
-                    <p><strong><?= _t('Entry Date:'); ?></strong> <?= date('D, M d, o', strtotime(_h($student->stuAddDate))); ?></p>
+                    <p><strong><?= _t('Birth Date:'); ?></strong> <?= (_h($student->dob) > '0000-00-00' ? date('D, M d, o', strtotime(_h($student->dob))) : ''); ?></p>
                     <p><strong><?= _t('Status:'); ?></strong> <?=(_h($student->stuStatus) == 'A') ? _t( 'Active' ) : _t( 'Inactive' );?></p>
                 </div>
-                <!-- // Three Fourth's Column END -->
+                <!-- // Three Fifth's Column END -->
 
-                <!-- Four Fourth's Column -->
-                <div class="col-md-3">
+                <!-- Four Fifth's Column -->
+                <div class="col-md-2">
                     <p><strong><?= _t('FERPA:'); ?></strong> <?= is_ferpa(_h($student->stuID)); ?> 
                             <?php if (is_ferpa(_h($student->stuID)) == 'Yes') : ?>
                             <a href="#FERPA" data-toggle="modal"><img style="vertical-align:top !important;" src="<?= get_base_url(); ?>static/common/theme/images/exclamation.png" /></a>
@@ -652,15 +684,29 @@ function get_stu_header($stu_id)
                         <?php endif; ?>
                     </p>
                     <p><strong><?= _t('Restriction(s):'); ?></strong> 
-                        <?php $prefix = ''; foreach (get_stu_restriction($student->stuID) as $v) : ?>
-                            <?=$prefix;?><span data-toggle="popover" data-title="<?= _h($v['description']); ?>" data-content="Contact: <?= _h($v['deptName']); ?> <?= (_h($v['deptEmail']) != '') ? ' | ' . $v['deptEmail'] : ''; ?><?= (_h($v['deptPhone']) != '') ? ' | ' . $v['deptPhone'] : ''; ?><?= (_h($v['severity']) == 99) ? _t(' | Restricted from registering for courses.') : ''; ?>" data-placement="bottom"><a href="#"><?= _h($v['Restriction']); ?></a></span>
-                        <?php $prefix = ', '; endforeach; ?>
+                        <?php $rstr = ''; foreach (get_stu_restriction($student->stuID) as $v) : ?>
+                            <?=$rstr;?><span data-toggle="popover" data-title="<?= _h($v['description']); ?>" data-content="Contact: <?= _h($v['deptName']); ?> <?= (_h($v['deptEmail']) != '') ? ' | ' . $v['deptEmail'] : ''; ?><?= (_h($v['deptPhone']) != '') ? ' | ' . $v['deptPhone'] : ''; ?><?= (_h($v['severity']) == 99) ? _t(' | Restricted from registering for courses.') : ''; ?>" data-placement="bottom"><a href="#"><?= _h($v['Restriction']); ?></a></span>
+                        <?php $rstr = ', '; endforeach; ?>
+                    </p>
+                    <p><strong><?= _t('Entry Date:'); ?></strong> <?= date('D, M d, o', strtotime(_h($student->stuAddDate))); ?></p>
+                </div>
+                <!-- // Four Fifth's Column END -->
+                
+                <!-- Five Fifth's Column -->
+                <div class="col-md-2">
+                    <p><strong><?= _t('SACP:'); ?></strong> 
+                         <?php $sacp = ''; foreach (get_sacp($student->stuID) as $v) : ?>
+                            <?=$sacp;?><span data-toggle="popover" data-title="<?=_h($v['acadProgTitle']);?> (<?=(_h($v['currStatus']) == 'A' ? _t('Active') : _t('Graduated'));?>)" data-content="<?= _h($v['programDesc']); ?>" data-placement="bottom"><a href="#"><?= _h($v['SACP']); ?></a></span>
+                        <?php $sacp = ', '; endforeach; ?>
+                    </p>
+                    <p><strong><?= _t('Admit Status:'); ?></strong> 
+                        
                     </p>
                     <p><strong><?= _t('Hiatus:'); ?></strong> 
                         <span data-toggle="popover" data-title="<?= get_shis_name(get_stu_shis(_h($student->stuID), 'shisCode')); ?>" data-content="Start Date: <?= get_stu_shis(_h($student->stuID), 'startDate'); ?> | End Date: <?=(get_stu_shis(_h($student->stuID), 'endDate') <= '0000-00-00' ? '' : get_stu_shis(_h($student->stuID), 'endDate')); ?>" data-placement="bottom"><a href="#"><?= get_stu_shis(_h($student->stuID), 'shisCode'); ?></a></span>
                     </p>
                 </div>
-                <!-- // Four Fourth's Column END -->
+                <!-- // Five Fifth's Column END -->
 
             </div>
             <!-- // 4 Column Grid / One Third END -->
