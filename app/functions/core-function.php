@@ -4456,3 +4456,68 @@ function _escape($t, $C = 1, $S = [])
 {
     return htmLawed($t, $C, $S);
 }
+
+/**
+ * Converts seconds to time format.
+ * 
+ * @since 6.2.11
+ * @param numeric $seconds
+ */
+function etsis_seconds_to_time($seconds)
+{
+    $ret = "";
+
+    /** get the days */
+    $days = intval(intval($seconds) / (3600 * 24));
+    if ($days > 0) {
+        $ret .= "$days days ";
+    }
+
+    /** get the hours */
+    $hours = (intval($seconds) / 3600) % 24;
+    if ($hours > 0) {
+        $ret .= "$hours hours ";
+    }
+
+    /** get the minutes */
+    $minutes = (intval($seconds) / 60) % 60;
+    if ($minutes > 0) {
+        $ret .= "$minutes minutes ";
+    }
+
+    /** get the seconds */
+    $seconds = intval($seconds) % 60;
+    if ($seconds > 0) {
+        $ret .= "$seconds seconds";
+    }
+
+    return $ret;
+}
+
+/**
+ * Set the system environment.
+ * 
+ * @since 6.2.11
+ */
+function etsis_set_environment()
+{
+    /**
+     * Error log setting
+     */
+    if (APP_ENV == 'DEV') {
+        /**
+         * Print errors to the screen.
+         */
+        error_reporting(E_ALL & ~E_NOTICE);
+        ini_set('display_errors', 'On');
+    } else {
+        /**
+         * Log errors to a file.
+         */
+        error_reporting(E_ALL & ~E_NOTICE);
+        ini_set('display_errors', 'Off');
+        ini_set('log_errors', 'On');
+        ini_set('error_log', BASE_PATH . 'app' . DS . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
+        set_error_handler('etsis_error_handler', E_ALL & ~E_NOTICE);
+    }
+}
