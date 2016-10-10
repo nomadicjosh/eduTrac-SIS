@@ -42,10 +42,9 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$logger = new \app\src\Log();
 $flashNow = new \app\src\Core\etsis_Messages();
 
-$app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
+$app->group('/hr', function () use($app, $css, $js, $flashNow) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {
@@ -76,7 +75,7 @@ $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
         );
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $staff = $app->db->staff();
             $staff->schoolCode = $_POST['schoolCode'];
@@ -156,7 +155,7 @@ $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/grades/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/grades/', function () use($app, $css, $js, $flashNow) {
 
         if ($app->req->isPost()) {
             if (isset($_POST['addDate'])) {
@@ -166,7 +165,7 @@ $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
                 }
                 if ($pg->save()) {
                     $app->flash('success_message', $flashNow->notice(200));
-                    $logger->setLog('New Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
+                    etsis_logger_activity_log_write('New Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                 }
@@ -178,7 +177,7 @@ $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
                 $pg->where('ID = ?', _filter_input_int(INPUT_POST, 'ID'));
                 if ($pg->update()) {
                     $app->flash('success_message', $flashNow->notice(200));
-                    $logger->setLog('Update Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
+                    etsis_logger_activity_log_write('Update Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                 }
@@ -204,7 +203,7 @@ $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
         );
     });
 
-    $app->match('GET|POST', '/jobs/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/jobs/', function () use($app, $css, $js, $flashNow) {
 
         if ($app->req->isPost()) {
             if (isset($_POST['addDate'])) {
@@ -214,7 +213,7 @@ $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
                 }
                 if ($job->save()) {
                     $app->flash('success_message', $flashNow->notice(200));
-                    $logger->setLog('New Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
+                    etsis_logger_activity_log_write('New Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                 }
@@ -226,7 +225,7 @@ $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
                 $job->where('ID = ?', _filter_input_int(INPUT_POST, 'ID'));
                 if ($job->update()) {
                     $app->flash('success_message', $flashNow->notice(200));
-                    $logger->setLog('Update Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
+                    etsis_logger_activity_log_write('Update Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                 }
@@ -252,7 +251,7 @@ $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
         );
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $position = $app->db->staff_meta();
             foreach ($_POST as $k => $v) {
@@ -260,7 +259,7 @@ $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
             }
             if ($position->save()) {
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Job Position', get_name($id), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Job Position', get_name($id), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -312,7 +311,7 @@ $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/positions/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/positions/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
 
         if ($app->req->isPost()) {
             $position = $app->db->staff_meta();
@@ -322,7 +321,7 @@ $app->group('/hr', function () use($app, $css, $js, $logger, $flashNow) {
             $position->where('sMetaID = ?', _filter_input_int(INPUT_POST, 'sMetaID'));
             if ($position->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Job Position', get_name($id), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Job Position', get_name($id), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }

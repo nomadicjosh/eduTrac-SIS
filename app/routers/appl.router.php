@@ -29,21 +29,15 @@ $js = [
 ];
 
 $json_url = get_base_url() . 'api' . '/';
-
-$logger = new \app\src\Log();
 $email = _etsis_email();
 $flashNow = new \app\src\Core\etsis_Messages();
 
-$app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
+$app->group('/appl', function () use($app, $css, $js, $json_url, $flashNow, $email) {
 
     /**
      * Before router check.
      */
     $app->before('GET|POST', '/', function() {
-        if (!file_exists(BASE_PATH . 'config.php')) {
-            redirect(get_base_url() . 'install/?step=1');
-        }
-
         if (!hasPermission('access_application_screen')) {
             redirect(get_base_url() . 'dashboard' . '/');
         }
@@ -179,7 +173,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->post('/editAppl/(\d+)/', function ($id) use($app, $logger, $flashNow, $email) {
+    $app->post('/editAppl/(\d+)/', function ($id) use($app, $flashNow, $email) {
         $appl = $app->db->application();
         $appl->acadProgCode = $_POST['acadProgCode'];
         $appl->startTerm = $_POST['startTerm'];
@@ -207,7 +201,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
 
         if ($appl->update()) {
             $app->flash('success_message', $flashNow->notice(200));
-            $logger->setLog('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));
+            etsis_logger_activity_log_write('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));
         } else {
             $app->flash('error_message', $flashNow->notice(409));
         }
@@ -252,7 +246,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
                 $app->hook->do_action('post_update_username', $person);
 
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -291,7 +285,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
 
         if ($app->req->isPost()) {
             $appl = $app->db->application();
@@ -320,7 +314,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
             if ($appl->save()) {
                 $ID = $appl->lastInsertId();
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Application', get_name($id), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Application', get_name($id), get_persondata('uname'));
                 redirect(get_base_url() . 'appl' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -387,7 +381,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/inst-attended/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/inst-attended/', function () use($app, $css, $js, $flashNow) {
 
         if ($app->req->isPost()) {
             $inst = $app->db->institution_attended();
@@ -403,7 +397,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
             $inst->addedBy = get_persondata('personID');
             if ($inst->save()) {
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Institution Attended', get_name($_POST['personID']), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Institution Attended', get_name($_POST['personID']), get_persondata('uname'));
                 redirect(get_base_url() . 'appl' . '/' . $_POST['personID'] . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -453,7 +447,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
         );
     });
 
-    $app->match('GET|POST', '/inst/add/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/inst/add/', function () use($app, $css, $js, $flashNow) {
 
         if ($app->req->isPost()) {
             $inst = $app->db->institution();
@@ -466,7 +460,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
             if ($inst->save()) {
                 $ID = $inst->lastInsertId();
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Institution', $_POST['instName'], get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Institution', $_POST['instName'], get_persondata('uname'));
                 redirect(get_base_url() . 'appl/inst' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -482,7 +476,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
         );
     });
 
-    $app->match('GET|POST', '/inst/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/inst/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         if ($app->req->isPost()) {
             $inst = $app->db->institution();
             foreach ($_POST as $k => $v) {
@@ -491,7 +485,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $logger, $flash
             $inst->where('institutionID = ?', $id);
             if ($inst->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Institution', _filter_input_string(INPUT_POST, 'instName'), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Institution', _filter_input_string(INPUT_POST, 'instName'), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }

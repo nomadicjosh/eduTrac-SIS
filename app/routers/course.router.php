@@ -46,11 +46,9 @@ $js = [
 ];
 
 $json_url = get_base_url() . 'api' . '/';
-
-$logger = new \app\src\Log();
 $flashNow = new \app\src\Core\etsis_Messages();
 
-$app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
+$app->group('/crse', function() use ($app, $css, $js, $json_url, $flashNow) {
 
     /**
      * Before route check.
@@ -103,7 +101,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         $course = get_course($id);
 
         if ($app->req->isPost()) {
@@ -148,10 +146,10 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
                  */
                 $app->hook->do_action('post_update_crse', $crse);
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update', 'Course', $course->courseCode, get_persondata('uname'));
+                etsis_logger_activity_log_write('Update', 'Course', $course->courseCode, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
-                $logger->setLog('Update Error', 'Course', $course->courseCode, get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Error', 'Course', $course->courseCode, get_persondata('uname'));
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
@@ -203,7 +201,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         $course = get_course($id);
 
         if ($app->req->isPost()) {
@@ -222,7 +220,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
                  */
                 $app->hook->do_action('post_update_crse_addnl_info', $crse);
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Course', $course->courseCode, get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Course', $course->courseCode, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -277,7 +275,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $flashNow) {
 
         if ($app->req->isPost()) {
             $crse = $app->db->course();
@@ -323,7 +321,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
                 $app->hook->do_action('post_save_crse', $course);
 
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Course', $_POST['subjectCode'] . '-' . $_POST['courseNumber'], get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Course', $_POST['subjectCode'] . '-' . $_POST['courseNumber'], get_persondata('uname'));
                 redirect(get_base_url() . 'crse' . '/' . (int) $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -378,7 +376,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->get('/clone/(\d+)/', function($id) use($app, $flashNow, $logger) {
+    $app->get('/clone/(\d+)/', function($id) use($app, $flashNow) {
         $crse = get_course($id);
         $clone = $app->db->course();
         $clone->courseNumber = $crse->courseNumber;
@@ -409,7 +407,7 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $logger, $flash
             $ID = $clone->lastInsertId();
             etsis_cache_flush_namespace('crse');
             $app->flash('success_message', $flashNow->notice(200));
-            $logger->setLog('New Record', 'Cloned Course', $crse->courseCode, get_persondata('uname'));
+            etsis_logger_activity_log_write('New Record', 'Cloned Course', $crse->courseCode, get_persondata('uname'));
             redirect(get_base_url() . 'crse' . '/' . (int) $ID . '/');
         } else {
             $app->flash('error_message', $flashNow->notice(409));

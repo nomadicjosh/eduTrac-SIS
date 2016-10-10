@@ -2,8 +2,6 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
-$logger = new \app\src\Log;
-
 /**
  * Before route check.
  */
@@ -23,7 +21,7 @@ $app->before('GET', '/setting/', function() {
 });
 
 
-$app->match('GET|POST', '/setting/', function () use($app, $logger) {
+$app->match('GET|POST', '/setting/', function () use($app) {
     $css = [ 'css/admin/module.admin.page.form_elements.min.css'];
     $js = [
         'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
@@ -55,7 +53,7 @@ $app->match('GET|POST', '/setting/', function () use($app, $logger) {
         // Update more options here
         $app->hook->do_action('update_options');
         /* Write to logs */
-        $logger->setLog('Update', 'Settings', 'System Settings', get_persondata('uname'));
+        etsis_logger_activity_log_write('Update', 'Settings', 'System Settings', get_persondata('uname'));
         redirect($app->req->server['HTTP_REFERER']);
     }
 
@@ -85,7 +83,7 @@ $app->before('GET', '/registration/', function() {
     }
 });
 
-$app->match('GET|POST', '/registration/', function () use($app, $logger) {
+$app->match('GET|POST', '/registration/', function () use($app) {
     $css = [ 'css/admin/module.admin.page.form_elements.min.css'];
     $js = [
         'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
@@ -112,7 +110,7 @@ $app->match('GET|POST', '/registration/', function () use($app, $logger) {
         // Update more options here
         $app->hook->do_action('update_options');
         /* Write to logs */
-        $logger->setLog('Update', 'Settings', 'Registration Settings', get_persondata('uname'));
+        etsis_logger_activity_log_write('Update', 'Settings', 'Registration Settings', get_persondata('uname'));
     }
 
     $app->view->display('setting/registration', [
@@ -142,7 +140,7 @@ $app->before('GET', '/email/', function() {
     }
 });
 
-$app->match('GET|POST', '/email/', function () use($app, $logger) {
+$app->match('GET|POST', '/email/', function () use($app) {
     $css = [ 'css/admin/module.admin.page.form_elements.min.css'];
     $js = [
         'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
@@ -168,7 +166,7 @@ $app->match('GET|POST', '/email/', function () use($app, $logger) {
         // Update more options here
         $app->hook->do_action('update_options');
         /* Write to logs */
-        $logger->setLog('Update', 'Settings', 'Email Settings', get_persondata('uname'));
+        etsis_logger_activity_log_write('Update', 'Settings', 'Email Settings', get_persondata('uname'));
     }
 
     $app->view->display('setting/email', [
@@ -198,7 +196,7 @@ $app->before('GET|POST', '/templates/', function() {
     }
 });
 
-$app->match('GET|POST', '/templates/', function () use($app, $logger) {
+$app->match('GET|POST', '/templates/', function () use($app) {
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
     $js = [
         'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
@@ -227,7 +225,7 @@ $app->match('GET|POST', '/templates/', function () use($app, $logger) {
         // Update more options here
         $app->hook->do_action('update_options');
         /* Write to logs */
-        $logger->setLog('Update', 'Settings', 'Email Templates', get_persondata('uname'));
+        etsis_logger_activity_log_write('Update', 'Settings', 'Email Templates', get_persondata('uname'));
     }
 
     $app->view->display('setting/templates', [

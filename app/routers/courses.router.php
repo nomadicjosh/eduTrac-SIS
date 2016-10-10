@@ -35,12 +35,10 @@ $js = [
 ];
 
 $json_url = get_base_url() . 'api' . '/';
-
-$logger = new \app\src\Log();
 $email = _etsis_email();
 $flashNow = new \app\src\Core\etsis_Messages();
 
-$app->group('/courses', function() use ($app, $css, $js, $json_url, $logger, $flashNow, $email) {
+$app->group('/courses', function() use ($app, $css, $js, $json_url, $flashNow, $email) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js, $json_url, $flashNow) {
         if ($app->req->isPost()) {

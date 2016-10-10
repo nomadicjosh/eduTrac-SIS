@@ -10,7 +10,6 @@ if (!defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-$logger = new \app\src\Log();
 $flashNow = new \app\src\Core\etsis_Messages();
 
 $css = [
@@ -31,7 +30,7 @@ $js = [
     'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
 ];
 
-$app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
+$app->group('/form', function () use($app, $css, $js, $flashNow) {
 
     /**
      * Before route check.
@@ -51,7 +50,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/semester/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/semester/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $sem = $app->db->semester();
             foreach ($_POST as $k => $v) {
@@ -61,7 +60,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $sem->lastInsertId();
                 etsis_cache_flush_namespace('sem');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Semester', _filter_input_string(INPUT_POST, 'semName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'semCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Semester', _filter_input_string(INPUT_POST, 'semName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'semCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/semester' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -110,7 +109,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             redirect(get_base_url() . 'lock' . '/');
         }
     });
-    $app->match('GET|POST', '/semester/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/semester/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $sem = $app->db->semester();
             foreach ($_POST as $k => $v) {
@@ -120,7 +119,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($sem->update()) {
                 etsis_cache_flush_namespace('sem');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Semester', _filter_input_string(INPUT_POST, 'semName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'semCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Semester', _filter_input_string(INPUT_POST, 'semName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'semCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -200,7 +199,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/term/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/term/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $term = $app->db->term();
             foreach ($_POST as $k => $v) {
@@ -210,7 +209,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $term->lastInsertId();
                 etsis_cache_flush_namespace('term');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Term', _filter_input_string(INPUT_POST, 'termName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'termCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Term', _filter_input_string(INPUT_POST, 'termName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'termCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/term' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -261,7 +260,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             redirect(get_base_url() . 'lock' . '/');
         }
     });
-    $app->match('GET|POST', '/term/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/term/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $term = $app->db->term();
             foreach ($_POST as $k => $v) {
@@ -271,7 +270,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($term->update()) {
                 etsis_cache_flush_namespace('term');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Term', _filter_input_string(INPUT_POST, 'termName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'termCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Term', _filter_input_string(INPUT_POST, 'termName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'termCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -351,7 +350,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/acad-year/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/acad-year/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $year = $app->db->acad_year();
             foreach ($_POST as $k => $v) {
@@ -361,7 +360,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $year->lastInsertId();
                 etsis_cache_flush_namespace('ayr');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Academic Year', _filter_input_string(INPUT_POST, 'acadYearDesc'), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Academic Year', _filter_input_string(INPUT_POST, 'acadYearDesc'), get_persondata('uname'));
                 redirect(get_base_url() . 'form/acad-year' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -411,7 +410,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/acad-year/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/acad-year/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $year = $app->db->acad_year();
             foreach ($_POST as $k => $v) {
@@ -421,7 +420,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($year->update()) {
                 etsis_cache_flush_namespace('ayr');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Academic Year', _filter_input_string(INPUT_POST, 'acadYearDesc'), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Academic Year', _filter_input_string(INPUT_POST, 'acadYearDesc'), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -501,7 +500,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/department/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/department/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $dept = $app->db->department();
             foreach ($_POST as $k => $v) {
@@ -511,7 +510,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $dept->lastInsertId();
                 etsis_cache_flush_namespace('dept');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Department', _filter_input_string(INPUT_POST, 'deptName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'deptCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Department', _filter_input_string(INPUT_POST, 'deptName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'deptCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/department' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -561,7 +560,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/department/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/department/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $dept = $app->db->department();
             foreach ($_POST as $k => $v) {
@@ -571,7 +570,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($dept->update()) {
                 etsis_cache_flush_namespace('dept');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Department', _filter_input_string(INPUT_POST, 'deptName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'deptCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Department', _filter_input_string(INPUT_POST, 'deptName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'deptCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -651,7 +650,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/subject/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/subject/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $subj = $app->db->subject();
             $subj->subjectCode = _filter_input_string(INPUT_POST, 'subjectCode');
@@ -673,7 +672,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $app->hook->do_action('post_save_subject', $subject);
 
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Subject', _filter_input_string(INPUT_POST, 'subjectName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'subjectCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Subject', _filter_input_string(INPUT_POST, 'subjectName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'subjectCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/subject' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -723,7 +722,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/subject/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/subject/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $subj = $app->db->subject();
             foreach ($_POST as $k => $v) {
@@ -733,7 +732,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($subj->update()) {
                 etsis_cache_flush_namespace('subj');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Subject', _filter_input_string(INPUT_POST, 'subjectName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'subjectCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Subject', _filter_input_string(INPUT_POST, 'subjectName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'subjectCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -960,7 +959,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/degree/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/degree/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $degree = $app->db->degree();
             foreach ($_POST as $k => $v) {
@@ -970,7 +969,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $degree->lastInsertId();
                 etsis_cache_flush_namespace('deg');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Degree', _filter_input_string(INPUT_POST, 'degreeName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'degreeCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Degree', _filter_input_string(INPUT_POST, 'degreeName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'degreeCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/degree' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -1020,7 +1019,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/degree/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/degree/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $degree = $app->db->degree();
             foreach ($_POST as $k => $v) {
@@ -1030,7 +1029,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($degree->update()) {
                 etsis_cache_flush_namespace('deg');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Degree', _filter_input_string(INPUT_POST, 'degreeName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'degreeCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Degree', _filter_input_string(INPUT_POST, 'degreeName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'degreeCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -1110,7 +1109,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/major/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/major/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $major = $app->db->major();
             foreach ($_POST as $k => $v) {
@@ -1120,7 +1119,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $major->lastInsertId();
                 etsis_cache_flush_namespace('majr');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Major', _filter_input_string(INPUT_POST, 'majorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'majorCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Major', _filter_input_string(INPUT_POST, 'majorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'majorCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/major' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -1170,7 +1169,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/major/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/major/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $major = $app->db->major();
             foreach ($_POST as $k => $v) {
@@ -1180,7 +1179,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($major->update()) {
                 etsis_cache_flush_namespace('majr');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Major', _filter_input_string(INPUT_POST, 'majorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'majorCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Major', _filter_input_string(INPUT_POST, 'majorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'majorCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -1260,7 +1259,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/minor/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/minor/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $minor = $app->db->minor();
             foreach ($_POST as $k => $v) {
@@ -1270,7 +1269,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $minor->lastInsertId();
                 etsis_cache_flush_namespace('minr');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Minor', _filter_input_string(INPUT_POST, 'minorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'minorCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Minor', _filter_input_string(INPUT_POST, 'minorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'minorCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/minor' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -1320,7 +1319,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/minor/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/minor/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $minor = $app->db->minor();
             foreach ($_POST as $k => $v) {
@@ -1330,7 +1329,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($minor->update()) {
                 etsis_cache_flush_namespace('minr');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Minor', _filter_input_string(INPUT_POST, 'minorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'minorCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Minor', _filter_input_string(INPUT_POST, 'minorName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'minorCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -1410,7 +1409,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/ccd/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/ccd/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $ccd = $app->db->ccd();
             foreach ($_POST as $k => $v) {
@@ -1420,7 +1419,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $ccd->lastInsertId();
                 etsis_cache_flush_namespace('ccd');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'CCD', _filter_input_string(INPUT_POST, 'ccdName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'ccdCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'CCD', _filter_input_string(INPUT_POST, 'ccdName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'ccdCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/ccd' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -1469,7 +1468,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/ccd/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/ccd/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $ccd = $app->db->ccd();
             foreach ($_POST as $k => $v) {
@@ -1479,7 +1478,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($ccd->update()) {
                 etsis_cache_flush_namespace('ccd');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'CCD', _filter_input_string(INPUT_POST, 'ccdName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'ccdCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'CCD', _filter_input_string(INPUT_POST, 'ccdName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'ccdCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -1559,7 +1558,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/specialization/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/specialization/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $spec = $app->db->specialization();
             foreach ($_POST as $k => $v) {
@@ -1569,7 +1568,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $spec->lastInsertId();
                 etsis_cache_flush_namespace('spec');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Specialization', _filter_input_string(INPUT_POST, 'specName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'specCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Specialization', _filter_input_string(INPUT_POST, 'specName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'specCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/specialization' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -1619,7 +1618,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/specialization/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/specialization/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $spec = $app->db->specialization();
             foreach ($_POST as $k => $v) {
@@ -1629,7 +1628,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($spec->update()) {
                 etsis_cache_flush_namespace('spec');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Specialization', _filter_input_string(INPUT_POST, 'specName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'specCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Specialization', _filter_input_string(INPUT_POST, 'specName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'specCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -1709,7 +1708,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/cip/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/cip/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $cip = $app->db->cip();
             foreach ($_POST as $k => $v) {
@@ -1719,7 +1718,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $cip->lastInsertId();
                 etsis_cache_flush_namespace('cip');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'CIP', _filter_input_string(INPUT_POST, 'cipName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'cipCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'CIP', _filter_input_string(INPUT_POST, 'cipName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'cipCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/cip' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -1769,7 +1768,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/cip/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/cip/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $cip = $app->db->cip();
             foreach ($_POST as $k => $v) {
@@ -1779,7 +1778,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($cip->update()) {
                 etsis_cache_flush_namespace('cip');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'CIP', _filter_input_string(INPUT_POST, 'cipName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'cipCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'CIP', _filter_input_string(INPUT_POST, 'cipName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'cipCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -1859,7 +1858,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/rstr-code/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/rstr-code/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $rstr = $app->db->restriction_code();
             foreach ($_POST as $k => $v) {
@@ -1869,7 +1868,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $rstr->lastInsertId();
                 etsis_cache_flush_namespace('rstr');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Restriction Code', _filter_input_string(INPUT_POST, 'rstrCode'), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Restriction Code', _filter_input_string(INPUT_POST, 'rstrCode'), get_persondata('uname'));
                 redirect(get_base_url() . 'form/rstr-code' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -1920,7 +1919,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/rstr-code/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/rstr-code/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $rstr = $app->db->restriction_code();
             foreach ($_POST as $k => $v) {
@@ -1930,7 +1929,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($rstr->update()) {
                 etsis_cache_flush_namespace('rstr');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Restriction Code', _filter_input_string(INPUT_POST, 'rstrCode'), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Restriction Code', _filter_input_string(INPUT_POST, 'rstrCode'), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -2010,7 +2009,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/location/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/location/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $loc = $app->db->location();
             foreach ($_POST as $k => $v) {
@@ -2020,7 +2019,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $loc->lastInsertId();
                 etsis_cache_flush_namespace('loc');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Location', _filter_input_string(INPUT_POST, 'locationCode') . ' (' . _trim(_filter_input_string(INPUT_POST, 'locationCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Location', _filter_input_string(INPUT_POST, 'locationCode') . ' (' . _trim(_filter_input_string(INPUT_POST, 'locationCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/location' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -2070,7 +2069,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/location/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/location/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $loc = $app->db->location();
             foreach ($_POST as $k => $v) {
@@ -2080,7 +2079,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($loc->update()) {
                 etsis_cache_flush_namespace('loc');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Location Code', _filter_input_string(INPUT_POST, 'locationCode') . ' (' . _trim(_filter_input_string(INPUT_POST, 'locationCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Location Code', _filter_input_string(INPUT_POST, 'locationCode') . ' (' . _trim(_filter_input_string(INPUT_POST, 'locationCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -2160,7 +2159,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/building/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/building/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $build = $app->db->building();
             foreach ($_POST as $k => $v) {
@@ -2170,7 +2169,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $build->lastInsertId();
                 etsis_cache_flush_namespace('bldg');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Building', _filter_input_string(INPUT_POST, 'buildingName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'buildingCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Building', _filter_input_string(INPUT_POST, 'buildingName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'buildingCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/building' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -2220,7 +2219,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/building/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/building/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $build = $app->db->building();
             foreach ($_POST as $k => $v) {
@@ -2230,7 +2229,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($build->update()) {
                 etsis_cache_flush_namespace('bldg');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Building', _filter_input_string(INPUT_POST, 'buildingName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'buildingCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Building', _filter_input_string(INPUT_POST, 'buildingName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'buildingCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -2310,7 +2309,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/room/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/room/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $room = $app->db->room();
             foreach ($_POST as $k => $v) {
@@ -2320,7 +2319,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $room->lastInsertId();
                 etsis_cache_flush_namespace('room');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Room', _filter_input_string(INPUT_POST, 'roomCode'), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Room', _filter_input_string(INPUT_POST, 'roomCode'), get_persondata('uname'));
                 redirect(get_base_url() . 'form/room' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -2372,7 +2371,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/room/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/room/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $room = $app->db->room();
             foreach ($_POST as $k => $v) {
@@ -2382,7 +2381,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($room->update()) {
                 etsis_cache_flush_namespace('room');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Room', _filter_input_string(INPUT_POST, 'roomCode'), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Room', _filter_input_string(INPUT_POST, 'roomCode'), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -2462,7 +2461,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/school/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/school/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $school = $app->db->school();
             foreach ($_POST as $k => $v) {
@@ -2472,7 +2471,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $school->lastInsertId();
                 etsis_cache_flush_namespace('sch');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'School', _filter_input_string(INPUT_POST, 'schoolName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'schoolCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'School', _filter_input_string(INPUT_POST, 'schoolName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'schoolCode')) . ')', get_persondata('uname'));
                 redirect(get_base_url() . 'form/school' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -2524,7 +2523,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/school/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/school/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $school = $app->db->school();
             foreach ($_POST as $k => $v) {
@@ -2534,7 +2533,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($school->update()) {
                 etsis_cache_flush_namespace('sch');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'School', _filter_input_string(INPUT_POST, 'schoolName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'schoolCode')) . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'School', _filter_input_string(INPUT_POST, 'schoolName') . ' (' . _trim(_filter_input_string(INPUT_POST, 'schoolCode')) . ')', get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -2614,7 +2613,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/grade-scale/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/grade-scale/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $gs = $app->db->grade_scale();
             foreach ($_POST as $k => $v) {
@@ -2624,7 +2623,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
                 $ID = $gs->lastInsertId();
                 etsis_cache_flush_namespace('grsc');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Grade Scale', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Grade Scale', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
                 redirect(get_base_url() . 'form/grade-scale' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -2673,7 +2672,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
         }
     });
 
-    $app->match('GET|POST', '/grade-scale/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/grade-scale/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             $gs = $app->db->grade_scale();
             foreach ($_POST as $k => $v) {
@@ -2683,7 +2682,7 @@ $app->group('/form', function () use($app, $css, $js, $logger, $flashNow) {
             if ($gs->update()) {
                 etsis_cache_flush_namespace('grsc');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Grade Scale', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Grade Scale', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
