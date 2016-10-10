@@ -22,14 +22,14 @@ defined('DB_USER') or define('DB_USER', ''); // Database username.
 defined('DB_PASS') or define('DB_PASS', ''); // Database password.
 defined('DB_PORT') or define('DB_PORT', 3306); // Database port.
     
-return array(
-    "paths" => array(
+return [
+    "paths" => [
         "migrations" => "app/migrations"
-    ),
-    "environments" => array(
+    ],
+    "environments" => [
         "default_migration_table" => "migrations",
         "default_database" => "production",
-        "production" => array(
+        "production" => [
             "adapter" => "mysql",
             "host" => DB_HOST,
             "name" => DB_NAME,
@@ -37,6 +37,6 @@ return array(
             "pass" => DB_PASS,
             "charset" => 'utf8',
             //"port" => DB_PORT
-        )
-    )
-);
+        ]
+    ]
+];
