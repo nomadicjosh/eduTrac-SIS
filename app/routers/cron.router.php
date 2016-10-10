@@ -83,7 +83,7 @@ function saveCronjobs($data)
 {
     $cronDir = cronDir() . 'cron/';
     if (!file_put_contents($cronDir . 'cronjobs.dat.php', '<' . '?php /*' . base64_encode(serialize($data)) . '*/')) {
-        _error_log('cron', _t('cannot write to cronjobs database file, please check file rights'));
+        etsis_monolog('cron', _t('cannot write to cronjobs database file, please check file rights'), 'addError');
     }
 }
 
@@ -96,7 +96,7 @@ function saveLogs($text)
 {
     $cronDir = cronDir() . 'cron/';
     if (!file_put_contents($cronDir . 'logs/cronjobs.log', date('Y-m-d H:i:s') . ' - ' . $text . PHP_EOL . _file_get_contents($cronDir . 'logs/cronjobs.log'))) {
-        _error_log('cron', _t('cannot write to cronjobs database file, please check file rights'));
+        etsis_monolog('cron', _t('cannot write to cronjobs database file, please check file rights'), 'addError');
     }
 }
 
@@ -144,7 +144,6 @@ if (file_exists(cronDir() . 'cron/' . 'cronjobs.dat.php')) {
     $_SESSION = null;
 }
 
-$logger = new \app\src\Log();
 $email = _etsis_email();
 $flashNow = new \app\src\Core\etsis_Messages();
 $emailer = _etsis_phpmailer();
@@ -166,7 +165,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$app->group('/cron', function () use($app, $css, $js, $logger, $emailer, $email) {
+$app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
 
     /**
      * Before route checks to make sure the logged in user
@@ -369,7 +368,7 @@ $app->group('/cron', function () use($app, $css, $js, $logger, $emailer, $email)
     });
 
     $app->get('/cronjob/', function () use($app, $email) {
-        $cronDir = cronDir() . 'cron/';
+        $cronDir = cronDir() . 'cron' . DS;
         if (file_exists($cronDir . 'cronjobs.dat.php')) {
             $cronjobs = getCronjobs();
 
@@ -438,7 +437,7 @@ $app->group('/cron', function () use($app, $css, $js, $logger, $emailer, $email)
                         curl_setopt($ch, CURLOPT_URL, $cronjob['url']);
                         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
                         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch, CURLOPT_TIMEOUT, (isset($cronjons['settings'], $cronjobs['settings']['timeout']) ? $cronjob['settings']['timeout'] : 5));
+                        curl_setopt($ch, CURLOPT_TIMEOUT, (isset($cronjobs['settings'], $cronjobs['settings']['timeout']) ? $cronjob['settings']['timeout'] : 5));
 
                         $data = curl_exec($ch);
 
@@ -524,8 +523,8 @@ $app->group('/cron', function () use($app, $css, $js, $logger, $emailer, $email)
         }
     });
 
-    $app->get('/activityLog/', function () use($logger) {
-        $logger->purgeLog();
+    $app->get('/activityLog/', function () {
+        etsis_logger_activity_log_purge();
     });
 
     $app->get('/runStuTerms/', function () use($app) {
@@ -550,8 +549,8 @@ $app->group('/cron', function () use($app, $css, $js, $logger, $emailer, $email)
              * but does not exist in the stu_term table, then insert
              * that new record into the stu_term table.
              */
-            $app->db->query("INSERT IGNORE INTO stu_term (stuID,termCode,termCredits,acadLevelCode) 
-				SELECT stuID,termCode,SUM(attCred),acadLevelCode FROM stu_acad_cred 
+            $app->db->query("INSERT IGNORE INTO stu_term (stuID,termCode,termCredits,addDateTime,acadLevelCode) 
+				SELECT stuID,termCode,SUM(attCred),NOW(),acadLevelCode FROM stu_acad_cred 
 				GROUP BY stuID,termCode,acadLevelCode");
         }
     });
@@ -676,7 +675,8 @@ $app->group('/cron', function () use($app, $css, $js, $logger, $emailer, $email)
 
     $app->get('/runEmailQueue/', function () use($app, $emailer) {
         $queue = $app->db->email_queue()
-            ->where('sent = "0"');
+            ->where('sent = "0"')->_and_()
+            ->where('email <> ""');
         $queue->find(function ($data) use($app, $emailer) {
             foreach ($data as $d) {
                 if ($app->hook->has_action('etsisMailer_init', 'etsis_smtp')) {
@@ -732,9 +732,10 @@ $app->group('/cron', function () use($app, $css, $js, $logger, $emailer, $email)
             ->delete();
     });
 
-    $app->get('/purgeEmailHold/', function () use($app) {
+    $app->get('/purgeEmailQueue/', function () use($app) {
         $app->db->email_queue()
-            ->where('sent = "1"')
+            ->where('sent = "1"')->_or_()
+            ->where('email = ""')
             ->delete();
     });
 
@@ -874,7 +875,7 @@ $app->group('/cron', function () use($app, $css, $js, $logger, $emailer, $email)
 
     $app->get('/runTermGPA/', function () use($app) {
         $gs = $app->db->grade_scale()
-            ->select('b.stuID,b.termCode,b.acadLevelCode,SUM(b.attCred) AS Attempted,')
+            ->select('b.stuID,b.termCode,b.acadLevelCode,SUM(b.attCred) AS Attempted')
             ->select('SUM(b.compCred) AS Completed,SUM(b.gradePoints) AS Points')
             ->select('SUM(b.gradePoints)/SUM(b.attCred) AS GPA')
             ->_join('stu_acad_cred', 'grade_scale.grade = b.grade', 'b')
@@ -966,13 +967,13 @@ $app->group('/cron', function () use($app, $css, $js, $logger, $emailer, $email)
         }
     });
 
-    $app->get('/purgeErrorLog/', function () use($app, $logger) {
+    $app->get('/purgeErrorLog/', function () use($app) {
         $now = date('Y-m-d');
         $app->db->error()
             ->where('DATE_ADD(error.addDate, INTERVAL 5 DAY) <= ?', $now)
             ->delete();
 
-        $logger->purgeErrLog();
+        etsis_logger_error_log_purge();
     });
 
     $app->get('/purgeSavedQuery/', function () use($app) {
@@ -1044,6 +1045,13 @@ $app->group('/cron', function () use($app, $css, $js, $logger, $emailer, $email)
                 }
             }
         }
+    });
+    
+    $app->get('/runNodeQ/', function () {
+        etsis_nodeq_login_details();
+        etsis_nodeq_reset_password();
+        etsis_nodeq_csv_email();
+        etsis_nodeq_change_address();
     });
 });
 
