@@ -194,7 +194,7 @@ class etsis_Updater
             echo $error->getMessage();
         } else {
             $this->update->setCurrentVersion(RELEASE_TAG);
-            $this->update->setUpdateUrl('http://etsis.s3.amazonaws.com/core/1.1/update-check');
+            $this->update->setUpdateUrl($this->url . 'core/1.1/update-check');
             
             // Optional:
             $this->update->addLogHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp' . DS . 'logs' . DS . 'core-update.' . date('m-d-Y') . '.txt'));
