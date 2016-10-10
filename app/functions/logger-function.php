@@ -90,3 +90,31 @@ function etsis_monolog($name, $message, $level = 'addInfo')
     $log->pushHandler(new \Monolog\Handler\StreamHandler(APP_PATH .'tmp'.DS.'logs'.DS._trim($name).'.'.date('m-d-Y').'.txt'));
     $log->$level($message);
 }
+
+/**
+ * Set the system environment.
+ * 
+ * @since 6.2.11
+ */
+function etsis_set_environment()
+{
+    /**
+     * Error log setting
+     */
+    if (APP_ENV == 'DEV') {
+        /**
+         * Print errors to the screen.
+         */
+        error_reporting(E_ALL & ~E_NOTICE);
+        ini_set('display_errors', 'On');
+    } else {
+        /**
+         * Log errors to a file.
+         */
+        error_reporting(E_ALL & ~E_NOTICE);
+        ini_set('display_errors', 'Off');
+        ini_set('log_errors', 'On');
+        ini_set('error_log', BASE_PATH . 'app' . DS . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
+        set_error_handler('etsis_error_handler', E_ALL & ~E_NOTICE);
+    }
+}
