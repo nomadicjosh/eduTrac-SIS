@@ -85,7 +85,7 @@ function etsis_cache_replace($key, $data, $namespace = '', $expire = 120)
      *
      * @since 6.2.0
      * @param int $expire
-     *            When the cass data should expire, in seconds.
+     *            When the cache data should expire, in seconds.
      */
     $ttl = $app->hook->apply_filter('etsis_cache_replace_ttl', $expire);
     $cache = _etsis_cache_init();
@@ -160,7 +160,7 @@ function etsis_cache_set($key, $data, $namespace = '', $expire = 120)
      *
      * @since 6.2.0
      * @param int $expire
-     *            When the cass data should expire, in seconds.
+     *            When the cache data should expire, in seconds.
      */
     $ttl = $app->hook->apply_filter('etsis_cache_increase_ttl', $expire);
     $cache = _etsis_cache_init();
