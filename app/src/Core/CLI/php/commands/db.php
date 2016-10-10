@@ -34,15 +34,16 @@ class Db_Command extends ETSIS_CLI_Command
      * ## OPTIONS
      * 
      * [--dir=<path>]
-     * : Where the mysqldump should be saved. If empty, saved in root. 
+     * : Where the mysqldump should be saved. If --dir argument is missing, saved in root. 
      *  
      *     $ ./etsis db backup --dir=app/tmp
      *     Success: Database export is complete.  
      */
-    public function backup()
+    public function backup($args, $assoc_args)
     {
-        if (defined('ETSIS_DIR')) {
-            $filename = ETSIS_DIR . '/' . date("Y-m-d") . strtotime(date('h:m:s')) . '_etsis-backup.sql';
+        if (!empty($assoc_args['dir'])) {
+            $dir = rtrim($assoc_args['dir'], '/');
+            $filename = $dir . '/' . date("Y-m-d") . strtotime(date('h:m:s')) . '_etsis-backup.sql';
         } else {
             $filename = date("Y-m-d") . strtotime(date('h:m:s')) . '_etsis-backup.sql';
         }
@@ -73,7 +74,7 @@ class Db_Command extends ETSIS_CLI_Command
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->query('SET CHARACTER SET utf8');
         } catch (PDOException $e) {
-            echo 'ERROR: ' . $e->getMessage();
+            ETSIS_CLI::error(sprintf('"%s"', $e->getMessage()));
         }
 
         ETSIS_CLI::line('Starting optimization process...');
@@ -102,7 +103,7 @@ class Db_Command extends ETSIS_CLI_Command
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->query('SET CHARACTER SET utf8');
         } catch (PDOException $e) {
-            echo 'ERROR: ' . $e->getMessage();
+            ETSIS_CLI::error(sprintf('"%s"', $e->getMessage()));
         }
 
         $opt = $this->pdo->query("SHOW TABLES");

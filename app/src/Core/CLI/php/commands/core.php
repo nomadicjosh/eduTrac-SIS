@@ -5,17 +5,23 @@
  * ## EXAMPLES
  *
  *     # Display release and copyright.
- *     $ ./etsis core info 
- * 
- *     # Installs eduTrac SIS.
- *     $ ./etsis core install
+ *     $ ./etsis core info
+ *
+ *     # Installs / Updates eduTrac SIS.
+ *     $ ./etsis core migrate
  *
  *     # Rollback to previous migration.
  *     $ ./etsis core rollback
- * 
+ *
  *     # Prints list of all migrations with current status.
- *     $ ./etsis core status  
+ *     $ ./etsis core status
  * 
+ *     # Checks if an update is available.
+ *     $ ./etsis core check_update
+ * 
+ *     # Updates your system to the latest release.
+ *     $ ./etsis core update
+ *
  */
 ETSIS_CLI::add_command('core', 'Core_Command');
 
@@ -24,7 +30,7 @@ class Core_Command extends ETSIS_CLI_Command
 
     /**
      * Display various info about eduTrac SIS.
-     * 
+     *
      * ## EXAMPLES
      *
      *     # Display release and copyright.
@@ -35,7 +41,7 @@ class Core_Command extends ETSIS_CLI_Command
         ETSIS_CLI::line('eduTrac SIS ' . file_get_contents('RELEASE'));
         ETSIS_CLI::line('Copyright (c) 2013-2016 Joshua Parker <joshmac3@icloud.com>');
     }
-
+    
     /**
      * Populate database and create config file.
      * 
@@ -43,15 +49,31 @@ class Core_Command extends ETSIS_CLI_Command
      *
      *     # Populate eduTrac SIS database.
      *     $ ./etsis core install
+     * 
+     * @deprecated since release 6.2.11
      */
     public function install()
+    {
+        ETSIS_CLI::line('This command is deprecated, please use the new command: %G./etsis core migrate%n');
+    }
+
+    /**
+     * Populate database and create config file on first
+     * run. All others will be updates.
+     *
+     * ## EXAMPLES
+     *
+     *     # Populate eduTrac SIS database.
+     *     $ ./etsis core migrate
+     */
+    public function migrate()
     {
         ETSIS_CLI::line(shell_exec('./phinx migrate -e production'));
     }
 
     /**
      * Rollback is used to undo a previous migration.
-     * 
+     *
      * ## EXAMPLES
      *
      *     # Rollback to previous migration.
@@ -64,7 +86,7 @@ class Core_Command extends ETSIS_CLI_Command
 
     /**
      * Use this command to determine which migrations have been run.
-     * 
+     *
      * ## EXAMPLES
      *
      *     # Prints list of all migrations with current status.
@@ -73,5 +95,70 @@ class Core_Command extends ETSIS_CLI_Command
     public function status()
     {
         ETSIS_CLI::line(shell_exec('./phinx status -e production'));
+    }
+    
+    /**
+     * Use this command to check for a new update.
+     * 
+     * ## EXAMPLES  
+     * 
+     *      #Displays need for update or not.
+     *      $ ./etsis core check_update
+     */
+    public function check_update()
+    {
+        $update = new \VisualAppeal\AutoUpdate('app/tmp', 'app/tmp', 1800);
+        $update->setCurrentVersion(trim(file_get_contents('RELEASE')));
+        $update->setUpdateUrl('http://etsis.s3.amazonaws.com/core/1.1/update-check');
+
+        // Optional:
+        $update->addLogHandler(new Monolog\Handler\StreamHandler('app/tmp/logs/core-update.' . date('m-d-Y') . '.txt'));
+        $update->setCache(new Desarrolla2\Cache\Adapter\File('app/tmp/cache'), 3600);
+        if ($update->checkUpdate() !== false) {
+            if ($update->newVersionAvailable()) {
+                ETSIS_CLI::line('Release %G' . $update->getLatestVersion() . '%n is available.');
+                ETSIS_CLI::line('Do a backup before upgrading: https://www.edutracsis.com/manual/edutrac-sis-backups/');
+            } else {
+                ETSIS_CLI::line('%GSuccess:%n eduTrac SIS is at the latest release.');
+            }
+        }
+    }
+    
+    /**
+     * Use this command to update installation.
+     * 
+     * ## EXAMPLES  
+     * 
+     *      #Updates a current installation.
+     *      $ ./etsis core update
+     */
+    public function update()
+    {
+        $zip = new ZipArchive;
+        $current_release = ETSIS_CLI::getCurrentRelease();
+        $file = 'http://etsis.s3.amazonaws.com/core/1.1/release/' . $current_release . '.zip';
+        if (version_compare(trim(file_get_contents('RELEASE')), $current_release, '<')) {
+            if (ETSIS_CLI::checkExternalFile($file) == 200) {
+                //Download file to the server
+                opt_notify(new \cli\progress\Bar('Downloading ', 1000000));
+                ETSIS_CLI::getDownload($current_release . '.zip', $file);
+                //Unzip the file to update
+                opt_notify(new \cli\progress\Bar('Unzipping ', 1000000));
+                $x = $zip->open($current_release . '.zip');
+                if ($x === true) {
+                    //Extract file in root.
+                    $zip->extractTo(realpath(__DIR__ . '/../../../../../../'));
+                    $zip->close();
+                    //Remove download after completion.
+                    unlink($current_release . '.zip');
+                }
+                ETSIS_CLI::line('Core upgrade complete.');
+                ETSIS_CLI::line('Run the command %G./etsis db migrate%n to check for database updates.');
+            } else {
+                ETSIS_CLI::line('Update server cannot be reached. Please try again later.');
+            }
+        } else {
+            ETSIS_CLI::line('No Update');
+        }
     }
 }
