@@ -123,7 +123,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t( "This password is required in order to run your cronjob (i.e. /var/www/home/username/app/views/cron/cronjob password=CRONPASSWORD)." );?></p>
+		            <p><?=_t( "This password is required in order to run your master cronjob (i.e. http://localhost/etsis/cron/cronjob?password=CRONPASSWORD)." );?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
