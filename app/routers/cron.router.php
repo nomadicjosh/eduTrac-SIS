@@ -681,6 +681,7 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
             foreach ($data as $d) {
                 if ($app->hook->has_action('etsisMailer_init', 'etsis_smtp')) {
                     $emailer->IsSMTP();
+                    $emailer->CharSet = 'UTF-8';
                     $emailer->Mailer = "smtp";
                     $emailer->Host = _h(get_option('etsis_smtp_host'));
                     $emailer->SMTPSecure = _h(get_option('etsis_smtp_smtpsecure'));
@@ -702,6 +703,7 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
                     $emailer->ClearAddresses();
                     $emailer->ClearAttachments();
                 } else {
+                    $emailer->CharSet = 'UTF-8';
                     $emailer->AddAddress($d['email'], $d['lname'] . ', ' . $d['fname']);
                     $emailer->From = $d['fromEmail'];
                     $emailer->FromName = $d['fromName'];
