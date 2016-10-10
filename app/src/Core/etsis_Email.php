@@ -451,6 +451,7 @@ class etsis_Email
     /**
      * Method used to send students an email currently via the faculty portal.
      *
+     * @deprecated since release 6.2.11
      * @param string $email
      *            Student's email address.
      * @param string $from
