@@ -1,10 +1,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: eduTrac\n"
+"Project-Id-Version: eduTrac SIS\n"
 "X-Domain: edutrac-sis\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-20 15:45-0400\n"
+"POT-Creation-Date: 2016-10-07 11:11-0400\n"
 "PO-Revision-Date: 2015-11-06 11:48-0500\n"
 "Last-Translator: Joshua Parker <josh@7mediaws.org>\n"
 "Language-Team: 7 Media Web Solutions, LLC <email@7mediaws.org>\n"
@@ -18,36 +18,38 @@ msgstr ""
 "X-Generator: Poedit 1.8.9\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: Info\n"
-"X-Poedit-SearchPathExcluded-1: lang\n"
-"X-Poedit-SearchPathExcluded-2: plugins\n"
-"X-Poedit-SearchPathExcluded-3: tmp\n"
+"X-Poedit-SearchPathExcluded-1: plugins\n"
+"X-Poedit-SearchPathExcluded-2: languages\n"
+"X-Poedit-SearchPathExcluded-3: migrations\n"
 "X-Poedit-SearchPathExcluded-4: src/vendor\n"
+"X-Poedit-SearchPathExcluded-5: tmp\n"
 
-#: functions/auth-function.php:426
-msgid "Your account is deactivated."
-msgstr ""
-
-#: functions/auth-function.php:462
-msgid "<strong>ERROR</strong>: The username/email field is empty."
+#: functions/auth-function.php:430
+#, php-format
+msgid "Your account is not active. <a href=\"%s\">More info.</a>"
 msgstr ""
 
 #: functions/auth-function.php:466
+msgid "<strong>ERROR</strong>: The username/email field is empty."
+msgstr ""
+
+#: functions/auth-function.php:470
 msgid "<strong>ERROR</strong>: The password field is empty."
 msgstr ""
 
-#: functions/auth-function.php:477
+#: functions/auth-function.php:481
 msgid "<strong>ERROR</strong>: Invalid email address."
 msgstr ""
 
-#: functions/auth-function.php:486
+#: functions/auth-function.php:490
 msgid "<strong>ERROR</strong>: Invalid username."
 msgstr ""
 
-#: functions/auth-function.php:494
+#: functions/auth-function.php:498
 msgid "<strong>ERROR</strong>: The password you entered is incorrect."
 msgstr ""
 
-#: functions/auth-function.php:519
+#: functions/auth-function.php:523
 msgid "$person should be a database object."
 msgstr ""
 
@@ -60,77 +62,76 @@ msgstr ""
 msgid "The following directory could not be created: %s"
 msgstr ""
 
-#: functions/core-function.php:487
+#: functions/core-function.php:465
 msgid "Invalid password: empty password given."
 msgstr ""
 
-#: functions/core-function.php:943
+#: functions/core-function.php:921
 msgid "Invalid file: empty file given."
 msgstr ""
 
-#: functions/core-function.php:1076 functions/core-function.php:1104
+#: functions/core-function.php:1054 functions/core-function.php:1082
 msgid "Invalid file name: empty file name given."
 msgstr ""
 
-#: functions/core-function.php:1087
+#: functions/core-function.php:1065
 #, php-format
 msgid ""
 "The following function is already defined elsewhere: <strong>%s</strong>"
 msgstr ""
 
-#: functions/core-function.php:1164
+#: functions/core-function.php:1142
 msgid "Cannot read file "
 msgstr ""
 
-#: functions/core-function.php:1218
+#: functions/core-function.php:1196
 msgid ""
 "Plugin could not be activated because it triggered a <strong>fatal error</"
 "strong>. <br /><br />"
 msgstr ""
 
-#: functions/dependency.php:78
+#: functions/dependency.php:73
 msgid "Invalid apply_filter hook: empty hook name given."
 msgstr ""
 
-#: functions/dependency.php:84
+#: functions/dependency.php:79
 msgid "Invalid apply_filter hook: hook name must be a string."
 msgstr ""
 
-#: functions/dependency.php:114
+#: functions/dependency.php:109
 msgid "Invalid add_filter hook: empty hook name given."
 msgstr ""
 
-#: functions/dependency.php:120
+#: functions/dependency.php:115
 msgid "Invalid add_filter hook: hook name must be a string."
 msgstr ""
 
-#: functions/dependency.php:145
+#: functions/dependency.php:140
 msgid "Invalid add_action hook: empty hook name given."
 msgstr ""
 
-#: functions/dependency.php:151
+#: functions/dependency.php:146
 msgid "Invalid add_action hook: hook name must be a string."
 msgstr ""
 
-#: functions/dependency.php:241
+#: functions/dependency.php:236
 msgid "Invalid do_action hook: empty hook name given."
 msgstr ""
 
-#: functions/dependency.php:247
+#: functions/dependency.php:242
 msgid "Invalid do_action hook: hook name must be a string."
 msgstr ""
 
-#: functions/dependency.php:567
+#: functions/dependency.php:562
 #, php-format
 msgid "Invalid file name: <strong>%s</strong> does not exist. <br />"
 msgstr ""
 
-#: functions/hook-function.php:266 functions/hook-function.php:329
-#: functions/hook-function.php:392
+#: functions/hook-function.php:266 functions/hook-function.php:392
 #, php-format
 msgid ""
-"%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. "
-"<br />"
+"%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s() "
+"instead. <br />"
 msgstr ""
 
 #: functions/hook-function.php:268 functions/hook-function.php:331
@@ -139,6 +140,13 @@ msgstr ""
 msgid ""
 "%1$s() is <strong>deprecated</strong> since release %2$s with no alternative "
 "available. <br />"
+msgstr ""
+
+#: functions/hook-function.php:329
+#, php-format
+msgid ""
+"%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. "
+"<br />"
 msgstr ""
 
 #: functions/hook-function.php:462
@@ -391,6 +399,25 @@ msgid ""
 "and you have it set to "
 msgstr ""
 
+#: functions/nodeq-function.php:30 functions/nodeq-function.php:214
+#: routers/student.router.php:269
+msgid "myeduTrac :: "
+msgstr ""
+
+#: functions/nodeq-function.php:63
+msgid "myeduTrac Login Details"
+msgstr ""
+
+#: functions/nodeq-function.php:125 routers/person.router.php:832
+#: routers/person.router.php:833 views/person/view.php:470
+#: views/setting/templates.php:186
+msgid "Reset Password"
+msgstr ""
+
+#: functions/nodeq-function.php:255
+msgid "Change of Address Request"
+msgstr ""
+
 #: functions/parsecode-function.php:35 functions/parsecode-function.php:64
 msgid "Invalid parsecode name: empty name given."
 msgstr ""
@@ -428,98 +455,117 @@ msgstr ""
 #: functions/student-function.php:233 views/course/addnl-info.php:77
 #: views/course/addnl-info.php:90 views/course/addnl-info.php:155
 #: views/course/index.php:119 views/course/view.php:314
-#: views/financial/paypal.php:55 views/financial/paypal.php:68
-#: views/financial/paypal.php:110 views/form/grade-scale.php:85
-#: views/form/grade-scale.php:101 views/form/semester.php:120
-#: views/form/student-load-rule.php:104 views/form/term.php:134
-#: views/form/view-grade-scale.php:87 views/form/view-grade-scale.php:103
-#: views/form/view-semester.php:122 views/form/view-student-load-rule.php:114
-#: views/form/view-term.php:141 views/index/apply.php:143
-#: views/person/add.php:272 views/person/view.php:252 views/section/add.php:291
-#: views/section/offering-info.php:170 views/setting/index.php:77
-#: views/setting/index.php:139 views/setting/registration.php:67
-#: views/student/sacp.php:131
+#: views/dashboard/system-snapshot.php:40
+#: views/dashboard/system-snapshot.php:69 views/financial/paypal.php:55
+#: views/financial/paypal.php:68 views/financial/paypal.php:110
+#: views/form/grade-scale.php:85 views/form/grade-scale.php:101
+#: views/form/semester.php:120 views/form/student-load-rule.php:104
+#: views/form/term.php:134 views/form/view-grade-scale.php:87
+#: views/form/view-grade-scale.php:103 views/form/view-semester.php:122
+#: views/form/view-student-load-rule.php:114 views/form/view-term.php:141
+#: views/index/apply.php:143 views/person/add.php:272 views/person/view.php:252
+#: views/section/add.php:291 views/section/offering-info.php:170
+#: views/setting/index.php:77 views/setting/index.php:139
+#: views/setting/registration.php:67 views/student/sacp.php:131
 msgid "Yes"
 msgstr ""
 
 #: functions/student-function.php:235 views/course/addnl-info.php:78
 #: views/course/addnl-info.php:91 views/course/addnl-info.php:156
 #: views/course/index.php:120 views/course/view.php:315
-#: views/financial/paypal.php:56 views/financial/paypal.php:69
-#: views/financial/paypal.php:111 views/form/grade-scale.php:86
-#: views/form/grade-scale.php:102 views/form/semester.php:121
-#: views/form/student-load-rule.php:105 views/form/term.php:135
-#: views/form/view-grade-scale.php:88 views/form/view-grade-scale.php:104
-#: views/form/view-semester.php:123 views/form/view-student-load-rule.php:115
-#: views/form/view-term.php:142 views/index/apply.php:144
-#: views/person/add.php:273 views/person/view.php:253 views/section/add.php:292
-#: views/section/offering-info.php:171 views/setting/index.php:78
-#: views/setting/index.php:140 views/setting/registration.php:68
-#: views/student/sacp.php:132
+#: views/dashboard/system-snapshot.php:40
+#: views/dashboard/system-snapshot.php:69 views/financial/paypal.php:56
+#: views/financial/paypal.php:69 views/financial/paypal.php:111
+#: views/form/grade-scale.php:86 views/form/grade-scale.php:102
+#: views/form/semester.php:121 views/form/student-load-rule.php:105
+#: views/form/term.php:135 views/form/view-grade-scale.php:88
+#: views/form/view-grade-scale.php:104 views/form/view-semester.php:123
+#: views/form/view-student-load-rule.php:115 views/form/view-term.php:142
+#: views/index/apply.php:144 views/person/add.php:273 views/person/view.php:253
+#: views/section/add.php:292 views/section/offering-info.php:171
+#: views/setting/index.php:78 views/setting/index.php:140
+#: views/setting/registration.php:68 views/student/sacp.php:132
 msgid "No"
 msgstr ""
 
-#: functions/student-function.php:611 views/dashboard/menu.php:169
+#: functions/student-function.php:643 views/dashboard/menu.php:169
 msgid "Switch To"
 msgstr ""
 
-#: functions/student-function.php:633 views/hr/add.php:58
+#: functions/student-function.php:665 views/hr/add.php:58
 #: views/hr/positions.php:59 views/hr/view-timesheet.php:58
 #: views/hr/view.php:59 views/staff/view.php:58
 msgid "Phone:"
 msgstr ""
 
-#: functions/student-function.php:639 views/hr/add.php:73
+#: functions/student-function.php:671 views/hr/add.php:73
 #: views/hr/positions.php:74 views/hr/view-timesheet.php:73
 #: views/hr/view.php:74 views/staff/view.php:73
 msgid "Email:"
 msgstr ""
 
-#: functions/student-function.php:640
-msgid "Entry Date:"
+#: functions/student-function.php:672
+msgid "Birth Date:"
 msgstr ""
 
-#: functions/student-function.php:641 views/hr/add.php:74
+#: functions/student-function.php:673 views/hr/add.php:74
 #: views/hr/positions.php:75 views/hr/view-timesheet.php:74
 #: views/hr/view.php:75 views/staff/view.php:74
 msgid "Status:"
 msgstr ""
 
-#: functions/student-function.php:641 views/admin/links.php:60
-#: views/admin/links.php:160 views/financial/billing-table.php:80
-#: views/financial/billing-table.php:186 views/form/grade-scale.php:97
-#: views/form/semester.php:116 views/form/student-load-rule.php:100
-#: views/form/student-load-rule.php:148 views/form/term.php:130
-#: views/form/view-grade-scale.php:99 views/form/view-semester.php:118
-#: views/form/view-student-load-rule.php:110 views/form/view-term.php:137
-#: views/person/view.php:331 views/student/view.php:143
+#: functions/student-function.php:673 functions/student-function.php:699
+#: views/admin/links.php:60 views/admin/links.php:160
+#: views/financial/billing-table.php:80 views/financial/billing-table.php:186
+#: views/form/grade-scale.php:97 views/form/semester.php:116
+#: views/form/student-load-rule.php:100 views/form/student-load-rule.php:148
+#: views/form/term.php:130 views/form/view-grade-scale.php:99
+#: views/form/view-semester.php:118 views/form/view-student-load-rule.php:110
+#: views/form/view-term.php:137 views/person/view.php:331
+#: views/student/view.php:143
 msgid "Active"
 msgstr ""
 
-#: functions/student-function.php:641 views/admin/links.php:61
+#: functions/student-function.php:673 views/admin/links.php:61
 #: views/admin/links.php:161 views/financial/billing-table.php:81
 #: views/financial/billing-table.php:187 views/person/view.php:332
 #: views/student/view.php:144
 msgid "Inactive"
 msgstr ""
 
-#: functions/student-function.php:647
+#: functions/student-function.php:679
 msgid "FERPA:"
 msgstr ""
 
-#: functions/student-function.php:654
+#: functions/student-function.php:686
 msgid "Restriction(s):"
 msgstr ""
 
-#: functions/student-function.php:656
+#: functions/student-function.php:688
 msgid " | Restricted from registering for courses."
 msgstr ""
 
-#: functions/student-function.php:659
+#: functions/student-function.php:691
+msgid "Entry Date:"
+msgstr ""
+
+#: functions/student-function.php:697
+msgid "SACP:"
+msgstr ""
+
+#: functions/student-function.php:699
+msgid "Graduated"
+msgstr ""
+
+#: functions/student-function.php:702
+msgid "Admit Status:"
+msgstr ""
+
+#: functions/student-function.php:705
 msgid "Hiatus:"
 msgstr ""
 
-#: functions/student-function.php:679 views/financial/account-history.php:155
+#: functions/student-function.php:725 views/financial/account-history.php:155
 #: views/financial/view-bill.php:338 views/financial/view-comments.php:154
 #: views/financial/view-payments.php:198 views/financial/view-refunds.php:189
 #: views/student/add-prog.php:209 views/student/sacd.php:262
@@ -529,7 +575,7 @@ msgstr ""
 msgid "Family Educational Rights and Privacy Act (FERPA)"
 msgstr ""
 
-#: functions/student-function.php:684
+#: functions/student-function.php:730
 msgid ""
 "\"FERPA gives parents certain rights with respect to their children's "
 "education records. \n"
@@ -539,7 +585,7 @@ msgid ""
 "transferred are 'eligible students.'\""
 msgstr ""
 
-#: functions/student-function.php:687
+#: functions/student-function.php:733
 msgid ""
 "If the FERPA restriction states \"Yes\", then the student has requested that "
 "none of their \n"
@@ -548,7 +594,7 @@ msgid ""
 "                the U.S. DOE's website @ "
 msgstr ""
 
-#: functions/student-function.php:695 views/application/index.php:121
+#: functions/student-function.php:741 views/application/index.php:121
 #: views/application/view.php:527 views/courses/index.php:148
 #: views/financial/account-history.php:171 views/financial/create-bill.php:209
 #: views/financial/index.php:127 views/financial/payment-plan.php:367
@@ -589,11 +635,11 @@ msgstr ""
 msgid "Pay Now"
 msgstr ""
 
-#: routers/appl.router.php:240
+#: routers/appl.router.php:234
 msgid "myeduTrac Username Change"
 msgstr ""
 
-#: routers/courses.router.php:67 routers/courses.router.php:187
+#: routers/courses.router.php:65 routers/courses.router.php:185
 #, php-format
 msgid ""
 "Your institution has set a course registration limit. You are only allowed "
@@ -614,54 +660,54 @@ msgid ""
 "write rights of this script."
 msgstr ""
 
-#: routers/cron.router.php:204
+#: routers/cron.router.php:203
 #, php-format
 msgid "Could not remove file %s from server, please do this manually"
 msgstr ""
 
-#: routers/cron.router.php:257
+#: routers/cron.router.php:256
 msgid "Time settings missing, please add time settings"
 msgstr ""
 
-#: routers/cron.router.php:260
+#: routers/cron.router.php:259
 msgid "Email address is invalid!"
 msgstr ""
 
-#: routers/cron.router.php:278
+#: routers/cron.router.php:277
 msgid "Cronjob already known in this system."
 msgstr ""
 
-#: routers/cron.router.php:282
+#: routers/cron.router.php:281
 msgid "Cronjob URL is wrong."
 msgstr ""
 
-#: routers/cron.router.php:299
+#: routers/cron.router.php:298
 msgid ""
 "Your cronjob script cannot run without a password, Your cronjob password "
 "contains wrong characters, minimum of 4 letters and numbers."
 msgstr ""
 
-#: routers/cron.router.php:343
+#: routers/cron.router.php:342
 msgid ""
 "Current URL is not correct; must begin with http(s):// and followed with a "
 "path."
 msgstr ""
 
-#: routers/cron.router.php:362
+#: routers/cron.router.php:361
 msgid "Cronjob log cleaned."
 msgstr ""
 
-#: routers/dashboard.router.php:259 routers/plugins.router.php:158
+#: routers/dashboard.router.php:269 routers/plugins.router.php:158
 msgid ""
 "The file you are trying to upload is not the accepted file type. Please try "
 "again."
 msgstr ""
 
-#: routers/dashboard.router.php:270
+#: routers/dashboard.router.php:280
 msgid "The module was uploaded and installed properly."
 msgstr ""
 
-#: routers/dashboard.router.php:272
+#: routers/dashboard.router.php:282
 msgid ""
 "There was a problem uploading the module. Please try again or check the "
 "module package."
@@ -728,57 +774,49 @@ msgstr ""
 msgid "School Photo"
 msgstr ""
 
-#: routers/myet.router.php:635 routers/person.router.php:314
-#: routers/student.router.php:271
-msgid "myeduTrac :: "
+#: routers/myet.router.php:654
+msgid ". Your request has been queued for sending."
 msgstr ""
 
-#: routers/myet.router.php:662
-msgid "Change of Address Request"
-msgstr ""
-
-#: routers/myet.router.php:681
+#: routers/myet.router.php:672
 #, php-format
 msgid ""
 "The username <strong>%s</strong> is already taken. Try again with a more "
 "unique username."
 msgstr ""
 
-#: routers/myet.router.php:688
+#: routers/myet.router.php:679
 #, php-format
 msgid ""
 "The email address <strong>%s</strong> is already in use. Try again with a "
 "different email address."
 msgstr ""
 
-#: routers/myet.router.php:766
+#: routers/myet.router.php:757
 msgid ""
 "Your application has been submitted, and you can now log in with your "
 "username and password."
 msgstr ""
 
-#: routers/myet.router.php:767
+#: routers/myet.router.php:758
 msgid "Student Application Via myeT"
 msgstr ""
 
-#: routers/myet.router.php:791
+#: routers/myet.router.php:782
 msgid "Online Application"
 msgstr ""
 
-#: routers/person.router.php:332
-msgid "myeduTrac Login Details"
+#: routers/person.router.php:339
+msgid ""
+"200 - Success: Ok. If checked `Send username & password to the user`, email "
+"has been sent to the queue."
 msgstr ""
 
-#: routers/person.router.php:854
-msgid "The password has been reset and an email has been sent to this user."
+#: routers/person.router.php:832
+msgid "Password reset; new email sent to queue."
 msgstr ""
 
-#: routers/person.router.php:855 routers/person.router.php:856
-#: views/person/view.php:470 views/setting/templates.php:186
-msgid "Reset Password"
-msgstr ""
-
-#: routers/person.router.php:856
+#: routers/person.router.php:833
 msgid "Update Record"
 msgstr ""
 
@@ -810,52 +848,56 @@ msgstr ""
 msgid "Install Plugins"
 msgstr ""
 
-#: routers/savedquery.router.php:43
+#: routers/savedquery.router.php:44
 msgid "Your query contained a forbidden keyword(s). Please try again."
 msgstr ""
 
-#: routers/savedquery.router.php:248
+#: routers/savedquery.router.php:261
 msgid "CSV to Email Attachment"
 msgstr ""
 
-#: routers/savedquery.router.php:248
+#: routers/savedquery.router.php:261
 msgid ""
 "The attached report can be opened with OpenOffice.org Calc, Google Docs, "
 "Microsoft Excel, or Apple Numbers."
 msgstr ""
 
-#: routers/student.router.php:294
+#: routers/student.router.php:292
 msgid "Student Acceptance Letter"
 msgstr ""
 
-#: src/CSVEmail.php:170
+#: src/CSVEmail.php:174 src/CSVEmail.php:283
 #, php-format
 msgid "Could not connect to MySQL server: %s"
 msgstr ""
 
-#: src/CSVEmail.php:173
+#: src/CSVEmail.php:177 src/CSVEmail.php:286
 msgid ""
 "Step 1: Connected to MySQL server successfully. \n"
 "\n"
 msgstr ""
 
-#: src/CSVEmail.php:245
+#: src/CSVEmail.php:249
 msgid ""
 "Step 4: Email sent with attachment. \n"
 "\n"
 msgstr ""
 
-#: src/CSVEmail.php:249
+#: src/CSVEmail.php:253
 msgid ""
 "Step 4: No data found for query. Email NOT sent. \n"
 "\n"
 msgstr ""
 
-#: src/CSVEmail.php:260
+#: src/CSVEmail.php:264
 msgid "FINISHED."
 msgstr ""
 
-#: src/CSVEmail.php:272
+#: src/CSVEmail.php:306
+msgid "File saved."
+msgstr ""
+
+#: src/CSVEmail.php:318
 #, php-format
 msgid ""
 "ERROR: Invalid query \n"
@@ -863,25 +905,25 @@ msgid ""
 " Your query: %s"
 msgstr ""
 
-#: src/CSVEmail.php:278
+#: src/CSVEmail.php:324
 msgid ""
 "Step 2 (repeats for each attachment): MySQL query ran successfully. \n"
 "\n"
 msgstr ""
 
-#: src/CSVEmail.php:309
+#: src/CSVEmail.php:355
 msgid ""
 "Step 3 (repeats for each attachment): CSV file built. \n"
 "\n"
 msgstr ""
 
-#: src/CSVEmail.php:312
+#: src/CSVEmail.php:358
 msgid ""
 "Step 2 (repeats for each attachment): MySQL query ran successfully \n"
 "\n"
 msgstr ""
 
-#: src/CSVEmail.php:313
+#: src/CSVEmail.php:359
 #, php-format
 msgid ""
 "Step 3 (repeats for each attachment): NO results were returned for this "
@@ -971,39 +1013,43 @@ msgstr ""
 msgid "Course Registration"
 msgstr ""
 
-#: src/Core/etsis_Email.php:503 src/Core/etsis_Email.php:548
+#: src/Core/etsis_Email.php:504 src/Core/etsis_Email.php:549
 msgid "myeduTrac::"
 msgstr ""
 
-#: src/Core/etsis_Email.php:527
+#: src/Core/etsis_Email.php:528
 msgid " Account Login Details"
 msgstr ""
 
-#: src/Core/etsis_Email.php:573
+#: src/Core/etsis_Email.php:574
 msgid "Application for Admissions"
 msgstr ""
 
-#: src/Core/etsis_Messages.php:67 src/Messages.php:71
+#: src/Core/etsis_Messages.php:68 src/Messages.php:71
 #, php-format
 msgid ""
 "Plugin could not be activated because it triggered a <strong>fatal error</"
 "strong>. <br /><br /> %s</div></section>"
 msgstr ""
 
-#: src/Core/etsis_Messages.php:74 src/Messages.php:78
+#: src/Core/etsis_Messages.php:83 src/Messages.php:78
 msgid "200 - Success: Ok"
 msgstr ""
 
-#: src/Core/etsis_Messages.php:75 src/Messages.php:79
+#: src/Core/etsis_Messages.php:84 src/Messages.php:79
 msgid "201 - Success: Created"
 msgstr ""
 
-#: src/Core/etsis_Messages.php:76 src/Messages.php:80
+#: src/Core/etsis_Messages.php:85 src/Messages.php:80
 msgid "204 - Error: No Content"
 msgstr ""
 
-#: src/Core/etsis_Messages.php:77 src/Messages.php:81
+#: src/Core/etsis_Messages.php:86 src/Messages.php:81
 msgid "409 - Error: Conflict"
+msgstr ""
+
+#: src/Core/etsis_NodeQ.php:255
+msgid "Node is cleared, so no other records to delete."
 msgstr ""
 
 #: src/Core/etsis_Updater.php:146
@@ -1101,19 +1147,20 @@ msgstr ""
 #: views/dashboard/index.php:20 views/dashboard/index.php:26
 #: views/dashboard/install-module.php:25 views/dashboard/menu.php:40
 #: views/dashboard/menu.php:42 views/dashboard/modules.php:21
-#: views/dashboard/support.php:24 views/dashboard/update.php:20
-#: views/error/audit.php:20 views/error/logs.php:21
-#: views/financial/account-history.php:25 views/financial/add-jentry.php:94
-#: views/financial/add-payment.php:44 views/financial/batch.php:37
-#: views/financial/billing-table.php:26 views/financial/create-bill.php:44
-#: views/financial/gl-accounts.php:26 views/financial/gl-filter.php:20
-#: views/financial/index.php:26 views/financial/issue-refund.php:44
-#: views/financial/jentry-filter.php:20 views/financial/journal-entries.php:26
-#: views/financial/payment-plan.php:44 views/financial/paypal.php:20
-#: views/financial/view-bill.php:29 views/financial/view-comments.php:30
-#: views/financial/view-payments.php:30 views/financial/view-refunds.php:30
-#: views/form/acad-year.php:21 views/form/building.php:26 views/form/ccd.php:26
-#: views/form/cip.php:26 views/form/degree.php:21 views/form/department.php:21
+#: views/dashboard/support.php:24 views/dashboard/system-snapshot.php:19
+#: views/dashboard/update.php:20 views/error/audit.php:20
+#: views/error/logs.php:21 views/financial/account-history.php:25
+#: views/financial/add-jentry.php:94 views/financial/add-payment.php:44
+#: views/financial/batch.php:37 views/financial/billing-table.php:26
+#: views/financial/create-bill.php:44 views/financial/gl-accounts.php:26
+#: views/financial/gl-filter.php:20 views/financial/index.php:26
+#: views/financial/issue-refund.php:44 views/financial/jentry-filter.php:20
+#: views/financial/journal-entries.php:26 views/financial/payment-plan.php:44
+#: views/financial/paypal.php:20 views/financial/view-bill.php:29
+#: views/financial/view-comments.php:30 views/financial/view-payments.php:30
+#: views/financial/view-refunds.php:30 views/form/acad-year.php:21
+#: views/form/building.php:26 views/form/ccd.php:26 views/form/cip.php:26
+#: views/form/degree.php:21 views/form/department.php:21
 #: views/form/grade-scale.php:21 views/form/import.php:26
 #: views/form/location.php:26 views/form/major.php:26 views/form/minor.php:26
 #: views/form/room.php:26 views/form/rstr-code.php:26 views/form/school.php:26
@@ -1154,7 +1201,7 @@ msgstr ""
 #: views/section/view.php:46 views/setting/email.php:21
 #: views/setting/index.php:22 views/setting/registration.php:21
 #: views/setting/templates.php:137 views/sql/add-query.php:34
-#: views/sql/csv-email.php:26 views/sql/index.php:50
+#: views/sql/csv-email.php:26 views/sql/index.php:49
 #: views/sql/saved-queries.php:26 views/sql/view-query.php:34
 #: views/staff/add.php:25 views/staff/file-manager.php:35
 #: views/staff/index.php:20 views/staff/timesheets.php:26
@@ -1394,21 +1441,20 @@ msgstr ""
 #: views/comm-mgmt/mailmerge.php:97 views/comm-mgmt/schedule.php:121
 #: views/comm-mgmt/view.php:154 views/course/atceq.php:215
 #: views/course/tcre.php:308 views/dashboard/install-module.php:95
-#: views/dashboard/upgrade.php:36 views/financial/add-jentry.php:258
-#: views/financial/add-payment.php:194 views/financial/batch.php:200
-#: views/financial/billing-table.php:97 views/financial/create-bill.php:181
-#: views/financial/gl-filter.php:99 views/financial/issue-refund.php:173
-#: views/financial/jentry-filter.php:99 views/financial/payment-plan.php:179
-#: views/financial/view-payments.php:315 views/financial/view-refunds.php:285
-#: views/form/acad-year.php:77 views/form/address.php:83
-#: views/form/import.php:130 views/form/photo.php:58 views/form/school.php:94
-#: views/form/semester.php:137 views/hr/grades.php:126 views/hr/jobs.php:144
-#: views/plugins/install.php:93 views/role/add.php:84
+#: views/financial/add-jentry.php:258 views/financial/add-payment.php:194
+#: views/financial/batch.php:200 views/financial/billing-table.php:97
+#: views/financial/create-bill.php:181 views/financial/gl-filter.php:99
+#: views/financial/issue-refund.php:173 views/financial/jentry-filter.php:99
+#: views/financial/payment-plan.php:179 views/financial/view-payments.php:315
+#: views/financial/view-refunds.php:285 views/form/acad-year.php:77
+#: views/form/address.php:83 views/form/import.php:130 views/form/photo.php:58
+#: views/form/school.php:94 views/form/semester.php:137 views/hr/grades.php:126
+#: views/hr/jobs.php:144 views/plugins/install.php:93 views/role/add.php:84
 #: views/section/attendance.php:95 views/section/batch-register.php:126
 #: views/section/booking-info.php:260 views/section/booking-info.php:445
 #: views/section/final-grade.php:93 views/section/grading.php:83
 #: views/section/section-fgrade.php:96 views/section/sros.php:127
-#: views/sql/index.php:138 views/student/graduation.php:100
+#: views/sql/index.php:137 views/student/graduation.php:100
 #: views/student/shis.php:264 views/student/strc.php:233
 #: views/student/tran.php:129
 msgid "Submit"
@@ -1694,19 +1740,19 @@ msgstr ""
 #: views/cron/view.php:43 views/dashboard/core-update.php:21
 #: views/dashboard/index.php:19 views/dashboard/install-module.php:24
 #: views/dashboard/modules.php:20 views/dashboard/support.php:23
-#: views/dashboard/update.php:19 views/error/audit.php:19
-#: views/error/logs.php:20 views/financial/account-history.php:24
-#: views/financial/add-jentry.php:93 views/financial/add-payment.php:43
-#: views/financial/batch.php:36 views/financial/billing-table.php:25
-#: views/financial/create-bill.php:43 views/financial/gl-accounts.php:25
-#: views/financial/gl-filter.php:19 views/financial/index.php:25
-#: views/financial/issue-refund.php:43 views/financial/jentry-filter.php:19
-#: views/financial/journal-entries.php:25 views/financial/payment-plan.php:43
-#: views/financial/paypal.php:19 views/financial/view-bill.php:28
-#: views/financial/view-comments.php:29 views/financial/view-payments.php:29
-#: views/financial/view-refunds.php:29 views/form/acad-year.php:20
-#: views/form/building.php:25 views/form/ccd.php:25 views/form/cip.php:25
-#: views/form/degree.php:20 views/form/department.php:20
+#: views/dashboard/system-snapshot.php:18 views/dashboard/update.php:19
+#: views/error/audit.php:19 views/error/logs.php:20
+#: views/financial/account-history.php:24 views/financial/add-jentry.php:93
+#: views/financial/add-payment.php:43 views/financial/batch.php:36
+#: views/financial/billing-table.php:25 views/financial/create-bill.php:43
+#: views/financial/gl-accounts.php:25 views/financial/gl-filter.php:19
+#: views/financial/index.php:25 views/financial/issue-refund.php:43
+#: views/financial/jentry-filter.php:19 views/financial/journal-entries.php:25
+#: views/financial/payment-plan.php:43 views/financial/paypal.php:19
+#: views/financial/view-bill.php:28 views/financial/view-comments.php:29
+#: views/financial/view-payments.php:29 views/financial/view-refunds.php:29
+#: views/form/acad-year.php:20 views/form/building.php:25 views/form/ccd.php:25
+#: views/form/cip.php:25 views/form/degree.php:20 views/form/department.php:20
 #: views/form/grade-scale.php:20 views/form/import.php:25
 #: views/form/location.php:25 views/form/major.php:25 views/form/minor.php:25
 #: views/form/room.php:25 views/form/rstr-code.php:25 views/form/school.php:25
@@ -1747,7 +1793,7 @@ msgstr ""
 #: views/section/view.php:45 views/setting/email.php:20
 #: views/setting/index.php:21 views/setting/registration.php:20
 #: views/setting/templates.php:136 views/sql/add-query.php:33
-#: views/sql/csv-email.php:25 views/sql/index.php:49
+#: views/sql/csv-email.php:25 views/sql/index.php:48
 #: views/sql/saved-queries.php:25 views/sql/view-query.php:33
 #: views/staff/add.php:24 views/staff/file-manager.php:34
 #: views/staff/index.php:19 views/staff/timesheets.php:25
@@ -1794,8 +1840,7 @@ msgid "University"
 msgstr ""
 
 #: views/application/add-inst.php:83 views/application/inst.php:67
-#: views/application/view-inst.php:83 views/install/index.php:213
-#: views/setting/index.php:64
+#: views/application/view-inst.php:83 views/setting/index.php:64
 msgid "Institution Name"
 msgstr ""
 
@@ -2082,9 +2127,8 @@ msgid "View Application"
 msgstr ""
 
 #: views/application/view.php:158 views/error/audit.php:43
-#: views/index/apply.php:51 views/index/profile.php:35
-#: views/install/index.php:137 views/install/index.php:189
-#: views/install/index.php:216 views/person/add.php:93 views/person/view.php:78
+#: views/index/apply.php:51 views/index/profile.php:35 views/person/add.php:93
+#: views/person/view.php:78
 msgid "Username"
 msgstr ""
 
@@ -2402,7 +2446,7 @@ msgstr ""
 #: views/section/sros.php:61 views/section/view-assignment.php:49
 #: views/section/view.php:68 views/setting/email.php:39
 #: views/setting/index.php:40 views/setting/registration.php:39
-#: views/sql/add-query.php:56 views/sql/csv-email.php:46 views/sql/index.php:83
+#: views/sql/add-query.php:56 views/sql/csv-email.php:46 views/sql/index.php:82
 #: views/sql/view-query.php:56 views/staff/add.php:45 views/staff/view.php:99
 #: views/student/add-prog.php:68 views/student/add.php:62
 #: views/student/graduation.php:46 views/student/sacp.php:54
@@ -2541,7 +2585,7 @@ msgstr ""
 
 #: views/comm-mgmt/mailmerge.php:52 views/comm-mgmt/schedule.php:101
 #: views/section/batch-register.php:106 views/sql/csv-email.php:90
-#: views/sql/index.php:108 views/sql/saved-queries.php:31
+#: views/sql/index.php:107 views/sql/saved-queries.php:31
 #: views/student/graduation.php:68
 msgid "Saved Query"
 msgstr ""
@@ -2563,7 +2607,7 @@ msgid "Subject"
 msgstr ""
 
 #: views/comm-mgmt/queue.php:51 views/sql/add-query.php:90
-#: views/sql/index.php:120 views/sql/view-query.php:91
+#: views/sql/index.php:119 views/sql/view-query.php:91
 msgid "Query"
 msgstr ""
 
@@ -3202,8 +3246,8 @@ msgstr ""
 
 #: views/cron/setting.php:126
 msgid ""
-"This password is required in order to run your cronjob (i.e. /var/www/home/"
-"username/app/views/cron/cronjob password=CRONPASSWORD)."
+"This password is required in order to run your master cronjob (i.e. http://"
+"localhost/etsis/cron/cronjob?password=CRONPASSWORD)."
 msgstr ""
 
 #: views/cron/setting.php:146
@@ -3411,8 +3455,8 @@ msgid "SQL"
 msgstr ""
 
 #: views/dashboard/core-admin-bar.php:133 views/dashboard/menu.php:142
-#: views/sql/add-query.php:63 views/sql/csv-email.php:53 views/sql/index.php:52
-#: views/sql/index.php:55 views/sql/index.php:90 views/sql/saved-queries.php:44
+#: views/sql/add-query.php:63 views/sql/csv-email.php:53 views/sql/index.php:51
+#: views/sql/index.php:54 views/sql/index.php:89 views/sql/saved-queries.php:44
 #: views/sql/view-query.php:63
 msgid "SQL Interface"
 msgstr ""
@@ -3900,42 +3944,17 @@ msgstr ""
 msgid "Your browser does not support iframes."
 msgstr ""
 
-#: views/dashboard/upgrade.php:30
-msgid "Warning!"
+#: views/dashboard/system-snapshot.php:21
+#: views/dashboard/system-snapshot.php:24
+msgid "System Snapshot Report"
 msgstr ""
 
-#: views/dashboard/upgrade.php:30
-msgid "Hey admin, your database is out of date and currently at version "
+#: views/dashboard/system-snapshot.php:48
+msgid "Production"
 msgstr ""
 
-#: views/dashboard/upgrade.php:30
-msgid ""
-". Click the button below to upgrade your database. When the upgrade is "
-"complete,"
-msgstr ""
-
-#: views/dashboard/upgrade.php:30
-msgid "click here"
-msgstr ""
-
-#: views/dashboard/upgrade.php:30
-msgid ""
-"to return to the dashboard. If you are behind on a few versions, you may be "
-"redirected to this page again until the system is fully up to date."
-msgstr ""
-
-#: views/dashboard/upgrade.php:44
-msgid ""
-"Hey admin, you database is currently up to date. There is nothing else here "
-"to see. "
-msgstr ""
-
-#: views/dashboard/upgrade.php:44 views/setting/index.php:346
-msgid "Click here"
-msgstr ""
-
-#: views/dashboard/upgrade.php:44
-msgid "to return to the dashboard."
+#: views/dashboard/system-snapshot.php:48
+msgid "Development"
 msgstr ""
 
 #: views/error/404.php:27
@@ -4354,18 +4373,18 @@ msgid "Invoice #"
 msgstr ""
 
 #: views/financial/index.php:67 views/index/apply.php:79
-#: views/index/profile.php:47 views/install/index.php:222
-#: views/person/add.php:145 views/person/addr-form.php:85
-#: views/person/addr.php:85 views/person/index.php:63 views/person/view.php:130
-#: views/staff/index.php:60 views/student/index.php:57
+#: views/index/profile.php:47 views/person/add.php:145
+#: views/person/addr-form.php:85 views/person/addr.php:85
+#: views/person/index.php:63 views/person/view.php:130 views/staff/index.php:60
+#: views/student/index.php:57
 msgid "Last Name"
 msgstr ""
 
 #: views/financial/index.php:68 views/index/apply.php:77
-#: views/index/profile.php:43 views/install/index.php:219
-#: views/person/add.php:136 views/person/addr-form.php:76
-#: views/person/addr.php:76 views/person/index.php:64 views/person/view.php:121
-#: views/staff/index.php:61 views/student/index.php:58
+#: views/index/profile.php:43 views/person/add.php:136
+#: views/person/addr-form.php:76 views/person/addr.php:76
+#: views/person/index.php:64 views/person/view.php:121 views/staff/index.php:61
+#: views/student/index.php:58
 msgid "First Name"
 msgstr ""
 
@@ -5376,8 +5395,6 @@ msgid "Apply for Admissions"
 msgstr ""
 
 #: views/index/apply.php:53 views/index/login.php:52
-#: views/install/index.php:140 views/install/index.php:198
-#: views/install/index.php:225
 msgid "Password"
 msgstr ""
 
@@ -5548,196 +5565,6 @@ msgstr ""
 
 #: views/index/view-news.php:32
 msgid "Last Update:"
-msgstr ""
-
-#: views/install/index.php:23
-msgid "eduTrac SIS Installer"
-msgstr ""
-
-#: views/install/index.php:42
-msgid "eduTrac SIS Installation Wizard"
-msgstr ""
-
-#: views/install/index.php:52
-msgid "Step 1 - Introduction"
-msgstr ""
-
-#: views/install/index.php:54
-msgid ""
-"Welcome to the eduTrac Student Information System. Before getting started, "
-"we need some information on the database. You will need to know the "
-"following items before proceeding."
-msgstr ""
-
-#: views/install/index.php:57
-msgid "Database name"
-msgstr ""
-
-#: views/install/index.php:58
-msgid "Database username"
-msgstr ""
-
-#: views/install/index.php:59
-msgid "Database password"
-msgstr ""
-
-#: views/install/index.php:60
-msgid "Database host"
-msgstr ""
-
-#: views/install/index.php:63
-msgid ""
-"If for some reason the config.php file does not get created after the "
-"installer has finished, don't worry. All this does is fill in the database "
-"information to the config file. Just go to the root of the install, make a "
-"copy of config.sample.php, rename the copy to config.php, and fill in the "
-"database information."
-msgstr ""
-
-#: views/install/index.php:65
-msgid ""
-"In all likelihood, these items were supplied to you by your Web Host. If you "
-"do not have this information, then you will need to contact them before you "
-"can continue. If you're all ready..."
-msgstr ""
-
-#: views/install/index.php:66 views/install/index.php:95
-#: views/install/index.php:149
-msgid "Next Step"
-msgstr ""
-
-#: views/install/index.php:78
-msgid "Step 2 - Environment Test"
-msgstr ""
-
-#: views/install/index.php:80
-msgid ""
-"If your system fails any of the tests to the right, then you need to correct "
-"them, refresh your browser to make sure all have a green 'ok' or an orange "
-"'warning' and then proceed with the install. If you proceed without "
-"correcting the errors, the install may fail and/or eduTrac may not function "
-"properly."
-msgstr ""
-
-#: views/install/index.php:99
-msgid "Legend"
-msgstr ""
-
-#: views/install/index.php:101
-msgid "ok"
-msgstr ""
-
-#: views/install/index.php:101
-msgid "All OK"
-msgstr ""
-
-#: views/install/index.php:102
-msgid "warning"
-msgstr ""
-
-#: views/install/index.php:102
-msgid "Not a deal breaker and is only a recommendation"
-msgstr ""
-
-#: views/install/index.php:103
-msgid "error"
-msgstr ""
-
-#: views/install/index.php:103
-msgid "eduTrac SIS requires this feature and can't work without it"
-msgstr ""
-
-#: views/install/index.php:118 views/install/index.php:134
-msgid "Database Name"
-msgstr ""
-
-#: views/install/index.php:119
-msgid "The name of the database you want to run eduTrac SIS in."
-msgstr ""
-
-#: views/install/index.php:125
-msgid "Step 3 - Database Connection"
-msgstr ""
-
-#: views/install/index.php:127
-msgid ""
-"On the right, you should enter your database connection details. If you're "
-"not sure about these, contact your host."
-msgstr ""
-
-#: views/install/index.php:143
-msgid "Database Host"
-msgstr ""
-
-#: views/install/index.php:164
-msgid "Step 4 - Install Database Tables"
-msgstr ""
-
-#: views/install/index.php:166
-msgid ""
-"It will take at least 30 seconds to a minute to install the tables. So "
-"please be patient."
-msgstr ""
-
-#: views/install/index.php:173
-msgid "Install Tables"
-msgstr ""
-
-#: views/install/index.php:190
-msgid ""
-"Usernames can have only alphanumeric characters, spaces, underscores, "
-"hyphens, periods and the @ symbol."
-msgstr ""
-
-#: views/install/index.php:199
-msgid ""
-"Hint: The password should be at least seven characters long. To make it "
-"stronger, use upper and lower case letters, numbers and symbols like ! \" ? "
-"$ % ^ &amp; )."
-msgstr ""
-
-#: views/install/index.php:205
-msgid "Step 5 - Admin Account"
-msgstr ""
-
-#: views/install/index.php:206
-msgid ""
-"Fill in the information to the right and you’ll be on your way to using the "
-"eduTrac SIS."
-msgstr ""
-
-#: views/install/index.php:228
-msgid "Your E-mail"
-msgstr ""
-
-#: views/install/index.php:234
-msgid "Create Admin"
-msgstr ""
-
-#: views/install/index.php:249
-msgid "Success!"
-msgstr ""
-
-#: views/install/index.php:251
-msgid ""
-"eduTrac SIS has been installed. Click the button below in order to create "
-"the config file, flush the installer and be redirected to the login page."
-msgstr ""
-
-#: views/install/index.php:253
-msgid "Finish Installer"
-msgstr ""
-
-#: views/install/index.php:265
-msgid "Javascript is required in order to use this installer."
-msgstr ""
-
-#: views/install/index.php:266
-msgid "How to enable javascript"
-msgstr ""
-
-#: views/install/index.php:268
-msgid "Upgrade Browser"
 msgstr ""
 
 #: views/permission/add.php:29 views/permission/index.php:32
@@ -6545,6 +6372,10 @@ msgid ""
 msgstr ""
 
 #: views/setting/index.php:346
+msgid "Click here"
+msgstr ""
+
+#: views/setting/index.php:346
 msgid "to generate an api key for your account."
 msgstr ""
 
@@ -6741,7 +6572,7 @@ msgid "User Login Details"
 msgstr ""
 
 #: views/sql/add-query.php:36 views/sql/add-query.php:65
-#: views/sql/csv-email.php:55 views/sql/index.php:92
+#: views/sql/csv-email.php:55 views/sql/index.php:91
 #: views/sql/saved-queries.php:28 views/sql/saved-queries.php:46
 #: views/sql/view-query.php:36 views/sql/view-query.php:65
 msgid "Saved Queries"
@@ -6751,12 +6582,12 @@ msgstr ""
 msgid "Create Save Query"
 msgstr ""
 
-#: views/sql/add-query.php:64 views/sql/csv-email.php:54 views/sql/index.php:91
+#: views/sql/add-query.php:64 views/sql/csv-email.php:54 views/sql/index.php:90
 #: views/sql/saved-queries.php:45 views/sql/view-query.php:64
 msgid "Create Saved Query"
 msgstr ""
 
-#: views/sql/add-query.php:66 views/sql/csv-email.php:56 views/sql/index.php:93
+#: views/sql/add-query.php:66 views/sql/csv-email.php:56 views/sql/index.php:92
 #: views/sql/saved-queries.php:47 views/sql/view-query.php:66
 msgid "CSV to Email"
 msgstr ""
@@ -6793,15 +6624,15 @@ msgstr ""
 msgid "Recipient"
 msgstr ""
 
-#: views/sql/index.php:68
+#: views/sql/index.php:67
 msgid "Choose a saved query from the drop down list or enter a custom query."
 msgstr ""
 
-#: views/sql/index.php:169
+#: views/sql/index.php:168
 msgid "Successly Executed - "
 msgstr ""
 
-#: views/sql/index.php:174
+#: views/sql/index.php:173
 msgid "Query is : "
 msgstr ""
 
