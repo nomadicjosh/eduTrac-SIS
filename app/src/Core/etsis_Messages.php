@@ -35,6 +35,7 @@ class etsis_Messages
         $error_message[] = $_COOKIE['error_message'];
         $plugin_success_message[] = $_COOKIE['plugin_success_message'];
         $plugin_error_message[] = $_COOKIE['plugin_error_message'];
+        $pnotify[] = $_COOKIE['pnotify'];
 
         // echo out positive messages
         if (isset($_COOKIE['success_message'])) {
@@ -65,6 +66,14 @@ class etsis_Messages
             foreach ($plugin_error_message as $message) {
                 $this->app->cookies->remove('plugin_error_message');
                 return '<section class="panel error-panel"><div class="alerts alerts-error center">' . sprintf(_t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br /> %s</div></section>'), $message);
+            }
+        }
+        
+        // return a browser notification if set
+        if (isset($_COOKIE['pnotify'])) {
+            foreach ($pnotify as $message) {
+                $this->app->cookies->remove('pnotify');
+                return $message;
             }
         }
     }
