@@ -20,7 +20,7 @@ _mkdir($app->config('cookies.savepath'));
 /**
  * Creates a node directory with proper permissions.
  */
-_mkdir($app->config('cookies.savepath') . 'nodes');
+_mkdir($app->config('cookies.savepath') . 'nodes' . DS . 'etsis' . DS);
 
 /**
  * Creates a file directory with proper permissions.

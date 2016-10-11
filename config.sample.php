@@ -94,12 +94,11 @@ defined('DB_PASS') or define('DB_PASS', '{password}');
 /**
  * NodeQ noSQL details.
  */
-defined('NODEQ_PATH') or define('NODEQ_PATH', $app->config('cookies.savepath') . 'nodes' . DS);
+defined('NODEQ_PATH') or define('NODEQ_PATH', $app->config('cookies.savepath') . 'nodes' . DS . 'etsis' . DS);
 
 /**
  * Do not edit anything from this point on.
  */
-
 $app->inst->singleton('db', function () {
     $pdo = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS, [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"]);
     $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -115,9 +114,7 @@ $app->inst->singleton('db', function () {
  */
 require( APP_PATH . 'functions.php' );
 require( APP_PATH . 'functions' . DS . 'dependency.php' );
-if (file_exists(BASE_PATH . 'config.php')) {
-    require( APP_PATH . 'functions' . DS . 'hook-function.php' );
-}
+require( APP_PATH . 'functions' . DS . 'hook-function.php' );
 require( APP_PATH . 'application.php' );
 
 /**
@@ -128,12 +125,15 @@ require( APP_PATH . 'application.php' );
  */
 include(APP_PATH . 'routers.php');
 
+/**
+ * Initialize benchmark.
+ */
 benchmark_init();
-if (file_exists(BASE_PATH . 'config.php')) {
-    date_default_timezone_set((get_option('system_timezone') !== NULL) ? get_option('system_timezone') : 'America/New_York');
-} else {
-    date_default_timezone_set('America/New_York');
-}
+
+/**
+ * Set the timezone for the application.
+ */
+date_default_timezone_set((get_option('system_timezone') !== NULL) ? get_option('system_timezone') : 'America/New_York');
 
 /**
  * Autoload Dropins
@@ -143,13 +143,11 @@ if (file_exists(BASE_PATH . 'config.php')) {
  * add your own customized screens without needing to touch
  * the core.
  */
-if (file_exists(BASE_PATH . 'config.php')) {
-    $dropins = glob(APP_PATH . 'dropins' . DS . '*.php');
-    if (is_array($dropins)) {
-        foreach ($dropins as $dropin) {
-            if (file_exists($dropin))
-                include($dropin);
-        }
+$dropins = glob(APP_PATH . 'dropins' . DS . '*.php');
+if (is_array($dropins)) {
+    foreach ($dropins as $dropin) {
+        if (file_exists($dropin))
+            include($dropin);
     }
 }
 
