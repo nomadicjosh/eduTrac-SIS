@@ -42,13 +42,13 @@ class File implements FileInterface {
 
     public final function getPath()
     {
-        if (!defined('NODEQ_PATH'))
+        if (!defined('ETSIS_NODEQ_PATH'))
         {
-            throw new LazerException('Please define constant NODEQ_PATH (check README.md)');
+            throw new LazerException('Please define constant ETSIS_NODEQ_PATH (check README.md)');
         }
         else if (!empty($this->type))
         {
-            return NODEQ_PATH . $this->name . '.' . $this->type . '.node';
+            return ETSIS_NODEQ_PATH . $this->name . '.' . $this->type . '.node';
         }
         else
         {

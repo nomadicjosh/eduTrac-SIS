@@ -94,7 +94,8 @@ defined('DB_PASS') or define('DB_PASS', '{password}');
 /**
  * NodeQ noSQL details.
  */
-defined('NODEQ_PATH') or define('NODEQ_PATH', $app->config('cookies.savepath') . 'nodes' . DS . 'etsis' . DS);
+defined('NODEQ_PATH') or define('NODEQ_PATH', $app->config('cookies.savepath') . 'nodes' . DS);
+defined('ETSIS_NODEQ_PATH') or define('ETSIS_NODEQ_PATH', NODEQ_PATH . 'etsis' . DS);
 
 /**
  * Do not edit anything from this point on.
