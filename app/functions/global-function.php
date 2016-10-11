@@ -63,3 +63,14 @@ function _etsis_email()
     $email = new \app\src\Core\etsis_Email();
     return $email;
 }
+
+/**
+ * Sets up eduTrac SIS Logger global scope.
+ *
+ * @since 6.2.11
+ */
+function _etsis_logger()
+{
+    $logger = new \app\src\Core\etsis_Logger();
+    return $logger;
+}

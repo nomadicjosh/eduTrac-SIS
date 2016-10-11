@@ -44,11 +44,9 @@ $js = [
 ];
 
 $json_url = get_base_url() . 'api' . '/';
-
-$logger = new \app\src\Log();
 $flashNow = new \app\src\Core\etsis_Messages;
 
-$app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
+$app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
 
     /**
      * Before route check.
@@ -102,7 +100,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         $section = get_course_sec($id);
 
         $date = date("Y-m-d");
@@ -194,10 +192,10 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
 
             if ($sect->update() || $q->update()) {
                 etsis_cache_delete($id, 'sect');
-                $logger->setLog('Update Record', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $section->courseSecCode . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $section->courseSecCode . ')', get_persondata('uname'));
                 $app->flash('success_message', $flashNow->notice(200));
             } else {
-                $logger->setLog('Update Error', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $section->courseSecCode . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Error', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $section->courseSecCode . ')', get_persondata('uname'));
                 $app->flash('error_message', $flashNow->notice(409));
             }
             /**
@@ -281,7 +279,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         $crse = get_course($id);
 
         if ($app->req->isPost()) {
@@ -365,7 +363,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
                 etsis_cache_flush_namespace('sect');
 
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Course Section', _trim($courseSection), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Course Section', _trim($courseSection), get_persondata('uname'));
                 redirect(get_base_url() . 'sect' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -419,7 +417,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         $section = get_course_sec($id);
 
         if ($app->req->isPost()) {
@@ -442,7 +440,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
             if ($sect->update()) {
                 etsis_cache_delete($id, 'sect');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Course Section', $section->courseSection, get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Course Section', $section->courseSection, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -518,7 +516,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         $sect = get_course_sec($id);
 
         if ($app->req->isPost()) {
@@ -541,7 +539,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
             if ($soff->update()) {
                 etsis_cache_delete($id, 'sect');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Course Section Offering', $sect->courseSection, get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Course Section Offering', $sect->courseSection, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -595,7 +593,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/fgrade/(\d+)/', function ($id) use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/fgrade/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
 
         if ($app->req->isPost()) {
             $size = count($_POST['stuID']);
@@ -616,7 +614,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
                 $grade->compCred = $compCred;
                 $grade->where('stuID = ?', $_POST['stuID'][$i])->_and_()->where('courseSecID = ?', $id)->update();
 
-                $logger->setLog('Update Record', 'Final Grade', get_name($_POST['stuID'][$i]) . ' (' . $_POST['termCode'] . '-' . $_POST['courseSecCode'] . ')', get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Final Grade', get_name($_POST['stuID'][$i]) . ' (' . $_POST['termCode'] . '-' . $_POST['courseSecCode'] . ')', get_persondata('uname'));
                 ++$i;
             }
             redirect($app->req->server['HTTP_REFERER']);
@@ -685,7 +683,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/rgn/', function () use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/rgn/', function () use($app, $css, $js, $json_url, $flashNow) {
         $time = date("h:i A");
 
         if ($app->req->isPost()) {
@@ -773,7 +771,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
                     generate_stu_bill($sect->termCode, $_POST['stuID'], $sect->courseSecID);
                 }
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Course Registration Via Staff', get_name($_POST['stuID']) . ' - ' . $sect->secShortTitle, get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Course Registration Via Staff', get_name($_POST['stuID']) . ' - ' . $sect->secShortTitle, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -797,7 +795,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
         }
     });
 
-    $app->match('GET|POST', '/sros/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/sros/', function () use($app, $css, $js, $flashNow) {
 
         if ($app->req->isPost()) {
             redirect(get_base_url() . 'sect/sros' . '/' . $_POST['sectionID'] . '/' . $_POST['template'] . '/');
@@ -811,7 +809,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $logger, $flash
         );
     });
 
-    $app->get('/sros/(\d+)/(\w+)/', function ($id, $template) use($app, $css, $js, $logger, $flashNow) {
+    $app->get('/sros/(\d+)/(\w+)/', function ($id, $template) use($app, $css, $js, $flashNow) {
 
         $sros = $app->db->query("SELECT 
 						a.stuID,a.courseSecCode,a.termCode,a.courseCredits,

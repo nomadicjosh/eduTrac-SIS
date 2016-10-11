@@ -417,8 +417,6 @@ function etsis_authenticate($login, $password, $rememberme)
 {
     $app = \Liten\Liten::getInstance();
 
-    $logger = new \app\src\Log();
-
     $person = $app->db->person()
         ->select('person.personID,person.uname,person.password')
         ->_join('staff', 'person.personID = staff.staffID')
@@ -446,7 +444,7 @@ function etsis_authenticate($login, $password, $rememberme)
      */
     $app->hook->apply_filter('etsis_auth_cookie', $person, $rememberme);
 
-    $logger->setLog('Authentication', 'Login', get_name(_h($person->personID)), _h($person->uname));
+    etsis_logger_activity_log_write('Authentication', 'Login', get_name(_h($person->personID)), _h($person->uname));
     redirect(get_base_url());
 }
 

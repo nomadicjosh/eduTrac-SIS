@@ -16,16 +16,6 @@ if ( isset( $assoc_args['require'] ) ) {
     }
 }
 
-// Global parameter :  --dir
-if ( isset( $assoc_args['dir'] ) ) {
-    if( file_exists( $assoc_args['dir'] ) ) {
-        define( 'ETSIS_DIR', rtrim( $assoc_args['dir'], '/' ) );
-        unset( $assoc_args['dir'] );
-    } else {
-        ETSIS_CLI::error( sprintf( 'The directory "%s" does not exist. It must be created first.', $assoc_args['dir'] ) ) ;
-    }
-}
-
 // Global parameter :  --path
 if ( !empty( $assoc_args['path'] ) ) {
 	define( 'ETSIS_ROOT', rtrim( $assoc_args['path'], '/' ) );

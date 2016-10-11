@@ -1,2 +1,2 @@
 #!/bin/bash
-php app/src/vendor/Phinx/vendor/bin/phinx $1 $2 $3 $4 $5
+php app/src/vendor/robmorgan/phinx/bin/phinx $1 $2 $3 $4 $5

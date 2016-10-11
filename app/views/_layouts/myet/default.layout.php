@@ -77,7 +77,7 @@ ob_implicit_flush(0);
 					<ul class="topnav pull-right">
 						
 						<li class="hidden-xs"><a href="<?=_h(get_option('help_desk'));?>" class="glyphicons shield"><i></i> <?=_t( 'Get Help' );?></a></li>
-						<?php if(!isUserLoggedIn()) : ?>
+						<?php if(!is_user_logged_in()) : ?>
 						<li class="glyphs2 hidden-xs">
 							<ul>
 								<li><a href="<?=get_base_url();?>login/" class="glyphicons unlock"><i></i> <?=_t( 'Sign in' );?></a></li>
@@ -98,7 +98,7 @@ ob_implicit_flush(0);
 							</ul>
 						</li>
 						<?php endif; ?>
-						<?php if(isUserLoggedIn() && isRecordActive(get_persondata('personID'))) : ?>
+						<?php if(is_user_logged_in() && isRecordActive(get_persondata('personID'))) : ?>
 						<li<?=ae('access_dashboard');?> class="glyphs2 hidden-xs">
 							<ul>
 								<li<?=ae('access_dashboard');?> class="single"><a href="<?=get_base_url();?>dashboard/" class="no-ajaxify glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
@@ -110,7 +110,7 @@ ob_implicit_flush(0);
 								<li class="single"><a href="<?=get_base_url();?>admin/" class="no-ajaxify glyphicons keys"><i></i> <?=_t( 'Admin' );?></a></li>
 							</ul>
 						</li>
-						<?php if(isUserLoggedIn()) : ?>
+						<?php if(is_user_logged_in()) : ?>
 						<li class="glyphs2 hidden-xs">
 							<ul>
 								<li class="single"><a href="<?=get_base_url();?>profile/" class="no-ajaxify glyphicons user"><i></i> <?=_t( 'Howdy,' );?> <?=get_persondata('uname');?></a></li>
@@ -143,7 +143,7 @@ ob_implicit_flush(0);
 			<ul class="topnav pull-left">
 				
 				<li><a href="<?=get_base_url();?>" class="glyphicons home"><i></i><?=_t( 'Home' );?></a></li>
-				<?php if(isUserLoggedIn()) : ?>
+				<?php if(is_user_logged_in()) : ?>
 				<li class="dropdown dd-1">
 					<a href="" data-toggle="dropdown" class="glyphicons show_lines"><i></i><?=_t( 'My Menu' );?> <span class="caret"></span></a>
 					<ul class="dropdown-menu pull-left">

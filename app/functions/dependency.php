@@ -12,12 +12,7 @@ if (! defined('BASE_PATH'))
  */
 $app = \Liten\Liten::getInstance();
 
-etsis_load_file(APP_PATH . 'src/vendor/Gettext/autoloader.php');
-etsis_load_file(APP_PATH . 'src/vendor/Gettext/Languages/autoloader.php');
-etsis_load_file(APP_PATH . 'src/vendor/Httpful/autoload.php');
-etsis_load_file(APP_PATH . 'src/vendor/CoreUpdate/vendor/autoload.php');
-etsis_load_file(APP_PATH . 'src/vendor/PHPMailer/vendor/autoload.php');
-etsis_load_file(APP_PATH . 'src/vendor/PHP-Benchmark/vendor/autoload.php');
+etsis_load_file(APP_PATH . 'src/vendor/autoload.php');
 
 $app->inst->singleton('hook', function () {
     return new \app\src\Hooks();
@@ -630,6 +625,9 @@ function remove_trailing_slash($string)
     return rtrim($string, '/\\');
 }
 
+require( APP_PATH . 'functions' . DS . 'logger-function.php' );
+require( APP_PATH . 'functions' . DS . 'notify-function.php' );
+require( APP_PATH . 'functions' . DS . 'nodeq-function.php' );
 require( APP_PATH . 'functions' . DS . 'global-function.php' );
 require( APP_PATH . 'functions' . DS . 'deprecated-function.php' );
 require( APP_PATH . 'functions' . DS . 'auth-function.php' );

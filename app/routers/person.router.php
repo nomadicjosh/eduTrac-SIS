@@ -1,6 +1,7 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use \app\src\Core\NodeQ\etsis_NodeQ as Node;
 
 /**
  * Person Router
@@ -32,12 +33,10 @@ $js = [
 ];
 
 $json_url = get_base_url() . 'api' . '/';
-
-$logger = new \app\src\Log();
 $flashNow = new \app\src\Core\etsis_Messages();
 $email = _etsis_email();
 
-$app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
+$app->group('/nae', function () use($app, $css, $js, $json_url, $flashNow, $email) {
 
     /**
      * Before route check.
@@ -98,7 +97,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
 
         if ($app->req->isPost()) {
             $nae = $app->db->person();
@@ -121,7 +120,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
                 $email->where('personID = ?', $id)->update();
 
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Person (NAE)', get_name($id), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Person (NAE)', get_name($id), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -156,12 +155,9 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
             ->findOne();
 
         $addr = $app->db->address()
-            ->where('addressType = "P"')
-            ->_and_()
-            ->where('endDate = "0000-00-00"')
-            ->_and_()
-            ->where('addressStatus = "C"')
-            ->_and_()
+            ->where('addressType = "P"')->_and_()
+            ->where('endDate = "0000-00-00"')->_and_()
+            ->where('addressStatus = "C"')->_and_()
             ->where('personID = ?', $id);
 
         $q = $addr->find(function ($data) {
@@ -224,7 +220,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
+    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $json_url, $flashNow, $email) {
 
         $passSuffix = 'eT*';
 
@@ -310,26 +306,18 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
                     } else {
                         $pass = 'myaccount' . $passSuffix;
                     }
-                    $host = strtolower($_SERVER['SERVER_NAME']);
-                    $site = _t('myeduTrac :: ') . _h(get_option('institution_name'));
-                    $message = _escape(get_option('person_login_details'));
-                    $message = str_replace('#uname#', $_POST['uname'], $message);
-                    $message = str_replace('#fname#', $_POST['fname'], $message);
-                    $message = str_replace('#lname#', $_POST['lname'], $message);
-                    $message = str_replace('#name#', $_POST['lname'] . ', ' . $_POST['fname'], $message);
-                    $message = str_replace('#id#', $ID, $message);
-                    $message = str_replace('#altID#', $_POST['altID'], $message);
-                    $message = str_replace('#password#', $pass, $message);
-                    $message = str_replace('#url#', get_base_url(), $message);
-                    $message = str_replace('#helpdesk#', _h(get_option('help_desk')), $message);
-                    $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
-                    $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
 
-                    $headers = "From: $site <dont-reply@$host>\r\n";
-                    $headers .= "X-Mailer: PHP/" . phpversion();
-                    $headers .= "MIME-Version: 1.0" . "\r\n";
-                    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                    $email->etsis_mail($_POST['email'], _t("myeduTrac Login Details"), $message, $headers);
+                    Node::dispense('login_details');
+                    $node = Node::table('login_details');
+                    $node->uname = (string) $_POST['uname'];
+                    $node->email = (string) $_POST['email'];
+                    $node->personid = (int) $ID;
+                    $node->fname = (string) $_POST['fname'];
+                    $node->lname = (string) $_POST['lname'];
+                    $node->password = (string) $pass;
+                    $node->altid = (string) $_POST['altID'];
+                    $node->sent = (int) 0;
+                    $node->save();
                 }
                 if ($addr->save()) {
 
@@ -347,8 +335,8 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
                         $nae
                     ]);
 
-                    $logger->setLog('New Record', 'Name and Address', get_name($ID), get_persondata('uname'));
-                    $app->flash('success_message', $flashNow->notice(200));
+                    etsis_logger_activity_log_write('New Record', 'Name and Address', get_name($ID), get_persondata('uname'));
+                    $app->flash('success_message', _t('200 - Success: Ok. If checked `Send username & password to the user`, email has been sent to the queue.'));
                     redirect(get_base_url() . 'nae' . '/' . $ID . '/');
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
@@ -388,8 +376,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
             ->select('b.addressID,b.address1,b.address2,b.city')
             ->select('b.state,b.zip,b.addressType,b.addressStatus')
             ->_join('address', 'a.personID = b.personID', 'b')
-            ->where('a.personID = ?', $id)
-            ->_and_()
+            ->where('a.personID = ?', $id)->_and_()
             ->where('b.personID <> "NULL"');
 
         $q = $adsu->find(function ($data) {
@@ -450,7 +437,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/addr-form/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/addr-form/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
 
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
@@ -484,7 +471,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
 
             if ($addr->save()) {
                 $ID = $addr->lastInsertId();
-                $logger->setLog('New Record', 'Address', get_name($decode[0]['personID']), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Address', get_name($decode[0]['personID']), get_persondata('uname'));
                 $app->flash('success_message', $flashNow->notice(200));
                 etsis_cache_delete($id, 'stu');
                 etsis_cache_delete($id, 'person');
@@ -545,7 +532,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/addr/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/addr/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
 
         $json_a = _file_get_contents($json_url . 'address/addressID/' . $id . '/?key=' . _h(get_option('api_key')));
         $a_decode = json_decode($json_a, true);
@@ -565,7 +552,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
             $addr->where('addressID = ?', $id);
             if ($addr->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Address', get_name($a_decode[0]['personID']), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Address', get_name($a_decode[0]['personID']), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -625,7 +612,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
 
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
@@ -705,7 +692,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/perms/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/perms/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
 
         $json = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . _h(get_option('api_key')));
         $decode = json_decode($json, true);
@@ -770,7 +757,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/usernameCheck/', function () use($app) {
+    $app->match('GET|POST', '/usernameCheck/', function () {
         $uname = get_person_by('uname', $_POST['uname']);
 
         if ($uname->uname == $_POST['uname']) {
@@ -787,7 +774,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->get('/resetPassword/(\d+)/', function ($id) use($app, $logger, $flashNow, $email) {
+    $app->get('/resetPassword/(\d+)/', function ($id) use($app, $flashNow, $email) {
 
         $passSuffix = 'eT*';
 
@@ -803,27 +790,18 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
             $pass = 'myaccount' . $passSuffix;
         }
 
-        $from = _h(get_option('institution_name'));
-        $fromEmail = _h(get_option('system_email'));
-        $url = get_base_url();
-        $host = $app->req->server['HTTP_HOST'];
-        $helpDesk = _h(get_option('help_desk'));
-        $body = _escape(get_option('reset_password_text'));
-        $body = str_replace('#instname#', _h(get_option('institution_name')), $body);
-        $body = str_replace('#mailaddr#', _h(get_option('mailing_address')), $body);
-        $body = str_replace('#url#', $url, $body);
-        $body = str_replace('#helpdesk#', $helpDesk, $body);
-        $body = str_replace('#adminemail#', $fromEmail, $body);
-        $body = str_replace('#uname#', _h($person->uname), $body);
-        $body = str_replace('#email#', _h($person->email), $body);
-        $body = str_replace('#name#', get_name(_h($person->personID)), $body);
-        $body = str_replace('#fname#', _h($person->fname), $body);
-        $body = str_replace('#lname#', _h($person->lname), $body);
-        $body = str_replace('#password#', $pass, $body);
-        $headers = "From: $from <auto-reply@$host>\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion();
-        $headers .= "MIME-Version: 1.0\r\n";
-        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        Node::dispense('reset_password');
+        $node = Node::table('reset_password');
+        $node->uname = (string) _h($person->uname);
+        $node->email = (string) _h($person->email);
+        $node->name = (string) get_name(_h($person->personID));
+        $node->personid = (int) _h($person->personID);
+        $node->fname = (string) _h($person->fname);
+        $node->lname = (string) _h($person->lname);
+        $node->password = (string) $pass;
+        $node->sent = (int) 0;
+        $node->save();
+
         $password = etsis_hash_password($pass);
         $q2 = $app->db->person();
         $q2->password = $password;
@@ -851,9 +829,8 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $logger, $flashN
              */
             $app->hook->do_action('post_reset_password', $pass);
 
-            $app->flash('success_message', _t('The password has been reset and an email has been sent to this user.'));
-            $email->etsis_mail($person->email, _t("Reset Password"), $body, $headers);
-            $logger->setLog(_t('Update Record'), _t('Reset Password'), get_name($id), get_persondata('uname'));
+            etsis_desktop_notify(_t('Reset Password'), _t('Password reset; new email sent to queue.'), 'false');
+            etsis_logger_activity_log_write(_t('Update Record'), _t('Reset Password'), get_name($id), get_persondata('uname'));
         } else {
             $app->flash('error_message', $flashNow->notice(409));
         }

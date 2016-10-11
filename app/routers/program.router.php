@@ -44,11 +44,9 @@ $js = [
 ];
 
 $json_url = get_base_url() . 'api' . '/';
-
-$logger = new \app\src\Log();
 $flashNow = new \app\src\Core\etsis_Messages();
 
-$app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $flashNow) {
+$app->group('/program', function() use ($app, $css, $js, $json_url, $flashNow) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {
@@ -86,7 +84,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
         );
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         $program = get_acad_program($id);
 
         if ($app->req->isPost()) {
@@ -124,10 +122,10 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
             if ($prog->update()) {
                 etsis_cache_delete($id, 'prog');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update', 'Acad Program', $program->acadProgCode, get_persondata('uname'));
+                etsis_logger_activity_log_write('Update', 'Acad Program', $program->acadProgCode, get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
-                $logger->setLog('Update Error', 'Acad Program', $program->acadProgCode, get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Error', 'Acad Program', $program->acadProgCode, get_persondata('uname'));
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
@@ -189,7 +187,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
         }
     });
 
-    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $flashNow) {
 
         if ($app->req->isPost()) {
             $prog = $app->db->acad_program();
@@ -226,7 +224,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $logger, $fl
                 $ID = $prog->lastInsertId();
                 etsis_cache_flush_namespace('prog');
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Acad Program', $_POST['acadProgCode'], get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Acad Program', $_POST['acadProgCode'], get_persondata('uname'));
                 redirect(get_base_url() . 'program' . '/' . $ID . '/');
             } else {
                 $app->flash('error_message', $flashNow->notice(409));

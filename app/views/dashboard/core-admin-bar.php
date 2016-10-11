@@ -53,9 +53,6 @@ $app = \Liten\Liten::getInstance();
                                         <li<?= hl('registration_settings'); ?>><a href="<?= get_base_url(); ?>registration/<?= bm(); ?>"> <?= _t('Registration Settings'); ?></a></li>
                                         <li<?= hl('email_settings'); ?>><a href="<?= get_base_url(); ?>email/<?= bm(); ?>"> <?= _t('Email Settings'); ?></a></li>
                                         <li<?= hl('email_settings'); ?>><a href="<?= get_base_url(); ?>templates/<?= bm(); ?>"> <?= _t('Email Templates'); ?></a></li>
-                                        <?php if (defined('MULTICAMPUS') && MULTICAMPUS == true) : ?>
-                                        <li<?= \app\src\Campus::menu(); ?><?= ml('campus_module'); ?>><a href="<?= get_base_url(); ?>campus/<?= bm(); ?>"> <?= _t('Campuses'); ?></a></li>
-                                        <?php endif; ?>
                                         <li<?= hl('importer', 'import_data'); ?><?= ml('import_module'); ?> class=""><a href="<?= get_base_url(); ?>form/import/<?= bm(); ?>"><?= _t('Importer'); ?></a></li>
                                         <li<?= hl('cron_jobs'); ?>><a href="<?= get_base_url(); ?>cron/<?= bm(); ?>"> <?= _t('Cronjob Handler'); ?></a></li>
                                         <li<?= hl('permissions', 'access_permission_screen'); ?>><a href="<?= get_base_url(); ?>permission/<?= bm(); ?>"> <?= _t('(MPRM) Manage Perm'); ?></a></li>
@@ -65,6 +62,8 @@ $app = \Liten\Liten::getInstance();
                                         <li<?= hl('automatic_update', 'edit_settings'); ?>><a href="<?= get_base_url(); ?>dashboard/core-update/<?= bm(); ?>"> <?= _t('Automatic Update'); ?></a></li>
                                     </ul>
                                 </li>
+                                
+                                <li<?= hl('snapshot', 'access_error_log_screen'); ?>><a href="<?= get_base_url(); ?>dashboard/system-snapshot/<?= bm(); ?>" class="glyphicons camera"><i></i><?= _t('System Snapshot Report'); ?></a></li>
                                 
                                 <li<?= ae('access_plugin_screen'); ?> class="dropdown submenu">
                                     <a href="" data-toggle="dropdown" class="dropdown-toggle glyphicons package"><i></i><?= _t('System Modules'); ?> <span class="caret"></span></a>

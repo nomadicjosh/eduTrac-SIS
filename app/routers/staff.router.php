@@ -29,7 +29,7 @@ function access($attr, $path, $data, $volume)
  * Before router middleware checks to see
  * if the user is logged in.
  */
-$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff(.*)', function() use ($app) {
+$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff(.*)', function() {
     if (!is_user_logged_in()) {
         redirect(get_base_url() . 'login' . '/');
     }
@@ -65,8 +65,6 @@ $js = [
 ];
 
 $json_url = get_base_url() . 'api' . '/';
-
-$logger = new \app\src\Log();
 $flashNow = new \app\src\Core\etsis_Messages();
 use \app\src\elFinder\elFinderConnector;
 use \app\src\elFinder\elFinder;
@@ -74,14 +72,14 @@ use \app\src\elFinder\elFinderVolumeDriver;
 use \app\src\elFinder\elFinderVolumeLocalFileSystem;
 use \app\src\elFinder\elFinderVolumeS3;
 
-$app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flashNow) {
+$app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
 
         /**
          * Before route middleware check.
          */
-        $app->before('GET|POST', '/staff/', function() use ($app) {
+        $app->before('GET|POST', '/staff/', function() {
             if (!hasPermission('access_staff_screen')) {
                 redirect(get_base_url() . 'dashboard' . '/');
             }
@@ -232,7 +230,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         if ($app->req->isPost()) {
             $staff = $app->db->staff();
             foreach (_filter_input_array(INPUT_POST) as $k => $v) {
@@ -248,7 +246,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
                  */
                 $app->hook->do_action('post_update_staff', $staff);
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Staff', get_name($id), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Staff', get_name($id), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -317,13 +315,13 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
     /**
      * Before route middleware check.
      */
-    $app->before('GET|POST', '/add/(\d+)/', function($id) use ($app) {
+    $app->before('GET|POST', '/add/(\d+)/', function($id) {
         if (!hasPermission('create_staff_record')) {
             redirect(get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
 
         $json_p = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
         $p_decode = json_decode($json_p, true);
@@ -389,7 +387,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $logger, $flas
                  */
                 $app->hook->do_action('post_save_staff_meta', $meta);
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Staff Member', get_name($id), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Staff Member', get_name($id), get_persondata('uname'));
                 redirect(get_base_url() . 'staff' . '/' . $id);
             } else {
                 $app->flash('error_message', $flashNow->notice(409));

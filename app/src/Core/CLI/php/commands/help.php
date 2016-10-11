@@ -57,7 +57,7 @@ OPTIONAL PARAMETERS
   --path=<path>         Path to eduTrac SIS files.
   --dir=<path>          Set path to locate file or where file should be saved.
 
-Flags
+FLAGS
   --verbose, -v         Turn on verbose output.
   --quiet, -q           Disable all output.
 EOB

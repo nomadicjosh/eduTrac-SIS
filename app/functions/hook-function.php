@@ -263,15 +263,15 @@ function _deprecated_function($function_name, $release, $replacement = null)
     if (APP_ENV == 'DEV' && $app->hook->apply_filter('deprecated_function_trigger_error', true)) {
         if (function_exists('_t')) {
             if (!is_null($replacement)) {
-                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />'), $function_name, $release, $replacement));
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s() instead. <br />'), $function_name, $release, $replacement), E_USER_DEPRECATED);
             } else {
-                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $function_name, $release));
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $function_name, $release), E_USER_DEPRECATED);
             }
         } else {
             if (!is_null($replacement)) {
-                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />', $function_name, $release, $replacement));
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s() instead. <br />', $function_name, $release, $replacement), E_USER_DEPRECATED);
             } else {
-                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $function_name, $release));
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $function_name, $release), E_USER_DEPRECATED);
             }
         }
     }
@@ -326,15 +326,15 @@ function _deprecated_class($class_name, $release, $replacement = null)
     if (APP_ENV == 'DEV' && $app->hook->apply_filter('deprecated_class_trigger_error', true)) {
         if (function_exists('_t')) {
             if (!is_null($replacement)) {
-                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />'), $class_name, $release, $replacement));
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />'), $class_name, $release, $replacement), E_USER_DEPRECATED);
             } else {
-                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $class_name, $release));
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $class_name, $release), E_USER_DEPRECATED);
             }
         } else {
             if (!is_null($replacement)) {
-                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />', $class_name, $release, $replacement));
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />', $class_name, $release, $replacement), E_USER_DEPRECATED);
             } else {
-                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $class_name, $release));
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $class_name, $release), E_USER_DEPRECATED);
             }
         }
     }
@@ -389,15 +389,15 @@ function _deprecated_class_method($method_name, $release, $replacement = null)
     if (APP_ENV == 'DEV' && $app->hook->apply_filter('deprecated_class_method_trigger_error', true)) {
         if (function_exists('_t')) {
             if (!is_null($replacement)) {
-                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />'), $method_name, $release, $replacement));
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s() instead. <br />'), $method_name, $release, $replacement), E_USER_DEPRECATED);
             } else {
-                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $method_name, $release));
+                _trigger_error(sprintf(_t('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $method_name, $release), E_USER_DEPRECATED);
             }
         } else {
             if (!is_null($replacement)) {
-                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s instead. <br />', $method_name, $release, $replacement));
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s! Use %3$s() instead. <br />', $method_name, $release, $replacement), E_USER_DEPRECATED);
             } else {
-                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $method_name, $release));
+                _trigger_error(sprintf('%1$s() is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $method_name, $release), E_USER_DEPRECATED);
             }
         }
     }
@@ -459,15 +459,15 @@ function _deprecated_argument($function_name, $release, $message = null)
     if (APP_ENV == 'DEV' && $app->hook->apply_filter('deprecated_argument_trigger_error', true)) {
         if (function_exists('_t')) {
             if (!is_null($message)) {
-                _trigger_error(sprintf(_t('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s! %3$s. <br />'), $function_name, $release, $message));
+                _trigger_error(sprintf(_t('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s! %3$s. <br />'), $function_name, $release, $message), E_USER_DEPRECATED);
             } else {
-                _trigger_error(sprintf(_t('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $function_name, $release));
+                _trigger_error(sprintf(_t('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s with no alternative available. <br />'), $function_name, $release), E_USER_DEPRECATED);
             }
         } else {
             if (!is_null($message)) {
-                _trigger_error(sprintf('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s! %3$s. <br />', $function_name, $release, $message));
+                _trigger_error(sprintf('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s! %3$s. <br />', $function_name, $release, $message), E_USER_DEPRECATED);
             } else {
-                _trigger_error(sprintf('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $function_name, $release));
+                _trigger_error(sprintf('%1$s() was called with an argument that is <strong>deprecated</strong> since release %2$s with no alternative available. <br />', $function_name, $release), E_USER_DEPRECATED);
             }
         }
     }
@@ -521,11 +521,11 @@ function _incorrectly_called($function_name, $message, $release)
         if (function_exists('_t')) {
             $release = is_null($release) ? '' : sprintf(_t('(This message was added in release %s.) <br /><br />'), $release);
             /* translators: %s: Codex URL */
-            $message .= ' ' . sprintf(_t('Please see <a href="%s">Debugging in eduTrac SIS</a> for more information.'), 'http://developer.edutracsis.com/codex/debugging-edutrac-sis/');
+            $message .= ' ' . sprintf(_t('Please see <a href="%s">Debugging in eduTrac SIS</a> for more information.'), 'https://developer.edutracsis.com/codex/debugging-edutrac-sis/');
             _trigger_error(sprintf(_t('%1$s() was called <strong>incorrectly</strong>. %2$s %3$s <br />'), $function_name, $message, $release));
         } else {
             $release = is_null($release) ? '' : sprintf('(This message was added in release %s.) <br /><br />', $release);
-            $message .= sprintf(' Please see <a href="%s">Debugging in eduTrac SIS</a> for more information.', 'http://developer.edutracsis.com/codex/debugging-edutrac-sis/');
+            $message .= sprintf(' Please see <a href="%s">Debugging in eduTrac SIS</a> for more information.', 'https://developer.edutracsis.com/codex/debugging-edutrac-sis/');
             _trigger_error(sprintf('%1$s() was called <strong>incorrectly</strong>. %2$s %3$s <br />', $function_name, $message, $release));
         }
     }
@@ -786,7 +786,7 @@ function show_update_message()
     if ($acl->userHasRole(8)) {
         $update = new \VisualAppeal\AutoUpdate(rtrim($app->config('file.savepath'), '/'), BASE_PATH, 1800);
         $update->setCurrentVersion(RELEASE_TAG);
-        $update->setUpdateUrl('http://etsis.s3.amazonaws.com/core/1.1/update-check');
+        $update->setUpdateUrl('https://etsis.s3.amazonaws.com/core/1.1/update-check');
 
         // Optional:
         $update->addLogHandler(new Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/core-update.' . date('m-d-Y') . '.txt'));
@@ -794,7 +794,7 @@ function show_update_message()
         if ($update->checkUpdate() !== false) {
             if ($update->newVersionAvailable()) {
                 $alert = '<div class="alerts alerts-warn center">';
-                $alert .= sprintf(_t('eduTrac SIS release %s is available for download/upgrade. Before upgrading, make sure to <a href="%s">backup your system</a>.'), $update->getLatestVersion(), 'http://www.edutracsis.com/manual/edutrac-sis-backups/');
+                $alert .= sprintf(_t('eduTrac SIS release %s is available for download/upgrade. Before upgrading, make sure to <a href="%s">backup your system</a>.'), $update->getLatestVersion(), 'https://www.edutracsis.com/manual/edutrac-sis-backups/');
                 $alert .= '</div>';
             }
         }
@@ -1700,7 +1700,9 @@ function _etsis_student_router()
     return $app->hook->apply_filter('student_router', $router);
 }
 $app->hook->add_action('admin_head', 'head_release_meta', 5);
+$app->hook->add_action('admin_head', 'etsis_notify_style', 2);
 $app->hook->add_action('myet_head', 'head_release_meta', 5);
+$app->hook->add_action('footer', 'etsis_notify_script', 5);
 $app->hook->add_action('release', 'foot_release', 5);
 $app->hook->add_action('dashboard_top_widgets', 'dashboard_student_count', 5);
 $app->hook->add_action('dashboard_top_widgets', 'dashboard_course_count', 5);

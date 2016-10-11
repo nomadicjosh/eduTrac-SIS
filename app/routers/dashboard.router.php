@@ -14,10 +14,6 @@ if (!defined('BASE_PATH'))
  * Before route check.
  */
 $app->before('GET|POST', '/dashboard(.*)', function () {
-    if (!file_exists(BASE_PATH . 'config.php')) {
-        redirect(get_base_url() . 'install/?step=1');
-    }
-
     if (!hasPermission('access_dashboard')) {
         redirect(get_base_url());
     }
@@ -32,7 +28,6 @@ $app->before('GET|POST', '/dashboard(.*)', function () {
     }
 });
 
-$logger = new \app\src\Log();
 $flashNow = new \app\src\Core\etsis_Messages();
 
 $app->get('/dashboard', function () use($app) {
@@ -82,7 +77,7 @@ $app->get('/dashboard', function () use($app) {
         ->groupBy('d.deptCode')
         ->orderBy('d.deptCode', 'DESC')
         ->limit(10);
-    
+
     $dept = $stuDept->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
@@ -175,6 +170,21 @@ $app->before('GET|POST', '/dashboard/upgrade/', function () {
 $app->match('GET|POST', '/dashboard/upgrade/', function () use($app) {
     $app->view->display('dashboard/upgrade', [
         'title' => 'Database Upgrade'
+    ]);
+});
+
+/**
+ * Before route check.
+ */
+$app->before('GET|POST','/dashboard/system-snapshot/', function () {
+    if (!hasPermission('edit_settings')) {
+        redirect(get_base_url() . 'dashboard' . '/');
+    }
+});
+
+$app->get('/dashboard/system-snapshot/', function () use($app) {
+    $app->view->display('dashboard/system-snapshot', [
+        'title' => 'System Snapshot Report'
     ]);
 });
 

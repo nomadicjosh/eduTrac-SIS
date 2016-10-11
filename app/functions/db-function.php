@@ -302,7 +302,7 @@ function qt($table, $field, $where = null)
         return $array;
     });
     foreach ($result as $r) {
-        return $r[$field];
+        return _h($r[$field]);
     }
 }
 

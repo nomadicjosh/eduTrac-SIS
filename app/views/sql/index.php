@@ -15,7 +15,6 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'sql';
 $flash = new \app\src\Core\etsis_Messages();
-$logger = new \app\src\Log;
 
 $pdo = new \PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS,[\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"]);
 
@@ -163,7 +162,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				
 					$qtext2 = str_replace("\\", " ", $qtext);
                     /* Write to activity log table. */
-                    $logger->setLog("Query", "SQL Interface", $qtext2, get_persondata('uname') );
+                    etsis_logger_activity_log_write("Query", "SQL Interface", $qtext2, get_persondata('uname') );
 				
 						if($result = $pdo->query("$qtext2"))
 							echo _t( "Successly Executed - " );

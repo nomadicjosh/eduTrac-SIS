@@ -177,3 +177,30 @@ function isUserLoggedIn()
 
     return is_user_logged_in();
 }
+
+/**
+ * Custom error log function for better PHP logging.
+ *
+ * @deprecated since release 6.2.11
+ * @since 6.2.0
+ * @param string $name
+ *            Log channel and log file prefix.
+ * @param string $message
+ *            Message printed to log.
+ */
+function _error_log($name, $message)
+{
+    _deprecated_function(__FUNCTION__, '6.2.11', 'etsis_monolog');
+
+    return etsis_monolog($name, $message, $level = 'addInfo');
+}
+
+/**
+ * Function wrapper for the setError log method.
+ * 
+ * @deprecated since release 6.2.11
+ */
+function logError()
+{
+    _deprecated_function(__FUNCTION__, '6.2.11', 'etsis_error_handler');
+}

@@ -29,12 +29,10 @@ $js = [
 ];
 
 $json_url = get_base_url() . 'api' . '/';
-
-$logger = new \app\src\Log();
 $email = _etsis_email();
 $flashNow = new \app\src\Core\etsis_Messages();
 
-$app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashNow, $email) {
+$app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $email) {
 
     /**
      * Before route check.
@@ -103,7 +101,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         if ($app->req->isPost()) {
             $spro = $app->db->student();
             foreach (_filter_input_array(INPUT_POST) as $k => $v) {
@@ -130,7 +128,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                  */
                 $app->hook->do_action('post_update_spro', $spro);
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Student Profile (SPRO)', get_name($id), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Student Profile (SPRO)', get_name($id), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -221,7 +219,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow, $email) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow, $email) {
         if ($app->req->isPost()) {
             $nae = get_person_by('personID', $id);
             if ($nae->ssn > 0) {
@@ -314,7 +312,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                 $app->hook->do_action('post_save_stu', $spro);
 
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Student', get_name($id), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Student', get_name($id), get_persondata('uname'));
                 redirect(get_base_url() . 'stu/' . $id . '/' . bm());
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -533,7 +531,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/shis/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/shis/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
 
         if ($app->req->isPost()) {
             if (isset($_POST['shisID'])) {
@@ -548,7 +546,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                     $shis->where('stuID = ?', $id)->_and_()->where('shisID = ?', $_POST['shisID'][$i]);
                     if ($shis->update()) {
                         $app->flash('success_message', $flashNow->notice(200));
-                        $logger->setLog('Update Record', 'Student Hiatus', get_name($id), get_persondata('uname'));
+                        etsis_logger_activity_log_write('Update Record', 'Student Hiatus', get_name($id), get_persondata('uname'));
                     } else {
                         $app->flash('error_message', $flashNow->notice(409));
                     }
@@ -561,7 +559,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                 }
                 if ($shis->save()) {
                     $app->flash('success_message', $flashNow->notice(200));
-                    $logger->setLog('New Record', 'Student Hiatus (SHIS)', get_name($id), get_persondata('uname'));
+                    etsis_logger_activity_log_write('New Record', 'Student Hiatus (SHIS)', get_name($id), get_persondata('uname'));
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                 }
@@ -652,7 +650,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/strc/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/strc/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
 
         if ($app->req->isPost()) {
             if (isset($_POST['rstrID'])) {
@@ -668,7 +666,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                     $strc->where('stuID = ?', $id)->_and_()->where('rstrID = ?', $_POST['rstrID'][$i]);
                     if ($strc->update()) {
                         $app->flash('success_message', $flashNow->notice(200));
-                        $logger->setLog('Update Record', 'Student Restriction', get_name($id), get_persondata('uname'));
+                        etsis_logger_activity_log_write('Update Record', 'Student Restriction', get_name($id), get_persondata('uname'));
                     } else {
                         $app->flash('error_message', $flashNow->notice(409));
                     }
@@ -681,7 +679,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                 }
                 if ($strc->save()) {
                     $app->flash('success_message', $flashNow->notice(200));
-                    $logger->setLog('New Record', 'Student Restriction (STRC)', get_name($id), get_persondata('uname'));
+                    etsis_logger_activity_log_write('New Record', 'Student Restriction (STRC)', get_name($id), get_persondata('uname'));
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
                 }
@@ -991,7 +989,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/sacp/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/sacp/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         if ($app->req->isPost()) {
             $sacp = $app->db->stu_program();
             foreach (_filter_input_array(INPUT_POST) as $k => $v) {
@@ -1000,7 +998,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
             $sacp->where('stuProgID = ?', $id);
             if ($sacp->update()) {
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('Update Record', 'Student Acad Program (SACP)', get_name($_POST['stuID']), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Student Acad Program (SACP)', get_name($_POST['stuID']), get_persondata('uname'));
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
             }
@@ -1081,7 +1079,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/add-prog/(\d+)/', function ($id) use($app, $css, $js, $json_url, $logger, $flashNow) {
+    $app->match('GET|POST', '/add-prog/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
         if ($app->req->isPost()) {
             $json = _file_get_contents($json_url . 'acad_program/acadProgCode/' . $_POST['acadProgCode'] . '/?key=' . get_option('api_key'));
             $decode = json_decode($json, true);
@@ -1118,7 +1116,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                     $al->save();
                 }
                 $app->flash('success_message', $flashNow->notice(200));
-                $logger->setLog('New Record', 'Student Academic Program', get_name($id), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Student Academic Program', get_name($id), get_persondata('uname'));
                 redirect(get_base_url() . 'stu' . '/' . $id . '/' . bm());
             } else {
                 $app->flash('error_message', $flashNow->notice(409));
@@ -1182,7 +1180,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
         }
     });
 
-    $app->match('GET|POST', '/graduation/', function () use($app, $css, $js, $logger, $flashNow) {
+    $app->match('GET|POST', '/graduation/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             if (!empty($_POST['studentID'])) {
                 $grad = $app->db->stu_program();
@@ -1202,7 +1200,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
                 $grad->queryID = $_POST['queryID'];
                 $grad->gradDate = $_POST['gradDate'];
                 if ($grad->save()) {
-                    $logger->setLog('Update Record', 'Graduation', get_name($_POST['stuID']), get_persondata('uname'));
+                    etsis_logger_activity_log_write('Update Record', 'Graduation', get_name($_POST['stuID']), get_persondata('uname'));
                     $app->flash('success_message', $flashNow->notice(200));
                 } else {
                     $app->flash('error_message', $flashNow->notice(409));
@@ -1413,7 +1411,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/timetable/', function() use($app) {
+    $app->before('GET|POST', '/timetable/', function() {
         if (!checkStuAccess(get_persondata('personID'))) {
             redirect(get_base_url() . 'profile' . '/');
         }
@@ -1439,7 +1437,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/terms/', function() use($app) {
+    $app->before('GET|POST', '/terms/', function() {
         if (!checkStuAccess(get_persondata('personID'))) {
             redirect(get_base_url() . 'profile' . '/');
         }
@@ -1484,7 +1482,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/schedule.*', function() use($app) {
+    $app->before('GET|POST', '/schedule.*', function() {
         if (!checkStuAccess(get_persondata('personID'))) {
             redirect(get_base_url() . 'profile' . '/');
         }
@@ -1567,7 +1565,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $logger, $flashN
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/final-grades/', function() use($app) {
+    $app->before('GET|POST', '/final-grades/', function() {
         if (!checkStuAccess(get_persondata('personID'))) {
             redirect(get_base_url() . 'profile' . '/');
         }

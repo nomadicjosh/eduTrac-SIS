@@ -12,19 +12,12 @@ if (!defined('BASE_PATH'))
  */
 $json_url = get_base_url() . 'api' . '/';
 $hasher = new \app\src\PasswordHash(8, FALSE);
-
-$logger = new \app\src\Log();
 $flashNow = new \app\src\Core\etsis_Messages();
 
 /**
  * Before route check.
  */
 $app->before('GET|POST', '/', function() {
-    if (!file_exists(BASE_PATH . 'config.php')) {
-        redirect(get_base_url() . 'install/?step=1');
-        exit();
-    }
-
     if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
         redirect(get_base_url() . 'offline' . '/');
     }
@@ -79,7 +72,7 @@ $app->before('GET|POST', '/login/', function() {
     }
 });
 
-$app->match('GET|POST', '/login/', function () use($app, $hasher, $logger) {
+$app->match('GET|POST', '/login/', function () use($app) {
 
     if ($app->req->isPost()) {
         /**
@@ -244,7 +237,7 @@ $app->match('GET|POST', '/permission/', function () use($app) {
     );
 });
 
-$app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url, $logger, $flashNow) {
+$app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url, $flashNow) {
     if ($app->req->isPost()) {
         $perm = $app->db->permission();
         foreach (_filter_input_array(INPUT_POST) as $k => $v) {
@@ -253,7 +246,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
         $perm->where('ID = ?', $id);
         if ($perm->update()) {
             $app->flash('success_message', $flashNow->notice(200));
-            $logger->setLog('Update Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
+            etsis_logger_activity_log_write('Update Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
         } else {
             $app->flash('error_message', $flashNow->notice(409));
         }
@@ -315,7 +308,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
     }
 });
 
-$app->match('GET|POST', '/permission/add/', function () use($app, $flashNow, $logger) {
+$app->match('GET|POST', '/permission/add/', function () use($app, $flashNow) {
 
     $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
     $js = [
@@ -339,7 +332,7 @@ $app->match('GET|POST', '/permission/add/', function () use($app, $flashNow, $lo
         }
         if ($perm->save()) {
             $app->flash('success_message', $flashNow->notice(200));
-            $logger->setLog('New Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
+            etsis_logger_activity_log_write('New Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
             redirect(get_base_url() . 'permission' . '/');
         } else {
             $app->flash('error_message', $flashNow->notice(409));
@@ -496,7 +489,7 @@ $app->post('/role/editRole/', function () use($app, $flashNow) {
     redirect($app->req->server['HTTP_REFERER']);
 });
 
-$app->post('/message/', function () use($app, $logger) {
+$app->post('/message/', function () use($app) {
     $options = ['myet_welcome_message'];
 
     foreach ($options as $option_name) {
@@ -512,7 +505,7 @@ $app->post('/message/', function () use($app, $logger) {
      */
     $app->hook->do_action('update_options');
     /* Write to logs */
-    $logger->setLog('Update', 'myeduTrac', 'Welcome Message', get_persondata('uname'));
+    etsis_logger_activity_log_write('Update', 'myeduTrac', 'Welcome Message', get_persondata('uname'));
 
     redirect($app->req->server['HTTP_REFERER']);
 });
@@ -612,9 +605,9 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
     redirect(get_base_url() . 'dashboard' . '/');
 });
 
-$app->get('/logout/', function () use($app, $logger) {
+$app->get('/logout/', function () {
 
-    $logger->setLog('Authentication', 'Logout', get_name(get_persondata('personID')), get_persondata('uname'));
+    etsis_logger_activity_log_write('Authentication', 'Logout', get_name(get_persondata('personID')), get_persondata('uname'));
     /**
      * This function is documented in app/functions/auth-function.php.
      * 

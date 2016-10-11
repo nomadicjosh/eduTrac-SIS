@@ -34,7 +34,7 @@ abstract class ETSIS_CLI_Command {
         }
     }
     
-    static function describe_command( $class, $command ) {
+    public static function describe_command( $class, $command ) {
         if ( method_exists( $class, 'help' ) ) {
             $class::help();
             return;
@@ -59,7 +59,7 @@ abstract class ETSIS_CLI_Command {
      * @param string $class
      * @return array The list of methods
      */
-    static function get_subcommands( $class ) {
+    public static function get_subcommands( $class ) {
         $reflection = new ReflectionClass( $class );
 
         $methods = array();

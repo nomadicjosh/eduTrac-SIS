@@ -18,6 +18,11 @@ if (!defined('BASE_PATH'))
 _mkdir($app->config('cookies.savepath'));
 
 /**
+ * Creates a node directory with proper permissions.
+ */
+_mkdir($app->config('cookies.savepath') . 'nodes' . DS . 'etsis' . DS);
+
+/**
  * Creates a file directory with proper permissions.
  */
 _mkdir($app->config('file.savepath'));
@@ -36,22 +41,7 @@ _mkdir(cronDir() . 'cron/logs/');
 /**
  * Error log setting
  */
-if (APP_ENV == 'DEV') {
-    /**
-     * Print errors to the screen.
-     */
-    error_reporting(E_ALL & ~E_NOTICE);
-    ini_set('display_errors', 'On');
-} else {
-    /**
-     * Log errors to a file.
-     */
-    error_reporting(E_ALL & ~E_NOTICE);
-    ini_set('display_errors', 'Off');
-    ini_set('log_errors', 'On');
-    ini_set('error_log', BASE_PATH . 'app' . DS . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
-    set_error_handler('logError', E_ALL & ~E_NOTICE);
-}
+etsis_set_environment();
 
 /**
  * Loads the default textdomain.
