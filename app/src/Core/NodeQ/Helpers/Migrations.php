@@ -18,7 +18,7 @@ class Migrations
         return true;
     }
 
-    public function reset_password()
+    public static function reset_password()
     {
         Node::create('reset_password', [
             'personid' => 'integer',
@@ -32,7 +32,7 @@ class Migrations
         ]);
     }
 
-    public function csv_email()
+    public static function csv_email()
     {
         Node::create('csv_email', [
             'recipient' => 'string',
@@ -43,7 +43,7 @@ class Migrations
         ]);
     }
 
-    public function login_details()
+    public static function login_details()
     {
         Node::create('login_details', [
             'personid' => 'integer',
@@ -57,7 +57,7 @@ class Migrations
         ]);
     }
     
-    public function change_address()
+    public static function change_address()
     {
         Node::create('change_address', [
             'personid' => 'integer',
