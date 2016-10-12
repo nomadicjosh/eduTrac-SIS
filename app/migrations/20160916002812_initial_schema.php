@@ -1363,7 +1363,7 @@ INSERT INTO `country` VALUES(250, 'ZW', 'Zimbabwe', 'Republic of Zimbabwe', 'ZWE
             ->addIndex(array('meta_key'), array('unique' => true))
             ->create();
 
-        $this->execute(file_get_contents('app/src/vendor/Phinx/migrations/meta_value.txt'));
+        $this->execute(file_get_contents('app/migrations/meta_value.txt'));
 
         // Migration for table pay_grade
         $table = $this->table('pay_grade', array('id' => false, 'primary_key' => 'ID'));
@@ -2728,7 +2728,7 @@ INSERT INTO `country` VALUES(250, 'ZW', 'Zimbabwe', 'Republic of Zimbabwe', 'ZWE
             ->addColumn('active', 'enum', array('values' => array('1', '0')))
             ->create();
         
-        $this->execute(file_get_contents('app/src/vendor/Phinx/migrations/stu_load_rules.txt'));
+        $this->execute(file_get_contents('app/migrations/stu_load_rules.txt'));
 
 
         // Migration for table subject
