@@ -12,6 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$db = $app->db->query("SELECT version() AS version")->findOne();
 ?>
 
 <ul class="breadcrumb">
@@ -52,7 +53,7 @@ $app->view->block('dashboard');
                     $report .= "\n\t".'** SERVER DATA **'.PHP_EOL . PHP_EOL;
                     $report .= 'PHP Version:'."\t\t\t\t\t\t".PHP_VERSION.PHP_EOL;
                     $report .= 'PHP Handler:'."\t\t\t\t\t\t".PHP_SAPI.PHP_EOL;
-                    $report .= 'MySQL Version:'."\t\t\t\t\t\t".mysql_get_server_info().PHP_EOL;
+                    $report .= 'MySQL Version:'."\t\t\t\t\t\t".$db->version.PHP_EOL;
                     $report .= 'Server Software:'."\t\t\t\t\t".$app->req->server['SERVER_SOFTWARE'].PHP_EOL;
 
                     $report .= "\n\t".'** PHP CONFIGURATION **'.PHP_EOL . PHP_EOL;

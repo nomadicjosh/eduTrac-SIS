@@ -18,7 +18,7 @@ class CurrencyTable extends AbstractMigration
             ->addColumn('unicode_hex', 'string', array('limit' => 25))
             ->create();
         
-        $this->execute(file_get_contents('app/src/vendor/Phinx/migrations/currency_table.txt'));
+        $this->execute(file_get_contents('app/migrations/currency_table.txt'));
     }
     
     public function down()
