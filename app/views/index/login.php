@@ -66,6 +66,11 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 			</div>
 			<!-- // Box END -->
             
+            <div class="innerT center">
+				<p><a href="#resetpass" data-toggle="modal"><?=_t( 'Request Password Reset' );?></a></p>
+			</div>
+
+            
             <?php 
             /**
              * Prints scripts or data at the bottom
@@ -78,6 +83,65 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 		</div>
 		
 	</div>
+    
+    <!-- Modal -->
+	<div class="modal fade" id="resetpass">
+		<form class="form-horizontal margin-none" action="<?=get_base_url();?>reset-password" id="validateSubmitForm" method="post" autocomplete="off">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- Modal heading -->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title"><?=_t( 'Reset Password Request' );?></h3>
+				</div>
+				<!-- // Modal heading END -->
+				<!-- Modal body -->
+				<div class="modal-body">
+					<div class="row">
+					<div class="col-md-12">
+                        <p class="alerts alerts-info"><?=_t( "If you've forgotten your password, send a request to the administrator to have it reset." );?></p>
+                        <p>&nbsp;</p>
+					<!-- Group -->
+		            <div class="form-group">
+		                <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Email' );?></label>
+		                <div class="col-md-8">
+		                    <input class="form-control" type="text" name="email" required/>
+		                </div>
+		            </div>
+		            <!-- // Group END -->
+		            
+		            <!-- Group -->
+		            <div class="form-group">
+		                <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Full Name' );?></label>
+		                <div class="col-md-8">
+                            <input class="form-control" type="text" name="name" required/>
+                        </div>
+		            </div>
+		            <!-- // Group END -->
+		            
+		            <!-- Group -->
+		            <div class="form-group">
+		                <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Message' );?></label>
+		                <div class="col-md-8">
+		                    <textarea class="form-control" name="message" rows="3" data-height="auto" required></textarea>
+		                </div>
+		            </div>
+		            <!-- // Group END -->
+		           	</div>
+		           	</div>
+				</div>
+				<!-- // Modal body END -->
+				<!-- Modal footer -->
+				<div class="modal-footer">
+		        	<button type="submit" class="btn btn-default"><?=_t( 'Send' );?></button>
+					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a>
+				</div>
+				<!-- // Modal footer END -->
+			</div>
+		</div>
+		</form>
+	</div>
+	<!-- // Modal END -->
 	
 </div>
 <!-- // Wrapper END -->

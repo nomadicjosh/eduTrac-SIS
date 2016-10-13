@@ -11,6 +11,7 @@ if (!defined('BASE_PATH'))
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $json_url = get_base_url() . 'api' . '/';
+$email = _etsis_email();
 $hasher = new \app\src\PasswordHash(8, FALSE);
 $flashNow = new \app\src\Core\etsis_Messages();
 
@@ -87,6 +88,25 @@ $app->match('GET|POST', '/login/', function () use($app) {
         'title' => 'Login'
         ]
     );
+});
+
+$app->post('/reset-password/', function () use($app, $email) {
+
+    if ($app->req->isPost()) {
+        $addr = $app->req->_post('email');
+        $name = $app->req->_post('name');
+        $message = $app->req->_post('message');
+        $headers = "From: $name <$addr>\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion();
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        if($email->etsis_mail(_h(get_option('system_email')), _t("Reset Password Request"), $message, $headers)) {
+            $app->flash('success_message', _t( 'Your request has been sent.' ));
+        } else {
+            $app->flash('error_message', _t( 'System encountered an error. Please try again.' ));
+        }
+    }
+    redirect($app->req->server['HTTP_REFERER']);
 });
 
 /**
