@@ -8,18 +8,19 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        'e40631d46120a9c38ea139981f8dab26' => __DIR__ . '/..' . '/ircmaxell/password-compat/lib/password.php',
+        'edc6464955a37aa4d5fbf39d40fb6ee7' => __DIR__ . '/..' . '/symfony/polyfill-php55/bootstrap.php',
     );
 
     public static $prefixLengthsPsr4 = array (
-        'V' => 
-        array (
-            'VisualAppeal\\' => 13,
-        ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php55\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Yaml\\' => 23,
+            'Symfony\\Component\\Serializer\\' => 29,
             'Symfony\\Component\\Process\\' => 26,
+            'Symfony\\Component\\OptionsResolver\\' => 34,
             'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\Console\\' => 26,
@@ -47,16 +48,16 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
             'Gettext\\Languages\\' => 18,
             'Gettext\\' => 8,
         ),
-        'D' => 
+        'C' => 
         array (
-            'Desarrolla2\\Cache\\' => 18,
+            'Cascade\\' => 8,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'VisualAppeal\\' => 
+        'Symfony\\Polyfill\\Php55\\' => 
         array (
-            0 => __DIR__ . '/..' . '/visualappeal/php-auto-update/src',
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php55',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
@@ -66,9 +67,17 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
         ),
+        'Symfony\\Component\\Serializer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/serializer',
+        ),
         'Symfony\\Component\\Process\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/process',
+        ),
+        'Symfony\\Component\\OptionsResolver\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/options-resolver',
         ),
         'Symfony\\Component\\Filesystem\\' => 
         array (
@@ -114,24 +123,13 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
         array (
             0 => __DIR__ . '/..' . '/gettext/gettext/src',
         ),
-        'Desarrolla2\\Cache\\' => 
+        'Cascade\\' => 
         array (
-            0 => __DIR__ . '/..' . '/desarrolla2/cache/src',
+            0 => __DIR__ . '/..' . '/theorchard/monolog-cascade/src',
         ),
     );
 
     public static $prefixesPsr0 = array (
-        'v' => 
-        array (
-            'vierbergenlars\\SemVer\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/vierbergenlars/php-semver/src',
-            ),
-            'vierbergenlars\\LibJs\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/vierbergenlars/php-semver/src',
-            ),
-        ),
         'o' => 
         array (
             'org\\bovigo\\vfs\\' => 
@@ -168,11 +166,6 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
         'SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.smtp.php',
         'ntlm_sasl_client_class' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/ntlm_sasl_client.php',
         'phpmailerException' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
-        'vierbergenlars\\SemVer\\Internal\\Comparator' => __DIR__ . '/..' . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
-        'vierbergenlars\\SemVer\\Internal\\Exports' => __DIR__ . '/..' . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
-        'vierbergenlars\\SemVer\\Internal\\G' => __DIR__ . '/..' . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
-        'vierbergenlars\\SemVer\\Internal\\Range' => __DIR__ . '/..' . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
-        'vierbergenlars\\SemVer\\Internal\\SemVer' => __DIR__ . '/..' . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

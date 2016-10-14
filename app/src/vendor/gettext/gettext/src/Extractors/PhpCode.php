@@ -16,6 +16,8 @@ class PhpCode extends Extractor implements ExtractorInterface
          // - non-empty string: to extract comments that start with that string
         'extractComments' => false,
 
+        'constants' => [],
+
         'functions' => [
             'gettext' => 'gettext',
             '__' => 'gettext',
@@ -31,6 +33,8 @@ class PhpCode extends Extractor implements ExtractorInterface
             'np__' => 'npgettext',
             'dnpgettext' => 'dnpgettext',
             'dnp__' => 'dnpgettext',
+            'noop' => 'noop',
+            'noop__' => 'noop',
         ],
     ];
 

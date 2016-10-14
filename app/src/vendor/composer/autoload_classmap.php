@@ -14,9 +14,4 @@ return array(
     'SMTP' => $vendorDir . '/phpmailer/phpmailer/class.smtp.php',
     'ntlm_sasl_client_class' => $vendorDir . '/phpmailer/phpmailer/extras/ntlm_sasl_client.php',
     'phpmailerException' => $vendorDir . '/phpmailer/phpmailer/class.phpmailer.php',
-    'vierbergenlars\\SemVer\\Internal\\Comparator' => $vendorDir . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
-    'vierbergenlars\\SemVer\\Internal\\Exports' => $vendorDir . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
-    'vierbergenlars\\SemVer\\Internal\\G' => $vendorDir . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
-    'vierbergenlars\\SemVer\\Internal\\Range' => $vendorDir . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
-    'vierbergenlars\\SemVer\\Internal\\SemVer' => $vendorDir . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
 );

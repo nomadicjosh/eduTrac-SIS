@@ -20,7 +20,7 @@ class JsFunctionsScanner extends FunctionsScanner
     /**
      * {@inheritdoc}
      */
-    public function getFunctions()
+    public function getFunctions(array $constants = [])
     {
         $length = strlen($this->code);
         $line = 1;
@@ -32,7 +32,7 @@ class JsFunctionsScanner extends FunctionsScanner
         for ($pos = 0; $pos < $length; ++$pos) {
             $prev = $char;
             $char = $this->code[$pos];
-            $next = isset($this->code[$pos+1]) ? $this->code[$pos+1] : null;
+            $next = isset($this->code[$pos + 1]) ? $this->code[$pos + 1] : null;
 
             switch ($char) {
                 case "\n":
