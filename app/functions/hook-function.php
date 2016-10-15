@@ -551,14 +551,14 @@ function etsis_dashboard_copyright_footer()
  *
  * @since 1.0.0
  */
-load_activated_plugins(APP_PATH . 'plugins/');
+load_activated_plugins(APP_PATH . 'plugins' . DS);
 
 /**
  * Includes and loads all available modules.
  *
  * @since 5.0.0
  */
-$app->module->load_installed_modules(APP_PATH . 'modules/');
+$app->module->load_installed_modules(APP_PATH . 'modules' . DS);
 
 /**
  * An action called to add the plugin's link
@@ -781,25 +781,25 @@ function dashboard_acadProg_count()
  */
 function show_update_message()
 {
-    $app = \Liten\Liten::getInstance();
-    $acl = new \app\src\ACL(get_persondata('personID'));
-    if ($acl->userHasRole(8)) {
-        $update = new \VisualAppeal\AutoUpdate(rtrim($app->config('file.savepath'), '/'), BASE_PATH, 1800);
-        $update->setCurrentVersion(RELEASE_TAG);
-        $update->setUpdateUrl('https://etsis.s3.amazonaws.com/core/1.1/update-check');
+    /* $app = \Liten\Liten::getInstance();
+      $acl = new \app\src\ACL(get_persondata('personID'));
+      if ($acl->userHasRole(8)) {
+      $update = new \VisualAppeal\AutoUpdate(rtrim($app->config('file.savepath'), '/'), BASE_PATH, 1800);
+      $update->setCurrentVersion(RELEASE_TAG);
+      $update->setUpdateUrl('https://etsis.s3.amazonaws.com/core/1.1/update-check');
 
-        // Optional:
-        $update->addLogHandler(new Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/core-update.' . date('m-d-Y') . '.txt'));
-        $update->setCache(new Desarrolla2\Cache\Adapter\File(APP_PATH . 'tmp/cache'), 3600);
-        if ($update->checkUpdate() !== false) {
-            if ($update->newVersionAvailable()) {
-                $alert = '<div class="alerts alerts-warn center">';
-                $alert .= sprintf(_t('eduTrac SIS release %s is available for download/upgrade. Before upgrading, make sure to <a href="%s">backup your system</a>.'), $update->getLatestVersion(), 'https://www.edutracsis.com/manual/edutrac-sis-backups/');
-                $alert .= '</div>';
-            }
-        }
-    }
-    return $app->hook->apply_filter('update_message', $alert);
+      // Optional:
+      $update->addLogHandler(new Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/core-update.' . date('m-d-Y') . '.txt'));
+      $update->setCache(new Desarrolla2\Cache\Adapter\File(APP_PATH . 'tmp/cache'), 3600);
+      if ($update->checkUpdate() !== false) {
+      if ($update->newVersionAvailable()) {
+      $alert = '<div class="alerts alerts-warn center">';
+      $alert .= sprintf(_t('eduTrac SIS release %s is available for download/upgrade. Before upgrading, make sure to <a href="%s">backup your system</a>.'), $update->getLatestVersion(), 'https://www.edutracsis.com/manual/edutrac-sis-backups/');
+      $alert .= '</div>';
+      }
+      }
+      }
+      return $app->hook->apply_filter('update_message', $alert); */
 }
 
 /**

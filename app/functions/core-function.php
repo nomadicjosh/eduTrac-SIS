@@ -14,10 +14,14 @@ define('CURRENT_RELEASE', '6.2.0');
 define('RELEASE_TAG', trim(_file_get_contents(BASE_PATH . 'RELEASE')));
 
 $app = \Liten\Liten::getInstance();
-use \League\Event\Event;
-use \PHPBenchmark\HtmlView;
-use \PHPBenchmark\Monitor;
-use \PHPBenchmark\MonitorInterface;
+use League\Event\Event;
+use PHPBenchmark\HtmlView;
+use PHPBenchmark\Monitor;
+use PHPBenchmark\MonitorInterface;
+use app\src\Core\Exception\Exception;
+use app\src\Core\Exception\FileNotFoundException;
+use app\src\Core\Exception\IOException;
+use Cascade\Cascade;
 
 /**
  * Retrieves eduTrac site root url.
@@ -45,6 +49,8 @@ function get_base_url()
  * @param string $path
  *            Path to be created.
  * @return string
+ * @throws IOException If session.savepath is not set, path is not writable, or
+ * lacks permission to mkdir.
  */
 function _mkdir($path)
 {
@@ -54,11 +60,17 @@ function _mkdir($path)
         return;
     }
 
-    if (!is_dir($path)) {
-        if (!mkdir($path, 0755, true)) {
-            etsis_monolog('core_function', sprintf(_t('The following directory could not be created: %s'), $path), 'addError');
+    if (session_save_path() == "") {
+        throw new IOException(sprintf(_t('Session savepath is not set correctly. It is currently set to: %s'), session_save_path()));
+    }
 
-            return;
+    if (!is_writable(session_save_path())) {
+        throw new IOException(sprintf(_t('"%s" is not writable or etSIS does not have permission to create and write directories and files in this location.'), session_save_path()));
+    }
+
+    if (!is_dir($path)) {
+        if (!@mkdir($path, 0755, true)) {
+            throw new IOException(sprintf(_t('The following directory could not be created: %s'), $path));
         }
     }
 }
@@ -184,7 +196,7 @@ function _file_get_contents($filename, $use_include_path = false, $context = tru
  */
 function benchmark_init()
 {
-    if (!file_exists(BASE_PATH . 'config.php')) {
+    if (!etsis_file_exists(BASE_PATH . 'config.php')) {
         return false;
     }
     if (_h(get_option('enable_benchmark')) == 1) {
@@ -196,47 +208,40 @@ function benchmark_init()
             });
     }
 }
-if (!function_exists('imgResize')) {
 
-    function imgResize($width, $height, $target)
-    {
-        // takes the larger size of the width and height and applies the formula. Your function is designed to work with any image in any size.
-        if ($width > $height) {
-            $percentage = ($target / $width);
-        } else {
-            $percentage = ($target / $height);
-        }
-
-        // gets the new value and applies the percentage, then rounds the value
-        $width = round($width * $percentage);
-        $height = round($height * $percentage);
-        // returns the new sizes in html image tag format...this is so you can plug this function inside an image tag so that it will set the image to the correct size, without putting a whole script into the tag.
-        return "width=\"$width\" height=\"$height\"";
+function imgResize($width, $height, $target)
+{
+    // takes the larger size of the width and height and applies the formula. Your function is designed to work with any image in any size.
+    if ($width > $height) {
+        $percentage = ($target / $width);
+    } else {
+        $percentage = ($target / $height);
     }
+
+    // gets the new value and applies the percentage, then rounds the value
+    $width = round($width * $percentage);
+    $height = round($height * $percentage);
+    // returns the new sizes in html image tag format...this is so you can plug this function inside an image tag so that it will set the image to the correct size, without putting a whole script into the tag.
+    return "width=\"$width\" height=\"$height\"";
 }
 
 // An alternative function of using the echo command.
-if (!function_exists('_e')) {
 
-    function _e($string)
-    {
-        echo $string;
-    }
+function _e($string)
+{
+    echo $string;
 }
 
-if (!function_exists('clickableLink')) {
+function clickableLink($text = '')
+{
+    $text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1:", $text);
+    $ret = ' ' . $text;
+    $ret = preg_replace("#(^|[\n ])([\w]+?://[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret);
 
-    function clickableLink($text = '')
-    {
-        $text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1:", $text);
-        $ret = ' ' . $text;
-        $ret = preg_replace("#(^|[\n ])([\w]+?://[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret);
-
-        $ret = preg_replace("#(^|[\n ])((www|ftp)\.[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret);
-        $ret = preg_replace("#(^|[\n ])([a-z0-9&\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $ret);
-        $ret = substr($ret, 1);
-        return $ret;
-    }
+    $ret = preg_replace("#(^|[\n ])((www|ftp)\.[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret);
+    $ret = preg_replace("#(^|[\n ])([a-z0-9&\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $ret);
+    $ret = substr($ret, 1);
+    return $ret;
 }
 
 /**
@@ -588,8 +593,9 @@ function generate_timezone_list()
  */
 function getAge($birthdate = '0000-00-00')
 {
-    if ($birthdate == '0000-00-00')
-        return 'Unknown';
+    if ($birthdate == '0000-00-00') {
+        return _t('Unknown');
+    }
 
     $bits = explode('-', $birthdate);
     $age = date('Y') - $bits[0] - 1;
@@ -599,8 +605,9 @@ function getAge($birthdate = '0000-00-00')
 
     for ($i = 1; $arr[$i]; $i ++) {
         $n = date($arr[$i]);
-        if ($n < $bits[$i])
+        if ($n < $bits[$i]) {
             break;
+        }
         if ($n > $bits[$i]) {
             ++$age;
             break;
@@ -1130,16 +1137,18 @@ function etsis_php_check_includes($file_name)
  *
  * @since 6.2.0
  * @param string $file_name
- *            PHP script to check.
+ *            PHP script/file to check.
  * @param bool $check_includes
  *            If set to TRUE, will check if other files have been included.
  * @return void|\app\src\Core\Exception\Exception
+ * @throws FileNotFoundException If file does not exist or is not readable.
+ * @throws Exception If file contains duplicate function names.
  */
 function etsis_php_check_syntax($file_name, $check_includes = true)
 {
-    // If it is not a file or we can't read it throw an exception
+    // If file does not exist or it is not readable, throw an exception
     if (!is_file($file_name) || !is_readable($file_name)) {
-        return new \app\src\Core\Exception\Exception(_t('Cannot read file ') . $file_name, 'php_check_syntax');
+        throw new FileNotFoundException(sprintf(_t('File "%s" is not found or is not a regular file.'), $file_name), 'php_check_syntax');
     }
 
     $dupe_function = is_duplicate_function($file_name);
@@ -1149,10 +1158,10 @@ function etsis_php_check_syntax($file_name, $check_includes = true)
     }
 
     // Sort out the formatting of the filename
-    $file_name = realpath($file_name);
+    $filename = realpath($file_name);
 
     // Get the shell output from the syntax check command
-    $output = shell_exec('php -l "' . $file_name . '"');
+    $output = shell_exec('php -l "' . $filename . '"');
 
     // Try to find the parse error text and chop it off
     $syntaxError = preg_replace("/Errors parsing.*$/", "", $output, - 1, $count);
@@ -1164,9 +1173,11 @@ function etsis_php_check_syntax($file_name, $check_includes = true)
 
     // If we are going to check the files includes
     if ($check_includes) {
-        foreach (etsis_php_check_includes($file_name) as $include) {
+        foreach (etsis_php_check_includes($filename) as $include) {
             // Check the syntax for each include
-            etsis_php_check_syntax($include);
+            if (is_file($include)) {
+                etsis_php_check_syntax($include);
+            }
         }
     }
 }
@@ -1185,10 +1196,10 @@ function etsis_validate_plugin($plugin_name)
 
     $plugin = str_replace('.plugin.php', '', $plugin_name);
 
-    if (!file_exists(ETSIS_PLUGIN_DIR . $plugin . '/' . $plugin_name)) {
+    if (!etsis_file_exists(ETSIS_PLUGIN_DIR . $plugin . DS . $plugin_name)) {
         $file = ETSIS_PLUGIN_DIR . $plugin_name;
     } else {
-        $file = ETSIS_PLUGIN_DIR . $plugin . '/' . $plugin_name;
+        $file = ETSIS_PLUGIN_DIR . $plugin . DS . $plugin_name;
     }
 
     $error = etsis_php_check_syntax($file);
@@ -1197,8 +1208,12 @@ function etsis_validate_plugin($plugin_name)
         return false;
     }
 
-    if (file_exists($file)) {
-        include_once ($file);
+    try {
+        if (etsis_file_exists($file)) {
+            include_once ($file);
+        }
+    } catch (FileNotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
     }
 
     /**
@@ -1264,10 +1279,10 @@ function win_is_writable($path)
     if ($path{strlen($path) - 1} == '/') { // recursively return a temporary file path
         return win_is_writable($path . uniqid(mt_rand()) . '.tmp');
     } elseif (is_dir($path)) {
-        return win_is_writable($path . '/' . uniqid(mt_rand()) . '.tmp');
+        return win_is_writable($path . DS . uniqid(mt_rand()) . '.tmp');
     }
     // check tmp file for read/write capabilities
-    $rm = file_exists($path);
+    $rm = etsis_file_exists($path);
     $f = fopen($path, 'a');
     if ($f === false) {
         return false;
@@ -1516,4 +1531,22 @@ function etsis_seconds_to_time($seconds)
     }
 
     return $ret;
+}
+
+/**
+ * Checks whether a file or directory exists.
+ * 
+ * @since 6.2.12
+ * @uses Cascade\Cascade Prints to log file if false.
+ * @param string $filename Path to the file or directory.
+ * @return boolean <b>TRUE</b> if the file or directory specified by
+ * <i>$filename</i> exists; <b>FALSE</b> otherwise.
+ * @throws FileNotFoundException If file does not exist.
+ */
+function etsis_file_exists($filename)
+{
+    if (!file_exists($filename)) {
+        throw new FileNotFoundException(sprintf(_t('File "%s" does not exist.'), $filename), 'file_not_found');
+    }
+    return true;
 }

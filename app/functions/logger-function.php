@@ -11,6 +11,91 @@ if (!defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
+$app = \Liten\Liten::getInstance();
+use Cascade\Cascade;
+
+$config = array(
+    'version' => 1,
+    'disable_existing_loggers' => false,
+    'formatters' => array(
+        'spaced' => array(
+            'format' => "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n",
+            'include_stacktraces' => true
+        ),
+        'dashed' => array(
+            'format' => "%datetime%-%channel%.%level_name% - %message% - %context% - %extra%\n"
+        ),
+    ),
+    'handlers' => array(
+        'console' => array(
+            'class' => 'Monolog\Handler\StreamHandler',
+            'level' => 'DEBUG',
+            'formatter' => 'spaced',
+            'stream' => 'php://stdout'
+        ),
+        'info_file_handler' => array(
+            'class' => 'Monolog\Handler\RotatingFileHandler',
+            'level' => 'INFO',
+            'formatter' => 'spaced',
+            'maxFiles' => 10,
+            'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-info.txt'
+        ),
+        'error_file_handler' => array(
+            'class' => 'Monolog\Handler\RotatingFileHandler',
+            'level' => 'ERROR',
+            'formatter' => 'spaced',
+            'maxFiles' => 10,
+            'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-error.txt'
+        ),
+        'notice_file_handler' => array(
+            'class' => 'Monolog\Handler\RotatingFileHandler',
+            'level' => 'NOTICE',
+            'formatter' => 'spaced',
+            'maxFiles' => 10,
+            'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-notice.txt'
+        ),
+        'critical_file_handler' => array(
+            'class' => 'Monolog\Handler\RotatingFileHandler',
+            'level' => 'CRITICAL',
+            'formatter' => 'spaced',
+            'maxFiles' => 10,
+            'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-critical.txt'
+        ),
+        'alert_file_handler' => array(
+            'class' => 'app\src\Core\etsis_MailHandler',
+            'level' => 'ALERT',
+            'formatter' => 'spaced',
+            'mailer' => new app\src\Core\etsis_Email(),
+            'message' => 'This message will be replaced with the real one.',
+            'email_to' => _h($app->hook->{'get_option'}('system_email')),
+            'subject' => _t('eduTrac SIS System Alert!')
+        )
+    ),
+    'processors' => array(
+        'tag_processor' => array(
+            'class' => 'Monolog\Processor\TagProcessor'
+        )
+    ),
+    'loggers' => array(
+        'info' => array(
+            'handlers' => array('console', 'info_file_handler')
+        ),
+        'error' => array(
+            'handlers' => array('console', 'error_file_handler')
+        ),
+        'notice' => array(
+            'handlers' => array('console', 'notice_file_handler')
+        ),
+        'critical' => array(
+            'handlers' => array('console', 'critical_file_handler')
+        ),
+        'system_email' => array(
+            'handlers' => array('console', 'alert_file_handler')
+        )
+    )
+);
+
+Cascade::fileConfig($config);
 
 /**
  * Default Error Handler
@@ -87,7 +172,7 @@ function etsis_logger_activity_log_purge()
 function etsis_monolog($name, $message, $level = 'addInfo')
 {
     $log = new \Monolog\Logger(_trim($name));
-    $log->pushHandler(new \Monolog\Handler\StreamHandler(APP_PATH .'tmp'.DS.'logs'.DS._trim($name).'.'.date('m-d-Y').'.txt'));
+    $log->pushHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp' . DS . 'logs' . DS . _trim($name) . '.' . date('m-d-Y') . '.txt'));
     $log->$level($message);
 }
 

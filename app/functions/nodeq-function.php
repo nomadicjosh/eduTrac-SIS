@@ -3,6 +3,7 @@ if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 use \app\src\Core\NodeQ\etsis_NodeQ as Node;
+use \app\src\Core\Exception\Exception;
 
 /**
  * eduTrac SIS NodeQ Functions
@@ -72,8 +73,8 @@ function etsis_nodeq_login_details()
                 }
             }
         }
-    } catch (\Exception $e) {
-        return new \app\src\Core\Exception\Exception($e->getMessage(), 'NodeQ');
+    } catch (Exception $e) {
+        throw new Exception($e->getMessage(), 'NodeQ');
     }
 }
 
@@ -134,8 +135,8 @@ function etsis_nodeq_reset_password()
                 }
             }
         }
-    } catch (\Exception $e) {
-        return new \app\src\Core\Exception\Exception($e->getMessage(), 'NodeQ');
+    } catch (Exception $e) {
+        throw new Exception($e->getMessage(), 'NodeQ');
     }
 }
 
@@ -192,8 +193,8 @@ function etsis_nodeq_csv_email()
                 }
             }
         }
-    } catch (\Exception $e) {
-        return new \app\src\Core\Exception\Exception($e->getMessage(), 'NodeQ');
+    } catch (Exception $e) {
+        throw new Exception($e->getMessage(), 'NodeQ');
     }
 }
 
@@ -264,7 +265,7 @@ function etsis_nodeq_change_address()
                 }
             }
         }
-    } catch (\Exception $e) {
-        return new \app\src\Core\Exception\Exception($e->getMessage(), 'NodeQ');
+    } catch (Exception $e) {
+        throw new Exception($e->getMessage(), 'NodeQ');
     }
 }

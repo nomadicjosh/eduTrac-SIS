@@ -1,5 +1,5 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 /**
  * eduTrac SIS Dependency Injection, Wrappers, etc.
@@ -74,13 +74,13 @@ function apply_filter($hook, $value)
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
-    if (! is_string($hook)) {
+
+    if (!is_string($hook)) {
         $message = _t('Invalid apply_filter hook: hook name must be a string.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
+
     $app = \Liten\Liten::getInstance();
     return $app->hook->apply_filter($hook, $value);
 }
@@ -110,13 +110,13 @@ function add_filter($hook, $function_to_add, $priority = 10, $accepted_args = 1)
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
-    if (! is_string($hook)) {
+
+    if (!is_string($hook)) {
         $message = _t('Invalid add_filter hook: hook name must be a string.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
+
     $app = \Liten\Liten::getInstance();
     return $app->hook->add_filter($hook, $function_to_add, $priority, $accepted_args);
 }
@@ -141,13 +141,13 @@ function add_action($hook, $function_to_add, $priority = 10, $accepted_args = 1)
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
-    if (! is_string($hook)) {
+
+    if (!is_string($hook)) {
         $message = _t('Invalid add_action hook: hook name must be a string.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
+
     $app = \Liten\Liten::getInstance();
     return $app->hook->add_action($hook, $function_to_add, $priority, $accepted_args);
 }
@@ -193,7 +193,6 @@ function remove_all_actions($hook, $priority = false)
     $app = \Liten\Liten::getInstance();
     return $app->hook->remove_all_actions($hook, $priority);
 }
-
 /**
  * Wrapper function for Hooks::apply_filter() and
  * performs a filtering operation on a eduTrac SIS element or event.
@@ -237,13 +236,13 @@ function do_action($hook, $arg = '')
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
-    if (! is_string($hook)) {
+
+    if (!is_string($hook)) {
         $message = _t('Invalid do_action hook: hook name must be a string.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
+
     $app = \Liten\Liten::getInstance();
     return $app->hook->do_action($hook, $arg);
 }
@@ -624,16 +623,15 @@ function remove_trailing_slash($string)
 {
     return rtrim($string, '/\\');
 }
-
-require( APP_PATH . 'functions' . DS . 'logger-function.php' );
+require( APP_PATH . 'functions' . DS . 'global-function.php' );
 require( APP_PATH . 'functions' . DS . 'notify-function.php' );
 require( APP_PATH . 'functions' . DS . 'nodeq-function.php' );
-require( APP_PATH . 'functions' . DS . 'global-function.php' );
 require( APP_PATH . 'functions' . DS . 'deprecated-function.php' );
 require( APP_PATH . 'functions' . DS . 'auth-function.php' );
 require( APP_PATH . 'functions' . DS . 'cache-function.php' );
 require( APP_PATH . 'functions' . DS . 'textdomain-function.php' );
 require( APP_PATH . 'functions' . DS . 'core-function.php' );
+require( APP_PATH . 'functions' . DS . 'logger-function.php' );
 require( APP_PATH . 'functions' . DS . 'db-function.php' );
 require( APP_PATH . 'functions' . DS . 'course-function.php' );
 require( APP_PATH . 'functions' . DS . 'section-function.php' );

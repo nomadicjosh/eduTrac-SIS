@@ -421,8 +421,7 @@ function etsis_authenticate($login, $password, $rememberme)
         ->select('person.personID,person.uname,person.password')
         ->_join('staff', 'person.personID = staff.staffID')
         ->_join('student', 'person.personID = student.stuID')
-        ->where('(person.uname = ? OR person.email = ?)', [$login, $login])
-        ->_and_()
+        ->where('(person.uname = ? OR person.email = ?)', [$login, $login])->_and_()
         ->where('(staff.status = "A" OR student.status = "A")')
         ->findOne();
 
@@ -441,8 +440,13 @@ function etsis_authenticate($login, $password, $rememberme)
      * @since 6.2.0
      * @param object $person Person data object.
      * @param string $rememberme Whether to remember the person.
+     * @throws Exception If $person is not a database object.
      */
-    $app->hook->apply_filter('etsis_auth_cookie', $person, $rememberme);
+    try {
+        $app->hook->apply_filter('etsis_auth_cookie', $person, $rememberme);
+    } catch (\app\src\Core\Exception\Exception $e) {
+        Cascade\Cascade::getLogger('error')->error($e->getMessage());
+    }
 
     etsis_logger_activity_log_write('Authentication', 'Login', get_name(_h($person->personID)), _h($person->uname));
     redirect(get_base_url());
@@ -520,7 +524,7 @@ function etsis_set_auth_cookie($person, $rememberme = '')
     $app = \Liten\Liten::getInstance();
 
     if (!is_object($person)) {
-        return new \app\src\Core\Exception\Exception(_t('$person should be a database object.'), 'set_auth_cookie');
+        throw new \app\src\Core\Exception\Exception(_t('"$person" should be a database object.'), 'set_auth_cookie');
     }
 
     if (isset($rememberme)) {

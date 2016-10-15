@@ -11,32 +11,35 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
+try {
+    /**
+     * Creates a cookies directory with proper permissions.
+     */
+    _mkdir($app->config('cookies.savepath'));
 
-/**
- * Creates a cookies directory with proper permissions.
- */
-_mkdir($app->config('cookies.savepath'));
+    /**
+     * Creates a node directory with proper permissions.
+     */
+    _mkdir($app->config('cookies.savepath') . 'nodes' . DS . 'etsis' . DS);
 
-/**
- * Creates a node directory with proper permissions.
- */
-_mkdir($app->config('cookies.savepath') . 'nodes' . DS . 'etsis' . DS);
+    /**
+     * Creates a file directory with proper permissions.
+     */
+    _mkdir($app->config('file.savepath'));
 
-/**
- * Creates a file directory with proper permissions.
- */
-_mkdir($app->config('file.savepath'));
+    /**
+     * Creates a cron directory with proper permissions.
+     */
+    _mkdir(cronDir());
 
-/**
- * Creates a cron directory with proper permissions.
- */
-_mkdir(cronDir());
-
-/**
- * Creates the cron directory with proper permissions to store
- * cronjob information.
- */
-_mkdir(cronDir() . 'cron/logs/');
+    /**
+     * Creates the cron directory with proper permissions to store
+     * cronjob information.
+     */
+    _mkdir(cronDir() . 'cron' . DS . 'logs' . DS);
+} catch (\app\src\Core\Exception\IOException $e) {
+    Cascade\Cascade::getLogger('error')->error($e->getMessage());
+}
 
 /**
  * Error log setting
