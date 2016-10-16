@@ -89,8 +89,10 @@ class etsis_Object_Cache
             $this->_cache = new \app\src\Core\Cache\etsis_Cache_Memory();
         }
         
-        if (is_etsis_exception($this->_cache)) {
-            return $this->_cache->getMessage();
+        $error = $this->_cache;
+        if (is_etsis_exception($error)) {
+            Cascade\Cascade::getLogger('error')->error($error->getMessage());
+            return false;
         }
         
         return $this->_cache;

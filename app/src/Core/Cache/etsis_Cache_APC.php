@@ -1,7 +1,8 @@
 <?php namespace app\src\Core\Cache;
 
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\Exception;
 
 /**
  * eduTrac SIS APC Cache Class.
@@ -23,7 +24,7 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
      * @var array
      */
     protected $_cache = [];
-    
+
     /**
      * Holds the application object
      * 
@@ -31,7 +32,7 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
      * @var object
      */
     public $app;
-    
+
     /**
      * Sets if cache is enabled or not.
      *
@@ -42,12 +43,12 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
 
     public function __construct(\Liten\Liten $liten = null)
     {
-        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
-        
-        if (! extension_loaded('apc') && ! ini_get('apc.enabled') || ! function_exists('apc_fetch')) {
-            return new \app\src\Core\Exception\Exception(_t('APC requires PHP APC extension to be installed and loaded.'), 'php_apc_extension');
+        $this->app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
+
+        if (!extension_loaded('apc') && !ini_get('apc.enabled') || !function_exists('apc_fetch')) {
+            throw new Exception(_t('APC requires PHP APC extension to be installed and loaded.'), 'php_apc_extension');
         }
-        
+
         /**
          * Filter sets whether caching is enabled or not.
          *
@@ -76,20 +77,20 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function create($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         if ($this->_exists($unique_key, $namespace)) {
             return false;
         }
-        
+
         return set($key, $data, $namespace, (int) $ttl);
     }
 
@@ -108,16 +109,16 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function read($key, $namespace = 'default')
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return apc_fetch($unique_key);
     }
 
@@ -140,16 +141,16 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function update($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return apc_store($unique_key, $data, (int) $ttl);
     }
 
@@ -171,9 +172,9 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return apc_delete($unique_key);
     }
 
@@ -208,10 +209,10 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->flush();
     }
-    
+
     /**
      * Sets the data contents into the cache.
      *
@@ -231,17 +232,17 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function set($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-    
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return apc_store($key, $data, (int) $ttl);
     }
-    
+
     /**
      * Echoes the stats of the cache.
      *
@@ -251,19 +252,19 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function getStats()
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         $info = apc_cache_info('', true);
-        $sma  = apc_sma_info();
-        
+        $sma = apc_sma_info();
+
         if (PHP_VERSION_ID >= 50500) {
-            $info['num_hits']   = isset($info['num_hits'])   ? $info['num_hits']   : $info['nhits'];
+            $info['num_hits'] = isset($info['num_hits']) ? $info['num_hits'] : $info['nhits'];
             $info['num_misses'] = isset($info['num_misses']) ? $info['num_misses'] : $info['nmisses'];
             $info['start_time'] = isset($info['start_time']) ? $info['start_time'] : $info['stime'];
         }
-        
+
         echo "<p>";
         echo "<strong>" . _t('Cache Hits:') . "</strong> " . $info['num_hits'] . "<br />";
         echo "<strong>" . _t('Cache Misses:') . "</strong> " . $info['num_misses'] . "<br />";
@@ -272,7 +273,7 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
         echo "<strong>" . _t('Memory Available:') . "</strong> " . $sma['avail_mem'] . "<br />";
         echo "</p>";
     }
-    
+
     /**
      * Increments numeric cache item's value.
      *
@@ -292,10 +293,10 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
     public function inc($key, $offset = 1, $namespace = 'default')
     {
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return apc_inc($unique_key, (int) $offset);
     }
-    
+
     /**
      * Decrements numeric cache item's value.
      *
@@ -315,7 +316,7 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
     public function dec($key, $offset = 1, $namespace = 'default')
     {
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return apc_dec($unique_key, (int) $offset);
     }
 
@@ -338,7 +339,7 @@ class etsis_Cache_APC extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->_cache[$namespace][$key] = $namespace . ':' . $key;
     }
 

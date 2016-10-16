@@ -1,7 +1,8 @@
 <?php namespace app\src\Core\Cache;
 
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\Exception;
 
 /**
  * eduTrac SIS XCache Cache Class.
@@ -23,7 +24,7 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
      * @var array
      */
     protected $_cache = [];
-    
+
     /**
      * Holds the application object
      *
@@ -31,7 +32,7 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
      * @var object
      */
     public $app;
-    
+
     /**
      * Sets if cache is enabled or not.
      *
@@ -42,12 +43,12 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
 
     public function __construct(\Liten\Liten $liten = null)
     {
-        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
-        
-        if (! extension_loaded('xcache') && ! function_exists('xcache_get')) {
-            return new \app\src\Core\Exception\Exception(_t('XCache requires PHP XCache extension to be installed and loaded.'), 'php_xcache_extension');
+        $this->app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
+
+        if (!extension_loaded('xcache') && !function_exists('xcache_get')) {
+            throw new Exception(_t('XCache requires PHP XCache extension to be installed and loaded.'), 'php_xcache_extension');
         }
-        
+
         /**
          * Filter sets whether caching is enabled or not.
          *
@@ -76,14 +77,14 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function create($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->set($key, $data, $namespace, (int) $ttl);
     }
 
@@ -102,16 +103,16 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function read($key, $namespace = 'default')
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return xcache_isset($unique_key) ? xcache_get($unique_key) : false;
     }
 
@@ -136,16 +137,16 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function update($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return $this->create($unique_key, $data, (int) $ttl);
     }
 
@@ -167,9 +168,9 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return xcache_unset($unique_key);
     }
 
@@ -208,10 +209,10 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return xcache_inc($namespace, 10);
     }
-    
+
     /**
      * Sets the data contents into the cache.
      *
@@ -231,23 +232,23 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function set($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-    
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-    
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         if ($this->_exists($unique_key, $namespace)) {
             return false;
         }
-        
+
         return xcache_set($unique_key, $data, (int) $ttl);
     }
-    
+
     /**
      * Echoes the stats of the cache.
      *
@@ -257,12 +258,12 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function getStats()
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-    
+
         $info = xcache_info(XC_TYPE_VAR, 0);
-    
+
         echo "<p>";
         echo "<strong>" . _t('Cache Hits:') . "</strong> " . $info['hits'] . "<br />";
         echo "<strong>" . _t('Cache Misses:') . "</strong> " . $info['misses'] . "<br />";
@@ -271,7 +272,7 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
         echo "<strong>" . _t('Memory Available:') . "</strong> " . $sma['avail'] . "<br />";
         echo "</p>";
     }
-    
+
     /**
      * Increments numeric cache item's value.
      *
@@ -291,10 +292,10 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
     public function inc($key, $offset = 1, $namespace = 'default')
     {
         $unique_key = $this->uniqueKey($key, $namespace);
-    
+
         return xcache_inc($unique_key, (int) $offset);
     }
-    
+
     /**
      * Decrements numeric cache item's value.
      *
@@ -314,7 +315,7 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
     public function dec($key, $offset = 1, $namespace = 'default')
     {
         $unique_key = $this->uniqueKey($key, $namespace);
-    
+
         return xcache_dec($unique_key, (int) $offset);
     }
 
@@ -337,7 +338,7 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->_cache[$namespace][$key] = $namespace . ':' . $key;
     }
 

@@ -1,7 +1,8 @@
 <?php namespace app\src\Core\Cache;
 
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\Exception;
 
 /**
  * eduTrac SIS \Memcache|\Memcached Class.
@@ -36,7 +37,7 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
      * @var array
      */
     protected $_cache = [];
-    
+
     /**
      * Holds the application object
      *
@@ -55,26 +56,26 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
 
     public function __construct($useMemcached, \Liten\Liten $liten = null)
     {
-        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
-        
+        $this->app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
+
         $this->useMemcached = $useMemcached;
-        
+
         $ext = $this->useMemcached ? 'memcached' : 'memcache';
-        
-        if ($ext == 'memcached' && ! class_exists('memcached')) {
-            return new \app\src\Core\Exception\Exception(sprintf(_t('Memcached requires PHP <strong>%s</strong> extension to be loaded.'), $ext), 'php_memcache_extension');
+
+        if ($ext == 'memcached' && !class_exists('memcached')) {
+            throw new Exception(sprintf(_t('Memcached requires PHP <strong>%s</strong> extension to be loaded.'), $ext), 'php_memcache_extension');
         }
-        
-        if ($ext == 'memcache' && ! function_exists('memcache_connect')) {
-            return new \app\src\Core\Exception\Exception(sprintf(_t('Memcached requires PHP <strong>%s</strong> extension to be loaded.'), $ext), 'php_memcache_extension');
+
+        if ($ext == 'memcache' && !function_exists('memcache_connect')) {
+            throw new Exception(sprintf(_t('Memcached requires PHP <strong>%s</strong> extension to be loaded.'), $ext), 'php_memcache_extension');
         }
-        
+
         if ($ext == 'memcache') {
             $this->connection = new \Memcache();
         } else {
             $this->connection = new \Memcached('etsis');
         }
-        
+
         /**
          * Filter sets whether caching is enabled or not.
          *
@@ -103,10 +104,10 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function create($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
@@ -128,16 +129,16 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function read($key, $namespace = 'default')
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return $this->connection->get($unique_key);
     }
 
@@ -160,20 +161,20 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function update($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         if ($this->_exists($unique_key, $namespace)) {
             return false;
         }
-        
+
         return $this->useMemcached ? $this->connection->replace($unique_key, $data, (int) $ttl) : $this->connection->replace($unique_key, $data, 0, (int) $ttl);
     }
 
@@ -195,9 +196,9 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return $this->connection->delete($unique_key);
     }
 
@@ -231,7 +232,7 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->connection->increment($namespace, 10);
     }
 
@@ -254,20 +255,20 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function set($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         if ($this->_exists($unique_key, $namespace)) {
             return false;
         }
-        
+
         return $this->useMemcached ? $this->connection->set($unique_key, $data, (int) $ttl) : $this->connection->set($unique_key, $data, 0, (int) $ttl);
     }
 
@@ -280,10 +281,10 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function getStats()
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if ($this->useMemcached == false) {
             $stats = $this->connection->getStats();
             echo "<p>";
@@ -294,7 +295,7 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
             echo "<strong>" . _t('Memory Available:') . "</strong> " . $stats['limit_maxbytes'] . "<br />";
             echo "</p>";
         }
-        
+
         if ($this->useMemcached == true) {
             $stats = $this->connection->getStats();
             $servers = $this->connection->getServerList();
@@ -329,7 +330,7 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
     public function inc($key, $offset = 1, $namespace = 'default')
     {
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return $this->connection->increment($unique_key, (int) $offset);
     }
 
@@ -352,7 +353,7 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
     public function dec($key, $offset = 1, $namespace = 'default')
     {
         $unique_key = $this->uniqueKey($key, $namespace);
-        
+
         return $this->connection->decrement($unique_key, (int) $offset);
     }
 
@@ -367,18 +368,18 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
     {
         if ($this->useMemcached == true) {
             $existingServers = [];
-            
+
             foreach ($this->connection->getServerList() as $s) {
                 $existingServers[$s['host'] . ':' . $s['port']] = true;
             }
-            
+
             foreach ($servers as $server) {
-                if (empty($existingServers) || ! isset($existingServers[$server->host . ':' . $server->port])) {
+                if (empty($existingServers) || !isset($existingServers[$server->host . ':' . $server->port])) {
                     $this->connection->addServer($server->$host, $server->$port, $server->$weight);
                 }
             }
         }
-        
+
         if ($this->useMemcached == false) {
             foreach ($servers as $server) {
                 $this->connection->addServer($server['host'], $server['port'], true, $server['weight']);
@@ -405,7 +406,7 @@ class etsis_Cache_Memcache extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->_cache[$namespace][$key] = $namespace . ':' . $key;
     }
 

@@ -1,7 +1,10 @@
 <?php namespace app\src\Core\Cache;
 
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\Exception;
+use app\src\Core\Exception\IOException;
+use Cascade\Cascade;
 
 /**
  * eduTrac SIS JSON Cache Class.
@@ -74,8 +77,8 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
 
     public function __construct(\Liten\Liten $liten = null)
     {
-        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
-        
+        $this->app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
+
         if (ETSIS_FILE_CACHE_LOW_RAM && function_exists('memory_get_usage')) {
             $limit = _trim(ini_get('memory_limit'));
             $mod = strtolower($limit[strlen($limit) - 1]);
@@ -90,13 +93,13 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
                     $limit *= 1024;
                     break;
             }
-            
+
             if ($limit <= 0) {
                 $limit = 0;
             }
-            
+
             $this->_memory_limit = $limit;
-            
+
             $limit = _trim(ETSIS_FILE_CACHE_LOW_RAM);
             $mod = strtolower($limit[strlen($limit) - 1]);
             switch ($mod) {
@@ -110,13 +113,13 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
                     $limit *= 1024;
                     break;
             }
-            
+
             $this->_memory_low = $limit;
         } else {
             $this->_memory_limit = 0;
             $this->_memory_low = 0;
         }
-        
+
         /**
          * Filter sets whether caching is enabled or not.
          *
@@ -124,14 +127,14 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
          * @var bool
          */
         $this->enable = $this->app->hook->apply_filter('enable_caching', true);
-        
+
         $this->persist = $this->enable && true;
-        
+
         /**
          * File system cache directory.
          */
         $dir = $this->app->config('file.savepath') . 'cache';
-        
+
         /**
          * Filter the file cache directory in order to override it
          * in case some systems are having issues.
@@ -141,22 +144,28 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
          *            The directory where file system cache files are saved.
          */
         $cacheDir = $this->app->hook->apply_filter('filesystem_cache_dir', $dir);
-        
+
         /**
          * If the cache directory does not exist, the create it first
          * before trying to call it for use.
          */
-        if (! is_dir($cacheDir) || ! file_exists($cacheDir)) {
-            _mkdir($cacheDir);
+        if (!is_dir($cacheDir) || !file_exists($cacheDir)) {
+            try {
+                _mkdir($cacheDir);
+            } catch (IOException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+            }
         }
-        
+
         /**
          * If the directory isn't writable, throw an exception.
          */
-        if (! etsis_is_writable($cacheDir)) {
-            return new \app\src\Core\Exception\Exception(_t('Could not create the file cache directory.'), 'json_cache');
+        if (!etsis_is_writable($cacheDir)) {
+            throw new Exception(_t('Could not create the file cache directory.'), 'json_cache');
         }
-        
+
         /**
          * Cache directory is set.
          */
@@ -182,14 +191,14 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function create($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->set($key, $data, $namespace, (int) $ttl);
     }
 
@@ -208,30 +217,30 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function read($key, $namespace = 'default')
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
-        if (! $this->_exists($key, $namespace)) {
+
+        if (!$this->_exists($key, $namespace)) {
             $this->cacheMisses();
             return false;
         }
-        
+
         if (isset($this->_cache[$namespace], $this->_cache[$namespace][$key])) {
             $this->cacheHits();
             return $this->_cache[$namespace][$key];
         }
-        
+
         $filename = $this->keyToPath($key, $namespace);
-        
+
         $get_data = _file_get_contents($filename, LOCK_EX);
-        
+
         $data = json_decode($get_data, true);
-        
+
         if ($this->persist) {
             if ($this->_memory_limit) {
                 $usage = memory_get_usage();
@@ -240,24 +249,24 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
                     return false;
                 }
             }
-            
+
             $files = glob($filename);
-            if (empty($files) || ! isset($files[0])) {
+            if (empty($files) || !isset($files[0])) {
                 $this->cacheMisses();
                 return false;
             }
-            
+
             if (is_readable($files[0])) {
                 $result = $files[0];
                 $time = $data[0] - file_mod_time($result);
-                
+
                 $now = time();
                 if ((file_mod_time($result) + $time < $now)) {
                     $this->cacheMisses();
                     unlink($result);
                     return false;
                 }
-                
+
                 if ((file_mod_time($result) + $time > $now)) {
                     $this->cacheHits();
                     settype($result, 'string');
@@ -266,7 +275,7 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
                     return is_object($result) ? clone ($result) : $result;
                 }
             }
-            
+
             unlink($files[0]);
         }
     }
@@ -292,14 +301,14 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function update($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->create($key, $data, $namespace, (int) $ttl);
     }
 
@@ -322,15 +331,15 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         unset($this->_cache[$namespace][$key]);
-        
-        if (! $this->_exists($key, $namespace)) {
+
+        if (!$this->_exists($key, $namespace)) {
             return false;
         }
-        
+
         $filename = $this->keyToPath($key, $namespace);
-        
+
         return rename($filename, $filename . $this->inc($key, 1, $namespace));
     }
 
@@ -348,7 +357,7 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
     {
         $this->remove_dir($this->_dir);
         $this->_cache = [];
-        
+
         return true;
     }
 
@@ -369,10 +378,10 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $dir = $this->_dir . $namespace;
         $this->remove_dir($dir);
-        
+
         return true;
     }
 
@@ -395,20 +404,20 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function set($key, $data, $namespace = 'default', $ttl = 0)
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         /**
          * Removes any and all stale items from the cache before
          * adding more items to the specified namespace.
          */
         $this->removeStaleCache($namespace, (int) $ttl);
-        
+
         if ($this->_memory_limit) {
             $usage = memory_get_usage();
             if ($this->_memory_limit - $usage < $this->_memory_low) {
@@ -416,23 +425,23 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
                 return false;
             }
         }
-        
+
         if (is_object($data)) {
             $data = clone ($data);
         }
-        
+
         $this->_cache[$namespace][$key] = $data;
-        
+
         $filename = $this->keyToPath($key, $namespace);
-        
+
         if ($this->_exists($key, $namespace)) {
             return false;
         }
         // Opening the file in read/write mode
         $h = fopen($filename, 'a+');
         // If there is an issue with the handler, throw an exception.
-        if (! $h) {
-            return new \app\src\Core\Exception\Exception(_t('Could not write to cache.'), 'json_cache');
+        if (!$h) {
+            throw new Exception(_t('Could not write to cache.'), 'json_cache');
         }
         // exclusive lock, will get released when the file is closed
         flock($h, LOCK_EX);
@@ -446,10 +455,10 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
             $data
         ));
         if (fwrite($h, $data) === false) {
-            return new \app\src\Core\Exception\Exception(_t('Could not write to cache.'), 'json_cache');
+            throw new Exception(_t('Could not write to cache.'), 'json_cache');
         }
         fclose($h);
-        
+
         return true;
     }
 
@@ -462,10 +471,10 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     public function getStats()
     {
-        if (! $this->enable) {
+        if (!$this->enable) {
             return false;
         }
-        
+
         echo "<p>";
         echo "<strong>" . _t('Cache Hits:') . "</strong> " . _file_get_contents($this->_dir . 'cache_hits.txt') . "<br />";
         echo "<strong>" . _t('Cache Misses:') . "</strong> " . _file_get_contents($this->_dir . 'cache_misses.txt') . "<br />";
@@ -496,23 +505,23 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
-        if (! $this->_exists($key, $namespace)) {
+
+        if (!$this->_exists($key, $namespace)) {
             return false;
         }
-        
-        if (! is_numeric($this->_cache[$namespace][$key])) {
+
+        if (!is_numeric($this->_cache[$namespace][$key])) {
             $this->_cache[$namespace][$key] = 0;
         }
-        
+
         $offset = (int) $offset;
-        
+
         $this->_cache[$namespace][$key] += $offset;
-        
+
         if ($this->_cache[$namespace][$key] < 0) {
             $this->_cache[$namespace][$key] = 0;
         }
-        
+
         return $this->_cache[$namespace][$key];
     }
 
@@ -538,23 +547,23 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
-        if (! $this->_exists($key, $namespace)) {
+
+        if (!$this->_exists($key, $namespace)) {
             return false;
         }
-        
-        if (! is_numeric($this->_cache[$namespace][$key])) {
+
+        if (!is_numeric($this->_cache[$namespace][$key])) {
             $this->_cache[$namespace][$key] = 0;
         }
-        
+
         $offset = (int) $offset;
-        
+
         $this->_cache[$namespace][$key] -= $offset;
-        
+
         if ($this->_cache[$namespace][$key] < 0) {
             $this->_cache[$namespace][$key] = 0;
         }
-        
+
         return $this->_cache[$namespace][$key];
     }
 
@@ -577,7 +586,7 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->_cache[$namespace][$key] = $namespace . ':' . $key;
     }
 
@@ -601,7 +610,7 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         if (is_readable($this->keyToPath($key, $namespace))) {
             return true;
         }
@@ -616,17 +625,17 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
      */
     protected function remove_dir($dir)
     {
-        if(! is_dir($dir)) {
+        if (!is_dir($dir)) {
             return;
         }
-        
+
         $dh = opendir($dir);
-        if (! is_resource($dh)) {
+        if (!is_resource($dh)) {
             return;
         }
-        
+
         _rmdir($dir);
-        
+
         closedir($dh);
     }
 
@@ -639,22 +648,22 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
     protected function cacheHits()
     {
         $filename = $this->_dir . 'cache_hits.txt';
-        
-        if (! is_readable($filename)) {
+
+        if (!is_readable($filename)) {
             $fp = fopen($filename, 'w');
             fwrite($fp, 0);
             fclose($fp);
             return false;
         }
-        
+
         $fp = fopen($filename, 'c+');
         flock($fp, LOCK_EX);
-        
+
         $count = (int) fread($fp, filesize($filename));
         ftruncate($fp, 0);
         fseek($fp, 0);
         fwrite($fp, $count + 1);
-        
+
         flock($fp, LOCK_UN);
         fclose($fp);
     }
@@ -668,22 +677,22 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
     protected function cacheMisses()
     {
         $filename = $this->_dir . 'cache_misses.txt';
-        
-        if (! is_readable($filename)) {
+
+        if (!is_readable($filename)) {
             $fp = fopen($filename, 'w');
             fwrite($fp, 0);
             fclose($fp);
             return false;
         }
-        
+
         $fp = fopen($filename, 'c+');
         flock($fp, LOCK_EX);
-        
+
         $count = (int) fread($fp, filesize($filename));
         ftruncate($fp, 0);
         fseek($fp, 0);
         fwrite($fp, $count + 1);
-        
+
         flock($fp, LOCK_UN);
         fclose($fp);
     }
@@ -702,7 +711,7 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         $stale = glob($this->_dir . $namespace . DS . '*');
         if (is_array($stale)) {
             foreach ($stale as $filename) {
@@ -728,8 +737,14 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
     private function keyToPath($key, $namespace)
     {
         $dir = $this->_dir . urlencode($namespace);
-        if (! file_exists($dir)) {
-            _mkdir($dir);
+        if (!file_exists($dir)) {
+            try {
+                _mkdir($dir);
+            } catch (IOException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+            }
         }
         return $this->_dir . urlencode($namespace) . DS . urlencode(md5($key));
     }
