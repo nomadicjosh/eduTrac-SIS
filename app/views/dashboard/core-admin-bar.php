@@ -9,6 +9,7 @@
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app = \Liten\Liten::getInstance();
+$cookie = get_secure_cookie_data('SWITCH_USERBACK');
 ?>
 
                 <!-- Top navbar -->
@@ -325,11 +326,8 @@ $app = \Liten\Liten::getInstance();
                                 </li>
                                 <?php if (isset($_COOKIE['SWITCH_USERBACK'])) : ?>
                                     <li>
-                                        <a href="<?= get_base_url(); ?>switchUserBack/<?=$app->cookies->getSecureCookie('SWITCH_USERBACK');?>/"><?=_t('Switch Back to');?> <?=$app->cookies->getSecureCookie('SWITCH_USERNAME');?></a>
+                                        <a href="<?= get_base_url(); ?>switchUserBack/<?=$cookie->personID;?>/"><?=_t('Switch Back to');?> <?=$cookie->uname;?></a>
                                     </li>
-                                <?php endif; ?>
-                                <?php if (!isset($_COOKIE['SWITCH_USERBACK']) && !isset($_COOKIE['SCREENLOCK'])) : ?>
-                                    <!-- <li><a href="<?= get_base_url(); ?>lock/" class="glyphicons lock"><?= _t('Lock Screen'); ?><i></i></a></li> -->
                                 <?php endif; ?>
                                 <li class="innerTB half">
                                     <span>

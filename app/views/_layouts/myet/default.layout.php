@@ -7,6 +7,7 @@ Layout Slug: default
 $app = \Liten\Liten::getInstance();
 ob_start();
 ob_implicit_flush(0);
+$cookie = get_secure_cookie_data('SWITCH_USERBACK');
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="front ie lt-ie9 lt-ie8 lt-ie7 fluid top-full"> <![endif]-->
@@ -121,7 +122,7 @@ ob_implicit_flush(0);
 						<li class="glyphs2 hidden-xs">
 							<ul>
 								<li class="single">
-									<a href="<?=get_base_url();?>switchUserBack/<?=$app->cookies->getSecureCookie('SWITCH_USERBACK');?>/" class="no-ajaxify glyphicons history"><i></i> <?=_t( 'Switch Back to' );?> <?=$app->cookies->getSecureCookie('SWITCH_USERNAME');?></a>
+									<a href="<?=get_base_url();?>switchUserBack/<?=$cookie->personID;?>/" class="no-ajaxify glyphicons history"><i></i> <?=_t( 'Switch Back to' );?> <?=$cookie->uname;?></a>
 								</li>
 							</ul>
 						</li>

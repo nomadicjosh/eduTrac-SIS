@@ -53,7 +53,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<input type="password" name="password" class="form-control margin-none" placeholder="Your Password" required/>
 						<div class="row">
 							<div class="col-md-8">
-								<div class="uniformjs"><label class="checkbox"><input type="checkbox" name="rememberme" value="rememberme"><?=_t( 'Remember me' );?></label></div>
+								<div class="uniformjs"><label class="checkbox"><input type="checkbox" name="rememberme" value="yes"><?=_t( 'Remember me' );?></label></div>
 							</div>
 							<div class="col-md-4 center">
 								<button class="btn btn-block btn-inverse" type="submit"><?=_t( 'Sign in' );?></button>

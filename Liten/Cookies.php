@@ -38,11 +38,11 @@ class Cookies
      * Liten application object
      * @var object|callable
      */
-    protected $_app;
+    public $app;
 
     public function __construct(\Liten\Liten $liten = null)
     {
-        $this->_app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
+        $this->app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
     }
 
     /**
@@ -59,7 +59,7 @@ class Cookies
         for ($i = 0; $i < $length; $i++) {
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
-        return hash($this->_app->config('cookies.crypt'), $randomString);
+        return hash($this->app->config('cookies.crypt'), $randomString);
     }
 
     /**
@@ -72,7 +72,13 @@ class Cookies
     public function set($key, $value, $expires = null)
     {
         return setcookie(
-            $key, $value, ($expires == null ? time() + $this->_app->config('cookies.lifetime') : time() + $expires), $this->_app->config('cookies.path'), $this->_app->config('cookies.domain'), $this->_app->config('cookies.secure'), $this->_app->config('cookies.httponly')
+            $key,
+            $value,
+            ($expires == null ? time() + $this->app->config('cookies.lifetime') : time() + $expires),
+            $this->app->config('cookies.path'),
+            $this->app->config('cookies.domain'),
+            $this->app->config('cookies.secure'),
+            $this->app->config('cookies.httponly')
         );
     }
 
@@ -98,31 +104,33 @@ class Cookies
      * @return mixed
      * 
      */
-    public function setSecureCookie($key, $data, $expires = null)
+    public function setSecureCookie(array $data)
     {
         $token = $this->token();
-        $value = $this->buildCookie($token, $expires);
-
+        $value = $this->buildCookie($token, $data['exp']);
+        
         file_put_contents(
-            $this->_app->config('cookies.savepath') . 'cookies.' . $token, $this->_app->hook->maybe_serialize(
-                [
-                    $key => $data,
-                    'exp' => ($expires == null ? time() + $this->_app->config('cookies.lifetime') : time() + $expires)
-                ]
-            )
+            $this->app->config('cookies.savepath') . 'cookies.' . $token,
+            json_encode($data, JSON_PRETTY_PRINT)
         );
-
+        
         return setcookie(
-            $key, $value, ($expires == null ? time() + $this->_app->config('cookies.lifetime') : time() + $expires), $this->_app->config('cookies.path'), $this->_app->config('cookies.domain'), $this->_app->config('cookies.secure'), $this->_app->config('cookies.httponly')
+            $data['key'],
+            $value,
+            $data['exp'],
+            $this->app->config('cookies.path'),
+            $this->app->config('cookies.domain'),
+            $this->app->config('cookies.secure'),
+            $this->app->config('cookies.httponly')
         );
     }
 
     public function getSecureCookie($key)
     {
-        $file = $this->_app->config('cookies.savepath') . 'cookies.' . $this->getCookieVars($key, 'data');
+        $file = $this->app->config('cookies.savepath') . 'cookies.' . $this->getCookieVars($key, 'data');
         if (file_exists($file)) {
-            $data = $this->_app->hook->maybe_unserialize(file_get_contents($file));
-            return $data[$key];
+            $data = json_decode(file_get_contents($file));
+            return $data;
         }
         return false;
     }
@@ -137,7 +145,13 @@ class Cookies
     public function remove($key)
     {
         return setcookie(
-            $key, '', time() - (432000 + $this->_app->config('cookies.lifetime')), $this->_app->config('cookies.path'), $this->_app->config('cookies.domain'), $this->_app->config('cookies.secure'), $this->_app->config('cookies.httponly')
+            $key,
+            '',
+            time() - (432000 + $this->app->config('cookies.lifetime')),
+            $this->app->config('cookies.path'),
+            $this->app->config('cookies.domain'),
+            $this->app->config('cookies.secure'),
+            $this->app->config('cookies.httponly')
         );
     }
 
@@ -146,12 +160,10 @@ class Cookies
      *
      * @param string $data Cookie value: e.g. random token or hash
      */
-    public function buildCookie($data, $expires = null)
+    public function buildCookie($data, $expires)
     {
-        $time = ($expires == null ? time() + $this->_app->config('cookies.lifetime') : $expires + time());
-
-        $string = sprintf("exp=%s&data=%s", urlencode($time), urlencode($data));
-        $mac = hash_hmac($this->_app->config('cookies.crypt'), $string, $this->_app->config('cookies.secret.key'));
+        $string = sprintf("exp=%s&data=%s", urlencode($expires), urlencode($data));
+        $mac = hash_hmac($this->app->config('cookies.crypt'), $string, $this->app->config('cookies.secret.key'));
         return $string . '&digest=' . urlencode($mac);
     }
 
@@ -183,24 +195,18 @@ class Cookies
     /**
      * Verifies the expiry and MAC for the cookie
      *
-     * @param string $cookie String from the client
+     * @param string $key String from the client
      * @return bool
      */
     public function verifySecureCookie($key)
     {
-        $cookieFile = glob($this->_app->config('cookies.savepath') . 'cookies.*');
-        if (is_array($cookieFile)) {
-            foreach ($cookieFile as $file) {
-                if (file_exists($file)) {
-                    $exp = $this->_app->hook->maybe_unserialize(file_get_contents($file));
-                }
-            }
-        }
+        $file = $this->app->config('cookies.savepath') . 'cookies.' . $this->getCookieVars($key, 'data');
+        $data = $this->getSecureCookie($key);
         /**
          * If the cookie exists and it is expired, delete it
          * from the server side.
          */
-        if (file_exists($file) && $exp['exp'] < time()) {
+        if ($data && $data->exp < time()) {
             unlink($file);
         }
 
@@ -208,9 +214,9 @@ class Cookies
             // The cookie has expired
             return false;
         }
-
+        
         $mac = sprintf("exp=%s&data=%s", urlencode($this->getCookieVars($key, 'exp')), urlencode($this->getCookieVars($key, 'data')));
-        $hash = hash_hmac($this->_app->config('cookies.crypt'), $mac, $this->_app->config('cookies.secret.key'));
+        $hash = hash_hmac($this->app->config('cookies.crypt'), $mac, $this->app->config('cookies.secret.key'));
 
         if (!hash_equals($this->getCookieVars($key, 'digest'), $hash)) {
             // The cookie has been compromised

@@ -541,16 +541,19 @@ $app->before('GET|POST', '/switchUserTo/(\d+)/', function() {
 
 $app->get('/switchUserTo/(\d+)/', function ($id) use($app) {
 
-    if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('SWITCH_USERBACK', get_persondata('personID'), (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-        $app->cookies->setSecureCookie('SWITCH_USERNAME', get_persondata('uname'), (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-    } else {
-        $app->cookies->setSecureCookie('SWITCH_USERBACK', get_persondata('personID'), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
-        $app->cookies->setSecureCookie('SWITCH_USERNAME', get_persondata('uname'), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
+    if (isset($_COOKIE['ET_COOKIENAME'])) {
+        $switch_cookie = [
+            'key' => 'SWITCH_USERBACK',
+            'personID' => get_persondata('personID'),
+            'uname' => get_persondata('uname'),
+            'remember' => (_h(get_option('cookieexpire')) - time() > 86400 ? _t('yes') : _t('no')),
+            'exp' => _h(get_option('cookieexpire')) + time()
+        ];
+        $app->cookies->setSecureCookie($switch_cookie);
     }
 
     $vars = [];
-    parse_str($app->cookies->get('ET_COOKNAME'), $vars);
+    parse_str($app->cookies->get('ET_COOKIENAME'), $vars);
     /**
      * Checks to see if the cookie is exists on the server.
      * It it exists, we need to delete it.
@@ -563,20 +566,24 @@ $app->get('/switchUserTo/(\d+)/', function ($id) use($app) {
     /**
      * Delete the old cookie.
      */
-    $app->cookies->remove("ET_COOKNAME");
+    $app->cookies->remove("ET_COOKIENAME");
 
-    if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-    } else {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
-    }
+    $auth_cookie = [
+        'key' => 'ET_COOKIENAME',
+        'personID' => $id,
+        'uname' => getUserValue($id, 'uname'),
+        'remember' => (_h(get_option('cookieexpire')) - time() > 86400 ? _t('yes') : _t('no')),
+        'exp' => _h(get_option('cookieexpire')) + time()
+    ];
+
+    $app->cookies->setSecureCookie($auth_cookie);
 
     redirect(get_base_url() . 'dashboard' . '/');
 });
 
 $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
     $vars1 = [];
-    parse_str($app->cookies->get('ET_COOKNAME'), $vars1);
+    parse_str($app->cookies->get('ET_COOKIENAME'), $vars1);
     /**
      * Checks to see if the cookie is exists on the server.
      * It it exists, we need to delete it.
@@ -585,7 +592,7 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
     if (file_exists($file1)) {
         unlink($file1);
     }
-    $app->cookies->remove("ET_COOKNAME");
+    $app->cookies->remove("ET_COOKIENAME");
 
     $vars2 = [];
     parse_str($app->cookies->get('SWITCH_USERBACK'), $vars2);
@@ -599,29 +606,20 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
     }
     $app->cookies->remove("SWITCH_USERBACK");
 
-    $vars3 = [];
-    parse_str($app->cookies->get('SWITCH_USERNAME'), $vars3);
-    /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
-     */
-    $file3 = $app->config('cookies.savepath') . 'cookies.' . $vars3['data'];
-    if (file_exists($file3)) {
-        unlink($file3);
-    }
-    $app->cookies->remove("SWITCH_USERNAME");
-
     /**
      * After the login as user cookies have been
      * removed from the server and the browser,
      * we need to set fresh cookies for the
      * original logged in user.
      */
-    if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-    } else {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
-    }
+    $switch_cookie = [
+        'key' => 'ET_COOKIENAME',
+        'personID' => $id,
+        'uname' => getUserValue($id, 'uname'),
+        'remember' => (_h(get_option('cookieexpire')) - time() > 86400 ? _t('yes') : _t('no')),
+        'exp' => _h(get_option('cookieexpire')) + time()
+    ];
+    $app->cookies->setSecureCookie($switch_cookie);
     redirect(get_base_url() . 'dashboard' . '/');
 });
 

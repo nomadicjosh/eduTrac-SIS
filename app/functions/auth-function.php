@@ -23,13 +23,14 @@ function hasPermission($perm)
 function get_persondata($field)
 {
     $app = \Liten\Liten::getInstance();
-    $personID = $app->cookies->getSecureCookie('ET_COOKNAME');
+    $person = get_secure_cookie_data('ET_COOKIENAME');
     $value = $app->db->person()
         ->select('person.*,address.*,staff.*,student.*')
         ->_join('address', 'person.personID = address.personID')
         ->_join('staff', 'person.personID = staff.staffID')
         ->_join('student', 'person.personID = student.stuID')
-        ->where('person.personID = ?', $personID);
+        ->where('person.personID = ?', $person->personID)->_and_()
+        ->where('person.uname = ?', $person->uname);
     $q = $value->find(function ($data) {
         $array = [];
         foreach ($data as $d) {
@@ -50,9 +51,11 @@ function get_persondata($field)
  */
 function is_user_logged_in()
 {
+    $app = \Liten\Liten::getInstance();
+    
     $person = get_person_by('personID', get_persondata('personID'));
 
-    if ('' != $person->personID) {
+    if ('' != $person->personID && $app->cookies->verifySecureCookie('ET_COOKIENAME')) {
         return true;
     }
 
@@ -533,19 +536,23 @@ function etsis_set_auth_cookie($person, $rememberme = '')
          * 
          * @since 6.2.0
          */
-        $expire = $app->hook->apply_filter('auth_cookie_expiration', (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-        // Set remember me cookie.
-        $app->cookies->setSecureCookie('ET_REMEMBER', 'rememberme', $expire);
+        $expire = $app->hook->apply_filter('auth_cookie_expiration', (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookies.lifetime'));
     } else {
         /**
          * Ensure the browser will continue to send the cookie until it expires.
          *
          * @since 6.2.0
          */
-        $expire = $app->hook->apply_filter('auth_cookie_expiration', ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
+        $expire = $app->hook->apply_filter('auth_cookie_expiration', ($app->config('cookies.lifetime') !== '') ? $app->config('cookies.lifetime') : 86400);
     }
 
-    $auth_cookie = _h($person->personID);
+    $auth_cookie = [
+        'key' => 'ET_COOKIENAME',
+        'personID' => _h($person->personID),
+        'uname' => _h($person->uname),
+        'remember' => (isset($rememberme) ? $rememberme : _t('no')),
+        'exp' => $expire + time()
+    ];
 
     /**
      * Fires immediately before the secure authentication cookie is set.
@@ -556,7 +563,7 @@ function etsis_set_auth_cookie($person, $rememberme = '')
      */
     $app->hook->do_action('set_auth_cookie', $auth_cookie, $expire);
 
-    $app->cookies->setSecureCookie('ET_COOKNAME', $auth_cookie, $expire);
+    $app->cookies->setSecureCookie($auth_cookie);
 }
 
 /**
@@ -577,7 +584,7 @@ function etsis_clear_auth_cookie()
     $app->hook->do_action('clear_auth_cookie');
 
     $vars1 = [];
-    parse_str($app->cookies->get('ET_COOKNAME'), $vars1);
+    parse_str($app->cookies->get('ET_COOKIENAME'), $vars1);
     /**
      * Checks to see if the cookie is exists on the server.
      * It it exists, we need to delete it.
@@ -598,37 +605,13 @@ function etsis_clear_auth_cookie()
         unlink($file2);
     }
 
-    $vars3 = [];
-    parse_str($app->cookies->get('SWITCH_USERNAME'), $vars3);
-    /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
-     */
-    $file3 = $app->config('cookies.savepath') . 'cookies.' . $vars3['data'];
-    if (file_exists($file3)) {
-        unlink($file3);
-    }
-
-    $vars4 = [];
-    parse_str($app->cookies->get('ET_REMEMBER'), $vars4);
-    /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
-     */
-    $file4 = $app->config('cookies.savepath') . 'cookies.' . $vars4['data'];
-    if (file_exists($file4)) {
-        unlink($file4);
-    }
-
     /**
      * After the cookie is removed from the server,
      * we know need to remove it from the browser and
      * redirect the user to the login page.
      */
-    $app->cookies->remove('ET_COOKNAME');
+    $app->cookies->remove('ET_COOKIENAME');
     $app->cookies->remove('SWITCH_USERBACK');
-    $app->cookies->remove('SWITCH_USERNAME');
-    $app->cookies->remove('ET_REMEMBER');
 }
 
 /**
@@ -641,4 +624,18 @@ function etsis_login_form_show_message()
     $app = \Liten\Liten::getInstance();
     $flash = new \app\src\Core\etsis_Messages();
     echo $app->hook->apply_filter('login_form_show_message', $flash->showMessage());
+}
+
+/**
+ * Retrieves data from a secure cookie.
+ * 
+ * @since 6.2.12
+ * @param string $key COOKIE key.
+ * @return mixed
+ */
+function get_secure_cookie_data($key)
+{
+    $app = \Liten\Liten::getInstance();
+    $data = $app->cookies->getSecureCookie($key);
+    return $data;
 }
