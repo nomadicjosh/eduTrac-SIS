@@ -34,34 +34,34 @@ $config = array(
         'console' => array(
             'class' => 'Monolog\Handler\StreamHandler',
             'level' => 'DEBUG',
-            'formatter' => 'spaced',
+            'formatter' => 'exception',
             'stream' => 'php://stdout'
         ),
         'info_file_handler' => array(
             'class' => 'Monolog\Handler\RotatingFileHandler',
             'level' => 'INFO',
-            'formatter' => 'spaced',
+            'formatter' => 'exception',
             'maxFiles' => 10,
             'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-info.txt'
         ),
         'error_file_handler' => array(
             'class' => 'Monolog\Handler\RotatingFileHandler',
             'level' => 'ERROR',
-            'formatter' => 'spaced',
+            'formatter' => 'exception',
             'maxFiles' => 10,
             'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-error.txt'
         ),
         'notice_file_handler' => array(
             'class' => 'Monolog\Handler\RotatingFileHandler',
             'level' => 'NOTICE',
-            'formatter' => 'spaced',
+            'formatter' => 'exception',
             'maxFiles' => 10,
             'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-notice.txt'
         ),
         'critical_file_handler' => array(
             'class' => 'Monolog\Handler\RotatingFileHandler',
             'level' => 'CRITICAL',
-            'formatter' => 'spaced',
+            'formatter' => 'exception',
             'maxFiles' => 10,
             'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-critical.txt'
         ),
