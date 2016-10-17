@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+
 /**
  * Index Router
  *  
@@ -100,10 +102,10 @@ $app->post('/reset-password/', function () use($app, $email) {
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-        if($email->etsis_mail(_h(get_option('system_email')), _t("Reset Password Request"), $message, $headers)) {
-            $app->flash('success_message', _t( 'Your request has been sent.' ));
+        if ($email->etsis_mail(_h(get_option('system_email')), _t("Reset Password Request"), $message, $headers)) {
+            $app->flash('success_message', _t('Your request has been sent.'));
         } else {
-            $app->flash('error_message', _t( 'System encountered an error. Please try again.' ));
+            $app->flash('error_message', _t('System encountered an error. Please try again.'));
         }
     }
     redirect($app->req->server['HTTP_REFERER']);
@@ -559,8 +561,12 @@ $app->get('/switchUserTo/(\d+)/', function ($id) use($app) {
      * It it exists, we need to delete it.
      */
     $file = $app->config('cookies.savepath') . 'cookies.' . $vars['data'];
-    if (file_exists($file)) {
-        unlink($file);
+    try {
+        if (etsis_file_exists($file)) {
+            unlink($file);
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 
     /**
@@ -589,9 +595,14 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
      * It it exists, we need to delete it.
      */
     $file1 = $app->config('cookies.savepath') . 'cookies.' . $vars1['data'];
-    if (file_exists($file1)) {
-        unlink($file1);
+    try {
+        if (etsis_file_exists($file1)) {
+            unlink($file1);
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
+
     $app->cookies->remove("ET_COOKIENAME");
 
     $vars2 = [];
@@ -601,9 +612,14 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
      * It it exists, we need to delete it.
      */
     $file2 = $app->config('cookies.savepath') . 'cookies.' . $vars2['data'];
-    if (file_exists($file2)) {
-        unlink($file2);
+    try {
+        if (etsis_file_exists($file2)) {
+            unlink($file2);
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
+
     $app->cookies->remove("SWITCH_USERBACK");
 
     /**

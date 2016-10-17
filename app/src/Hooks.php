@@ -228,7 +228,7 @@ class Hooks
             $pluginFile = _h($v->location);
             $plugin = str_replace('.plugin.php', '', $pluginFile);
             
-            if (! file_exists($plugins_dir . $plugin . DS . $pluginFile)) {
+            if (! etsis_file_exists($plugins_dir . $plugin . DS . $pluginFile, false)) {
                 $file = $plugins_dir . $pluginFile;
             } else {
                 $file = $plugins_dir . $plugin . DS . $pluginFile;
@@ -241,7 +241,7 @@ class Hooks
                 return false;
             }
             
-            if (file_exists($file)) {
+            if (etsis_file_exists($file, false)) {
                 require_once ($file);
             } else {
                 $this->deactivate_plugin(_h($v->location));

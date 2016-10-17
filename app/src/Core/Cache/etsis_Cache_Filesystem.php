@@ -149,7 +149,7 @@ class etsis_Cache_Filesystem extends \app\src\Core\Cache\etsis_Abstract_Cache
          * If the cache directory does not exist, the create it first
          * before trying to call it for use.
          */
-        if (!is_dir($cacheDir) || !file_exists($cacheDir)) {
+        if (!is_dir($cacheDir) || !etsis_file_exists($cacheDir, false)) {
             try {
                 _mkdir($cacheDir);
             } catch (IOException $e) {
@@ -713,7 +713,7 @@ class etsis_Cache_Filesystem extends \app\src\Core\Cache\etsis_Abstract_Cache
         $stale = glob($this->_dir . $namespace . DS . '*');
         if (is_array($stale)) {
             foreach ($stale as $filename) {
-                if (file_exists($filename)) {
+                if (etsis_file_exists($filename, false)) {
                     if (time() - file_mod_time($filename) > (int) $ttl) {
                         unlink($filename);
                     }
@@ -735,7 +735,7 @@ class etsis_Cache_Filesystem extends \app\src\Core\Cache\etsis_Abstract_Cache
     private function keyToPath($key, $namespace)
     {
         $dir = $this->_dir . urlencode($namespace);
-        if (!file_exists($dir)) {
+        if (!etsis_file_exists($dir, false)) {
             try {
                 _mkdir($dir);
             } catch (IOException $e) {

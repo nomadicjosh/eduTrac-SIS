@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use Cascade\Cascade;
 
 /**
  * eduTrac Auth Helper
@@ -52,7 +54,7 @@ function get_persondata($field)
 function is_user_logged_in()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $person = get_person_by('personID', get_persondata('personID'));
 
     if ('' != $person->personID && $app->cookies->verifySecureCookie('ET_COOKIENAME')) {
@@ -590,8 +592,12 @@ function etsis_clear_auth_cookie()
      * It it exists, we need to delete it.
      */
     $file1 = $app->config('cookies.savepath') . 'cookies.' . $vars1['data'];
-    if (file_exists($file1)) {
-        unlink($file1);
+    try {
+        if (etsis_file_exists($file1)) {
+            unlink($file1);
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 
     $vars2 = [];
@@ -601,7 +607,7 @@ function etsis_clear_auth_cookie()
      * It it exists, we need to delete it.
      */
     $file2 = $app->config('cookies.savepath') . 'cookies.' . $vars2['data'];
-    if (file_exists($file2)) {
+    if (etsis_file_exists($file2, false)) {
         unlink($file2);
     }
 

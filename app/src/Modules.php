@@ -1,5 +1,7 @@
 <?php namespace app\src;
 
+use app\src\Core\Exception\NotFoundException;
+
 /**
  * Modules Library
  *  
@@ -114,8 +116,12 @@ class Modules
         $modules = glob(APP_PATH . 'modules' . DS . '*.module.php');
         if (is_array($modules)) {
             foreach ($modules as $module) {
-                if (file_exists($module)) {
-                    require_once($module);
+                try {
+                    if (etsis_file_exists($module)) {
+                        require_once($module);
+                    }
+                } catch (NotFoundException $e) {
+                    \Cascade\Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
                 }
             }
         }

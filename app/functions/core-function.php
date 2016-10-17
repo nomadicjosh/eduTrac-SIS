@@ -19,7 +19,7 @@ use PHPBenchmark\HtmlView;
 use PHPBenchmark\Monitor;
 use PHPBenchmark\MonitorInterface;
 use app\src\Core\Exception\Exception;
-use app\src\Core\Exception\FileNotFoundException;
+use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\IOException;
 use Cascade\Cascade;
 
@@ -196,7 +196,7 @@ function _file_get_contents($filename, $use_include_path = false, $context = tru
  */
 function benchmark_init()
 {
-    if (!etsis_file_exists(BASE_PATH . 'config.php')) {
+    if (!etsis_file_exists(BASE_PATH . 'config.php', false)) {
         return false;
     }
     if (_h(get_option('enable_benchmark')) == 1) {
@@ -1141,14 +1141,14 @@ function etsis_php_check_includes($file_name)
  * @param bool $check_includes
  *            If set to TRUE, will check if other files have been included.
  * @return void|\app\src\Core\Exception\Exception
- * @throws FileNotFoundException If file does not exist or is not readable.
+ * @throws NotFoundException If file does not exist or is not readable.
  * @throws Exception If file contains duplicate function names.
  */
 function etsis_php_check_syntax($file_name, $check_includes = true)
 {
     // If file does not exist or it is not readable, throw an exception
     if (!is_file($file_name) || !is_readable($file_name)) {
-        throw new FileNotFoundException(sprintf(_t('File "%s" is not found or is not a regular file.'), $file_name), 'php_check_syntax');
+        throw new NotFoundException(sprintf(_t('File "%s" is not found or is not a regular file.'), $file_name), 4041);
     }
 
     $dupe_function = is_duplicate_function($file_name);
@@ -1196,7 +1196,7 @@ function etsis_validate_plugin($plugin_name)
 
     $plugin = str_replace('.plugin.php', '', $plugin_name);
 
-    if (!etsis_file_exists(ETSIS_PLUGIN_DIR . $plugin . DS . $plugin_name)) {
+    if (!etsis_file_exists(ETSIS_PLUGIN_DIR . $plugin . DS . $plugin_name, false)) {
         $file = ETSIS_PLUGIN_DIR . $plugin_name;
     } else {
         $file = ETSIS_PLUGIN_DIR . $plugin . DS . $plugin_name;
@@ -1212,8 +1212,8 @@ function etsis_validate_plugin($plugin_name)
         if (etsis_file_exists($file)) {
             include_once ($file);
         }
-    } catch (FileNotFoundException $e) {
-        Cascade::getLogger('error')->error($e->getMessage());
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 
     /**
@@ -1282,7 +1282,7 @@ function win_is_writable($path)
         return win_is_writable($path . DS . uniqid(mt_rand()) . '.tmp');
     }
     // check tmp file for read/write capabilities
-    $rm = etsis_file_exists($path);
+    $rm = etsis_file_exists($path, false);
     $f = fopen($path, 'a');
     if ($f === false) {
         return false;
@@ -1541,12 +1541,15 @@ function etsis_seconds_to_time($seconds)
  * @param string $filename Path to the file or directory.
  * @return boolean <b>TRUE</b> if the file or directory specified by
  * <i>$filename</i> exists; <b>FALSE</b> otherwise.
- * @throws FileNotFoundException If file does not exist.
+ * @throws NotFoundException If file does not exist.
  */
-function etsis_file_exists($filename)
+function etsis_file_exists($filename, $throw = true)
 {
     if (!file_exists($filename)) {
-        throw new FileNotFoundException(sprintf(_t('File "%s" does not exist.'), $filename), 'file_not_found');
+        if ($throw == true) {
+            throw new NotFoundException(sprintf(_t('File "%s" does not exist.'), $filename), 4041);
+        }
+        return false;
     }
     return true;
 }

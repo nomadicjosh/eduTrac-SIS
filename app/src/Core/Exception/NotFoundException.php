@@ -4,7 +4,7 @@ if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * eduTrac SIS File Not Found Exception Class
+ * eduTrac SIS Not Found Exception Class
  * 
  * This extends the default `LitenException` class to allow converting
  * file not found exceptions to and from `etsis_Error` objects.
@@ -17,7 +17,10 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-class FileNotFoundException extends \app\src\Core\Exception\BaseException
+class NotFoundException extends BaseException
 {
-    
+    public function __construct($message = 'Data requested cannot be found in the data source.', $code = 4040, $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }
