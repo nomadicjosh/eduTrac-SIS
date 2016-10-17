@@ -36,7 +36,7 @@ class etsis_MailHandler extends MailHandler
 
     protected function send($content, array $records)
     {
-        return $this->buildMessage($content, $records);
+        return $this->buildMessage((string)$content, $records);
     }
 
     /**
@@ -46,7 +46,7 @@ class etsis_MailHandler extends MailHandler
      * @param  array         $records Log records that formed the content
      * @return etsis_Email
      */
-    protected function buildMessage(string $content, array $records)
+    protected function buildMessage($content, array $records)
     {
         $message = null;
         if ($this->mailer instanceof etsis_Email) {
