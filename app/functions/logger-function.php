@@ -25,6 +25,10 @@ $config = array(
         'dashed' => array(
             'format' => "%datetime%-%channel%.%level_name% - %message% - %context% - %extra%\n"
         ),
+        'exception' => array(
+            'format' => "[%datetime%] %message% %context% %extra%\n",
+            'include_stacktraces' => true
+        )
     ),
     'handlers' => array(
         'console' => array(
@@ -64,7 +68,7 @@ $config = array(
         'alert_file_handler' => array(
             'class' => 'app\src\Core\etsis_MailHandler',
             'level' => 'ALERT',
-            'formatter' => 'spaced',
+            'formatter' => 'exception',
             'mailer' => new app\src\Core\etsis_Email(),
             'message' => 'This message will be replaced with the real one.',
             'email_to' => _h($app->hook->{'get_option'}('system_email')),
@@ -95,7 +99,7 @@ $config = array(
     )
 );
 
-Cascade::fileConfig($config);
+Cascade::fileConfig($app->hook->{'apply_filter'}('monolog_cascade_config', $config));
 
 /**
  * Default Error Handler
@@ -199,7 +203,7 @@ function etsis_set_environment()
         error_reporting(E_ALL & ~E_NOTICE);
         ini_set('display_errors', 'Off');
         ini_set('log_errors', 'On');
-        ini_set('error_log', BASE_PATH . 'app' . DS . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
+        ini_set('error_log', APP_PATH . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
         set_error_handler('etsis_error_handler', E_ALL & ~E_NOTICE);
     }
 }
