@@ -219,38 +219,32 @@ class Hooks
      *            string (optional) $plugins_dir Loads plugins from specified folder
      * @return mixed
      */
-    public function load_activated_plugins($plugins_dir = '')
+    public function load_activated_plugins($plugins_dir)
     {
         $plugin = $this->_app->db->plugin();
-        $q = $plugin->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+        $q = $plugin->find();
         
-        foreach ($q as $k => $v) {
-            $pluginFile = _h($v['location']);
+        foreach ($q as $v) {
+            $pluginFile = _h($v->location);
             $plugin = str_replace('.plugin.php', '', $pluginFile);
             
-            if (! file_exists($plugins_dir . $plugin . '/' . $pluginFile)) {
+            if (! file_exists($plugins_dir . $plugin . DS . $pluginFile)) {
                 $file = $plugins_dir . $pluginFile;
             } else {
-                $file = $plugins_dir . $plugin . '/' . $pluginFile;
+                $file = $plugins_dir . $plugin . DS . $pluginFile;
             }
             
             $error = etsis_php_check_syntax($file);
             if (is_etsis_exception($error)) {
-                $this->deactivate_plugin(_h($v['location']));
-                $this->_app->flash('error_message', sprintf(_t('The plugin <strong>%s</strong> has been deactivated because your changes resulted in a <strong>fatal error</strong>. <br /><br />') . $error->getMessage(), _h($v['location'])));
+                $this->deactivate_plugin(_h($v->location));
+                $this->_app->flash('error_message', sprintf(_t('The plugin <strong>%s</strong> has been deactivated because your changes resulted in a <strong>fatal error</strong>. <br /><br />') . $error->getMessage(), _h($v->location)));
                 return false;
             }
             
             if (file_exists($file)) {
                 require_once ($file);
             } else {
-                $this->deactivate_plugin(_h($v['location']));
+                $this->deactivate_plugin(_h($v->location));
             }
         }
     }
@@ -264,8 +258,8 @@ class Hooks
      */
     public function is_plugin_activated($plugin)
     {
-        $plugin = $this->_app->db->plugin()->where('location = ?', $plugin);
-        $q = $plugin->find(function ($data) {
+        $active = $this->_app->db->plugin()->where('location = ?', $plugin);
+        $q = $active->find(function ($data) {
             $array = [];
             foreach ($data as $d) {
                 $array[] = $d;
