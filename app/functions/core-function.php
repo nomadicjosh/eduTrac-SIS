@@ -757,7 +757,7 @@ function forbidden_keyword()
 }
 
 /**
- * The myeduTrac welcome message filter.
+ * The myetSIS welcome message filter.
  *
  * @since 4.3
  */
@@ -1148,7 +1148,7 @@ function etsis_php_check_syntax($file_name, $check_includes = true)
 {
     // If file does not exist or it is not readable, throw an exception
     if (!is_file($file_name) || !is_readable($file_name)) {
-        throw new NotFoundException(sprintf(_t('File "%s" is not found or is not a regular file.'), $file_name), 4041);
+        throw new NotFoundException(sprintf(_t('"%s" is not found or is not a regular file.'), $file_name));
     }
 
     $dupe_function = is_duplicate_function($file_name);
@@ -1213,7 +1213,7 @@ function etsis_validate_plugin($plugin_name)
             include_once ($file);
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: File not found: %s', $e->getCode(), $e->getMessage()));
     }
 
     /**
@@ -1537,8 +1537,8 @@ function etsis_seconds_to_time($seconds)
  * Checks whether a file or directory exists.
  * 
  * @since 6.2.12
- * @uses Cascade\Cascade Prints to log file if false.
  * @param string $filename Path to the file or directory.
+ * @param bool $throw Determines whether to do a simple check or throw an exception.
  * @return boolean <b>TRUE</b> if the file or directory specified by
  * <i>$filename</i> exists; <b>FALSE</b> otherwise.
  * @throws NotFoundException If file does not exist.
@@ -1547,7 +1547,7 @@ function etsis_file_exists($filename, $throw = true)
 {
     if (!file_exists($filename)) {
         if ($throw == true) {
-            throw new NotFoundException(sprintf(_t('File "%s" does not exist.'), $filename), 4041);
+            throw new NotFoundException(sprintf(_t('"%s" does not exist.'), $filename));
         }
         return false;
     }

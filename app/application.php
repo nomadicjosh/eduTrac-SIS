@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\IOException;
+use Cascade\Cascade;
 
 /**
  * Bootstrap for the application
@@ -16,29 +18,45 @@ try {
      * Creates a cookies directory with proper permissions.
      */
     _mkdir($app->config('cookies.savepath'));
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
 
+try {
     /**
      * Creates a node directory with proper permissions.
      */
     _mkdir($app->config('cookies.savepath') . 'nodes' . DS . 'etsis' . DS);
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
 
+try {
     /**
      * Creates a file directory with proper permissions.
      */
     _mkdir($app->config('file.savepath'));
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
 
+try {
     /**
      * Creates a cron directory with proper permissions.
      */
     _mkdir(cronDir());
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
 
+try {
     /**
      * Creates the cron directory with proper permissions to store
      * cronjob information.
      */
     _mkdir(cronDir() . 'cron' . DS . 'logs' . DS);
-} catch (\app\src\Core\Exception\IOException $e) {
-    Cascade\Cascade::getLogger('error')->error($e->getMessage());
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
 }
 
 /**

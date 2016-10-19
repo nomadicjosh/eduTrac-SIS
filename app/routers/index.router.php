@@ -525,9 +525,9 @@ $app->post('/message/', function () use($app) {
      * 
      * @return mixed
      */
-    $app->hook->do_action('update_options');
+    $app->hook->do_action('myetsis_welcom_message_option');
     /* Write to logs */
-    etsis_logger_activity_log_write('Update', 'myeduTrac', 'Welcome Message', get_persondata('uname'));
+    etsis_logger_activity_log_write('Update', 'myetSIS', 'Welcome Message', get_persondata('uname'));
 
     redirect($app->req->server['HTTP_REFERER']);
 });
@@ -566,7 +566,7 @@ $app->get('/switchUserTo/(\d+)/', function ($id) use($app) {
             unlink($file);
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: File not found: %s', $e->getCode(), $e->getMessage()));
     }
 
     /**
@@ -600,7 +600,7 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
             unlink($file1);
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: File not found: %s', $e->getCode(), $e->getMessage()));
     }
 
     $app->cookies->remove("ET_COOKIENAME");
@@ -617,7 +617,7 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
             unlink($file2);
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: File not found: %s', $e->getCode(), $e->getMessage()));
     }
 
     $app->cookies->remove("SWITCH_USERBACK");

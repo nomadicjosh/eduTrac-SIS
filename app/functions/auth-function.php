@@ -2,6 +2,7 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\UnauthorizedException;
 use Cascade\Cascade;
 
 /**
@@ -449,8 +450,8 @@ function etsis_authenticate($login, $password, $rememberme)
      */
     try {
         $app->hook->apply_filter('etsis_auth_cookie', $person, $rememberme);
-    } catch (\app\src\Core\Exception\Exception $e) {
-        Cascade\Cascade::getLogger('error')->error($e->getMessage());
+    } catch (UnauthorizedException $e) {
+        Cascade::getLogger('error')->error(sprintf('AUTHSTATE[%s]: Unauthorized: %s', $e->getCode(), $e->getMessage()));
     }
 
     etsis_logger_activity_log_write('Authentication', 'Login', get_name(_h($person->personID)), _h($person->uname));
@@ -529,7 +530,7 @@ function etsis_set_auth_cookie($person, $rememberme = '')
     $app = \Liten\Liten::getInstance();
 
     if (!is_object($person)) {
-        throw new \app\src\Core\Exception\Exception(_t('"$person" should be a database object.'), 'set_auth_cookie');
+        throw new UnauthorizedException(_t('"$person" should be a database object.'), 4011);
     }
 
     if (isset($rememberme)) {
@@ -597,7 +598,7 @@ function etsis_clear_auth_cookie()
             unlink($file1);
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: File not found: %s', $e->getCode(), $e->getMessage()));
     }
 
     $vars2 = [];
@@ -608,7 +609,7 @@ function etsis_clear_auth_cookie()
      */
     $file2 = $app->config('cookies.savepath') . 'cookies.' . $vars2['data'];
     if (etsis_file_exists($file2, false)) {
-        unlink($file2);
+        @unlink($file2);
     }
 
     /**

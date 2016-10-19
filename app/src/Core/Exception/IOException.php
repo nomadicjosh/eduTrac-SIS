@@ -19,5 +19,8 @@ if (!defined('BASE_PATH'))
  */
 class IOException extends \app\src\Core\Exception\BaseException
 {
-    
+    public function __construct($message = 'Cannot read/write to/from specified file or director.', $code = 403, $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }

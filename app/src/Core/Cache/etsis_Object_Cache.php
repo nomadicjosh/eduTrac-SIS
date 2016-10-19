@@ -1,6 +1,6 @@
 <?php namespace app\src\Core\Cache;
 
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
@@ -24,7 +24,7 @@ class etsis_Object_Cache
      * @var object
      */
     protected $_cache;
-    
+
     /**
      * Application global scope.
      * 
@@ -36,8 +36,8 @@ class etsis_Object_Cache
 
     public function __construct($driver, \Liten\Liten $liten = null)
     {
-        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
-        
+        $this->app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
+
         if ($driver == 'file') {
             $this->_cache = new \app\src\Core\Cache\etsis_Cache_Filesystem();
         } elseif ($driver == 'apc') {
@@ -51,9 +51,9 @@ class etsis_Object_Cache
              *            bool false Use `\Memcache`|`\Memcached`. Default is false.
              */
             $useMemcached = $this->app->hook->apply_filter('use_memcached', false);
-            
+
             $this->_cache = new \app\src\Core\Cache\etsis_Cache_Memcache($useMemcached);
-            
+
             $pool = [
                 [
                     'host' => '127.0.0.1',
@@ -69,7 +69,7 @@ class etsis_Object_Cache
              *            Array of servers to add to the connection pool.
              */
             $servers = $this->app->hook->apply_filter('memcache_server_pool', $pool);
-            
+
             $this->_cache->addServer($servers);
         } elseif ($driver == 'external') {
             /**
@@ -88,13 +88,13 @@ class etsis_Object_Cache
         } elseif ($driver == 'memory') {
             $this->_cache = new \app\src\Core\Cache\etsis_Cache_Memory();
         }
-        
+
         $error = $this->_cache;
         if (is_etsis_exception($error)) {
-            Cascade\Cascade::getLogger('error')->error($error->getMessage());
+            Cascade\Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $error->getCode(), $error->getMessage()));
             return false;
         }
-        
+
         return $this->_cache;
     }
 
@@ -116,7 +116,7 @@ class etsis_Object_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->_cache->create($key, $data, $namespace, (int) $ttl);
     }
 
@@ -134,7 +134,7 @@ class etsis_Object_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->_cache->read($key, $namespace);
     }
 
@@ -158,7 +158,7 @@ class etsis_Object_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->create($key, $data, $namespace, (int) $ttl);
     }
 
@@ -176,7 +176,7 @@ class etsis_Object_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->_cache->delete($key, $namespace);
     }
 
@@ -202,10 +202,10 @@ class etsis_Object_Cache
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->_cache->flushNamespace($namespace);
     }
-    
+
     /**
      * Sets the data contents into the cache.
      *
@@ -220,13 +220,18 @@ class etsis_Object_Cache
      *            Time to live sets the life of the cache file. Default: 0 = expires immediately after request.
      * @return bool Returns true if the cache was set and false otherwise.
      */
-    public function set($key, $data, $namespace = 'default', $ttl = 0) {
-        if (empty($namespace)) {
-            $namespace = 'default';
+    public function set($key, $data, $namespace = 'default', $ttl = 0)
+    {
+        try {
+            if (empty($namespace)) {
+                $namespace = 'default';
+            }
+            return $this->_cache->set($key, $data, $namespace, (int) $ttl);
+        } catch (\app\src\Core\Exception\IOException $e) {
+            Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
         }
-        return $this->_cache->set($key, $data, $namespace, (int) $ttl);
     }
-    
+
     /**
      * Returns stats of the cache.
      *
@@ -234,10 +239,11 @@ class etsis_Object_Cache
      *
      * @since 6.2.0
      */
-    public function getStats() {
+    public function getStats()
+    {
         return $this->_cache->getStats();
     }
-    
+
     /**
      * Increments numeric cache item's value.
      *
@@ -250,14 +256,15 @@ class etsis_Object_Cache
      *            Optional. The namespace the key is in.
      * @return false|int False on failure, the item's new value on success.
      */
-    public function inc($key, $offset = 1, $namespace = 'default') {
+    public function inc($key, $offset = 1, $namespace = 'default')
+    {
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->_cache->inc($key, (int) $offset, $namespace);
     }
-    
+
     /**
      * Decrements numeric cache item's value.
      *
@@ -270,11 +277,12 @@ class etsis_Object_Cache
      *            Optional. The namespace the key is in.
      * @return false|int False on failure, the item's new value on success.
      */
-    public function dec($key, $offset = 1, $namespace = 'default') {
+    public function dec($key, $offset = 1, $namespace = 'default')
+    {
         if (empty($namespace)) {
             $namespace = 'default';
         }
-        
+
         return $this->_cache->dec($key, (int) $offset, $namespace);
     }
 }

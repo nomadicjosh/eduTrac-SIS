@@ -4,7 +4,7 @@ if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * eduTrac SIS Not Found Exception Class
+ * eduTrac SIS UnauthorizedException Class
  * 
  * This extends the default `LitenException` class to allow converting
  * file not found exceptions to and from `etsis_Error` objects.
@@ -17,9 +17,9 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-class NotFoundException extends BaseException
+class UnauthorizedException extends BaseException
 {
-    public function __construct($message = 'Data requested cannot be found in the data source.', $code = 404, $previous = null)
+    public function __construct($message = 'Unauthorized: The request requires user authentication.', $code = 401, $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

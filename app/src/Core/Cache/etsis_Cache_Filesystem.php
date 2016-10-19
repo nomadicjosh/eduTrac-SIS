@@ -153,9 +153,9 @@ class etsis_Cache_Filesystem extends \app\src\Core\Cache\etsis_Abstract_Cache
             try {
                 _mkdir($cacheDir);
             } catch (IOException $e) {
-                Cascade::getLogger('error')->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
             } catch (Exception $e) {
-                Cascade::getLogger('error')->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
             }
         }
 
@@ -163,7 +163,7 @@ class etsis_Cache_Filesystem extends \app\src\Core\Cache\etsis_Abstract_Cache
          * If the directory isn't writable, throw an exception.
          */
         if (!etsis_is_writable($cacheDir)) {
-            throw new Exception(_t('Could not create the file cache directory.'), 'file_system_cache');
+            throw new IOException(_t('Could not create the file cache directory.'));
         }
 
         /**
@@ -442,7 +442,7 @@ class etsis_Cache_Filesystem extends \app\src\Core\Cache\etsis_Abstract_Cache
         $h = fopen($filename, 'a+');
         // If there is an issue with the handler, throw an exception.
         if (!$h) {
-            throw new Exception(_t('Could not write to cache.'), 'file_system_cache');
+            throw new IOException(_t('Could not write to cache.'));
         }
         // exclusive lock, will get released when the file is closed
         flock($h, LOCK_EX);
@@ -456,7 +456,7 @@ class etsis_Cache_Filesystem extends \app\src\Core\Cache\etsis_Abstract_Cache
             $data
         ));
         if (fwrite($h, $data) === false) {
-            throw new Exception(_t('Could not write to cache.'), 'file_system_cache');
+            throw new IOException(_t('Could not write to cache.'));
         }
         fclose($h);
 
@@ -739,9 +739,11 @@ class etsis_Cache_Filesystem extends \app\src\Core\Cache\etsis_Abstract_Cache
             try {
                 _mkdir($dir);
             } catch (IOException $e) {
-                Cascade::getLogger('error')->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+                return;
             } catch (Exception $e) {
-                Cascade::getLogger('error')->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+                return;
             }
         }
         return $this->_dir . urlencode($namespace) . DS . urlencode(md5($key));

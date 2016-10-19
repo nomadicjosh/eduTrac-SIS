@@ -66,7 +66,7 @@ $app->group('/plugins', function () use($app, $css, $js) {
         
         if (ob_get_length() > 0) {
             $output = ob_get_clean();
-            $error = new \app\src\etError('unexpected_output', _t('The plugin generated unexpected output.'), $output);
+            $error = new \app\src\Core\etsis_Error('unexpected_output', _t('The plugin generated unexpected output.'), $output);
             $app->flash('error_message', $error);
         }
         ob_end_clean();
@@ -152,7 +152,6 @@ $app->group('/plugins', function () use($app, $css, $js) {
                 }
             }
             
-            $dir = substr($_FILES["plugin_zip"]["name"], 0, - 15);
             $continue = strtolower($name[1]) == 'zip' ? true : false;
             
             if (! $continue) {
@@ -163,7 +162,7 @@ $app->group('/plugins', function () use($app, $css, $js) {
                 $zip = new \ZipArchive();
                 $x = $zip->open($target_path);
                 if ($x === true) {
-                    $zip->extractTo(APP_PATH . 'plugins' . DS . $dir);
+                    $zip->extractTo(APP_PATH . 'plugins' . DS);
                     $zip->close();
                     unlink($target_path);
                 }
