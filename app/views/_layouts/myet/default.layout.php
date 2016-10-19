@@ -88,7 +88,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                      * Apply Online
                                      * 
                                      * This action is triggered to echo out new links
-                                     * at the top of myeduTrac self service portal.
+                                     * at the top of myetSIS self service portal.
                                      * 
                                      * @since 5.0.0
                                      */
@@ -160,7 +160,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                      * Student My Menu Action Hook
                                      * 
                                      * Hook into this action in order to add a new menu item
-                                     * to be accessed by any logged in student under myeduTrac
+                                     * to be accessed by any logged in student under myetSIS
                                      * self service portal.
                                      * 
                                      * @since 6.1.05
@@ -180,7 +180,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                      * Forms My Menu Action Hook
                                      * 
                                      * Hook into this action in order to add a new menu item
-                                     * to be accessed by any logged in user under myeduTrac
+                                     * to be accessed by any logged in user under myetSIS
                                      * self service portal.
                                      * 
                                      * @since 6.1.05
@@ -194,7 +194,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                              * My Menu Action Hook
                              * 
                              * Hook into this action in order to add a new menu item
-                             * to be accessed by any logged in user under myeduTrac
+                             * to be accessed by any logged in user under myetSIS
                              * self service portal.
                              * 
                              * @since 5.0.0
@@ -228,7 +228,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                 <?php endif; ?>
 				<?php 
                     /**
-                     * myeduTrac Main Menu Hook
+                     * myetSIS Main Menu Hook
                      * 
                      * Hook into this action in order to add a new menu item
                      * to be accessed by any user or visitor.

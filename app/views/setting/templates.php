@@ -37,7 +37,7 @@ tinymce.init({
             icon: false,
             menu: [
                 {text: 'Administrator Email', onclick: function() {editor.insertContent('#adminemail#');}},
-                {text: 'myeduTrac URL', onclick: function() {editor.insertContent('#url#');}},
+                {text: 'myetSIS URL', onclick: function() {editor.insertContent('#url#');}},
                 {text: 'HelpDesk URL', onclick: function() {editor.insertContent('#helpdesk#');}},
                 {text: 'Current Term', onclick: function() {editor.insertContent('#currentterm#');}},
                 {text: 'Institution Name', onclick: function() {editor.insertContent('#instname#');}},

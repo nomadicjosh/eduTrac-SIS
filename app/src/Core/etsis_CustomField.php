@@ -190,7 +190,7 @@ class etsis_CustomField
 
     /**
      * Custom form field for application form
-     * via myeduTrac self service.
+     * via myetSIS self service.
      * 
      * @since 6.1.10
      */

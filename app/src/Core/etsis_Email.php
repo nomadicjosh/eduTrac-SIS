@@ -501,7 +501,7 @@ class etsis_Email
         }
         
         $name = get_name($id);
-        $site = _t('myeduTrac::') . _h(get_option('institution_name'));
+        $site = _t('myetSIS::') . _h(get_option('institution_name'));
         $message = "<p>Hello $name:</p>
         
 		<p>Below are your login details. Keep this email for future reference.</p>
@@ -526,7 +526,7 @@ class etsis_Email
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         
         $this->etsis_mail($email, _h(get_option('institution_name')) . _t(" Account Login Details"), $message, $headers);
-        return $this->app->hook->apply_filter('myedutrac_appl_confirm', $message, $headers);
+        return $this->app->hook->apply_filter('myetsis_appl_confirm', $message, $headers);
     }
 
     /**
@@ -546,7 +546,7 @@ class etsis_Email
         }
         
         $name = get_name($id);
-        $site = _t('myeduTrac::') . _h(get_option('institution_name'));
+        $site = _t('myetSIS::') . _h(get_option('institution_name'));
         $message = "<p>Dear Admissions:</p>
         
 		<p>A new application has been submitted via <em>my</em>eduTrac SIS self service.</p>
@@ -572,6 +572,6 @@ class etsis_Email
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         
         $this->etsis_mail(_h(get_option('admissions_email')), _t("Application for Admissions"), $message, $headers);
-        return $this->app->hook->apply_filter('myedutrac_application', $message, $headers);
+        return $this->app->hook->apply_filter('myetsis_application', $message, $headers);
     }
 }

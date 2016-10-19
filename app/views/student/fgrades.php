@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * myeduTrac Final Grades View
+ * myetSIS Final Grades View
  *  
  * @license GPLv3
  * 

@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * myeduTrac Register Spam View
+ * myetSIS Register Spam View
  *  
  * @license GPLv3
  * 

@@ -519,7 +519,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- // Modal heading END -->
 				<!-- Modal body -->
 				<div class="modal-body">
-					<p><?=_t( 'These comments will be shown to the applicant in myeduTrac.' );?></p>
+					<p><?=_t( 'These comments will be shown to the applicant in myetSIS.' );?></p>
 				</div>
 				<!-- // Modal body END -->
 				<!-- Modal footer -->

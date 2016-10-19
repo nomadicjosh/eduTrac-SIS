@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * myeduTrac Student Schedule View
+ * myetSIS Student Schedule View
  *  
  * @license GPLv3
  * 

@@ -47,7 +47,7 @@ function isStudent($id)
 /**
  * If the logged in user is not a student,
  * hide the menu item.
- * For myeduTrac usage.
+ * For myetSIS usage.
  *
  * @since 4.3
  * @param int $id

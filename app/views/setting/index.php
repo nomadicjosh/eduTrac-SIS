@@ -320,11 +320,11 @@ $screen = 'setting';
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'myeduTrac Layout' );?></h3>
+					<h3 class="modal-title"><?=_t( 'myetSIS Layout' );?></h3>
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t("You can create your own layout for myeduTrac self service portal. Make a duplicate of the default layout (/app/views/_layouts/myet/default.php), modify it and add your own css styling.");?></p>
+		            <p><?=_t("You can create your own layout for myetSIS self service portal. Make a duplicate of the default layout (/app/views/_layouts/myet/default.php), modify it and add your own css styling.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
@@ -358,11 +358,11 @@ $screen = 'setting';
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'myeduTrac Self Service' );?></h3>
+					<h3 class="modal-title"><?=_t( 'myetSIS Self Service' );?></h3>
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t("Use this option to place myeduTrac self service into maintenance mode.");?></p>
+		            <p><?=_t("Use this option to place myetSIS self service into maintenance mode.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
@@ -377,11 +377,11 @@ $screen = 'setting';
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'myeduTrac Offline Message' );?></h3>
+					<h3 class="modal-title"><?=_t( 'myetSIS Offline Message' );?></h3>
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t("Type the message that should be shown to vistors when myeduTrac self service is in offline mode. Those who have an account can still log into the site. If the logged in user does not have dashboard access, they will be redirected back to the offline message.");?></p>
+		            <p><?=_t("Type the message that should be shown to vistors when myetSIS self service is in offline mode. Those who have an account can still log into the site. If the logged in user does not have dashboard access, they will be redirected back to the offline message.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
@@ -396,7 +396,7 @@ $screen = 'setting';
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'myeduTrac Application Form' );?></h3>
+					<h3 class="modal-title"><?=_t( 'myetSIS Application Form' );?></h3>
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">

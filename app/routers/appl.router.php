@@ -231,7 +231,7 @@ $app->group('/appl', function () use($app, $css, $js, $json_url, $flashNow, $ema
                 $headers .= "X-Mailer: PHP/" . phpversion();
                 $headers .= "MIME-Version: 1.0" . "\r\n";
                 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                $email->etsis_mail(getUserValue($_POST['personID'], 'email'), _t("myeduTrac Username Change"), $message, $headers);
+                $email->etsis_mail(getUserValue($_POST['personID'], 'email'), _t("myetSIS Username Change"), $message, $headers);
 
                 /**
                  * @since 6.1.07

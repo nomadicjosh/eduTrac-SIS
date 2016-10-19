@@ -266,7 +266,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
             if ($student->save() && $sacp->save() && $al->save()) {
                 if (_h(get_option('send_acceptance_email')) == 1) {
                     $host = strtolower($_SERVER['SERVER_NAME']);
-                    $site = _t('myeduTrac :: ') . _h(get_option('institution_name'));
+                    $site = _t('myetSIS :: ') . _h(get_option('institution_name'));
                     $message = _escape(get_option('student_acceptance_letter'));
                     $message = str_replace('#uname#', $nae->uname, $message);
                     $message = str_replace('#fname#', $nae->fname, $message);

@@ -202,7 +202,7 @@ $screen = 'setting';
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t("Emails via the myeduTrac portal (i.e. address changes) will be sent to this email address. This email address will show up in the contact details in the portal's footer as well.");?></p>
+		            <p><?=_t("Emails via the myetSIS portal (i.e. address changes) will be sent to this email address. This email address will show up in the contact details in the portal's footer as well.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
@@ -222,7 +222,7 @@ $screen = 'setting';
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t("New applications submitted via the myeduTrac portal will be sent to this email adddress.");?></p>
+		            <p><?=_t("New applications submitted via the myetSIS portal will be sent to this email adddress.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>

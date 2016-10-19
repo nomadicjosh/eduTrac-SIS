@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * myeduTrac Shopping Cart View
+ * myetSIS Shopping Cart View
  *  
  * @license GPLv3
  * 
