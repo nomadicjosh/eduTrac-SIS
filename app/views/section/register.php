@@ -47,19 +47,16 @@ $(window).load(function() {
 		}
 	});
 });
-
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
 	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><?=_t( 'Course Registration' );?></li>
+	<li><?=_t( 'Course Registration (RGN)' );?></li>
 </ul>
 
-<h3><?=_t( 'Course Registration' );?></h3>
+<h3><?=_t( 'Course Registration (RGN)' );?></h3>
 <div class="innerLR">
     
     <?=$flash->showMessage();?>
@@ -132,6 +129,29 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- // Row END -->
 				
 				<hr class="separator" />
+                
+                <!-- Row -->
+				<div class="row">
+                    
+                    <!-- Column -->
+                    <div class="col-md-3">
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label"><?=_t( 'RRSR' );?> <a href="<?=get_base_url();?>sect/rgn/rrsr/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <div class="col-md-3">
+                                <input type="text" disabled value="<?=is_node_count_zero('rrsr');?>" class="form-control col-md-1 center" />
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                    </div>
+					<!-- // Column END -->
+					
+				</div>
+				<!-- // Row END -->
+                
+                <hr class="separator" />
 				
 				<!-- Form actions -->
 				<div class="form-actions">
