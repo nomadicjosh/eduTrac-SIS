@@ -55,42 +55,7 @@
 				},
 				defaultTheme: false
 			}
-		},
-		
-		placeholder: "#chart_simple",
-
-		// initialize
-		init: function()
-		{
-			if (this.plot == null)
-			{
-				for (var i = 0; i < 14; i += 0.5) 
-				{
-			        this.data.sin.push([i, Math.sin(i)]);
-			        this.data.cos.push([i, Math.cos(i)]);
-			    }
-			}
-			this.plot = $.plot(
-				$(this.placeholder),
-	           	[{
-	    			label: "Sin", 
-	    			data: this.data.sin,
-	    			lines: {fillColor: "#DA4C4C"},
-	    			points: {fillColor: "#fff"}
-	    		}, 
-	    		{	
-	    			label: "Cos", 
-	    			data: this.data.cos,
-	    			lines: {fillColor: "#444"},
-	    			points: {fillColor: "#fff"}
-	    		}], this.options);
 		}
 	};
-		
-	$(window).on('load', function(){
-		setTimeout(function(){
-			charts.chart_simple.init();
-		}, 100);
-	});
 	
 })(jQuery);
