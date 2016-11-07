@@ -525,7 +525,7 @@ $app->post('/message/', function () use($app) {
      * 
      * @return mixed
      */
-    $app->hook->do_action('myetsis_welcom_message_option');
+    $app->hook->do_action('myetsis_welcome_message_option');
     /* Write to logs */
     etsis_logger_activity_log_write('Update', 'myetSIS', 'Welcome Message', get_persondata('uname'));
 
