@@ -40,25 +40,6 @@ try {
     Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
 }
 
-try {
-    /**
-     * Creates a cron directory with proper permissions.
-     */
-    _mkdir(cronDir());
-} catch (IOException $e) {
-    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
-}
-
-try {
-    /**
-     * Creates the cron directory with proper permissions to store
-     * cronjob information.
-     */
-    _mkdir(cronDir() . 'cron' . DS . 'logs' . DS);
-} catch (IOException $e) {
-    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
-}
-
 /**
  * Error log setting
  */

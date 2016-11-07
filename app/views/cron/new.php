@@ -14,7 +14,8 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $flash = new \app\src\Core\etsis_Messages();
 $screen = 'cron';
-$options = [30        => '30 seconds',
+$options = [
+                 30        => '30 seconds',
                  60        => 'Minute',
                  120       => '2 minutes',
                  300       => '5 minutes',
@@ -31,9 +32,8 @@ $options = [30        => '30 seconds',
                  259200    => '3 days', 
                  604800    => 'Week', 
                  209600    => '2 weeks', 
-                 2629743   => 'Month'];
-session_start();
-session_regenerate_id();
+                 2629743   => 'Month'
+];
 ?>
 
 <script type="text/javascript">
@@ -66,7 +66,6 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                 <ul>
                     <li class="glyphicons dashboard"><a href="<?=get_base_url();?>cron/<?=bm();?>"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
                     <li class="glyphicons star active"><a href="<?=get_base_url();?>cron/new/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
-                    <li class="glyphicons list tab-stacked"><a href="<?=get_base_url();?>cron/log/<?=bm();?>"><i></i> <?=_t( 'Log' );?></a></li>
                     <li class="glyphicons wrench tab-stacked"><a href="<?=get_base_url();?>cron/setting/<?=bm();?>"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
                     <!-- <li class="glyphicons circle_question_mark tab-stacked"><a href="<?=get_base_url();?>cron/about/<?=bm();?>"><i></i> <span><?=_t( 'About' );?></span></a></li> -->
                 </ul>
@@ -97,18 +96,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( "Save Log" );?> <a href="#slog" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Cronjob Name" );?></label>
                             <div class="col-md-8">
-                                <input type="checkbox" id="savelog" name="savelog"/>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( "Mail Log" );?> <a href="#mlog" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
-                            <div class="col-md-8">
-                                <input type="checkbox" id="maillog" name="maillog"/>
+                                <input type="text" name="name" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -118,15 +108,6 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 					
 					<!-- Column -->
 					<div class="col-md-6">
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( "Mail Log Email" );?> <a href="#mlogEmail" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
-                            <div class="col-md-8">
-                                <input type="text" id="maillogaddress" name="maillogaddress" class="form-control"/>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
@@ -181,66 +162,6 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 		
 	</form>
 	<!-- // Form END -->
-	
-	<div class="modal fade" id="slog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-	
-				<!-- Modal heading -->
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Save Log' );?></h3>
-				</div>
-				<!-- // Modal heading END -->
-		        <div class="modal-body">
-		            <p><?=_t( 'Click the checkbox if the system should save a log of when the cronjob runs.' );?></p>
-		        </div>
-		        <div class="modal-footer">
-		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
-		        </div>
-	       	</div>
-      	</div>
-    </div>
-    
-    <div class="modal fade" id="mlog">
-    	<div class="modal-dialog">
-			<div class="modal-content">
-	
-				<!-- Modal heading -->
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Mail Log' );?></h3>
-				</div>
-				<!-- // Modal heading END -->
-		        <div class="modal-body">
-		            <p><?=_t( "Click checkbox if you want the system to send you an email of the cronjob log." );?></p>
-		        </div>
-		        <div class="modal-footer">
-		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
-		        </div>
-	        </div>
-      	</div>
-    </div>
-    
-    <div class="modal fade" id="mlogEmail">
-    	<div class="modal-dialog">
-			<div class="modal-content">
-	
-				<!-- Modal heading -->
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Mail Log Email' );?></h3>
-				</div>
-				<!-- // Modal heading END -->
-		        <div class="modal-body">
-		            <p><?=_t("If you checked 'Mail Log', enter the email address where the log should be sent.");?></p>
-		        </div>
-		        <div class="modal-footer">
-		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
-		        </div>
-	        </div>
-      	</div>
-    </div>
     
     <div class="modal fade" id="each">
     	<div class="modal-dialog">
@@ -249,7 +170,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Each Time' );?></h3>
+					<h3 class="modal-title"><?=_t( 'Each / Time' );?></h3>
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">

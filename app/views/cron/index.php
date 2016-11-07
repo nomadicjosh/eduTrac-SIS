@@ -45,7 +45,6 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
             <ul>
                 <li class="glyphicons dashboard active"><a href="<?=get_base_url();?>cron/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
                 <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/<?=bm();?>"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
-                <li class="glyphicons list tab-stacked"><a href="<?=get_base_url();?>cron/log/<?=bm();?>"><i></i> <?=_t( 'Log' );?></a></li>
                 <li class="glyphicons wrench tab-stacked"><a href="<?=get_base_url();?>cron/setting/<?=bm();?>"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
                 <!-- <li class="glyphicons circle_question_mark tab-stacked"><a href="<?=get_base_url();?>cron/about/<?=bm();?>"><i></i> <span><?=_t( 'About' );?></span></a></li> -->
             </ul>
@@ -72,17 +71,18 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				
 				<!-- Table body -->
 				<tbody>
-				<?php if (isset($_SESSION['cronjobs'], $_SESSION['cronjobs']['jobs']) && count($_SESSION['cronjobs']['jobs']) > 0) { ?>
-                <?php foreach ($_SESSION['cronjobs']['jobs'] as $k => $cronjob) {?>
+                <?php foreach ($cron as $job) {?>
                 <tr class="gradeX">
-                    <td class="text-center"><input type="checkbox" value="xx" name="cronjobs[<?=$k;?>]" /></td>
-                    <td class="text-center"><a href="<?=get_base_url() . 'cron/view' . '/' . $k . '/';?>" title="Edit"><?=(strlen($cronjob['url']) > 52) ? substr($cronjob['url'], 0, 50) . '..' : $cronjob['url'];?></a></td>
-                    <td class="text-center">Each <?=($cronjob['time'] != '') ? "day on " . $cronjob['time']  . ' hours' : $options[$cronjob['each']] . ((isset($cronjob['eachtime']) && strlen($cronjob['eachtime']) > 0) ? ' at ' . $cronjob['eachtime'] : '');?></td>
-                    <td class="text-center"><?=($cronjob['lastrun'] !== '') ? date('M d, Y @ h:i A', strtotime($cronjob['lastrun'])) : '';?></td>
-                    <td class="text-center"><?=$cronjob['runned'];?></td>
-                    <td class="text-center"><?=($cronjob['savelog'] == true) ? 'Yes' : 'No'; ?><?php echo isset($_SESSION['cronjobs']['settings']) ? ' / <a target="_blank" href="'.get_base_url(). 'cron/cronjob' . '/' . '?password=' . $_SESSION['cronjobs']['settings']['cronjobpassword'] . '&id=' . $k . '">'._t('Run').'</a>' : '';?></td>
+                    <td class="text-center"><input type="checkbox" value="<?=$job->id;?>" name="cronjobs[<?=$job->id;?>]" /></td>
+                    <td class="text-center"><a href="<?=get_base_url() . 'cron/view/' . $job->id . '/';?>" title="Edit"><?=$job->name;?></a></td>
+                    <td class="text-center">Each <?=($job->time != 0) ? "day on " . $job->time  . ' hours' : etsis_seconds_to_time($job->each) . (strlen($job->eachtime > 0) ? ' at ' . $job->eachtime : '');?></td>
+                    <td class="text-center"><?=($job->lastrun !== '') ? date('M d, Y @ h:i A', strtotime($job->lastrun)) : '';?></td>
+                    <td class="text-center"><?=$job->runned;?></td>
+                    <?php foreach ($set as $s) : ?>
+                    <td class="text-center"><?=isset($s) ? '<a target="_blank" href="'.get_base_url(). 'cron/cronjob' . '/' . '?password=' . $s->cronjobpassword . '&id=' . $job->id . '">'._t('Run').'</a>' : '';?></td>
+                    <?php endforeach; ?>
                 </tr>
-                <?php } } ?>
+                <?php } ?>
 					
 				</tbody>
 				<!-- // Table body END -->
@@ -90,7 +90,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 			</table>
 			<!-- // Table END -->
             
-            <?php if (isset($k, $cronjob)) { ?> 
+            <?php if (isset($job->id)) { ?> 
             <hr class="separator" />
 				
             <div class="separator line bottom"></div>

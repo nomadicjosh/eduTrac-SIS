@@ -1,6 +1,9 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\NodeQ\etsis_NodeQ as Node;
+use app\src\Core\NodeQ\Helpers\Validate as Validate;
+use Cascade\Cascade;
 
 /**
  * Cron Router
@@ -11,9 +14,6 @@ if (!defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-session_start();
-session_regenerate_id();
-
 $options = [
     30 => '30 seconds',
     60 => 'Minute',
@@ -62,88 +62,6 @@ foreach ($regions as $name => $mask) {
     }
 }
 
-/**
- * Retrieves a serialized array of cronjob handlers.
- *
- * @since 6.0.00
- * @return mixed
- */
-function getCronjobs()
-{
-    $cronDir = cronDir() . 'cron/';
-    return unserialize(base64_decode(substr(_file_get_contents($cronDir . 'cronjobs.dat.php'), 7, - 2)));
-}
-
-/**
- * Saves new cronjob handlers to serialized array.
- *
- * @since 6.0.00
- */
-function saveCronjobs($data)
-{
-    $cronDir = cronDir() . 'cron/';
-    if (!file_put_contents($cronDir . 'cronjobs.dat.php', '<' . '?php /*' . base64_encode(serialize($data)) . '*/')) {
-        etsis_monolog('cron', _t('cannot write to cronjobs database file, please check file rights'), 'addError');
-    }
-}
-
-/**
- * Saves cronjob handler activity to a log file.
- *
- * @since 6.0.00
- */
-function saveLogs($text)
-{
-    $cronDir = cronDir() . 'cron/';
-    if (!file_put_contents($cronDir . 'logs/cronjobs.log', date('Y-m-d H:i:s') . ' - ' . $text . PHP_EOL . _file_get_contents($cronDir . 'logs/cronjobs.log'))) {
-        etsis_monolog('cron', _t('cannot write to cronjobs database file, please check file rights'), 'addError');
-    }
-}
-
-/**
- * Updates a cronjob handler.
- *
- * @since 6.0.00
- */
-function updateCronjobs($id = '')
-{
-    $app = \Liten\Liten::getInstance();
-    $cronDir = cronDir() . 'cron/';
-    if (file_put_contents($cronDir . 'cronjobs.dat.php', '<' . '?php /*' . base64_encode(serialize($_SESSION['cronjobs'])) . '*/')) {
-        $app->flash('success_message', _t('Database saved.'));
-
-        // create 'backup'
-        file_put_contents($cronDir . 'cronjobs.backup-' . date('Y-m-d') . '.php', '<' . '?php /*' . base64_encode(serialize($_SESSION['cronjobs'])) . '*/');
-    } else {
-        $app->flash('error_message', _t('Database not saved, could not create database file on server, please check write rights of this script.'));
-    }
-
-    // remove old cronjob backup files
-    $files = glob($cronDir . 'cronjobs.backup*.php');
-    if (is_array($files)) {
-        foreach ($files as $file) {
-            if (is_file($file) && time() - filemtime($file) >= 2 * 24 * 60 * 60) { // 2 days
-                unlink($file);
-            }
-        }
-    }
-
-    if ($id != '' && is_numeric($id)) {
-        redirect(get_base_url() . 'cron/view' . '/' . $id);
-    } else {
-        redirect($app->req->server['HTTP_REFERER']);
-    }
-    exit();
-}
-if (file_exists(cronDir() . 'cron/' . 'cronjobs.dat.php')) {
-    $data = unserialize(base64_decode(substr(_file_get_contents(cronDir() . 'cron/' . 'cronjobs.dat.php'), 7, - 2)));
-    if (is_array($data)) {
-        $_SESSION['cronjobs'] = $data;
-    }
-} elseif (isset($_SESSION['cronjobs'])) {
-    $_SESSION = null;
-}
-
 $email = _etsis_email();
 $flashNow = new \app\src\Core\etsis_Messages();
 $emailer = _etsis_phpmailer();
@@ -165,7 +83,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
+$app->group('/cron', function () use($app, $css, $js, $emailer, $email, $flashNow) {
 
     /**
      * Before route checks to make sure the logged in user
@@ -187,36 +105,30 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
     });
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
+        if (!Validate::table('cronjob_setting')->exists()) {
+            Node::dispense('cronjob_setting');
+        }
+
+        if (!Validate::table('cronjob_handler')->exists()) {
+            Node::dispense('cronjob_handler');
+        }
+
+        $set = Node::table('cronjob_setting')->findAll();
+        $job = Node::table('cronjob_handler')->findAll();
+
         if ($app->req->isPost()) {
-            $cronDir = cronDir() . 'cron/';
-            // remove from session
-            foreach ($_POST['cronjobs'] as $k => $v) {
-                // get log files, if exists;
-                if (is_dir($cronDir . 'logs/')) {
-                    $files = glob($cronDir . 'logs/*' . preg_replace('/[^A-Za-z0-9 ]/', '', $_SESSION['cronjobs']['jobs'][$k]['url']) . '.log');
-                    // files found?
-                    if (is_array($files) && count($files) > 0) {
-                        // remove all!!
-                        foreach ($files as $k => $file) {
-                            if (!unlink($file)) {
-                                $_SESSION['errors'][] = sprintf('Could not remove file %s from server, please do this manually', $file);
-                                $app->flash('error_message', sprintf(_t('Could not remove file %s from server, please do this manually'), $file));
-                            }
-                        }
-                    }
-                }
-                unset($_SESSION['cronjobs']['jobs'][$k]);
+            foreach ($_POST['cronjobs'] as $job) {
+                Node::table('cronjob_handler')->find($job)->delete();
             }
-
-            $app->flash('success_message', count($_POST['cronjobs']) . ' cronjobs removed');
-
-            updateCronjobs();
+            redirect($app->req->server['HTTP_REFERER']);
         }
 
         $app->view->display('cron/index', [
             'title' => 'Cronjob Handlers',
             'cssArray' => $css,
-            'jsArray' => $js
+            'jsArray' => $js,
+            'cron' => $job,
+            'set' => $set
         ]);
     });
 
@@ -242,45 +154,37 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
     $app->match('GET|POST', '/new/', function () use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
             if (filter_var($_POST['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
+                $url = Node::table('cronjob_handler')->where('url', '=', $app->req->_post('url'))->find();
                 $found = false;
-                if (isset($_SESSION['cronjobs'], $_SESSION['cronjobs']['jobs']) && count($_SESSION['cronjobs']['jobs']) > 0) {
-                    foreach ($_SESSION['cronjobs']['jobs'] as $null => $cronjob) {
-                        if ($cronjob['url'] == $_POST['url']) {
-                            $found = true;
-                        }
-                    }
+                if ($url->count() > 0) {
+                    $found = true;
                 }
 
                 if ($found == false) {
-                    if ($_POST['time'] == '' && $_POST['each'] == '') {
-                        $app->flash('error_message', _t('Time settings missing, please add time settings'));
+                    if ($app->req->_post('each') == '') {
+                        $app->flash('error_message', _t('Time setting missing, please add time settings.'));
                     } else {
-                        if (isset($_POST['maillog'], $_POST['maillogaddress']) && !filter_var($_POST['maillogaddress'], FILTER_VALIDATE_EMAIL)) {
-                            $app->flash('error_message', _t('Email address is invalid!'));
+
+                        $cron = Node::table('cronjob_handler');
+                        $cron->name = (string) $app->req->_post('name');
+                        $cron->url = (string) $app->req->_post('url');
+                        $cron->each = (int) $app->req->_post('each');
+                        $cron->eachtime = ((isset($_POST['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['eachtime'])) ? $_POST['eachtime'] : '');
+                        $cron->save();
+
+                        if ($cron) {
+                            $app->flash('success_message', $flashNow->notice(200));
+                        } else {
+                            $app->flash('error_message', $flashNow->notice(409));
                         }
-
-                        $_SESSION['cronjobs']['jobs'][] = array(
-                            'url' => $_POST['url'],
-                            'time' => ((isset($_POST['time']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['time'])) ? $_POST['time'] : ''),
-                            'each' => ((isset($_POST['each']) && is_numeric($_POST['each'])) ? $_POST['each'] : ''),
-                            'eachtime' => ((isset($_POST['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['eachtime'])) ? $_POST['eachtime'] : ''),
-                            'lastrun' => '',
-                            'runned' => 0,
-                            'savelog' => (isset($_POST['savelog']) ? true : false),
-                            'maillog' => (isset($_POST['maillog']) ? true : false),
-                            'maillogaddress' => ((isset($_POST['maillogaddress']) && filter_var($_POST['maillogaddress'], FILTER_VALIDATE_EMAIL)) ? $_POST['maillogaddress'] : '')
-                        );
-
-                        updateCronjobs(count($_SESSION['cronjobs']['jobs']));
                     }
                 } else {
-                    $app->flash('error_message', _t('Cronjob already known in this system.'));
-                    redirect($app->req->server['HTTP_REFERER']);
+                    $app->flash('error_message', _t('Cronjob handler already exists in the system.'));
                 }
             } else {
                 $app->flash('error_message', _t('Cronjob URL is wrong.'));
-                redirect($app->req->server['HTTP_REFERER']);
             }
+            redirect(get_base_url() . 'cron/');
         }
 
         $app->view->display('cron/new', [
@@ -291,69 +195,101 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
     });
 
     $app->match('GET|POST', '/setting/', function () use($app, $css, $js, $flashNow) {
+
         if ($app->req->isPost()) {
             $good = true;
 
             if (strlen(trim($_POST['cronjobpassword'])) < 2) {
-                $app->flash('error_message', _t('Your cronjob script cannot run without a password, Your cronjob password contains wrong characters, minimum of 4 letters and numbers.'));
+                $app->flash('error_message', _t('Cronjobs cannot run without a password. Your cronjob password contains wrong characters, minimum of 4 letters and numbers.'));
                 $good = false;
             }
 
             if ($good == true) {
-                $_SESSION['cronjobs']['settings'] = [
-                    'cronjobpassword' => $_POST['cronjobpassword'],
-                    'timeout' => (isset($_POST['timeout']) && is_numeric($_POST['timeout']) ? $_POST['timeout'] : 30)
-                ];
-                updateCronjobs();
+                $cron = Node::table('cronjob_setting')->find(1);
+                $cron->cronjobpassword = (string) $app->req->_post('cronjobpassword');
+                $cron->timeout = (isset($_POST['timeout']) && is_numeric($_POST['timeout']) ? (int) $app->req->_post('timeout') : 30);
+                $cron->save();
+
+                if ($cron) {
+                    $app->flash('success_message', $flashNow->notice(200));
+                } else {
+                    $app->flash('error_message', $flashNow->notice(409));
+                }
             }
+            redirect($app->req->server['HTTP_REFERER']);
         }
+
+        $set = Node::table('cronjob_setting')->find(1);
 
         $app->view->display('cron/setting', [
             'title' => 'Cronjob Handler Settings',
             'cssArray' => $css,
             'jsArray' => $js,
-            'data' => $_SESSION['cronjobs']
+            'data' => $set
         ]);
     });
 
     $app->match('GET|POST', '/view/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
         if ($app->req->isPost()) {
-
             if (filter_var($_POST['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
-                if (isset($_POST['maillog'], $_POST['maillogaddress']) && !filter_var($_POST['maillogaddress'], FILTER_VALIDATE_EMAIL)) {
-                    $_SESSION['errors'][] = 'Email address is invalid and not saved to database!';
+
+                $cron = Node::table('cronjob_handler')->find($id);
+                $cron->name = (string) $app->req->_post('name');
+                $cron->url = (string) $app->req->_post('url');
+                $cron->each = (int) $app->req->_post('each');
+                $cron->eachtime = ((isset($_POST['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['eachtime'])) ? $_POST['eachtime'] : '');
+                $cron->save();
+
+                if ($cron) {
+                    $app->flash('success_message', $flashNow->notice(200));
+                } else {
+                    $app->flash('error_message', $flashNow->notice(409));
                 }
-
-                $_SESSION['cronjobs']['jobs'][$id] = array(
-                    'url' => $_POST['url'],
-                    'time' => ((isset($_POST['time']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['time'])) ? $_POST['time'] : ''),
-                    'each' => ((isset($_POST['each']) && is_numeric($_POST['each'])) ? $_POST['each'] : ''),
-                    'eachtime' => ((isset($_POST['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['eachtime'])) ? $_POST['eachtime'] : ''),
-                    'lastrun' => $_SESSION['cronjobs']['jobs'][$id]['lastrun'],
-                    'runned' => $_SESSION['cronjobs']['jobs'][$id]['runned'],
-                    'savelog' => (isset($_POST['savelog']) ? true : false),
-                    'maillog' => (isset($_POST['maillog']) ? true : false),
-                    'maillogaddress' => ((isset($_POST['maillogaddress']) && filter_var($_POST['maillogaddress'], FILTER_VALIDATE_EMAIL)) ? $_POST['maillogaddress'] : '')
-                );
-
-                updateCronjobs($id);
             } else {
-                $_SESSION['errors'][] = 'Current URL is not correct, must contact http(s):// and a path';
                 $app->flash('error_message', _t('Current URL is not correct; must begin with http(s):// and followed with a path.'));
             }
 
             redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $data = $_SESSION['cronjobs']['jobs'][$id];
+        $sql = Node::table('cronjob_handler')->find($id);
 
-        $app->view->display('cron/view', [
-            'title' => 'View Cronjob Handler',
-            'cssArray' => $css,
-            'jsArray' => $js,
-            'data' => $data,
-            'id' => $id
-        ]);
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($sql == false) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($sql) == true) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If data is zero, 404 not found.
+         */ elseif (count($sql->id) <= 0) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+
+            $app->view->display('cron/view', [
+                'title' => 'View Cronjob Handler',
+                'cssArray' => $css,
+                'jsArray' => $js,
+                'cron' => $sql
+                ]
+            );
+        }
     });
 
     $app->match('GET|POST', '/log/', function () use($app) {
@@ -368,221 +304,93 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
     });
 
     $app->get('/cronjob/', function () use($app, $email) {
-        $cronDir = cronDir() . 'cron' . DS;
-        if (file_exists($cronDir . 'cronjobs.dat.php')) {
-            $cronjobs = getCronjobs();
 
-            if (!isset($_GET['password']) && !isset($argv[1])) {
-                saveLogs('No cronjob password found');
-                die(htmlspecialchars('No cronjob password found, use cronjob.php?password=<yourpassword> or full path to cronjob.php <yourpassword>'));
-            } elseif (isset($_GET['password']) && $_GET['password'] != $cronjobs['settings']['cronjobpassword']) {
-                saveLogs('Invalid $_GET password');
-                die('Invalid $_GET password');
-            } elseif (isset($argv[0]) && (substr($argv[1], 0, 8) != 'password' or substr($argv[1], 9) != $cronjobs['settings']['cronjobpassword'])) {
-                saveLogs('Invalid argument password (password=yourpassword)');
-                die('Invalid argument password (password=password)');
-            }
+        $setting = Node::table('cronjob_setting')->find(1);
+        $cron = Node::table('cronjob_handler')->findAll();
 
-            if (isset($cronjobs['run']) && $cronjobs['run'] == true) {
-                die('Cronjob already running');
-            }
+        if (!isset($_GET['password']) && !isset($argv[1])) {
+            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('No cronjob password found, use cronjob?password=<yourpassword>.')));
+            exit(_t('No cronjob handler password found, use cronjob?password=<yourpassword>.'));
+        } elseif (isset($_GET['password']) && $_GET['password'] != $setting->cronjobpassword) {
+            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid $_GET password')));
+            exit(_t('Invalid $_GET password'));
+        } elseif ($setting->cronjobpassword == 'changeme') {
+            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Cronjob handler password needs to be changed.')));
+            exit(_t('Cronjob handler password needs to be changed.'));
+        } elseif (isset($argv[0]) && (substr($argv[1], 0, 8) != 'password' or substr($argv[1], 9) != $setting->cronjobpassword)) {
+            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid argument password (password=yourpassword)')));
+            exit(_t('Invalid argument password (password=yourpassword)'));
+        }
 
-            $cronjobs['run'] = true;
-            saveCronjobs($cronjobs);
+        if (isset($run) && $run == true) {
+            exit(_t('Cronjob already running'));
+        }
 
-            if (isset($cronjobs['jobs']) && is_array($cronjobs['jobs']) && count($cronjobs['jobs']) > 0) {
-                // execute only one job and then exit
-                foreach ($cronjobs['jobs'] as $k => $cronjob) {
+        $run = true;
 
-                    if (isset($_GET['id']) && $k == $_GET['id']) {
-                        $run = true;
-                    } else {
-                        $run = false;
-                        if (isset($cronjob['time']) && $cronjob['time'] != '') {
-                            // voer alleen uit als tijd ouder is dan vandaag 16.00 uur, maar pas na 16.00 uur
-                            if (substr($cronjob['lastrun'], 0, 10) != date('Y-m-d')) {
-                                if (strtotime(date('Y-m-d H:i')) > strtotime(date('Y-m-d ') . $cronjob['time'])) {
-                                    $run = true;
-                                }
-                            }
-                        } elseif (isset($cronjob['each']) && $cronjob['each'] > 0) {
-                            if (strtotime($cronjob['lastrun']) + $cronjob['each'] < strtotime("now")) {
+        if (is_object($cron) && count($cron) > 0) {
+            // execute only one job and then exit
+            foreach ($cron as $job) {
+
+                if (isset($_GET['id']) && $job->id == $_GET['id']) {
+                    $run = true;
+                } else {
+                    $run = false;
+                    if ($job->time != '') {
+                        if (substr($job->lastrun, 0, 10) != date('Y-m-d')) {
+                            if (strtotime(date('Y-m-d H:i')) > strtotime(date('Y-m-d ') . $job->time)) {
                                 $run = true;
-                                // if time set, daily after time...
-                                if ($cronjob['each'] > (60 * 60 * 24) && isset($cronjob['eachtime']) && strlen($cronjob['eachtime']) == 5 && strtotime(date('Y-m-d H:i')) < strtotime(date('Y-m-d') . $cronjob['eachtime'])) {
-                                    // only run 'today' at or after give time.
-                                    $run = false;
-                                }
                             }
-                        } elseif (substr($cronjob['lastrun'], 0, 10) != date('Y-m-d')) {
+                        }
+                    } elseif ($job->each > 0) {
+                        if (strtotime($job->lastrun) + $job->each < strtotime("now")) {
                             $run = true;
-                        }
-                    }
-
-                    if ($run == true) {
-                        // save as executed
-                        echo 'Running: ' . $cronjobs['jobs'][$k]['url'] . PHP_EOL;
-
-                        $cronjobs['jobs'][$k]['lastrun'] = date('Y-m-d H:i:s');
-                        $cronjobs['jobs'][$k]['runned'] ++;
-
-                        saveCronjobs($cronjobs);
-
-                        saveLogs($cronjob['url']);
-
-                        echo 'Connecting to cronjob' . PHP_EOL;
-
-                        // execute cronjob
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, $cronjob['url']);
-                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch, CURLOPT_TIMEOUT, (isset($cronjobs['settings'], $cronjobs['settings']['timeout']) ? $cronjob['settings']['timeout'] : 5));
-
-                        $data = curl_exec($ch);
-
-                        $cronjobs = getCronjobs();
-                        if (curl_errno($ch)) {
-                            echo 'Cronjob error: ' . curl_error($ch) . PHP_EOL;
-
-                            saveLogs($cronjob['url'] . ' - Error: ' . curl_error($ch));
-                        } else {
-                            echo 'Cronjob data loaded' . PHP_EOL;
-
-                            if (isset($cronjob['savelog']) && $cronjob['savelog'] == true) {
-                                if (!is_dir($cronDir . 'logs')) {
-                                    mkdir($cronDir . 'logs');
-                                }
-
-                                if (is_dir($cronDir . 'logs')) {
-                                    echo 'Cronjob save log' . PHP_EOL;
-                                    file_put_contents($cronDir . 'logs/' . date('Y-m-d-H-i-s') . '-' . preg_replace('/[^A-Za-z0-9 ]/', '', $cronjob['url']) . '.log', $data);
-                                }
-                            }
-
-                            if (isset($cronjob['maillog'], $cronjob['maillogaddress']) && $cronjob['maillog'] == true && filter_var($cronjob['maillogaddress'], FILTER_VALIDATE_EMAIL)) {
-                                echo 'Cronjob mail to client: ' . $cronjob['maillogaddress'] . PHP_EOL;
-
-                                $random_hash = md5(date('r', time()));
-                                $headers = 'From: ' . $cronjob['maillogaddress'] . "\r\nReply-To: " . $cronjob['maillogaddress'];
-                                $headers .= "\r\nContent-Type: multipart/mixed; boundary=\"PHP-mixed-" . $random_hash . "\"";
-                                $attachment = chunk_split(base64_encode($data));
-
-                                ob_start();
-
-                                ?> 
-                                --PHP-mixed-<?php echo $random_hash; ?>  
-                                Content-Type: multipart/alternative; boundary="PHP-alt-<?php echo $random_hash; ?>" 
-
-                                --PHP-alt-<?php echo $random_hash; ?>  
-                                Content-Type: text/plain; charset="iso-8859-1" 
-                                Content-Transfer-Encoding: 7bit
-
-                                Attatched is your log file from running the cronjob "<?php echo htmlspecialchars($cronjob['url']); ?>" on <?php echo $cronjob['lastrun']; ?> 
-
-                                --PHP-alt-<?php echo $random_hash; ?>  
-                                Content-Type: text/html; charset="UTF-8" 
-                                Content-Transfer-Encoding: 7bit
-
-                                <p>
-                                    Attatched is your log file from running the cronjob "<strong><?php echo htmlspecialchars($cronjob['url']); ?></strong>"
-                                    on <strong><?php echo $cronjob['lastrun']; ?></strong>
-
-                                </p>
-
-                                --PHP-alt-<?php echo $random_hash; ?>-- 
-
-                                --PHP-mixed-<?php echo $random_hash; ?>  
-                                Content-Type: application/zip; name="<?php echo date("Y-m-d-H-i-s") . '-' . preg_replace("/[^A-Za-z0-9 ]/", '', $cronjob['url']) . '.log'; ?>"  
-                                Content-Transfer-Encoding: base64  
-                                Content-Disposition: attachment  
-
-                                <?php echo $attachment; ?> 
-                                --PHP-mixed-<?php echo $random_hash; ?>-- 
-
-                                <?php
-                                $message = ob_get_clean();
-                                $mail_sent = $email->etsis_mail($cronjob['maillogaddress'], 'Cronjob log ' . date('Y-m-d H:i:s') . ' for ' . htmlspecialchars($cronjob['url']), $message, $headers);
-
-                                saveLogs($mail_sent ? 'Mail sent' : 'Mail failed');
+                            // if time set, daily after time...
+                            if ($job->each > (60 * 60 * 24) && strlen($job->eachtime) == 5 && strtotime(date('Y-m-d H:i')) < strtotime(date('Y-m-d') . $job->eachtime)) {
+                                // only run 'today' at or after give time.
+                                $run = false;
                             }
                         }
+                    } elseif (substr($job->lastrun, 0, 10) != date('Y-m-d')) {
+                        $run = true;
+                    }
+                }
 
-                        curl_close($ch);
+                if ($run == true) {
+                    // save as executed
+                    echo _t('Running: ') . $job->url . PHP_EOL . PHP_EOL;
+
+                    $upd = Node::table('cronjob_handler')->find($job->id);
+                    $upd->lastrun = date('Y-m-d H:i:s');
+                    $upd->runned ++;
+                    $upd->save();
+
+                    echo _t('Connecting to cronjob') . PHP_EOL . PHP_EOL;
+
+                    // execute cronjob
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $job->url);
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, (!empty($setting->timeout) ? $setting->timeout : 5));
+
+                    curl_exec($ch);
+
+                    if (curl_errno($ch)) {
+                        Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[400]: Bad request: %s', curl_error($ch)));
+                        echo _t('Cronjob error: ') . curl_error($ch) . PHP_EOL;
+                    } else {
+                        echo _t('Cronjob data loaded') . PHP_EOL;
                     }
 
-                    // update cronjob list as the user can change stuff...
-                    $cronjobs = getCronjobs();
+                    curl_close($ch);
                 }
             }
-
-            $cronjobs['run'] = false;
-            saveCronjobs($cronjobs);
-        } else {
-            die('cronjob database file not found...');
         }
     });
 
-    $app->get('/activityLog/', function () {
+    $app->get('/purgeActivityLog/', function () {
         etsis_logger_activity_log_purge();
-    });
-
-    $app->get('/runStuTerms/', function () use($app) {
-        /**
-         * Select all records from the stu_acad_cred table.
-         */
-        $terms = $app->db->stu_acad_cred()
-            ->setTableAlias('stac')
-            ->select('stac.stuID,stac.courseSecCode,stac.termCode,stac.acadLevelCode,SUM(stac.attCred)')
-            ->groupBy('stac.stuID,stac.termCode,stac.acadLevelCode');
-        $q = $terms->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        if (count($q) > 0) {
-            /**
-             * If a student ID exists in the stu_acad_cred table,
-             * but does not exist in the stu_term table, then insert
-             * that new record into the stu_term table.
-             */
-            $app->db->query("INSERT IGNORE INTO stu_term (stuID,termCode,termCredits,addDateTime,acadLevelCode) 
-				SELECT stuID,termCode,SUM(attCred),NOW(),acadLevelCode FROM stu_acad_cred 
-				GROUP BY stuID,termCode,acadLevelCode");
-        }
-    });
-
-    $app->get('/runStuLoad/', function () use($app) {
-        $terms = $app->db->stu_term()
-            ->setTableAlias('sttr')
-            ->select('stuID,termCode,acadLevelCode,termCredits')
-            ->_join('stu_term_load', 'sttr.stuID = stld.stuID AND sttr.termCode = stld.termCode AND sttr.acadLevelCode = stld.acadLevelCode', 'stld')
-            ->whereNull('stld.stuID')
-            ->_and_()
-            ->whereNull('stld.termCode')
-            ->_and_()
-            ->whereNull('stld.acadLevelCode');
-        $q = $terms->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        if (count($q) > 0) {
-            foreach ($q as $r) {
-                $ins = $app->db->stu_term_load();
-                $ins->stuID = _h($r['stuID']);
-                $ins->termCode = _h($r['termCode']);
-                $ins->stuLoad = getstudentload(_h($r['termCode']), _h($r['termCredits']), _h($r['acadLevelCode']));
-                $ins->acadLevelCode = _h($r['acadLevelCode']);
-                $ins->save();
-            }
-        }
     });
 
     $app->get('/runEmailHold/', function () use($app) {
@@ -608,11 +416,8 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
             $array[] = $r;
         }
 
-        $query = $r['savedQuery'];
-        $hold1 = $app->db->query($query);
         $hold2 = $app->db->email_queue()
-            ->where('holdID = ?', _h($r['id']))
-            ->_and_()
+            ->where('holdID = ?', _h($r['id']))->_and_()
             ->where('sent = "0"');
         $q2 = $hold2->find(function ($data) {
             $array = [];
@@ -630,6 +435,8 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
          */
         if (count($r['fromEmail']) > 0) {
             if (count($q2) <= 0) {
+                $query = $r['savedQuery'];
+                $hold1 = $app->db->query($query);
                 $q = $hold1->find(function ($data) {
                     $array = [];
                     foreach ($data as $d) {
@@ -728,8 +535,7 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
     $app->get('/purgeEmailHold/', function () use($app) {
         $now = date('Y-m-d');
         $app->db->email_hold()
-            ->where('email_hold.processed = "1"')
-            ->_and_()
+            ->where('email_hold.processed = "1"')->_and_()
             ->where('DATE_ADD(email_hold.dateTime, INTERVAL 15 DAY) <= ?', $now)
             ->delete();
     });
@@ -741,28 +547,45 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
             ->delete();
     });
 
+    $app->get('/runStuTerms/', function () use($app) {
+        /**
+         * Select all records from the stu_acad_cred table.
+         */
+        $terms = $app->db->stu_acad_cred()
+            ->setTableAlias('stac')
+            ->select('stac.stuID,stac.courseSecCode,stac.termCode,stac.acadLevelCode,SUM(stac.attCred)')
+            ->groupBy('stac.stuID,stac.termCode,stac.acadLevelCode');
+        $q = $terms->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+
+        if (count($q) > 0) {
+            /**
+             * If a student ID exists in the stu_acad_cred table,
+             * but does not exist in the sttr table, then insert
+             * that new record into the sttr table.
+             */
+            $app->db->query("INSERT IGNORE INTO sttr (stuID,termCode,attCred,created,acadLevelCode) 
+				SELECT stuID,termCode,SUM(attCred),NOW(),acadLevelCode FROM stu_acad_cred 
+				GROUP BY stuID,termCode,acadLevelCode");
+        }
+    });
+
     $app->get('/updateStuTerms/', function () use($app) {
         $terms = $app->db->query("SELECT 
-                    SUM(a.attCred) as Credits,
-                    a.stuID as stuAcadCredID,
-                    a.termCode as termAcadCredCode,
-                    a.acadLevelCode as acadCredLevel,
-                    b.stuID AS stuTermID,
-                    b.termCode AS TermCode,
-                    b.acadLevelCode as termAcadLevel,
-                    b.termCredits AS TermCredits 
-                FROM 
-                    stu_acad_cred a 
-                LEFT JOIN 
-                    stu_term b 
-                ON 
-                    a.stuID = b.stuID 
-                WHERE 
-                    a.termCode = b.termCode 
-                AND 
-                    a.acadLevelCode = b.acadLevelCode 
-                GROUP BY 
-                    a.stuID,a.termCode");
+                    SUM(stac.attCred) AS stacAttCreds,SUM(stac.compCred) AS stacCompCreds,
+                    stac.stuID,stac.termCode,stac.acadLevelCode,SUM(stac.gradePoints) AS stacPoints,
+                    sttr.attCred AS sttrAttCreds,sttr.gradePoints AS sttrPoints,
+                    sttr.gpa 
+                FROM stu_acad_cred stac 
+                LEFT JOIN sttr ON stac.stuID = sttr.stuID 
+                WHERE stac.termCode = sttr.termCode 
+                AND stac.acadLevelCode = sttr.acadLevelCode 
+                GROUP BY stac.stuID,stac.termCode,stac.acadLevelCode");
         $q = $terms->find(function ($data) {
             $array = [];
             foreach ($data as $d) {
@@ -772,55 +595,18 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
         });
 
         foreach ($q as $r) {
-            if ($r['Credits'] != $r['TermCredits']) {
-                $q2 = $app->db->stu_term();
-                $q2->termCredits = $r['Credits'];
-                $q2->where('stuID = ?', $r['stuTermID'])
-                    ->_and_()
-                    ->where('termCode = ?', $r['TermCode'])
-                    ->_and_()
-                    ->where('acadLevelCode = ?', $r['termAcadLevel']);
-                $q2->update();
-            }
-        }
-    });
-
-    $app->get('/updateStuLoad/', function () use($app) {
-        $load = $app->db->query("SELECT 
-                    a.termCredits,
-                    a.stuID AS StudentID,
-                    a.termCode AS TermCode,
-                    a.acadLevelCode AS AcademicLevel,
-                    a.LastUpdate AS termLatest,
-                    b.LastUpdate AS stuTermLatest 
-                FROM 
-                    stu_term a 
-                LEFT JOIN 
-                    stu_term_load b 
-                ON 
-                    a.stuID = b.stuID 
-                WHERE 
-                    a.termCode = b.termCode 
-                AND 
-                    a.acadLevelCode = b.acadLevelCode");
-        $q = $load->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        foreach ($q as $r) {
-            if ($r['termLatest'] > $r['stuTermLatest']) {
-                $q2 = $app->db->stu_term_load();
-                $q2->stuLoad = getstudentload(_h($r['TermCode']), _h($r['termCredits']), _h($r['AcademicLevel']));
-                $q2->where('stuID = ?', $r['StudentID'])
-                    ->_and_()
-                    ->where('termCode = ?', $r['TermCode'])
-                    ->_and_()
-                    ->where('acadLevelCode = ?', $r['AcademicLevel']);
-                $q2->update();
+            $GPA = $r['stacPoints'] / $r['stacAttCreds'];
+            if ($r['stacAttCreds'] != $r['sttrAttCreds'] || $r['sttrPoints'] != $r['stacPoints'] || $r['gpa'] != $GPA) {
+                $q2 = $app->db->sttr();
+                $q2->attCred = $r['stacAttCreds'];
+                $q2->compCred = $r['stacCompCreds'];
+                $q2->gradePoints = $r['stacPoints'];
+                $q2->stuLoad = getstudentload(_h($r['termCode']), _h($r['stacAttCreds']), _h($r['acadLevelCode']));
+                $q2->gpa = $GPA;
+                $q2->where('stuID = ?', $r['stuID'])->_and_()
+                    ->where('termCode = ?', $r['termCode'])->_and_()
+                    ->where('acadLevelCode = ?', $r['acadLevelCode'])
+                    ->update();
             }
         }
     });
@@ -875,100 +661,6 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
         $app->db->query("TRUNCATE graduation_hold");
     });
 
-    $app->get('/runTermGPA/', function () use($app) {
-        $gs = $app->db->grade_scale()
-            ->select('b.stuID,b.termCode,b.acadLevelCode,SUM(b.attCred) AS Attempted')
-            ->select('SUM(b.compCred) AS Completed,SUM(b.gradePoints) AS Points')
-            ->select('SUM(b.gradePoints)/SUM(b.attCred) AS GPA')
-            ->_join('stu_acad_cred', 'grade_scale.grade = b.grade', 'b')
-            ->where('grade_scale.count_in_gpa = "1"')
-            ->_and_()
-            ->where('grade_scale.status = "1"')
-            ->_and_()
-            ->where('b.grade <> "NULL"')
-            ->groupBy('b.stuID,b.termCode,b.acadLevelCode');
-        $q = $gs->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        if (count($q) > 0) {
-            foreach ($q as $r) {
-
-                $ins = $app->db->stu_term_gpa();
-                $ins->stuID = _h($r['stuID']);
-                $ins->termCode = _h($r['termCode']);
-                $ins->acadLevelCode = _h($r['acadLevelCode']);
-                $ins->attCred = _h($r['Attempted']);
-                $ins->compCred = _h($r['Completed']);
-                $ins->gradePoints = _h($r['Points']);
-                $ins->termGPA = _h($r['GPA']);
-                $ins->save();
-            }
-        }
-    });
-
-    $app->get('/updateTermGPA/', function () use($app) {
-        $gpa = $app->db->query("SELECT 
-                    a.stuID,
-                    a.termCode,
-                    a.acadLevelCode,
-                    a.termGPA,
-                    a.gradePoints AS termGradePoints,
-                    SUM(b.attCred) AS Attempted,
-                    SUM(b.compCred) AS Completed,
-                    SUM(b.gradePoints) AS stacGradePoints 
-                FROM 
-                    stu_term_gpa a 
-                LEFT JOIN 
-                    stu_acad_cred b 
-                ON 
-                    a.stuID = b.stuID 
-                LEFT JOIN 
-                	grade_scale c 
-            	ON 
-            		b.grade = c.grade 
-                WHERE 
-                    a.termCode = b.termCode 
-                AND 
-                	b.grade <> 'NULL' 
-        		AND 
-        			c.count_in_gpa = '1' 
-    			AND 
-    				c.status = '1' 
-                AND 
-                    a.acadLevelCode = b.acadLevelCode 
-                GROUP BY 
-                	a.stuID,a.termCode,a.acadLevelCode");
-        $q = $gpa->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        foreach ($q as $r) {
-            $GPA = $r['stacGradePoints'] / $r['Attempted'];
-            if ($r['termGradePoints'] != $r['stacGradePoints'] || $r['termGPA'] != $GPA) {
-                $q2 = $app->db->stu_term_gpa();
-                $q2->attCred = $r['Attempted'];
-                $q2->compCred = $r['Completed'];
-                $q2->gradePoints = $r['termGradePoints'];
-                $q2->termGPA = $GPA;
-                $q2->where('stuID = ?', $r['stuID'])
-                    ->_and_()
-                    ->where('termCode = ?', $r['termCode'])
-                    ->_and_()
-                    ->where('acadLevelCode = ?', $r['acadLevelCode']);
-                $q2->update();
-            }
-        }
-    });
-
     $app->get('/purgeErrorLog/', function () use($app) {
         $now = date('Y-m-d');
         $app->db->error()
@@ -981,8 +673,7 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
     $app->get('/purgeSavedQuery/', function () use($app) {
         $now = date('Y-m-d');
         $app->db->saved_query()
-            ->where('DATE_ADD(saved_query.createdDate, INTERVAL 30 DAY) <= ?', $now)
-            ->_and_()
+            ->where('DATE_ADD(saved_query.createdDate, INTERVAL 30 DAY) <= ?', $now)->_and_()
             ->where('saved_query.purgeQuery = "1"')
             ->delete();
     });
@@ -1012,30 +703,36 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
             if ($r['Balance'] >= 0) {
                 $result = $app->db->stu_acct_bill();
                 $result->balanceDue = '0';
-                $result->where('stuID = ?', $r['stuID'])
-                    ->_and_()
+                $result->where('stuID = ?', $r['stuID'])->_and_()
                     ->where('termCode = ?', $r['termCode'])
                     ->update();
             } elseif ($r['Balance'] < 0) {
                 $result = $app->db->stu_acct_bill();
                 $result->balanceDue = '1';
-                $result->where('stuID = ?', $r['stuID'])
-                    ->_and_()
+                $result->where('stuID = ?', $r['stuID'])->_and_()
                     ->where('termCode = ?', $r['termCode'])
                     ->update();
             }
         }
     });
 
-    $app->get('/runDBBackup/', function () {
+    $app->get('/runDBBackup/', function () use($app) {
         $dbhost = DB_HOST;
         $dbuser = DB_USER;
         $dbpass = DB_PASS;
         $dbname = DB_NAME;
-        _mkdir('/tmp/' . subdomain_as_directory() . '/backups/');
-        $backupDir = '/tmp/' . subdomain_as_directory() . '/backups/';
+
+        try {
+            $backupDir = $app->config('file.savepath') . 'backups' . DS;
+            if (!etsis_file_exists($backupDir, false)) {
+                _mkdir($backupDir);
+            }
+        } catch (\app\src\Core\Exception\IOException $e) {
+            Cascade\Cascade::getLogger('system_email')->alert(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+        }
+
         $backupFile = $backupDir . $dbname . '-' . date("Y-m-d-H-i-s") . '.gz';
-        if (!file_exists($backupFile)) {
+        if (!etsis_file_exists($backupFile, false)) {
             $command = "mysqldump --opt -h $dbhost -u $dbuser -p$dbpass $dbname | gzip > $backupFile";
             system($command);
         }
@@ -1048,7 +745,7 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
             }
         }
     });
-    
+
     $app->get('/runNodeQ/', function () {
         etsis_nodeq_login_details();
         etsis_nodeq_reset_password();
