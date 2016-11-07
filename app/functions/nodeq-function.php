@@ -28,7 +28,7 @@ function etsis_nodeq_login_details()
     $app = \Liten\Liten::getInstance();
 
     $email = _etsis_email();
-    $site = _t('myeduTrac :: ') . _h(get_option('institution_name'));
+    $site = _t('myetSIS :: ') . _h(get_option('institution_name'));
     $host = $app->req->server['HTTP_HOST'];
     // Creates node's schema if does not exist.
     Node::dispense('login_details');
@@ -61,7 +61,7 @@ function etsis_nodeq_login_details()
                 $headers .= "MIME-Version: 1.0\r\n";
                 $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
 
-                $email->etsis_mail(_h($r->email), _t("myeduTrac Login Details"), $message, $headers);
+                $email->etsis_mail(_h($r->email), _t("myetSIS Login Details"), $message, $headers);
                 
                 $upd = Node::table('login_details')->find(_h($r->id));
                 $upd->sent = 1;
@@ -212,7 +212,7 @@ function etsis_nodeq_change_address()
 
     $email = _etsis_email();
     $host = $app->req->server['HTTP_HOST'];
-    $site = _t('myeduTrac :: ') . _h(get_option('institution_name'));
+    $site = _t('myetSIS :: ') . _h(get_option('institution_name'));
     // Creates node's schema if does not exist.
     Node::dispense('change_address');
     

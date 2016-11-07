@@ -617,7 +617,7 @@ function myet_head()
 {
     $app = \Liten\Liten::getInstance();
     /**
-     * Prints scripts and/or data in the head tag of the myeduTrac self service
+     * Prints scripts and/or data in the head tag of the myetSIS self service
      * portal.
      *
      * @since 1.0.0
@@ -644,7 +644,7 @@ function footer()
 
 /**
  * Fires the footer action via
- * myeduTrac self service portal.
+ * myetSIS self service portal.
  *
  * @since 6.1.12
  */
@@ -652,7 +652,7 @@ function myet_footer()
 {
     $app = \Liten\Liten::getInstance();
     /**
-     * Prints scripts and/or data before the ending body tag of the myeduTrac
+     * Prints scripts and/or data before the ending body tag of the myetSIS
      * self service portal.
      *
      * @since 6.1.12
@@ -894,12 +894,12 @@ function get_met_title()
 {
     $app = \Liten\Liten::getInstance();
 
-    $title = '<em>' . _t('my') . '</em>' . ('eduTrac');
+    $title = '<em>' . _t('my') . '</em>' . ('etSIS');
     return $app->hook->apply_filter('met_title', $title);
 }
 
 /**
- * myeduTrac welcome message title.
+ * myetSIS welcome message title.
  *
  * @since 6.2.2
  * @uses $app->hook->apply_filter() Calls 'met_welcome_message_title' filter.
@@ -910,7 +910,7 @@ function get_met_welcome_message_title()
 {
     $app = \Liten\Liten::getInstance();
 
-    $title = _t('Welcome to myeduTrac');
+    $title = _t('Welcome to myetSIS');
     return $app->hook->apply_filter('met_welcome_message_title', $title);
 }
 
@@ -1393,7 +1393,13 @@ function get_user_avatar($email, $s = 80, $class = '', $d = 'mm', $r = 'g', $img
 {
     $app = \Liten\Liten::getInstance();
 
-    $url = 'http://www.gravatar.com/avatar/';
+    if (function_exists('enable_url_ssl')) {
+        $protocol = 'https://';
+    } else {
+        $protocol = 'http://';
+    }
+
+    $url = $protocol . 'www.gravatar.com/avatar/';
     $url .= md5(strtolower(trim($email)));
     $url .= "?s=200&d=$d&r=$r";
     $avatarsize = getimagesize($url);
@@ -1417,7 +1423,7 @@ function nocache_headers()
 }
 
 /**
- * WYSIWYG editor function for myeduTrac
+ * WYSIWYG editor function for myetSIS
  * self service portal.
  *
  * @since 6.1.12
@@ -1712,6 +1718,7 @@ $app->hook->add_action('dashboard_right_widgets', 'dashboard_weather', 5);
 $app->hook->add_action('activated_plugin', 'etsis_plugin_activate_message', 5, 1);
 $app->hook->add_action('deactivated_plugin', 'etsis_plugin_deactivate_message', 5, 1);
 $app->hook->add_action('login_form_top', 'etsis_login_form_show_message', 5);
+$app->hook->add_action('execute_reg_rstr_rule', 'etsis_reg_rstr_rule', 5, 1);
 $app->hook->add_filter('the_myet_page_content', 'etsis_autop');
 $app->hook->add_filter('the_myet_page_content', 'parsecode_unautop');
 $app->hook->add_filter('the_myet_page_content', 'do_parsecode', 5);
