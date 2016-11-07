@@ -41,7 +41,7 @@ class etsis_Messages
         if (isset($_COOKIE['success_message'])) {
             foreach ($success_message as $message) {
                 $this->app->cookies->remove('success_message');
-                return '<section class="panel success-panel"><div class="alerts alerts-success center">' . $message . '</div></section>';
+                return '<section style="margin-bottom:1.5em;" class="flash_message success-panel"><div class="alerts alerts-success center"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $message . '</div></section>';
             }
         }
 
@@ -49,7 +49,7 @@ class etsis_Messages
         if (isset($_COOKIE['error_message'])) {
             foreach ($error_message as $message) {
                 $this->app->cookies->remove('error_message');
-                return '<section class="panel error-panel"><div class="alerts alerts-error center">' . $message . '</div></section>';
+                return '<section style="margin-bottom:1.5em;" class="flash_message error-panel"><div class="alerts alerts-error center"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $message . '</div></section>';
             }
         }
 
@@ -57,7 +57,7 @@ class etsis_Messages
         if (isset($_COOKIE['plugin_success_message'])) {
             foreach ($plugin_success_message as $message) {
                 $this->app->cookies->remove('plugin_success_message');
-                return '<section class="panel success-panel"><div class="alerts alerts-success center">' . $message . '</div></section>';
+                return '<section style="margin-bottom:1.5em;" class="flash_message success-panel"><div class="alerts alerts-success center"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $message . '</div></section>';
             }
         }
 
@@ -65,7 +65,7 @@ class etsis_Messages
         if (isset($_COOKIE['plugin_error_message'])) {
             foreach ($plugin_error_message as $message) {
                 $this->app->cookies->remove('plugin_error_message');
-                return '<section class="panel error-panel"><div class="alerts alerts-error center">' . sprintf(_t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br /> %s</div></section>'), $message);
+                return '<section style="margin-bottom:1.5em;" class="flash_message error-panel"><div class="alerts alerts-error center"><button type="button" class="close" data-dismiss="alert">&times;</button>' . sprintf(_t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br /> %s</div></section>'), $message);
             }
         }
         
