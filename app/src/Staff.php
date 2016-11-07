@@ -38,7 +38,6 @@ class Staff {
 
 	public function __construct() {
         $this->_app = \Liten\Liten::getInstance();
-        $this->_cache = new \app\src\DBCache;
     }
 
     /**
