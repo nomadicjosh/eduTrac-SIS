@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use \app\src\Core\NodeQ\etsis_NodeQ as Node;
+
 /**
  * Course Section Router
  *  
@@ -677,9 +679,17 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/rgn/', function() {
+    $app->before('GET|POST', '/rgn/', function() use($app) {
         if (!hasPermission('register_students')) {
             redirect(get_base_url() . 'dashboard' . '/');
+        }
+        
+        if ($app->req->isPost()) {
+            if(is_null($_POST['courseSecID'])) {
+                $app->flash('error_message', _t("The course section cannot be a 'null' value"));
+                redirect($app->req->server['HTTP_REFERER']);
+                exit();
+            }
         }
     });
 
@@ -687,6 +697,8 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
         $time = date("h:i A");
 
         if ($app->req->isPost()) {
+            
+            $app->hook->{'do_action'}('execute_reg_rstr_rule', $app->req->_post('stuID'));
 
             $sect = get_course_sec($_POST['courseSecID']);
             $crse = $app->db->course()->where('courseID = ?', (int) $sect->courseID)->findOne();
@@ -782,6 +794,65 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
             'title' => 'Course Registration',
             'cssArray' => $css,
             'jsArray' => $js
+            ]
+        );
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/rgn/rrsr/', function() {
+        if (!hasPermission('register_students')) {
+            redirect(get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/rgn/rrsr/', function () use($app, $css, $js, $flashNow) {
+        if ($app->req->isPost()) {
+            $size = count($_POST['rule']);
+            $i = 0;
+            while ($i < $size) {
+                if ($_POST['id'][$i] == null) {
+                    $rlde = get_rule_by_code((string) $app->req->_post('rule')[$i]);
+                    $rrsr = Node::table('rrsr');
+                    $rrsr->rid = (int) $rlde->id;
+                    $rrsr->rule = (string) $app->req->_post('rule')[$i];
+                    $rrsr->value = (string) $app->req->_post('value')[$i];
+                    $rrsr->save();
+                }
+                ++$i;
+            }
+
+            $id_size = count($_POST['rule']);
+            $t = 0;
+            while ($t < $id_size) {
+                if ($_POST['id'][$t] > 0) {
+                    $rlde = get_rule_by_code((string) $app->req->_post('rule')[$t]);
+                    $rrsr = Node::table('rrsr')->find($_POST['id'][$t]);
+                    $rrsr->rid = (int) $rlde->id;
+                    $rrsr->rule = (string) $app->req->_post('rule')[$t];
+                    $rrsr->value = (string) $app->req->_post('value')[$t];
+                    $rrsr->save();
+                }
+                ++$t;
+            }
+
+            if ($rrsr) {
+                $app->flash('success_message', $flashNow->notice(200));
+                etsis_logger_activity_log_write('New Record', 'Registration Restriction Rule (RRSR)', $rlde->code . ' - ' . $rlde->description, get_persondata('uname'));
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
+        
+        $rrsr = Node::table('rrsr')->findAll();
+        
+        $app->view->display('section/rrsr', [
+            'title' => 'Registration Restriction Rule (RRSR)',
+            'cssArray' => $css,
+            'jsArray' => $js,
+            'rrsr' => $rrsr
             ]
         );
     });

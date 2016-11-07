@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use \app\src\Core\NodeQ\etsis_NodeQ as Node;
+
 /**
  * Form Router
  *
@@ -27,7 +29,9 @@ $js = [
     'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
     'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
+    'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0',
+    'components/modules/admin/forms/elements/inputmask/assets/lib/jquery.inputmask.bundle.min.js?v=v2.1.0',
+    'components/modules/admin/forms/elements/inputmask/assets/custom/inputmask.init.js?v=v2.1.0'
 ];
 
 $app->group('/form', function () use($app, $css, $js, $flashNow) {
@@ -2742,6 +2746,485 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
                 'scale' => $q
             ]);
         }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/aclv/', function () {
+        if (!hasPermission('access_forms')) {
+            redirect(get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/aclv/', function () use($app, $css, $js, $flashNow) {
+        if ($app->req->isPost()) {
+            $aclv = $app->db->aclv();
+            $aclv->code = _trim((string) $app->req->_post('code'));
+            $aclv->name = (string) $app->req->_post('name');
+            $aclv->ht_creds = (double) $app->req->_post('ht_creds');
+            $aclv->ft_creds = (double) $app->req->_post('ft_creds');
+            $aclv->ovr_creds = (double) $app->req->_post('ovr_creds');
+            $aclv->grad_level = (string) $app->req->_post('grad_level');
+            $aclv->comp_months = (int) $app->req->_post('comp_months');
+
+            if ($aclv->save()) {
+                $ID = $aclv->lastInsertId();
+                etsis_cache_flush_namespace('aclv');
+                $app->flash('success_message', $flashNow->notice(200));
+                etsis_logger_activity_log_write('New Record', 'Academic Level (ACLV)', _filter_input_string(INPUT_POST, 'code'), get_persondata('uname'));
+                redirect(get_base_url() . 'form/aclv' . '/' . $ID . '/');
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+                redirect($app->req->server['HTTP_REFERER']);
+            }
+        }
+
+        $aclv = $app->db->aclv()
+            ->orderBy('code');
+
+        $q = etsis_cache_get('aclv', 'aclv');
+        if (empty($q)) {
+            $q = $aclv->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add('aclv', $q, 'aclv');
+        }
+
+        $app->view->display('form/aclv', [
+            'title' => 'Academic Level (ACLV)',
+            'cssArray' => $css,
+            'jsArray' => $js,
+            'aclv' => $q
+        ]);
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/aclv/(\d+)/', function () {
+        if (!hasPermission('access_forms')) {
+            redirect(get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/aclv/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
+        if ($app->req->isPost()) {
+            $aclv = $app->db->aclv();
+            $aclv->code = _trim((string) $app->req->_post('code'));
+            $aclv->name = (string) $app->req->_post('name');
+            $aclv->ht_creds = (double) $app->req->_post('ht_creds');
+            $aclv->ft_creds = (double) $app->req->_post('ft_creds');
+            $aclv->ovr_creds = (double) $app->req->_post('ovr_creds');
+            $aclv->grad_level = (string) $app->req->_post('grad_level');
+            $aclv->comp_months = (int) $app->req->_post('comp_months');
+            $aclv->where('id = ?', $id);
+
+            if ($aclv->update()) {
+                update_aclv_code_on_update('stld', $id, _trim((string) $app->req->_post('code')));
+                update_aclv_code_on_update('clvr', $id, _trim((string) $app->req->_post('code')));
+                etsis_cache_flush_namespace('aclv');
+                $app->flash('success_message', $flashNow->notice(200));
+                etsis_logger_activity_log_write('Update Record', 'Academic Level (ACLV)', _filter_input_string(INPUT_POST, 'code'), get_persondata('uname'));
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+            redirect($app->req->server['HTTP_REFERER']);
+        }
+
+        $aclv = $app->db->aclv()
+            ->where('id = ?', $id);
+
+        $q = etsis_cache_get($id, 'aclv');
+        if (empty($q)) {
+            $q = $aclv->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add($id, $q, 'aclv');
+        }
+
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($q == false) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($q) == true) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If data is zero, 404 not found.
+         */ elseif (count($q[0]['id']) <= 0) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+
+            $app->view->display('form/view-aclv', [
+                'title' => $q[0]['code'] . ' - ' . $q[0]['name'] . ' ' . _t('Academic Level'),
+                'cssArray' => $css,
+                'jsArray' => $js,
+                'aclv' => $q
+            ]);
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/aclv/(\d+)/stld/', function () {
+        if (!hasPermission('access_forms')) {
+            redirect(get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/aclv/(\d+)/stld/', function ($id) use($app, $css, $js, $flashNow) {
+        if ($app->req->isPost()) {
+            $size = count($_POST['rule']);
+            $i = 0;
+            while ($i < $size) {
+                if ($_POST['id'][$i] == null) {
+                    $rlde = get_rule_by_code((string) $app->req->_post('rule')[$i]);
+                    $stld = Node::table('stld');
+                    $stld->rid = (int) $rlde->id;
+                    $stld->aid = (int) $id;
+                    $stld->rule = (string) $app->req->_post('rule')[$i];
+                    $stld->value = (string) $app->req->_post('value')[$i];
+                    $stld->level = _trim((string) $app->req->_post('level'));
+                    $stld->save();
+                }
+                ++$i;
+            }
+
+            $id_size = count($_POST['rule']);
+            $t = 0;
+            while ($t < $id_size) {
+                if ($_POST['id'][$t] > 0) {
+                    $rlde = get_rule_by_code((string) $app->req->_post('rule')[$t]);
+                    $stld = Node::table('stld')->find($_POST['id'][$t]);
+                    $stld->rid = (int) $rlde->id;
+                    $stld->aid = (int) $id;
+                    $stld->rule = (string) $app->req->_post('rule')[$t];
+                    $stld->value = (string) $app->req->_post('value')[$t];
+                    $stld->level = _trim((string) $app->req->_post('level'));
+                    $stld->save();
+                }
+                ++$t;
+            }
+
+            if ($stld) {
+                $app->flash('success_message', $flashNow->notice(200));
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+
+            redirect($app->req->server['HTTP_REFERER']);
+        }
+
+        $aclv = $app->db->aclv()->findOne($id);
+        $stld = Node::table('stld')->where('aid', '=', $id)->findAll();
+
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($aclv == false) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($aclv) == true) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If data is zero, 404 not found.
+         */ elseif (count($aclv->id) <= 0) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+
+            $app->view->display('form/stld', [
+                'title' => _t('Student Load Rules'),
+                'cssArray' => $css,
+                'jsArray' => $js,
+                'aclv' => $aclv,
+                'stld' => $stld
+            ]);
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/aclv/(\d+)/clas/', function () {
+        if (!hasPermission('access_forms')) {
+            redirect(get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/aclv/(\d+)/clas/', function ($id) use($app, $css, $js, $flashNow) {
+        if ($app->req->isPost()) {
+            $size = count($_POST['code']);
+            $i = 0;
+            while ($i < $size) {
+                if ($_POST['id'][$i] == null) {
+                    $clas = $app->db->clas();
+                    $clas->code = _trim((string) $app->req->_post('code')[$i]);
+                    $clas->name = (string) $app->req->_post('name')[$i];
+                    $clas->acadLevelCode = _trim((string) $app->req->_post('acadLevelCode'));
+                    $clas->save();
+                }
+                ++$i;
+            }
+
+            $id_size = count($_POST['code']);
+            $t = 0;
+            while ($t < $id_size) {
+                if ($_POST['id'][$t] > 0) {
+                    $clas = $app->db->clas();
+                    $clas->code = _trim((string) $app->req->_post('code')[$t]);
+                    $clas->name = (string) $app->req->_post('name')[$t];
+                    $clas->acadLevelCode = _trim((string) $app->req->_post('acadLevelCode'));
+                    $clas->where('id = ?', (int) $_POST['id'][$t]);
+                    $clas->update();
+                }
+                ++$t;
+            }
+
+            if ($clas) {
+                $app->flash('success_message', $flashNow->notice(200));
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+
+            redirect($app->req->server['HTTP_REFERER']);
+        }
+
+        $aclv = $app->db->aclv()->findOne($id);
+        $clas = $app->db->clas()->where('acadLevelCode = ?', $aclv->code);
+        $q = $clas->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($aclv == false) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($aclv) == true) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If data is zero, 404 not found.
+         */ elseif (count($aclv->id) <= 0) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+
+            $app->view->display('form/clas', [
+                'title' => _t('Class Level (CLAS)'),
+                'cssArray' => $css,
+                'jsArray' => $js,
+                'aclv' => $aclv,
+                'clas' => $q
+            ]);
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/aclv/(\d+)/clvr/', function () {
+        if (!hasPermission('access_forms')) {
+            redirect(get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/aclv/(\d+)/clvr/', function ($id) use($app, $css, $js, $flashNow) {
+        if ($app->req->isPost()) {
+            $size = count($_POST['rule']);
+            $i = 0;
+            while ($i < $size) {
+                if ($_POST['id'][$i] == null) {
+                    $rlde = get_rule_by_code((string) $app->req->_post('rule')[$i]);
+                    $clvr = Node::table('clvr');
+                    $clvr->rid = (int) $rlde->id;
+                    $clvr->aid = (int) $id;
+                    $clvr->rule = (string) $app->req->_post('rule')[$i];
+                    $clvr->value = (string) $app->req->_post('value')[$i];
+                    $clvr->level = _trim((string) $app->req->_post('level'));
+                    $clvr->save();
+                }
+                ++$i;
+            }
+
+            $id_size = count($_POST['rule']);
+            $t = 0;
+            while ($t < $id_size) {
+                if ($_POST['id'][$t] > 0) {
+                    $rlde = get_rule_by_code((string) $app->req->_post('rule')[$t]);
+                    $clvr = Node::table('clvr')->find($_POST['id'][$t]);
+                    $clvr->rid = (int) $rlde->id;
+                    $clvr->aid = (int) $id;
+                    $clvr->rule = (string) $app->req->_post('rule')[$t];
+                    $clvr->value = (string) $app->req->_post('value')[$t];
+                    $clvr->level = _trim((string) $app->req->_post('level'));
+                    $clvr->save();
+                }
+                ++$t;
+            }
+
+            if ($clvr) {
+                $app->flash('success_message', $flashNow->notice(200));
+            } else {
+                $app->flash('error_message', $flashNow->notice(409));
+            }
+
+            redirect($app->req->server['HTTP_REFERER']);
+        }
+
+        $aclv = $app->db->aclv()->findOne($id);
+        $clvr = Node::table('clvr')->where('aid', '=', $id)->findAll();
+
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($aclv == false) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($aclv) == true) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If data is zero, 404 not found.
+         */ elseif (count($aclv->id) <= 0) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+
+            $app->view->display('form/clvr', [
+                'title' => _t('Class Level Rules'),
+                'cssArray' => $css,
+                'jsArray' => $js,
+                'aclv' => $aclv,
+                'clvr' => $clvr
+            ]);
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET', '/aclv/(\d+)/stld/(\d+)/(\d+)/d/', function () use($app) {
+        if (!hasPermission('access_forms')) {
+            $app->flash('error_message', _t( "You don't have the proper permission(s) to delete a student load rule." ));
+            redirect($app->req->server['HTTP_REFERER']);
+            exit();
+        }
+    });
+
+    $app->get('/aclv/(\d+)/stld/(\d+)/(\d+)/d/', function ($aid, $rid, $id) use($app, $flashNow) {
+        $stld = Node::table('stld');
+
+        if ($stld->where('aid', '=', $aid)->where('rid', '=', $rid)->findAll()->count() > 0) {
+            $stld->find($id)->delete();
+            $app->flash('success_message', $flashNow->notice(200));
+        } else {
+            $app->flash('error_message', $flashNow->notice(409));
+        }
+        redirect($app->req->server['HTTP_REFERER']);
+    });
+    
+    /**
+     * Before route check.
+     */
+    $app->before('GET', '/aclv/(\d+)/clvr/(\d+)/(\d+)/d/', function () use($app) {
+        if (!hasPermission('access_forms')) {
+            $app->flash('error_message', _t( "You don't have the proper permission(s) to delete a class level rule." ));
+            redirect($app->req->server['HTTP_REFERER']);
+            exit();
+        }
+    });
+
+    $app->get('/aclv/(\d+)/clvr/(\d+)/(\d+)/d/', function ($aid, $rid, $id) use($app, $flashNow) {
+        $clvr = Node::table('clvr');
+
+        if ($clvr->where('aid', '=', $aid)->where('rid', '=', $rid)->findAll()->count() > 0) {
+            $clvr->find($id)->delete();
+            $app->flash('success_message', $flashNow->notice(200));
+        } else {
+            $app->flash('error_message', $flashNow->notice(409));
+        }
+        redirect($app->req->server['HTTP_REFERER']);
     });
 
     $app->setError(function () use($app) {
