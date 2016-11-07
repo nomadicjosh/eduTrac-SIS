@@ -14,58 +14,58 @@ if (!defined('BASE_PATH'))
 $app = \Liten\Liten::getInstance();
 use Cascade\Cascade;
 
-$config = array(
+$config = [
     'version' => 1,
     'disable_existing_loggers' => false,
-    'formatters' => array(
-        'spaced' => array(
+    'formatters' => [
+        'spaced' => [
             'format' => "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n",
             'include_stacktraces' => true
-        ),
-        'dashed' => array(
+        ],
+        'dashed' => [
             'format' => "%datetime%-%channel%.%level_name% - %message% - %context% - %extra%\n"
-        ),
-        'exception' => array(
+        ],
+        'exception' => [
             'format' => "[%datetime%] %message% %context% %extra%\n",
             'include_stacktraces' => true
-        )
-    ),
-    'handlers' => array(
-        'console' => array(
+        ]
+    ],
+    'handlers' => [
+        'console' => [
             'class' => 'Monolog\Handler\StreamHandler',
             'level' => 'DEBUG',
             'formatter' => 'exception',
             'stream' => 'php://stdout'
-        ),
-        'info_file_handler' => array(
+        ],
+        'info_file_handler' => [
             'class' => 'Monolog\Handler\RotatingFileHandler',
             'level' => 'INFO',
             'formatter' => 'exception',
             'maxFiles' => 10,
             'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-info.txt'
-        ),
-        'error_file_handler' => array(
+        ],
+        'error_file_handler' => [
             'class' => 'Monolog\Handler\RotatingFileHandler',
             'level' => 'ERROR',
             'formatter' => 'exception',
             'maxFiles' => 10,
             'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-error.txt'
-        ),
-        'notice_file_handler' => array(
+        ],
+        'notice_file_handler' => [
             'class' => 'Monolog\Handler\RotatingFileHandler',
             'level' => 'NOTICE',
             'formatter' => 'exception',
             'maxFiles' => 10,
             'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-notice.txt'
-        ),
-        'critical_file_handler' => array(
+        ],
+        'critical_file_handler' => [
             'class' => 'Monolog\Handler\RotatingFileHandler',
             'level' => 'CRITICAL',
             'formatter' => 'exception',
             'maxFiles' => 10,
             'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-critical.txt'
-        ),
-        'alert_file_handler' => array(
+        ],
+        'alert_file_handler' => [
             'class' => 'app\src\Core\etsis_MailHandler',
             'level' => 'ALERT',
             'formatter' => 'exception',
@@ -73,31 +73,31 @@ $config = array(
             'message' => 'This message will be replaced with the real one.',
             'email_to' => _h($app->hook->{'get_option'}('system_email')),
             'subject' => _t('eduTrac SIS System Alert!')
-        )
-    ),
-    'processors' => array(
-        'tag_processor' => array(
+        ]
+    ],
+    'processors' => [
+        'tag_processor' => [
             'class' => 'Monolog\Processor\TagProcessor'
-        )
-    ),
-    'loggers' => array(
-        'info' => array(
-            'handlers' => array('console', 'info_file_handler')
-        ),
-        'error' => array(
-            'handlers' => array('console', 'error_file_handler')
-        ),
-        'notice' => array(
-            'handlers' => array('console', 'notice_file_handler')
-        ),
-        'critical' => array(
-            'handlers' => array('console', 'critical_file_handler')
-        ),
-        'system_email' => array(
-            'handlers' => array('console', 'alert_file_handler')
-        )
-    )
-);
+        ]
+    ],
+    'loggers' => [
+        'info' => [
+            'handlers' => ['console', 'info_file_handler']
+        ],
+        'error' => [
+            'handlers' => ['console', 'error_file_handler']
+        ],
+        'notice' => [
+            'handlers' => ['console', 'notice_file_handler']
+        ],
+        'critical' => [
+            'handlers' => ['console', 'critical_file_handler']
+        ],
+        'system_email' => [
+            'handlers' => ['console', 'alert_file_handler']
+        ]
+    ]
+];
 
 Cascade::fileConfig($app->hook->{'apply_filter'}('monolog_cascade_config', $config));
 
@@ -203,7 +203,7 @@ function etsis_set_environment()
         error_reporting(E_ALL & ~E_NOTICE);
         ini_set('display_errors', 'Off');
         ini_set('log_errors', 'On');
-        ini_set('error_log', APP_PATH . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
+        ini_set('error_log', APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-error-' . date('Y-m-d') . '.txt');
         set_error_handler('etsis_error_handler', E_ALL & ~E_NOTICE);
     }
 }
