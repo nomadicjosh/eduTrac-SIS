@@ -52,7 +52,7 @@ $screen = 'dash';
 							<!-- Simple Chart -->
 							<div class="widget-chart bg-lightseagreen">
 								<?php  $rss1 = new \DOMDocument();
-                                $rss1->load('http://feeds.feedburner.com/eduTracSIS');
+                                $rss1->load("https://www.edutracsis.com/feed/");
                                 $feed = etsis_cache_get('rss', 'rss');
                                 if(empty($feed)) {
                                 $feed = [];
