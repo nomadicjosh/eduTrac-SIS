@@ -60,7 +60,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                         <li<?= hl('roles', 'access_role_screen'); ?>><a href="<?= get_base_url(); ?>role/"> <?= _t('(MRLE) Manage Role'); ?></a></li>
                                         <li<?= hl('errorlogs', 'access_error_log_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= get_base_url(); ?>err/logs/"> <?= _t('Error Log'); ?></a></li>
                                         <li<?= hl('audit_trail', 'access_audit_trail_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= get_base_url(); ?>audit-trail/"> <?= _t('Audit Trail'); ?></a></li>
-                                        <li<?= hl('automatic_update', 'edit_settings'); ?>><a href="<?= get_base_url(); ?>dashboard/core-update/"> <?= _t('Automatic Update'); ?></a></li>
+                                        <li<?= hl('automatic_update', 'not_hidden'); ?>><a href="<?= get_base_url(); ?>dashboard/core-update/"> <?= _t('Automatic Update'); ?></a></li>
                                     </ul>
                                 </li>
                                 

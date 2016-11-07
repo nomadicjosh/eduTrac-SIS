@@ -71,7 +71,7 @@
                                 <?php if(_he('access_audit_trail_screen') && _mf('event_log_module')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_64"><a<?=($screen === 'audit') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>audit-trail/"><?=_t( 'Audit Trail' );?></a></li>
                                 <?php endif; ?>
-                                <?php if(_he('edit_settings')) : ?>
+                                <?php if(_he('not_hidden')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_65"><a<?=($screen === 'update') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>dashboard/core-update/"><?=_t( 'Automatic Update' );?></a></li>
                                 <?php endif; ?>
                             </ul>
