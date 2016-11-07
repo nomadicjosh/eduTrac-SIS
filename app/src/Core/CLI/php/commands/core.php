@@ -54,7 +54,7 @@ class Core_Command extends ETSIS_CLI_Command
      */
     public function install()
     {
-        ETSIS_CLI::line('This command is deprecated, please use the new command: %G./etsis core migrate%n');
+        ETSIS_CLI::line('This command has been removed and replaced with: %G./etsis core migrate%n');
     }
 
     /**
