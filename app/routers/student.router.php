@@ -460,17 +460,15 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
 
     $app->match('GET|POST', '/sttr/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
 
-        $sttr = $app->db->stu_term_gpa()
-            ->setTableAlias('a')
-            ->select('a.termCode,a.acadLevelCode,a.attCred,a.compCred')
-            ->select('a.stuID,a.gradePoints,a.termGPA,a.acadLevelCode')
-            ->select('b.termStartDate,b.termEndDate,d.stuLoad')
-            ->_join('term', 'a.termCode = b.termCode', 'b')
-            ->_join('stu_course_sec', 'a.termCode = c.termCode AND a.stuID = c.stuID', 'c')
-            ->_join('stu_term_load', 'a.termCode = d.termCode AND a.stuID = d.stuID', 'd')
-            ->where('a.stuID = ?', $id)
-            ->groupBy('a.termCode, a.stuID')
-            ->orderBy('a.termCode', 'ASC');
+        $sttr = $app->db->sttr()
+            ->select('sttr.termCode,sttr.acadLevelCode,sttr.attCred,sttr.compCred')
+            ->select('sttr.stuID,sttr.gradePoints,sttr.gpa,sttr.stuLoad')
+            ->select('b.termStartDate,b.termEndDate')
+            ->_join('term', 'sttr.termCode = b.termCode', 'b')
+            ->_join('stu_course_sec', 'sttr.termCode = c.termCode AND sttr.stuID = c.stuID', 'c')
+            ->where('sttr.stuID = ?', $id)
+            ->groupBy('sttr.termCode, sttr.stuID')
+            ->orderBy('sttr.termCode', 'ASC');
 
         $q = $sttr->find(function($data) {
             $array = [];
@@ -1345,23 +1343,6 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
             }
             return $array;
         });
-
-        /* $stuTerms = $app->db->stu_term_gpa()
-          ->setTableAlias('sttr')
-          ->select('sttr.termCode,sttr.acadLevelCode,sttr.attCred,sttr.compCred')
-          ->select('sttr.gradePoints,sttr.termGPA')
-          ->_join('term', 'sttr.termCode = term.termCode')
-          ->where('sttr.stuID = ?', $id)->_and_()
-          ->where('sttr.acadLevelCode = ?', $level)
-          ->groupBy('termCode')
-          ->orderBy('termStartDate', 'ASC');
-          $stuTermTran = $stuTerms->find(function($data) {
-          $array = [];
-          foreach ($data as $d) {
-          $array[] = $d;
-          }
-          return $array;
-          }); */
 
         /**
          * If the database table doesn't exist, then it

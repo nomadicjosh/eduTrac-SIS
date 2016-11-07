@@ -78,7 +78,7 @@ $stu = get_student(_h($stu));
                     <td class="text-center"><?=_h($v['gradePoints']);?></td>
                     <td class="text-center"><?=_h($v['stuLoad']);?></td>
                     <td class="text-center"><?=_h($v['acadLevelCode']);?></td>
-                    <td class="text-center"><?=_h($v['termGPA']);?></td>
+                    <td class="text-center"><?=_h($v['gpa']);?></td>
                     <td class="text-center"><?=_h($v['termStartDate']);?></td>
                     <td class="text-center"><?=_h($v['termEndDate']);?></td>
                 </tr>
