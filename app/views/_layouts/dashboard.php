@@ -38,6 +38,7 @@ ob_implicit_flush(0);
         <script src="<?= get_javascript_directory_uri(); ?>plugins/browser/ie/ie.prototype.polyfill.js?v=v2.1.0"></script>
         <script src="<?= get_javascript_directory_uri(); ?>plugins/typeahead/bootstrap-typeahead.js?v=v2.3.2"></script>
         <script src="<?= get_base_url(); ?>static/assets/plugins/jstree/jstree.min.js"></script>
+        <script src="<?= get_javascript_directory_uri(); ?>library/bootstrap/js/bootstrap.min.js?v=v2.1.0"></script>
 
         <?php
         if (isset($cssArray)) {
@@ -113,7 +114,6 @@ ob_implicit_flush(0);
 
                 var themerPrimaryColor = primaryColor;
             </script>
-            <script src="<?= get_javascript_directory_uri(); ?>library/bootstrap/js/bootstrap.min.js?v=v2.1.0"></script>
             <script src="<?= get_javascript_directory_uri(); ?>plugins/slimscroll/jquery.slimscroll.js?v=v2.1.0"></script>
             <script src="<?= get_javascript_directory_uri(); ?>plugins/breakpoints/breakpoints.js?v=v2.1.0"></script>
             <script src="<?= get_javascript_directory_uri(); ?>core/js/core.init.js?v=v2.1.0"></script>
