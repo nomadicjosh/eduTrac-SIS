@@ -136,7 +136,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-4 control-label"><?=_t( 'STLD' );?> <a href="<?=get_base_url();?>form/aclv/<?=_h($aclv[0]['id']);?>/stld/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-3">
-                                <input type="text" disabled value="<?=is_node_count_zero('stld');?>" class="form-control col-md-1 center" />
+                                <input type="text" disabled value="<?=is_node_count_zero('stld','level','=',_h($aclv[0]['code']));?>" class="form-control col-md-1 center" />
                             </div>
                         </div>
                         <!-- // Group END -->
