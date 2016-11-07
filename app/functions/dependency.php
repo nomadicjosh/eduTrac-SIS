@@ -626,6 +626,7 @@ function remove_trailing_slash($string)
 require( APP_PATH . 'functions' . DS . 'global-function.php' );
 require( APP_PATH . 'functions' . DS . 'notify-function.php' );
 require( APP_PATH . 'functions' . DS . 'nodeq-function.php' );
+require( APP_PATH . 'functions' . DS . 'rules-function.php' );
 require( APP_PATH . 'functions' . DS . 'deprecated-function.php' );
 require( APP_PATH . 'functions' . DS . 'auth-function.php' );
 require( APP_PATH . 'functions' . DS . 'cache-function.php' );
