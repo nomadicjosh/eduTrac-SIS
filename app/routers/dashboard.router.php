@@ -99,26 +99,10 @@ $app->post('/dashboard/search/', function () use($app) {
     $acro = $_POST['screen'];
     $screen = explode(" ", $acro);
 
-    $acryn = $app->db->screen()
-        ->where('code = ?', $screen[0])
-        ->limit(1);
-    $q = $acryn->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-
-    $a = [];
-    foreach ($q as $r) {
-        $a[] = $r;
-    }
-
-    if (!$r['relativeURL']) {
+    if (get_screen($screen[0]) == '') {
         redirect(get_base_url() . 'err/screen-error?code=' . _h($screen[0]));
     } else {
-        redirect(get_base_url() . $r['relativeURL']);
+        redirect(get_base_url() . get_screen($screen[0]) . '/');
     }
 });
 

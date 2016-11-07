@@ -1553,3 +1553,56 @@ function etsis_file_exists($filename, $throw = true)
     }
     return true;
 }
+
+function get_screen($screen)
+{
+    $acronym = [
+        'SYSS' => 'setting',
+        'MPRM' => 'permission',
+        'APRM' => 'permission/add',
+        'MRLE' => 'role',
+        'AUDT' => 'audit-trail',
+        'SQL' => 'sql',
+        'SCH' => 'form/school',
+        'SEM' => 'form/semester',
+        'TERM' => 'form/term',
+        'AYR' => 'form/acad-year',
+        'CRSE' => 'crse',
+        'DEPT' => 'form/department',
+        'DEG' => 'form/degree',
+        'MAJR' => 'form/major',
+        'MINR' => 'form/minor',
+        'PROG' => 'program',
+        'CCD' => 'form/ccd',
+        'CIP' => 'form/cip',
+        'LOC' => 'form/location',
+        'BLDG' => 'form/building',
+        'ROOM' => 'form/room',
+        'SPEC' => 'form/specialization',
+        'SUBJ' => 'form/subject',
+        'APRG' => 'program/add',
+        'ACRS' => 'crse/add',
+        'SECT' => 'sect',
+        'RGN' => 'sect/rgn',
+        'NAE' => 'nae',
+        'APER' => 'nae/add',
+        'SPRO' => 'stu',
+        'INST' => 'app/inst',
+        'AINST' => 'app/inst/add',
+        'APPL' => 'appl',
+        'BRGN' => 'sect/brgn',
+        'STAF' => 'staff',
+        'TRAN' => 'stu/tran',
+        'SLR' => 'form/student-load-rule',
+        'RSTR' => 'form/rstr-code',
+        'GRSC' => 'form/grade-scale',
+        'SROS' => 'sect/sros',
+        'EXTR' => 'crse/extr',
+        'ATCEQ' => 'crse/atceq',
+        'TCEQ' => 'crse/tceq',
+        'TCRE' => 'crse/tcre',
+        'RLDE' => 'rlde',
+        'ACLV' => 'form/aclv'
+    ];
+    return $acronym[$screen];
+}
