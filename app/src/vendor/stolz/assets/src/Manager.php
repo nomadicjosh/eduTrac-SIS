@@ -278,7 +278,7 @@ class Manager
 			$asset = $this->buildLocalLink($asset, $this->css_dir);
 
 		if( ! in_array($asset, $this->css))
-			$this->css[] = $asset;
+			$this->css[] = get_base_url() . $asset;
 
 		return $this;
 	}
@@ -306,7 +306,7 @@ class Manager
 			$asset = $this->buildLocalLink($asset, $this->js_dir);
 
 		if( ! in_array($asset, $this->js))
-			$this->js[] = $asset;
+			$this->js[] = get_base_url() . $asset;
 
 		return $this;
 	}
