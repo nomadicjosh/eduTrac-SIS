@@ -26,6 +26,8 @@ $screen = 'setting';
 <h3><?=_t( 'Registration Settings' );?></h3>
 <div class="innerLR">
     
+    <?=_etsis_flash()->showMessage();?>
+    
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
@@ -45,8 +47,9 @@ $screen = 'setting';
                 <ul>
                     <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left"><a href="<?=get_base_url();?>setting/"><i></i> <?=_t( 'General' );?></a></li>
                     <li<?= hl('registration_settings'); ?> class="glyphicons lock active"><a href="<?=get_base_url();?>registration/" data-toggle="tab"><i></i> <?=_t( 'Registration' );?></a></li>
-                    <li<?= hl('email_settings'); ?> class="glyphicons inbox tab-stacked"><a href="<?=get_base_url();?>email/"><i></i> <?=_t( 'Email' );?></a></li>
-                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked"><a href="<?=get_base_url();?>templates/"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons inbox"><a href="<?=get_base_url();?>email/"><i></i> <?=_t( 'Email' );?></a></li>
+                    <li<?= hl('email_settings'); ?> class="glyphicons show_lines"><a href="<?=get_base_url();?>templates/"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
+                    <li<?= hl('general_settings'); ?> class="glyphicons iphone"><a href="<?=get_base_url();?>sms/"><i></i> <span><?=_t( 'SMS' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
