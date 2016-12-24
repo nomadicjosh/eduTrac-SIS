@@ -1007,86 +1007,6 @@
         ]
     },
     {
-        "name": "monolog/monolog",
-        "version": "1.22.0",
-        "version_normalized": "1.22.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/Seldaek/monolog.git",
-            "reference": "bad29cb8d18ab0315e6c477751418a82c850d558"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/bad29cb8d18ab0315e6c477751418a82c850d558",
-            "reference": "bad29cb8d18ab0315e6c477751418a82c850d558",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.0",
-            "psr/log": "~1.0"
-        },
-        "provide": {
-            "psr/log-implementation": "1.0.0"
-        },
-        "require-dev": {
-            "aws/aws-sdk-php": "^2.4.9 || ^3.0",
-            "doctrine/couchdb": "~1.0@dev",
-            "graylog2/gelf-php": "~1.0",
-            "jakub-onderka/php-parallel-lint": "0.9",
-            "php-amqplib/php-amqplib": "~2.4",
-            "php-console/php-console": "^3.1.3",
-            "phpunit/phpunit": "~4.5",
-            "phpunit/phpunit-mock-objects": "2.3.0",
-            "ruflin/elastica": ">=0.90 <3.0",
-            "sentry/sentry": "^0.13",
-            "swiftmailer/swiftmailer": "~5.3"
-        },
-        "suggest": {
-            "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
-            "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
-            "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
-            "ext-mongo": "Allow sending log messages to a MongoDB server",
-            "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
-            "mongodb/mongodb": "Allow sending log messages to a MongoDB server via PHP Driver",
-            "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
-            "php-console/php-console": "Allow sending log messages to Google Chrome",
-            "rollbar/rollbar": "Allow sending log messages to Rollbar",
-            "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
-            "sentry/sentry": "Allow sending log messages to a Sentry server"
-        },
-        "time": "2016-11-26 00:15:39",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.0.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Monolog\\": "src/Monolog"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jordi Boggiano",
-                "email": "j.boggiano@seld.be",
-                "homepage": "http://seld.be"
-            }
-        ],
-        "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
-        "homepage": "http://github.com/Seldaek/monolog",
-        "keywords": [
-            "log",
-            "logging",
-            "psr-3"
-        ]
-    },
-    {
         "name": "symfony/serializer",
         "version": "v3.2.1",
         "version_normalized": "3.2.1.0",
@@ -1717,5 +1637,240 @@
             "sms",
             "twilio"
         ]
+    },
+    {
+        "name": "monolog/monolog",
+        "version": "1.21.0",
+        "version_normalized": "1.21.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Seldaek/monolog.git",
+            "reference": "f42fbdfd53e306bda545845e4dbfd3e72edb4952"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/f42fbdfd53e306bda545845e4dbfd3e72edb4952",
+            "reference": "f42fbdfd53e306bda545845e4dbfd3e72edb4952",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0",
+            "psr/log": "~1.0"
+        },
+        "provide": {
+            "psr/log-implementation": "1.0.0"
+        },
+        "require-dev": {
+            "aws/aws-sdk-php": "^2.4.9",
+            "doctrine/couchdb": "~1.0@dev",
+            "graylog2/gelf-php": "~1.0",
+            "jakub-onderka/php-parallel-lint": "0.9",
+            "php-amqplib/php-amqplib": "~2.4",
+            "php-console/php-console": "^3.1.3",
+            "phpunit/phpunit": "~4.5",
+            "phpunit/phpunit-mock-objects": "2.3.0",
+            "ruflin/elastica": ">=0.90 <3.0",
+            "sentry/sentry": "^0.13",
+            "swiftmailer/swiftmailer": "~5.3"
+        },
+        "suggest": {
+            "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+            "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+            "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+            "ext-mongo": "Allow sending log messages to a MongoDB server",
+            "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
+            "mongodb/mongodb": "Allow sending log messages to a MongoDB server via PHP Driver",
+            "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+            "php-console/php-console": "Allow sending log messages to Google Chrome",
+            "rollbar/rollbar": "Allow sending log messages to Rollbar",
+            "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
+            "sentry/sentry": "Allow sending log messages to a Sentry server"
+        },
+        "time": "2016-07-29 03:23:52",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Monolog\\": "src/Monolog"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jordi Boggiano",
+                "email": "j.boggiano@seld.be",
+                "homepage": "http://seld.be"
+            }
+        ],
+        "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+        "homepage": "http://github.com/Seldaek/monolog",
+        "keywords": [
+            "log",
+            "logging",
+            "psr-3"
+        ]
+    },
+    {
+        "name": "desarrolla2/cache",
+        "version": "v2.1.0",
+        "version_normalized": "2.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/desarrolla2/Cache.git",
+            "reference": "5a9b1b55cf666328cb3ca161357ccd767225fea0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/desarrolla2/Cache/zipball/5a9b1b55cf666328cb3ca161357ccd767225fea0",
+            "reference": "5a9b1b55cf666328cb3ca161357ccd767225fea0",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "predis/predis": "~1.0.0"
+        },
+        "suggest": {
+            "predis/predis": "Predis support"
+        },
+        "time": "2015-11-26 12:29:49",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Desarrolla2\\Cache\\": "src/",
+                "Desarrolla2\\Test\\Cache\\": "test/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Daniel González",
+                "homepage": "http://desarrolla2.com/"
+            }
+        ],
+        "description": "Provides an cache interface for several adapters Apc, Apcu, File, Mongo, Memcache, Memcached, Mysql, Mongo, Redis is supported. New adapters is comming!",
+        "homepage": "https://github.com/desarrolla2/Cache/",
+        "keywords": [
+            "apc",
+            "apcu",
+            "cache",
+            "file",
+            "memcache",
+            "memcached",
+            "mongo",
+            "mysql",
+            "redis"
+        ]
+    },
+    {
+        "name": "vierbergenlars/php-semver",
+        "version": "3.0.1",
+        "version_normalized": "3.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/vierbergenlars/php-semver.git",
+            "reference": "516bb3061577e60e9420cbecc479362d3ad8c7f1"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/vierbergenlars/php-semver/zipball/516bb3061577e60e9420cbecc479362d3ad8c7f1",
+            "reference": "516bb3061577e60e9420cbecc479362d3ad8c7f1",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "simpletest/simpletest": "1.1.*"
+        },
+        "time": "2015-05-02 19:28:54",
+        "bin": [
+            "bin/semver",
+            "bin/update-versions"
+        ],
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "vierbergenlars\\SemVer\\": "src/",
+                "vierbergenlars\\LibJs\\": "src/"
+            },
+            "classmap": [
+                "src/vierbergenlars/SemVer/internal.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Lars Vierbergen",
+                "email": "vierbergenlars@gmail.com"
+            }
+        ],
+        "description": "The Semantic Versioner for PHP",
+        "keywords": [
+            "semantic",
+            "semver",
+            "versioning"
+        ]
+    },
+    {
+        "name": "visualappeal/php-auto-update",
+        "version": "0.9.3",
+        "version_normalized": "0.9.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/VisualAppeal/PHP-Auto-Update.git",
+            "reference": "2853884c8665b60c6557529d026c2a2122877463"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/VisualAppeal/PHP-Auto-Update/zipball/2853884c8665b60c6557529d026c2a2122877463",
+            "reference": "2853884c8665b60c6557529d026c2a2122877463",
+            "shasum": ""
+        },
+        "require": {
+            "desarrolla2/cache": "2.1.*",
+            "monolog/monolog": "1.21.*",
+            "php": ">= 5.5.9",
+            "vierbergenlars/php-semver": "3.0.*"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.8.*"
+        },
+        "time": "2016-10-20 05:28:32",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "VisualAppeal\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Tim Helfensdörfer",
+                "email": "tim@visualappeal.de"
+            }
+        ],
+        "description": "Autoupdater for PHP"
     }
 ]

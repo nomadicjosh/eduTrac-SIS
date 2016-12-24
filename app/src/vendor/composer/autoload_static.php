@@ -11,6 +11,10 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
     );
 
     public static $prefixLengthsPsr4 = array (
+        'V' => 
+        array (
+            'VisualAppeal\\' => 13,
+        ),
         'T' => 
         array (
             'Twilio\\' => 7,
@@ -52,6 +56,11 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
             'Gettext\\Languages\\' => 18,
             'Gettext\\' => 8,
         ),
+        'D' => 
+        array (
+            'Desarrolla2\\Test\\Cache\\' => 23,
+            'Desarrolla2\\Cache\\' => 18,
+        ),
         'C' => 
         array (
             'Cascade\\' => 8,
@@ -60,6 +69,10 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
     );
 
     public static $prefixDirsPsr4 = array (
+        'VisualAppeal\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/visualappeal/php-auto-update/src',
+        ),
         'Twilio\\' => 
         array (
             0 => __DIR__ . '/..' . '/twilio/sdk/Twilio',
@@ -140,6 +153,14 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
         array (
             0 => __DIR__ . '/..' . '/gettext/gettext/src',
         ),
+        'Desarrolla2\\Test\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/desarrolla2/cache/test',
+        ),
+        'Desarrolla2\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/desarrolla2/cache/src',
+        ),
         'Cascade\\' => 
         array (
             0 => __DIR__ . '/..' . '/theorchard/monolog-cascade/src',
@@ -151,6 +172,17 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
     );
 
     public static $prefixesPsr0 = array (
+        'v' => 
+        array (
+            'vierbergenlars\\SemVer\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/vierbergenlars/php-semver/src',
+            ),
+            'vierbergenlars\\LibJs\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/vierbergenlars/php-semver/src',
+            ),
+        ),
         'o' => 
         array (
             'org\\bovigo\\vfs\\' => 
@@ -252,6 +284,11 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
         'SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.smtp.php',
         'ntlm_sasl_client_class' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/ntlm_sasl_client.php',
         'phpmailerException' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
+        'vierbergenlars\\SemVer\\Internal\\Comparator' => __DIR__ . '/..' . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
+        'vierbergenlars\\SemVer\\Internal\\Exports' => __DIR__ . '/..' . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
+        'vierbergenlars\\SemVer\\Internal\\G' => __DIR__ . '/..' . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
+        'vierbergenlars\\SemVer\\Internal\\Range' => __DIR__ . '/..' . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
+        'vierbergenlars\\SemVer\\Internal\\SemVer' => __DIR__ . '/..' . '/vierbergenlars/php-semver/src/vierbergenlars/SemVer/internal.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

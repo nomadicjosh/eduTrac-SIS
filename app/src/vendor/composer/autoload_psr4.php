@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'VisualAppeal\\' => array($vendorDir . '/visualappeal/php-auto-update/src'),
     'Twilio\\' => array($vendorDir . '/twilio/sdk/Twilio'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
@@ -26,6 +27,8 @@ return array(
     'Jenssegers\\Date\\' => array($vendorDir . '/jenssegers/date/src'),
     'Gettext\\Languages\\' => array($vendorDir . '/gettext/languages/src'),
     'Gettext\\' => array($vendorDir . '/gettext/gettext/src'),
+    'Desarrolla2\\Test\\Cache\\' => array($vendorDir . '/desarrolla2/cache/test'),
+    'Desarrolla2\\Cache\\' => array($vendorDir . '/desarrolla2/cache/src'),
     'Cascade\\' => array($vendorDir . '/theorchard/monolog-cascade/src'),
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
 );
