@@ -28,6 +28,8 @@ $screen = 'dash';
 
 	<div class="row">
         
+        <?=_etsis_flash()->showMessage();?>
+        
         <?php jstree_sidebar_menu($screen); ?>
         
         <div class="<?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?> tablet-column-reset">
