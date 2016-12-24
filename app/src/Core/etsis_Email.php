@@ -417,7 +417,7 @@ class etsis_Email
         
         $name = get_name($id);
         $site = _h(get_option('institution_name'));
-        $message = "<p>Dear Registrar:</p>
+        $body = "<p>Dear Registrar:</p>
         
         <p>The following student submitted a new course registration.</p>
         
@@ -439,6 +439,7 @@ class etsis_Email
         ***DO NOT RESPOND TO THIS EMAIL****</p>
         ";
         
+        $message = process_email_html( $body, _t("Course Registration") );
         $headers = "From: $site <auto-reply@$sitename>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0" . "\r\n";
@@ -502,7 +503,7 @@ class etsis_Email
         
         $name = get_name($id);
         $site = _t('myetSIS::') . _h(get_option('institution_name'));
-        $message = "<p>Hello $name:</p>
+        $body = "<p>Hello $name:</p>
         
 		<p>Below are your login details. Keep this email for future reference.</p>
         
@@ -520,6 +521,7 @@ class etsis_Email
         ***DO NOT RESPOND TO THIS EMAIL****</p>
         ";
         
+        $message = process_email_html( $body, _t(" Account Login Details") );
         $headers = "From: $site <auto-reply@$sitename>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0" . "\r\n";
@@ -547,7 +549,7 @@ class etsis_Email
         
         $name = get_name($id);
         $site = _t('myetSIS::') . _h(get_option('institution_name'));
-        $message = "<p>Dear Admissions:</p>
+        $body = "<p>Dear Admissions:</p>
         
 		<p>A new application has been submitted via <em>my</em>eduTrac SIS self service.</p>
         
@@ -566,6 +568,7 @@ class etsis_Email
         ***DO NOT RESPOND TO THIS EMAIL****</p>
         ";
         
+        $message = process_email_html( $body, _t("Application for Admissions") );
         $headers = "From: $site <auto-reply@$sitename>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0" . "\r\n";
