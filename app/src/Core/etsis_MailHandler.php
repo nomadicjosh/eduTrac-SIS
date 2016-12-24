@@ -12,7 +12,7 @@ use app\src\Core\etsis_Email;
  *
  * @license GPLv3
  *         
- * @since 6.2.12
+ * @since 6.3.0
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
@@ -48,6 +48,13 @@ class etsis_MailHandler extends MailHandler
      */
     protected function buildMessage($content, array $records)
     {
+        $sitename = strtolower($_SERVER['SERVER_NAME']);
+        if (substr($sitename, 0, 4) == 'www.') {
+            $sitename = substr($sitename, 4);
+        }
+        
+        $site = _h(get_option('institution_name'));
+        
         $message = null;
         if ($this->mailer instanceof etsis_Email) {
             $message = clone $this->mailer;
@@ -59,7 +66,12 @@ class etsis_MailHandler extends MailHandler
         }
         if ($records) {
             $subjectFormatter = new LineFormatter($this->subject);
-            $message = $this->mailer->etsis_mail($this->email_to, $subjectFormatter->format($this->getHighestRecord($records)), $content);
+            $headers = "From: $site <auto-reply@$sitename>\r\n";
+            $headers .= "X-Mailer: PHP/" . phpversion();
+            $headers .= "MIME-Version: 1.0" . "\r\n";
+            $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+            $body = process_email_html( $content, $subjectFormatter->format($this->getHighestRecord($records)) );
+            $message = $this->mailer->etsis_mail($this->email_to, $subjectFormatter->format($this->getHighestRecord($records)), $body, $headers);
         }
         return $message;
     }
