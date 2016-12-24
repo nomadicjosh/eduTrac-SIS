@@ -1,6 +1,10 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+
 /**
  * eduTrac SIS Course Section Functions
  *
@@ -10,7 +14,6 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-
 $app = \Liten\Liten::getInstance();
 
 /**
@@ -20,20 +23,29 @@ $app = \Liten\Liten::getInstance();
 function convertCourseSec($sect)
 {
     $app = \Liten\Liten::getInstance();
-    $section = $app->db->course_sec()
-        ->select('courseSecCode')
-        ->where('courseSecID = ?', $sect);
-    $q = $section->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+
+    try {
+        $section = $app->db->course_sec()
+            ->select('courseSecCode')
+            ->where('courseSecID = ?', $sect);
+        $q = $section->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        foreach ($q as $r) {
+            $section = $r['courseSecCode'];
         }
-        return $array;
-    });
-    foreach ($q as $r) {
-        $section = $r['courseSecCode'];
+        return $section;
+    } catch (NotFoundException $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
     }
-    return $section;
 }
 
 /**
@@ -58,14 +70,14 @@ function get_course_sec($section, $object = true)
     } else {
         $_section = \app\src\Core\etsis_Course_Sec::get_instance($section);
     }
-    
-    if (! $_section) {
+
+    if (!$_section) {
         return null;
     }
-    
+
     if ($object == true) {
         $_section = array_to_object($_section);
     }
-    
+
     return $_section;
 }

@@ -474,6 +474,56 @@ function _deprecated_argument($function_name, $release, $message = null)
 }
 
 /**
+ * Marks a deprecated action or filter hook as deprecated and throws a notice.
+ *
+ * Default behavior is to trigger a user error if `APP_ENV` is set to DEV.
+ *
+ * This function is called by the hook::do_action_deprecated() and Hook::apply_filter_deprecated()
+ * functions, and so generally does not need to be called directly.
+ *
+ * @since 6.3.0
+ * 
+ * @param string $hook        The hook that was used.
+ * @param string $release     The release of eduTrac SIS that deprecated the hook.
+ * @param string $replacement Optional. The hook that should have been used.
+ * @param string $message     Optional. A message regarding the change.
+ */
+function _deprecated_hook($hook, $release, $replacement = null, $message = null)
+{
+
+    $app = \Liten\Liten::getInstance();
+
+    /**
+     * Fires when a deprecated hook is called.
+     *
+     * @since 6.3.0
+     * 
+     * @param string $hook        The hook that was called.
+     * @param string $replacement The hook that should be used as a replacement.
+     * @param string $release     The release of eduTrac SIS that deprecated the argument used.
+     * @param string $message     A message regarding the change.
+     */
+    $app->hook->{'do_action'}('deprecated_hook_run', $hook, $replacement, $release, $message);
+
+    /**
+     * Filters whether to trigger deprecated hook errors.
+     *
+     * @since 6.3.0
+     * 
+     * @param bool $trigger Whether to trigger deprecated hook errors. Requires
+     *                      `APP_DEV` to be defined DEV.
+     */
+    if (APP_ENV == 'DEV' && $app->hook->{'apply_filter'}('deprecated_hook_trigger_error', true)) {
+        $message = empty($message) ? '' : ' ' . $message;
+        if (!is_null($replacement)) {
+            _trigger_error(sprintf(__('%1$s is <strong>deprecated</strong> since release %2$s! Use %3$s instead.'), $hook, $release, $replacement) . $message, E_USER_DEPRECATED);
+        } else {
+            _trigger_error(sprintf(__('%1$s is <strong>deprecated</strong> since release %2$s with no alternative available.'), $hook, $release) . $message, E_USER_DEPRECATED);
+        }
+    }
+}
+
+/**
  * Mark something as being incorrectly called.
  *
  * There is a hook incorrectly_called_run that will be called that can be used
@@ -658,6 +708,39 @@ function myet_footer()
      * @since 6.1.12
      */
     $app->hook->do_action('myet_footer');
+}
+
+/**
+ * Fires the etsis_dashboard_head action.
+ *
+ * @since 6.3.0
+ */
+function etsis_dashboard_head()
+{
+    $app = \Liten\Liten::getInstance();
+    /**
+     * Prints scripts and/or data in the head tag of the dashboard.
+     *
+     * @since 6.3.0
+     */
+    $app->hook->{'do_action'}('etsis_dashboard_head');
+}
+
+/**
+ * Fires the etsis_dashboard_footer action via the dashboard.
+ *
+ * @since 6.3.0
+ */
+function etsis_dashboard_footer()
+{
+    $app = \Liten\Liten::getInstance();
+    /**
+     * Prints scripts and/or data before the ending body tag
+     * of the dashboard.
+     *
+     * @since 6.3.0
+     */
+    $app->hook->{'do_action'}('etsis_dashboard_footer');
 }
 
 /**
@@ -1399,11 +1482,17 @@ function get_user_avatar($email, $s = 80, $class = '', $d = 'mm', $r = 'g', $img
         $protocol = 'http://';
     }
 
-    $url = $protocol . 'www.gravatar.com/avatar/';
-    $url .= md5(strtolower(trim($email)));
-    $url .= "?s=200&d=$d&r=$r";
-    $avatarsize = getimagesize($url);
-    $avatar = '<img src="' . $url . '" ' . imgResize($avatarsize[1], $avatarsize[1], $s) . ' class="' . $class . '" />';
+    $url = $protocol . "www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=200&d=$d&r=$r";
+
+    if (get_http_response_code($protocol . 'www.gravatar.com/') != 302) {
+        $static_image_url = get_base_url() . "static/assets/img/avatar.png?s=200";
+        $avatarsize = getimagesize($static_image_url);
+        $avatar = '<img src="' . get_base_url() . 'static/assets/img/avatar.png" ' . resize_image($avatarsize[1], $avatarsize[1], $s) . ' class="' . $class . '" />';
+    } else {
+        $avatarsize = getimagesize($url);
+        $avatar = '<img src="' . $url . '" ' . resize_image($avatarsize[1], $avatarsize[1], $s) . ' class="' . $class . '" />';
+    }
+
     return $app->hook->apply_filter('user_avatar', $avatar, $email, $s, $class, $d, $r, $img);
 }
 
@@ -1705,25 +1794,73 @@ function _etsis_student_router()
     }
     return $app->hook->apply_filter('student_router', $router);
 }
-$app->hook->add_action('admin_head', 'head_release_meta', 5);
-$app->hook->add_action('admin_head', 'etsis_notify_style', 2);
-$app->hook->add_action('myet_head', 'head_release_meta', 5);
-$app->hook->add_action('footer', 'etsis_notify_script', 5);
-$app->hook->add_action('release', 'foot_release', 5);
-$app->hook->add_action('dashboard_top_widgets', 'dashboard_student_count', 5);
-$app->hook->add_action('dashboard_top_widgets', 'dashboard_course_count', 5);
-$app->hook->add_action('dashboard_top_widgets', 'dashboard_acadProg_count', 5);
-$app->hook->add_action('dashboard_right_widgets', 'dashboard_clock', 5);
-$app->hook->add_action('dashboard_right_widgets', 'dashboard_weather', 5);
-$app->hook->add_action('activated_plugin', 'etsis_plugin_activate_message', 5, 1);
-$app->hook->add_action('deactivated_plugin', 'etsis_plugin_deactivate_message', 5, 1);
-$app->hook->add_action('login_form_top', 'etsis_login_form_show_message', 5);
-$app->hook->add_action('execute_reg_rstr_rule', 'etsis_reg_rstr_rule', 5, 1);
-$app->hook->add_filter('the_myet_page_content', 'etsis_autop');
-$app->hook->add_filter('the_myet_page_content', 'parsecode_unautop');
-$app->hook->add_filter('the_myet_page_content', 'do_parsecode', 5);
-$app->hook->add_filter('the_myet_welcome_message', 'etsis_autop');
-$app->hook->add_filter('the_myet_welcome_message', 'parsecode_unautop');
-$app->hook->add_filter('the_myet_welcome_message', 'do_parsecode', 5);
-$app->hook->add_filter('etsis_authenticate_person', 'etsis_authenticate', 5, 3);
-$app->hook->add_filter('etsis_auth_cookie', 'etsis_set_auth_cookie', 5, 2);
+
+/**
+ * Register stylesheet.
+ * 
+ * @since 6.3.0
+ * @param string $handle
+ */
+function etsis_register_style($handle)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->asset->{'register_style'}($handle);
+}
+
+/**
+ * Register javascript.
+ * 
+ * @since 6.3.0
+ * @param string $handle
+ */
+function etsis_register_script($handle)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->asset->{'register_script'}($handle);
+}
+
+/**
+ * Enqueue stylesheet.
+ * 
+ * @since 6.3.0
+ */
+function etsis_enqueue_style()
+{
+    $app = \Liten\Liten::getInstance();
+    echo $app->asset->{'enqueue_style'}();
+}
+
+/**
+ * Enqueue javascript.
+ * 
+ * @since 6.3.0
+ */
+function etsis_enqueue_script()
+{
+    $app = \Liten\Liten::getInstance();
+    echo $app->asset->{'enqueue_script'}();
+}
+$app->hook->{'add_action'}('etsis_dashboard_head', 'head_release_meta', 5);
+$app->hook->{'add_action'}('etsis_dashboard_head', 'etsis_enqueue_style', 1);
+$app->hook->{'add_action'}('etsis_dashboard_head', 'etsis_notify_style', 2);
+$app->hook->{'add_action'}('myet_head', 'head_release_meta', 5);
+$app->hook->{'add_action'}('etsis_dashboard_footer', 'etsis_notify_script', 20);
+$app->hook->{'add_action'}('etsis_dashboard_footer', 'etsis_enqueue_script', 5);
+$app->hook->{'add_action'}('release', 'foot_release', 5);
+$app->hook->{'add_action'}('dashboard_top_widgets', 'dashboard_student_count', 5);
+$app->hook->{'add_action'}('dashboard_top_widgets', 'dashboard_course_count', 5);
+$app->hook->{'add_action'}('dashboard_top_widgets', 'dashboard_acadProg_count', 5);
+$app->hook->{'add_action'}('dashboard_right_widgets', 'dashboard_clock', 5);
+$app->hook->{'add_action'}('dashboard_right_widgets', 'dashboard_weather', 5);
+$app->hook->{'add_action'}('activated_plugin', 'etsis_plugin_activate_message', 5, 1);
+$app->hook->{'add_action'}('deactivated_plugin', 'etsis_plugin_deactivate_message', 5, 1);
+$app->hook->{'add_action'}('login_form_top', 'etsis_login_form_show_message', 5);
+$app->hook->{'add_action'}('execute_reg_rstr_rule', 'etsis_reg_rstr_rule', 5, 1);
+$app->hook->{'add_filter'}('the_myet_page_content', 'etsis_autop');
+$app->hook->{'add_filter'}('the_myet_page_content', 'parsecode_unautop');
+$app->hook->{'add_filter'}('the_myet_page_content', 'do_parsecode', 5);
+$app->hook->{'add_filter'}('the_myet_welcome_message', 'etsis_autop');
+$app->hook->{'add_filter'}('the_myet_welcome_message', 'parsecode_unautop');
+$app->hook->{'add_filter'}('the_myet_welcome_message', 'do_parsecode', 5);
+$app->hook->{'add_filter'}('etsis_authenticate_person', 'etsis_authenticate', 5, 3);
+$app->hook->{'add_filter'}('etsis_auth_cookie', 'etsis_set_auth_cookie', 5, 2);

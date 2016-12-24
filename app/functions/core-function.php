@@ -22,6 +22,7 @@ use app\src\Core\Exception\Exception;
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\IOException;
 use Cascade\Cascade;
+use Jenssegers\Date\Date;
 
 /**
  * Retrieves eduTrac site root url.
@@ -209,7 +210,15 @@ function benchmark_init()
     }
 }
 
-function imgResize($width, $height, $target)
+/**
+ * Resize image function.
+ *
+ * @since 6.3.0
+ * @param int $width Width of the image.
+ * @param int $height Height of the image.
+ * @param string $target Path to the image.
+ */
+function resize_image($width, $height, $target)
 {
     // takes the larger size of the width and height and applies the formula. Your function is designed to work with any image in any size.
     if ($width > $height) {
@@ -222,7 +231,7 @@ function imgResize($width, $height, $target)
     $width = round($width * $percentage);
     $height = round($height * $percentage);
     // returns the new sizes in html image tag format...this is so you can plug this function inside an image tag so that it will set the image to the correct size, without putting a whole script into the tag.
-    return "width=\"$width\" height=\"$height\"";
+    return 'width="' . $width . '" height="' . $height . '"';
 }
 
 // An alternative function of using the echo command.
@@ -232,16 +241,61 @@ function _e($string)
     echo $string;
 }
 
-function clickableLink($text = '')
+/**
+ * Turn all URLs into clickable links.
+ * 
+ * @since 6.3.0
+ * @param string $value
+ * @param array  $protocols  http/https, ftp, mail, twitter
+ * @param array  $attributes
+ * @param string $mode       normal or all
+ * @return string
+ */
+function make_clickable($value, $protocols = ['http', 'mail'], array $attributes = [])
 {
-    $text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1:", $text);
-    $ret = ' ' . $text;
-    $ret = preg_replace("#(^|[\n ])([\w]+?://[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret);
+    // Link attributes
+    $attr = '';
+    foreach ($attributes as $key => $val) {
+        $attr = ' ' . $key . '="' . htmlentities($val) . '"';
+    }
 
-    $ret = preg_replace("#(^|[\n ])((www|ftp)\.[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret);
-    $ret = preg_replace("#(^|[\n ])([a-z0-9&\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $ret);
-    $ret = substr($ret, 1);
-    return $ret;
+    $links = [];
+
+    // Extract existing links and tags
+    $value = preg_replace_callback('~(<a .*?>.*?</a>|<.*?>)~i', function ($match) use (&$links) {
+        return '<' . array_push($links, $match[1]) . '>';
+    }, $value);
+
+    // Extract text links for each protocol
+    foreach ((array) $protocols as $protocol) {
+        switch ($protocol) {
+            case 'http':
+            case 'https': $value = preg_replace_callback('~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
+                    if ($match[1])
+                        $protocol = $match[1];
+                    $link = $match[2] ? : $match[3];
+                    return '<' . array_push($links, "<a $attr href=\"$protocol://$link\">$link</a>") . '>';
+                }, $value);
+                break;
+            case 'mail': $value = preg_replace_callback('~([^\s<]+?@[^\s<]+?\.[^\s<]+)(?<![\.,:])~', function ($match) use (&$links, $attr) {
+                    return '<' . array_push($links, "<a $attr href=\"mailto:{$match[1]}\">{$match[1]}</a>") . '>';
+                }, $value);
+                break;
+            case 'twitter': $value = preg_replace_callback('~(?<!\w)[@#](\w++)~', function ($match) use (&$links, $attr) {
+                    return '<' . array_push($links, "<a $attr href=\"https://twitter.com/" . ($match[0][0] == '@' ? '' : 'search/%23') . $match[1] . "\">{$match[0]}</a>") . '>';
+                }, $value);
+                break;
+            default: $value = preg_replace_callback('~' . preg_quote($protocol, '~') . '://([^\s<]+?)(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
+                    return '<' . array_push($links, "<a $attr href=\"$protocol://{$match[1]}\">{$match[1]}</a>") . '>';
+                }, $value);
+                break;
+        }
+    }
+
+    // Insert all link
+    return preg_replace_callback('/<(\d+)>/', function ($match) use (&$links) {
+        return $links[$match[1] - 1];
+    }, $value);
 }
 
 /**
@@ -587,31 +641,18 @@ function generate_timezone_list()
 /**
  * Get age by birthdate.
  *
+ * @since 6.3.0
  * @param string $birthdate
  *            Person's birth date.
  * @return mixed
  */
-function getAge($birthdate = '0000-00-00')
+function get_age($birthdate = '0000-00-00')
 {
-    if ($birthdate == '0000-00-00') {
+    $date = new Date($birthdate);
+    $age = $date->age;
+
+    if ($birthdate <= '0000-00-00' || $age == date('Y')) {
         return _t('Unknown');
-    }
-
-    $bits = explode('-', $birthdate);
-    $age = date('Y') - $bits[0] - 1;
-
-    $arr[1] = 'm';
-    $arr[2] = 'd';
-
-    for ($i = 1; $arr[$i]; $i ++) {
-        $n = date($arr[$i]);
-        if ($n < $bits[$i]) {
-            break;
-        }
-        if ($n > $bits[$i]) {
-            ++$age;
-            break;
-        }
     }
     return $age;
 }
@@ -1536,7 +1577,7 @@ function etsis_seconds_to_time($seconds)
 /**
  * Checks whether a file or directory exists.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  * @param string $filename Path to the file or directory.
  * @param bool $throw Determines whether to do a simple check or throw an exception.
  * @return boolean <b>TRUE</b> if the file or directory specified by
@@ -1605,4 +1646,76 @@ function get_screen($screen)
         'ACLV' => 'form/aclv'
     ];
     return $acronym[$screen];
+}
+
+/**
+ * Add the template to the message body.
+ *
+ * Looks for {content} into the template and replaces it with the message.
+ *
+ * @since 6.3.0
+ * @param string $body The message to templatize.
+ * @return string $email The email surrounded by template.
+ */
+function set_email_template($body)
+{
+    $app = \Liten\Liten::getInstance();
+    
+    $tpl = _file_get_contents(APP_PATH . 'views/setting/tpl/email_alert.tpl');
+    
+    $template = $app->hook->{'apply_filter'}('email_template', $tpl);
+
+    return str_replace('{content}', $body, $template);
+}
+
+/**
+ * Replace variables in the template.
+ *
+ * @since 6.3.0
+ * @param string $template Template with variables.
+ * @return string Template with variables replaced.
+ */
+function template_vars_replacement($template)
+{
+    $app = \Liten\Liten::getInstance();
+
+    $var_array = [
+        'institution_name' => _h(get_option('institution_name')),
+        'address' => _h(get_option('mailing_address'))
+    ];
+
+    $to_replace = $app->hook->{'apply_filter'}('email_template_tags', $var_array);
+
+    foreach ($to_replace as $tag => $var) {
+        $template = str_replace('{' . $tag . '}', $var, $template);
+    }
+
+    return $template;
+}
+
+/**
+ * Process the HTML version of the text.
+ *
+ * @since 6.3.0
+ * @param string $text
+ * @param string $title
+ * @return string
+ */
+function process_email_html($text, $title)
+{
+    $app = \Liten\Liten::getInstance();
+
+    // Convert URLs to links
+    $links = make_clickable($text);
+
+    // Add template to message
+    $template = set_email_template($links);
+
+    // Replace title tag with $title.
+    $body = str_replace('{title}', $title, $template);
+
+    // Replace variables in email
+    $message = $app->hook->{'apply_filter'}('email_template_body', template_vars_replacement($body));
+
+    return $message;
 }

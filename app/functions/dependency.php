@@ -22,6 +22,17 @@ $app->inst->singleton('module', function () {
     return new \app\src\Modules();
 });
 
+$app->inst->singleton('asset', function () {
+    $options = [
+        'public_dir' => remove_trailing_slash(BASE_PATH),
+        'css_dir' => 'static/assets/css',
+        'js_dir' => 'static/assets/components/modules',
+        'pipeline' => false,
+        'pipeline_dir' => 'static/assets/min'
+    ];
+    return new \app\src\Core\etsis_Assets($options);
+});
+
 /**
  * Wrapper function for the core PHP function: trigger_error.
  *
@@ -623,6 +634,28 @@ function remove_trailing_slash($string)
 {
     return rtrim($string, '/\\');
 }
+$app->asset->registerStyleCollection('form', ['admin/module.admin.page.form_elements.min.css']);
+$app->asset->registerStyleCollection('form-alt', ['admin/module.admin.page.alt.form_elements.min.css']);
+$app->asset->registerStyleCollection('table', ['admin/module.admin.page.tables.min.css']);
+$app->asset->registerStyleCollection('invoice', ['admin/module.admin.page.invoice.min.css']);
+$app->asset->registerStyleCollection('table-alt', ['admin/module.admin.page.alt.tables.min.css']);
+$app->asset->registerStyleCollection('calendar', ['fullcalendar/fullcalendar.css','fullcalendar/calendar.css']);
+
+$app->asset->registerScriptCollection('select', ['admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js', 'admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js']);
+$app->asset->registerScriptCollection('select2', ['admin/forms/elements/select2/assets/lib/js/select2.js', 'admin/forms/elements/select2/assets/custom/js/select2.init.js']);
+$app->asset->registerScriptCollection('datepicker', ['admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js', 'admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js']);
+$app->asset->registerScriptCollection('timepicker', ['admin/forms/elements/bootstrap-timepicker/assets/lib/js/bootstrap-timepicker.js','admin/forms/elements/bootstrap-timepicker/assets/custom/js/bootstrap-timepicker.init.js']);
+$app->asset->registerScriptCollection('calendar', ['fullcalendar/fullcalendar.js']);
+$app->asset->registerScriptCollection('datatables', [
+    'admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js',
+    'admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js',
+    'admin/tables/datatables/assets/custom/js/DT_bootstrap.js',
+    'admin/tables/datatables/assets/custom/js/datatables.init.js'
+    ]
+);
+$app->asset->registerScriptCollection('multiselect', ['admin/forms/elements/multiselect/assets/lib/js/jquery.multi-select.js', 'admin/forms/elements/multiselect/assets/custom/js/multiselect.init.js']);
+$app->asset->registerScriptCollection('combo', ['admin/forms/elements/jCombo/jquery.jCombo.min.js']);
+
 require( APP_PATH . 'functions' . DS . 'global-function.php' );
 require( APP_PATH . 'functions' . DS . 'notify-function.php' );
 require( APP_PATH . 'functions' . DS . 'nodeq-function.php' );
@@ -637,6 +670,7 @@ require( APP_PATH . 'functions' . DS . 'db-function.php' );
 require( APP_PATH . 'functions' . DS . 'course-function.php' );
 require( APP_PATH . 'functions' . DS . 'section-function.php' );
 require( APP_PATH . 'functions' . DS . 'person-function.php' );
+require( APP_PATH . 'functions' . DS . 'staff-function.php' );
 require( APP_PATH . 'functions' . DS . 'student-function.php' );
 require( APP_PATH . 'functions' . DS . 'program-function.php' );
 require( APP_PATH . 'functions' . DS . 'parsecode-function.php' );

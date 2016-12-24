@@ -2,7 +2,9 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
 use app\src\Core\Exception\UnauthorizedException;
+use PDOException as ORMException;
 use Cascade\Cascade;
 
 /**
@@ -25,24 +27,32 @@ function hasPermission($perm)
 
 function get_persondata($field)
 {
-    $app = \Liten\Liten::getInstance();
-    $person = get_secure_cookie_data('ET_COOKIENAME');
-    $value = $app->db->person()
-        ->select('person.*,address.*,staff.*,student.*')
-        ->_join('address', 'person.personID = address.personID')
-        ->_join('staff', 'person.personID = staff.staffID')
-        ->_join('student', 'person.personID = student.stuID')
-        ->where('person.personID = ?', $person->personID)->_and_()
-        ->where('person.uname = ?', $person->uname);
-    $q = $value->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+    try {
+        $app = \Liten\Liten::getInstance();
+        $person = get_secure_cookie_data('ET_COOKIENAME');
+        $value = $app->db->person()
+            ->select('person.*,address.*,staff.*,student.*')
+            ->_join('address', 'person.personID = address.personID')
+            ->_join('staff', 'person.personID = staff.staffID')
+            ->_join('student', 'person.personID = student.stuID')
+            ->where('person.personID = ?', $person->personID)->_and_()
+            ->where('person.uname = ?', $person->uname);
+        $q = $value->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        foreach ($q as $r) {
+            return _h($r[$field]);
         }
-        return $array;
-    });
-    foreach ($q as $r) {
-        return _h($r[$field]);
+    } catch (NotFoundException $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
     }
 }
 
@@ -58,7 +68,7 @@ function is_user_logged_in()
 
     $person = get_person_by('personID', get_persondata('personID'));
 
-    if ('' != $person->personID && $app->cookies->verifySecureCookie('ET_COOKIENAME')) {
+    if ('' != $person->personID && $app->cookies->{'verifySecureCookie'}('ET_COOKIENAME')) {
         return true;
     }
 
@@ -399,16 +409,23 @@ function dopt($perm)
 function get_person_by($field, $value)
 {
     $app = \Liten\Liten::getInstance();
+    try {
+        $person = $app->db->person()
+            ->select('person.*, address.*, staff.*, student.*')
+            ->_join('address', 'person.personID = address.personID')
+            ->_join('staff', 'person.personID = staff.staffID')
+            ->_join('student', 'person.personID = student.stuID')
+            ->where("person.$field = ?", $value)
+            ->findOne();
 
-    $person = $app->db->person()
-        ->select('person.*, address.*, staff.*, student.*')
-        ->_join('address', 'person.personID = address.personID')
-        ->_join('staff', 'person.personID = staff.staffID')
-        ->_join('student', 'person.personID = student.stuID')
-        ->where("person.$field = ?", $value)
-        ->findOne();
-
-    return $person;
+        return $person;
+    } catch (NotFoundException $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
+    }
 }
 
 /**
@@ -422,40 +439,47 @@ function get_person_by($field, $value)
 function etsis_authenticate($login, $password, $rememberme)
 {
     $app = \Liten\Liten::getInstance();
-
-    $person = $app->db->person()
-        ->select('person.personID,person.uname,person.password')
-        ->_join('staff', 'person.personID = staff.staffID')
-        ->_join('student', 'person.personID = student.stuID')
-        ->where('(person.uname = ? OR person.email = ?)', [$login, $login])->_and_()
-        ->where('(staff.status = "A" OR student.status = "A")')
-        ->findOne();
-
-    if (false == $person) {
-        $app->flash('error_message', sprintf(_t('Your account is not active. <a href="%s">More info.</a>'), 'https://www.edutracsis.com/manual/troubleshooting/#Your_Account_is_Deactivated'));
-        redirect($app->req->server['HTTP_REFERER']);
-        return;
-    }
-
-    $ll = $app->db->person();
-    $ll->LastLogin = $ll->NOW();
-    $ll->where('personID = ?', _h($person->personID))->update();
-    /**
-     * Filters the authentication cookie.
-     * 
-     * @since 6.2.0
-     * @param object $person Person data object.
-     * @param string $rememberme Whether to remember the person.
-     * @throws Exception If $person is not a database object.
-     */
     try {
-        $app->hook->apply_filter('etsis_auth_cookie', $person, $rememberme);
-    } catch (UnauthorizedException $e) {
-        Cascade::getLogger('error')->error(sprintf('AUTHSTATE[%s]: Unauthorized: %s', $e->getCode(), $e->getMessage()));
-    }
+        $person = $app->db->person()
+            ->select('person.personID,person.uname,person.password')
+            ->_join('staff', 'person.personID = staff.staffID')
+            ->_join('student', 'person.personID = student.stuID')
+            ->where('(person.uname = ? OR person.email = ?)', [$login, $login])->_and_()
+            ->where('(staff.status = "A" OR student.status = "A")')
+            ->findOne();
 
-    etsis_logger_activity_log_write('Authentication', 'Login', get_name(_h($person->personID)), _h($person->uname));
-    redirect(get_base_url());
+        if (false == $person) {
+            $app->flash('error_message', sprintf(_t('Your account is not active. <a href="%s">More info.</a>'), 'https://www.edutracsis.com/manual/troubleshooting/#Your_Account_is_Deactivated'));
+            redirect($app->req->server['HTTP_REFERER']);
+            return;
+        }
+
+        $ll = $app->db->person();
+        $ll->LastLogin = $ll->NOW();
+        $ll->where('personID = ?', _h($person->personID))->update();
+        /**
+         * Filters the authentication cookie.
+         * 
+         * @since 6.2.0
+         * @param object $person Person data object.
+         * @param string $rememberme Whether to remember the person.
+         * @throws Exception If $person is not a database object.
+         */
+        try {
+            $app->hook->{'apply_filter'}('etsis_auth_cookie', $person, $rememberme);
+        } catch (UnauthorizedException $e) {
+            Cascade::getLogger('error')->{'error'}(sprintf('AUTHSTATE[%s]: Unauthorized: %s', $e->getCode(), $e->getMessage()));
+        }
+
+        etsis_logger_activity_log_write('Authentication', 'Login', get_name(_h($person->personID)), _h($person->uname));
+        redirect(get_base_url());
+    } catch (NotFoundException $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->{'error'}($e->getMessage());
+    }
 }
 
 /**
@@ -519,7 +543,7 @@ function etsis_authenticate_person($login, $password, $rememberme)
      * @param string $password Person's password.
      * @param string $rememberme Whether to remember the person.
      */
-    $person = $app->hook->apply_filter('etsis_authenticate_person', $login, $password, $rememberme);
+    $person = $app->hook->{'apply_filter'}('etsis_authenticate_person', $login, $password, $rememberme);
 
     return $person;
 }
@@ -539,14 +563,14 @@ function etsis_set_auth_cookie($person, $rememberme = '')
          * 
          * @since 6.2.0
          */
-        $expire = $app->hook->apply_filter('auth_cookie_expiration', (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookies.lifetime'));
+        $expire = $app->hook->{'apply_filter'}('auth_cookie_expiration', (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookies.lifetime'));
     } else {
         /**
          * Ensure the browser will continue to send the cookie until it expires.
          *
          * @since 6.2.0
          */
-        $expire = $app->hook->apply_filter('auth_cookie_expiration', ($app->config('cookies.lifetime') !== '') ? $app->config('cookies.lifetime') : 86400);
+        $expire = $app->hook->{'apply_filter'}('auth_cookie_expiration', ($app->config('cookies.lifetime') !== '') ? $app->config('cookies.lifetime') : 86400);
     }
 
     $auth_cookie = [
@@ -564,9 +588,9 @@ function etsis_set_auth_cookie($person, $rememberme = '')
      * @param string $auth_cookie Authentication cookie.
      * @param int    $expire  Duration in seconds the authentication cookie should be valid.
      */
-    $app->hook->do_action('set_auth_cookie', $auth_cookie, $expire);
+    $app->hook->{'do_action'}('set_auth_cookie', $auth_cookie, $expire);
 
-    $app->cookies->setSecureCookie($auth_cookie);
+    $app->cookies->{'setSecureCookie'}($auth_cookie);
 }
 
 /**
@@ -584,10 +608,10 @@ function etsis_clear_auth_cookie()
      *
      * @since 6.2.0
      */
-    $app->hook->do_action('clear_auth_cookie');
+    $app->hook->{'do_action'}('clear_auth_cookie');
 
     $vars1 = [];
-    parse_str($app->cookies->get('ET_COOKIENAME'), $vars1);
+    parse_str($app->cookies->{'get'}('ET_COOKIENAME'), $vars1);
     /**
      * Checks to see if the cookie is exists on the server.
      * It it exists, we need to delete it.
@@ -598,11 +622,11 @@ function etsis_clear_auth_cookie()
             unlink($file1);
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: File not found: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->{'error'}(sprintf('FILESTATE[%s]: File not found: %s', $e->getCode(), $e->getMessage()));
     }
 
     $vars2 = [];
-    parse_str($app->cookies->get('SWITCH_USERBACK'), $vars2);
+    parse_str($app->cookies->{'get'}('SWITCH_USERBACK'), $vars2);
     /**
      * Checks to see if the cookie is exists on the server.
      * It it exists, we need to delete it.
@@ -617,8 +641,8 @@ function etsis_clear_auth_cookie()
      * we know need to remove it from the browser and
      * redirect the user to the login page.
      */
-    $app->cookies->remove('ET_COOKIENAME');
-    $app->cookies->remove('SWITCH_USERBACK');
+    $app->cookies->{'remove'}('ET_COOKIENAME');
+    $app->cookies->{'remove'}('SWITCH_USERBACK');
 }
 
 /**
@@ -630,19 +654,19 @@ function etsis_login_form_show_message()
 {
     $app = \Liten\Liten::getInstance();
     $flash = new \app\src\Core\etsis_Messages();
-    echo $app->hook->apply_filter('login_form_show_message', $flash->showMessage());
+    echo $app->hook->{'apply_filter'}('login_form_show_message', $flash->showMessage());
 }
 
 /**
  * Retrieves data from a secure cookie.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  * @param string $key COOKIE key.
  * @return mixed
  */
 function get_secure_cookie_data($key)
 {
     $app = \Liten\Liten::getInstance();
-    $data = $app->cookies->getSecureCookie($key);
+    $data = $app->cookies->{'getSecureCookie'}($key);
     return $data;
 }

@@ -71,7 +71,7 @@ $config = [
             'formatter' => 'exception',
             'mailer' => new app\src\Core\etsis_Email(),
             'message' => 'This message will be replaced with the real one.',
-            'email_to' => _h($app->hook->{'get_option'}('system_email')),
+            'email_to' => $app->hook->{'apply_filter'}('system_alert_email', _h($app->hook->{'get_option'}('system_email'))),
             'subject' => _t('eduTrac SIS System Alert!')
         ]
     ],

@@ -8,7 +8,7 @@ use \app\src\Core\NodeQ\etsis_NodeQ as Node;
  *
  * @license GPLv3
  *
- * @since 6.2.12
+ * @since 6.3.0
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
@@ -17,35 +17,35 @@ $app = \Liten\Liten::getInstance();
 /**
  * Creates rlde node if it does not exist.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  */
 Node::dispense('rlde');
 
 /**
  * Creates stld node if it does not exist.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  */
 Node::dispense('stld');
 
 /**
  * Creates clvr node if it does not exist.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  */
 Node::dispense('clvr');
 
 /**
  * Creates rrsr node if it does not exist.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  */
 Node::dispense('rrsr');
 
 /**
  * Retrieve a list of rules.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  * @param string $active
  */
 function get_rules($active = null)
@@ -59,7 +59,7 @@ function get_rules($active = null)
 /**
  * Retrieve department data as object.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  * @param string $code Deparment code.
  * @return mixed
  */
@@ -75,7 +75,7 @@ function get_department($code)
 /**
  * Counts records in a particular node.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  * @param string $node Name of node to query.
  * @param string $field Field name.
  * @param string $op Operator
@@ -100,7 +100,7 @@ function is_node_count_zero($node, $field = null, $op = null, $value = null)
 /**
  * Retrieve rule data as object by the rule's unique code.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  * @param string $code Rule's unique code.
  * @return object
  */
@@ -113,7 +113,7 @@ function get_rule_by_code($code)
 /**
  * Updates rlde rule codes on update that are connected to other rules.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  * @param string $node Name of node to update.
  * @param int $id Primary ID of the rule being updated.
  * @param string $code Level that was updated.
@@ -133,7 +133,7 @@ function update_rlde_code_on_update($node, $id, $code)
 /**
  * Updates aclv level codes on update that are connected to other rules.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  * @param string $node Name of node to update.
  * @param int $id Primary ID of the rule being updated.
  * @param string $code Level that was updated.
@@ -176,7 +176,7 @@ function clas_dropdown($table, $where = null, $id, $code, $name, $bind = null)
 /**
  * Registration restriction rule check.
  * 
- * @since 6.2.12
+ * @since 6.3.0
  * @param int $stuID Student ID.
  */
 function etsis_reg_rstr_rule($stuID)

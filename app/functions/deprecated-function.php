@@ -204,3 +204,46 @@ function logError()
 {
     _deprecated_function(__FUNCTION__, '6.2.11', 'etsis_error_handler');
 }
+
+/**
+ * Resizes images.
+ * 
+ * @deprecated since release 6.3.0
+ * @param type $width
+ * @param type $height
+ * @param type $target
+ */
+function imgResize($width, $height, $target)
+{
+    _deprecated_function(__FUNCTION__, '6.3.0', 'resize_image');
+
+    return resize_image($width, $height, $target);
+}
+
+/**
+ * Makes links in text clickable.
+ * 
+ * @deprecated since release 6.3.0
+ * @param type $text
+ */
+function clickableLink($text = 'deprecated')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0', 'make_clickable');
+    
+    return make_clickable($text);
+}
+
+/**
+ * Get age by birthdate.
+ *
+ * @deprecated since release 6.3.0
+ * @param string $birthdate
+ *            Person's birth date.
+ * @return mixed
+ */
+function getAge($birthdate = '0000-00-00')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0', 'get_age');
+    
+    return get_age($birthdate);
+}
