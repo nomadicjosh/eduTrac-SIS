@@ -24,12 +24,5 @@
  * IN THE SOFTWARE.
  */
 
-if (file_exists(__DIR__ . '/../app/phinx.php')) {
-    $filename = __DIR__ . '/../app/phinx.php';
-} elseif (file_exists(realpath(__DIR__ . '/../app/phinx.php'))) {
-    $filename = realpath(__DIR__ . '/../app/phinx.php');
-} else {
-    $filename = 'app/src/vendor/robmorgan/phinx/app/phinx.php';
-}
-$app = require($filename);
+$app = require __DIR__ . '/../app/phinx.php';
 $app->run();
