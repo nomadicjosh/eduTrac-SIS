@@ -107,6 +107,11 @@ class Core_Command extends ETSIS_CLI_Command
      */
     public function check_update()
     {
+        if (version_compare(PHP_VERSION, '5.6', '<')) {
+            ETSIS_CLI::line('To upgrade to release 6.3+, your server must be using a minimum of %GPHP 5.6%n.');
+            return false;
+        }
+        
         $update = new \VisualAppeal\AutoUpdate('app/tmp', 'app/tmp', 1800);
         $update->setCurrentVersion(trim(file_get_contents('RELEASE')));
         $update->setUpdateUrl('http://etsis.s3.amazonaws.com/core/1.1/update-check');
@@ -134,6 +139,10 @@ class Core_Command extends ETSIS_CLI_Command
      */
     public function update()
     {
+        if (version_compare(PHP_VERSION, '5.6', '<')) {
+            ETSIS_CLI::line('To upgrade to release 6.3+, your server must be using a minimum of %GPHP 5.6%n.');
+            return false;
+        }
         $zip = new ZipArchive;
         $current_release = ETSIS_CLI::getCurrentRelease();
         $file = 'http://etsis.s3.amazonaws.com/core/1.1/release/' . $current_release . '.zip';
