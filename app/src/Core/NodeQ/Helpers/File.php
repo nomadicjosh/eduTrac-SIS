@@ -2,7 +2,7 @@
 
 namespace app\src\Core\NodeQ\Helpers;
 
-use \app\src\Core\NodeQ\LazerException;
+use \app\src\Core\NodeQ\NodeQException;
 
 /**
  * File managing class
@@ -44,7 +44,7 @@ class File implements FileInterface {
     {
         if (!defined('ETSIS_NODEQ_PATH'))
         {
-            throw new LazerException('Please define constant ETSIS_NODEQ_PATH (check README.md)');
+            throw new NodeQException('Please define constant ETSIS_NODEQ_PATH (check README.md)');
         }
         else if (!empty($this->type))
         {
@@ -52,7 +52,7 @@ class File implements FileInterface {
         }
         else
         {
-            throw new LazerException('Please specify the type of file in class: ' . __CLASS__);
+            throw new NodeQException('Please specify the type of file in class: ' . __CLASS__);
         }
     }
 
@@ -79,10 +79,10 @@ class File implements FileInterface {
             if (unlink($this->getPath()))
                 return TRUE;
 
-            throw new LazerException($type . ': Deleting failed');
+            throw new NodeQException($type . ': Deleting failed');
         }
 
-        throw new LazerException($type . ': File does not exists');
+        throw new NodeQException($type . ': File does not exists');
     }
 
 }
