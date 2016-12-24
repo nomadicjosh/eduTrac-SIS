@@ -63,7 +63,6 @@ foreach ($regions as $name => $mask) {
 }
 
 $email = _etsis_email();
-$flashNow = new \app\src\Core\etsis_Messages();
 $emailer = _etsis_phpmailer();
 
 $css = [
@@ -83,7 +82,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$app->group('/cron', function () use($app, $css, $js, $emailer, $email, $flashNow) {
+$app->group('/cron', function () use($app, $emailer, $email) {
 
     /**
      * Before route checks to make sure the logged in user
@@ -91,20 +90,11 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email, $flashNo
      */
     $app->before('GET', '/', function () {
         if (!hasPermission('access_cronjob_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
-        }
-
-        /**
-         * If user is logged in and the lockscreen cookie is set,
-         * redirect user to the lock screen until he/she enters
-         * his/her password to gain access.
-         */
-        if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(get_base_url() . 'lock' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/', function () use($app, $css, $js) {
+    $app->match('GET|POST', '/', function () use($app) {
         if (!Validate::table('cronjob_setting')->exists()) {
             Node::dispense('cronjob_setting');
         }
@@ -125,33 +115,12 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email, $flashNo
 
         $app->view->display('cron/index', [
             'title' => 'Cronjob Handlers',
-            'cssArray' => $css,
-            'jsArray' => $js,
             'cron' => $job,
             'set' => $set
         ]);
     });
 
-    /**
-     * Before route checks to make sure the logged in user
-     * us allowed to manage options/settings.
-     */
-    $app->before('GET|POST', '/(\d+)/', function () {
-        if (!hasPermission('access_cronjob_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
-        }
-
-        /**
-         * If user is logged in and the lockscreen cookie is set,
-         * redirect user to the lock screen until he/she enters
-         * his/her password to gain access.
-         */
-        if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(get_base_url() . 'lock' . '/');
-        }
-    });
-
-    $app->match('GET|POST', '/new/', function () use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/new/', function () use($app) {
         if ($app->req->isPost()) {
             if (filter_var($_POST['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
                 $url = Node::table('cronjob_handler')->where('url', '=', $app->req->_post('url'))->find();
@@ -194,7 +163,7 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email, $flashNo
         ]);
     });
 
-    $app->match('GET|POST', '/setting/', function () use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/setting/', function () use($app) {
 
         if ($app->req->isPost()) {
             $good = true;
@@ -228,8 +197,18 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email, $flashNo
             'data' => $set
         ]);
     });
+    
+    /**
+     * Before route checks to make sure the logged in user
+     * us allowed to manage options/settings.
+     */
+    $app->before('GET|POST', '/(\d+)/', function () {
+        if (!hasPermission('access_cronjob_screen')) {
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
 
-    $app->match('GET|POST', '/view/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app) {
         if ($app->req->isPost()) {
             if (filter_var($_POST['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
 

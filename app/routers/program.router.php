@@ -174,7 +174,7 @@ $app->group('/program', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/add/', function() {
         if (!hasPermission('add_acad_prog')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**

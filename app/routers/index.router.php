@@ -97,7 +97,8 @@ $app->post('/reset-password/', function () use($app, $email) {
     if ($app->req->isPost()) {
         $addr = $app->req->_post('email');
         $name = $app->req->_post('name');
-        $message = $app->req->_post('message');
+        $body = $app->req->_post('message');
+        $message = process_email_html( $body, _t("Reset Password Request") );
         $headers = "From: $name <$addr>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0\r\n";
@@ -230,7 +231,7 @@ $app->match('GET|POST', '/password/', function () use($app, $flashNow) {
  */
 $app->before('GET|POST', '/permission.*', function() {
     if (!hasPermission('access_permission_screen')) {
-        redirect(get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -376,7 +377,7 @@ $app->match('GET|POST', '/permission/add/', function () use($app, $flashNow) {
  */
 $app->before('GET|POST', '/role.*', function() {
     if (!hasPermission('access_role_screen')) {
-        redirect(get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -537,7 +538,7 @@ $app->post('/message/', function () use($app) {
  */
 $app->before('GET|POST', '/switchUserTo/(\d+)/', function() {
     if (!hasPermission('login_as_user')) {
-        redirect(get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -584,7 +585,7 @@ $app->get('/switchUserTo/(\d+)/', function ($id) use($app) {
 
     $app->cookies->setSecureCookie($auth_cookie);
 
-    redirect(get_base_url() . 'dashboard' . '/');
+    _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
 });
 
 $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
@@ -636,7 +637,7 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
         'exp' => _h(get_option('cookieexpire')) + time()
     ];
     $app->cookies->setSecureCookie($switch_cookie);
-    redirect(get_base_url() . 'dashboard' . '/');
+    _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
 });
 
 $app->get('/logout/', function () {

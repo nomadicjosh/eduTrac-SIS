@@ -55,7 +55,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -98,7 +98,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -277,7 +277,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('add_course_sec')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -415,7 +415,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/addnl/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -514,7 +514,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/soff/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -591,7 +591,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/fgrade/(\d+)/', function() {
         if (!hasPermission('submit_final_grades')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -681,7 +681,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/rgn/', function() use($app) {
         if (!hasPermission('register_students')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
         
         if ($app->req->isPost()) {
@@ -803,7 +803,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/rgn/rrsr/', function() {
         if (!hasPermission('register_students')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -862,7 +862,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/sros.*', function() {
         if (!hasPermission('access_stu_roster_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -964,7 +964,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/catalog.*', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 

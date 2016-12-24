@@ -1,6 +1,9 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
 
 /**
  * Student Router
@@ -39,7 +42,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -88,7 +91,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -206,7 +209,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('create_stu_record')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -284,6 +287,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
                     $message = str_replace('#currentterm#', _h(get_option('current_term_code')), $message);
                     $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
                     $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
+                    $message = process_email_html($message, _t("Student Acceptance Letter"));
 
                     $headers = "From: $site <auto-reply@$host>\r\n";
                     $headers .= "X-Mailer: PHP/" . phpversion();
@@ -377,7 +381,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/stac/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -445,7 +449,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/sttr/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -516,7 +520,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/shis/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -635,7 +639,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/strc/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -749,7 +753,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/sacd/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -974,7 +978,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/sacp/(\d+)/', function() {
         if (!hasPermission('access_student_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1064,7 +1068,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/add-prog/(\d+)/', function() {
         if (!hasPermission('create_stu_record')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1174,7 +1178,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/graduation/', function() {
         if (!hasPermission('graduate_students')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -1219,7 +1223,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/tran.*', function() {
         if (!hasPermission('generate_transcripts')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -1404,8 +1408,8 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
 
     $app->get('/timetable/', function () use($app) {
 
-        $css = [ 'plugins/fullcalendar/fullcalendar.css', 'css/calendar.css'];
-        $js = [ 'plugins/fullcalendar/fullcalendar.js'];
+        $css = [ 'css/fullcalendar/fullcalendar.css', 'css/fullcalendar/calendar.css'];
+        $js = [ 'components/modules/fullcalendar/fullcalendar.js'];
 
         $app->view->display('student/timetable', [
             'title' => 'Timetable',
@@ -1619,38 +1623,46 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
         redirect($app->req->server['HTTP_REFERER']);
     });
 
-    $app->get('/getEvents/', function () use($app, $css, $js) {
-        $meta = $app->db->event_meta()
-            ->setTableAlias('a')
-            ->select('a.*,b.roomCode,c.buildingCode,e.bgcolor')
-            ->_join('room', 'a.roomCode = b.roomCode', 'b')
-            ->_join('building', 'b.buildingCode = c.buildingCode', 'c')
-            ->_join('event', 'a.eventID = d.eventID', 'd')
-            ->_join('event_category', 'd.catID = e.catID', 'e')
-            ->_join('stu_acad_cred', 'd.termCode = f.termCode AND d.title = f.courseSecCode', 'f')
-            ->where('f.stuID = ?', get_persondata('personID'));
-        $q = $meta->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+    $app->get('/getEvents/', function () use($app) {
+        try {
+            $meta = $app->db->event_meta()
+                ->setTableAlias('a')
+                ->select('a.*,b.roomCode,c.buildingCode,e.bgcolor')
+                ->_join('room', 'a.roomCode = b.roomCode', 'b')
+                ->_join('building', 'b.buildingCode = c.buildingCode', 'c')
+                ->_join('event', 'a.eventID = d.eventID', 'd')
+                ->_join('event_category', 'd.catID = e.catID', 'e')
+                ->_join('stu_acad_cred', 'd.termCode = f.termCode AND d.title = f.courseSecCode', 'f')
+                ->where('f.stuID = ?', get_persondata('personID'));
+            $q = $meta->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            if (count($q[0]['eventID']) > 0) {
+                $events = [];
+                foreach ($q as $r) {
+                    $eventArray['eMID'] = $r['eventMetaID'];
+                    $eventArray['eID'] = $r['eventID'];
+                    $eventArray['buildingCode'] = $r['buildingCode'];
+                    $eventArray['roomCode'] = $r['roomCode'];
+                    $eventArray['title'] = $r['title'];
+                    $eventArray['description'] = $r['description'];
+                    $eventArray['start'] = $r['start'];
+                    $eventArray['end'] = $r['end'];
+                    $eventArray['color'] = $r['bgcolor'];
+                    $events[] = $eventArray;
+                }
+                echo json_encode($events);
             }
-            return $array;
-        });
-        if (count($q[0]['eventID']) > 0) {
-            $events = [];
-            foreach ($q as $r) {
-                $eventArray['eMID'] = $r['eventMetaID'];
-                $eventArray['eID'] = $r['eventID'];
-                $eventArray['buildingCode'] = $r['buildingCode'];
-                $eventArray['roomCode'] = $r['roomCode'];
-                $eventArray['title'] = $r['title'];
-                $eventArray['description'] = $r['description'];
-                $eventArray['start'] = $r['start'];
-                $eventArray['end'] = $r['end'];
-                $eventArray['color'] = $r['bgcolor'];
-                $events[] = $eventArray;
-            }
-            echo json_encode($events);
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
         }
     });
 
@@ -1680,6 +1692,392 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
             ];
         }
         echo json_encode($json);
+    });
+
+    $app->match('GET|POST', '/stu/paypal-ipn/', function () use($app) {
+
+        $app->view->display('student/paypal-ipn', [
+            'title' => 'Paypal IPN'
+        ]);
+    });
+
+    /**
+     * Before router check.
+     */
+    $app->before('GET|POST', '/stu/payment-cancel/', function () {
+        if (!is_user_logged_in()) {
+            redirect(get_base_url() . 'login' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/stu/payment-cancel/', function () use($app) {
+
+        $app->view->display('student/payment-cancel', [
+            'title' => 'Payment Cancelled'
+        ]);
+    });
+
+    /**
+     * Before router check.
+     */
+    $app->before('GET|POST', '/stu/payment-success/', function () {
+        if (!is_user_logged_in()) {
+            redirect(get_base_url() . 'login' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/stu/payment-success/', function () use($app) {
+
+        $app->view->display('student/payment-success', [
+            'title' => 'Payment Successful'
+        ]);
+    });
+
+    $app->post('/stu/redirectPaypal/', function () use($app) {
+
+        $vars = [];
+        $vars['amount'] = $app->req->_post('amount');
+        $vars['cmd'] = $app->req->_post('cmd');
+        $vars['business'] = $app->req->_post('business');
+        $vars['currency_code'] = $app->req->_post('currency_code');
+        $vars['item_name'] = $app->req->_post('item_name');
+        $vars['return'] = $app->req->_post('return');
+        $vars['notify_url'] = $app->req->_post('notify_url');
+        $vars['cancel_return'] = $app->req->_post('cancel_return');
+        $vars['custom'] = $app->req->_post('custom');
+        $vars['item_number'] = $app->req->_post('item_number');
+        $vars['shipping'] = $app->req->_post('shipping');
+        etsis_cache_flush_namespace('student_account');
+        redirect($app->req->_post('ppurl') . '?' . http_build_query($vars));
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/stu/bill/', function () {
+        if (!checkStuAccess(get_persondata('personID'))) {
+            redirect(get_base_url() . 'profile' . '/');
+        }
+
+        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
+            redirect(get_base_url() . 'offline' . '/');
+        }
+    });
+
+    $app->get('/stu/bill/', function () use($app) {
+
+        $css = [
+            'css/admin/module.admin.page.alt.tables.min.css'
+        ];
+        $js = [
+            'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
+            'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
+            'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
+            'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
+        ];
+
+        $bill = $app->db->stu_acct_bill()
+            ->select('billID,stuID,termCode')
+            ->where('stuID = ?', get_persondata('personID'))
+            ->groupBy('stuID,termCode');
+        $q = etsis_cache_get('students_bill' . get_persondata('personID'), 'student_account');
+        if (empty($q)) {
+            $q = $bill->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add('students_bill' . get_persondata('personID'), $q, 'student_account');
+        }
+
+        $app->view->display('student/bill', [
+            'title' => 'My Bills',
+            'cssArray' => $css,
+            'jsArray' => $js,
+            'bill' => $q
+        ]);
+    });
+
+    $app->match('GET|POST', '/stu/bill/([^/]+)/', function ($id) use($app) {
+
+        $bill = $app->db->stu_acct_bill()
+            ->setTableAlias('a')
+            ->select('a.*, b.termName')
+            ->_join('term', 'a.termCode = b.termCode', 'b')
+            ->where('billID = ?', $id)
+            ->_and_()
+            ->where('stuID = ?', get_persondata('personID'));
+        $q1 = etsis_cache_get('bill' . $id, 'student_account');
+        if (empty($q1)) {
+            $q1 = $bill->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add('bill' . $id, $q1, 'student_account');
+        }
+        $stuTuition = $app->db->stu_acct_tuition()
+            ->where('stuID = ?', $q1[0]['stuID'])
+            ->_and_()
+            ->where('termCode = ?', $q1[0]['termCode']);
+        $query = etsis_cache_get('stuTuition' . $id, 'student_account');
+        if (empty($query)) {
+            $query = $stuTuition->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add('stuTuition' . $id, $query, 'student_account');
+        }
+        $tuition = $app->db->query('SELECT ' . 'SUM(amount) as sum ' . 'FROM stu_acct_fee ' . 'WHERE billID = ? ' . 'AND type = "Tuition" ' . 'GROUP BY stuID, termCode', [
+            $id
+        ]);
+        $q2 = etsis_cache_get('tuition' . $id, 'student_account');
+        if (empty($q2)) {
+            $q2 = $tuition->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add('tuition' . $id, $q2, 'student_account');
+        }
+        $fee = $app->db->query('SELECT ' . 'ID, description, amount as Fee ' . 'FROM stu_acct_fee ' . 'WHERE billID = ? ' . 'AND type = "Fee"', [
+            $id
+        ]);
+        $q3 = etsis_cache_get('fee' . $id, 'student_account');
+        if (empty($q3)) {
+            $q3 = $fee->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add('fee' . $id, $q3, 'student_account');
+        }
+        $sumFee = $app->db->query("SELECT 
+                        SUM(amount) as sum 
+                    FROM stu_acct_fee 
+                    WHERE billID = ? 
+                    AND type = 'Fee' 
+                    GROUP BY stuID,termCode", [
+            $id
+        ]);
+        $q4 = etsis_cache_get('sumFee' . $id, 'student_account');
+        if (empty($q4)) {
+            $q4 = $sumFee->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add('sumFee' . $id, $q4, 'student_account');
+        }
+        $sumPay = $app->db->query("SELECT 
+                        SUM(amount) as sum 
+                    FROM payment 
+                    WHERE stuID = ? 
+                    AND termCode = ? 
+                    GROUP BY stuID,termCode", [
+            $q1[0]['stuID'],
+            $q1[0]['termCode']
+        ]);
+        $q5 = etsis_cache_get('sumPay' . $id, 'student_account');
+        if (empty($q5)) {
+            $q5 = $sumPay->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add('sumPay' . $id, $q5, 'student_account');
+        }
+        $sumRefund = $app->db->query("SELECT 
+                        SUM(amount) as sum 
+                    FROM refund 
+                    WHERE stuID = ? 
+                    AND termCode = ? 
+                    GROUP BY stuID,termCode", [
+            $q1[0]['stuID'],
+            $q1[0]['termCode']
+        ]);
+        $q6 = etsis_cache_get('sumRefund' . $id, 'student_account');
+        if (empty($q6)) {
+            $q6 = $sumRefund->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add('sumRefund' . $id, $q6, 'student_account');
+        }
+
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($q1 == false) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($q1) == true) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If data is zero, 404 not found.
+         */ elseif (count($q1) <= 0) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+
+            $app->view->display('student/vbill', [
+                'title' => $q1[0]['termCode'] . ' Bill',
+                'bill' => $q1,
+                'tuition1' => $query,
+                'tuition2' => money_format('%n', $q2[0]['sum']),
+                'fee' => $q3,
+                'begin' => money_format('-%n', bcadd($query[0]['total'], $q4[0]['sum'])),
+                'sumFee' => $q4[0]['sum'],
+                'sumPayments' => $q5[0]['sum'],
+                'sumRefund' => $q6[0]['sum']
+            ]);
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/stu/account-history/', function () use($app) {
+        if (!checkStuAccess(get_persondata('personID'))) {
+            redirect(get_base_url() . 'profile' . '/');
+        }
+
+        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
+            redirect(get_base_url() . 'offline' . '/');
+        }
+    });
+
+    $app->get('/stu/account-history/', function () use($app, $js, $flashNow) {
+        $css = [
+            'css/admin/module.admin.page.alt.tables.min.css'
+        ];
+        $js = [
+            'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
+            'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
+            'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
+            'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
+        ];
+        $plan = $app->db->query('SELECT *,' . ' CASE payFrequency' . ' WHEN "1" THEN "Daily"' . ' WHEN "7" THEN "Weekly"' . ' WHEN "14" THEN "Bi-Weekly"' . ' WHEN "30" THEN "Monthly"' . ' ELSE "Yearly"' . ' END AS Frequency' . ' FROM stu_acct_pp' . ' WHERE stuID = ?', [
+            get_persondata('personID')
+        ]);
+        $sql = etsis_cache_get('payment_plan' . get_persondata('personID'), 'student_account');
+        if (empty($sql)) {
+            $sql = $plan->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add('payment_plan' . get_persondata('personID'), $sql, 'student_account');
+        }
+        $history = $app->db->query('SELECT 
+            ID AS FeeID, billID AS billID, stuID AS stuID,
+            termCode AS termCode, type as type, description AS description,
+            amount AS FeeAmount, NULL AS PayAmount, NULL AS method, feeDate AS dateStamp 
+            FROM stu_acct_fee 
+            WHERE stuID = ? 
+            AND type = "Fee"
+            UNION ALL 
+                SELECT NULL as FeeID, NULL AS billID, stuID AS stuID, termCode AS termCode,
+                NULL as type, "Tuition" as description, total AS FeeAmount, NULL AS PayAmount,
+                NULL as method, tuitionTimeStamp AS dateStamp 
+                FROM stu_acct_tuition 
+                WHERE stuID = ? 
+            UNION ALL 
+            SELECT NULL as FeeID, NULL AS billID, stuID AS stuID, termCode AS termCode,
+            NULL as type, "Payment" as description, NULL AS FeeAmount, amount AS PayAmount, 
+            paymentTypeID as method, paymentDate AS dateStamp 
+            FROM payment 
+            WHERE stuID = ? 
+            ORDER BY dateStamp ASC', [
+            get_persondata('personID'),
+            get_persondata('personID'),
+            get_persondata('personID')
+        ]);
+        $q = etsis_cache_get('history' . get_persondata('personID'), 'student_account');
+        if (empty($q)) {
+            $q = $history->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            etsis_cache_add('history' . get_persondata('personID'), $q, 'student_account');
+        }
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($q === false) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($q) === true) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If data is zero, 404 not found.
+         */ elseif (count($q[0]['stuID']) <= 0) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+            $app->view->display('student/account-history', [
+                'title' => 'Student Account History',
+                'cssArray' => $css,
+                'jsArray' => $js,
+                'history' => $q,
+                'plan' => $sql
+            ]);
+        }
     });
 
     $app->setError(function() use($app) {

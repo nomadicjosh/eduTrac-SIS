@@ -1,6 +1,10 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+
 /**
  * Course Router
  *  
@@ -17,15 +21,6 @@ if (!defined('BASE_PATH'))
 $app->before('GET|POST', '/crse(.*)', function() {
     if (!is_user_logged_in()) {
         redirect(get_base_url() . 'login' . '/');
-    }
-
-    /**
-     * If user is logged in and the lockscreen cookie is set, 
-     * redirect user to the lock screen until he/she enters 
-     * his/her password to gain access.
-     */
-    if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . '/');
     }
 });
 
@@ -45,24 +40,22 @@ $js = [
     'components/modules/admin/forms/elements/bootstrap-maxlength/custom/js/custom.js'
 ];
 
-$json_url = get_base_url() . 'api' . '/';
-$flashNow = new \app\src\Core\etsis_Messages();
-
-$app->group('/crse', function() use ($app, $css, $js, $json_url, $flashNow) {
+$app->group('/crse', function() use ($app) {
 
     /**
      * Before route check.
      */
     $app->before('GET|POST', '/', function() {
         if (!hasPermission('access_course_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {
-            $post = $_POST['crse'];
-            $crse = $app->db->query("SELECT 
+            try {
+                $post = $_POST['crse'];
+                $crse = $app->db->query("SELECT 
                     CASE currStatus 
                     WHEN 'A' THEN 'Active' 
                     WHEN 'I' THEN 'Inactive' 
@@ -73,20 +66,30 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $flashNow) {
                     FROM course
                     WHERE courseCode LIKE ?
                     ORDER BY startDate DESC", [ "%$post%"]
-            );
+                );
 
-            $q = $crse->find(function($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
+                $q = $crse->find(function($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+            } catch (NotFoundException $e) {
+                _etsis_flash()->{'error'}($e->getMessage());
+            } catch (Exception $e) {
+                _etsis_flash()->{'error'}($e->getMessage());
+            } catch (ORMException $e) {
+                _etsis_flash()->{'error'}($e->getMessage());
+            }
         }
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datatables');
         $app->view->display('course/index', [
             'title' => 'Search Course',
-            'cssArray' => $css,
-            'jsArray' => $js,
             'crse' => $q
             ]
         );
@@ -97,61 +100,68 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_course_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app) {
         $course = get_course($id);
 
         if ($app->req->isPost()) {
-            $crse = $app->db->course();
-            $crse->courseNumber = $_POST['courseNumber'];
-            $crse->courseCode = $_POST['subjectCode'] . '-' . $_POST['courseNumber'];
-            $crse->subjectCode = $_POST['subjectCode'];
-            $crse->deptCode = $_POST['deptCode'];
-            $crse->courseDesc = $_POST['courseDesc'];
-            $crse->creditType = $_POST['creditType'];
-            $crse->minCredit = $_POST['minCredit'];
-            $crse->maxCredit = $_POST['maxCredit'];
-            $crse->increCredit = $_POST['increCredit'];
-            $crse->courseLevelCode = $_POST['courseLevelCode'];
-            $crse->acadLevelCode = $_POST['acadLevelCode'];
-            $crse->courseShortTitle = $_POST['courseShortTitle'];
-            $crse->courseLongTitle = $_POST['courseLongTitle'];
-            $crse->startDate = $_POST['startDate'];
-            $crse->endDate = $_POST['endDate'];
-            $crse->currStatus = $_POST['currStatus'];
+            try {
+                $crse = $app->db->course();
+                $crse->courseNumber = $_POST['courseNumber'];
+                $crse->courseCode = $_POST['subjectCode'] . '-' . $_POST['courseNumber'];
+                $crse->subjectCode = $_POST['subjectCode'];
+                $crse->deptCode = $_POST['deptCode'];
+                $crse->courseDesc = $_POST['courseDesc'];
+                $crse->creditType = $_POST['creditType'];
+                $crse->minCredit = $_POST['minCredit'];
+                $crse->maxCredit = $_POST['maxCredit'];
+                $crse->increCredit = $_POST['increCredit'];
+                $crse->courseLevelCode = $_POST['courseLevelCode'];
+                $crse->acadLevelCode = $_POST['acadLevelCode'];
+                $crse->courseShortTitle = $_POST['courseShortTitle'];
+                $crse->courseLongTitle = $_POST['courseLongTitle'];
+                $crse->startDate = $_POST['startDate'];
+                $crse->endDate = $_POST['endDate'];
+                $crse->currStatus = $_POST['currStatus'];
 
-            if ($course->currStatus !== $_POST['currStatus']) {
-                $crse->statusDate = $app->db->NOW();
-            }
-            $crse->where('courseID = ?', (int) $id);
+                if ($course->currStatus !== $_POST['currStatus']) {
+                    $crse->statusDate = $app->db->NOW();
+                }
+                $crse->where('courseID = ?', (int) $id);
 
-            /**
-             * Fires during the update of a course.
-             *
-             * @since 6.1.10
-             * @param object $crse Course object.
-             */
-            $app->hook->do_action('update_course_db_table', $crse);
-
-            if ($crse->update()) {
-                etsis_cache_delete($id, 'crse');
                 /**
-                 * Is triggered after a course is updated.
-                 * 
-                 * @since 6.1.05
+                 * Fires during the update of a course.
+                 *
+                 * @since 6.1.10
                  * @param object $crse Course object.
                  */
-                $app->hook->do_action('post_update_crse', $crse);
-                $app->flash('success_message', $flashNow->notice(200));
-                etsis_logger_activity_log_write('Update', 'Course', $course->courseCode, get_persondata('uname'));
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
-                etsis_logger_activity_log_write('Update Error', 'Course', $course->courseCode, get_persondata('uname'));
+                $app->hook->do_action('update_course_db_table', $crse);
+
+                if ($crse->update()) {
+                    etsis_cache_delete($id, 'crse');
+                    /**
+                     * Is triggered after a course is updated.
+                     * 
+                     * @since 6.1.05
+                     * @param object $crse Course object.
+                     */
+                    $app->hook->do_action('post_update_crse', $crse);
+                    etsis_logger_activity_log_write('Update', 'Course', $course->courseCode, get_persondata('uname'));
+                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                } else {
+                    etsis_logger_activity_log_write('Update Error', 'Course', $course->courseCode, get_persondata('uname'));
+                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+                }
+            } catch (NotFoundException $e) {
+                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            } catch (Exception $e) {
+                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            } catch (ORMException $e) {
+                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
             }
-            redirect($app->req->server['HTTP_REFERER']);
         }
 
         /**
@@ -182,10 +192,13 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $flashNow) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datepicker');
+
             $app->view->display('course/view', [
                 'title' => $course->courseShortTitle . ' :: Course',
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'crse' => $course
                 ]
             );
@@ -197,34 +210,41 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/addnl/(\d+)/', function() {
         if (!hasPermission('access_course_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app) {
         $course = get_course($id);
 
         if ($app->req->isPost()) {
-            $crse = $app->db->course();
-            foreach ($_POST as $k => $v) {
-                $crse->$k = $v;
+            try {
+                $crse = $app->db->course();
+                foreach ($_POST as $k => $v) {
+                    $crse->$k = $v;
+                }
+                $crse->where('courseID = ?', (int) $id);
+                if ($crse->update()) {
+                    etsis_cache_delete($id, 'crse');
+                    /**
+                     * Is triggered after course additional info is updated.
+                     * 
+                     * @since 6.1.05
+                     * @param object $crse Course object.
+                     */
+                    $app->hook->do_action('post_update_crse_addnl_info', $crse);
+                    etsis_logger_activity_log_write('Update Record', 'Course', $course->courseCode, get_persondata('uname'));
+                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                } else {
+                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+                }
+            } catch (NotFoundException $e) {
+                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            } catch (Exception $e) {
+                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            } catch (ORMException $e) {
+                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
             }
-            $crse->where('courseID = ?', (int) $id);
-            if ($crse->update()) {
-                etsis_cache_delete($id, 'crse');
-                /**
-                 * Is triggered after course additional info is updated.
-                 * 
-                 * @since 6.1.05
-                 * @param object $crse Course object.
-                 */
-                $app->hook->do_action('post_update_crse_addnl_info', $crse);
-                $app->flash('success_message', $flashNow->notice(200));
-                etsis_logger_activity_log_write('Update Record', 'Course', $course->courseCode, get_persondata('uname'));
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
-            }
-            redirect($app->req->server['HTTP_REFERER']);
         }
 
         /**
@@ -255,10 +275,12 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $flashNow) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+
             $app->view->display('course/addnl-info', [
                 'title' => $course->courseShortTitle . ' :: Course',
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'crse' => $course
                 ]
             );
@@ -271,68 +293,76 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/add/', function() {
         if (!hasPermission('add_course')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/add/', function () use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/add/', function () use($app) {
 
         if ($app->req->isPost()) {
-            $crse = $app->db->course();
-            $crse->courseNumber = $_POST['courseNumber'];
-            $crse->courseCode = $_POST['subjectCode'] . '-' . $_POST['courseNumber'];
-            $crse->subjectCode = $_POST['subjectCode'];
-            $crse->deptCode = $_POST['deptCode'];
-            $crse->courseDesc = $_POST['courseDesc'];
-            $crse->minCredit = $_POST['minCredit'];
-            //$crse->maxCredit = $_POST['maxCredit'];
-            //$crse->increCredit = $_POST['increCredit'];
-            $crse->courseLevelCode = $_POST['courseLevelCode'];
-            $crse->acadLevelCode = $_POST['acadLevelCode'];
-            $crse->courseShortTitle = $_POST['courseShortTitle'];
-            $crse->courseLongTitle = $_POST['courseLongTitle'];
-            $crse->startDate = $_POST['startDate'];
-            $crse->endDate = $_POST['endDate'];
-            $crse->currStatus = $_POST['currStatus'];
-            $crse->statusDate = $app->db->NOW();
-            $crse->approvedDate = $app->db->NOW();
-            $crse->approvedBy = get_persondata('personID');
+            try {
+                $crse = $app->db->course();
+                $crse->courseNumber = $_POST['courseNumber'];
+                $crse->courseCode = $_POST['subjectCode'] . '-' . $_POST['courseNumber'];
+                $crse->subjectCode = $_POST['subjectCode'];
+                $crse->deptCode = $_POST['deptCode'];
+                $crse->courseDesc = $_POST['courseDesc'];
+                $crse->minCredit = $_POST['minCredit'];
+                //$crse->maxCredit = $_POST['maxCredit'];
+                //$crse->increCredit = $_POST['increCredit'];
+                $crse->courseLevelCode = $_POST['courseLevelCode'];
+                $crse->acadLevelCode = $_POST['acadLevelCode'];
+                $crse->courseShortTitle = $_POST['courseShortTitle'];
+                $crse->courseLongTitle = $_POST['courseLongTitle'];
+                $crse->startDate = $_POST['startDate'];
+                $crse->endDate = $_POST['endDate'];
+                $crse->currStatus = $_POST['currStatus'];
+                $crse->statusDate = $app->db->NOW();
+                $crse->approvedDate = $app->db->NOW();
+                $crse->approvedBy = get_persondata('personID');
 
-            /**
-             * Fires during the saving/creating of a course.
-             *
-             * @since 6.1.10
-             * @param array $crse Course object.
-             */
-            $app->hook->do_action('save_course_db_table', $crse);
-
-            if ($crse->save()) {
-                $ID = $crse->lastInsertId();
-
-                etsis_cache_flush_namespace('crse');
-
-                $course = get_course($ID);
                 /**
-                 * Fires after a new course has been created.
-                 * 
-                 * @since 6.1.05
-                 * @param object $course Course object.
+                 * Fires during the saving/creating of a course.
+                 *
+                 * @since 6.1.10
+                 * @param array $crse Course object.
                  */
-                $app->hook->do_action('post_save_crse', $course);
+                $app->hook->do_action('save_course_db_table', $crse);
 
-                $app->flash('success_message', $flashNow->notice(200));
-                etsis_logger_activity_log_write('New Record', 'Course', $_POST['subjectCode'] . '-' . $_POST['courseNumber'], get_persondata('uname'));
-                redirect(get_base_url() . 'crse' . '/' . (int) $ID . '/');
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
-                redirect($app->req->server['HTTP_REFERER']);
+                if ($crse->save()) {
+                    $ID = $crse->lastInsertId();
+
+                    etsis_cache_flush_namespace('crse');
+
+                    $course = get_course($ID);
+                    /**
+                     * Fires after a new course has been created.
+                     * 
+                     * @since 6.1.05
+                     * @param object $course Course object.
+                     */
+                    $app->hook->do_action('post_save_crse', $course);
+                    etsis_logger_activity_log_write('New Record', 'Course', $_POST['subjectCode'] . '-' . $_POST['courseNumber'], get_persondata('uname'));
+                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'crse' . '/' . (int) $ID . '/');
+                } else {
+                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                }
+            } catch (NotFoundException $e) {
+                _etsis_flash()->{'error'}($e->getMessage());
+            } catch (Exception $e) {
+                _etsis_flash()->{'error'}($e->getMessage());
+            } catch (ORMException $e) {
+                _etsis_flash()->{'error'}($e->getMessage());
             }
         }
 
+        etsis_register_style('form');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datepicker');
+
         $app->view->display('course/add', [
-            'title' => 'Add Course',
-            'cssArray' => $css,
-            'jsArray' => $js
+            'title' => 'Add Course'
             ]
         );
     });
@@ -350,21 +380,28 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->post('/termLookup/', function() use($app) {
-
-        $term = $app->db->term()->where('termCode = ?', $_POST['termCode']);
-        $q = $term->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+        try {
+            $term = $app->db->term()->where('termCode = ?', $_POST['termCode']);
+            $q = $term->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            foreach ($q as $v) {
+                $json = [
+                    'input#rTerm' => $v['reportingTerm']
+                ];
             }
-            return $array;
-        });
-        foreach ($q as $v) {
-            $json = [
-                'input#rTerm' => $v['reportingTerm']
-            ];
+            echo json_encode($json);
+        } catch (NotFoundException $e) {
+            _etsis_flash()->{'error'}($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->{'error'}($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->{'error'}($e->getMessage());
         }
-        echo json_encode($json);
     });
 
     /**
@@ -372,89 +409,111 @@ $app->group('/crse', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/clone/(\d+)/', function() {
         if (!hasPermission('add_course')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->get('/clone/(\d+)/', function($id) use($app, $flashNow) {
-        $crse = get_course($id);
-        $clone = $app->db->course();
-        $clone->courseNumber = $crse->courseNumber;
-        $clone->courseCode = $crse->courseCode;
-        $clone->subjectCode = $crse->subjectCode;
-        $clone->deptCode = $crse->deptCode;
-        $clone->courseDesc = $crse->courseDesc;
-        $clone->creditType = $crse->creditType;
-        $clone->minCredit = $crse->minCredit;
-        $clone->maxCredit = $crse->maxCredit;
-        $clone->increCredit = $crse->increCredit;
-        $clone->acadLevelCode = $crse->acadLevelCode;
-        $clone->courseLevelCode = $crse->courseLevelCode;
-        $clone->courseLongTitle = $crse->courseLongTitle . ' (COPY)';
-        $clone->courseShortTitle = $crse->courseShortTitle;
-        $clone->preReq = $crse->preReq;
-        $clone->allowAudit = $crse->allowAudit;
-        $clone->allowWaitlist = $crse->allowWaitlist;
-        $clone->minEnroll = $crse->minEnroll;
-        $clone->seatCap = $crse->seatCap;
-        $clone->startDate = $crse->startDate;
-        $clone->currStatus = $crse->currStatus;
-        $clone->statusDate = $app->db->NOW();
-        $clone->approvedDate = $app->db->NOW();
-        $clone->approvedBy = get_persondata('personID');
+    $app->get('/clone/(\d+)/', function($id) use($app) {
+        try {
+            $crse = get_course($id);
+            $clone = $app->db->course();
+            $clone->courseNumber = $crse->courseNumber;
+            $clone->courseCode = $crse->courseCode;
+            $clone->subjectCode = $crse->subjectCode;
+            $clone->deptCode = $crse->deptCode;
+            $clone->courseDesc = $crse->courseDesc;
+            $clone->creditType = $crse->creditType;
+            $clone->minCredit = $crse->minCredit;
+            $clone->maxCredit = $crse->maxCredit;
+            $clone->increCredit = $crse->increCredit;
+            $clone->acadLevelCode = $crse->acadLevelCode;
+            $clone->courseLevelCode = $crse->courseLevelCode;
+            $clone->courseLongTitle = $crse->courseLongTitle . ' (COPY)';
+            $clone->courseShortTitle = $crse->courseShortTitle;
+            $clone->preReq = $crse->preReq;
+            $clone->allowAudit = $crse->allowAudit;
+            $clone->allowWaitlist = $crse->allowWaitlist;
+            $clone->minEnroll = $crse->minEnroll;
+            $clone->seatCap = $crse->seatCap;
+            $clone->startDate = $crse->startDate;
+            $clone->currStatus = $crse->currStatus;
+            $clone->statusDate = $app->db->NOW();
+            $clone->approvedDate = $app->db->NOW();
+            $clone->approvedBy = get_persondata('personID');
 
-        if ($clone->save()) {
-            $ID = $clone->lastInsertId();
-            etsis_cache_flush_namespace('crse');
-            $app->flash('success_message', $flashNow->notice(200));
-            etsis_logger_activity_log_write('New Record', 'Cloned Course', $crse->courseCode, get_persondata('uname'));
-            redirect(get_base_url() . 'crse' . '/' . (int) $ID . '/');
-        } else {
-            $app->flash('error_message', $flashNow->notice(409));
-            redirect($app->req->server['HTTP_REFERER']);
+            if ($clone->save()) {
+                $ID = $clone->lastInsertId();
+                etsis_cache_flush_namespace('crse');
+                etsis_logger_activity_log_write('New Record', 'Cloned Course', $crse->courseCode, get_persondata('uname'));
+                _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'crse' . '/' . (int) $ID . '/');
+            } else {
+                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            }
+        } catch (NotFoundException $e) {
+            _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+        } catch (Exception $e) {
+            _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+        } catch (ORMException $e) {
+            _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
         }
     });
 
     $app->post('/dept/', function() use($app) {
-        etsis_cache_flush_namespace('dept');
-        $dept = $app->db->department();
-        foreach ($_POST as $k => $v) {
-            $dept->$k = $v;
-        }
-        $dept->save();
-        $ID = $dept->lastInsertId();
-
-        $department = $app->db->department()
-            ->where('deptID = ?', $ID);
-        $q = $department->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+        try {
+            etsis_cache_flush_namespace('dept');
+            $dept = $app->db->department();
+            foreach ($_POST as $k => $v) {
+                $dept->$k = $v;
             }
-            return $array;
-        });
-        echo json_encode($q);
+            $dept->save();
+            $ID = $dept->lastInsertId();
+
+            $department = $app->db->department()
+                ->where('deptID = ?', $ID);
+            $q = $department->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            echo json_encode($q);
+        } catch (NotFoundException $e) {
+            _etsis_flash()->{'error'}($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->{'error'}($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->{'error'}($e->getMessage());
+        }
     });
 
     $app->post('/subj/', function() use($app) {
-        etsis_cache_flush_namespace('subj');
-        $subj = $app->db->subject();
-        foreach ($_POST as $k => $v) {
-            $subj->$k = $v;
-        }
-        $subj->save();
-        $ID = $subj->lastInsertId();
-
-        $subject = $app->db->subject()
-            ->where('subjectID = ?', $ID);
-        $q = $subject->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+        try {
+            etsis_cache_flush_namespace('subj');
+            $subj = $app->db->subject();
+            foreach ($_POST as $k => $v) {
+                $subj->$k = $v;
             }
-            return $array;
-        });
-        echo json_encode($q);
+            $subj->save();
+            $ID = $subj->lastInsertId();
+
+            $subject = $app->db->subject()
+                ->where('subjectID = ?', $ID);
+            $q = $subject->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            echo json_encode($q);
+        } catch (NotFoundException $e) {
+            _etsis_flash()->{'error'}($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->{'error'}($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->{'error'}($e->getMessage());
+        }
     });
 });
 

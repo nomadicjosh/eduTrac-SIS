@@ -81,7 +81,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
          */
         $app->before('GET|POST', '/staff/', function() {
             if (!hasPermission('access_staff_screen')) {
-                redirect(get_base_url() . 'dashboard' . '/');
+                _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
             }
         });
 
@@ -226,7 +226,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_staff_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -317,7 +317,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/add/(\d+)/', function($id) {
         if (!hasPermission('create_staff_record')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 

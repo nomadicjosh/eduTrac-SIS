@@ -43,7 +43,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/', function () {
         if (!hasPermission('access_person_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -93,7 +93,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/(\d+)/', function () {
         if (!hasPermission('access_person_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -216,7 +216,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/add/', function () {
         if (!hasPermission('add_person')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -360,7 +360,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/adsu/(\d+)/', function () {
         if (!hasPermission('access_person_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -433,7 +433,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/addr-form/(\d+)/', function () {
         if (!hasPermission('add_address')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -528,7 +528,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/addr/(\d+)/', function () {
         if (!hasPermission('access_person_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -608,7 +608,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/role/(\d+)/', function () {
         if (!hasPermission('access_user_role_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -688,7 +688,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/perms/(\d+)/', function () {
         if (!hasPermission('access_user_permission_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -770,7 +770,7 @@ $app->group('/nae', function () use($app, $css, $js, $json_url, $flashNow, $emai
      */
     $app->before('GET|POST', '/resetPassword/(\d+)/', function () {
         if (!hasPermission('reset_person_password')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 

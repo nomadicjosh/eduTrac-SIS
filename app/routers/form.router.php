@@ -41,7 +41,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/semester/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -101,7 +101,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/semester/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -190,7 +190,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/term/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -252,7 +252,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/term/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -341,7 +341,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/acad-year/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -401,7 +401,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/acad-year/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -491,7 +491,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/department/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -551,7 +551,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/department/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -641,7 +641,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/subject/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -713,7 +713,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/subject/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -803,7 +803,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/student-load-rule/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -861,7 +861,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/student-load-rule/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -950,7 +950,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/degree/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1010,7 +1010,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/degree/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1100,7 +1100,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/major/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1160,7 +1160,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/major/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1250,7 +1250,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/minor/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1310,7 +1310,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/minor/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1400,7 +1400,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/ccd/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1459,7 +1459,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/ccd/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1549,7 +1549,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/specialization/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1609,7 +1609,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/specialization/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1699,7 +1699,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/cip/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1759,7 +1759,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/cip/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1849,7 +1849,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/rstr-code/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -1910,7 +1910,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/rstr-code/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -2000,7 +2000,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/location/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -2060,7 +2060,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/location/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -2150,7 +2150,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/building/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -2210,7 +2210,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/building/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -2300,7 +2300,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/room/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -2362,7 +2362,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/room/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -2452,7 +2452,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/school/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -2514,7 +2514,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/school/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -2604,7 +2604,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/grade-scale/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -2663,7 +2663,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/grade-scale/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
 
         /**
@@ -2753,7 +2753,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/aclv/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -2808,7 +2808,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/aclv/(\d+)/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -2896,7 +2896,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/aclv/(\d+)/stld/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -2992,7 +2992,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/aclv/(\d+)/clas/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -3090,7 +3090,7 @@ $app->group('/form', function () use($app, $css, $js, $flashNow) {
      */
     $app->before('GET|POST', '/aclv/(\d+)/clvr/', function () {
         if (!hasPermission('access_forms')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
