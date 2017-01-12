@@ -54,7 +54,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_h($sect->courseCode);?>-<sec id="section"></sec></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen,'',$sect); ?>
 

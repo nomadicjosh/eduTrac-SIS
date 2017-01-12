@@ -24,6 +24,8 @@ $screen = 'cat';
 <h3><?=_t( 'Course Catalogs' );?></h3>
 <div class="innerLR">
     
+    <?=_etsis_flash()->showMessage();?>
+    
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Widget -->

@@ -41,7 +41,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     
     <div class="separator line bottom"></div>
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacp/<?=_h($sacp[0]['stuProgID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">

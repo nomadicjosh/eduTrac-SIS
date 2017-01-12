@@ -38,7 +38,7 @@ $screen = 'acrse';
 <h3><?=_t( 'Add Course' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 

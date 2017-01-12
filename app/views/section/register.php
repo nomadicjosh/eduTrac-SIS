@@ -59,7 +59,7 @@ $(window).load(function() {
 <h3><?=_t( 'Course Registration (RGN)' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 

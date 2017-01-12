@@ -27,6 +27,8 @@ $screen = 'nae';
 <h3><?=_t( 'Person Lookup' );?></h3>
 <div class="innerLR">
     
+    <?=_etsis_flash()->showMessage();?>
+    
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Widget -->

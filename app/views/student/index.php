@@ -23,6 +23,8 @@ $app->view->block('dashboard');
 
 <h3><?=_t( 'Search Student' );?></h3>
 <div class="innerLR">
+    
+    <?=_etsis_flash()->showMessage();?>
 
 	<!-- Widget -->
 	<div class="widget widget-heading-simple widget-body-gray">

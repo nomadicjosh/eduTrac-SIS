@@ -32,7 +32,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Add Staff' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>staff/add/<?=_h($person[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">

@@ -39,7 +39,7 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
 	<h3 class="glyphicons search"><i></i><?=_t( 'Search Courses' );?></h3>
 	<div class="separator bottom"></div>
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
 	
     <?php $app->hook->do_action('course_reg_message'); ?>
 	

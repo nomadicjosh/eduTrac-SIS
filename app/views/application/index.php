@@ -24,8 +24,10 @@ $screen = 'appl';
 
 <h3><?=_t( 'Search Application' );?></h3>
 <div class="innerLR">
+    
+    <?=_etsis_flash()->showMessage();?>
 
-<?php jstree_sidebar_menu($screen); ?>
+    <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Widget -->
 	<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">

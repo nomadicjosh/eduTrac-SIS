@@ -26,7 +26,7 @@ $screen = 'deg';
 <h3><?=_t( 'Degree' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 

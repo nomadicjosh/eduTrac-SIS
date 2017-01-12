@@ -37,7 +37,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 </h3>
 <div class="innerLR">
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen,'','','','','',$prog); ?>
 

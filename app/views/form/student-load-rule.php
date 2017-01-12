@@ -25,6 +25,8 @@ $screen = 'slr';
 <h3><?=_t( 'Student Load Rules' );?></h3>
 <div class="innerLR">
     
+    <?=_etsis_flash()->showMessage();?>
+    
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->

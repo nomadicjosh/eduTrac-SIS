@@ -31,6 +31,8 @@ $screen = 'adsu';
 <h3><?=get_name(_h((int)$nae[0]['personID']));?> <?=_t( "ID: " );?><?=_h($nae[0]['personID']);?></h3>
 <div class="innerLR">
     
+    <?=_etsis_flash()->showMessage();?>
+    
     <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
         
         <!-- Widget -->

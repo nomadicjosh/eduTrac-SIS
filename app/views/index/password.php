@@ -28,7 +28,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<h3 class="glyphicons keys"><i></i><?=_t( 'Change Password' );?></h3>
 	<div class="separator bottom"></div>
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
 
 <!-- Form -->
 <form class="form-horizontal margin-none" action="<?=get_base_url();?>password/" id="validateSubmitForm" method="post" autocomplete="off">	

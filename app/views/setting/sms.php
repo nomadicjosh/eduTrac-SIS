@@ -127,7 +127,7 @@ $screen = 'setting';
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t( 'Your Account SID from www.twilio.com/console' );?></p>
+                    <p><?=sprintf(_t( 'Your Account SID from %s.' ), make_clickable('www.twilio.com/console'));?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
@@ -147,7 +147,7 @@ $screen = 'setting';
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t( "Your Auth Token from www.twilio.com/console." );?></p>
+                    <p><?=sprintf(_t( "Your Auth Token from %s." ), make_clickable('www.twilio.com/console'));?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>

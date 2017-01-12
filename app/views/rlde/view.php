@@ -33,7 +33,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 <h3><?=_h($rule->code);?> - <?=_h($rule->description);?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 
@@ -183,14 +183,14 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 </div>
 <!-- // Modal END -->
 
-<script type="text/javascript" src="<?=get_base_url();?>static/assets/plugins/querybuilder/bootstrap-select/js/bootstrap-select.min.js"></script>
-<script type="text/javascript" src="<?=get_base_url();?>static/assets/plugins/querybuilder/bootbox/bootbox.js"></script>
-<script type="text/javascript" src="<?=get_base_url();?>static/assets/plugins/querybuilder/selectize/js/standalone/selectize.min.js"></script>
-<script type="text/javascript" src="<?=get_base_url();?>static/assets/plugins/querybuilder/jquery-extendext/jQuery.extendext.min.js"></script>
-<script type="text/javascript" src="<?=get_base_url();?>static/assets/plugins/querybuilder/sql-parser/browser/sql-parser.js"></script>
-<script type="text/javascript" src="<?=get_base_url();?>static/assets/plugins/querybuilder/doT/doT.js"></script>
-<script type="text/javascript" src="<?=get_base_url();?>static/assets/plugins/querybuilder/interact/interact.js"></script>
-<script type="text/javascript" src="<?=get_base_url();?>static/assets/plugins/querybuilder/js/query-builder.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/bootstrap-select/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/bootbox/bootbox.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/selectize/js/standalone/selectize.min.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/jquery-extendext/jQuery.extendext.min.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/sql-parser/browser/sql-parser.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/doT/doT.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/interact/interact.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/js/query-builder.js"></script>
 
 <script>
 $('[data-toggle="tooltip"]').tooltip();

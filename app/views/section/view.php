@@ -11,7 +11,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'vsect';
 ?>
 
@@ -53,7 +52,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_h($sect->courseSection);?></h3>
 <div class="innerLR">
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen, '', $sect); ?>
 

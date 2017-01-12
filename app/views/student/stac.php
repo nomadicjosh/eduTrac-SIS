@@ -38,7 +38,7 @@ $stu = get_student(_h($stu));
     
     <div class="separator line bottom"></div>
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
 
 	<!-- Widget -->
 	<div class="widget widget-heading-simple widget-body-gray">

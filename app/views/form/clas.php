@@ -48,7 +48,7 @@ $screen = 'aclv';
 <h3><?= _h($aclv->name); ?> <?=_t( 'Class Level' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
     

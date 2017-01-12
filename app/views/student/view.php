@@ -46,7 +46,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     
     <div class="separator line bottom"></div>
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
 
     <!-- Form -->
     <form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/<?=$stu->stuID;?>/" id="validateSubmitForm" method="post" autocomplete="off">

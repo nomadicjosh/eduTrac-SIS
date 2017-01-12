@@ -84,7 +84,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     
     <div class="separator line bottom"></div>
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 

@@ -25,7 +25,7 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
 	<h3 class="glyphicons search"><i></i><?=_t( 'Shopping Cart' );?></h3>
 	<div class="separator bottom"></div>
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
 	
 	<!-- Form -->
     <form class="margin-none" action="<?=get_base_url();?>courses/reg/" id="validateSubmitForm" method="post" autocomplete="off">

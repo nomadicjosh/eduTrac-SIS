@@ -38,7 +38,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     
     <div class="separator line bottom"></div>
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacd/<?=_h($sacd[0]['stuAcadCredID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
