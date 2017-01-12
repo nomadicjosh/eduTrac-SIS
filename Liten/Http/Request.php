@@ -45,6 +45,18 @@ class Request
      * @var bool
      */
     public $server = [];
+    
+    /**
+     * Global post variables
+     * @var bool
+     */
+    public $post = [];
+    
+    /**
+     * Global get variables
+     * @var bool
+     */
+    public $get = [];
 
     /**
      * URI prefix
@@ -58,6 +70,8 @@ class Request
     public function __construct()
     {
         $this->server = $_SERVER;
+        $this->post = $_POST;
+        $this->get = $_GET;
     }
 
     /**
