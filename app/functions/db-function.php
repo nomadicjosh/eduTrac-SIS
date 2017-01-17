@@ -1,6 +1,10 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+
 /**
  * eduTrac SIS Database Related Functions
  *
@@ -13,7 +17,6 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-
 $app = \Liten\Liten::getInstance();
 
 /**
@@ -39,23 +42,25 @@ $app = \Liten\Liten::getInstance();
 function table_dropdown($table, $where = null, $id, $code, $name, $activeID = null, $bind = null)
 {
     $app = \Liten\Liten::getInstance();
-    if ($where !== null && $bind == null) {
-        $table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where");
-    } elseif ($bind !== null) {
-        $table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where", $bind);
-    } else {
-        $table = $app->db->query("SELECT $id, $code, $name FROM $table");
-    }
-    $q = $table->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+    try {
+        if ($where !== null && $bind == null) {
+            $tbl = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where");
+        } elseif ($bind !== null) {
+            $tbl = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where", $bind);
+        } else {
+            $tbl = $app->db->query("SELECT $id, $code, $name FROM $table");
         }
-        return $array;
-    });
-    
-    foreach ($q as $r) {
-        echo '<option value="' . _h($r[$code]) . '"' . selected($activeID, _h($r[$code]), false) . '>' . _h($r[$code]) . ' ' . _h($r[$name]) . '</option>' . "\n";
+        $q = $tbl->find();
+
+        foreach ($q as $r) {
+            echo '<option value="' . _h($r->{$code}) . '"' . selected($activeID, _h($r->{$code}), false) . '>' . _h($r->{$code}) . ' ' . _h($r->{$name}) . '</option>' . "\n";
+        }
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
@@ -80,7 +85,7 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
             $date = explode('-', $r[$field]);
         }
     }
-    
+
     /* years */
     $html_output = '           <select name="' . $name . 'Year"' . $bool . ' class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">' . "\n";
     $html_output .= '               <option value="">&nbsp;</option>' . "\n";
@@ -88,7 +93,7 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
         $html_output .= '               <option value="' . sprintf("%04s", $year) . '"' . selected(sprintf("%04s", $year), $date[0], false) . '>' . sprintf("%04s", $year) . '</option>' . "\n";
     }
     $html_output .= '           </select>' . "\n";
-    
+
     /* months */
     $html_output .= '           <select name="' . $name . 'Month"' . $bool . ' class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">' . "\n";
     $html_output .= '               <option value="">&nbsp;</option>' . "\n";
@@ -111,7 +116,7 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
         $html_output .= '               <option value="' . sprintf("%02s", $month) . '"' . selected(sprintf("%02s", $month), $date[1], false) . '>' . $months[$month] . '</option>' . "\n";
     }
     $html_output .= '           </select>' . "\n";
-    
+
     /* days */
     $html_output .= '           <select name="' . $name . 'Day"' . $bool . ' class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">' . "\n";
     $html_output .= '               <option value="">&nbsp;</option>' . "\n";
@@ -119,7 +124,7 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
         $html_output .= '               <option value="' . sprintf("%02s", $day) . '"' . selected(sprintf("%02s", $day), $date[2], false) . '>' . sprintf("%02s", $day) . '</option>' . "\n";
     }
     $html_output .= '           </select>' . "\n";
-    
+
     return $html_output;
 }
 
@@ -130,18 +135,26 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
 function is_count_zero($table, $field, $ID)
 {
     $app = \Liten\Liten::getInstance();
-    $zero = $app->db->query("SELECT $field FROM $table WHERE $field = ?", [
-        $ID
-    ]);
-    $q = $zero->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+    try {
+        $zero = $app->db->query("SELECT $field FROM $table WHERE $field = ?", [
+            $ID
+        ]);
+        $q = $zero->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        if (count($q) > 0) {
+            return 'X';
         }
-        return $array;
-    });
-    if (count($q) > 0) {
-        return 'X';
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
@@ -155,12 +168,19 @@ function is_count_zero($table, $field, $ID)
 function hasAppl($id)
 {
     $app = \Liten\Liten::getInstance();
-    
-    $appl = $app->db->application()
-        ->where('personID = ?', $id)
-        ->findOne();
-    
-    return _h($appl->personID);
+    try {
+        $appl = $app->db->application()
+            ->where('personID = ?', $id)
+            ->findOne();
+
+        return _h($appl->personID);
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
+    }
 }
 
 /**
@@ -176,20 +196,21 @@ function hasAppl($id)
 function qt($table, $field, $where = null)
 {
     $app = \Liten\Liten::getInstance();
-    if ($where !== null) {
-        $query = $app->db->query("SELECT * FROM $table WHERE $where");
-    } else {
-        $query = $app->db->query("SELECT * FROM $table");
-    }
-    $result = $query->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+    try {
+        if ($where !== null) {
+            $query = $app->db->query("SELECT * FROM $table WHERE $where");
+        } else {
+            $query = $app->db->query("SELECT * FROM $table");
         }
-        return $array;
-    });
-    foreach ($result as $r) {
-        return _h($r[$field]);
+        $result = $query->find();
+        foreach ($result as $r) {
+            return _h($r->{$field});
+        }
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
-

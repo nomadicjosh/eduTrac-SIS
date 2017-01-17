@@ -1,6 +1,11 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+
 /**
  * eduTrac SIS Staff Functions
  *
@@ -10,7 +15,6 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-
 $app = \Liten\Liten::getInstance();
 
 /**
@@ -26,14 +30,22 @@ $app = \Liten\Liten::getInstance();
 function facID_dropdown($facID = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    $fac = $app->db->staff_meta()
-        ->select('staffID')
-        ->where('staffType = "FAC"')
-        ->orderBy('staffID')
-        ->find();
-    
-    foreach ($fac as $v) {
-        echo '<option value="' . _h($v->staffID) . '"' . selected($facID, _h($v->staffID), false) . '>' . get_name(_h($v->staffID)) . '</option>' . "\n";
+    try {
+        $fac = $app->db->staff_meta()
+            ->select('staffID')
+            ->where('staffType = "FAC"')
+            ->orderBy('staffID')
+            ->find();
+
+        foreach ($fac as $v) {
+            echo '<option value="' . _h($v->staffID) . '"' . selected($facID, _h($v->staffID), false) . '>' . get_name(_h($v->staffID)) . '</option>' . "\n";
+        }
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
@@ -46,65 +58,104 @@ function facID_dropdown($facID = NULL)
 function get_staff_email()
 {
     $app = \Liten\Liten::getInstance();
-    $email = $app->db->person()
-        ->select('person.email,person.personID')
-        ->_join('staff', 'person.personID = staff.staffID')
-        ->where('staff.status = "A"')
-        ->orderBy('person.lname')
-        ->find();
-    foreach ($email as $v) {
-        echo '<option value="' . _h($v->email) . '">' . get_name(_h($v->personID)) . '</option>' . "\n";
+    try {
+        $email = $app->db->person()
+            ->select('person.email,person.personID')
+            ->_join('staff', 'person.personID = staff.staffID')
+            ->where('staff.status = "A"')
+            ->orderBy('person.lname')
+            ->find();
+        foreach ($email as $v) {
+            echo '<option value="' . _h($v->email) . '">' . get_name(_h($v->personID)) . '</option>' . "\n";
+        }
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
 function supervisor($id, $active = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    
-    $q = $app->db->staff()
-        ->select('staff.staffID')
-        ->whereNot('staff.staffID', $id)
-        ->find();
-    
-    foreach ($q as $v) {
-        echo '<option value="' . _h($v->staffID) . '"' . selected($active, _h($v->staffID), false) . '>' . get_name(_h($v->staffID)) . '</option>' . "\n";
+    try {
+        $q = $app->db->staff()
+            ->select('staff.staffID')
+            ->whereNot('staff.staffID', $id)
+            ->find();
+
+        foreach ($q as $v) {
+            echo '<option value="' . _h($v->staffID) . '"' . selected($active, _h($v->staffID), false) . '>' . get_name(_h($v->staffID)) . '</option>' . "\n";
+        }
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
 function getJobID()
 {
     $app = \Liten\Liten::getInstance();
-    $job = $app->db->staff_meta()
-        ->select('jobID')
-        ->where('staffID = ?', get_persondata('personID'))->_and_()
-        ->where('hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', get_persondata('personID'))
-        ->findOne();
-    return _h($job->jobID);
+    try {
+        $job = $app->db->staff_meta()
+            ->select('jobID')
+            ->where('staffID = ?', get_persondata('personID'))->_and_()
+            ->where('hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', get_persondata('personID'))
+            ->findOne();
+        return _h($job->jobID);
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
+    }
 }
 
 function getJobTitle()
 {
     $app = \Liten\Liten::getInstance();
-    $job = $app->db->job()
-        ->select('job.title')
-        ->_join('staff_meta', 'job.ID = staff_meta.jobID')
-        ->where('job.ID = ?', getJobID())
-        ->findOne();
-    
-    return _h($job->title);
+    try {
+        $job = $app->db->job()
+            ->select('job.title')
+            ->_join('staff_meta', 'job.ID = staff_meta.jobID')
+            ->where('job.ID = ?', getJobID())
+            ->findOne();
+
+        return _h($job->title);
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
+    }
 }
 
 function getStaffJobTitle($id)
 {
     $app = \Liten\Liten::getInstance();
-    $title = $app->db->job()
-        ->select('job.title')
-        ->_join('staff_meta', 'job.ID = staff_meta.jobID')
-        ->where('staff_meta.staffID = ?', $id)->_and_()
-        ->where('staff_meta.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id)
-        ->findOne();
-    
-    return _h($title->title);
+    try {
+        $title = $app->db->job()
+            ->select('job.title')
+            ->_join('staff_meta', 'job.ID = staff_meta.jobID')
+            ->where('staff_meta.staffID = ?', $id)->_and_()
+            ->where('staff_meta.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id)
+            ->findOne();
+
+        return _h($title->title);
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
+    }
 }
 
 /**
@@ -129,14 +180,14 @@ function get_staff($staff, $object = true)
     } else {
         $_staff = \app\src\Core\etsis_Staff::get_instance($staff);
     }
-    
-    if (! $_staff) {
+
+    if (!$_staff) {
         return null;
     }
-    
+
     if ($object == true) {
         $_staff = array_to_object($_staff);
     }
-    
+
     return $_staff;
 }

@@ -1,6 +1,10 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+
 /**
  * eduTrac SIS Course Functions
  *
@@ -10,7 +14,6 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-
 $app = \Liten\Liten::getInstance();
 
 /**
@@ -19,26 +22,24 @@ $app = \Liten\Liten::getInstance();
 function courseList($id = '')
 {
     $app = \Liten\Liten::getInstance();
-    $crse = $app->db->course()
-        ->select('courseCode')
-        ->where('courseID <> ?', $id)
-        ->_and_()
-        ->where('currStatus = "A"')
-        ->_and_()
-        ->where('endDate <= "0000-00-00"');
-    $q = $crse->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+    try {
+        $crse = $app->db->course()
+            ->select('courseCode')
+            ->where('courseID <> ?', $id)->_and_()
+            ->where('currStatus = "A"')->_and_()
+            ->where('endDate <= "0000-00-00"');
+        $q = $crse->find();
+
+        foreach ($q as $r) {
+            return $r->courseCode;
         }
-        return $array;
-    });
-    
-    $a = [];
-    foreach ($q as $r) {
-        $a[] = $r['courseCode'];
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
-    return $a;
 }
 
 /**
@@ -63,14 +64,14 @@ function get_course($course, $object = true)
     } else {
         $_course = \app\src\Core\etsis_Course::get_instance($course);
     }
-    
-    if (! $_course) {
+
+    if (!$_course) {
         return null;
     }
-    
+
     if ($object == true) {
         $_course = array_to_object($_course);
     }
-    
+
     return $_course;
 }

@@ -28,15 +28,9 @@ function convertCourseSec($sect)
         $section = $app->db->course_sec()
             ->select('courseSecCode')
             ->where('courseSecID = ?', $sect);
-        $q = $section->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+        $q = $section->find();
         foreach ($q as $r) {
-            $section = $r['courseSecCode'];
+            $section = $r->courseSecCode;
         }
         return $section;
     } catch (NotFoundException $e) {

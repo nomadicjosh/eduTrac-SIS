@@ -1,6 +1,10 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+
 /**
  * eduTrac SIS Person Functions
  *
@@ -10,7 +14,6 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-
 $app = \Liten\Liten::getInstance();
 
 /**
@@ -24,154 +27,176 @@ $app = \Liten\Liten::getInstance();
  */
 function isRecordActive($id)
 {
+    $app = \Liten\Liten::getInstance();
+
     if ('' == _trim($id)) {
         $message = _t('Invalid person ID: empty ID given.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
-    if (! is_numeric($id)) {
+
+    if (!is_numeric($id)) {
         $message = _t('Invalid person ID: person id must be numeric.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
-    $app = \Liten\Liten::getInstance();
-    $rec = $app->db->person()
-        ->select('person.personID')
-        ->_join('student', 'person.personID = student.stuID')
-        ->_join('staff', 'person.personID = staff.staffID')
-        ->where('person.personID = ?', $id)
-        ->_and_()
-        ->where('student.status = "A"')
-        ->_or_()
-        ->where('staff.status = "A"')
-        ->findOne();
-    
-    if ($rec !== false) {
-        return true;
+    try {
+        $rec = $app->db->person()
+            ->select('person.personID')
+            ->_join('student', 'person.personID = student.stuID')
+            ->_join('staff', 'person.personID = staff.staffID')
+            ->where('person.personID = ?', $id)->_and_()
+            ->where('student.status = "A"')->_or_()
+            ->where('staff.status = "A"')
+            ->findOne();
+
+        if ($rec !== false) {
+            return true;
+        }
+        return false;
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
-    return false;
 }
 
 function rolePerm($id)
 {
     $app = \Liten\Liten::getInstance();
-    $role = $app->db->query("SELECT permission from role WHERE ID = ?", [
-        $id
-    ]);
-    $q1 = $role->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+    try {
+        $role = $app->db->query("SELECT permission from role WHERE ID = ?", [
+            $id
+        ]);
+        $q1 = $role->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        $a = [];
+        foreach ($q1 as $v) {
+            $a[] = $v;
         }
-        return $array;
-    });
-    $a = [];
-    foreach ($q1 as $v) {
-        $a[] = $v;
-    }
-    $sql = $app->db->permission();
-    $q2 = $sql->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($q2 as $r) {
-        $perm = maybe_unserialize($v['permission']);
-        echo '
+        $sql = $app->db->permission();
+        $q2 = $sql->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        foreach ($q2 as $r) {
+            $perm = maybe_unserialize($v['permission']);
+            echo '
 				<tr>
 					<td>' . $r['permName'] . '</td>
 					<td class="text-center">';
-        if (in_array($r['permKey'], $perm)) {
-            echo '<input type="checkbox" name="permission[]" value="' . $r['permKey'] . '" checked="checked" />';
-        } else {
-            echo '<input type="checkbox" name="permission[]" value="' . $r['permKey'] . '" />';
-        }
-        echo '</td>
+            if (in_array($r['permKey'], $perm)) {
+                echo '<input type="checkbox" name="permission[]" value="' . $r['permKey'] . '" checked="checked" />';
+            } else {
+                echo '<input type="checkbox" name="permission[]" value="' . $r['permKey'] . '" />';
+            }
+            echo '</td>
             </tr>';
+        }
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
 function personPerm($id)
 {
     $app = \Liten\Liten::getInstance();
-    $array = [];
-    $pp = $app->db->query("SELECT permission FROM person_perms WHERE personID = ?", [
-        $id
-    ]);
-    $q = $pp->find(function ($data) {
+    try {
         $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+        $pp = $app->db->query("SELECT permission FROM person_perms WHERE personID = ?", [
+            $id
+        ]);
+        $q = $pp->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        foreach ($q as $r) {
+            $array[] = $r;
         }
-        return $array;
-    });
-    foreach ($q as $r) {
-        $array[] = $r;
-    }
-    $personPerm = maybe_unserialize($r['permission']);
-    /**
-     * Select the role(s) of the person who's
-     * personID = $id
-     */
-    $array1 = [];
-    $pr = $app->db->query("SELECT roleID from person_roles WHERE personID = ?", [
-        $id
-    ]);
-    $q1 = $pr->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+        $personPerm = maybe_unserialize($r['permission']);
+        /**
+         * Select the role(s) of the person who's
+         * personID = $id
+         */
+        $array1 = [];
+        $pr = $app->db->query("SELECT roleID from person_roles WHERE personID = ?", [
+            $id
+        ]);
+        $q1 = $pr->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        foreach ($q1 as $r1) {
+            $array1[] = $r1;
         }
-        return $array;
-    });
-    foreach ($q1 as $r1) {
-        $array1[] = $r1;
-    }
-    /**
-     * Select all the permissions from the role(s)
-     * that are connected to the selected person.
-     */
-    $array2 = [];
-    $role = $app->db->query("SELECT permission from role WHERE ID = ?", [
-        _h($r1['roleID'])
-    ]);
-    $q2 = $role->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+        /**
+         * Select all the permissions from the role(s)
+         * that are connected to the selected person.
+         */
+        $array2 = [];
+        $role = $app->db->query("SELECT permission from role WHERE ID = ?", [
+            _h($r1['roleID'])
+        ]);
+        $q2 = $role->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        foreach ($q2 as $r2) {
+            $array2[] = $r2;
         }
-        return $array;
-    });
-    foreach ($q2 as $r2) {
-        $array2[] = $r2;
-    }
-    $perm = maybe_unserialize($r2['permission']);
-    $permission = $app->db->permission();
-    $sql = $permission->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    foreach ($sql as $row) {
-        echo '
+        $perm = maybe_unserialize($r2['permission']);
+        $permission = $app->db->permission();
+        $sql = $permission->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        foreach ($sql as $row) {
+            echo '
             <tr>
                 <td>' . $row['permName'] . '</td>
                 <td class="text-center">';
-        if (in_array($row['permKey'], $perm)) {
-            echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" checked="checked" disabled="disabled" />';
-        } elseif ($personPerm != '' && in_array($row['permKey'], $personPerm)) {
-            echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" checked="checked" />';
-        } else {
-            echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" />';
-        }
-        echo '</td>
+            if (in_array($row['permKey'], $perm)) {
+                echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" checked="checked" disabled="disabled" />';
+            } elseif ($personPerm != '' && in_array($row['permKey'], $personPerm)) {
+                echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" checked="checked" />';
+            } else {
+                echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" />';
+            }
+            echo '</td>
             </tr>';
+        }
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
@@ -190,15 +215,15 @@ function get_name($ID)
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
-    if (! is_numeric($ID)) {
+
+    if (!is_numeric($ID)) {
         $message = _t('Invalid person ID: person id must be numeric.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
+
     $name = get_person_by('personID', $ID);
-    
+
     return _h($name->lname) . ', ' . _h($name->fname);
 }
 
@@ -220,15 +245,15 @@ function get_initials($ID, $initials = 2)
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
-    if (! is_numeric($ID)) {
+
+    if (!is_numeric($ID)) {
         $message = _t('Invalid person ID: person id must be numeric.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
+
     $name = get_person_by('personID', $ID);
-    
+
     if ($initials == 2) {
         return mb_substr(_h($name->fname), 0, 1, 'UTF-8') . '. ' . mb_substr(_h($name->lname), 0, 1, 'UTF-8') . '.';
     } else {
@@ -254,27 +279,32 @@ function get_initials($ID, $initials = 2)
 function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
 {
     $app = \Liten\Liten::getInstance();
-    
-    $nae = $app->db->person()
-        ->select('photo')
-        ->where('personID = ?', $id)
-        ->_and_()
-        ->where('photo <> ""')
-        ->_and_()
-        ->where('photo <> "NULL"')
-        ->findOne();
-    
-    if ($nae !== false) {
-        $photosize = getimagesize(get_base_url() . 'static/photos/' . $nae->photo);
-        if (getPathInfo('/form/photo/') === '/form/photo/') {
-            $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . $nae->photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
+    try {
+        $nae = $app->db->person()
+            ->select('photo')
+            ->where('personID = ?', $id)->_and_()
+            ->where('photo <> ""')->_and_()
+            ->where('photo <> "NULL"')
+            ->findOne();
+
+        if ($nae !== false) {
+            $photosize = getimagesize(get_base_url() . 'static/photos/' . $nae->photo);
+            if (getPathInfo('/form/photo/') === '/form/photo/') {
+                $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . $nae->photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
+            } else {
+                $avatar = '<img src="' . get_base_url() . 'static/photos/' . $nae->photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
+            }
         } else {
-            $avatar = '<img src="' . get_base_url() . 'static/photos/' . $nae->photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
+            $avatar = get_user_avatar($email, $s, $class);
         }
-    } else {
-        $avatar = get_user_avatar($email, $s, $class);
+        return $avatar;
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
-    return $avatar;
 }
 
 /**
@@ -291,7 +321,7 @@ function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
 function getUserValue($id, $field)
 {
     $value = get_person_by('personID', $id);
-    
+
     return $value->$field;
 }
 
@@ -304,19 +334,27 @@ function getUserValue($id, $field)
 function get_perm_roles()
 {
     $app = \Liten\Liten::getInstance();
-    $query = $app->db->query('SELECT
+    try {
+        $query = $app->db->query('SELECT
     		trim(leading "0" from ID) AS roleID, roleName
 		FROM role');
-    $result = $query->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+        $result = $query->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+
+        foreach ($result as $r) {
+            echo '<option value="' . _h($r['roleID']) . '">' . _h($r['roleName']) . '</option>' . "\n";
         }
-        return $array;
-    });
-    
-    foreach ($result as $r) {
-        echo '<option value="' . _h($r['roleID']) . '">' . _h($r['roleName']) . '</option>' . "\n";
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
@@ -342,15 +380,15 @@ function get_person($person, $object = true)
     } else {
         $_person = \app\src\Core\etsis_Person::get_instance($person);
     }
-    
-    if (! $_person) {
+
+    if (!$_person) {
         return null;
     }
-    
+
     if ($object == true) {
         $_person = array_to_object($_person);
     }
-    
+
     return $_person;
 }
 

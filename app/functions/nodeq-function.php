@@ -76,9 +76,9 @@ function etsis_nodeq_login_details()
             }
         }
     } catch (NodeQException $e) {
-        Cascade::getLogger('system_email')->{'alert'}(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     } catch (Exception $e) {
-        Cascade::getLogger('system_email')->{'alert'}(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
@@ -141,9 +141,9 @@ function etsis_nodeq_reset_password()
             }
         }
     } catch (NodeQException $e) {
-        Cascade::getLogger('system_email')->{'alert'}(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     } catch (Exception $e) {
-        Cascade::getLogger('system_email')->{'alert'}(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
@@ -202,9 +202,9 @@ function etsis_nodeq_csv_email()
             }
         }
     } catch (NodeQException $e) {
-        Cascade::getLogger('system_email')->{'alert'}(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     } catch (Exception $e) {
-        Cascade::getLogger('system_email')->{'alert'}(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
@@ -283,8 +283,86 @@ function etsis_nodeq_change_address()
             }
         }
     } catch (NodeQException $e) {
-        Cascade::getLogger('system_email')->{'alert'}(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     } catch (Exception $e) {
-        Cascade::getLogger('system_email')->{'alert'}(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    }
+}
+
+/**
+ * Acceptance Letter
+ * 
+ * Function used to send acceptance letter when applicant
+ * has been accepted and moved to student.
+ * 
+ * @since 6.3.0
+ */
+function etsis_nodeq_acceptance_letter()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $email = _etsis_email();
+    $host = $app->req->server['HTTP_HOST'];
+    $site = _h(get_option('institution_name'));
+
+    try {
+        // Creates node's schema if does not exist.
+        Node::dispense('acceptance_letter');
+
+        $sql = Node::table('acceptance_letter')->where('sent', '=', 0)->findAll();
+
+        if ($sql->count() == 0) {
+            Node::table('acceptance_letter')->delete();
+        }
+
+        $numItems = $sql->count();
+        $i = 0;
+        if ($sql->count() > 0) {
+            foreach ($sql as $r) {
+                $message = _escape(get_option('student_acceptance_letter'));
+                $message = str_replace('#uname#', $r->uname, $message);
+                $message = str_replace('#fname#', $r->fname, $message);
+                $message = str_replace('#lname#', $r->lname, $message);
+                $message = str_replace('#name#', $r->name, $message);
+                $message = str_replace('#id#', $r->personid, $message);
+                $message = str_replace('#email#', $r->email, $message);
+                $message = str_replace('#sacp#', _trim($r->sacp), $message);
+                $message = str_replace('#acadlevel#', _trim($r->acadlevel), $message);
+                $message = str_replace('#degree#', $r->degree, $message);
+                $message = str_replace('#startterm#', $r->startterm, $message);
+                $message = str_replace('#adminemail#', _h(get_option('system_email')), $message);
+                $message = str_replace('#url#', get_base_url(), $message);
+                $message = str_replace('#helpdesk#', _h(get_option('help_desk')), $message);
+                $message = str_replace('#currentterm#', _h(get_option('current_term_code')), $message);
+                $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
+                $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
+                $message = process_email_html($message, _h(get_option('institution_name')) . ' ' . _t('Decision Notification'));
+
+                $headers = "From: $site <auto-reply@$host>\r\n";
+                $headers .= "X-Mailer: eduTrac SIS\r\n";
+                $headers .= "MIME-Version: 1.0" . "\r\n";
+
+                try {
+                    $email->etsis_mail(_h(get_option('contact_email')), _h(get_option('institution_name')) . ' ' . _t('Decision Notification'), $message, $headers);
+                } catch (phpmailerException $e) {
+                    _etsis_flash()->error($e->getMessage());
+                } catch (Exception $e) {
+                    _etsis_flash()->error($e->getMessage());
+                }
+
+                $upd = Node::table('acceptance_letter')->find(_h($r->id));
+                $upd->sent = 1;
+                $upd->save();
+
+                if (++$i === $numItems) {
+                    //If we reach the last item, send user a desktop notification.
+                    etsis_push_notify('Acceptance Letter', 'An acceptance letter has been emailed to the new student.');
+                }
+            }
+        }
+    } catch (NodeQException $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }

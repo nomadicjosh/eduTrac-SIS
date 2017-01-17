@@ -1,6 +1,9 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
 
 /**
  * eduTrac SIS Deprecated Functions.
@@ -29,20 +32,28 @@ function subject_code_dropdown($subjectCode = NULL)
     _deprecated_function(__FUNCTION__, '6.1.12', 'table_dropdown');
 
     $app = \Liten\Liten::getInstance();
-    $subj = $app->db->subject()
-        ->select('subjectCode,subjectName')
-        ->where('subjectCode <> "NULL"');
+    try {
+        $subj = $app->db->subject()
+            ->select('subjectCode,subjectName')
+            ->where('subjectCode <> "NULL"');
 
-    $q = $subj->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+        $q = $subj->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+
+        foreach ($q as $v) {
+            echo '<option value="' . _h($v['subjectCode']) . '"' . selected($subjectCode, _h($v['subjectCode']), false) . '>' . _h($v['subjectCode']) . ' ' . _h($v['subjectName']) . '</option>' . "\n";
         }
-        return $array;
-    });
-
-    foreach ($q as $v) {
-        echo '<option value="' . _h($v['subjectCode']) . '"' . selected($subjectCode, _h($v['subjectCode']), false) . '>' . _h($v['subjectCode']) . ' ' . _h($v['subjectName']) . '</option>' . "\n";
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
@@ -229,7 +240,7 @@ function imgResize($width, $height, $target)
 function clickableLink($text = 'deprecated')
 {
     _deprecated_function(__FUNCTION__, '6.3.0', 'make_clickable');
-    
+
     return make_clickable($text);
 }
 
@@ -244,6 +255,6 @@ function clickableLink($text = 'deprecated')
 function getAge($birthdate = '0000-00-00')
 {
     _deprecated_function(__FUNCTION__, '6.3.0', 'get_age');
-    
+
     return get_age($birthdate);
 }

@@ -2,6 +2,10 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 use \app\src\Core\NodeQ\etsis_NodeQ as Node;
+use app\src\Core\NodeQ\NodeQException;
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
 
 /**
  * eduTrac SIS Rules Functions
@@ -14,33 +18,39 @@ use \app\src\Core\NodeQ\etsis_NodeQ as Node;
  */
 $app = \Liten\Liten::getInstance();
 
-/**
- * Creates rlde node if it does not exist.
- * 
- * @since 6.3.0
- */
-Node::dispense('rlde');
+try {
+    /**
+     * Creates rlde node if it does not exist.
+     * 
+     * @since 6.3.0
+     */
+    Node::dispense('rlde');
 
-/**
- * Creates stld node if it does not exist.
- * 
- * @since 6.3.0
- */
-Node::dispense('stld');
+    /**
+     * Creates stld node if it does not exist.
+     * 
+     * @since 6.3.0
+     */
+    Node::dispense('stld');
 
-/**
- * Creates clvr node if it does not exist.
- * 
- * @since 6.3.0
- */
-Node::dispense('clvr');
+    /**
+     * Creates clvr node if it does not exist.
+     * 
+     * @since 6.3.0
+     */
+    Node::dispense('clvr');
 
-/**
- * Creates rrsr node if it does not exist.
- * 
- * @since 6.3.0
- */
-Node::dispense('rrsr');
+    /**
+     * Creates rrsr node if it does not exist.
+     * 
+     * @since 6.3.0
+     */
+    Node::dispense('rrsr');
+} catch (NodeQException $e) {
+    _etsis_flash()->error($e->getMessage());
+} catch (Exception $e) {
+    _etsis_flash()->error($e->getMessage());
+}
 
 /**
  * Retrieve a list of rules.
@@ -50,9 +60,15 @@ Node::dispense('rrsr');
  */
 function get_rules($active = null)
 {
-    $rlde = Node::table('rlde')->findAll();
-    foreach ($rlde as $rule) {
-        echo '<option value="' . _h($rule->code) . '"' . selected(_h($rule->code), $active, false) . '>' . '(' . _h($rule->code) . ') - ' . _h($rule->description) . '</option>';
+    try {
+        $rlde = Node::table('rlde')->findAll();
+        foreach ($rlde as $rule) {
+            echo '<option value="' . _h($rule->code) . '"' . selected(_h($rule->code), $active, false) . '>' . '(' . _h($rule->code) . ') - ' . _h($rule->description) . '</option>';
+        }
+    } catch (NodeQException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
@@ -66,9 +82,17 @@ function get_rules($active = null)
 function get_department($code)
 {
     $app = \Liten\Liten::getInstance();
-    $dept = $app->db->department()->where('deptCode = ?', $code)->find();
-    foreach ($dept as $d) {
-        return $d;
+    try {
+        $dept = $app->db->department()->where('deptCode = ?', $code)->find();
+        foreach ($dept as $d) {
+            return $d;
+        }
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
@@ -84,16 +108,22 @@ function get_department($code)
  */
 function is_node_count_zero($node, $field = null, $op = null, $value = null)
 {
-    if ($field != null) {
-        $count = Node::table($node)->where($field, $op, $value)->findAll()->count();
-        if ($count > 0) {
-            return 'X';
+    try {
+        if ($field != null) {
+            $count = Node::table($node)->where($field, $op, $value)->findAll()->count();
+            if ($count > 0) {
+                return 'X';
+            }
+        } else {
+            $count = Node::table($node)->findAll()->count();
+            if ($count > 0) {
+                return 'X';
+            }
         }
-    } else {
-        $count = Node::table($node)->findAll()->count();
-        if ($count > 0) {
-            return 'X';
-        }
+    } catch (NodeQException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
@@ -106,8 +136,14 @@ function is_node_count_zero($node, $field = null, $op = null, $value = null)
  */
 function get_rule_by_code($code)
 {
-    $rlde = Node::table('rlde')->where('code', '=', $code)->find();
-    return $rlde;
+    try {
+        $rlde = Node::table('rlde')->where('code', '=', $code)->find();
+        return $rlde;
+    } catch (NodeQException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    }
 }
 
 /**
@@ -120,13 +156,19 @@ function get_rule_by_code($code)
  */
 function update_rlde_code_on_update($node, $id, $code)
 {
-    $find = Node::table("$node")->where('rid', '=', $id)->findAll();
-    if ($find->count() > 0) {
-        foreach ($find as $rule) {
-            $upd = Node::table("$node")->find($rule->id);
-            $upd->rule = $code;
-            $upd->save();
+    try {
+        $find = Node::table("$node")->where('rid', '=', $id)->findAll();
+        if ($find->count() > 0) {
+            foreach ($find as $rule) {
+                $upd = Node::table("$node")->find($rule->id);
+                $upd->rule = $code;
+                $upd->save();
+            }
         }
+    } catch (NodeQException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
@@ -140,13 +182,19 @@ function update_rlde_code_on_update($node, $id, $code)
  */
 function update_aclv_code_on_update($node, $id, $code)
 {
-    $find = Node::table("$node")->where('aid', '=', $id)->findAll();
-    if ($find->count() > 0) {
-        foreach ($find as $rule) {
-            $upd = Node::table("$node")->find($rule->id);
-            $upd->level = $code;
-            $upd->save();
+    try {
+        $find = Node::table("$node")->where('aid', '=', $id)->findAll();
+        if ($find->count() > 0) {
+            foreach ($find as $rule) {
+                $upd = Node::table("$node")->find($rule->id);
+                $upd->level = $code;
+                $upd->save();
+            }
         }
+    } catch (NodeQException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
@@ -182,19 +230,28 @@ function clas_dropdown($table, $where = null, $id, $code, $name, $bind = null)
 function etsis_reg_rstr_rule($stuID)
 {
     $app = \Liten\Liten::getInstance();
-
-    $node = Node::table('rrsr')->findAll();
-    foreach ($node as $rule) {
-        $rlde = get_rule_by_code($rule->rule);
-        $db = $app->db->restriction()
-            ->setTableAlias('strs')
-            ->where('strs.stuID = ?', $stuID)->_and_()
-            ->where("$rlde->rule")
-            ->findOne();
-        if (false != $db) {
-            $app->flash('error_message', $rule->value);
-            redirect($app->req->server['HTTP_REFERER']);
-            exit();
+    try {
+        $node = Node::table('rrsr')->findAll();
+        foreach ($node as $rule) {
+            $rlde = get_rule_by_code($rule->rule);
+            $db = $app->db->restriction()
+                ->setTableAlias('strs')
+                ->where('strs.stuID = ?', $stuID)->_and_()
+                ->where("$rlde->rule")
+                ->findOne();
+            if (false != $db) {
+                $app->flash('error_message', $rule->value);
+                redirect($app->req->server['HTTP_REFERER']);
+                exit();
+            }
         }
+    } catch (NodeQException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
     }
 }

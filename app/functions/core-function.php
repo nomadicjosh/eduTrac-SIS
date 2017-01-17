@@ -1068,14 +1068,14 @@ function file_mod_time($file)
  * Returns an array of function names in a file.
  *
  * @since 6.2.0
- * @param string $file
+ * @param string $filename
  *            The path to the file.
  * @param bool $sort
  *            If TRUE, sort results by function name.
  */
-function get_functions_in_file($file, $sort = FALSE)
+function get_functions_in_file($filename, $sort = FALSE)
 {
-    $file = file($file);
+    $file = file($filename);
     $functions = [];
     foreach ($file as $line) {
         $line = trim($line);
@@ -1094,22 +1094,22 @@ function get_functions_in_file($file, $sort = FALSE)
  * Checks a given file for any duplicated named user functions.
  *
  * @since 6.2.0
- * @param string $file_name            
+ * @param string $filename            
  */
-function is_duplicate_function($file_name)
+function is_duplicate_function($filename)
 {
-    if ('' == _trim($file_name)) {
+    if ('' == _trim($filename)) {
         $message = _t('Invalid file name: empty file name given.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
 
-    $plugin = get_functions_in_file($file_name);
+    $plugin = get_functions_in_file($filename);
     $functions = get_defined_functions();
     $merge = array_merge($plugin, $functions['user']);
     if (count($merge) !== count(array_unique($merge))) {
         $dupe = array_unique(array_diff_assoc($merge, array_unique($merge)));
-        foreach ($dupe as $key => $value) {
+        foreach ($dupe as $value) {
             return new \app\src\Core\etsis_Error('duplicate_function_error', sprintf(_t('The following function is already defined elsewhere: <strong>%s</strong>'), $value));
         }
     }
@@ -1121,12 +1121,12 @@ function is_duplicate_function($file_name)
  * that might have been required or included.
  *
  * @since 6.2.0
- * @param string $file_name
+ * @param string $filename
  *            PHP script to check.
  */
-function etsis_php_check_includes($file_name)
+function etsis_php_check_includes($filename)
 {
-    if ('' == _trim($file_name)) {
+    if ('' == _trim($filename)) {
         $message = _t('Invalid file name: empty file name given.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
@@ -1136,11 +1136,11 @@ function etsis_php_check_includes($file_name)
     // we can assume things like proper line terminations
     $includes = [];
     // Get the directory name of the file so we can prepend it to relative paths
-    $dir = dirname($file_name);
+    $dir = dirname($filename);
 
     // Split the contents of $fileName about requires and includes
     // We need to slice off the first element since that is the text up to the first include/require
-    $requireSplit = array_slice(preg_split('/require|include/i', _file_get_contents($file_name)), 1);
+    $requireSplit = array_slice(preg_split('/require|include/i', _file_get_contents($filename)), 1);
 
     // For each match
     foreach ($requireSplit as $string) {
@@ -1177,7 +1177,7 @@ function etsis_php_check_includes($file_name)
  * Performs a syntax and error check of a given PHP script.
  *
  * @since 6.2.0
- * @param string $file_name
+ * @param string $filename
  *            PHP script/file to check.
  * @param bool $check_includes
  *            If set to TRUE, will check if other files have been included.
@@ -1185,24 +1185,24 @@ function etsis_php_check_includes($file_name)
  * @throws NotFoundException If file does not exist or is not readable.
  * @throws Exception If file contains duplicate function names.
  */
-function etsis_php_check_syntax($file_name, $check_includes = true)
+function etsis_php_check_syntax($filename, $check_includes = true)
 {
     // If file does not exist or it is not readable, throw an exception
-    if (!is_file($file_name) || !is_readable($file_name)) {
-        throw new NotFoundException(sprintf(_t('"%s" is not found or is not a regular file.'), $file_name));
+    if (!is_file($filename) || !is_readable($filename)) {
+        throw new NotFoundException(sprintf(_t('"%s" is not found or is not a regular file.'), $filename));
     }
 
-    $dupe_function = is_duplicate_function($file_name);
+    $dupe_function = is_duplicate_function($filename);
 
     if (is_etsis_error($dupe_function)) {
         return new \app\src\Core\Exception\Exception($dupe_function->get_error_message(), 'php_check_syntax');
     }
 
     // Sort out the formatting of the filename
-    $filename = realpath($file_name);
+    $file_name = realpath($filename);
 
     // Get the shell output from the syntax check command
-    $output = shell_exec('php -l "' . $filename . '"');
+    $output = shell_exec('php -l "' . $file_name . '"');
 
     // Try to find the parse error text and chop it off
     $syntaxError = preg_replace("/Errors parsing.*$/", "", $output, - 1, $count);
@@ -1214,7 +1214,7 @@ function etsis_php_check_syntax($file_name, $check_includes = true)
 
     // If we are going to check the files includes
     if ($check_includes) {
-        foreach (etsis_php_check_includes($filename) as $include) {
+        foreach (etsis_php_check_includes($file_name) as $include) {
             // Check the syntax for each include
             if (is_file($include)) {
                 etsis_php_check_syntax($include);
@@ -1663,9 +1663,9 @@ function set_email_template($body)
     
     $tpl = _file_get_contents(APP_PATH . 'views/setting/tpl/email_alert.tpl');
     
-    $template = $app->hook->{'apply_filter'}('email_template', $tpl);
+    $template = $app->hook->apply_filter('email_template', $tpl);
 
-    return str_replace('{content}', $body, $template);
+    return str_replace('{content}', $template, $body);
 }
 
 /**
@@ -1684,7 +1684,7 @@ function template_vars_replacement($template)
         'address' => _h(get_option('mailing_address'))
     ];
 
-    $to_replace = $app->hook->{'apply_filter'}('email_template_tags', $var_array);
+    $to_replace = $app->hook->apply_filter('email_template_tags', $var_array);
 
     foreach ($to_replace as $tag => $var) {
         $template = str_replace('{' . $tag . '}', $var, $template);
@@ -1715,7 +1715,7 @@ function process_email_html($text, $title)
     $body = str_replace('{title}', $title, $template);
 
     // Replace variables in email
-    $message = $app->hook->{'apply_filter'}('email_template_body', template_vars_replacement($body));
+    $message = $app->hook->apply_filter('email_template_body', template_vars_replacement($body));
 
     return $message;
 }

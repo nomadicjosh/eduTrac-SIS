@@ -634,13 +634,23 @@ function remove_trailing_slash($string)
 {
     return rtrim($string, '/\\');
 }
+$app->asset->registerStyleCollection('gridforms', ['gridforms/gridforms.css']);
+$app->asset->registerStyleCollection('dash', ['admin/module.admin.page.index.min.css']);
 $app->asset->registerStyleCollection('form', ['admin/module.admin.page.form_elements.min.css']);
 $app->asset->registerStyleCollection('form-alt', ['admin/module.admin.page.alt.form_elements.min.css']);
 $app->asset->registerStyleCollection('table', ['admin/module.admin.page.tables.min.css']);
 $app->asset->registerStyleCollection('invoice', ['admin/module.admin.page.invoice.min.css']);
 $app->asset->registerStyleCollection('table-alt', ['admin/module.admin.page.alt.tables.min.css']);
 $app->asset->registerStyleCollection('calendar', ['fullcalendar/fullcalendar.css','fullcalendar/calendar.css']);
+$app->asset->registerStyleCollection('querybuilder', [
+    'querybuilder/bootstrap-select/css/bootstrap-select.min.css',
+    'querybuilder/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css',
+    'querybuilder/selectize/css/selectize.bootstrap3.css',
+    'querybuilder/css/query-builder.default.css'
+    ]);
+$app->asset->registerStyleCollection('elFinder', ['elfinder/css/elfinder.min.css','elfinder/css/theme.css']);
 
+$app->asset->registerScriptCollection('gridforms', ['admin/gridforms/gridforms.js']);
 $app->asset->registerScriptCollection('select', ['admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js', 'admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js']);
 $app->asset->registerScriptCollection('select2', ['admin/forms/elements/select2/assets/lib/js/select2.js', 'admin/forms/elements/select2/assets/custom/js/select2.init.js']);
 $app->asset->registerScriptCollection('datepicker', ['admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js', 'admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js']);
@@ -654,7 +664,10 @@ $app->asset->registerScriptCollection('datatables', [
     ]
 );
 $app->asset->registerScriptCollection('multiselect', ['admin/forms/elements/multiselect/assets/lib/js/jquery.multi-select.js', 'admin/forms/elements/multiselect/assets/custom/js/multiselect.init.js']);
-$app->asset->registerScriptCollection('combo', ['admin/forms/elements/jCombo/jquery.jCombo.min.js']);
+$app->asset->registerScriptCollection('jCombo', ['admin/forms/elements/jCombo/jquery.jCombo.min.js']);
+$app->asset->registerScriptCollection('maxlength', ['admin/forms/elements/bootstrap-maxlength/bootstrap-maxlength.min.js','admin/forms/elements/bootstrap-maxlength/custom/js/custom.js']);
+$app->asset->registerScriptCollection('upload', ['admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js']);
+$app->asset->registerScriptCollection('highcharts', ['admin/Highcharts/highcharts.js','admin/Highcharts/modules/exporting.js','admin/Highcharts/highcharts-conf.js']);
 
 require( APP_PATH . 'functions' . DS . 'global-function.php' );
 require( APP_PATH . 'functions' . DS . 'notify-function.php' );

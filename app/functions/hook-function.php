@@ -1,6 +1,11 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+
 /**
  * eduTrac SIS Hooks Helper & Wrapper
  *
@@ -503,7 +508,7 @@ function _deprecated_hook($hook, $release, $replacement = null, $message = null)
      * @param string $release     The release of eduTrac SIS that deprecated the argument used.
      * @param string $message     A message regarding the change.
      */
-    $app->hook->{'do_action'}('deprecated_hook_run', $hook, $replacement, $release, $message);
+    $app->hook->do_action('deprecated_hook_run', $hook, $replacement, $release, $message);
 
     /**
      * Filters whether to trigger deprecated hook errors.
@@ -513,7 +518,7 @@ function _deprecated_hook($hook, $release, $replacement = null, $message = null)
      * @param bool $trigger Whether to trigger deprecated hook errors. Requires
      *                      `APP_DEV` to be defined DEV.
      */
-    if (APP_ENV == 'DEV' && $app->hook->{'apply_filter'}('deprecated_hook_trigger_error', true)) {
+    if (APP_ENV == 'DEV' && $app->hook->apply_filter('deprecated_hook_trigger_error', true)) {
         $message = empty($message) ? '' : ' ' . $message;
         if (!is_null($replacement)) {
             _trigger_error(sprintf(__('%1$s is <strong>deprecated</strong> since release %2$s! Use %3$s instead.'), $hook, $release, $replacement) . $message, E_USER_DEPRECATED);
@@ -723,7 +728,7 @@ function etsis_dashboard_head()
      *
      * @since 6.3.0
      */
-    $app->hook->{'do_action'}('etsis_dashboard_head');
+    $app->hook->do_action('etsis_dashboard_head');
 }
 
 /**
@@ -740,7 +745,7 @@ function etsis_dashboard_footer()
      *
      * @since 6.3.0
      */
-    $app->hook->{'do_action'}('etsis_dashboard_footer');
+    $app->hook->do_action('etsis_dashboard_footer');
 }
 
 /**
@@ -783,11 +788,11 @@ function dashboard_top_widgets()
 function dashboard_student_count()
 {
     $app = \Liten\Liten::getInstance();
-    $stu = $app->db->student()
+    try {
+        $stu = $app->db->student()
         ->select('COUNT(student.stuID) as count')
         ->_join('stu_program', 'student.stuID = stu_program.stuID')
-        ->where('student.status = "A"')
-        ->_and_()
+        ->where('student.status = "A"')->_and_()
         ->where('stu_program.currStatus = "A"');
     $q = $stu->find(function ($data) {
         $array = [];
@@ -808,6 +813,13 @@ function dashboard_student_count()
     $stuCount .= '</a>';
     $stuCount .= '</div>';
     echo $app->hook->apply_filter('dashboard_student_count', $stuCount);
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
+    }
 }
 
 /**
@@ -818,8 +830,8 @@ function dashboard_student_count()
 function dashboard_course_count()
 {
     $app = \Liten\Liten::getInstance();
-
-    $count = $app->db->course()
+    try {
+        $count = $app->db->course()
         ->where('course.currStatus = "A" AND course.endDate = "0000-00-00"')
         ->count('course.courseID');
 
@@ -831,6 +843,13 @@ function dashboard_course_count()
     $crseCount .= '</a>';
     $crseCount .= '</div>';
     echo $app->hook->apply_filter('dashboard_course_count', $crseCount);
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
+    }
 }
 
 /**
@@ -841,8 +860,8 @@ function dashboard_course_count()
 function dashboard_acadProg_count()
 {
     $app = \Liten\Liten::getInstance();
-
-    $count = $app->db->acad_program()
+    try {
+        $count = $app->db->acad_program()
         ->where('acad_program.currStatus = "A" AND acad_program.endDate = "0000-00-00"')
         ->count('acad_program.acadProgID');
 
@@ -854,6 +873,13 @@ function dashboard_acadProg_count()
     $progCount .= '</a>';
     $progCount .= '</div>';
     echo $app->hook->apply_filter('dashboard_acadProg_count', $progCount);
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
+    }
 }
 
 /**
@@ -1386,7 +1412,8 @@ function class_year($year = NULL)
 function grading_scale($grade = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    $select = '<select name="grade[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>' . "\n";
+    try {
+        $select = '<select name="grade[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>' . "\n";
     $select .= '<option value="">&nbsp;</option>' . "\n";
     $scale = $app->db->query('SELECT * FROM grade_scale WHERE status = "1"');
     $q = $scale->find(function ($data) {
@@ -1401,12 +1428,20 @@ function grading_scale($grade = NULL)
     }
     $select .= '</select>';
     return $app->hook->apply_filter('grading_scale', $select, $grade);
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
+    }
 }
 
 function grades($id, $aID)
 {
     $app = \Liten\Liten::getInstance();
-    $grade = $app->db->query('SELECT * FROM gradebook WHERE stuID = ? AND assignID = ?', [
+    try {
+        $grade = $app->db->query('SELECT * FROM gradebook WHERE stuID = ? AND assignID = ?', [
         $id,
         $aID
     ]);
@@ -1423,6 +1458,13 @@ function grades($id, $aID)
     }
     $select = grading_scale(_h($r['grade']));
     return $app->hook->apply_filter('grades', $select);
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
+    }
 }
 
 /**
@@ -1651,22 +1693,24 @@ function etsis_plugin_deactivate_message($plugin_name)
 function acad_program_select($progCode = null)
 {
     $app = \Liten\Liten::getInstance();
-    $prog = $app->db->acad_program()
+    try {
+        $prog = $app->db->acad_program()
         ->where('currStatus = "A"')
         ->orderBy('deptCode');
-    $query = $prog->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
+    $query = $prog->find();
 
     foreach ($query as $r) {
-        echo '<option value="' . _h($r['acadProgCode']) . '"' . selected($progCode, _h($r['acadProgCode']), false) . '>' . _h($r['acadProgCode']) . ' ' . _h($r['acadProgTitle']) . '</option>' . "\n";
+        echo '<option value="' . _h($r->acadProgCode) . '"' . selected($progCode, _h($r->acadProgCode), false) . '>' . _h($r->acadProgCode) . ' ' . _h($r->acadProgTitle) . '</option>' . "\n";
     }
 
     return $app->hook->apply_filter('academic_program', $query, $progCode);
+    } catch (NotFoundException $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (Exception $e) {
+        _etsis_flash()->error($e->getMessage());
+    } catch (ORMException $e) {
+        _etsis_flash()->error($e->getMessage());
+    }
 }
 
 /**
@@ -1804,7 +1848,7 @@ function _etsis_student_router()
 function etsis_register_style($handle)
 {
     $app = \Liten\Liten::getInstance();
-    return $app->asset->{'register_style'}($handle);
+    return $app->asset->register_style($handle);
 }
 
 /**
@@ -1816,7 +1860,7 @@ function etsis_register_style($handle)
 function etsis_register_script($handle)
 {
     $app = \Liten\Liten::getInstance();
-    return $app->asset->{'register_script'}($handle);
+    return $app->asset->register_script($handle);
 }
 
 /**
@@ -1827,7 +1871,7 @@ function etsis_register_script($handle)
 function etsis_enqueue_style()
 {
     $app = \Liten\Liten::getInstance();
-    echo $app->asset->{'enqueue_style'}();
+    echo $app->asset->enqueue_style();
 }
 
 /**
@@ -1838,29 +1882,29 @@ function etsis_enqueue_style()
 function etsis_enqueue_script()
 {
     $app = \Liten\Liten::getInstance();
-    echo $app->asset->{'enqueue_script'}();
+    echo $app->asset->enqueue_script();
 }
-$app->hook->{'add_action'}('etsis_dashboard_head', 'head_release_meta', 5);
-$app->hook->{'add_action'}('etsis_dashboard_head', 'etsis_enqueue_style', 1);
-$app->hook->{'add_action'}('etsis_dashboard_head', 'etsis_notify_style', 2);
-$app->hook->{'add_action'}('myet_head', 'head_release_meta', 5);
-$app->hook->{'add_action'}('etsis_dashboard_footer', 'etsis_notify_script', 20);
-$app->hook->{'add_action'}('etsis_dashboard_footer', 'etsis_enqueue_script', 5);
-$app->hook->{'add_action'}('release', 'foot_release', 5);
-$app->hook->{'add_action'}('dashboard_top_widgets', 'dashboard_student_count', 5);
-$app->hook->{'add_action'}('dashboard_top_widgets', 'dashboard_course_count', 5);
-$app->hook->{'add_action'}('dashboard_top_widgets', 'dashboard_acadProg_count', 5);
-$app->hook->{'add_action'}('dashboard_right_widgets', 'dashboard_clock', 5);
-$app->hook->{'add_action'}('dashboard_right_widgets', 'dashboard_weather', 5);
-$app->hook->{'add_action'}('activated_plugin', 'etsis_plugin_activate_message', 5, 1);
-$app->hook->{'add_action'}('deactivated_plugin', 'etsis_plugin_deactivate_message', 5, 1);
-$app->hook->{'add_action'}('login_form_top', 'etsis_login_form_show_message', 5);
-$app->hook->{'add_action'}('execute_reg_rstr_rule', 'etsis_reg_rstr_rule', 5, 1);
-$app->hook->{'add_filter'}('the_myet_page_content', 'etsis_autop');
-$app->hook->{'add_filter'}('the_myet_page_content', 'parsecode_unautop');
-$app->hook->{'add_filter'}('the_myet_page_content', 'do_parsecode', 5);
-$app->hook->{'add_filter'}('the_myet_welcome_message', 'etsis_autop');
-$app->hook->{'add_filter'}('the_myet_welcome_message', 'parsecode_unautop');
-$app->hook->{'add_filter'}('the_myet_welcome_message', 'do_parsecode', 5);
-$app->hook->{'add_filter'}('etsis_authenticate_person', 'etsis_authenticate', 5, 3);
-$app->hook->{'add_filter'}('etsis_auth_cookie', 'etsis_set_auth_cookie', 5, 2);
+$app->hook->add_action('etsis_dashboard_head', 'head_release_meta', 5);
+$app->hook->add_action('etsis_dashboard_head', 'etsis_enqueue_style', 1);
+$app->hook->add_action('etsis_dashboard_head', 'etsis_notify_style', 2);
+$app->hook->add_action('myet_head', 'head_release_meta', 5);
+$app->hook->add_action('etsis_dashboard_footer', 'etsis_notify_script', 20);
+$app->hook->add_action('etsis_dashboard_footer', 'etsis_enqueue_script', 5);
+$app->hook->add_action('release', 'foot_release', 5);
+$app->hook->add_action('dashboard_top_widgets', 'dashboard_student_count', 5);
+$app->hook->add_action('dashboard_top_widgets', 'dashboard_course_count', 5);
+$app->hook->add_action('dashboard_top_widgets', 'dashboard_acadProg_count', 5);
+$app->hook->add_action('dashboard_right_widgets', 'dashboard_clock', 5);
+$app->hook->add_action('dashboard_right_widgets', 'dashboard_weather', 5);
+$app->hook->add_action('activated_plugin', 'etsis_plugin_activate_message', 5, 1);
+$app->hook->add_action('deactivated_plugin', 'etsis_plugin_deactivate_message', 5, 1);
+$app->hook->add_action('login_form_top', 'etsis_login_form_show_message', 5);
+$app->hook->add_action('execute_reg_rstr_rule', 'etsis_reg_rstr_rule', 5, 1);
+$app->hook->add_filter('the_myet_page_content', 'etsis_autop');
+$app->hook->add_filter('the_myet_page_content', 'parsecode_unautop');
+$app->hook->add_filter('the_myet_page_content', 'do_parsecode', 5);
+$app->hook->add_filter('the_myet_welcome_message', 'etsis_autop');
+$app->hook->add_filter('the_myet_welcome_message', 'parsecode_unautop');
+$app->hook->add_filter('the_myet_welcome_message', 'do_parsecode', 5);
+$app->hook->add_filter('etsis_authenticate_person', 'etsis_authenticate', 5, 3);
+$app->hook->add_filter('etsis_auth_cookie', 'etsis_set_auth_cookie', 5, 2);
