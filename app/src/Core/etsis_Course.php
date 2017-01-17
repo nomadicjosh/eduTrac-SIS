@@ -1,6 +1,10 @@
 <?php namespace app\src\Core;
 
-if (! defined('BASE_PATH'))
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception;
+use PDOException as ORMException;
+
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
@@ -207,38 +211,43 @@ final class etsis_Course
     public static function get_instance($course_id)
     {
         global $app;
-        
-        //$course_id = (int) $course_id;
-        
-        if (! $course_id) {
+
+        if (!$course_id) {
             return false;
         }
-        
-        $q = $app->db->course()->where('courseID = ?', $course_id);
-        
-        $course = etsis_cache_get($course_id, 'crse');
-        if (empty($course)) {
-            $course = $q->find(function ($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-            etsis_cache_add($course_id, $course, 'crse');
+        try {
+            $q = $app->db->course()->where('courseID = ?', $course_id);
+
+            $course = etsis_cache_get($course_id, 'crse');
+            if (empty($course)) {
+                $course = $q->find(function ($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+                etsis_cache_add($course_id, $course, 'crse');
+            }
+
+            $a = [];
+
+            foreach ($course as $_course) {
+                $a[] = $_course;
+            }
+
+            if (!$_course) {
+                return false;
+            }
+
+            return $_course;
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
         }
-        
-        $a = [];
-        
-        foreach ($course as $_course) {
-            $a[] = $_course;
-        }
-        
-        if (! $_course) {
-            return false;
-        }
-        
-        return $_course;
     }
 
     /**

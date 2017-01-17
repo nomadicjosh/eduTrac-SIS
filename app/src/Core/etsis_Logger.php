@@ -1,5 +1,9 @@
 <?php namespace app\src\Core;
 
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception;
+use PDOException as ORMException;
+
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
@@ -14,12 +18,13 @@ if (!defined('BASE_PATH'))
  */
 class etsis_Logger
 {
+
     /**
      * Application object.
      * @var type 
      */
     public $app;
-    
+
     public function __construct()
     {
         $this->app = \Liten\Liten::getInstance();
@@ -36,18 +41,25 @@ class etsis_Logger
         $current_date = strtotime($create);
         /* 20 days after creation date */
         $expire = date("Y-m-d H:i:s", $current_date+=1728000);
-        
+
         $expires_at = $this->app->hook->apply_filter('activity_log_expires', $expire);
+        try {
+            $log = $this->app->db->activity_log();
+            $log->action = $action;
+            $log->process = $process;
+            $log->record = $record;
+            $log->uname = $uname;
+            $log->created_at = $create;
+            $log->expires_at = $expires_at;
 
-        $log = $this->app->db->activity_log();
-        $log->action = $action;
-        $log->process = $process;
-        $log->record = $record;
-        $log->uname = $uname;
-        $log->created_at = $create;
-        $log->expires_at = $expires_at;
-
-        $log->save();
+            $log->save();
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
+        }
     }
 
     /**
@@ -57,7 +69,15 @@ class etsis_Logger
      */
     public function purgeActivityLog()
     {
-        $this->app->db->query("DELETE FROM activity_log WHERE expires_at <= ?", [ date('Y-m-d H:i:s', time())]);
+        try {
+            $this->app->db->query("DELETE FROM activity_log WHERE expires_at <= ?", [ date('Y-m-d H:i:s', time())]);
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
+        }
     }
 
     /**
@@ -81,15 +101,22 @@ class etsis_Logger
     public function logError($type, $string, $file, $line)
     {
         $date = new \DateTime();
+        try {
+            $log = $this->app->db->error();
+            $log->time = $date->getTimestamp();
+            $log->type = (int) $type;
+            $log->string = (string) $string;
+            $log->file = (string) $file;
+            $log->line = (int) $line;
 
-        $log = $this->app->db->error();
-        $log->time = $date->getTimestamp();
-        $log->type = (int) $type;
-        $log->string = (string) $string;
-        $log->file = (string) $file;
-        $log->line = (int) $line;
-
-        $log->save();
+            $log->save();
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
+        }
     }
 
     public function error_constant_to_name($value)

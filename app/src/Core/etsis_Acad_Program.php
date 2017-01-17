@@ -1,6 +1,10 @@
 <?php namespace app\src\Core;
 
-if (! defined('BASE_PATH'))
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception;
+use PDOException as ORMException;
+
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
@@ -181,38 +185,43 @@ final class etsis_Acad_Program
     public static function get_instance($acad_prog_id)
     {
         global $app;
-        
-        // $acad_prog_id = (int) $acad_prog_id;
-        
-        if (! $acad_prog_id) {
+
+        if (!$acad_prog_id) {
             return false;
         }
-        
-        $q = $app->db->acad_program()->where('acadProgID = ?', $acad_prog_id);
-        
-        $acad_prog = etsis_cache_get($acad_prog_id, 'prog');
-        if (empty($acad_prog)) {
-            $acad_prog = $q->find(function ($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-            etsis_cache_add($acad_prog_id, $acad_prog, 'prog');
+        try {
+            $q = $app->db->acad_program()->where('acadProgID = ?', $acad_prog_id);
+
+            $acad_prog = etsis_cache_get($acad_prog_id, 'prog');
+            if (empty($acad_prog)) {
+                $acad_prog = $q->find(function ($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+                etsis_cache_add($acad_prog_id, $acad_prog, 'prog');
+            }
+
+            $a = [];
+
+            foreach ($acad_prog as $_acad_prog) {
+                $a[] = $_acad_prog;
+            }
+
+            if (!$_acad_prog) {
+                return false;
+            }
+
+            return $_acad_prog;
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
         }
-        
-        $a = [];
-        
-        foreach ($acad_prog as $_acad_prog) {
-            $a[] = $_acad_prog;
-        }
-        
-        if (! $_acad_prog) {
-            return false;
-        }
-        
-        return $_acad_prog;
     }
 
     /**

@@ -1,6 +1,10 @@
 <?php namespace app\src\Core;
 
-if (! defined('BASE_PATH'))
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception;
+use PDOException as ORMException;
+
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
@@ -14,7 +18,7 @@ if (! defined('BASE_PATH'))
  */
 final class etsis_Student
 {
-    
+
     /**
      * Application object;
      * 
@@ -224,7 +228,7 @@ final class etsis_Student
      * @var string
      */
     public $email1;
-    
+
     /**
      * The student's header.
      * 
@@ -268,54 +272,57 @@ final class etsis_Student
     public static function get_instance($stu_id)
     {
         global $app;
-        
-        // $stu_id = (int) $stu_id;
-        
-        if (! $stu_id) {
+
+        if (!$stu_id) {
             return false;
         }
-        
-        $q = $app->db->student()
-            ->setTableAlias('stu')
-            ->select('stu.ID,stu.stuID,stu.status AS stuStatus,stu.addDate AS stuAddDate')
-            ->select('person.altID,person.uname,person.prefix,person.fname')
-            ->select('person.lname,person.mname,person.email,person.personType')
-            ->select('person.ssn,person.dob,person.veteran,person.ethnicity')
-            ->select('person.gender,person.emergency_contact,person.emergency_contact_phone')
-            ->select('person.photo,person.status AS naeStatus,person.approvedDate')
-            ->select('person.approvedBy,person.LastLogin,person.LastUpdate')
-            ->select('address.*')
-            ->_join('person', 'stu.stuID = person.personID')
-            ->_join('address', 'stu.stuID = address.personID')
-            ->where('stu.stuID = ?', $stu_id)
-            ->_and_()
-            ->where('address.addressStatus = "C"')
-            ->_and_()
-            ->where('(address.endDate = "" OR address.endDate = "0000-00-00")');
-        
-        $stu = etsis_cache_get($stu_id, 'stu');
-        if (empty($stu)) {
-            $stu = $q->find(function ($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-            etsis_cache_add($stu_id, $stu, 'stu');
+        try {
+            $q = $app->db->student()
+                ->setTableAlias('stu')
+                ->select('stu.ID,stu.stuID,stu.status AS stuStatus,stu.addDate AS stuAddDate')
+                ->select('person.altID,person.uname,person.prefix,person.fname')
+                ->select('person.lname,person.mname,person.email,person.personType')
+                ->select('person.ssn,person.dob,person.veteran,person.ethnicity')
+                ->select('person.gender,person.emergency_contact,person.emergency_contact_phone')
+                ->select('person.photo,person.status AS naeStatus,person.approvedDate')
+                ->select('person.approvedBy,person.LastLogin,person.LastUpdate')
+                ->select('address.*')
+                ->_join('person', 'stu.stuID = person.personID')
+                ->_join('address', 'stu.stuID = address.personID')
+                ->where('stu.stuID = ?', $stu_id)->_and_()
+                ->where('address.addressStatus = "C"')->_and_()
+                ->where('(address.endDate = "" OR address.endDate = "0000-00-00")');
+
+            $stu = etsis_cache_get($stu_id, 'stu');
+            if (empty($stu)) {
+                $stu = $q->find(function ($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+                etsis_cache_add($stu_id, $stu, 'stu');
+            }
+
+            $a = [];
+
+            foreach ($stu as $_stu) {
+                $a[] = $_stu;
+            }
+
+            if (!$_stu) {
+                return false;
+            }
+
+            return $_stu;
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
         }
-        
-        $a = [];
-        
-        foreach ($stu as $_stu) {
-            $a[] = $_stu;
-        }
-        
-        if (! $_stu) {
-            return false;
-        }
-        
-        return $_stu;
     }
 
     /**
@@ -329,10 +336,9 @@ final class etsis_Student
         foreach (get_object_vars($stu) as $key => $value) {
             $this->$key = $value;
         }
-        
-        $this->app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
-        
+
+        $this->app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
+
         $this->stuHeader = $this->getStuHeader();
     }
-    
 }

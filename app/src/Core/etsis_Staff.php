@@ -1,6 +1,10 @@
 <?php namespace app\src\Core;
 
-if (! defined('BASE_PATH'))
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception;
+use PDOException as ORMException;
+
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
@@ -14,7 +18,7 @@ if (! defined('BASE_PATH'))
  */
 final class etsis_Staff
 {
-    
+
     /**
      * Application object;
      * 
@@ -35,35 +39,35 @@ final class etsis_Staff
      * @var int
      */
     public $staffID;
-    
+
     /**
      * School Code.
      *
      * @var string
      */
     public $schoolCode;
-    
+
     /**
      * Building Code.
      *
      * @var string
      */
     public $buildingCode;
-    
+
     /**
      * Office Code.
      *
      * @var string
      */
     public $officeCode;
-    
+
     /**
      * Office Phone.
      *
      * @var string
      */
     public $office_phone;
-    
+
     /**
      * Department Code.
      *
@@ -77,7 +81,7 @@ final class etsis_Staff
      * @var string
      */
     public $status;
-    
+
     /**
      * The staff's add date.
      *
@@ -280,28 +284,28 @@ final class etsis_Staff
      * @var string
      */
     public $staffType;
-    
+
     /**
      * The staff meta hireDate.
      * 
      * @var string
      */
     public $hireDate;
-    
+
     /**
      * The staff meta startDate.
      * 
      * @var string
      */
     public $metaStartDate;
-    
+
     /**
      * The staff meta endDate.
      * 
      * @var string
      */
     public $metaEndDate;
-    
+
     /**
      * The staff meta addDate.
      * 
@@ -321,54 +325,61 @@ final class etsis_Staff
     public static function get_instance($staff_id)
     {
         global $app;
-        
-        if (! $staff_id) {
+
+        if (!$staff_id) {
             return false;
         }
-        
-        $q = $app->db->staff()
-            ->select('staff.ID,staff.staffID,staff.status AS staffStatus,staff.addDate AS staffAddDate')
-            ->select('person.altID,person.uname,person.prefix,person.fname')
-            ->select('person.lname,person.mname,person.email,person.personType')
-            ->select('person.ssn,person.dob,person.veteran,person.ethnicity')
-            ->select('person.gender,person.emergency_contact,person.emergency_contact_phone')
-            ->select('person.photo,person.status AS naeStatus,person.approvedDate')
-            ->select('person.approvedBy,person.LastLogin,person.LastUpdate')
-            ->select('address.*')
-            ->select('meta.sMetaID,meta.jobStatusCode,meta.jobID,meta.supervisorID,meta.staffType')
-            ->select('meta.hireDate,meta.startDate as metaStartDate,meta.endDate as metaEndDate')
-            ->select('meta.addDate as metaAddDate')
-            ->_join('person', 'staff.staffID = person.personID')
-            ->_join('address', 'staff.staffID = address.personID')
-            ->_join('staff_meta', 'staff.staffID = meta.staffID', 'meta')
-            ->where('staff.staffID = ?', $staff_id)->_and_()
-            ->where('meta.sMetaID = (SELECT sMetaID FROM staff_meta WHERE staffID = staff.staffID ORDER BY sMetaID DESC LIMIT 1)')->_and_()
-            ->where('address.addressStatus = "C"')->_and_()
-            ->where('(address.endDate = "" OR address.endDate = "0000-00-00")');
-        
-        $staff = etsis_cache_get($staff_id, 'staff');
-        if (empty($staff)) {
-            $staff = $q->find(function ($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-            etsis_cache_add($staff_id, $staff, 'staff');
+        try {
+            $q = $app->db->staff()
+                ->select('staff.ID,staff.staffID,staff.status AS staffStatus,staff.addDate AS staffAddDate')
+                ->select('person.altID,person.uname,person.prefix,person.fname')
+                ->select('person.lname,person.mname,person.email,person.personType')
+                ->select('person.ssn,person.dob,person.veteran,person.ethnicity')
+                ->select('person.gender,person.emergency_contact,person.emergency_contact_phone')
+                ->select('person.photo,person.status AS naeStatus,person.approvedDate')
+                ->select('person.approvedBy,person.LastLogin,person.LastUpdate')
+                ->select('address.*')
+                ->select('meta.sMetaID,meta.jobStatusCode,meta.jobID,meta.supervisorID,meta.staffType')
+                ->select('meta.hireDate,meta.startDate as metaStartDate,meta.endDate as metaEndDate')
+                ->select('meta.addDate as metaAddDate')
+                ->_join('person', 'staff.staffID = person.personID')
+                ->_join('address', 'staff.staffID = address.personID')
+                ->_join('staff_meta', 'staff.staffID = meta.staffID', 'meta')
+                ->where('staff.staffID = ?', $staff_id)->_and_()
+                ->where('meta.sMetaID = (SELECT sMetaID FROM staff_meta WHERE staffID = staff.staffID ORDER BY sMetaID DESC LIMIT 1)')->_and_()
+                ->where('address.addressStatus = "C"')->_and_()
+                ->where('(address.endDate = "" OR address.endDate = "0000-00-00")');
+
+            $staff = etsis_cache_get($staff_id, 'staff');
+            if (empty($staff)) {
+                $staff = $q->find(function ($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+                etsis_cache_add($staff_id, $staff, 'staff');
+            }
+
+            $a = [];
+
+            foreach ($staff as $_staff) {
+                $a[] = $_staff;
+            }
+
+            if (!$_staff) {
+                return false;
+            }
+
+            return $_staff;
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
         }
-        
-        $a = [];
-        
-        foreach ($staff as $_staff) {
-            $a[] = $_staff;
-        }
-        
-        if (! $_staff) {
-            return false;
-        }
-        
-        return $_staff;
     }
 
     /**
@@ -383,5 +394,4 @@ final class etsis_Staff
             $this->$key = $value;
         }
     }
-    
 }
