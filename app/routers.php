@@ -142,6 +142,11 @@ elseif (strpos(getPathInfo('/templates'), "/templates") === 0)
     require($app->config('routers_dir') . 'settings.router.php');
 }
 
+elseif (strpos(getPathInfo('/sms'), "/sms") === 0)
+{
+    require($app->config('routers_dir') . 'settings.router.php');
+}
+
 elseif (strpos(getPathInfo('/sql'), "/sql") === 0)
 {
     require($app->config('routers_dir') . 'sql.router.php');
