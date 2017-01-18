@@ -6,7 +6,7 @@ use \app\src\Core\NodeQ\NodeQException;
 use \app\src\Core\NodeQ\Relation;
 
 /**
- * Validation for tables
+ * Validation for nodes
  *
  * @category Helpers
  * @author Grzegorz Kuźnik
@@ -17,13 +17,13 @@ use \app\src\Core\NodeQ\Relation;
 class Validate {
 
     /**
-     * Name of table
+     * Name of node
      * @var string
      */
     private $name;
 
     /**
-     * Table name
+     * Node name
      * @param string $name
      * @return Validate
      */
@@ -104,7 +104,7 @@ class Validate {
     }
 
     /**
-     * Checking that typed fields really exist in table
+     * Checking that typed fields really exist in node
      * @param array $fields Indexed array
      * @return boolean
      * @throws NodeQException If field(s) does not exist
@@ -118,11 +118,11 @@ class Validate {
         {
             return true;
         }
-        throw new NodeQException('Field(s) "' . implode(', ', $diff) . '" does not exists in table "' . $this->name . '"');
+        throw new NodeQException('Field(s) "' . implode(', ', $diff) . '" does not exists in node "' . $this->name . '"');
     }
 
     /**
-     * Checking that typed field really exist in table
+     * Checking that typed field really exist in node
      * @param string $name
      * @return boolean
      * @throws NodeQException If field does not exist
@@ -133,22 +133,23 @@ class Validate {
         {
             return true;
         }
-        throw new NodeQException('Field ' . $name . ' does not exists in table "' . $this->name . '"');
+        throw new NodeQException('Field ' . $name . ' does not exists in node "' . $this->name . '"');
     }
 
     /**
-     * Checking that Table and Config exists and throw exceptions if not
+     * Checking that Node and Config exists and throw exceptions if not
      * @return boolean
      * @throws NodeQException
      */
     public function exists()
     {
-        if (!Data::table($this->name)->exists())
+        if (!Data::table($this->name)->exists()) {
             return false;
+        }
 
-        if (!Config::table($this->name)->exists())
-			return false;
-            //throw new NodeQException('Config "' . $this->name . '" does not exists');
+        if (!Config::table($this->name)->exists()) {
+            return false;
+        }
 
         return true;
     }
@@ -172,9 +173,9 @@ class Validate {
     }
 
     /**
-     * Checking that relation between tables exists
-     * @param string $local local table
-     * @param string $foreign related table
+     * Checking that relation between nodes exists
+     * @param string $local local node
+     * @param string $foreign related node
      * @return bool relation exists
      * @throws NodeQException
      */

@@ -1,6 +1,7 @@
 <?php namespace app\src\Core\NodeQ\Helpers;
 
-use \app\src\Core\NodeQ\etsis_NodeQ as Node;
+use app\src\Core\NodeQ\etsis_NodeQ as Node;
+use app\src\Core\NodeQ\NodeQException;
 use Cascade\Cascade;
 
 /**
@@ -32,7 +33,7 @@ class Migrations
 	            'password' => 'string',
 	            'sent' => 'integer'
 	        ]);
-    	} catch(\Exception $e) {
+    	} catch(NodeQException $e) {
     		Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     	}
     }
@@ -47,7 +48,7 @@ class Migrations
 	            'filename' => 'string',
 	            'sent' => 'integer'
 	        ]);
-    	} catch(\Exception $e) {
+    	} catch(NodeQException $e) {
     		Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     	}
     }
@@ -65,7 +66,7 @@ class Migrations
 	            'altid' => 'string',
 	            'sent' => 'integer'
 	        ]);
-    	} catch(\Exception $e) {
+    	} catch(NodeQException $e) {
     		Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     	}
     }
@@ -88,7 +89,7 @@ class Migrations
 	            'phone' => 'string',
 	            'sent' => 'integer'
 	        ]);
-    	} catch(\Exception $e) {
+    	} catch(NodeQException $e) {
     		Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     	}
     }
@@ -105,7 +106,7 @@ class Migrations
 	        $q->cronjobpassword = (string) 'changeme';
 	        $q->timeout = (int) 30;
 	        $q->save();
-    	} catch(\Exception $e) {
+    	} catch(NodeQException $e) {
     		Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     	}
     }
@@ -245,7 +246,7 @@ class Migrations
 	        $q->running = (boolean) false;
 	        $q->runned = (int) 0;
 	        $q->save();
-    	} catch(\Exception $e) {
+    	} catch(NodeQException $e) {
     		Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     	}
     }
@@ -275,7 +276,7 @@ class Migrations
 	            "level" => "string"
 	        ]);
         	\app\src\Core\NodeQ\Relation::table('stld')->belongsTo('rlde')->localKey('rule')->foreignKey('code')->setRelation();
-    	} catch(\Exception $e) {
+    	} catch(NodeQException $e) {
     		Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     	}
     }
@@ -292,7 +293,7 @@ class Migrations
 	            "level" => "string"
 	        ]);
 	        \app\src\Core\NodeQ\Relation::table('clvr')->belongsTo('rlde')->localKey('rule')->foreignKey('code')->setRelation();
-    	} catch(\Exception $e) {
+    	} catch(NodeQException $e) {
     		Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     	}
     }
@@ -306,7 +307,41 @@ class Migrations
 	            "value" => "string"
 	        ]);
 	        \app\src\Core\NodeQ\Relation::table('rrsr')->belongsTo('rlde')->localKey('rule')->foreignKey('code')->setRelation();
-    	} catch(\Exception $e) {
+    	} catch(NodeQException $e) {
+    		Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    	}
+    }
+    
+    public static function acceptance_letter()
+    {
+    	try {
+    		Node::create('acceptance_letter', [
+	            'personid' => 'integer',
+	            'uname' => 'string',
+                'fname' => 'string',
+                'lname' => 'string',
+                'name' => 'string',
+	            'email' => 'string',
+	            'sacp' => 'string',
+                'acadlevel' => 'string',
+                'degree' => 'string',
+                'startterm' => 'string',
+	            'sent' => 'integer'
+	        ]);
+    	} catch(NodeQException $e) {
+    		Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    	}
+    }
+    
+    public static function sms()
+    {
+    	try {
+    		Node::create('sms', [
+	            'number' => 'string',
+                'text' => 'string',
+	            'sent' => 'integer'
+	        ]);
+    	} catch(NodeQException $e) {
     		Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     	}
     }
