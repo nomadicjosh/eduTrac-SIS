@@ -132,7 +132,7 @@ if (window.location != window.parent.location)
 			"GRSC - Grade Scale","BRGN - Batch Registration","SROS - Student Roster","STAF - Staff",
 			"EXTR - External Course","ATCEQ - New Transfer Course Equivalency",
 			"TCEQ - Transfer Course Equivalency","TCRE - Transfer Credit", "RLDE - Rule Definition",
-                        "ACLV - Academic Level"],
+                        "ACLV - Academic Level", "APPL - Application"],
 			items: 6,
 			minLength: 2		
 		});
