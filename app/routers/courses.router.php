@@ -38,9 +38,7 @@ $js = [
     'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
 ];
 
-$email = _etsis_email();
-
-$app->group('/courses', function() use ($app, $css, $js, $email) {
+$app->group('/courses', function() use ($app, $css, $js) {
 
     $app->match('GET|POST', '/', function () use($app, $css, $js) {
         if ($app->req->isPost()) {
@@ -185,7 +183,7 @@ $app->group('/courses', function() use ($app, $css, $js, $email) {
         );
     });
 
-    $app->post('/reg/', function () use($app, $css, $js, $email) {
+    $app->post('/reg/', function () use($app, $css, $js) {
         $uname = get_persondata('uname');
 
         try {
@@ -360,7 +358,7 @@ $app->group('/courses', function() use ($app, $css, $js, $email) {
                 });
                 if (count($qry[0]['courseSection']) > 0) {
                     if (get_option('registrar_email_address') != '') {
-                        $email->course_registration(get_persondata('personID'), $_POST['termCode'], get_base_url());
+                        _etsis_email()->course_registration(get_persondata('personID'), $_POST['termCode'], get_base_url());
                     }
                 }
                 etsis_cache_flush_namespace('student_account');

@@ -12,7 +12,7 @@ if (!defined('BASE_PATH'))
  */
 $app->before('GET|POST', '/sql/', function() {
     if (!hasPermission('access_sql_interface_screen')) {
-        _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -22,7 +22,7 @@ $app->group('/sql', function() use ($app) {
         if ($app->req->isPost()) {
 
             if (strstra(strtolower($_POST['qtext']), forbidden_keyword())) {
-                _etsis_flash()->{'error'}(_t('Your query contains a forbidden keywork, please try again.'), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error(_t('Your query contains a forbidden keywork, please try again.'), $app->req->server['HTTP_REFERER']);
                 exit();
             }
 
@@ -38,11 +38,11 @@ $app->group('/sql', function() use ($app) {
                     $result = $pdo->query("$qtext2");
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 

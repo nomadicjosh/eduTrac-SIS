@@ -1,9 +1,16 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\NodeQ\etsis_NodeQ as Node;
+use app\src\Core\NodeQ\NodeQException;
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
+use \app\src\elFinder\elFinderConnector;
+use \app\src\elFinder\elFinder;
+use \app\src\elFinder\elFinderVolumeDriver;
+use \app\src\elFinder\elFinderVolumeLocalFileSystem;
+use \app\src\elFinder\elFinderVolumeS3;
 
 /**
  * Dashboard Router
@@ -23,413 +30,436 @@ $app->before('GET|POST', '/dashboard(.*)', function () {
     }
 });
 
-$flashNow = new \app\src\Core\etsis_Messages();
-use \app\src\elFinder\elFinderConnector;
-use \app\src\elFinder\elFinder;
-use \app\src\elFinder\elFinderVolumeDriver;
-use \app\src\elFinder\elFinderVolumeLocalFileSystem;
-use \app\src\elFinder\elFinderVolumeS3;
+$app->group('/dashboard', function () use($app) {
 
-$app->get('/dashboard', function () use($app) {
+    $app->get('/', function () use($app) {
 
-    $css = [
-        'css/admin/module.admin.page.index.min.css'
-    ];
-
-    $js = [
-        'components/modules/admin/charts/flot/assets/lib/jquery.flot.js?v=v2.1.0',
-        'components/modules/admin/charts/flot/assets/lib/jquery.flot.resize.js?v=v2.1.0',
-        'components/modules/admin/charts/flot/assets/lib/plugins/jquery.flot.tooltip.min.js?v=v2.1.0',
-        'components/modules/admin/charts/flot/assets/custom/js/flotcharts.common.js?v=v2.1.0',
-        'components/modules/admin/charts/flot/assets/custom/js/flotchart-simple.init.js?v=v2.1.0',
-        'components/modules/admin/charts/flot/custom/chart.js',
-        'components/modules/admin/charts/flot/custom/js/custom-flot.js'
-    ];
-
-    try {
-        $stuProg = $app->db->stu_program()
-            ->select('COUNT(stu_program.stuProgID) as ProgCount,stu_program.acadProgCode')
-            ->_join('acad_program', 'stu_program.acadProgCode = b.acadProgCode', 'b')
-            ->_join('student', 'stu_program.stuID = student.stuID')
-            ->where('stu_program.currStatus <> "G"')->_and_()
-            ->where('student.status = "A"')
-            ->groupBy('stu_program.acadProgCode')
-            ->orderBY('stu_program.acadProgCode', 'DESC')
-            ->limit(10);
-
-        $prog = $stuProg->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        $stuDept = $app->db->person()
-            ->select('SUM(person.gender="M") AS Male,SUM(person.gender="F") AS Female,d.deptCode')
-            ->_join('student', 'person.personID = student.stuID')
-            ->_join('stu_program', 'student.stuID = b.stuID', 'b')
-            ->_join('acad_program', 'b.acadProgCode = c.acadProgCode', 'c')
-            ->_join('department', 'c.deptCode = d.deptCode', 'd')
-            ->where('b.startDate = (SELECT MAX(startDate) FROM stu_program WHERE stuID = b.stuID)')->_and_()
-            ->where('student.status = "A"')->_and_()
-            ->where('b.currStatus = "A"')->_and_()
-            ->where('d.deptTypeCode = "ACAD"')
-            ->groupBy('d.deptCode')
-            ->orderBy('d.deptCode', 'DESC')
-            ->limit(10);
-
-        $dept = $stuDept->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-    } catch (NotFoundException $e) {
-        _etsis_flash()->{'error'}($e->getMessage());
-    } catch (Exception $e) {
-        _etsis_flash()->{'error'}($e->getMessage());
-    } catch (ORMException $e) {
-        _etsis_flash()->{'error'}($e->getMessage());
-    }
-
-    $app->view->display('dashboard/index', [
-        'title' => 'Dashboard',
-        'cssArray' => $css,
-        'jsArray' => $js,
-        'prog' => $prog,
-        'dept' => $dept
-    ]);
-});
-
-$app->post('/dashboard/search/', function () {
-    $acro = $_POST['screen'];
-    $screen = explode(" ", $acro);
-
-    if (get_screen($screen[0]) == '') {
-        redirect(get_base_url() . 'err/screen-error?code=' . _h($screen[0]));
-    } else {
-        redirect(get_base_url() . get_screen($screen[0]) . '/');
-    }
-});
-
-$app->get('/dashboard/support/', function () use($app) {
-    $app->view->display('dashboard/support', [
-        'title' => 'Online Support'
-    ]);
-});
-
-/**
- * Before route check.
- */
-$app->before('GET|POST', '/dashboard/update/', function () {
-    if (!hasPermission('edit_settings')) {
-        _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
-    }
-});
-
-$app->match('GET|POST', '/dashboard/update/', function () use($app) {
-    $app->view->display('dashboard/update', [
-        'title' => 'eduTrac SIS Update'
-    ]);
-});
-
-/**
- * Before route check.
- */
-$app->before('GET|POST', '/dashboard/core-update/', function () {
-    if (!hasPermission('edit_settings')) {
-        _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
-    }
-});
-
-$app->match('GET|POST', '/dashboard/core-update/', function () use($app) {
-    $app->view->display('dashboard/core-update', [
-        'title' => 'eduTrac SIS Update'
-    ]);
-});
-
-/**
- * Before route check.
- */
-$app->before('GET|POST', '/dashboard/upgrade/', function () {
-    if (!hasPermission('edit_settings')) {
-        redirect(url('/dashboard/'));
-    }
-});
-
-$app->match('GET|POST', '/dashboard/upgrade/', function () use($app) {
-    $app->view->display('dashboard/upgrade', [
-        'title' => 'Database Upgrade'
-    ]);
-});
-
-/**
- * Before route check.
- */
-$app->before('GET|POST', '/dashboard/system-snapshot/', function () {
-    if (!hasPermission('edit_settings')) {
-        _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
-    }
-});
-
-$app->get('/dashboard/system-snapshot/', function () use($app) {
-    $app->view->display('dashboard/system-snapshot', [
-        'title' => 'System Snapshot Report'
-    ]);
-});
-
-/**
- * Before route check.
- */
-$app->before('GET|POST', '/dashboard/modules/', function () {
-    if (!hasPermission('access_plugin_screen')) {
-        _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
-    }
-});
-
-$app->get('/dashboard/modules/', function () use($app) {
-    $css = [
-        'css/admin/module.admin.page.form_elements.min.css',
-        'css/admin/module.admin.page.tables.min.css'
-    ];
-    $js = [
-        'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-timepicker/assets/lib/js/bootstrap-timepicker.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-timepicker/assets/custom/js/bootstrap-timepicker.init.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js'
-    ];
-
-    $app->view->display('dashboard/modules', [
-        'title' => 'System Modules',
-        'cssArray' => $css,
-        'jsArray' => $js
-    ]);
-});
-
-/**
- * Before route check.
- */
-$app->before('GET|POST', '/dashboard/install-module/', function () {
-    if (!hasPermission('access_plugin_admin_page')) {
-        _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
-    }
-});
-
-$app->match('GET|POST', '/dashboard/install-module/', function () use($app) {
-
-    $css = [
-        'css/admin/module.admin.page.form_elements.min.css'
-    ];
-    $js = [
-        'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
-    ];
-
-    if ($app->req->isPost()) {
-        $name = explode(".", $_FILES["module_zip"]["name"]);
-        $accepted_types = [
-            'application/zip',
-            'application/x-zip-compressed',
-            'multipart/x-zip',
-            'application/x-compressed'
+        $css = [
+            'css/admin/module.admin.page.index.min.css'
         ];
 
-        foreach ($accepted_types as $mime_type) {
-            if ($mime_type == $type) {
-                $okay = true;
-                break;
-            }
+        $js = [
+            'components/modules/admin/charts/flot/assets/lib/jquery.flot.js?v=v2.1.0',
+            'components/modules/admin/charts/flot/assets/lib/jquery.flot.resize.js?v=v2.1.0',
+            'components/modules/admin/charts/flot/assets/lib/plugins/jquery.flot.tooltip.min.js?v=v2.1.0',
+            'components/modules/admin/charts/flot/assets/custom/js/flotcharts.common.js?v=v2.1.0',
+            'components/modules/admin/charts/flot/assets/custom/js/flotchart-simple.init.js?v=v2.1.0',
+            'components/modules/admin/charts/flot/custom/chart.js',
+            'components/modules/admin/charts/flot/custom/js/custom-flot.js'
+        ];
+
+        try {
+            $stuProg = $app->db->stu_program()
+                ->select('COUNT(stu_program.stuProgID) as ProgCount,stu_program.acadProgCode')
+                ->_join('acad_program', 'stu_program.acadProgCode = b.acadProgCode', 'b')
+                ->_join('student', 'stu_program.stuID = student.stuID')
+                ->where('stu_program.currStatus <> "G"')->_and_()
+                ->where('student.status = "A"')
+                ->groupBy('stu_program.acadProgCode')
+                ->orderBY('stu_program.acadProgCode', 'DESC')
+                ->limit(10);
+
+            $prog = $stuProg->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+
+            $stuDept = $app->db->person()
+                ->select('SUM(person.gender="M") AS Male,SUM(person.gender="F") AS Female,d.deptCode')
+                ->_join('student', 'person.personID = student.stuID')
+                ->_join('stu_program', 'student.stuID = b.stuID', 'b')
+                ->_join('acad_program', 'b.acadProgCode = c.acadProgCode', 'c')
+                ->_join('department', 'c.deptCode = d.deptCode', 'd')
+                ->where('b.startDate = (SELECT MAX(startDate) FROM stu_program WHERE stuID = b.stuID)')->_and_()
+                ->where('student.status = "A"')->_and_()
+                ->where('b.currStatus = "A"')->_and_()
+                ->where('d.deptTypeCode = "ACAD"')
+                ->groupBy('d.deptCode')
+                ->orderBy('d.deptCode', 'DESC')
+                ->limit(10);
+
+            $dept = $stuDept->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
         }
 
-        $continue = strtolower($name[1]) == 'zip' ? true : false;
+        etsis_register_style('dash');
+        etsis_register_script('highcharts');
 
-        if (!$continue) {
-            _etsis_flash()->{'error'}(_t('The file you are trying to upload is not the accepted file type. Please try again.'));
-        }
-        $target_path = BASE_PATH . $_FILES["module_zip"]["name"];
-        if (move_uploaded_file($_FILES["module_zip"]["tmp_name"], $target_path)) {
-            $zip = new \ZipArchive();
-            $x = $zip->open($target_path);
-            if ($x === true) {
-                $zip->extractTo(BASE_PATH);
-                $zip->close();
-                unlink($target_path);
-            }
-            _etsis_flash()->{'success'}(_t('The module was uploaded and installed properly.'));
+        $app->view->display('dashboard/index', [
+            'title' => 'Dashboard',
+            'prog' => $prog,
+            'dept' => $dept
+        ]);
+    });
+
+    $app->post('/search/', function () {
+        $acro = $_POST['screen'];
+        $screen = explode(" ", $acro);
+
+        if (get_screen($screen[0]) == '') {
+            redirect(get_base_url() . 'err/screen-error?code=' . _h($screen[0]));
         } else {
-            _etsis_flash()->{'error'}(_t('There was a problem uploading the module. Please try again or check the module package.'));
+            redirect(get_base_url() . get_screen($screen[0]) . '/');
         }
-        redirect($app->req->server['HTTP_REFERER']);
-    }
+    });
 
-    $app->view->display('dashboard/install-module', [
-        'title' => 'Install Modules',
-        'cssArray' => $css,
-        'jsArray' => $js
-    ]);
-});
+    $app->get('/support/', function () use($app) {
+        $app->view->display('dashboard/support', [
+            'title' => 'Online Support'
+        ]);
+    });
 
-$app->get('/dashboard/flushCache/', function () use($app) {
-    etsis_cache_flush();
-    redirect($app->req->server['HTTP_REFERER']);
-});
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/system-snapshot/', function () {
+        if (!hasPermission('edit_settings')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
 
-$app->match('GET|POST|PATCH|PUT|OPTIONS|DELETE', '/dashboard/connector/', function () use($app) {
-    error_reporting(0);
-    $opts = [
-        // 'debug' => true,
-        'locale' => 'es_ES.UTF-8',
-        'roots' => [
-            /* [
-              'driver' => 'LocalFileSystem',
-              'path' => $app->config('cookies.savepath') . 'nodes' . DS . 'etsis' . DS,
-              'alias' => 'Nodes',
-              'mimeDetect' => 'auto',
-              'accessControl' => 'access',
-              'attributes' => [
-              [
-              'read' => true,
-              'write' => true,
-              'locked' => false
-              ],
-              [
-              'pattern' => '/\.tmb/',
-              'read' => false,
-              'write' => false,
-              'hidden' => true,
-              'locked' => false
-              ],
-              [
-              'pattern' => '/\.quarantine/',
-              'read' => false,
-              'write' => false,
-              'hidden' => true,
-              'locked' => false
-              ],
-              [
-              'pattern' => '/\.DS_Store/',
-              'read' => false,
-              'write' => false,
-              'hidden' => true,
-              'locked' => false
-              ],
-              [
-              'pattern' => '/\.json$/',
-              'read' => true,
-              'write' => true,
-              'hidden' => false,
-              'locked' => false
-              ]
-              ],
-              'uploadMaxSize' => '500M',
-              'uploadAllow' => ['text/plain'],
-              'uploadOrder' => ['allow','deny']
-              ], */
-            [
-                'driver' => 'LocalFileSystem',
-                'path' => $app->config('cookies.savepath') . 'nodes',
-                'alias' => 'Nodes',
-                'mimeDetect' => 'auto',
-                'accessControl' => 'access',
-                'attributes' => [
-                    [
-                        'read' => true,
-                        'write' => true,
-                        'locked' => false
+    $app->get('/system-snapshot/', function () use($app) {
+        $app->view->display('dashboard/system-snapshot', [
+            'title' => 'System Snapshot Report'
+        ]);
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/modules/', function () {
+        if (!hasPermission('access_plugin_screen')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->get('/modules/', function () use($app) {
+
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datatables');
+
+        $app->view->display('dashboard/modules', [
+            'title' => 'System Modules'
+        ]);
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/install-module/', function () {
+        if (!hasPermission('access_plugin_admin_page')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/install-module/', function () use($app) {
+
+        if ($app->req->isPost()) {
+            $name = explode(".", $_FILES["module_zip"]["name"]);
+            $accepted_types = [
+                'application/zip',
+                'application/x-zip-compressed',
+                'multipart/x-zip',
+                'application/x-compressed'
+            ];
+
+            foreach ($accepted_types as $mime_type) {
+                if ($mime_type == $type) {
+                    $okay = true;
+                    break;
+                }
+            }
+
+            $continue = strtolower($name[1]) == 'zip' ? true : false;
+
+            if (!$continue) {
+                _etsis_flash()->error(_t('The file you are trying to upload is not the accepted file type. Please try again.'));
+            }
+            $target_path = BASE_PATH . $_FILES["module_zip"]["name"];
+            if (move_uploaded_file($_FILES["module_zip"]["tmp_name"], $target_path)) {
+                $zip = new \ZipArchive();
+                $x = $zip->open($target_path);
+                if ($x === true) {
+                    $zip->extractTo(BASE_PATH);
+                    $zip->close();
+                    unlink($target_path);
+                }
+                _etsis_flash()->success(_t('The module was uploaded and installed properly.'), $app->req->server['HTTP_REFERER']);
+            } else {
+                _etsis_flash()->error(_t('There was a problem uploading the module. Please try again or check the module package.'));
+            }
+        }
+
+        etsis_register_style('form');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('upload');
+
+        $app->view->display('dashboard/install-module', [
+            'title' => 'Install Modules'
+        ]);
+    });
+
+    $app->get('/flushCache/', function () use($app) {
+        etsis_cache_flush();
+        _etsis_flash()->success(_t('Cache was flushed successfully.'), $app->req->server['HTTP_REFERER']);
+    });
+
+    $app->match('GET|POST|PATCH|PUT|OPTIONS|DELETE', '/connector/', function () use($app) {
+        error_reporting(0);
+        $opts = [
+            // 'debug' => true,
+            'locale' => 'es_ES.UTF-8',
+            'roots' => [
+                [
+                    'driver' => 'LocalFileSystem',
+                    'path' => $app->config('cookies.savepath') . 'nodes',
+                    'alias' => 'Nodes',
+                    'mimeDetect' => 'auto',
+                    'accessControl' => 'access',
+                    'attributes' => [
+                        [
+                            'read' => true,
+                            'write' => true,
+                            'locked' => false
+                        ],
+                        [
+                            'pattern' => '/\.tmb/',
+                            'read' => false,
+                            'write' => false,
+                            'hidden' => true,
+                            'locked' => false
+                        ],
+                        [
+                            'pattern' => '/\.quarantine/',
+                            'read' => false,
+                            'write' => false,
+                            'hidden' => true,
+                            'locked' => false
+                        ],
+                        [
+                            'pattern' => '/\.DS_Store/',
+                            'read' => false,
+                            'write' => false,
+                            'hidden' => true,
+                            'locked' => false
+                        ],
+                        [
+                            'pattern' => '/\.json$/',
+                            'read' => true,
+                            'write' => true,
+                            'hidden' => false,
+                            'locked' => false
+                        ]
                     ],
-                    [
-                        'pattern' => '/\.tmb/',
-                        'read' => false,
-                        'write' => false,
-                        'hidden' => true,
-                        'locked' => false
-                    ],
-                    [
-                        'pattern' => '/\.quarantine/',
-                        'read' => false,
-                        'write' => false,
-                        'hidden' => true,
-                        'locked' => false
-                    ],
-                    [
-                        'pattern' => '/\.DS_Store/',
-                        'read' => false,
-                        'write' => false,
-                        'hidden' => true,
-                        'locked' => false
-                    ],
-                    [
-                        'pattern' => '/\.json$/',
-                        'read' => true,
-                        'write' => true,
-                        'hidden' => false,
-                        'locked' => false
-                    ]
-                ],
-                'uploadMaxSize' => '500M',
-                'uploadAllow' => ['text/plain'],
-                'uploadOrder' => ['allow', 'deny']
+                    'uploadMaxSize' => '500M',
+                    'uploadAllow' => ['text/plain'],
+                    'uploadOrder' => ['allow', 'deny']
+                ]
             ]
-        ]
-    ];
-    // run elFinder
-    $connector = new elFinderConnector(new elFinder($opts));
-    $connector->run();
+        ];
+        // run elFinder
+        $connector = new elFinderConnector(new elFinder($opts));
+        $connector->run();
+    });
+
+    /**
+     * Before route middleware check.
+     */
+    $app->before('GET|POST', '/ftp/', function() {
+        if (!hasPermission('access_dashboard')) {
+            redirect(get_base_url());
+        }
+    });
+
+    $app->get('/ftp/', function () use($app) {
+        etsis_register_style('elFinder');
+
+        $app->view->display('dashboard/ftp', [
+            'title' => 'FTP'
+            ]
+        );
+    });
+
+    $app->get('/getSACP/', function () use($app) {
+
+        try {
+            $stuProg = $app->db->stu_program()
+                ->select('COUNT(stu_program.stuProgID) AS Count,stu_program.acadProgCode AS Prog')
+                ->_join('acad_program', 'stu_program.acadProgCode = b.acadProgCode', 'b')
+                ->_join('student', 'stu_program.stuID = student.stuID')
+                ->where('stu_program.currStatus <> "G"')->_and_()
+                ->where('stu_program.currStatus <> "C"')->_and_()
+                ->where('student.status = "A"')
+                ->groupBy('stu_program.acadProgCode')
+                ->orderBY('stu_program.acadProgCode', 'DESC')
+                ->limit(10);
+            $q = $stuProg->find();
+            $rows = [];
+            foreach ($q as $r) {
+                $row[0] = $r->Prog;
+                $row[1] = $r->Count;
+                array_push($rows, $row);
+            }
+            print json_encode($rows, JSON_NUMERIC_CHECK);
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
+        }
+    });
+
+    $app->get('/getDEPT/', function () use($app) {
+
+        try {
+
+            $stuDept = $app->db->person()
+                ->select('SUM(CASE person.gender WHEN "M" THEN 1 ELSE 0 END) AS Male')
+                ->select('SUM(CASE person.gender WHEN "F" THEN 1 ELSE 0 END) AS Female,d.deptCode')
+                //->select('SUM(person.gender="M") AS Male,SUM(person.gender="F") AS Female,d.deptCode')
+                ->_join('student', 'person.personID = student.stuID')
+                ->_join('stu_program', 'student.stuID = b.stuID', 'b')
+                ->_join('acad_program', 'b.acadProgCode = c.acadProgCode', 'c')
+                ->_join('department', 'c.deptCode = d.deptCode', 'd')
+                ->where('b.startDate = (SELECT MAX(startDate) FROM stu_program WHERE stuID = b.stuID)')->_and_()
+                ->where('student.status = "A"')->_and_()
+                ->where('b.currStatus = "A"')->_and_()
+                ->where('d.deptTypeCode = "ACAD"')
+                ->groupBy('d.deptCode')
+                ->orderBy('d.deptCode', 'DESC')
+                ->limit(10);
+
+            $q = $stuDept->find();
+            $category = [];
+            $category['name'] = 'Academic Departments';
+            $series1 = [];
+            $series1['name'] = 'Male';
+            $series2 = [];
+            $series2['name'] = 'Female';
+            foreach ($q as $r) {
+                $category['data'][] = $r->deptCode;
+                $series1['data'][] = $r->Male;
+                $series2['data'][] = $r->Female;
+            }
+            $result = [];
+            array_push($result, $category);
+            array_push($result, $series1);
+            array_push($result, $series2);
+            print json_encode($result, JSON_NUMERIC_CHECK);
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
+        }
+    });
+    
+    /**
+     * Before route middleware check.
+     */
+    $app->before('GET|POST', '/sms/', function() {
+        if (!hasPermission('send_sms')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/sms/', function () use($app) {
+        try {
+            Node::dispense('sms');
+        } catch (NodeQException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        }
+
+        if ($app->req->isPost()) {
+            try {
+                if ($app->req->post['sms_group'] == 'all') {
+                    $sms = $app->db->person()
+                        ->select('CASE WHEN address.phoneType1 = "CEL" THEN address.phone1 ELSE address.phone2 END AS Phone')
+                        ->_join('address', 'person.personID = address.personID')
+                        ->where('person.status = "A"')->_and_()
+                        ->where('address.addressStatus = "C"')->_and_()
+                        ->where('address.phoneType1 <> "" or address.phoneType2 <> ""')
+                        ->find();
+                } elseif ($app->req->post['sms_group'] == 'staff') {
+                    $sms = $app->db->staff()
+                        ->select('CASE WHEN address.phoneType1 = "CEL" THEN address.phone1 ELSE address.phone2 END AS Phone')
+                        ->_join('address', 'staff.staffID = address.personID')
+                        ->where('staff.status = "A"')->_and_()
+                        ->where('address.addressStatus = "C"')->_and_()
+                        ->where('address.phoneType1 <> "" or address.phoneType2 <> ""')
+                        ->find();
+                } elseif ($app->req->post['sms_group'] == 'student') {
+                    $sms = $app->db->student()
+                        ->select('CASE WHEN address.phoneType1 = "CEL" THEN address.phone1 ELSE address.phone2 END AS Phone')
+                        ->_join('address', 'student.stuID = address.personID')
+                        ->where('student.status = "A"')->_and_()
+                        ->where('address.addressStatus = "C"')->_and_()
+                        ->where('address.phoneType1 <> "" or address.phoneType2 <> ""')
+                        ->find();
+                }
+            } catch (NotFoundException $e) {
+                _etsis_flash()->error($e->getMessage());
+            } catch (Exception $e) {
+                _etsis_flash()->error($e->getMessage());
+            } catch (ORMException $e) {
+                _etsis_flash()->error($e->getMessage());
+            }
+
+            $numItems = count($sms);
+            $i = 0;
+            foreach ($sms as $val) {
+                $phone = str_replace('-', '', $val->Phone);
+                try {
+                    $node = Node::table('sms');
+                    $node->number = _trim($phone);
+                    $node->text = $app->req->post['sms_text'];
+                    $node->sent = 0;
+                    $node->save();
+                    if (++$i === $numItems) {
+                        _etsis_flash()->success(_t('SMS messages have been queued for sending.'), $app->req->server['HTTP_REFERER']);
+                    }
+                } catch (NodeQException $e) {
+                    _etsis_flash()->error($e->getMessage());
+                } catch (Exception $e) {
+                    _etsis_flash()->error($e->getMessage());
+                }
+            }
+        }
+
+        etsis_register_style('form');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+
+        $app->view->display('dashboard/sms', [
+            'title' => 'Short Message Service (SMS)'
+            ]
+        );
+    });
 });
 
-/**
- * Before route middleware check.
- */
-$app->before('GET|POST', '/dashboard/ftp/', function() {
-    if (!hasPermission('access_dashboard')) {
-        redirect(get_base_url());
-    }
-});
 
-$app->get('/dashboard/ftp/', function () use($app) {
-    $css = [
-        'css/admin/module.admin.page.form_elements.min.css',
-        'css/admin/module.admin.page.tables.min.css',
-        'plugins/elfinder/css/elfinder.min.css',
-        'plugins/elfinder/css/theme.css'
-    ];
-
-    $js = [
-        'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-timepicker/assets/lib/js/bootstrap-timepicker.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-timepicker/assets/custom/js/bootstrap-timepicker.init.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
-    ];
-
-    $app->view->display('dashboard/ftp', [
-        'title' => 'FTP',
-        'cssArray' => $css,
-        'jsArray' => $js
-        ]
-    );
-});
 
 $app->setError(function () use($app) {
 

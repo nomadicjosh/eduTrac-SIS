@@ -24,22 +24,6 @@ $app->before('GET|POST', '/crse(.*)', function() {
     }
 });
 
-$css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
-$js = [
-    'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-maxlength/bootstrap-maxlength.min.js',
-    'components/modules/admin/forms/elements/bootstrap-maxlength/custom/js/custom.js'
-];
-
 $app->group('/crse', function() use ($app) {
 
     /**
@@ -47,11 +31,11 @@ $app->group('/crse', function() use ($app) {
      */
     $app->before('GET|POST', '/', function() {
         if (!hasPermission('access_course_screen')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/', function () use($app, $css, $js) {
+    $app->match('GET|POST', '/', function () use($app) {
         if ($app->req->isPost()) {
             try {
                 $post = $_POST['crse'];
@@ -76,11 +60,11 @@ $app->group('/crse', function() use ($app) {
                     return $array;
                 });
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
         etsis_register_style('form');
@@ -100,7 +84,7 @@ $app->group('/crse', function() use ($app) {
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_course_screen')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -153,14 +137,14 @@ $app->group('/crse', function() use ($app) {
                     _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                 } else {
                     etsis_logger_activity_log_write('Update Error', 'Course', $course->courseCode, get_persondata('uname'));
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+                    _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
             }
         }
 
@@ -196,6 +180,7 @@ $app->group('/crse', function() use ($app) {
             etsis_register_script('select');
             etsis_register_script('select2');
             etsis_register_script('datepicker');
+            etsis_register_script('maxlength');
 
             $app->view->display('course/view', [
                 'title' => $course->courseShortTitle . ' :: Course',
@@ -210,7 +195,7 @@ $app->group('/crse', function() use ($app) {
      */
     $app->before('GET|POST', '/addnl/(\d+)/', function() {
         if (!hasPermission('access_course_screen')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -236,14 +221,14 @@ $app->group('/crse', function() use ($app) {
                     etsis_logger_activity_log_write('Update Record', 'Course', $course->courseCode, get_persondata('uname'));
                     _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                 } else {
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+                    _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
             }
         }
 
@@ -293,7 +278,7 @@ $app->group('/crse', function() use ($app) {
      */
     $app->before('GET|POST', '/add/', function() {
         if (!hasPermission('add_course')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -345,14 +330,14 @@ $app->group('/crse', function() use ($app) {
                     etsis_logger_activity_log_write('New Record', 'Course', $_POST['subjectCode'] . '-' . $_POST['courseNumber'], get_persondata('uname'));
                     _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'crse' . '/' . (int) $ID . '/');
                 } else {
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -360,6 +345,7 @@ $app->group('/crse', function() use ($app) {
         etsis_register_script('select');
         etsis_register_script('select2');
         etsis_register_script('datepicker');
+        etsis_register_script('maxlength');
 
         $app->view->display('course/add', [
             'title' => 'Add Course'
@@ -396,11 +382,11 @@ $app->group('/crse', function() use ($app) {
             }
             echo json_encode($json);
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
     });
 
@@ -409,7 +395,7 @@ $app->group('/crse', function() use ($app) {
      */
     $app->before('GET|POST', '/clone/(\d+)/', function() {
         if (!hasPermission('add_course')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -447,14 +433,14 @@ $app->group('/crse', function() use ($app) {
                 etsis_logger_activity_log_write('New Record', 'Cloned Course', $crse->courseCode, get_persondata('uname'));
                 _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'crse' . '/' . (int) $ID . '/');
             } else {
-                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
             }
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
         }
     });
 
@@ -479,11 +465,11 @@ $app->group('/crse', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
     });
 
@@ -508,11 +494,11 @@ $app->group('/crse', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
     });
 });
