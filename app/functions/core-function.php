@@ -1665,7 +1665,7 @@ function set_email_template($body)
     
     $template = $app->hook->apply_filter('email_template', $tpl);
 
-    return str_replace('{content}', $template, $body);
+    return str_replace('{content}', $body, $template);
 }
 
 /**
