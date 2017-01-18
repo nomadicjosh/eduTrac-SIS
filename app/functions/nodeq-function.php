@@ -1,9 +1,9 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
-use \app\src\Core\NodeQ\etsis_NodeQ as Node;
+use app\src\Core\NodeQ\etsis_NodeQ as Node;
 use app\src\Core\NodeQ\NodeQException;
-use \app\src\Core\Exception\Exception;
+use app\src\Core\Exception\Exception;
 use Cascade\Cascade;
 
 /**
@@ -60,8 +60,8 @@ function etsis_nodeq_login_details()
                 $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
                 $message = process_email_html($message, _t("myetSIS Login Details"));
                 $headers = "From: $site <auto-reply@$host>\r\n";
-                $headers .= "X-Mailer: eduTrac SIS\r\n";
-                $headers .= "MIME-Version: 1.0\r\n";
+                $headers .= sprintf("X-Mailer: eduTrac SIS %s\r\n", RELEASE_TAG);
+                $headers .= 'Content-Type: text/html; charset="UTF-8"';
 
                 $email->etsis_mail(_h($r->email), _t("myetSIS Login Details"), $message, $headers);
 
@@ -125,8 +125,8 @@ function etsis_nodeq_reset_password()
                 $message = str_replace('#password#', _h($r->password), $message);
                 $message = process_email_html($message, _t('Reset Password'));
                 $headers = "From: $from <$host>\r\n";
-                $headers .= "X-Mailer: eduTrac SIS\r\n";
-                $headers .= "MIME-Version: 1.0\r\n";
+                $headers .= sprintf("X-Mailer: eduTrac SIS %s\r\n", RELEASE_TAG);
+                $headers .= 'Content-Type: text/html; charset="UTF-8"';
 
                 $email->etsis_mail(_h($r->email), _t('Reset Password'), $message, $headers);
 
@@ -182,8 +182,8 @@ function etsis_nodeq_csv_email()
             foreach ($sql as $r) {
                 $message = process_email_html(_escape($r->message), _h($r->subject));
                 $headers = "From: $site <auto-reply@$sitename>\r\n";
-                $headers .= "X-Mailer: eduTrac SIS\r\n";
-                $headers .= "MIME-Version: 1.0" . "\r\n";
+                $headers .= sprintf("X-Mailer: eduTrac SIS %s\r\n", RELEASE_TAG);
+                $headers .= 'Content-Type: text/html; charset="UTF-8"';
 
                 $attachment = $app->config('file.savepath') . _h($r->filename);
 
@@ -259,10 +259,9 @@ function etsis_nodeq_change_address()
                 $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
                 $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
                 $message = process_email_html($message, _t('Change of Address Request'));
-
                 $headers = "From: $site <auto-reply@$host>\r\n";
-                $headers .= "X-Mailer: eduTrac SIS\r\n";
-                $headers .= "MIME-Version: 1.0" . "\r\n";
+                $headers .= sprintf("X-Mailer: eduTrac SIS %s\r\n", RELEASE_TAG);
+                $headers .= 'Content-Type: text/html; charset="UTF-8"';
 
                 try {
                     $email->etsis_mail(_h(get_option('contact_email')), _t('Change of Address Request'), $message, $headers);
@@ -337,10 +336,9 @@ function etsis_nodeq_acceptance_letter()
                 $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
                 $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
                 $message = process_email_html($message, _h(get_option('institution_name')) . ' ' . _t('Decision Notification'));
-
                 $headers = "From: $site <auto-reply@$host>\r\n";
-                $headers .= "X-Mailer: eduTrac SIS\r\n";
-                $headers .= "MIME-Version: 1.0" . "\r\n";
+                $headers .= sprintf("X-Mailer: eduTrac SIS %s\r\n", RELEASE_TAG);
+                $headers .= 'Content-Type: text/html; charset="UTF-8"';
 
                 try {
                     $email->etsis_mail(_h(get_option('contact_email')), _h(get_option('institution_name')) . ' ' . _t('Decision Notification'), $message, $headers);
@@ -357,6 +355,59 @@ function etsis_nodeq_acceptance_letter()
                 if (++$i === $numItems) {
                     //If we reach the last item, send user a desktop notification.
                     etsis_push_notify('Acceptance Letter', 'An acceptance letter has been emailed to the new student.');
+                }
+            }
+        }
+    } catch (NodeQException $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    }
+}
+
+/**
+ * Send SMS
+ * 
+ * Function used to send sms messages.
+ * 
+ * @since 6.3.0
+ */
+function etsis_nodeq_send_sms()
+{
+    try {
+        // Creates node's schema if does not exist.
+        Node::dispense('sms');
+
+        $sql = Node::table('sms')->where('sent', '=', 0)->findAll();
+
+        if ($sql->count() == 0) {
+            Node::table('sms')->delete();
+        }
+
+        $numItems = $sql->count();
+        $i = 0;
+        if ($sql->count() > 0) {
+            foreach ($sql as $r) {
+                try {
+                    $client = new Twilio\Rest\Client(get_option('twilio_account_sid'), get_option('twilio_auth_token'));
+                    $client->messages->create(
+                        $r->number, // Text this number
+                        array(
+                        'from' => get_option('twilio_phone_number'), // From a valid Twilio number
+                        'body' => $r->text
+                        )
+                    );
+                } catch (Twilio\Exceptions\RestException $ex) {
+                    \Cascade\Cascade::getLogger('error')->error($ex->getMessage());
+                }
+
+                $upd = Node::table('sms')->find(_h($r->id));
+                $upd->sent = 1;
+                $upd->save();
+
+                if (++$i === $numItems) {
+                    //If we reach the last item, send user a desktop notification.
+                    etsis_push_notify('SMS', 'SMS messages sent.');
                 }
             }
         }
