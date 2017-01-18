@@ -34,11 +34,11 @@ function convertCourseSec($sect)
         }
         return $section;
     } catch (NotFoundException $e) {
-        _etsis_flash()->{'error'}($e->getMessage());
+        _etsis_flash()->error($e->getMessage());
     } catch (Exception $e) {
-        _etsis_flash()->{'error'}($e->getMessage());
+        _etsis_flash()->error($e->getMessage());
     } catch (ORMException $e) {
-        _etsis_flash()->{'error'}($e->getMessage());
+        _etsis_flash()->error($e->getMessage());
     }
 }
 
