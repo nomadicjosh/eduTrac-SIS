@@ -73,6 +73,8 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                         <li<?= ae('access_plugin_admin_page'); ?>><a href="<?= get_base_url(); ?>dashboard/install-module/"><?= _t('Install Modules'); ?></a></li>
                                     </ul>
                                 </li>
+                                
+                                <li<?=ae('send_sms');?>><a href="<?= get_base_url(); ?>dashboard/sms/" class="glyphicons iphone"><i></i><?= _t('Send SMS'); ?></a></li>
 
                                 <li<?= hl('forms', 'access_forms'); ?> class="dropdown submenu">
                                     <a data-toggle="dropdown" class="dropdown-toggle glyphicons notes_2"><i></i><?= _t('Forms'); ?></a>

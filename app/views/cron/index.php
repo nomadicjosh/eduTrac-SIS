@@ -12,18 +12,12 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'cron';
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Cronjob Handler' );?></li>
 </ul>
@@ -43,10 +37,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
         <!-- Tabs Heading -->
         <div class="tabsbar">
             <ul>
-                <li class="glyphicons dashboard active"><a href="<?=get_base_url();?>cron/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
-                <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/<?=bm();?>"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
-                <li class="glyphicons wrench tab-stacked"><a href="<?=get_base_url();?>cron/setting/<?=bm();?>"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
-                <!-- <li class="glyphicons circle_question_mark tab-stacked"><a href="<?=get_base_url();?>cron/about/<?=bm();?>"><i></i> <span><?=_t( 'About' );?></span></a></li> -->
+                <li class="glyphicons dashboard active"><a href="<?=get_base_url();?>cron/" data-toggle="tab"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
+                <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
+                <li class="glyphicons wrench tab-stacked"><a href="<?=get_base_url();?>cron/setting/"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
             </ul>
         </div>
         <!-- // Tabs Heading END -->
@@ -74,7 +67,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                 <?php foreach ($cron as $job) {?>
                 <tr class="gradeX">
                     <td class="text-center"><input type="checkbox" value="<?=$job->id;?>" name="cronjobs[<?=$job->id;?>]" /></td>
-                    <td class="text-center"><a href="<?=get_base_url() . 'cron/view/' . $job->id . '/';?>" title="Edit"><?=$job->name;?></a></td>
+                    <td class="text-center"><a href="<?=get_base_url() . 'cron/' . $job->id . '/';?>" title="Edit"><?=$job->name;?></a></td>
                     <td class="text-center">Each <?=($job->time != 0) ? "day on " . $job->time  . ' hours' : etsis_seconds_to_time($job->each) . (strlen($job->eachtime > 0) ? ' at ' . $job->eachtime : '');?></td>
                     <td class="text-center"><?=($job->lastrun !== '') ? date('M d, Y @ h:i A', strtotime($job->lastrun)) : '';?></td>
                     <td class="text-center"><?=$job->runned;?></td>

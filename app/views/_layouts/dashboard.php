@@ -34,11 +34,10 @@ ob_implicit_flush(0);
         <script src="<?= get_javascript_directory_uri(); ?>library/jquery/jquery-migrate.min.js"></script>
         <script src="<?= get_javascript_directory_uri(); ?>library/modernizr/modernizr.js"></script>
         <script src="<?= get_javascript_directory_uri(); ?>plugins/less-js/less.min.js"></script>
-        <script src="<?= get_javascript_directory_uri(); ?>modules/admin/charts/flot/assets/lib/excanvas.js"></script>
         <script src="<?= get_javascript_directory_uri(); ?>plugins/browser/ie/ie.prototype.polyfill.js"></script>
-        <script src="<?= get_javascript_directory_uri(); ?>plugins/typeahead/bootstrap-typeahead.js?v=v2.3.2"></script>
         <script src="<?= get_base_url(); ?>static/assets/plugins/jstree/jstree.min.js"></script>
         <script src="<?= get_javascript_directory_uri(); ?>library/bootstrap/js/bootstrap.min.js"></script>
+        <script src="<?= get_javascript_directory_uri(); ?>plugins/typeahead/bootstrap-typeahead.js?v=v2.3.2"></script>
         <?php etsis_dashboard_head(); ?>
         <link rel="stylesheet" href="<?= get_base_url(); ?>static/assets/plugins/jstree/themes/proton/style.css" />
     </head>

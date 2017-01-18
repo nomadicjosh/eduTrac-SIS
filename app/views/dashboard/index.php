@@ -47,42 +47,27 @@ $screen = 'dash';
             <div class="row">
                 <div class="col-md-12">
 
-                    <!-- Website Traffic Chart -->
-                    <div class="widget widget-body-white" data-toggle="collapse-widget">
+                    <!-- Students by Academic Program Chart -->
+                    <div class="widget widget-body-white">
                         <div class="widget-head">
                             <h4 class="heading glyphicons cardio"><i></i><?= _t('Students by Academic Program'); ?></h4>
                         </div>
                         <div class="widget-body">
 
                             <!-- Simple Chart -->
-                            <div class="widget-chart bg-lightseagreen">
-                                <table class="flot-chart" data-type="bars" data-tick-color="rgba(255,255,255,0.2)" data-width="100%" data-tool-tip="show" data-height="220px">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th style="color : #DDD;"><?= _t('Students'); ?></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php if ($prog != '') : foreach ($prog as $k => $v) { ?>
-                                                <tr>
-                                                    <th><?= $v['acadProgCode']; ?></th>
-                                                    <td><?= $v['ProgCount']; ?></td>
-                                                </tr>
-                                            <?php } endif; ?>
-                                    </tbody>
-                                </table>
+                            <div class="widget-chart">
+                                <div class="chart" id="getSACP" style="position: relative; height: 300px;"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- // Website Traffic Chart END -->
+                    <!-- // Students by Academic Program Chart END -->
 
                 </div>
 
                 <div class="col-md-12">
 
-                    <!-- Website Traffic Chart -->
-                    <div class="widget widget-body-white" data-toggle="collapse-widget">
+                    <!-- Gender by Academic Departments Chart -->
+                    <div class="widget widget-body-white">
                         <div class="widget-head">
                             <h4 class="heading glyphicons parents"><i></i><?= _t('Gender by Academic Departments'); ?></h4>
                         </div>
@@ -90,28 +75,11 @@ $screen = 'dash';
 
                             <!-- Simple Chart -->
                             <div class="widget-chart">
-                                <table class="flot-chart" data-type="bars" data-stack="true" data-tick-color="rgba(255,255,255,0.2)" data-width="100%" data-tool-tip="show" data-height="220px" data-position="after">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th style="color : #0090d9;"><?= _t('Male'); ?></th>
-                                            <th style="color : #ff69b4;"><?= _t('Female'); ?></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php if ($dept != '') : foreach ($dept as $k => $v) { ?>
-                                                <tr>
-                                                    <th><?= $v['deptCode']; ?></th>
-                                                    <td><?= $v['Male']; ?></td>
-                                                    <td><?= $v['Female']; ?></td>
-                                                </tr>
-                                            <?php } endif; ?>
-                                    </tbody>
-                                </table>
+                                <div class="chart" id="getDEPT" style="position: relative; height: 300px;"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- // Website Traffic Chart END -->
+                    <!-- // Gender by Academic Departments Chart END -->
                 </div>
 
             </div>

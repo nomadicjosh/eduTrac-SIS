@@ -14,29 +14,23 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'addr';
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>nae/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
+	<li><a href="<?=get_base_url();?>nae/" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>nae/<?=_h($addr[0]['personID']);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name(_h((int)$addr[0]['personID']));?></a></li>
+    <li><a href="<?=get_base_url();?>nae/<?=_h($addr[0]['personID']);?>/" class="glyphicons user"><i></i> <?=get_name(_h((int)$addr[0]['personID']));?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>nae/adsu/<?=_h($addr[0]['personID']);?>/<?=bm();?>" class="glyphicons vcard"><i></i> <?=_t( 'Address Summary' );?></a></li>
+    <li><a href="<?=get_base_url();?>nae/adsu/<?=_h($addr[0]['personID']);?>/" class="glyphicons vcard"><i></i> <?=_t( 'Address Summary' );?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Edit Address' );?></li>
 </ul>
 
-<h3><?=get_name(_h((int)$addr[0]['personID']));?></h3>
+<h3 class="hidden-print"><?=get_name(_h((int)$addr[0]['personID']));?></h3>
 <div class="innerLR">
 	
 	<?=_etsis_flash()->showMessage();?>
@@ -44,10 +38,14 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>nae/addr/<?=_h($addr[0]['addressID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none grid-form" action="<?=get_base_url();?>nae/addr/<?=_h($addr[0]['addressID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
-		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+		<div class="widget widget-heading-simple widget-body-white <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+            
+            <button type="button" data-toggle="print" class="btn btn-inverse pull-right print hidden-print"><i class="fa fa-fw fa-print"></i></button>
+            
+            <div class="breakline">&nbsp;</div>
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -56,339 +54,181 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 			<!-- // Widget heading END -->
 			
 			<div class="widget-body">
-			
-				<!-- Row -->
-				<div class="row">
-					<!-- Column -->
-					<div class="col-md-6">
-                        
-                        <!-- Group -->
-						<div class="form-group">
-							<label class="col-md-3 control-label"><?=_t( 'Person ID' );?></label>
-							<div class="col-md-8">
-								<input type="text" readonly class="form-control" value="<?=_h($nae[0]['personID']);?>" />
-							</div>
-						</div>
-						<!-- // Group END -->
-						
-						<!-- Group -->
-						<div class="form-group">
-							<label class="col-md-3 control-label"><?=_t( 'First Name' );?></label>
-							<div class="col-md-8">
-								<input type="text" readonly class="form-control" value="<?=_h($nae[0]['fname']);?>" />
-							</div>
-						</div>
-						<!-- // Group END -->
-						
-						<!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Last Name' );?></label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" value="<?=_h($nae[0]['lname']);?>" />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Middle Initial' );?></label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" value="<?=_h($nae[0]['mname']);?>" />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-						
-						<!-- Group -->
-						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Address1' );?></label>
-							<div class="col-md-8">
-								<input type="text" name="address1"<?=aio();?> class="form-control" value="<?=_h($addr[0]['address1']);?>" />
-							</div>
-						</div>
-						<!-- // Group END -->
-						
-						<!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Address2' );?></label>
-                            <div class="col-md-8">
-                                <input type="text" name="address2"<?=aio();?> class="form-control" value="<?=_h($addr[0]['address2']);?>" />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'City' );?></label>
-                            <div class="col-md-8">
-                                <input type="text" name="city"<?=aio();?> class="form-control" value="<?=_h($addr[0]['city']);?>" required />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'State' );?></label>
-                            <div class="col-md-8">
-                                <select name="state" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
-                                    <option value="">&nbsp;</option>
-                                    <?php table_dropdown('state',null,'code','code','name',_h($addr[0]['state'])); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Zip Code' );?></label>
-                            <div class="col-md-8">
-                                <input type="text" name="zip"<?=aio();?> class="form-control" value="<?=_h($addr[0]['zip']);?>" />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-						
-					</div>
-					<!-- // Column END -->
-					
-					<!-- Column -->
-					<div class="col-md-6">
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Country' );?></label>
-                            <div class="col-md-8">
-                                <select name="country" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
-                                    <option value="">&nbsp;</option>
-                                    <?php table_dropdown('country',null,'iso2','iso2','short_name',_h($addr[0]['country'])); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Address Type' );?></label>
-                            <div class="col-md-8">
-                                <?=address_type_select(_h($addr[0]['addressType']));?>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-					
-						<!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Start Date' );?></label>
-                            <div class="col-md-8">
-                                <div class="input-group date col-md-8" id="datepicker6">
-                                    <input class="form-control" name="startDate"<?=aio();?> type="text" value="<?=_h($addr[0]['startDate']);?>" required/>
-                                    <span class="input-group-addon"><i class="fa fa-th"></i></span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'End Date' );?></label>
-                            <div class="col-md-8">
-                                <div class="input-group date col-md-8" id="datepicker7">
-                                    <?php if($addr[0]['endDate'] == NULL || $addr[0]['endDate'] == '0000-00-00') { ?>
-                                    <input class="form-control" name="endDate"<?=aio();?> type="text" />
-                                    <?php } else { ?>
-                                    <input class="form-control" name="endDate"<?=aio();?> type="text" value="<?=_h($addr[0]['endDate']);?>" />
-                                    <?php } ?>
-                                    <span class="input-group-addon"><i class="fa fa-th"></i></span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Status' );?></label>
-                            <div class="col-md-8">
-                               <?=address_status_select(_h($addr[0]['addressStatus']));?>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Add Date' );?></label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" value="<?=date('D, M d, o',strtotime(_h($addr[0]['addDate'])));?>" />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Added By' );?></label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" value="<?=get_name(_h((int)$addr[0]['addedBy']));?>" />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-						
-					</div>
-					<!-- // Column END -->
-				</div>
-				<!-- // Row END -->
-			
-				<hr class="separator" />
-            
-            <div class="widget-body">		
-				<!-- Row -->
-                <div class="row">
-                    <!-- Column -->
-                    <div class="col-md-4">
-                        
-        				<!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Phone' );?></label>
-                            <div class="col-md-8">
-                                <input type="text" name="phone1"<?=aio();?> class="form-control" value="<?=_h($addr[0]['phone1']);?>" />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                    </div>
-                    
-                    <!-- Column -->
-                    <div class="col-md-4">
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            
-                            <label class="col-md-3 control-label"><?=_t( 'Extension' );?></label>
-                            <div class="col-md-8">
-                                <input type="text" name="ext1"<?=aio();?> class="form-control" value="<?=_h($addr[0]['ext1']);?>" />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                    </div>
-                    
-                    <!-- Column -->
-                    <div class="col-md-4">
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            
-                            <label class="col-md-3 control-label"><?=_t( 'Type' );?></label>
-                            <div class="col-md-8">
-                                <select name="phoneType1" class="selectpicker col-md-8" data-style="btn-info" data-size="10" data-live-search="true"<?=aio();?>>
-                                    <option value="">&nbsp;</option>
-                                    <option value="BUS"<?=selected(_h($addr[0]['phoneType1']),'BUS',false);?>><?=_t( 'Business' );?></option>
-                                    <option value="CEL"<?=selected(_h($addr[0]['phoneType1']),'CEL',false);?>><?=_t( 'Cellular' );?></option>
-                                    <option value="H"<?=selected(_h($addr[0]['phoneType1']),'H',false);?>><?=_t( 'Home' );?></option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                    </div>
-                </div>
-                <!-- Row End -->
                 
-                <!-- Row -->
-                <div class="row">
-                    <!-- Column -->
-                    <div class="col-md-4">
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Phone' );?></label>
-                            <div class="col-md-8">
-                                <input type="text" name="phone2"<?=aio();?> class="form-control" value="<?=_h($addr[0]['phone2']);?>" />
+                <fieldset>
+                    <legend><?=_t( 'Personal Details' );?></legend>
+                    <div data-row-span="4">
+                        <div data-field-span="1" class="readonly">
+                            <label><?= _t("Person ID"); ?></label>
+                            <input type="text" readonly value="<?=_h($nae[0]['personID']);?>" />
+                        </div>
+                        <div data-field-span="1" class="readonly">
+                            <label><?=_t( 'First Name' );?></label>
+                            <input type="text" readonly value="<?=_h($nae[0]['fname']);?>" />
+                        </div>
+                        <div data-field-span="1" class="readonly">
+                            <label><?=_t( 'Last Name' );?></label>
+                            <input type="text" readonly value="<?=_h($nae[0]['lname']);?>" />
+                        </div>
+                        <div data-field-span="1" class="readonly">
+                            <label><?=_t( 'Middle Initial' );?></label>
+                            <input type="text" readonly value="<?=_h($nae[0]['mname']);?>" />
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <br /><br />
+                
+                <fieldset>
+                    <legend><?=_t( 'Mailing Address & Contact Details' );?></legend>
+                    <div data-row-span="2">
+                        <div data-field-span="1">
+                            <label><font color="red">*</font> <?=_t( 'Address1' );?></label>
+                            <input type="text" name="address1"<?=aio();?> value="<?=_h($addr[0]['address1']);?>" required/>
+                        </div>
+                        <div data-field-span="1">
+                            <label><?=_t( 'Address2' );?></label>
+                            <input type="text" name="address2"<?=aio();?> value="<?=_h($addr[0]['address2']);?>" />
+                        </div>
+                    </div>
+                    <div data-row-span="4">
+                        <div data-field-span="1">
+                            <label><font color="red">*</font> <?=_t( 'City' );?></label>
+                            <input type="text" name="city"<?=aio();?> value="<?=_h($addr[0]['city']);?>" required />
+                        </div>
+                        <div data-field-span="1">
+                            <label><?=_t( 'State' );?></label>
+                            <select name="state" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                                <option value="">&nbsp;</option>
+                                <?php table_dropdown('state',null,'code','code','name',_h($addr[0]['state'])); ?>
+                            </select>
+                        </div>
+                        <div data-field-span="1">
+                            <label><?=_t( 'Zip/Postal Code' );?></label>
+                            <input type="text" name="zip"<?=aio();?> value="<?=_h($addr[0]['zip']);?>" />
+                        </div>
+                        <div data-field-span="1">
+                            <label><?=_t( 'Country' );?></label>
+                            <select name="country" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                                <option value="">&nbsp;</option>
+                                <?php table_dropdown('country',null,'iso2','iso2','short_name',_h($addr[0]['country'])); ?>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <br /><br />
+                
+                <fieldset>
+                    <legend><?=_t( 'Address Status' );?></legend>
+                    <div data-row-span="4">
+                        <div data-field-span="1">
+                            <label><font color="red">*</font> <?=_t( 'Address Type' );?></label>
+                            <?=address_type_select(_h($addr[0]['addressType']));?>
+                        </div>
+                        <div data-field-span="1">
+                            <label><font color="red">*</font> <?=_t( 'Start Date' );?></label>
+                            <div class="input-group date col-md-8" id="datepicker6">
+                                <input name="startDate"<?=aio();?> type="text" value="<?=_h($addr[0]['startDate']);?>" required/>
+                                <span class="input-group-addon"><i class="fa fa-th"></i></span>
                             </div>
                         </div>
-                        <!-- // Group END -->
-                        
+                        <div data-field-span="1">
+                            <label><?=_t( 'End Date' );?></label>
+                            <div class="input-group date col-md-8" id="datepicker7">
+                                <?php if($addr[0]['endDate'] == NULL || $addr[0]['endDate'] == '0000-00-00') { ?>
+                                <input name="endDate"<?=aio();?> type="text" />
+                                <?php } else { ?>
+                                <input name="endDate"<?=aio();?> type="text" value="<?=_h($addr[0]['endDate']);?>" />
+                                <?php } ?>
+                                <span class="input-group-addon"><i class="fa fa-th"></i></span>
+                            </div>
+                        </div>
+                        <div data-field-span="1">
+                            <label><font color="red">*</font> <?=_t( 'Status' );?></label>
+                            <?=address_status_select(_h($addr[0]['addressStatus']));?>
+                        </div>
+                    </div>
+                </fieldset>
+                
+                <br /><br />
+                
+                <fieldset>
+                    <legend><?=_t( 'Contact Details' );?></legend>
+                    <div data-row-span="3">
+                        <div data-field-span="1">
+                            <label><?= _t("Phone1"); ?></label>
+                            <input type="text" name="phone1"<?=aio();?> value="<?=_h($addr[0]['phone1']);?>" />
+                        </div>
+                        <div data-field-span="1">
+                            <label><?=_t( 'Extension1' );?></label>
+                            <input type="text" name="ext1"<?=aio();?> value="<?=_h($addr[0]['ext1']);?>" />
+                        </div>
+                        <div data-field-span="1">
+                            <label><?=_t( 'Type1' );?></label>
+                            <select name="phoneType1" class="selectpicker col-md-8" data-style="btn-info" data-size="10" data-live-search="true"<?=aio();?>>
+                                <option value="">&nbsp;</option>
+                                <option value="BUS"<?=selected(_h($addr[0]['phoneType1']),'BUS',false);?>><?=_t( 'Business' );?></option>
+                                <option value="CEL"<?=selected(_h($addr[0]['phoneType1']),'CEL',false);?>><?=_t( 'Cellular' );?></option>
+                                <option value="H"<?=selected(_h($addr[0]['phoneType1']),'H',false);?>><?=_t( 'Home' );?></option>
+                            </select>
+                        </div>
                     </div>
                     
-                    <!-- Column -->
-                    <div class="col-md-4">
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            
-                            <label class="col-md-3 control-label"><?=_t( 'Extension' );?></label>
-                            <div class="col-md-8">
-                                <input type="text" name="ext2"<?=aio();?> class="form-control" value="<?=_h($addr[0]['ext2']);?>" />
-                            </div>
+                    <div data-row-span="3">
+                        <div data-field-span="1">
+                            <label><?= _t("Phone2"); ?></label>
+                            <input type="text" name="phone2"<?=aio();?> value="<?=_h($addr[0]['phone2']);?>" />
                         </div>
-                        <!-- // Group END -->
-                        
+                        <div data-field-span="1">
+                            <label><?=_t( 'Extension2' );?></label>
+                            <input type="text" name="ext2"<?=aio();?> value="<?=_h($addr[0]['ext2']);?>" />
+                        </div>
+                        <div data-field-span="1">
+                            <label><?=_t( 'Type2' );?></label>
+                            <select name="phoneType2" class="selectpicker col-md-8" data-style="btn-info" data-size="10" data-live-search="true"<?=aio();?>>
+                                <option value="">&nbsp;</option>
+                                <option value="BUS"<?=selected(_h($addr[0]['phoneType2']),'BUS',false);?>><?=_t( 'Business' );?></option>
+                                <option value="CEL"<?=selected(_h($addr[0]['phoneType2']),'CEL',false);?>><?=_t( 'Cellular' );?></option>
+                                <option value="H"<?=selected(_h($addr[0]['phoneType2']),'H',false);?>><?=_t( 'Home' );?></option>
+                            </select>
+                        </div>
                     </div>
                     
-                    <!-- Column -->
-                    <div class="col-md-4">
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            
-                            <label class="col-md-3 control-label"><?=_t( 'Type' );?></label>
-                            <div class="col-md-8">
-                                <select name="phoneType2" class="selectpicker col-md-8" data-style="btn-info" data-size="10" data-live-search="true"<?=aio();?>>
-                                    <option value="">&nbsp;</option>
-                                    <option value="BUS"<?=selected(_h($addr[0]['phoneType2']),'BUS',false);?>><?=_t( 'Business' );?></option>
-                                    <option value="CEL"<?=selected(_h($addr[0]['phoneType2']),'CEL',false);?>><?=_t( 'Cellular' );?></option>
-                                    <option value="H"<?=selected(_h($addr[0]['phoneType2']),'H',false);?>><?=_t( 'Home' );?></option>
-                                </select>
-                            </div>
+                    <div data-row-span="2">
+                        <div data-field-span="1" class="readonly">
+                            <label><?= _t("Primary Email"); ?></label>
+                            <input type="email" readonly value="<?=_h($addr[0]['email1']);?>" />
                         </div>
-                        <!-- // Group END -->
-                        
+                        <div data-field-span="1">
+                            <label><?=_t( 'Secondary Email' );?></label>
+                            <input type="email" name="email2"<?=aio();?> value="<?=_h($addr[0]['email2']);?>" />
+                        </div>
                     </div>
-                </div>
-                <!-- Row End -->
-            </div>
-            
-                <hr class="separator" />
+                </fieldset>
                 
-            <div class="widget-body">       
-                <!-- Row -->
-                <div class="row">
-                    <!-- Column -->
-                    <div class="col-md-12">
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Primary Email' );?></label>
-                            <div class="col-md-8">
-                                <input type="email" readonly class="form-control" value="<?=_h($addr[0]['email1']);?>" />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                    </div>
-                </div>
-                <!-- Row End -->
+                <br /><br />
                 
-                <!-- Row -->
-                <div class="row-fluid">
-                    <!-- Column -->
-                    <div class="col-md-12">
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Secondary Email' );?></label>
-                            <div class="col-md-8">
-                                <input type="email" name="email2"<?=aio();?> class="form-control" value="<?=_h($addr[0]['email2']);?>" />
-                            </div>
+                <fieldset>
+                    <legend><?=_t( 'System Status' );?></legend>
+                    <div data-row-span="2">
+                        <div data-field-span="1" class="readonly">
+                            <label><?= _t("Add Date"); ?></label>
+                            <input type="text" readonly value="<?=date('D, M d, o',strtotime(_h($addr[0]['addDate'])));?>" />
                         </div>
-                        <!-- // Group END -->
-                        
+                        <div data-field-span="1" class="readonly">
+                            <label><?=_t( 'Added By' );?></label>
+                            <input type="text" readonly value="<?=get_name(_h((int)$addr[0]['addedBy']));?>" />
+                        </div>
                     </div>
-                </div>
-                <!-- Row End -->
-            </div>
+                </fieldset>
 				
-				<hr class="separator" />
+				<hr class="separator hidden-print" />
 				
 				<!-- Form actions -->
-				<div class="form-actions">
+				<div class="form-actions hidden-print">
 					<button type="submit"<?=aids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/adsu/<?=_h($addr[0]['personID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/adsu/<?=_h($addr[0]['personID']);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

@@ -12,7 +12,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'cron';
 $options = [
                  30        => '30 seconds',
@@ -36,14 +35,9 @@ $options = [
 ];
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'View Cronjob Handler' );?></li>
 </ul>
@@ -56,7 +50,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>cron/view/<?=$cron->id;?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>cron/<?=$cron->id;?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -64,10 +58,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons dashboard active"><a href="<?=get_base_url();?>cron/<?=bm();?>"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
-                    <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/<?=bm();?>"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
-                    <li class="glyphicons wrench tab-stacked"><a href="<?=get_base_url();?>cron/setting/<?=bm();?>"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
-                    <!-- <li class="glyphicons circle_question_mark tab-stacked"><a href="<?=get_base_url();?>cron/about/<?=bm();?>"><i></i> <span><?=_t( 'About' );?></span></a></li> -->
+                    <li class="glyphicons dashboard active"><a href="<?=get_base_url();?>cron/"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
+                    <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
+                    <li class="glyphicons wrench tab-stacked"><a href="<?=get_base_url();?>cron/setting/"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->

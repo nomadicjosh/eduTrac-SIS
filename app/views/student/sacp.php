@@ -12,25 +12,22 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
-$stu = get_student(_h($sacp[0]['stuID']));
+$stu = get_student(_h($sacp->stuID));
 ?>
 
 <script type="text/javascript">
 function addMsg(text,element_id) {
 	document.getElementById(element_id).value += text;
 }
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+	<li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=$stu->stuID;?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name($stu->stuID);?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=$stu->stuID;?>/" class="glyphicons user"><i></i> <?=get_name($stu->stuID);?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Edit Student Program (SACP)' );?></li>
 </ul>
@@ -44,7 +41,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 	<?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacp/<?=_h($sacp[0]['stuProgID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacp/<?=_h($sacp->stuProgID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -66,7 +63,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Program' );?></label>
 							<div class="col-md-8">
-								<input type="text" readonly class="form-control" value="<?=_h($sacp[0]['acadProgCode']);?>" />
+								<input type="text" readonly class="form-control" value="<?=_h($sacp->acadProgCode);?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -75,7 +72,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'School' );?></label>
                             <div class="col-md-8">
-                                <input type="text" readonly class="form-control" value="<?=_h($sacp[0]['schoolCode'].' '.$sacp[0]['schoolName']);?>" />
+                                <input type="text" readonly class="form-control" value="<?=_h($sacp->schoolCode.' '.$sacp->schoolName);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -84,7 +81,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Ant Grad Date' );?></label>
                             <div class="col-md-2">
-                                <input type="text"<?=sio();?> name="antGradDate" class="form-control center" value="<?=_h($sacp[0]['antGradDate']);?>" required />
+                                <input type="text"<?=sio();?> name="antGradDate" class="form-control center" value="<?=_h($sacp->antGradDate);?>" required />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -95,7 +92,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <div class="col-md-8">
                                 <select name="advisorID"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php facID_dropdown(_h($sacp[0]['advisorID'])); ?>
+                                    <?php facID_dropdown(_h($sacp->advisorID)); ?>
                                 </select>
                             </div>
                         </div>
@@ -105,7 +102,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <input type="text" readonly class="form-control" value="<?=_h($sacp[0]['acadLevelCode']);?>" />
+                                <input type="text" readonly class="form-control" value="<?=_h($sacp->acadLevelCode);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -116,7 +113,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <div class="col-md-8">
                                 <select name="catYearCode"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('acad_year', 'acadYearCode <> "NULL"', 'acadYearCode', 'acadYearCode', 'acadYearDesc',_h($sacp[0]['catYearCode'])); ?>
+                                    <?php table_dropdown('acad_year', 'acadYearCode <> "NULL"', 'acadYearCode', 'acadYearCode', 'acadYearDesc',_h($sacp->catYearCode)); ?>
                                 </select>
                             </div>
                         </div>
@@ -128,8 +125,8 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 							<div class="col-md-4">
 								<select name="eligible_to_graduate"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected('1',_h($sacp[0]['eligible_to_graduate']),false);?>><?=_t( 'Yes' );?></option>
-                                    <option value="0"<?=selected('0',_h($sacp[0]['eligible_to_graduate']),false);?>><?=_t( 'No' );?></option>
+                                    <option value="1"<?=selected('1',_h($sacp->eligible_to_graduate),false);?>><?=_t( 'Yes' );?></option>
+                                    <option value="0"<?=selected('0',_h($sacp->eligible_to_graduate),false);?>><?=_t( 'No' );?></option>
                                 </select>
 							</div>
 						</div>
@@ -145,18 +142,18 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Status' );?></label>
                             <div class="col-md-8">
-                                <?=stu_prog_status_select(_h($sacp[0]['currStatus']));?>
+                                <?=stu_prog_status_select(_h($sacp->currStatus));?>
                             </div>
                         </div>
                         <!-- // Group END -->
 					    
-					    <?php if(_h($sacp[0]['currStatus']) == 'G' || _h($sacp[0]['graduationDate']) > '0000-00-00') { ?>
+					    <?php if(_h($sacp->currStatus) == 'G' || _h($sacp->graduationDate) > '0000-00-00') { ?>
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Graduation Date' );?></label>
                             <div class="col-md-8">
                                 <div class="input-group date" id="datepicker6">
-                                    <input class="form-control"<?=sio();?> name="graduationDate"<?=sio();?> type="text" value="<?=_h($sacp[0]['graduationDate']);?>" />
+                                    <input class="form-control"<?=sio();?> name="graduationDate"<?=sio();?> type="text" value="<?=_h($sacp->graduationDate);?>" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
@@ -169,17 +166,17 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Start / End Date' );?></label>
                             <div class="col-md-4">
                                 <div class="input-group date" id="datepicker7">
-                                    <input class="form-control"<?=sio();?> name="startDate" type="text" value="<?=_h($sacp[0]['startDate']);?>" required/>
+                                    <input class="form-control"<?=sio();?> name="startDate" type="text" value="<?=_h($sacp->startDate);?>" required/>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
                             
                             <div class="col-md-4">
                                 <div class="input-group date" id="datepicker8">
-                                    <?php if($sacp[0]['endDate'] == NULL || $sacp[0]['endDate'] == '0000-00-00') { ?>
+                                    <?php if($sacp->endDate == NULL || $sacp->endDate == '0000-00-00') { ?>
                                     <input class="form-control"<?=sio();?> name="endDate"<?=sio();?> type="text" />
                                     <?php } else { ?>
-                                    <input class="form-control"<?=sio();?> name="endDate"<?=sio();?> type="text" value="<?=_h($sacp[0]['endDate']);?>" />
+                                    <input class="form-control"<?=sio();?> name="endDate"<?=sio();?> type="text" value="<?=_h($sacp->endDate);?>" />
                                     <?php } ?>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
@@ -190,7 +187,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Comments' );?></label>
-                            &nbsp;&nbsp;&nbsp;<a href="#comment-<?=_h($stu->stuID);?>" data-toggle="modal" title="Edit Comment" class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                            &nbsp;&nbsp;&nbsp;<a href="#comment-<?=_h($stu->stuID);?>" data-toggle="modal" title="Edit Comment" class="btn <?=(_h($sacp->Comment) == 'empty' ? 'btn-primary' : 'btn-danger');?>"><i class="fa fa-edit"></i></a>
                         </div>
                         <div class="modal fade" id="comment-<?=_h($stu->stuID);?>">
                         	<div class="modal-dialog">
@@ -202,7 +199,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 									</div>
 									<!-- // Modal heading END -->
                                     <div class="modal-body">
-                                        <textarea id="<?=_h($stu->stuID);?>" name="comments" class="form-control" rows="5"><?=_h($sacp[0]['comments']);?></textarea>
+                                        <textarea id="<?=_h($stu->stuID);?>" name="comments" class="form-control" rows="5"><?=_h($sacp->comments);?></textarea>
                                         <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=date('D, M d, o @ h:i A',strtotime(date('Y-m-d h:i A')));?> <?=get_name(get_persondata('personID'));?>','<?=_h($stu->stuID);?>'); return false;" />
                                     </div>
                                     <div class="modal-footer">
@@ -217,7 +214,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Approved By' );?></label>
                             <div class="col-md-6">
-                                <input type="text" readonly class="form-control" value="<?=_h(get_name($sacp[0]['approvedBy']));?>" />
+                                <input type="text" readonly class="form-control" value="<?=_h(get_name($sacp->approvedBy));?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -226,7 +223,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Last Update' );?></label>
                             <div class="col-md-6">
-                                <input type="text" readonly class="form-control" value="<?=date('D, M d, o @ h:i A',strtotime(_h($sacp[0]['LastUpdate'])));?>" />
+                                <input type="text" readonly class="form-control" value="<?=date('D, M d, o @ h:i A',strtotime(_h($sacp->LastUpdate)));?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -242,8 +239,8 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<div class="form-actions">
 				    <input type="hidden" name="stuID" value="<?=_h($stu->stuID);?>" />
 					<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" onclick="window.location='<?=get_base_url();?>stu/add-prog/<?=_h($stu->stuID);?>/<?=bm();?>'"><i></i><?=_t( 'Add' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" onclick="window.location='<?=get_base_url();?>stu/add-prog/<?=_h($stu->stuID);?>/'"><i></i><?=_t( 'Add' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

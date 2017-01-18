@@ -27,7 +27,7 @@
 </script>
 
 <!-- Widget -->
-<div class="widget widget-body-white col-md-2">
+<div class="widget widget-body-white col-md-2 hidden-print">
 
     <div class="widget-body">
 
@@ -45,6 +45,9 @@
                                 <?php endif; ?>
                                 <?php if(_he('access_plugin_admin_page')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_3"><a<?=($screen === 'imod') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>dashboard/install-module/"><?=_t( 'Install Module' );?></a></li>
+                                <?php endif; ?>
+                                <?php if(_he('send_sms')) : ?>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_104"><a<?=($screen === 'sms') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>dashboard/sms/"><?=_t( 'SMS' );?></a></li>
                                 <?php endif; ?>
                             </ul>
                         </li>

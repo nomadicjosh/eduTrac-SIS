@@ -19,6 +19,8 @@ $app->view->block('myet');
 			
 			<div class="separator bottom"></div>
 			<div class="separator bottom"></div>
+            
+            <?=_etsis_flash()->showMessage();?>
 		
 			<div class="widget widget-heading-simple widget-body-white">
 				<div class="widget-body">
