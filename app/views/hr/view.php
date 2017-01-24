@@ -14,21 +14,14 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'hr';
-$flash = new \app\src\Core\etsis_Messages();
-$staffInfo = new \app\src\Staff;
-$staffInfo->Load_from_key(_h($staff->staffID));
+$staffInfo = get_staff(_h($staff->staffID));
 ?>
-
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 5000);
-</script>
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here' );?></li>
-    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>hr/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Employee' );?></a></li>
+    <li><a href="<?=get_base_url();?>hr/" class="glyphicons search"><i></i> <?=_t( 'Search Employee' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'View Employee' );?></li>
 </ul>
@@ -39,8 +32,8 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <div class="relativeWrap">
         <div class="widget">
             <div class="widget-head">
-                <h4 class="heading glyphicons user"><i></i><?=get_name(_h($staffInfo->getStaffID()));?></h4>
-                <a href="<?=get_base_url();?>staff/<?=_h($staffInfo->getStaffID());?>/" class="heading pull-right"><?=_h($staffInfo->getStaffID());?></a>
+                <h4 class="heading glyphicons user"><i></i><?=get_name(_h($staffInfo->staffID));?></h4>
+                <a href="<?=get_base_url();?>staff/<?=_h($staffInfo->staffID);?>/" class="heading pull-right"><?=_h($staffInfo->staffID);?></a>
             </div>
             <div class="widget-body">
                 <!-- 3 Column Grid / One Third -->
@@ -48,31 +41,31 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                     
                     <!-- One Third Column -->
                     <div class="col-md-1">
-                        <?=getSchoolPhoto($staffInfo->getStaffID(), $staffInfo->getEmail(), '90');?>
+                        <?=getSchoolPhoto($staffInfo->staffID, $staffInfo->email, '90');?>
                     </div>
                     <!-- // One Third Column END -->
     
                     <!-- One Third Column -->
                     <div class="col-md-3">
-                        <p><?=_h($staffInfo->getAddress1());?> <?=_h($staffInfo->getAddress2());?></p>
-                        <p><?=_h($staffInfo->getCity());?> <?=_h($staffInfo->getState());?> <?=_h($staffInfo->getZip());?></p>
-                        <p><strong><?=_t( 'Phone:' );?></strong> <?=_h($staffInfo->getPhone1());?></p>
+                        <p><?=_h($staffInfo->address1);?> <?=_h($staffInfo->address2);?></p>
+                        <p><?=_h($staffInfo->city);?> <?=_h($staffInfo->state);?> <?=_h($staffInfo->zip);?></p>
+                        <p><strong><?=_t( 'Phone:' );?></strong> <?=_h($staffInfo->phone1);?></p>
                     </div>
                     <!-- // One Third Column END -->
                     
                     <!-- One Third Column -->
                     <div class="col-md-4">
-                    	<p><strong><?=_t( 'Title:' );?></strong> <?=_h($staffInfo->getTitle());?></p>
-                    	<p><strong><?=_t( 'Dept:' );?></strong> <?=_h($staffInfo->getDeptName());?></p>
-                    	<p><strong><?=_t( 'Office:' );?></strong> <?=_h($staffInfo->getOfficeCode());?></p>
+                    	<p><strong><?=_t( 'Title:' );?></strong> <?=_h($staffInfo->title);?></p>
+                    	<p><strong><?=_t( 'Dept:' );?></strong> <?=_h($staffInfo->deptName);?></p>
+                    	<p><strong><?=_t( 'Office:' );?></strong> <?=_h($staffInfo->officeCode);?></p>
                     </div>
                     <!-- // One Third Column END -->
                     
                     <!-- One Third Column -->
                     <div class="col-md-3">
-                        <p><strong><?=_t( 'Office Phone:' );?></strong> <?=_h($staffInfo->getOfficePhone());?></p>
-                        <p><strong><?=_t( 'Email:' );?></strong> <a href="mailto:<?=_h($staffInfo->getEmail());?>"><?=_h($staffInfo->getEmail());?></a></p>
-                        <p><strong><?=_t( 'Status:' );?></strong> <?=_h($staffInfo->getStaffStatus());?></p>
+                        <p><strong><?=_t( 'Office Phone:' );?></strong> <?=_h($staffInfo->office_phone);?></p>
+                        <p><strong><?=_t( 'Email:' );?></strong> <a href="mailto:<?=_h($staffInfo->email);?>"><?=_h($staffInfo->email);?></a></p>
+                        <p><strong><?=_t( 'Status:' );?></strong> <?=_h($staffInfo->staffStatus);?></p>
                     </div>
                     <!-- // One Third Column END -->
                     
@@ -355,7 +348,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                 <div class="form-actions">
                     <input type="hidden" name="sMetaID" value="<?=_h($staff->sMetaID);?>" />
                     <button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>hr/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>hr/'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>
                 <!-- // Form actions END -->
                 

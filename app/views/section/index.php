@@ -16,7 +16,7 @@ $screen = 'sect';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Sections' );?></li>
 </ul>
@@ -37,7 +37,7 @@ $screen = 'sect';
 					<div class="widget-body">
 						
 						<div class="widget widget-heading-simple widget-body-simple text-right form-group">
-							<form class="form-search text-center" action="<?=get_base_url();?>sect/<?=bm();?>" method="post" autocomplete="off">
+							<form class="form-search text-center" action="<?=get_base_url();?>sect/" method="post" autocomplete="off">
 							  	<input type="text" name="sect" class="form-control" placeholder="Search by department, subject or section code . . . " /> 
 							</form>
 						</div>
@@ -82,7 +82,7 @@ $screen = 'sect';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>sect/<?=_h($v['courseSecID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>sect/<?=_h($v['courseSecID']);?>/"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

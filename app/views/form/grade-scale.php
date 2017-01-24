@@ -12,21 +12,15 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'grsc';
 ?>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Grade Scale' );?></li>
 </ul>
-
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 5000);
-</script>
 
 <h3><?=_t( 'Grade Scale' );?></h3>
 <div class="innerLR">
@@ -184,7 +178,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                     <td class="text-center"><?=_h($value['points']);?></td>
                     <td class="text-center"><?=_bool(_h($value['status']));?></td>
                     <td class="center">
-                        <a href="<?=get_base_url(); ?>form/grade-scale/<?=_h($value['ID']); ?>/<?=bm();?>" title="View" class="btn btn-default"><i class="fa fa-eye"></i></a>
+                        <a href="<?=get_base_url(); ?>form/grade-scale/<?=_h($value['ID']); ?>/" title="View" class="btn btn-default"><i class="fa fa-eye"></i></a>
                     </td>
                 </tr>
                 <?php } endif; ?>

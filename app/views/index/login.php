@@ -14,11 +14,6 @@ $app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout')
 $app->view->block('myet');
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
-
 <div id="login" class="col-md-12">
 	
 	<div class="separator bottom"></div>

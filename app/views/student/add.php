@@ -12,7 +12,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $antGradDate = date("05/d/y",strtotime("+4 years"));
 ?>
 
@@ -33,15 +32,13 @@ jQuery(document).ready(function() {
         });
     });
 });
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+	<li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Add Student' );?></li>
 </ul>

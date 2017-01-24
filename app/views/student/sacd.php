@@ -12,22 +12,16 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $stu = get_student(_h($sacd[0]['stuID']));
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
-
 <ul class="breadcrumb">
     <li><?=_t( 'You are here' );?></li>
-    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>" class="glyphicons coins"><i></i> <?=_t( 'Academic Credits' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/" class="glyphicons coins"><i></i> <?=_t( 'Academic Credits' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'View Academic Credits (SACD)' );?></li>
 </ul>
@@ -55,7 +49,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><?=_t( 'CRSE ID/Name/Sec' );?> <a href="<?=get_base_url();?>crse/<?=_h($sacd[0]['courseID']);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+							<label class="col-md-3 control-label"><?=_t( 'CRSE ID/Name/Sec' );?> <a href="<?=get_base_url();?>crse/<?=_h($sacd[0]['courseID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
 							<div class="col-md-3">
 								<input type="text" name="courseID" value="<?=_h($sacd[0]['courseID']);?>" class="form-control" required/>
 							</div>
@@ -241,7 +235,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

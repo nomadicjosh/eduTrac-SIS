@@ -12,20 +12,14 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'term';
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 5000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-    <li><a href="<?=get_base_url();?>form/term/<?=bm();?>" class="glyphicons pin_flag"><i></i> <?=_t( 'Term' );?></a></li>
+    <li><a href="<?=get_base_url();?>form/term/" class="glyphicons pin_flag"><i></i> <?=_t( 'Term' );?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'View Term' );?></li>
 </ul>
@@ -154,7 +148,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>form/term/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>form/term/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

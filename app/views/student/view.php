@@ -14,7 +14,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $stu = get_student(_h($prog[0]['stuID']));
 $list = '"'.implode('","', tagList()).'"';
 ?>
@@ -27,15 +26,13 @@ $(function() {
 	$("#select2_5").select2({tags:[]});
 <?php endif; ?>
 });
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here');?></li>
-    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
     <li><?=get_name(_h($stu->stuID));?> <?=_t( '(SPRO)' );?></li>
 </ul>
@@ -57,11 +54,11 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons user active"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-                    <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-                    <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-                    <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
-                    <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+                    <li class="glyphicons user active"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/" data-toggle="tab"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+                    <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+                    <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+                    <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
+                    <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -93,7 +90,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <tbody>
                             <?php if($prog != '') : foreach($prog as $k => $v) { ?>
                             <tr class="gradeX">
-                                <td class="text-center"><a href="<?=get_base_url();?>stu/sacp/<?=_h($v['stuProgID']);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></td>
+                                <td class="text-center"><a href="<?=get_base_url();?>stu/sacp/<?=_h($v['stuProgID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></td>
                                 <td><input class="form-control center" type="text" readonly value="<?=_h($v['acadProgCode']);?>" /></td>
                                 <td><input class="form-control center" type="text" readonly value="<?=_h($v['progAcadLevel']);?>" /></td>
                                 <td><input class="form-control center" type="text" readonly value="<?=_h($v['currStatus']);?>" /></td>
@@ -157,7 +154,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                 <!-- Form actions -->
                 <div class="form-actions">
                     <button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>
                 <!-- // Form actions END -->
                 

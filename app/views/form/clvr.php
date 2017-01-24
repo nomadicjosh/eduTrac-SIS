@@ -13,7 +13,6 @@ if (!defined('BASE_PATH'))
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'aclv';
 
 ?>
@@ -29,11 +28,6 @@ $screen = 'aclv';
             $(".item-row:last").after('<tr class="item-row"><td class="center item-name"><select name="rule[]" class="rule selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required><option value="">&nbsp;</option><?php get_rules(); ?></select></td><td><select name="value[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required><option value="">&nbsp;</option><?php clas_dropdown("clas", "acadLevelCode = ?", "code", "code", "name", [_h($aclv->code)]); ?></select><input name="level" type="hidden" value="<?= _h($aclv->code); ?>" /></td><td><a href="javascript:;" title="Remove row" class="delme btn btn-danger"><i class="fa fa-minus"></i></a></td></tr>');
         });
     });
-
-    $(".panel").show();
-    setTimeout(function () {
-        $(".panel").hide();
-    }, 10000);
 </script>
 
 <ul class="breadcrumb">

@@ -12,20 +12,14 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'ayr';
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 5000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>form/acad-year/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_t( 'Academic Year' );?></a></li>
+	<li><a href="<?=get_base_url();?>form/acad-year/" class="glyphicons adjust_alt"><i></i> <?=_t( 'Academic Year' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'View Academic Year' );?></li>
 </ul>
@@ -82,7 +76,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=gids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>form/acad-year/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>form/acad-year/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

@@ -21,7 +21,7 @@ $app->view->block('dashboard');
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Online Documenation' );?></li>
 </ul>
@@ -34,7 +34,7 @@ $app->view->block('dashboard');
 		
 		<div class="widget-body">
 			
-			<iframe src="https://www.edutracsis.com/" width="100%" height="900" marginwidth="0" marginheight="0" frameborder="0">
+			<iframe src="https://www.edutracsis.com/knowledgebase/" width="100%" height="900" marginwidth="0" marginheight="0" frameborder="0">
 			  <p><?=_t( 'Your browser does not support iframes.' );?></p>
 			</iframe>
 			

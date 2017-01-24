@@ -11,21 +11,15 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 include('ajax.php');
 $screen = 'vprog';
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 5000);
-</script>
-
 <ul class="breadcrumb">
     <li><?=_t( 'You are here' );?></li>
-    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>program/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Program' );?></a></li>
+    <li><a href="<?=get_base_url();?>program/" class="glyphicons search"><i></i> <?=_t( 'Search Program' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'View Program' );?></li>
 </ul>
@@ -314,7 +308,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                 <div class="form-actions">
                     <input class="form-control" type="hidden" name="acadProgID" value="<?=_h($prog->acadProgID);?>" />
                     <button type="submit"<?=apids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>program/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>program/'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>
                 <!-- // Form actions END -->
                 

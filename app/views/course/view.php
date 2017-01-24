@@ -11,7 +11,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 include('ajax.php');
 $screen = 'vcrse';
 ?>
@@ -20,15 +19,13 @@ $screen = 'vcrse';
 <script src="<?=get_base_url();?>static/assets/plugins/tinymce/plugin.js"></script>
 <script type="text/javascript">
 	tinymce.init({selector: "textarea",plugins: [ "placeholder" ]});
-	$(".panel").show();
-	setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url()?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url()?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>crse/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
+	<li><a href="<?=get_base_url();?>crse/" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_h($crse->courseCode);?></li>
 </ul>
@@ -249,7 +246,7 @@ $screen = 'vcrse';
 						
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Additional Info' );?> <a href="<?=get_base_url();?>crse/addnl/<?=_h($crse->courseID);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Additional Info' );?> <a href="<?=get_base_url();?>crse/addnl/<?=_h($crse->courseID);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-1">
                                 <?php
                                      if($crse->preReq != '' || $crse->allowAudit != 0  || $crse->allowWaitlist != 0 || 
@@ -283,7 +280,7 @@ $screen = 'vcrse';
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=cids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				
@@ -311,7 +308,7 @@ $screen = 'vcrse';
                 <!-- // Modal body END -->
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse->courseID);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
+                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse->courseID);?>/" class="btn btn-default"><?=_t( 'Yes' );?></a>
                     <a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'No' );?></a> 
                 </div>
                 <!-- // Modal footer END -->

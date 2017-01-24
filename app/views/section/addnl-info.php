@@ -11,22 +11,16 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'vsect';
 ?>
 
-<script type="text/javascript">
-	$(".panel").show();
-	setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url()?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url()?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>sect/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
+	<li><a href="<?=get_base_url();?>sect/" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($sect->termCode);?>-<?=_h($sect->courseSecCode);?></a></li>
+	<li><a href="<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/" class="glyphicons adjust_alt"><i></i> <?=_h($sect->termCode);?>-<?=_h($sect->courseSecCode);?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'View Section' );?></li>
 </ul>
@@ -53,12 +47,12 @@ $screen = 'vsect';
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons adjust_alt"><a href="<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <?=_h($sect->courseSection);?></a></li>
-                    <li class="glyphicons circle_info active"><a href="<?=get_base_url();?>sect/addnl/<?=_h($sect->courseSecID);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Additional Info' );?></a></li>
-                    <li class="glyphicons more_items tab-stacked"><a href="<?=get_base_url();?>sect/soff/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <?=_t( 'Offering Info' );?></a></li>
-                    <li<?=ml('financial_module');?> class="glyphicons money tab-stacked"><a href="<?=get_base_url();?>sect/sbill/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <?=_t( 'Billing Info' );?></a></li>
+                    <li class="glyphicons adjust_alt"><a href="<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/"><i></i> <?=_h($sect->courseSection);?></a></li>
+                    <li class="glyphicons circle_info active"><a href="<?=get_base_url();?>sect/addnl/<?=_h($sect->courseSecID);?>/" data-toggle="tab"><i></i> <?=_t( 'Additional Info' );?></a></li>
+                    <li class="glyphicons more_items tab-stacked"><a href="<?=get_base_url();?>sect/soff/<?=_h($sect->courseSecID);?>/"><i></i> <?=_t( 'Offering Info' );?></a></li>
+                    <li<?=ml('financial_module');?> class="glyphicons money tab-stacked"><a href="<?=get_base_url();?>sect/sbill/<?=_h($sect->courseSecID);?>/"><i></i> <?=_t( 'Billing Info' );?></a></li>
                     <?php if($sect->roomCode != '') : ?>
-                    <li<?=ml('booking_module');?> class="glyphicons calendar tab-stacked"><a href="<?=get_base_url();?>sect/sbook/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Booking Info' );?></span></a></li>
+                    <li<?=ml('booking_module');?> class="glyphicons calendar tab-stacked"><a href="<?=get_base_url();?>sect/sbook/<?=_h($sect->courseSecID);?>/"><i></i> <span><?=_t( 'Booking Info' );?></span></a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -140,7 +134,7 @@ $screen = 'vsect';
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=csids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

@@ -13,7 +13,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 include('ajax.php');
 $screen = 'acrse';
 ?>
@@ -22,15 +21,13 @@ $screen = 'acrse';
 <script src="<?=get_base_url();?>static/assets/plugins/tinymce/plugin.js"></script>
 <script type="text/javascript">
 	tinymce.init({selector: "textarea",plugins: [ "placeholder" ]});
-	$(".panel").show();
-	setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>crse/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
+	<li><a href="<?=get_base_url();?>crse/" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Create Course' );?></li>
 </ul>

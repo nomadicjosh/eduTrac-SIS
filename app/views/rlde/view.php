@@ -12,13 +12,13 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'rlde';
 ?>
 
 <script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 5000);
+function addMsg(text,element_id) {
+	document.getElementById(element_id).value += text;
+}
 </script>
 
 <ul class="breadcrumb">
@@ -75,7 +75,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 						<!-- Group -->
 						<div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Rule Code' );?> <a href="#rlde" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
-							<div class="col-md-8"><input class="form-control" name="code" type="text" value="<?=_h($rule->code);?>" required /></div>
+							<div class="col-md-8"><input class="form-control" name="code" type="text" value="<?=_h($rule->code);?>" maxlength="10" required /></div>
 						</div>
 						<!-- // Group END -->
                         
@@ -113,7 +113,10 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <!-- Group -->
 						<div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Comment' );?></label>
-                            <div class="col-md-8"><textarea style="resize: none;height:8em;" class="form-control" name="comment"><?=_h($rule->comment);?></textarea></div>
+                            <div class="col-md-8">
+                                <textarea id="comment" style="resize: none;height:8em;" class="form-control" name="comment"><?=_h($rule->comment);?></textarea>
+                                <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','comment'); return false;" />
+                            </div>
 						</div>
 						<!-- // Group END -->
 						
@@ -256,6 +259,10 @@ var options = {
     id: 'sttr.termCode',
     label: 'Term Code',
     type: 'string',
+    input: 'select',
+    values: {
+        <?php get_acad_terms(); ?>
+    },
     optgroup: 'sttr',
     operators: ['equal','in','not_in','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
   },
@@ -263,6 +270,10 @@ var options = {
     id: 'sttr.acadLevelCode',
     label: 'Academic Level',
     type: 'string',
+    input: 'select',
+    values: {
+        <?php get_acad_levels(); ?>
+    },
     optgroup: 'sttr',
     operators: ['equal','in','not_in','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
   },
@@ -292,9 +303,22 @@ var options = {
     id: 'sttr.created',
     label: 'Created Date',
     type: 'date',
+    validation: {
+      format: 'yyyy-mm-dd'
+    },
+    plugin: 'datepicker',
+    plugin_config: {
+      format: 'yyyy-mm-dd',
+      todayBtn: 'linked',
+      todayHighlight: true,
+      autoclose: true
+    },
     optgroup: 'sttr',
     operators: ['equal','less','less_or_equal','greater','greater_or_equal','between']
   },
+  /*
+   * Student Restrictions
+   */
   {
     id: 'strs.rstrCode',
     label: 'Restriction Code',
@@ -317,6 +341,16 @@ var options = {
     id: 'strs.startDate',
     label: 'Start Date',
     type: 'date',
+    validation: {
+      format: 'yyyy-mm-dd'
+    },
+    plugin: 'datepicker',
+    plugin_config: {
+      format: 'yyyy-mm-dd',
+      todayBtn: 'linked',
+      todayHighlight: true,
+      autoclose: true
+    },
     optgroup: 'strs',
     operators: ['equal','not_equal','less','less_or_equal','greater','greater_or_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null','between','not_between']
   },
@@ -324,6 +358,16 @@ var options = {
     id: 'strs.endDate',
     label: 'End Date',
     type: 'date',
+    validation: {
+      format: 'yyyy-mm-dd'
+    },
+    plugin: 'datepicker',
+    plugin_config: {
+      format: 'yyyy-mm-dd',
+      todayBtn: 'linked',
+      todayHighlight: true,
+      autoclose: true
+    },
     optgroup: 'strs',
     operators: ['equal','not_equal','less','less_or_equal','greater','greater_or_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null','between','not_between']
   }

@@ -13,7 +13,6 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'tran';
-$flash = new \app\src\Core\etsis_Messages();
 $templates_header = get_templates_header(APP_PATH . 'views/student/templates/transcript/');
 ?>
 
@@ -34,13 +33,11 @@ $templates_header = get_templates_header(APP_PATH . 'views/student/templates/tra
         });
     });
 });
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Transcript' );?></li>
 </ul>

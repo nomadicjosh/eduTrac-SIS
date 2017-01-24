@@ -12,12 +12,11 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$db = $app->db->query("SELECT version() AS version")->findOne();
 ?>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'System Snapshot Report' );?></li>
 </ul>
@@ -33,17 +32,17 @@ $db = $app->db->query("SELECT version() AS version")->findOne();
                 <?php
                     $report = '';
                     // add filter for adding to report opening
-                    $report	.= $app->hook->{'apply_filter'}( 'system_snapshot_report_before', '' );
+                    $report	.= $app->hook->apply_filter( 'system_snapshot_report_before', '' );
                     
                     $report .= "\n\t" . '** etSIS DATA **' . PHP_EOL . PHP_EOL;
                     $report .= 'Site URL:'."\t\t\t\t\t\t" . get_base_url() . PHP_EOL;
-                    $report .= 'etSIS Release:' . "\t\t\t\t\t\t" . get_option('etsis_release') . PHP_EOL;
+                    $report .= 'etSIS Release:' . "\t\t\t\t\t\t" . RELEASE_TAG . PHP_EOL;
                     $report .= 'API Key:' . "\t\t\t\t\t\t" . (preg_match('/\s/',get_option('api_key')) ? '<font color="red">'._t('No').'</font>' : '<font color="green">'._t('Yes').'</font>') . PHP_EOL;
-                    $report .= "Active Person Count:"."\t\t\t\t\t".$app->db->person()->where("status = 'A'")->count('personID').PHP_EOL;
-                    $report .= "Active Student Count:"."\t\t\t\t\t".$app->db->student()->where("status = 'A'")->count('stuID').PHP_EOL;
-                    $report .= "Active Staff Count:"."\t\t\t\t\t".$app->db->staff()->where("status = 'A'")->count('staffID').PHP_EOL;
+                    $report .= "Active Person Count:"."\t\t\t\t\t".$nae.PHP_EOL;
+                    $report .= "Active Student Count:"."\t\t\t\t\t".$stu.PHP_EOL;
+                    $report .= "Active Staff Count:"."\t\t\t\t\t".$staf.PHP_EOL;
                     if(function_exists('event_log_module')) :
-                    $report .= sprintf("DB Errors:"."\t\t\t\t\t\t".($app->db->error()->count('ID') <= 0 ? '<font color="green">0</font>' : '<font color="red">'.$app->db->error()->count('ID').'</font> (<a href="%s"><strong>Click Here</strong></a>)'), get_base_url() . 'err/logs/').PHP_EOL;
+                    $report .= sprintf("DB Errors:"."\t\t\t\t\t\t".($error <= 0 ? '<font color="green">0</font>' : '<font color="red">'.$error.'</font> (<a href="%s"><strong>Click Here</strong></a>)'), get_base_url() . 'err/logs/').PHP_EOL;
                     endif;
                     $report .= "\n\t".'** etSIS CONFIG **'.PHP_EOL . PHP_EOL;
                     $report .= 'Environment:'."\t\t\t\t\t\t".(APP_ENV == 'PROD' ? '<font color="green">'._t('Production').'</font>' : '<font color="red">'._t('Development').'</font>').PHP_EOL;
@@ -71,7 +70,7 @@ $db = $app->db->query("SELECT version() AS version")->findOne();
                     $report	.= 'cURL Enabled:'."\t\t\t\t\t\t".(function_exists('curl_version') ? '<font color="green">'._t('Yes').'</font>' : '<font color="red">'._t('No').'</font>').PHP_EOL;
                     
                     // add filter for end of report
-                    $report	.= $app->hook->{'apply_filter'}( 'system_snapshot_report_after', '' );
+                    $report	.= $app->hook->apply_filter( 'system_snapshot_report_after', '' );
                     // end it all
                     $report	.= PHP_EOL;
 

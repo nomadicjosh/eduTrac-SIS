@@ -16,7 +16,7 @@ $app->view->block('dashboard');
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Student' );?></li>
 </ul>
@@ -35,7 +35,7 @@ $app->view->block('dashboard');
 					<div class="widget-body">
 						
 						<div class="widget widget-heading-simple widget-body-simple text-right form-group">
-							<form class="form-search text-center" action="<?=get_base_url();?>stu/<?=bm();?>" method="post" autocomplete="off">
+							<form class="form-search text-center" action="<?=get_base_url();?>stu/" method="post" autocomplete="off">
 							  	<input type="text" name="spro" class="form-control" placeholder="Search by student ID or name . . . " /> 
 							  	<a href="#myModal" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a>
 							</form>
@@ -79,10 +79,10 @@ $app->view->block('dashboard');
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>stu/<?=_h($v['stuID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
-                                <li><a href="<?=get_base_url();?>stu/stac/<?=_h($v['stuID']);?>/<?=bm();?>"><?=_t( 'Academic Credits (STAC)' ); ?></a></li>
-                                <li><a href="<?=get_base_url();?>stu/strc/<?=_h($v['stuID']);?>/<?=bm();?>"><?=_t( 'Restriction (RSTR)' ); ?></a></li>
-                                <li><a href="<?=get_base_url();?>stu/shis/<?=_h($v['stuID']);?>/<?=bm();?>"><?=_t( 'Hiatus (SHIS)' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>stu/<?=_h($v['stuID']);?>/"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>stu/stac/<?=_h($v['stuID']);?>/"><?=_t( 'Academic Credits (STAC)' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>stu/strc/<?=_h($v['stuID']);?>/"><?=_t( 'Restriction (RSTR)' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>stu/shis/<?=_h($v['stuID']);?>/"><?=_t( 'Hiatus (SHIS)' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

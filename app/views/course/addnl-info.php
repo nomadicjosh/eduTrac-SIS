@@ -11,7 +11,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $list = '"'.implode('","', courseList(_h($crse->preReq))).'"';
 $screen = 'vcrse';
 ?>
@@ -20,17 +19,15 @@ $screen = 'vcrse';
 $(function() {
     $("#select2_5").select2({tags:[<?=$list;?>]});
 });
-$(".success-panel").show();
-setTimeout(function() { $(".success-panel").hide(); }, 5000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url()?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url()?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>crse/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
+	<li><a href="<?=get_base_url();?>crse/" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($crse->courseCode);?></a></li>
+	<li><a href="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/" class="glyphicons adjust_alt"><i></i> <?=_h($crse->courseCode);?></a></li>
     <li class="divider"></li>
 	<li><?=_h($crse->courseCode);?></li>
 </ul>
@@ -124,7 +121,7 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=cids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				
@@ -152,7 +149,7 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
                 <!-- // Modal body END -->
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse->courseID);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
+                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse->courseID);?>/" class="btn btn-default"><?=_t( 'Yes' );?></a>
                     <a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'No' );?></a> 
                 </div>
                 <!-- // Modal footer END -->

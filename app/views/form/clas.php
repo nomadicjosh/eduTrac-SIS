@@ -12,7 +12,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'aclv';
 ?>
 
@@ -27,11 +26,6 @@ $screen = 'aclv';
             $(".item-row:last").after('<tr class="gradeX item-row"><td class="text-center item-name"><input class="form-control"<?=gio();?> name="code[]" type="text" required/></td><td class="text-center"><input class="form-control"<?=gio();?> name="name[]" type="text" required /><input name="acadLevelCode" type="hidden" value="<?= _h($aclv->code); ?>" /></td><td><a href="javascript:;" title="Remove row" class="delme btn btn-danger"><i class="fa fa-minus"></i></a></td></tr>');
         });
     });
-
-    $(".panel").show();
-    setTimeout(function () {
-        $(".panel").hide();
-    }, 10000);
 </script>
 
 <ul class="breadcrumb">

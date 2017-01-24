@@ -12,19 +12,13 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 ?>
-
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-    <li><a href="<?=get_base_url();?>plugins/<?=bm();?>" class="glyphicons cogwheel"><i></i> <?=_t( 'Plugins' );?></a></li>
+    <li><a href="<?=get_base_url();?>plugins/" class="glyphicons cogwheel"><i></i> <?=_t( 'Plugins' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Install Plugin' );?></li>
 </ul>
@@ -32,7 +26,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Install Plugin' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <div class="tab-pane" id="search-users">
         <div class="widget widget-heading-simple widget-body-white margin-none">

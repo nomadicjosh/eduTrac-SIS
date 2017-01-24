@@ -12,13 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
 $app->view->block('myet');
-$flash = new \app\src\Core\etsis_Messages();
 ?>
-
-<script type='text/javascript'> 
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 50000);
-</script>
 
 <div class="col-md-12">
 

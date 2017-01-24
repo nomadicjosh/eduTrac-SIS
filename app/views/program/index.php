@@ -16,7 +16,7 @@ $screen = 'prog';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Programs' );?></li>
 </ul>
@@ -37,7 +37,7 @@ $screen = 'prog';
 					<div class="widget-body">
 						
 						<div class="widget widget-heading-simple widget-body-simple text-right form-group">
-							<form class="form-search text-center" action="<?=get_base_url();?>program/<?=bm();?>" method="post" autocomplete="off">
+							<form class="form-search text-center" action="<?=get_base_url();?>program/" method="post" autocomplete="off">
 							  	<input type="text" name="prog" class="form-control" placeholder="Search by department or program code . . . " /> 
 							</form>
 						</div>
@@ -82,7 +82,7 @@ $screen = 'prog';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>program/<?=_h($v['acadProgID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>program/<?=_h($v['acadProgID']);?>/"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

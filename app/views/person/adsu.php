@@ -19,11 +19,11 @@ $screen = 'adsu';
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here');?></li>
-    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>nae/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
+    <li><a href="<?=get_base_url();?>nae/" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name(_h($nae[0]['personID']));?></a></li>
+    <li><a href="<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/" class="glyphicons user"><i></i> <?=get_name(_h($nae[0]['personID']));?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'Address Summary' );?></li>
 </ul>
@@ -48,7 +48,7 @@ $screen = 'adsu';
                     
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label" for="address"><?=_t( 'Address' );?> <a href="<?=get_base_url();?>nae/addr/<?=_h($v['addressID']);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <label class="col-md-3 control-label" for="address"><?=_t( 'Address' );?> <a href="<?=get_base_url();?>nae/addr/<?=_h($v['addressID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-8">
                                 <input class="form-control" type="text" readonly value="<?=_h($v['address1']);?> <?=_h($v['address2']);?>" />
                             </div>
@@ -100,8 +100,8 @@ $screen = 'adsu';
                 
                 <!-- Form actions -->
                 <div class="form-actions">
-                    <button type="button"<?=aids();?> class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=get_base_url();?>nae/addr-form/<?=_h($nae[0]['personID']);?>/<?=bm();?>'"><i></i><?=_t( 'Add' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button"<?=aids();?> class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=get_base_url();?>nae/addr-form/<?=_h($nae[0]['personID']);?>/'"><i></i><?=_t( 'Add' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>
                 <!-- // Form actions END -->
 

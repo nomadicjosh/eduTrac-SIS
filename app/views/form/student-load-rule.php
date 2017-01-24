@@ -17,7 +17,7 @@ $screen = 'slr';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Student Load Rules' );?></li>
 </ul>
@@ -171,7 +171,7 @@ $screen = 'slr';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' );?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url(); ?>form/student-load-rule/<?=_h($value['slrID']); ?>/<?=bm();?>"><?=_t( 'View' );?></a></li>
+                                <li><a href="<?=get_base_url(); ?>form/student-load-rule/<?=_h($value['slrID']); ?>/"><?=_t( 'View' );?></a></li>
                             </ul>
                         </div>
                     </td>
