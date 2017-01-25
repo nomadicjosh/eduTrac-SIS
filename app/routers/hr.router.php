@@ -20,7 +20,7 @@ use PDOException as ORMException;
  */
 $app->before('GET|POST', '/hr(.*)', function() {
     if (!hasPermission('access_human_resources')) {
-        _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -29,7 +29,7 @@ $app->group('/hr', function () use($app) {
     $app->match('GET|POST', '/', function () use($app) {
         if ($app->req->isPost()) {
             try {
-                $staff = $_POST['employee'];
+                $staff = $app->req->post['employee'];
                 $hr = $app->db->staff()
                     ->select('staff.staffID,staff.office_phone,b.email,c.deptName')
                     ->_join('person', 'staff.staffID = b.personID', 'b')
@@ -47,11 +47,11 @@ $app->group('/hr', function () use($app) {
                     return $array;
                 });
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -72,35 +72,35 @@ $app->group('/hr', function () use($app) {
         if ($app->req->isPost()) {
             try {
                 $staff = $app->db->staff();
-                $staff->schoolCode = $_POST['schoolCode'];
-                $staff->buildingCode = $_POST['buildingCode'];
-                $staff->officeCode = $_POST['officeCode'];
-                $staff->office_phone = $_POST['office_phone'];
-                $staff->deptCode = $_POST['deptCode'];
-                $staff->status = $_POST['status'];
+                $staff->schoolCode = $app->req->post['schoolCode'];
+                $staff->buildingCode = $app->req->post['buildingCode'];
+                $staff->officeCode = $app->req->post['officeCode'];
+                $staff->office_phone = $app->req->post['office_phone'];
+                $staff->deptCode = $app->req->post['deptCode'];
+                $staff->status = $app->req->post['status'];
                 $staff->where('staffID = ?', $id);
 
                 $smeta = $app->db->staff_meta();
-                $smeta->jobStatusCode = $_POST['jobStatusCode'];
-                $smeta->jobID = $_POST['jobID'];
-                $smeta->supervisorID = $_POST['supervisorID'];
-                $smeta->staffType = $_POST['staffType'];
-                $smeta->hireDate = $_POST['hireDate'];
-                $smeta->startDate = $_POST['startDate'];
-                $smeta->endDate = $_POST['endDate'];
-                $smeta->where('sMetaID = ?', $_POST['sMetaID'])->_and_()->where('staffID = ?', $id);
+                $smeta->jobStatusCode = $app->req->post['jobStatusCode'];
+                $smeta->jobID = $app->req->post['jobID'];
+                $smeta->supervisorID = $app->req->post['supervisorID'];
+                $smeta->staffType = $app->req->post['staffType'];
+                $smeta->hireDate = $app->req->post['hireDate'];
+                $smeta->startDate = $app->req->post['startDate'];
+                $smeta->endDate = $app->req->post['endDate'];
+                $smeta->where('sMetaID = ?', $app->req->post['sMetaID'])->_and_()->where('staffID = ?', $id);
 
                 if ($staff->update() || $smeta->update()) {
                     _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'hr' . '/' . $id . '/');
                 } else {
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(204));
+                    _etsis_flash()->error(_etsis_flash()->notice(204));
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -118,11 +118,11 @@ $app->group('/hr', function () use($app) {
                 ->where('b.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id)
                 ->findOne();
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
         /**
@@ -170,7 +170,7 @@ $app->group('/hr', function () use($app) {
 
         if ($app->req->isPost()) {
             try {
-                if (isset($_POST['addDate'])) {
+                if (isset($app->req->post['addDate'])) {
                     $pg = $app->db->pay_grade();
                     foreach ($_POST as $k => $v) {
                         $pg->$k = $v;
@@ -179,7 +179,7 @@ $app->group('/hr', function () use($app) {
                         etsis_logger_activity_log_write('New Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
                         _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                     } else {
-                        _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                        _etsis_flash()->error(_etsis_flash()->notice(409));
                     }
                 } else {
                     $pg = $app->db->pay_grade();
@@ -191,15 +191,15 @@ $app->group('/hr', function () use($app) {
                         etsis_logger_activity_log_write('Update Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
                         _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                     } else {
-                        _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                        _etsis_flash()->error(_etsis_flash()->notice(409));
                     }
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -213,11 +213,11 @@ $app->group('/hr', function () use($app) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
         etsis_register_style('form');
@@ -237,7 +237,7 @@ $app->group('/hr', function () use($app) {
 
         if ($app->req->isPost()) {
             try {
-                if (isset($_POST['addDate'])) {
+                if (isset($app->req->post['addDate'])) {
                     $job = $app->db->job();
                     foreach ($_POST as $k => $v) {
                         $job->$k = $v;
@@ -246,7 +246,7 @@ $app->group('/hr', function () use($app) {
                         etsis_logger_activity_log_write('New Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
                         _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                     } else {
-                        _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                        _etsis_flash()->error(_etsis_flash()->notice(409));
                     }
                 } else {
                     $job = $app->db->job();
@@ -258,15 +258,15 @@ $app->group('/hr', function () use($app) {
                         etsis_logger_activity_log_write('Update Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
                         _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                     } else {
-                        _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                        _etsis_flash()->error(_etsis_flash()->notice(409));
                     }
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -280,11 +280,11 @@ $app->group('/hr', function () use($app) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
         etsis_register_style('form');
@@ -311,14 +311,14 @@ $app->group('/hr', function () use($app) {
                     etsis_logger_activity_log_write('New Record', 'Job Position', get_name($id), get_persondata('uname'));
                     _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                 } else {
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -332,11 +332,11 @@ $app->group('/hr', function () use($app) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
 
@@ -394,14 +394,14 @@ $app->group('/hr', function () use($app) {
                     etsis_logger_activity_log_write('Update Record', 'Job Position', get_name($id), get_persondata('uname'));
                     _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                 } else {
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -420,11 +420,11 @@ $app->group('/hr', function () use($app) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
         /**
