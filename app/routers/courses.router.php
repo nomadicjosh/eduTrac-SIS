@@ -53,7 +53,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
                  */
                 $check = $app->db->stu_course_sec()
                     ->where('stuID = ?', get_persondata('personID'))->_and_()
-                    ->where('termCode = ?', $_POST['regTerm'])->_and_()
+                    ->where('termCode = ?', $app->req->post['regTerm'])->_and_()
                     ->whereIn('status', ['A', 'N']);
                 $q1 = $check->find(function($data) {
                     $array = [];
@@ -62,21 +62,21 @@ $app->group('/courses', function() use ($app, $css, $js) {
                     }
                     return $array;
                 });
-                if (bcadd(count($q1[0]['id']), count($_POST['courseSecID'])) > get_option('number_of_courses')) {
+                if (bcadd(count($q1[0]['id']), count($app->req->post['courseSecID'])) > get_option('number_of_courses')) {
                     _etsis_flash()->{'error'}(sprintf(_t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses')), get_base_url() . 'courses' . '/');
                     exit();
                 }
                 /* Retrieve the dropAddEndDate from the registration term. */
-                $term = $app->db->term()->where('termCode = ?', (string) $_POST['regTerm'])->findOne();
+                $term = $app->db->term()->where('termCode = ?', (string) $app->req->post['regTerm'])->findOne();
                 $deleteDate = date('Y-m-d', strtotime($term->dropAddEndDate . ' + 1 days'));
 
                 /* Add courses to the shopping cart. */
-                $size = count($_POST['courseSecID']);
+                $size = count($app->req->post['courseSecID']);
                 $i = 0;
                 while ($i < $size) {
                     $q2 = $app->db->stu_rgn_cart();
                     $q2->stuID = get_persondata('personID');
-                    $q2->courseSecID = $_POST['courseSecID'][$i];
+                    $q2->courseSecID = $app->req->post['courseSecID'][$i];
                     $q2->deleteDate = $deleteDate;
                     if ($q2->save()) {
                         _etsis_flash()->{'success'}(_etsis_flash()->notice(200));
@@ -206,7 +206,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
                 }
                 return $array;
             });
-            $counts = array_count_values($_POST['regAction']);
+            $counts = array_count_values($app->req->post['regAction']);
             if (bcadd(count($d[0]['id']), $counts['register']) > get_option('number_of_courses')) {
                 _etsis_flash()->{'error'}(sprintf(_t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses')), $app->req->server['HTTP_REFERER']);
                 exit();
@@ -215,13 +215,13 @@ $app->group('/courses', function() use ($app, $css, $js) {
              * If the action selected was 'remove', then remove the record from
              * the student's shopping cart.
              */
-            $count = count($_POST['regAction']);
+            $count = count($app->req->post['regAction']);
             $t = 0;
             while ($t < $count) {
-                if ($_POST['regAction'][$t] == 'remove') {
+                if ($app->req->post['regAction'][$t] == 'remove') {
                     $app->db->stu_rgn_cart()
                         ->where('stuID = ?', get_persondata('personID'))->_and_()
-                        ->where('courseSecID = ?', $_POST['courseSecID'][$t])
+                        ->where('courseSecID = ?', $app->req->post['courseSecID'][$t])
                         ->delete();
                 }
                 ++$t;
@@ -231,10 +231,10 @@ $app->group('/courses', function() use ($app, $css, $js) {
              * the required information and add new records to stu_course_sec as
              * well as stu_acad_cred.
              */
-            $size = count($_POST['regAction']);
+            $size = count($app->req->post['regAction']);
             $r = 0;
             while ($r < $size) {
-                if ($_POST['regAction'][$r] == 'register') {
+                if ($app->req->post['regAction'][$r] == 'register') {
                     $sect = $app->db->course_sec()
                         ->setTableAlias('a')
                         ->select('a.courseSecCode,a.termCode,a.minCredit')
@@ -245,7 +245,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
                         ->select('b.acadLevelCode,b.courseLevelCode,c.reportingTerm')
                         ->_join('course', 'a.courseID = b.courseID', 'b')
                         ->_join('term', 'a.termCode = c.termCode', 'c')
-                        ->where('a.courseSecID = ?', $_POST['courseSecID'][$r]);
+                        ->where('a.courseSecID = ?', $app->req->post['courseSecID'][$r]);
                     $sql = $sect->find(function($data) {
                         $array = [];
                         foreach ($data as $d) {
@@ -256,7 +256,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
 
                     $stcs = $app->db->stu_course_sec();
                     $stcs->stuID = get_persondata('personID');
-                    $stcs->courseSecID = $_POST['courseSecID'][$r];
+                    $stcs->courseSecID = $app->req->post['courseSecID'][$r];
                     $stcs->courseSecCode = $sql[0]['courseSecCode'];
                     $stcs->courseSection = $sql[0]['courseSection'];
                     $stcs->termCode = $sql[0]['termCode'];
@@ -272,7 +272,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
                         $stac = $app->db->stu_acad_cred();
                         $stac->stuID = get_persondata('personID');
                         $stac->courseID = $sql[0]['courseID'];
-                        $stac->courseSecID = $_POST['courseSecID'][$r];
+                        $stac->courseSecID = $app->req->post['courseSecID'][$r];
                         $stac->courseCode = $sql[0]['courseCode'];
                         $stac->courseSecCode = $sql[0]['courseSecCode'];
                         $stac->sectionNumber = $sql[0]['sectionNumber'];
@@ -321,14 +321,14 @@ $app->group('/courses', function() use ($app, $css, $js) {
                          */
                         $app->db->stu_rgn_cart()
                             ->where('stuID = ?', get_persondata('personID'))->_and_()
-                            ->where('courseSecID = ?', $_POST['courseSecID'][$r])
+                            ->where('courseSecID = ?', $app->req->post['courseSecID'][$r])
                             ->delete();
 
                         if (function_exists('financial_module')) {
                             /**
                              * Generate bill and/or add fees.
                              */
-                            generate_stu_bill($sql[0]['termCode'], get_persondata('personID'), $_POST['courseSecID'][$r]);
+                            generate_stu_bill($sql[0]['termCode'], get_persondata('personID'), $app->req->post['courseSecID'][$r]);
                         }
                     }
                 }
@@ -358,7 +358,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
                 });
                 if (count($qry[0]['courseSection']) > 0) {
                     if (get_option('registrar_email_address') != '') {
-                        _etsis_email()->course_registration(get_persondata('personID'), $_POST['termCode'], get_base_url());
+                        _etsis_email()->course_registration(get_persondata('personID'), $app->req->post['termCode'], get_base_url());
                     }
                 }
                 etsis_cache_flush_namespace('student_account');

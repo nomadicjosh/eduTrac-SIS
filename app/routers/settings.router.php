@@ -27,9 +27,9 @@ $app->match('GET|POST', '/setting/', function () use($app) {
         ];
 
         foreach ($options as $option_name) {
-            if (!isset($_POST[$option_name]))
+            if (!isset($app->req->post[$option_name]))
                 continue;
-            $value = $_POST[$option_name];
+            $value = $app->req->post[$option_name];
             update_option($option_name, $value);
         }
         // Update more options here
@@ -67,9 +67,9 @@ $app->match('GET|POST', '/registration/', function () use($app) {
         ];
 
         foreach ($options as $option_name) {
-            if (!isset($_POST[$option_name]))
+            if (!isset($app->req->post[$option_name]))
                 continue;
-            $value = $_POST[$option_name];
+            $value = $app->req->post[$option_name];
             update_option($option_name, $value);
         }
         // Update more options here
@@ -104,9 +104,9 @@ $app->match('GET|POST', '/email/', function () use($app) {
         $options = [ 'system_email', 'contact_email', 'room_request_email', 'registrar_email_address', 'admissions_email'];
 
         foreach ($options as $option_name) {
-            if (!isset($_POST[$option_name]))
+            if (!isset($app->req->post[$option_name]))
                 continue;
-            $value = $_POST[$option_name];
+            $value = $app->req->post[$option_name];
             update_option($option_name, $value);
         }
         // Update more options here
@@ -144,9 +144,9 @@ $app->match('GET|POST', '/templates/', function () use($app) {
         ];
 
         foreach ($options as $option_name) {
-            if (!isset($_POST[$option_name]))
+            if (!isset($app->req->post[$option_name]))
                 continue;
-            $value = $_POST[$option_name];
+            $value = $app->req->post[$option_name];
             update_option($option_name, $value);
         }
         // Update more options here
@@ -173,9 +173,9 @@ $app->match('GET|POST', '/sms/', function () use($app) {
         $options = [ 'twilio_account_sid', 'twilio_auth_token', 'twilio_phone_number'];
 
         foreach ($options as $option_name) {
-            if (!isset($_POST[$option_name]))
+            if (!isset($app->req->post[$option_name]))
                 continue;
-            $value = $_POST[$option_name];
+            $value = $app->req->post[$option_name];
             update_option($option_name, $value);
         }
         // Update more options here

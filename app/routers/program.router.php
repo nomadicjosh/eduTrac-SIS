@@ -29,7 +29,7 @@ $app->group('/program', function() use ($app) {
     $app->match('GET|POST', '/', function () use($app) {
         if ($app->req->isPost()) {
             try {
-                $post = $_POST['prog'];
+                $post = $app->req->post['prog'];
                 $prog = $app->db->query("SELECT 
                     CASE currStatus 
                     WHEN 'A' THEN 'Active' 
@@ -81,27 +81,27 @@ $app->group('/program', function() use ($app) {
         if ($app->req->isPost()) {
             try {
                 $prog = $app->db->acad_program();
-                $prog->acadProgCode = $_POST['acadProgCode'];
-                $prog->acadProgTitle = $_POST['acadProgTitle'];
-                $prog->programDesc = $_POST['programDesc'];
-                $prog->currStatus = $_POST['currStatus'];
-                if ($program->currStatus !== $_POST['currStatus']) {
+                $prog->acadProgCode = $app->req->post['acadProgCode'];
+                $prog->acadProgTitle = $app->req->post['acadProgTitle'];
+                $prog->programDesc = $app->req->post['programDesc'];
+                $prog->currStatus = $app->req->post['currStatus'];
+                if ($program->currStatus !== $app->req->post['currStatus']) {
                     $prog->statusDate = $app->db->NOW();
                 }
-                $prog->deptCode = $_POST['deptCode'];
-                $prog->schoolCode = $_POST['schoolCode'];
-                $prog->acadYearCode = $_POST['acadYearCode'];
-                $prog->startDate = $_POST['startDate'];
-                $prog->endDate = $_POST['endDate'];
-                $prog->degreeCode = $_POST['degreeCode'];
-                $prog->ccdCode = $_POST['ccdCode'];
-                $prog->majorCode = $_POST['majorCode'];
-                $prog->minorCode = $_POST['minorCode'];
-                $prog->specCode = $_POST['specCode'];
-                $prog->acadLevelCode = $_POST['acadLevelCode'];
-                $prog->cipCode = $_POST['cipCode'];
-                $prog->locationCode = $_POST['locationCode'];
-                $prog->where('acadProgID = ?', $_POST['acadProgID']);
+                $prog->deptCode = $app->req->post['deptCode'];
+                $prog->schoolCode = $app->req->post['schoolCode'];
+                $prog->acadYearCode = $app->req->post['acadYearCode'];
+                $prog->startDate = $app->req->post['startDate'];
+                $prog->endDate = $app->req->post['endDate'];
+                $prog->degreeCode = $app->req->post['degreeCode'];
+                $prog->ccdCode = $app->req->post['ccdCode'];
+                $prog->majorCode = $app->req->post['majorCode'];
+                $prog->minorCode = $app->req->post['minorCode'];
+                $prog->specCode = $app->req->post['specCode'];
+                $prog->acadLevelCode = $app->req->post['acadLevelCode'];
+                $prog->cipCode = $app->req->post['cipCode'];
+                $prog->locationCode = $app->req->post['locationCode'];
+                $prog->where('acadProgID = ?', $app->req->post['acadProgID']);
 
                 /**
                  * Fires during the update of an academic program.
@@ -185,26 +185,26 @@ $app->group('/program', function() use ($app) {
         if ($app->req->isPost()) {
             try {
                 $prog = $app->db->acad_program();
-                $prog->acadProgCode = $_POST['acadProgCode'];
-                $prog->acadProgTitle = $_POST['acadProgTitle'];
-                $prog->programDesc = $_POST['programDesc'];
-                $prog->currStatus = $_POST['currStatus'];
+                $prog->acadProgCode = $app->req->post['acadProgCode'];
+                $prog->acadProgTitle = $app->req->post['acadProgTitle'];
+                $prog->programDesc = $app->req->post['programDesc'];
+                $prog->currStatus = $app->req->post['currStatus'];
                 $prog->statusDate = $app->db->NOW();
                 $prog->approvedDate = $app->db->NOW();
                 $prog->approvedBy = get_persondata('personID');
-                $prog->deptCode = $_POST['deptCode'];
-                $prog->schoolCode = $_POST['schoolCode'];
-                $prog->acadYearCode = $_POST['acadYearCode'];
-                $prog->startDate = $_POST['startDate'];
-                $prog->endDate = $_POST['endDate'];
-                $prog->degreeCode = $_POST['degreeCode'];
-                $prog->ccdCode = $_POST['ccdCode'];
-                $prog->majorCode = $_POST['majorCode'];
-                $prog->minorCode = $_POST['minorCode'];
-                $prog->specCode = $_POST['specCode'];
-                $prog->acadLevelCode = $_POST['acadLevelCode'];
-                $prog->cipCode = $_POST['cipCode'];
-                $prog->locationCode = $_POST['locationCode'];
+                $prog->deptCode = $app->req->post['deptCode'];
+                $prog->schoolCode = $app->req->post['schoolCode'];
+                $prog->acadYearCode = $app->req->post['acadYearCode'];
+                $prog->startDate = $app->req->post['startDate'];
+                $prog->endDate = $app->req->post['endDate'];
+                $prog->degreeCode = $app->req->post['degreeCode'];
+                $prog->ccdCode = $app->req->post['ccdCode'];
+                $prog->majorCode = $app->req->post['majorCode'];
+                $prog->minorCode = $app->req->post['minorCode'];
+                $prog->specCode = $app->req->post['specCode'];
+                $prog->acadLevelCode = $app->req->post['acadLevelCode'];
+                $prog->cipCode = $app->req->post['cipCode'];
+                $prog->locationCode = $app->req->post['locationCode'];
 
                 /**
                  * Fires during the saving/creating of an academic program.
@@ -217,7 +217,7 @@ $app->group('/program', function() use ($app) {
                 if ($prog->save()) {
                     $ID = $prog->lastInsertId();
                     etsis_cache_flush_namespace('prog');
-                    etsis_logger_activity_log_write('New Record', 'Acad Program', $_POST['acadProgCode'], get_persondata('uname'));
+                    etsis_logger_activity_log_write('New Record', 'Acad Program', $app->req->post['acadProgCode'], get_persondata('uname'));
                     _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'program' . '/' . $ID . '/');
                 } else {
                     _etsis_flash()->{'error'}(_etsis_flash()->notice(409));

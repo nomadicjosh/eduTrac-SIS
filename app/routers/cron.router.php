@@ -100,7 +100,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         }
 
         if ($app->req->isPost()) {
-            foreach ($_POST['cronjobs'] as $job) {
+            foreach ($app->req->post['cronjobs'] as $job) {
                 try {
                     Node::table('cronjob_handler')->find($job)->delete();
                 } catch (NodeQException $e) {
@@ -127,7 +127,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
 
     $app->match('GET|POST', '/new/', function () use($app) {
         if ($app->req->isPost()) {
-            if (filter_var($_POST['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
+            if (filter_var($app->req->post['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
                 try {
                     $url = Node::table('cronjob_handler')->where('url', '=', $app->req->_post('url'))->find();
                 } catch (NodeQException $e) {
@@ -150,7 +150,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                             $cron->name = (string) $app->req->_post('name');
                             $cron->url = (string) $app->req->_post('url');
                             $cron->each = (int) $app->req->_post('each');
-                            $cron->eachtime = ((isset($_POST['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['eachtime'])) ? $_POST['eachtime'] : '');
+                            $cron->eachtime = ((isset($app->req->post['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $app->req->post['eachtime'])) ? $app->req->post['eachtime'] : '');
                             $cron->save();
 
                             if ($cron) {
@@ -187,7 +187,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         if ($app->req->isPost()) {
             $good = true;
 
-            if (strlen(trim($_POST['cronjobpassword'])) < 2) {
+            if (strlen(trim($app->req->post['cronjobpassword'])) < 2) {
                 _etsis_flash()->error(_t('Cronjobs cannot run without a password. Your cronjob password contains wrong characters, minimum of 4 letters and numbers.'));
                 $good = false;
             }
@@ -196,7 +196,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                 try {
                     $cron = Node::table('cronjob_setting')->find(1);
                     $cron->cronjobpassword = (string) $app->req->_post('cronjobpassword');
-                    $cron->timeout = (isset($_POST['timeout']) && is_numeric($_POST['timeout']) ? (int) $app->req->_post('timeout') : 30);
+                    $cron->timeout = (isset($app->req->post['timeout']) && is_numeric($app->req->post['timeout']) ? (int) $app->req->_post('timeout') : 30);
                     $cron->save();
 
                     if ($cron) {
@@ -243,14 +243,14 @@ $app->group('/cron', function () use($app, $emailer, $email) {
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app) {
         if ($app->req->isPost()) {
-            if (filter_var($_POST['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
+            if (filter_var($app->req->post['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
 
                 try {
                     $cron = Node::table('cronjob_handler')->find($id);
                     $cron->name = (string) $app->req->_post('name');
                     $cron->url = (string) $app->req->_post('url');
                     $cron->each = (int) $app->req->_post('each');
-                    $cron->eachtime = ((isset($_POST['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['eachtime'])) ? $_POST['eachtime'] : '');
+                    $cron->eachtime = ((isset($app->req->post['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $app->req->post['eachtime'])) ? $app->req->post['eachtime'] : '');
                     $cron->save();
 
                     if ($cron) {

@@ -31,7 +31,7 @@ $app->group('/appl', function () use($app, $email) {
 
         if ($app->req->isPost()) {
             try {
-                $post = $_POST['appl'];
+                $post = $app->req->post['appl'];
                 $appl = $app->db->application()
                     ->setTableAlias('a')
                     ->select('a.applID,a.personID,b.termName,c.fname,c.lname,c.uname,c.email')
@@ -173,21 +173,21 @@ $app->group('/appl', function () use($app, $email) {
     $app->post('/editAppl/(\d+)/', function ($id) use($app) {
         try {
             $appl = $app->db->application();
-            $appl->acadProgCode = $_POST['acadProgCode'];
-            $appl->startTerm = $_POST['startTerm'];
-            $appl->PSAT_Verbal = $_POST['PSAT_Verbal'];
-            $appl->PSAT_Math = $_POST['PSAT_Math'];
-            $appl->SAT_Verbal = $_POST['SAT_Verbal'];
-            $appl->SAT_Math = $_POST['SAT_Math'];
-            $appl->ACT_English = $_POST['ACT_English'];
-            $appl->ACT_Math = $_POST['ACT_Math'];
-            $appl->applDate = $_POST['applDate'];
-            $appl->appl_comments = $_POST['appl_comments'];
-            $appl->staff_comments = $_POST['staff_comments'];
-            $appl->applStatus = $_POST['applStatus'];
-            $appl->acadProgCode = $_POST['acadProgCode'];
-            $appl->acadProgCode = $_POST['acadProgCode'];
-            $appl->where('applID = ?', $_POST['applID']);
+            $appl->acadProgCode = $app->req->post['acadProgCode'];
+            $appl->startTerm = $app->req->post['startTerm'];
+            $appl->PSAT_Verbal = $app->req->post['PSAT_Verbal'];
+            $appl->PSAT_Math = $app->req->post['PSAT_Math'];
+            $appl->SAT_Verbal = $app->req->post['SAT_Verbal'];
+            $appl->SAT_Math = $app->req->post['SAT_Math'];
+            $appl->ACT_English = $app->req->post['ACT_English'];
+            $appl->ACT_Math = $app->req->post['ACT_Math'];
+            $appl->applDate = $app->req->post['applDate'];
+            $appl->appl_comments = $app->req->post['appl_comments'];
+            $appl->staff_comments = $app->req->post['staff_comments'];
+            $appl->applStatus = $app->req->post['applStatus'];
+            $appl->acadProgCode = $app->req->post['acadProgCode'];
+            $appl->acadProgCode = $app->req->post['acadProgCode'];
+            $appl->where('applID = ?', $app->req->post['applID']);
 
             /**
              * Fires during the update of an application.
@@ -198,25 +198,25 @@ $app->group('/appl', function () use($app, $email) {
             $app->hook->do_action('update_application_db_table', $appl);
 
             if ($appl->update()) {
-                etsis_logger_activity_log_write('Update Record', 'Application', get_name($_POST['personID']), get_persondata('uname'));
+                etsis_logger_activity_log_write('Update Record', 'Application', get_name($app->req->post['personID']), get_persondata('uname'));
                 _etsis_flash()->{'success'}(_etsis_flash()->notice(200));
             } else {
                 _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
             }
 
-            $size = count($_POST['fice_ceeb']);
+            $size = count($app->req->post['fice_ceeb']);
             $i = 0;
             while ($i < $size) {
                 $inst = $app->db->institution_attended();
-                $inst->fice_ceeb = $_POST['fice_ceeb'][$i];
-                $inst->fromDate = $_POST['fromDate'][$i];
-                $inst->toDate = $_POST['toDate'][$i];
-                $inst->GPA = $_POST['GPA'][$i];
-                $inst->major = $_POST['major'][$i];
-                $inst->degree_awarded = $_POST['degree_awarded'][$i];
-                $inst->degree_conferred_date = $_POST['degree_conferred_date'][$i];
-                $inst->where('instAttID = ?', $_POST['instAttID'][$i])->_and_()
-                    ->where('personID = ?', $_POST['personID']);
+                $inst->fice_ceeb = $app->req->post['fice_ceeb'][$i];
+                $inst->fromDate = $app->req->post['fromDate'][$i];
+                $inst->toDate = $app->req->post['toDate'][$i];
+                $inst->GPA = $app->req->post['GPA'][$i];
+                $inst->major = $app->req->post['major'][$i];
+                $inst->degree_awarded = $app->req->post['degree_awarded'][$i];
+                $inst->degree_conferred_date = $app->req->post['degree_conferred_date'][$i];
+                $inst->where('instAttID = ?', $app->req->post['instAttID'][$i])->_and_()
+                    ->where('personID = ?', $app->req->post['personID']);
                 if ($inst->update()) {
                     _etsis_flash()->{'success'}(_etsis_flash()->notice(200));
                 } else {
@@ -249,19 +249,19 @@ $app->group('/appl', function () use($app, $email) {
         if ($app->req->isPost()) {
             try {
                 $appl = $app->db->application();
-                $appl->acadProgCode = _trim($_POST['acadProgCode']);
-                $appl->startTerm = $_POST['startTerm'];
-                $appl->PSAT_Verbal = $_POST['PSAT_Verbal'];
-                $appl->PSAT_Math = $_POST['PSAT_Math'];
-                $appl->SAT_Verbal = $_POST['SAT_Verbal'];
-                $appl->SAT_Math = $_POST['SAT_Math'];
-                $appl->ACT_English = $_POST['ACT_English'];
-                $appl->ACT_MATH = $_POST['ACT_Math'];
+                $appl->acadProgCode = _trim($app->req->post['acadProgCode']);
+                $appl->startTerm = $app->req->post['startTerm'];
+                $appl->PSAT_Verbal = $app->req->post['PSAT_Verbal'];
+                $appl->PSAT_Math = $app->req->post['PSAT_Math'];
+                $appl->SAT_Verbal = $app->req->post['SAT_Verbal'];
+                $appl->SAT_Math = $app->req->post['SAT_Math'];
+                $appl->ACT_English = $app->req->post['ACT_English'];
+                $appl->ACT_MATH = $app->req->post['ACT_Math'];
                 $appl->personID = $id;
                 $appl->addDate = $app->db->NOW();
-                $appl->applDate = $_POST['applDate'];
+                $appl->applDate = $app->req->post['applDate'];
                 $appl->addedBy = get_persondata('personID');
-                $appl->admitStatus = $_POST['admitStatus'];
+                $appl->admitStatus = $app->req->post['admitStatus'];
 
                 /**
                  * Fires during the saving/creating of an application.
@@ -363,19 +363,19 @@ $app->group('/appl', function () use($app, $email) {
         if ($app->req->isPost()) {
             try {
                 $inst = $app->db->institution_attended();
-                $inst->fice_ceeb = _trim((int) $_POST['fice_ceeb']);
-                $inst->fromDate = $_POST['fromDate'];
-                $inst->toDate = $_POST['toDate'];
-                $inst->GPA = $_POST['GPA'];
-                $inst->personID = $_POST['personID'];
-                $inst->major = $_POST['major'];
-                $inst->degree_awarded = $_POST['degree_awarded'];
-                $inst->degree_conferred_date = $_POST['degree_conferred_date'];
+                $inst->fice_ceeb = _trim((int) $app->req->post['fice_ceeb']);
+                $inst->fromDate = $app->req->post['fromDate'];
+                $inst->toDate = $app->req->post['toDate'];
+                $inst->GPA = $app->req->post['GPA'];
+                $inst->personID = $app->req->post['personID'];
+                $inst->major = $app->req->post['major'];
+                $inst->degree_awarded = $app->req->post['degree_awarded'];
+                $inst->degree_conferred_date = $app->req->post['degree_conferred_date'];
                 $inst->addDate = $inst->NOW();
                 $inst->addedBy = get_persondata('personID');
                 if ($inst->save()) {
-                    etsis_logger_activity_log_write('New Record', 'Institution Attended', get_name($_POST['personID']), get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'appl' . '/' . $_POST['personID'] . '/');
+                    etsis_logger_activity_log_write('New Record', 'Institution Attended', get_name($app->req->post['personID']), get_persondata('uname'));
+                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'appl' . '/' . $app->req->post['personID'] . '/');
                 } else {
                     _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
                 }
@@ -412,7 +412,7 @@ $app->group('/appl', function () use($app, $email) {
 
         if ($app->req->isPost()) {
             try {
-                $post = $_POST['inst'];
+                $post = $app->req->post['inst'];
                 $inst = $app->db->institution()
                     ->whereLike('instName', "%$post%")->_or_()
                     ->whereLike('fice_ceeb', "%$post%");
@@ -450,15 +450,15 @@ $app->group('/appl', function () use($app, $email) {
         if ($app->req->isPost()) {
             try {
                 $inst = $app->db->institution();
-                $inst->fice_ceeb = _trim((int) $_POST['fice_ceeb']);
-                $inst->instType = $_POST['instType'];
-                $inst->instName = $_POST['instName'];
-                $inst->city = $_POST['city'];
-                $inst->state = $_POST['state'];
-                $inst->country = $_POST['country'];
+                $inst->fice_ceeb = _trim((int) $app->req->post['fice_ceeb']);
+                $inst->instType = $app->req->post['instType'];
+                $inst->instName = $app->req->post['instName'];
+                $inst->city = $app->req->post['city'];
+                $inst->state = $app->req->post['state'];
+                $inst->country = $app->req->post['country'];
                 if ($inst->save()) {
                     $ID = $inst->lastInsertId();
-                    etsis_logger_activity_log_write('New Record', 'Institution', $_POST['instName'], get_persondata('uname'));
+                    etsis_logger_activity_log_write('New Record', 'Institution', $app->req->post['instName'], get_persondata('uname'));
                     _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'appl/inst' . '/' . $ID . '/');
                 } else {
                     _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
@@ -567,7 +567,7 @@ $app->group('/appl', function () use($app, $email) {
     });
 
     $app->post('/applicantLookup/', function() {
-        $appl = get_person_by('personID', $_POST['personID']);
+        $appl = get_person_by('personID', $app->req->post['personID']);
 
         $json = [ 'input#person' => $appl->lname . ', ' . $appl->fname];
 

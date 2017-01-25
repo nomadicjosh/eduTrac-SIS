@@ -21,7 +21,7 @@ $app->group('/sql', function() use ($app) {
     $app->match('GET|POST', '/', function() use($app) {
         if ($app->req->isPost()) {
 
-            if (strstra(strtolower($_POST['qtext']), forbidden_keyword())) {
+            if (strstra(strtolower($app->req->post['qtext']), forbidden_keyword())) {
                 _etsis_flash()->error(_t('Your query contains a forbidden keywork, please try again.'), $app->req->server['HTTP_REFERER']);
                 exit();
             }
@@ -29,9 +29,9 @@ $app->group('/sql', function() use ($app) {
             try {
                 $pdo = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS, [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"]);
 
-                if ($_POST['type'] == "query") {
+                if ($app->req->post['type'] == "query") {
 
-                    $qtext2 = str_replace("\\", " ", str_replace("\\", "", $_POST['qtext']));
+                    $qtext2 = str_replace("\\", " ", str_replace("\\", "", $app->req->post['qtext']));
                     /* Write to activity log table. */
                     etsis_logger_activity_log_write("Query", "SQL Interface", $qtext2, get_persondata('uname'));
 

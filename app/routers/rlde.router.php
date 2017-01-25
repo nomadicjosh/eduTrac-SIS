@@ -88,10 +88,12 @@ $app->match('GET|POST', '/rlde/add/', function () use($app) {
     }
 
     etsis_register_style('form');
+    etsis_register_style('bootstrap-datepicker');
     etsis_register_style('querybuilder');
     etsis_register_script('select');
     etsis_register_script('select2');
     etsis_register_script('maxlength');
+    etsis_register_script('bootstrap-datepicker');
 
     $app->view->display('rlde/add', [
         'title' => 'Add Rule Definition',
@@ -135,10 +137,12 @@ $app->match('GET|POST', '/rlde/(\d+)/', function ($id) use($app) {
     }
 
     etsis_register_style('form');
+    etsis_register_style('bootstrap-datepicker');
     etsis_register_style('querybuilder');
     etsis_register_script('select');
     etsis_register_script('select2');
     etsis_register_script('maxlength');
+    etsis_register_script('bootstrap-datepicker');
 
     $app->view->display('rlde/view', [
         'title' => $rule->code . ' Rule',

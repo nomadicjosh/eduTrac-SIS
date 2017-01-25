@@ -55,12 +55,13 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
                 $post = $app->req->post['spro'];
                 $spro = $app->db->student()
                     ->setTableAlias('a')
-                    ->select('a.stuID,b.lname,b.fname,b.email')
+                    ->select('a.stuID,b.lname,b.fname,b.email,b.altID')
                     ->_join('person', 'a.stuID = b.personID', 'b')
                     ->whereLike('CONCAT(b.fname," ",b.lname)', "%$post%")->_or_()
                     ->whereLike('CONCAT(b.lname," ",b.fname)', "%$post%")->_or_()
                     ->whereLike('CONCAT(b.lname,", ",b.fname)', "%$post%")->_or_()
                     ->whereLike('b.uname', "%$post%")->_or_()
+                    ->whereLike('b.altID', "%$post%")->_or_()
                     ->whereLike('a.stuID', "%$post%");
 
                 $q = $spro->find(function($data) {

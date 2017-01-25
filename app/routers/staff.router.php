@@ -61,14 +61,15 @@ $app->group('/staff', function () use($app, $json_url) {
 
         if ($app->req->isPost()) {
             try {
-                $post = $_POST['staff'];
+                $post = $app->req->post['staff'];
                 $search = $app->db->staff()
                     ->setTableAlias('a')
-                    ->select('a.staffID,b.lname,b.fname,b.email')
+                    ->select('a.staffID,b.lname,b.fname,b.email,b.altID')
                     ->_join('person', 'a.staffID = b.personID', 'b')
                     ->whereLike('CONCAT(b.fname," ",b.lname)', "%$post%")->_or_()
                     ->whereLike('CONCAT(b.lname," ",b.fname)', "%$post%")->_or_()
                     ->whereLike('CONCAT(b.lname,", ",b.fname)', "%$post%")->_or_()
+                    ->whereLike('b.altID', "%$post%")->_or_()
                     ->whereLike('a.staffID', "%$post%");
                 $q = $search->find(function($data) {
                     $array = [];

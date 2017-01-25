@@ -38,7 +38,7 @@ $app->group('/crse', function() use ($app) {
     $app->match('GET|POST', '/', function () use($app) {
         if ($app->req->isPost()) {
             try {
-                $post = $_POST['crse'];
+                $post = $app->req->post['crse'];
                 $crse = $app->db->query("SELECT 
                     CASE currStatus 
                     WHEN 'A' THEN 'Active' 
@@ -94,24 +94,24 @@ $app->group('/crse', function() use ($app) {
         if ($app->req->isPost()) {
             try {
                 $crse = $app->db->course();
-                $crse->courseNumber = $_POST['courseNumber'];
-                $crse->courseCode = $_POST['subjectCode'] . '-' . $_POST['courseNumber'];
-                $crse->subjectCode = $_POST['subjectCode'];
-                $crse->deptCode = $_POST['deptCode'];
-                $crse->courseDesc = $_POST['courseDesc'];
-                $crse->creditType = $_POST['creditType'];
-                $crse->minCredit = $_POST['minCredit'];
-                $crse->maxCredit = $_POST['maxCredit'];
-                $crse->increCredit = $_POST['increCredit'];
-                $crse->courseLevelCode = $_POST['courseLevelCode'];
-                $crse->acadLevelCode = $_POST['acadLevelCode'];
-                $crse->courseShortTitle = $_POST['courseShortTitle'];
-                $crse->courseLongTitle = $_POST['courseLongTitle'];
-                $crse->startDate = $_POST['startDate'];
-                $crse->endDate = $_POST['endDate'];
-                $crse->currStatus = $_POST['currStatus'];
+                $crse->courseNumber = $app->req->post['courseNumber'];
+                $crse->courseCode = $app->req->post['subjectCode'] . '-' . $app->req->post['courseNumber'];
+                $crse->subjectCode = $app->req->post['subjectCode'];
+                $crse->deptCode = $app->req->post['deptCode'];
+                $crse->courseDesc = $app->req->post['courseDesc'];
+                $crse->creditType = $app->req->post['creditType'];
+                $crse->minCredit = $app->req->post['minCredit'];
+                $crse->maxCredit = $app->req->post['maxCredit'];
+                $crse->increCredit = $app->req->post['increCredit'];
+                $crse->courseLevelCode = $app->req->post['courseLevelCode'];
+                $crse->acadLevelCode = $app->req->post['acadLevelCode'];
+                $crse->courseShortTitle = $app->req->post['courseShortTitle'];
+                $crse->courseLongTitle = $app->req->post['courseLongTitle'];
+                $crse->startDate = $app->req->post['startDate'];
+                $crse->endDate = $app->req->post['endDate'];
+                $crse->currStatus = $app->req->post['currStatus'];
 
-                if ($course->currStatus !== $_POST['currStatus']) {
+                if ($course->currStatus !== $app->req->post['currStatus']) {
                     $crse->statusDate = $app->db->NOW();
                 }
                 $crse->where('courseID = ?', (int) $id);
@@ -287,21 +287,21 @@ $app->group('/crse', function() use ($app) {
         if ($app->req->isPost()) {
             try {
                 $crse = $app->db->course();
-                $crse->courseNumber = $_POST['courseNumber'];
-                $crse->courseCode = $_POST['subjectCode'] . '-' . $_POST['courseNumber'];
-                $crse->subjectCode = $_POST['subjectCode'];
-                $crse->deptCode = $_POST['deptCode'];
-                $crse->courseDesc = $_POST['courseDesc'];
-                $crse->minCredit = $_POST['minCredit'];
-                //$crse->maxCredit = $_POST['maxCredit'];
-                //$crse->increCredit = $_POST['increCredit'];
-                $crse->courseLevelCode = $_POST['courseLevelCode'];
-                $crse->acadLevelCode = $_POST['acadLevelCode'];
-                $crse->courseShortTitle = $_POST['courseShortTitle'];
-                $crse->courseLongTitle = $_POST['courseLongTitle'];
-                $crse->startDate = $_POST['startDate'];
-                $crse->endDate = $_POST['endDate'];
-                $crse->currStatus = $_POST['currStatus'];
+                $crse->courseNumber = $app->req->post['courseNumber'];
+                $crse->courseCode = $app->req->post['subjectCode'] . '-' . $app->req->post['courseNumber'];
+                $crse->subjectCode = $app->req->post['subjectCode'];
+                $crse->deptCode = $app->req->post['deptCode'];
+                $crse->courseDesc = $app->req->post['courseDesc'];
+                $crse->minCredit = $app->req->post['minCredit'];
+                //$crse->maxCredit = $app->req->post['maxCredit'];
+                //$crse->increCredit = $app->req->post['increCredit'];
+                $crse->courseLevelCode = $app->req->post['courseLevelCode'];
+                $crse->acadLevelCode = $app->req->post['acadLevelCode'];
+                $crse->courseShortTitle = $app->req->post['courseShortTitle'];
+                $crse->courseLongTitle = $app->req->post['courseLongTitle'];
+                $crse->startDate = $app->req->post['startDate'];
+                $crse->endDate = $app->req->post['endDate'];
+                $crse->currStatus = $app->req->post['currStatus'];
                 $crse->statusDate = $app->db->NOW();
                 $crse->approvedDate = $app->db->NOW();
                 $crse->approvedBy = get_persondata('personID');
@@ -327,7 +327,7 @@ $app->group('/crse', function() use ($app) {
                      * @param object $course Course object.
                      */
                     $app->hook->do_action('post_save_crse', $course);
-                    etsis_logger_activity_log_write('New Record', 'Course', $_POST['subjectCode'] . '-' . $_POST['courseNumber'], get_persondata('uname'));
+                    etsis_logger_activity_log_write('New Record', 'Course', $app->req->post['subjectCode'] . '-' . $app->req->post['courseNumber'], get_persondata('uname'));
                     _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'crse' . '/' . (int) $ID . '/');
                 } else {
                     _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -355,7 +355,7 @@ $app->group('/crse', function() use ($app) {
 
     $app->post('/crseLookup/', function() use($app) {
 
-        $crse = get_course($_POST['courseID']);
+        $crse = get_course($app->req->post['courseID']);
 
         $json = [
             'input#shortTitle' => $crse->courseShortTitle, 'input#minCredit' => $crse->minCredit,
@@ -367,7 +367,7 @@ $app->group('/crse', function() use ($app) {
 
     $app->post('/termLookup/', function() use($app) {
         try {
-            $term = $app->db->term()->where('termCode = ?', $_POST['termCode']);
+            $term = $app->db->term()->where('termCode = ?', $app->req->post['termCode']);
             $q = $term->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {

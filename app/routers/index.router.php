@@ -191,16 +191,16 @@ $app->match('GET|POST', '/password/', function () use($app) {
             foreach ($q as $r) {
                 $a[] = $r;
             }
-            if (etsis_check_password($_POST['currPass'], $r['password'], $r['personID'])) {
+            if (etsis_check_password($app->req->post['currPass'], $r['password'], $r['personID'])) {
                 $sql = $app->db->person();
-                $sql->password = etsis_hash_password($_POST['newPass']);
+                $sql->password = etsis_hash_password($app->req->post['newPass']);
                 $sql->where('personID = ?', get_persondata('personID'));
                 if ($sql->update()) {
                     /**
                      * @since 6.1.07
                      */
                     $pass = [];
-                    $pass['pass'] = $_POST['newPass'];
+                    $pass['pass'] = $app->req->post['newPass'];
                     $pass['personID'] = get_persondata('personID');
                     $pass['uname'] = get_persondata('uname');
                     $pass['fname'] = get_persondata('fname');
@@ -441,9 +441,9 @@ $app->match('GET|POST', '/role/add/', function () use($app) {
 
     if ($app->req->isPost()) {
         try {
-            $roleID = $_POST['roleID'];
-            $roleName = $_POST['roleName'];
-            $rolePerm = maybe_serialize($_POST['permission']);
+            $roleID = $app->req->post['roleID'];
+            $roleName = $app->req->post['roleName'];
+            $rolePerm = maybe_serialize($app->req->post['permission']);
 
             $strSQL = $app->db->query(sprintf("REPLACE INTO `role` SET `ID` = %u, `roleName` = '%s', `permission` = '%s'", $roleID, $roleName, $rolePerm));
             if ($strSQL) {
@@ -473,9 +473,9 @@ $app->match('GET|POST', '/role/add/', function () use($app) {
 
 $app->post('/role/editRole/', function () use($app, $flashNow) {
     try {
-        $roleID = $_POST['roleID'];
-        $roleName = $_POST['roleName'];
-        $rolePerm = maybe_serialize($_POST['permission']);
+        $roleID = $app->req->post['roleID'];
+        $roleName = $app->req->post['roleName'];
+        $rolePerm = maybe_serialize($app->req->post['permission']);
 
         $strSQL = $app->db->query(sprintf("REPLACE INTO `role` SET `ID` = %u, `roleName` = '%s', `permission` = '%s'", $roleID, $roleName, $rolePerm));
         if ($strSQL) {
@@ -496,9 +496,9 @@ $app->post('/message/', function () use($app) {
     $options = ['myet_welcome_message'];
 
     foreach ($options as $option_name) {
-        if (!isset($_POST[$option_name]))
+        if (!isset($app->req->post[$option_name]))
             continue;
-        $value = $_POST[$option_name];
+        $value = $app->req->post[$option_name];
         update_option($option_name, $value);
     }
     /**
