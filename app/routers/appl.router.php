@@ -23,7 +23,7 @@ $app->group('/appl', function () use($app, $email) {
      */
     $app->before('GET|POST', '/', function() {
         if (!hasPermission('access_application_screen')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -53,11 +53,11 @@ $app->group('/appl', function () use($app, $email) {
                 });
                 $spro = $app->db->student()->where('stuID = ?', $q[0]['personID'])->findOne();
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -80,7 +80,7 @@ $app->group('/appl', function () use($app, $email) {
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_application_screen')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -112,11 +112,11 @@ $app->group('/appl', function () use($app, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
         /**
@@ -166,7 +166,7 @@ $app->group('/appl', function () use($app, $email) {
      */
     $app->before('GET|POST', '/editAppl/(\d+)/', function() {
         if (!hasPermission('create_application')) {
-            _etsis_flash()->{'error'}(_t('Record update not allowed.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Record update not allowed.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -199,9 +199,9 @@ $app->group('/appl', function () use($app, $email) {
 
             if ($appl->update()) {
                 etsis_logger_activity_log_write('Update Record', 'Application', get_name($app->req->post['personID']), get_persondata('uname'));
-                _etsis_flash()->{'success'}(_etsis_flash()->notice(200));
+                _etsis_flash()->success(_etsis_flash()->notice(200));
             } else {
-                _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
 
             $size = count($app->req->post['fice_ceeb']);
@@ -218,18 +218,18 @@ $app->group('/appl', function () use($app, $email) {
                 $inst->where('instAttID = ?', $app->req->post['instAttID'][$i])->_and_()
                     ->where('personID = ?', $app->req->post['personID']);
                 if ($inst->update()) {
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200));
+                    _etsis_flash()->success(_etsis_flash()->notice(200));
                 } else {
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
                 ++$i;
             }
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
         redirect(get_base_url() . 'appl' . '/' . $id . '/');
@@ -240,7 +240,7 @@ $app->group('/appl', function () use($app, $email) {
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('create_application')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -274,16 +274,16 @@ $app->group('/appl', function () use($app, $email) {
                 if ($appl->save()) {
                     $ID = $appl->lastInsertId();
                     etsis_logger_activity_log_write('New Record', 'Application', get_name($id), get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'appl' . '/' . $ID . '/');
+                    _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'appl' . '/' . $ID . '/');
                 } else {
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -299,11 +299,11 @@ $app->group('/appl', function () use($app, $email) {
                 ->whereLte('endDate', '0000-00-00')
                 ->findOne();
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
         /**
@@ -354,7 +354,7 @@ $app->group('/appl', function () use($app, $email) {
      */
     $app->before('GET|POST', '/inst-attended/', function() {
         if (!hasPermission('access_application_screen')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -375,16 +375,16 @@ $app->group('/appl', function () use($app, $email) {
                 $inst->addedBy = get_persondata('personID');
                 if ($inst->save()) {
                     etsis_logger_activity_log_write('New Record', 'Institution Attended', get_name($app->req->post['personID']), get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'appl' . '/' . $app->req->post['personID'] . '/');
+                    _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'appl' . '/' . $app->req->post['personID'] . '/');
                 } else {
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -404,7 +404,7 @@ $app->group('/appl', function () use($app, $email) {
      */
     $app->before('GET|POST', '/inst(.*)', function() {
         if (!hasPermission('access_application_screen')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -424,11 +424,11 @@ $app->group('/appl', function () use($app, $email) {
                     return $array;
                 });
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
             }
         }
 
@@ -459,16 +459,16 @@ $app->group('/appl', function () use($app, $email) {
                 if ($inst->save()) {
                     $ID = $inst->lastInsertId();
                     etsis_logger_activity_log_write('New Record', 'Institution', $app->req->post['instName'], get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'appl/inst' . '/' . $ID . '/');
+                    _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'appl/inst' . '/' . $ID . '/');
                 } else {
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -492,27 +492,27 @@ $app->group('/appl', function () use($app, $email) {
                 $inst->where('institutionID = ?', $id);
                 if ($inst->update()) {
                     etsis_logger_activity_log_write('Update Record', 'Institution', _filter_input_string(INPUT_POST, 'instName'), get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200),$app->req->server['HTTP_REFERER']);
+                    _etsis_flash()->success(_etsis_flash()->notice(200),$app->req->server['HTTP_REFERER']);
                 } else {
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409),$app->req->server['HTTP_REFERER']);
+                    _etsis_flash()->error(_etsis_flash()->notice(409),$app->req->server['HTTP_REFERER']);
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage(),$app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(),$app->req->server['HTTP_REFERER']);
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage(),$app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(),$app->req->server['HTTP_REFERER']);
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage(),$app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($e->getMessage(),$app->req->server['HTTP_REFERER']);
             }
         }
 
         try {
             $inst = $app->db->institution()->where('institutionID = ?', (int) $id)->findOne();
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
         etsis_register_style('form');
@@ -538,11 +538,11 @@ $app->group('/appl', function () use($app, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
         $css = [ 'css/admin/module.admin.page.alt.form_elements.min.css', 'css/admin/module.admin.page.alt.tables.min.css'];
@@ -578,16 +578,16 @@ $app->group('/appl', function () use($app, $email) {
         try {
             $inst = $app->db->institution_attended()->where('instAttID = ?', $id);
             if ($inst->delete()) {
-                _etsis_flash()->{'success'}(_etsis_flash()->notice(200));
+                _etsis_flash()->success(_etsis_flash()->notice(200));
             } else {
-                _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
         redirect($app->req->server['HTTP_REFERER']);
     });

@@ -15,7 +15,7 @@ if (!defined('BASE_PATH'))
  */
 $app->before('GET|POST', '/plugins.*', function () {
     if (!hasPermission('access_plugin_screen')) {
-        _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
     }
 });
 
@@ -118,7 +118,7 @@ $app->group('/plugins', function () use($app) {
      */
     $app->before('GET|POST', '/install/', function () {
         if (!hasPermission('access_plugin_admin_page')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -143,7 +143,7 @@ $app->group('/plugins', function () use($app) {
             $continue = strtolower($name[1]) == 'zip' ? true : false;
 
             if (!$continue) {
-                _etsis_flash()->{'error'}(_t('The file you are trying to upload is not the accepted file type (.zip). Please try again.'));
+                _etsis_flash()->error(_t('The file you are trying to upload is not the accepted file type (.zip). Please try again.'));
             }
             $target_path = APP_PATH . 'plugins' . DS . $_FILES["plugin_zip"]["name"];
             if (move_uploaded_file($_FILES["plugin_zip"]["tmp_name"], $target_path)) {
@@ -154,9 +154,9 @@ $app->group('/plugins', function () use($app) {
                     $zip->close();
                     unlink($target_path);
                 }
-                _etsis_flash()->{'success'}(_t('Your plugin was uploaded and installed properly.'), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->success(_t('Your plugin was uploaded and installed properly.'), $app->req->server['HTTP_REFERER']);
             } else {
-                _etsis_flash()->{'error'}(_t('There was a problem uploading your plugin. Please try again or check the plugin package.'), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error(_t('There was a problem uploading your plugin. Please try again or check the plugin package.'), $app->req->server['HTTP_REFERER']);
             }
         }
 

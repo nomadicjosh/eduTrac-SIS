@@ -134,7 +134,7 @@ $app->group('/crse', function() use ($app) {
                      */
                     $app->hook->do_action('post_update_crse', $crse);
                     etsis_logger_activity_log_write('Update', 'Course', $course->courseCode, get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                    _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                 } else {
                     etsis_logger_activity_log_write('Update Error', 'Course', $course->courseCode, get_persondata('uname'));
                     _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
@@ -219,7 +219,7 @@ $app->group('/crse', function() use ($app) {
                      */
                     $app->hook->do_action('post_update_crse_addnl_info', $crse);
                     etsis_logger_activity_log_write('Update Record', 'Course', $course->courseCode, get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                    _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                 } else {
                     _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
                 }
@@ -328,7 +328,7 @@ $app->group('/crse', function() use ($app) {
                      */
                     $app->hook->do_action('post_save_crse', $course);
                     etsis_logger_activity_log_write('New Record', 'Course', $app->req->post['subjectCode'] . '-' . $app->req->post['courseNumber'], get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'crse' . '/' . (int) $ID . '/');
+                    _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'crse' . '/' . (int) $ID . '/');
                 } else {
                     _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
@@ -431,7 +431,7 @@ $app->group('/crse', function() use ($app) {
                 $ID = $clone->lastInsertId();
                 etsis_cache_flush_namespace('crse');
                 etsis_logger_activity_log_write('New Record', 'Cloned Course', $crse->courseCode, get_persondata('uname'));
-                _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'crse' . '/' . (int) $ID . '/');
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'crse' . '/' . (int) $ID . '/');
             } else {
                 _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
             }

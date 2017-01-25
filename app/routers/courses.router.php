@@ -63,7 +63,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
                     return $array;
                 });
                 if (bcadd(count($q1[0]['id']), count($app->req->post['courseSecID'])) > get_option('number_of_courses')) {
-                    _etsis_flash()->{'error'}(sprintf(_t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses')), get_base_url() . 'courses' . '/');
+                    _etsis_flash()->error(sprintf(_t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses')), get_base_url() . 'courses' . '/');
                     exit();
                 }
                 /* Retrieve the dropAddEndDate from the registration term. */
@@ -79,19 +79,19 @@ $app->group('/courses', function() use ($app, $css, $js) {
                     $q2->courseSecID = $app->req->post['courseSecID'][$i];
                     $q2->deleteDate = $deleteDate;
                     if ($q2->save()) {
-                        _etsis_flash()->{'success'}(_etsis_flash()->notice(200));
+                        _etsis_flash()->success(_etsis_flash()->notice(200));
                     } else {
-                        _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                        _etsis_flash()->error(_etsis_flash()->notice(409));
                     }
                     ++$i;
                     redirect(get_base_url() . 'courses/cart' . '/');
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), get_base_url() . 'courses/cart' . '/');
+                _etsis_flash()->error($e->getMessage(), get_base_url() . 'courses/cart' . '/');
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), get_base_url() . 'courses/cart' . '/');
+                _etsis_flash()->error($e->getMessage(), get_base_url() . 'courses/cart' . '/');
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage(), get_base_url() . 'courses/cart' . '/');
+                _etsis_flash()->error($e->getMessage(), get_base_url() . 'courses/cart' . '/');
             }
         }
 
@@ -133,11 +133,11 @@ $app->group('/courses', function() use ($app, $css, $js) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
         $app->view->display('courses/index', [
@@ -167,11 +167,11 @@ $app->group('/courses', function() use ($app, $css, $js) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
 
         $app->view->display('courses/cart', [
@@ -208,7 +208,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
             });
             $counts = array_count_values($app->req->post['regAction']);
             if (bcadd(count($d[0]['id']), $counts['register']) > get_option('number_of_courses')) {
-                _etsis_flash()->{'error'}(sprintf(_t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses')), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error(sprintf(_t('Your institution has set a course registration limit. You are only allowed to register for <strong>%s courses</strong> per term.'), get_option('number_of_courses')), $app->req->server['HTTP_REFERER']);
                 exit();
             }
             /**
@@ -362,16 +362,16 @@ $app->group('/courses', function() use ($app, $css, $js) {
                     }
                 }
                 etsis_cache_flush_namespace('student_account');
-                _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             } else {
-                _etsis_flash()->{'error'}(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
             }
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
         }
     });
 });

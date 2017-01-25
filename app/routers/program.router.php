@@ -54,11 +54,11 @@ $app->group('/program', function() use ($app) {
                     return $array;
                 });
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -114,17 +114,17 @@ $app->group('/program', function() use ($app) {
                 if ($prog->update()) {
                     etsis_cache_delete($id, 'prog');
                     etsis_logger_activity_log_write('Update', 'Acad Program', $program->acadProgCode, get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                    _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                 } else {
                     etsis_logger_activity_log_write('Update Error', 'Acad Program', $program->acadProgCode, get_persondata('uname'));
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -176,7 +176,7 @@ $app->group('/program', function() use ($app) {
      */
     $app->before('GET|POST', '/add/', function() {
         if (!hasPermission('add_acad_prog')) {
-            _etsis_flash()->{'error'}(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -218,16 +218,16 @@ $app->group('/program', function() use ($app) {
                     $ID = $prog->lastInsertId();
                     etsis_cache_flush_namespace('prog');
                     etsis_logger_activity_log_write('New Record', 'Acad Program', $app->req->post['acadProgCode'], get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'program' . '/' . $ID . '/');
+                    _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'program' . '/' . $ID . '/');
                 } else {
-                    _etsis_flash()->{'error'}(_etsis_flash()->notice(409));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (Exception $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             } catch (ORMException $e) {
-                _etsis_flash()->{'error'}($e->getMessage());
+                _etsis_flash()->error($e->getMessage());
             }
         }
 
@@ -264,11 +264,11 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
     });
 
@@ -293,11 +293,11 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
     });
 
@@ -322,11 +322,11 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
     });
 
@@ -351,11 +351,11 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
     });
 
@@ -380,11 +380,11 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
     });
 
@@ -409,11 +409,11 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
     });
 
@@ -438,11 +438,11 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         } catch (ORMException $e) {
-            _etsis_flash()->{'error'}($e->getMessage());
+            _etsis_flash()->error($e->getMessage());
         }
     });
 });

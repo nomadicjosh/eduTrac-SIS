@@ -91,7 +91,7 @@ $app->group('/hr', function () use($app) {
                 $smeta->where('sMetaID = ?', $app->req->post['sMetaID'])->_and_()->where('staffID = ?', $id);
 
                 if ($staff->update() || $smeta->update()) {
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), get_base_url() . 'hr' . '/' . $id . '/');
+                    _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'hr' . '/' . $id . '/');
                 } else {
                     _etsis_flash()->error(_etsis_flash()->notice(204));
                 }
@@ -177,7 +177,7 @@ $app->group('/hr', function () use($app) {
                     }
                     if ($pg->save()) {
                         etsis_logger_activity_log_write('New Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
-                        _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                        _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                     } else {
                         _etsis_flash()->error(_etsis_flash()->notice(409));
                     }
@@ -189,7 +189,7 @@ $app->group('/hr', function () use($app) {
                     $pg->where('ID = ?', _filter_input_int(INPUT_POST, 'ID'));
                     if ($pg->update()) {
                         etsis_logger_activity_log_write('Update Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
-                        _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                        _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                     } else {
                         _etsis_flash()->error(_etsis_flash()->notice(409));
                     }
@@ -244,7 +244,7 @@ $app->group('/hr', function () use($app) {
                     }
                     if ($job->save()) {
                         etsis_logger_activity_log_write('New Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
-                        _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                        _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                     } else {
                         _etsis_flash()->error(_etsis_flash()->notice(409));
                     }
@@ -256,7 +256,7 @@ $app->group('/hr', function () use($app) {
                     $job->where('ID = ?', _filter_input_int(INPUT_POST, 'ID'));
                     if ($job->update()) {
                         etsis_logger_activity_log_write('Update Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
-                        _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                        _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                     } else {
                         _etsis_flash()->error(_etsis_flash()->notice(409));
                     }
@@ -309,7 +309,7 @@ $app->group('/hr', function () use($app) {
                 }
                 if ($position->save()) {
                     etsis_logger_activity_log_write('New Record', 'Job Position', get_name($id), get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                    _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                 } else {
                     _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
@@ -392,7 +392,7 @@ $app->group('/hr', function () use($app) {
                 $position->where('sMetaID = ?', _filter_input_int(INPUT_POST, 'sMetaID'));
                 if ($position->update()) {
                     etsis_logger_activity_log_write('Update Record', 'Job Position', get_name($id), get_persondata('uname'));
-                    _etsis_flash()->{'success'}(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                    _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                 } else {
                     _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
