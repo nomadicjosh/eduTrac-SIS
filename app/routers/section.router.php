@@ -30,7 +30,7 @@ $app->group('/sect', function() use ($app) {
     $app->match('GET|POST', '/', function () use($app) {
         if ($app->req->isPost()) {
             try {
-                $post = $_POST['sect'];
+                $post = $app->req->post['sect'];
                 $sect = $app->db->query("SELECT 
                     CASE a.currStatus 
                     WHEN 'A' THEN 'Active' 
@@ -110,7 +110,7 @@ $app->group('/sect', function() use ($app) {
                 $sect->deptCode = $app->req->post['deptCode'];
                 $sect->minCredit = $app->req->post['minCredit'];
                 $sect->comment = $app->req->post['comment'];
-                $sect->courseSection = $app->req->post['termCode'] . '-' . $_POST['courseSecCode'];
+                $sect->courseSection = $app->req->post['termCode'] . '-' . $app->req->post['courseSecCode'];
                 $sect->ceu = $app->req->post['ceu'];
                 $sect->courseLevelCode = $app->req->post['courseLevelCode'];
                 $sect->where('courseSecID = ?', (int) $id);
@@ -298,7 +298,7 @@ $app->group('/sect', function() use ($app) {
 
                 $dotw = '';
                 /** Combine the days of the week to be entered into the database */
-                $days = $_POST['dotw'];
+                $days = $app->req->post['dotw'];
                 for ($i = 0; $i < sizeof($days); $i++) {
                     $dotw .= $days[$i];
                 }
@@ -620,7 +620,7 @@ $app->group('/sect', function() use ($app) {
 
         if ($app->req->isPost()) {
             try {
-                $size = count($_POST['stuID']);
+                $size = count($app->req->post['stuID']);
                 $i = 0;
                 while ($i < $size) {
                     if (acadCredGradePoints($app->req->post['grade'][$i], $app->req->post['attCredit']) > 0) {
@@ -838,7 +838,9 @@ $app->group('/sect', function() use ($app) {
         etsis_register_style('form');
         etsis_register_script('select');
         etsis_register_script('select2');
+        etsis_register_style('jquery-ui');
         etsis_register_script('jCombo');
+        etsis_register_script('jquery-ui');
 
         $app->view->display('section/register', [
             'title' => 'Course Registration'
@@ -858,10 +860,10 @@ $app->group('/sect', function() use ($app) {
     $app->match('GET|POST', '/rgn/rrsr/', function () use($app) {
         if ($app->req->isPost()) {
             try {
-                $size = count($_POST['rule']);
+                $size = count($app->req->post['rule']);
                 $i = 0;
                 while ($i < $size) {
-                    if ($_POST['id'][$i] == null) {
+                    if ($app->req->post['id'][$i] == null) {
                         $rlde = get_rule_by_code((string) $app->req->_post('rule')[$i]);
                         $rrsr = Node::table('rrsr');
                         $rrsr->rid = (int) $rlde->id;
@@ -872,12 +874,12 @@ $app->group('/sect', function() use ($app) {
                     ++$i;
                 }
 
-                $id_size = count($_POST['rule']);
+                $id_size = count($app->req->post['rule']);
                 $t = 0;
                 while ($t < $id_size) {
-                    if ($_POST['id'][$t] > 0) {
+                    if ($app->req->post['id'][$t] > 0) {
                         $rlde = get_rule_by_code((string) $app->req->_post('rule')[$t]);
-                        $rrsr = Node::table('rrsr')->find($_POST['id'][$t]);
+                        $rrsr = Node::table('rrsr')->find($app->req->post['id'][$t]);
                         $rrsr->rid = (int) $rlde->id;
                         $rrsr->rule = (string) $app->req->_post('rule')[$t];
                         $rrsr->value = (string) $app->req->_post('value')[$t];
@@ -927,7 +929,7 @@ $app->group('/sect', function() use ($app) {
     $app->match('GET|POST', '/sros/', function () use($app) {
 
         if ($app->req->isPost()) {
-            redirect(get_base_url() . 'sect/sros' . '/' . $_POST['sectionID'] . '/' . $_POST['template'] . '/');
+            redirect(get_base_url() . 'sect/sros' . '/' . $app->req->post['sectionID'] . '/' . $app->req->post['template'] . '/');
         }
 
         etsis_register_style('form');
@@ -1138,7 +1140,7 @@ $app->group('/sect', function() use ($app) {
         try {
             $term = $app->db->term()
                 ->select('termCode,termStartDate,termEndDate')
-                ->where('termCode = ?', $_POST['termCode'])->_and_()
+                ->where('termCode = ?', $app->req->post['termCode'])->_and_()
                 ->where('active = "1"');
             $q = $term->find(function($data) {
                 $array = [];
@@ -1161,14 +1163,28 @@ $app->group('/sect', function() use ($app) {
         }
     });
 
-    $app->post('/stuLookup/', function() use($app) {
+    $app->match('GET|POST','/stuLookup/', function() use($app) {
         try {
-            $stu = $app->db->student()->where('stuID = ?', (int) $_POST['stuID'])->findOne();
-            $nae = get_person_by('personID', $stu->stuID);
-
-            $json = [ 'input#stuName' => $nae->lname . ', ' . $nae->fname];
-
-            echo json_encode($json);
+            $term = $app->req->get['term'];
+            $stu = $app->db->student()
+                ->select('student.stuID,person.fname,person.lname')
+                ->_join('person','student.stuID = person.personID')
+                ->whereLike('student.stuID', "%".$term."%")->_or_()
+                ->whereLike('person.fname', "%".$term."%")->_or_()
+                ->whereLike('person.lname', "%".$term."%")->_or_()
+                ->whereLike('CONCAT(person.lname,", ",person.fname)', "%".$term."%")->_or_()
+                ->whereLike('CONCAT(person.fname," ",person.lname)', "%".$term."%")
+                ->find();
+            $items = [];
+            foreach($stu as $x) {
+                $option = array(
+                    'id' => $x->stuID,
+                    'label' => get_name($x->stuID),
+                    'value' => get_name($x->stuID)
+                );
+                $items[] = $option;
+            }
+            echo json_encode($items);
         } catch (NotFoundException $e) {
             _etsis_flash()->error($e->getMessage());
         } catch (Exception $e) {
