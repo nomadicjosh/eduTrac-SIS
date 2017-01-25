@@ -133,8 +133,26 @@ $app->group('/dashboard', function () use($app) {
     });
 
     $app->get('/system-snapshot/', function () use($app) {
+        try {
+            $db = $app->db->query("SELECT version() AS version")->findOne();
+            $nae = $app->db->person()->where("status = 'A'")->count('personID');
+            $stu = $app->db->student()->where("status = 'A'")->count('stuID');
+            $staf = $app->db->staff()->where("status = 'A'")->count('staffID');
+            $error = $app->db->error()->count('ID');
+        } catch (NotFoundException $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage());
+        } catch (ORMException $e) {
+            _etsis_flash()->error($e->getMessage());
+        }
         $app->view->display('dashboard/system-snapshot', [
-            'title' => 'System Snapshot Report'
+            'title' => 'System Snapshot Report',
+            'db' => $db,
+            'nae' => $nae,
+            'stu' => $stu,
+            'staf' => $staf,
+            'error' => $error
         ]);
     });
 
@@ -373,7 +391,7 @@ $app->group('/dashboard', function () use($app) {
             _etsis_flash()->error($e->getMessage());
         }
     });
-    
+
     /**
      * Before route middleware check.
      */
