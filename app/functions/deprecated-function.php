@@ -203,7 +203,7 @@ function _error_log($name, $message)
 {
     _deprecated_function(__FUNCTION__, '6.2.11', 'etsis_monolog');
 
-    return etsis_monolog($name, $message, $level = 'addInfo');
+    return etsis_monolog($name, $message);
 }
 
 /**
