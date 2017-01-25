@@ -171,13 +171,12 @@ function etsis_logger_activity_log_purge()
  *            Log channel and log file prefix.
  * @param string $message
  *            Message printed to log.
- * @param string $level The logging level.
  */
-function etsis_monolog($name, $message, $level = 'addInfo')
+function etsis_monolog($name, $message)
 {
     $log = new \Monolog\Logger(_trim($name));
     $log->pushHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp' . DS . 'logs' . DS . _trim($name) . '.' . date('m-d-Y') . '.txt'));
-    $log->$level($message);
+    $log->addError($message);
 }
 
 /**
