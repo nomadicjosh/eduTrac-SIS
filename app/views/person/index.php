@@ -61,7 +61,6 @@ $screen = 'nae';
 					<tr>
 						<th class="text-center"><?=_t( 'Image' );?></th>
 						<th class="text-center"><?=_t( 'ID' );?></th>
-                        <th class="text-center"><?=_t( 'Alternate ID' );?></th>
 						<th class="text-center"><?=_t( 'Last Name' );?></th>
 						<th class="text-center"><?=_t( 'First Name' );?></th>
 						<th class="text-center"><?=_t( 'Actions' );?></th>
@@ -74,8 +73,7 @@ $screen = 'nae';
 				<?php if($search != '') : foreach($search as $k => $v) { ?>
                 <tr class="gradeX">
                 	<td class="text-center"><?=getSchoolPhoto(_h($v['personID']), _h($v['email']), 48, 'avatar-frame');?></td>
-                    <td class="text-center"><?=_h($v['personID']);?></td>
-                    <td class="text-center"><?=_h($v['altID']);?></td>
+                    <td class="text-center"><?=(_h($v['altID']) != '' ? _h($v['altID']) : _h($v['personID']));?></td>
                     <td class="text-center"><?=_h($v['lname']);?></td>
                     <td class="text-center"><?=_h($v['fname']);?></td>
                     <td class="text-center">

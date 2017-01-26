@@ -17,21 +17,19 @@ $templates_header = get_templates_header(APP_PATH . 'views/student/templates/tra
 ?>
 
 <script type="text/javascript">
-    jQuery(document).ready(function() {
-    jQuery('#stuID').live('change', function(event) {
-        $.ajax({
-            type    : 'POST',
-            url     : '<?=get_base_url();?>sect/stuLookup/',
-            dataType: 'json',
-            data    : $('#validateSubmitForm').serialize(),
-            cache: false,
-            success: function( data ) {
-                   for(var id in data) {        
-                          $(id).val( data[id] );
-                   }
-            }
-        });
-    });
+$(document).ready(function(){
+  $("#stuID").autocomplete({
+        source: '<?=get_base_url();?>sect/stuLookup/', // The source of the AJAX results
+        minLength: 2, // The minimum amount of characters that must be typed before the autocomplete is triggered
+        focus: function( event, ui ) { // What happens when an autocomplete result is focused on
+            $("#stuID").val( ui.item.value );
+            return false;
+      },
+      select: function ( event, ui ) { // What happens when an autocomplete result is selected
+          $("#stuID").val( ui.item.value );
+          $('#StudentID').val( ui.item.id );
+      }
+  });
 });
 </script>
 
@@ -72,8 +70,8 @@ $templates_header = get_templates_header(APP_PATH . 'views/student/templates/tra
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Student ID' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="stuID" id="stuID" class="form-control" required />
-                                <input type="text" id="stuName" readonly="readonly" class="form-control text-center" />
+								<input type="text" id="stuID" class="form-control" required />
+                                <input type="text" id="StudentID" name="stuID" readonly="readonly" class="form-control text-center" />
 							</div>
 						</div>
 						<!-- // Group END -->

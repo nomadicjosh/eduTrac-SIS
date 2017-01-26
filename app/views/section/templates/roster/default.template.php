@@ -87,7 +87,7 @@ $table .= '</tr></thead>';
 $table .= '<tbody>';
 foreach($sros as $k => $v) {
      $table .= '<tr>';
-     $table .= '<td>'._h($v['stuID']).'</td>';
+     $table .= '<td>'.(_h($v['altID']) != '' ? _h($v['altID']) : _h($v['stuID'])).'</td>';
      $table .= '<td>'.get_name(_h($v['stuID'])).'</td>';
      $table .= '<td>'._h($v['acadLevelCode']).'</td>';
      $table .= '<td>'._h($v['acadProgCode']).'</td>';

@@ -71,7 +71,7 @@ $screen = 'staff';
 				<?php if($search != '') : foreach($search as $k => $v) { ?>
                 <tr class="gradeX">
                 	<td class="text-center"><?=getSchoolPhoto(_h($v['staffID']), _h($v['email']), 48, 'avatar-frame');?></td>
-                    <td class="text-center"><?=_h($v['staffID']);?></td>
+                    <td class="text-center"><?=(_h($v['altID']) != '' ? _h($v['altID']) : _h($v['staffID']));?></td>
                     <td class="text-center"><?=_h($v['lname']);?></td>
                     <td class="text-center"><?=_h($v['fname']);?></td>
                     <td class="text-center">

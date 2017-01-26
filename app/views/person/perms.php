@@ -27,7 +27,7 @@ $screen = 'pperm';
 	<li><?=_t( 'Manage Person Permissions' );?></li>
 </ul>
 
-<h3><?=get_name(_h($nae[0]['personID']));?>: <?=_t( 'ID#' );?> <?=_h($nae[0]['personID']);?></h3>
+<h3><?=get_name(_h($nae[0]['personID']));?>: <?=_t( 'ID#' );?> <?=(_h($nae[0]['altID']) != '' ? _h($nae[0]['altID']) : _h($nae[0]['personID']));?></h3>
 <div class="innerLR">
     
     <?=_etsis_flash()->showMessage();?>

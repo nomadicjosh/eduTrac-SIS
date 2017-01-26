@@ -33,7 +33,7 @@ $staffInfo = get_staff(_h($positions[0]['staffID']));
         <div class="widget">
             <div class="widget-head">
                 <h4 class="heading glyphicons user"><i></i><?=get_name(_h($staffInfo->staffID));?></h4>
-                <a href="<?=get_base_url();?>staff/<?=_h($staffInfo->staffID);?>/" class="heading pull-right"><?=_h($staffInfo->staffID);?></a>
+                <a href="<?=get_base_url();?>staff/<?=_h($staffInfo->staffID);?>/" class="heading pull-right"><?=(_h($staffInfo->altID) != '' ? _h($staffInfo->altID) : _h($staffInfo->staffID));?></a>
             </div>
             <div class="widget-body">
                 <!-- 3 Column Grid / One Third -->

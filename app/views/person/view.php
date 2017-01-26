@@ -61,24 +61,17 @@ $screen = 'vnae';
                     <legend><?=_t( 'Personal Details' );?></legend>
                     <div data-row-span="4">
                         <div data-field-span="1" class="readonly">
-                            <label><?=_t( 'Person ID' );?></label>
-                            <input type="text" value="<?=_h($nae[0]['personID']);?>" readonly />
+                            <label><?=_t( 'Unique ID' );?></label>
+                            <input type="text" value="<?=(_h($nae[0]['altID']) != '' ? _h($nae[0]['altID']) : _h($nae[0]['personID']));?>" readonly />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Username' );?></label>
                             <input type="text" value="<?=_h($nae[0]['uname']);?>" readonly />
                         </div>
                         <div data-field-span="1">
-                            <label><?=_t( 'Alternate ID' );?> <a href="#altID" class="hidden-print" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
-                            <input type="text" name="altID" value="<?=_h($nae[0]['altID']);?>" />
-                        </div>
-                        <div data-field-span="1">
                             <label><font color="red">*</font> <?=_t( 'Person Type' );?> <a href="#myModal" class="hidden-print" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <?=person_type_select(_h($nae[0]['personType']));?>
                         </div>
-                    </div>
-                    
-                    <div data-row-span="5">
                         <div data-field-span="1">
                             <label><?=_t( 'Prefix' );?></label>
                             <select name="prefix" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=pio();?>>
@@ -90,6 +83,9 @@ $screen = 'vnae';
                                 <option value="Dr"<?php if($nae[0]['prefix'] == 'Dr') { echo ' selected="selected"'; }?>><?=_t( 'Dr.' );?></option>
                             </select>
                         </div>
+                    </div>
+                    
+                    <div data-row-span="4">
                         <div data-field-span="1">
                             <label><font color="red">*</font> <?=_t( 'First Name' );?></label>
                             <input type="text" name="fname"<?=pio();?> value="<?=_h($nae[0]['fname']);?>" required />

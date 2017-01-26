@@ -55,8 +55,8 @@ $screen = 'addr';
                     <legend><?=_t( 'Personal Details' );?></legend>
                     <div data-row-span="4">
                         <div data-field-span="1" class="readonly">
-                            <label><?= _t("Person ID"); ?></label>
-                            <input type="text" readonly value="<?=_h($nae[0]['personID']);?>" />
+                            <label><?= _t("Unique ID"); ?></label>
+                            <input type="text" readonly value="<?=(_h($nae[0]['altID']) != '' ? _h($nae[0]['altID']) : _h($nae[0]['personID']));?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'First Name' );?></label>

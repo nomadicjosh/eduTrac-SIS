@@ -64,7 +64,7 @@ $txt1 .= _h($stuInfo[0]['address1']) . ' ' . _h($stuInfo[0]['address2']) . "<br 
 $txt1 .= _h($stuInfo[0]['city']) . ' ' . _h($stuInfo[0]['state']) . ' ' . _h($stuInfo[0]['zip']) . "<br />";
 
 // set some text for student info
-$txt2 = _t( 'Student ID: ' ) . _h($stuInfo[0]['stuID']) . "<br />";
+$txt2 = _t( 'Student ID: ' ) . (_h($stuInfo[0]['altID']) != '' ? _h($stuInfo[0]['altID']) : _h($stuInfo[0]['stuID'])) . "<br />";
 if(_h($stuInfo[0]['ssn']) > 0) {
 	$txt2 .= _t( 'Social Security #: ' ) . _h($stuInfo[0]['ssn']) . "<br />";
 } else {
