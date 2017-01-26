@@ -746,7 +746,7 @@ function get_stu_header($stu_id)
                 <?php if (get_persondata('personID') == $student->stuID && !hasPermission('access_dashboard')) : ?>
                     <a href="<?= get_base_url(); ?>profile/" class="heading pull-right"><?= _h($student->stuID); ?></a>
                 <?php else : ?>
-                    <a href="<?= get_base_url(); ?>stu/<?= _h($student->stuID); ?>/" class="heading pull-right"><?= _h($student->stuID); ?></a>
+                    <a href="<?= get_base_url(); ?>stu/<?= _h($student->stuID); ?>/" class="heading pull-right"><?=(_h($student->altID) != '' ? $student->altID : $student->stuID); ?></a>
                 <?php endif; ?>
             </div>
             <div class="widget-body">
