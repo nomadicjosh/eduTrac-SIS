@@ -240,8 +240,7 @@ function etsis_reg_rstr_rule($stuID)
                 ->where("$rlde->rule")
                 ->findOne();
             if (false != $db) {
-                $app->flash('error_message', $rule->value);
-                redirect($app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error($rule->value, $app->req->server['HTTP_REFERER']);
                 exit();
             }
         }
@@ -253,5 +252,37 @@ function etsis_reg_rstr_rule($stuID)
         _etsis_flash()->error($e->getMessage());
     } catch (ORMException $e) {
         _etsis_flash()->error($e->getMessage());
+    }
+}
+
+/**
+ * Retrieve a list of academic levels.
+ * 
+ * @since 6.3.0
+ */
+function get_acad_levels()
+{
+    $app = \Liten\Liten::getInstance();
+    $q = $app->db->aclv()
+        ->find();
+    foreach ($q as $r) {
+        echo "'" . $r->code . "'" . ': ' . "'" . $r->code . " " . $r->name . "'" . ',' . "\n";
+    }
+}
+
+/**
+ * Retrieve a list of academic terms.
+ * 
+ * @since 6.3.0
+ */
+function get_acad_terms()
+{
+    $app = \Liten\Liten::getInstance();
+    $q = $app->db->term()
+        ->where('termCode <> "NULL"')
+        ->orderBy('termStartDate', 'DESC')
+        ->find();
+    foreach ($q as $r) {
+        echo "'" . $r->termCode . "'" . ': ' . "'" . $r->termCode . " " . $r->termName . "'" . ',' . "\n";
     }
 }
