@@ -396,7 +396,7 @@ $app->group('/nae', function () use($app, $json_url) {
 
             $adsu = $app->db->person()
                 ->setTableAlias('a')
-                ->select('a.personID,a.fname,a.lname,a.mname')
+                ->select('a.personID,a.fname,a.lname,a.mname,a.altID')
                 ->select('b.addressID,b.address1,b.address2,b.city')
                 ->select('b.state,b.zip,b.addressType,b.addressStatus')
                 ->_join('address', 'a.personID = b.personID', 'b')

@@ -1287,8 +1287,10 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
         }
 
         etsis_register_style('form');
+        etsis_register_style('jquery-ui');
         etsis_register_script('select');
         etsis_register_script('select2');
+        etsis_register_script('jquery-ui');
 
         $app->view->display('student/tran', [
             'title' => 'Transcript'
@@ -1304,7 +1306,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
                     . 'WHEN "Phd" THEN "Doctorate" WHEN "CE" THEN "Continuing Education" WHEN "CTF" THEN "Certificate" '
                     . 'WHEN "DIP" THEN "Diploma" WHEN "PR" THEN "Professional" ELSE "Non-Degree" END AS "Level"')
                 ->select('a.stuID,b.address1,b.address2,b.city,b.state')
-                ->select('b.zip,c.ssn,c.dob,d.graduationDate,f.degreeCode')
+                ->select('b.zip,c.ssn,c.dob,c.altID,d.graduationDate,f.degreeCode')
                 ->select('f.degreeName,g.majorCode,g.majorName,h.minorCode')
                 ->select('h.minorName,i.specCode,i.specName,j.ccdCode,j.ccdName')
                 ->_join('address', 'a.stuID = b.personID', 'b')
@@ -1316,7 +1318,7 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
                 ->_join('minor', 'e.minorCode = h.minorCode', 'h')
                 ->_join('specialization', 'e.specCode = i.specCode', 'i')
                 ->_join('ccd', 'e.ccdCode = j.ccdCode', 'j')
-                ->where('a.stuID = ?', $id)->_and_()
+                ->where('(a.stuID = ? OR c.altID = ?)', [$id, $id])->_and_()
                 ->where('a.acadLevelCode = ?', $level)->_and_()
                 ->where('b.addressStatus = "C"')->_and_()
                 ->where('b.addressType = "P"')->_and_()
@@ -1334,14 +1336,15 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
                         stac.compCred,stac.attCred,stac.grade,stac.gradePoints,
                         stac.termCode,stac.creditType,
                         stac.shortTitle,REPLACE(stac.courseCode,'-',' ') AS CourseName,stac.courseSecCode,
-                        stac.startDate,stac.endDate 
+                        stac.startDate,stac.endDate,person.altID 
                     FROM stu_acad_cred stac
                     LEFT JOIN term ON stac.termCode = term.termCode
-                    WHERE stac.stuID = ? 
+                    LEFT JOIN person ON stac.stuID = person.personID
+                    WHERE (stac.stuID = ? OR person.altID = ?) 
                     AND stac.acadLevelCode = ? 
                     AND stac.creditType = 'I' 
                     GROUP BY stac.courseSecCode,stac.termCode,stac.acadLevelCode
-                    ORDER BY term.termStartDate ASC", [$id, $level]);
+                    ORDER BY term.termStartDate ASC", [$id, $id, $level]);
             $course = $tranCourse->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1355,8 +1358,9 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
                 ->select('SUM(stac.attCred) as Attempted')
                 ->select('SUM(stac.compCred) as Completed')
                 ->select('SUM(stac.gradePoints) as Points')
-                ->select('SUM(stac.gradePoints)/SUM(stac.attCred) as GPA')
-                ->where('stac.stuID = ?', $id)->_and_()
+                ->select('SUM(stac.gradePoints)/SUM(stac.attCred) as GPA,person.altID')
+                ->_join('person','stac.stuID = person.personID')
+                ->where('(stac.stuID = ? OR person.altID = ?)', [$id, $id])->_and_()
                 ->where('stac.acadLevelCode = ?', $level)->_and_()
                 ->whereNotNull('stac.grade')->_and_()
                 ->where('stac.creditType = "I"')
@@ -1370,13 +1374,15 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
             });
 
             $transferCourse = $app->db->query("SELECT 
-                        compCred,attCred,grade,gradePoints,
-                        termCode,creditType,
-                        shortTitle,REPLACE(courseCode,'-',' ') AS CourseName,courseSecCode 
-                    FROM stu_acad_cred  
-                    WHERE stuID = ? 
-                    AND acadLevelCode = ? 
-                    AND creditType = 'TR'", [$id, $level]);
+                        stac.compCred,stac.attCred,stac.grade,stac.gradePoints,
+                        stac.termCode,stac.creditType,
+                        stac.shortTitle,REPLACE(stac.courseCode,'-',' ') AS CourseName,stac.courseSecCode,
+                        person.altID 
+                    FROM stu_acad_cred AS stac 
+                    LEFT JOIN person ON stac.stuID = person.personID 
+                    WHERE (stac.stuID = ? OR person.altID = ?) 
+                    AND stac.acadLevelCode = ? 
+                    AND stac.creditType = 'TR'", [$id, $id, $level]);
             $transCRSE = $transferCourse->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1390,8 +1396,9 @@ $app->group('/stu', function() use ($app, $css, $js, $json_url, $flashNow, $emai
                 ->select('SUM(stac.attCred) as Attempted')
                 ->select('SUM(stac.compCred) as Completed')
                 ->select('SUM(stac.gradePoints) as Points')
-                ->select('SUM(stac.gradePoints)/SUM(stac.attCred) as GPA')
-                ->where('stac.stuID = ?', $id)->_and_()
+                ->select('SUM(stac.gradePoints)/SUM(stac.attCred) as GPA,person.altID')
+                ->_join('person','stac.stuID = person.personID')
+                ->where('(stac.stuID = ? OR person.altID = ?)', [$id, $id])->_and_()
                 ->where('stac.acadLevelCode = ?', $level)->_and_()
                 ->whereNotNull('stac.grade')->_and_()
                 ->where('stac.creditType = "TR"')

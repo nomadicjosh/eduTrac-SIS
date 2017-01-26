@@ -31,13 +31,14 @@ $app->group('/hr', function () use($app) {
             try {
                 $staff = $app->req->post['employee'];
                 $hr = $app->db->staff()
-                    ->select('staff.staffID,staff.office_phone,b.email,c.deptName')
+                    ->select('staff.staffID,staff.office_phone,b.email,b.altID,c.deptName')
                     ->_join('person', 'staff.staffID = b.personID', 'b')
                     ->_join('department', 'staff.deptCode = c.deptCode', 'c')
                     ->whereLike('CONCAT(b.fname," ",b.lname)', "%$staff%")->_or_()
                     ->whereLike('CONCAT(b.lname," ",b.fname)', "%$staff%")->_or_()
                     ->whereLike('CONCAT(b.lname,", ",b.fname)', "%$staff%")->_or_()
-                    ->whereLike('staff.staffID', "%$staff%");
+                    ->whereLike('staff.staffID', "%$staff%")->_or_()
+                    ->whereLike('b.altID', "%$staff%");
 
                 $q = $hr->find(function($data) {
                     $array = [];

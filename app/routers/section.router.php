@@ -956,10 +956,11 @@ $app->group('/sect', function() use ($app) {
 						b.acadProgCode,b.acadLevelCode,c.courseSection,
 						c.facID,c.roomCode,c.secShortTitle,c.startDate,
 						c.endDate,c.startTime,c.endTime,c.dotw,
-						c.instructorMethod 
+						c.instructorMethod,d.altID 
 					FROM stu_course_sec a 
 					LEFT JOIN stu_acad_level b ON a.stuID = b.stuID 
 					LEFT JOIN course_sec c ON a.courseSecID = c.courseSecID 
+                    LEFT JOIN person d ON a.stuID = d.personID 
 					WHERE c.courseSecID = ? 
 					AND c.termCode = a.termCode 
 					AND a.status IN('A','N','D') 
@@ -1167,9 +1168,10 @@ $app->group('/sect', function() use ($app) {
         try {
             $term = $app->req->get['term'];
             $stu = $app->db->student()
-                ->select('student.stuID,person.fname,person.lname')
+                ->select('student.stuID,person.altID,person.fname,person.lname')
                 ->_join('person','student.stuID = person.personID')
                 ->whereLike('student.stuID', "%".$term."%")->_or_()
+                ->whereLike('person.altID', "%".$term."%")->_or_()
                 ->whereLike('person.fname', "%".$term."%")->_or_()
                 ->whereLike('person.lname', "%".$term."%")->_or_()
                 ->whereLike('CONCAT(person.lname,", ",person.fname)', "%".$term."%")->_or_()
@@ -1178,7 +1180,7 @@ $app->group('/sect', function() use ($app) {
             $items = [];
             foreach($stu as $x) {
                 $option = array(
-                    'id' => $x->stuID,
+                    'id' => ($x->altID == '' ? $x->stuID : $x->altID),
                     'label' => get_name($x->stuID),
                     'value' => get_name($x->stuID)
                 );
