@@ -67,7 +67,7 @@ elseif (strpos(getPathInfo('/form'), "/form") === 0)
     }
     
     if(file_exists($app->config('routers_dir') . 'myet.router.php')) {
-        require($app->config('routers_dir') . 'myet.router.php');
+        _etsis_myetsis_router();
     }
 }
 
@@ -119,7 +119,7 @@ elseif (strpos(getPathInfo('/sect'), "/sect") === 0)
 
 elseif (strpos(getPathInfo('/admin'), "/admin") === 0)
 {
-    require($app->config('routers_dir') . 'myet.router.php');
+    _etsis_myetsis_router();
 }
 
 elseif (strpos(getPathInfo('/setting'), "/setting") === 0)
@@ -198,10 +198,10 @@ elseif (strpos(getPathInfo('/rlde'), "/rlde") === 0)
 }
 
 else {
-    require($app->config('routers_dir') . 'index.router.php');
+    _etsis_index_router();
     
     if(file_exists($app->config('routers_dir') . 'myet.router.php')) {
-        require($app->config('routers_dir') . 'myet.router.php');
+        _etsis_myetsis_router();
     } // default routes
 }
 

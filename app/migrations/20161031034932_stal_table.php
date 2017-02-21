@@ -29,7 +29,7 @@ class StalTable extends AbstractMigration
     {
         $table = $this->table('stal', ['id' => false, 'primary_key' => 'id']);
         $table
-            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('code', 'string', ['limit' => 11])
             ->addColumn('name', 'string', ['limit' => 108])
             ->addIndex(['code'])

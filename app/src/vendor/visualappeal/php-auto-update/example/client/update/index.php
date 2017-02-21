@@ -10,7 +10,7 @@ $update->setUpdateUrl('http://php-auto-update.app/server'); //Replace with your 
 
 // Optional:
 $update->addLogHandler(new Monolog\Handler\StreamHandler(__DIR__ . '/update.log'));
-$update->setCache(new Desarrolla2\Cache\Adapter\File(__DIR__ . '/cache'), 3600);
+// $update->setCache(new Desarrolla2\Cache\Adapter\File(__DIR__ . '/cache'), 3600);
 
 //Check for a new update
 if ($update->checkUpdate() === false)

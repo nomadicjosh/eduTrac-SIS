@@ -427,13 +427,13 @@ class AutoUpdate
 
         $versions = $this->_cache->get('update-versions');
 
-        // Check if cache is empty
-        if ($versions === null) {
-            // Create absolute url to update file
-            $updateFile = $this->_updateUrl . '/' . $this->_updateFile;
-            if (!empty($this->_branch))
-                $updateFile .= '.' . $this->_branch;
+        // Create absolute url to update file
+        $updateFile = $this->_updateUrl . '/' . $this->_updateFile;
+        if (!empty($this->_branch))
+            $updateFile .= '.' . $this->_branch;
 
+        // Check if cache is empty
+        if ($versions === null || $versions === false) {
             $this->_log->addDebug(sprintf('Get new updates from %s', $updateFile));
 
             // Read update file from update server
@@ -450,7 +450,7 @@ class AutoUpdate
                 case 'ini':
                     $versions = @parse_ini_string($update, true);
                     if (!is_array($versions)) {
-                        $this->_log->addInfo('Unable to parse ini update file!');
+                        $this->_log->addError('Unable to parse ini update file!');
 
                         return false;
                     }
@@ -463,14 +463,14 @@ class AutoUpdate
                 case 'json':
                     $versions = (array)@json_decode($update);
                     if (!is_array($versions)) {
-                        $this->_log->addInfo('Unable to parse json update file!');
+                        $this->_log->addError('Unable to parse json update file!');
 
                         return false;
                     }
 
                     break;
                 default:
-                    $this->_log->addInfo(sprintf('Unknown file extension "%s"', $updateFileExtension));
+                    $this->_log->addError(sprintf('Unknown file extension "%s"', $updateFileExtension));
 
                     return false;
             }
@@ -478,6 +478,12 @@ class AutoUpdate
             $this->_cache->set('update-versions', $versions);
         } else {
             $this->_log->addDebug('Got updates from cache');
+        }
+
+        if (!is_array($versions)) {
+            $this->_log->addError(sprintf('Could not read versions from server %s', $updateFile));
+
+            return false;
         }
 
         // Check for latest version
@@ -639,7 +645,7 @@ class AutoUpdate
                     $files[$i]['file_writable'] = false;
 
                     $simulateSuccess = false;
-                    $this->_log->addWarning('[SIMULATE] Could not overwrite "%s"!', $absoluteFilename);
+                    $this->_log->addWarning(sprintf('[SIMULATE] Could not overwrite "%s"!', $absoluteFilename));
                 }
             } else {
                 $files[$i]['file_exists'] = false;

@@ -802,11 +802,11 @@ function forbidden_keyword()
  *
  * @since 4.3
  */
-function the_myet_welcome_message()
+function the_myetsis_welcome_message()
 {
     $app = \Liten\Liten::getInstance();
-    $welcome_message = get_option('myet_welcome_message');
-    $welcome_message = $app->hook->apply_filter('the_myet_welcome_message', $welcome_message);
+    $welcome_message = _escape(get_option('myet_welcome_message'));
+    $welcome_message = $app->hook->apply_filter('the_myetsis_welcome_message', $welcome_message);
     $welcome_message = str_replace(']]>', ']]&gt;', $welcome_message);
     return $welcome_message;
 }

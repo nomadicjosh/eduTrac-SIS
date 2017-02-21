@@ -471,7 +471,7 @@ $app->match('GET|POST', '/role/add/', function () use($app) {
     );
 });
 
-$app->post('/role/editRole/', function () use($app, $flashNow) {
+$app->post('/role/editRole/', function () use($app) {
     try {
         $roleID = $app->req->post['roleID'];
         $roleName = $app->req->post['roleName'];
@@ -489,6 +489,16 @@ $app->post('/role/editRole/', function () use($app, $flashNow) {
         _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
     } catch (ORMException $e) {
         _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+    }
+});
+
+/**
+ * Before route check.
+ */
+$app->before('GET|POST', '/message/', function() {
+    if (!is_user_logged_in()) {
+        redirect(get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 

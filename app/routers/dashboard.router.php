@@ -106,7 +106,7 @@ $app->group('/dashboard', function () use($app) {
         ]);
     });
 
-    $app->post('/search/', function () {
+    $app->post('/search/', function () use($app) {
         $acro = $app->req->post['screen'];
         $screen = explode(" ", $acro);
 

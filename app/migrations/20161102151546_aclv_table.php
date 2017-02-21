@@ -30,15 +30,15 @@ class AclvTable extends AbstractMigration
     {
         $table = $this->table('aclv', ['id' => false, 'primary_key' => 'id']);
         $table
-            ->addColumn('id', 'integer', ['signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11])
+            ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => 11])
             ->addColumn('code', 'string', ['limit' => 11])
             ->addColumn('name', 'string', ['limit' => 80])
             ->addColumn('grsc', 'string', ['limit' => 6])
-            ->addColumn('ht_creds', 'decimal', ['signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '6.0'])
-            ->addColumn('ft_creds', 'decimal', ['signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '12.0'])
-            ->addColumn('ovr_creds', 'decimal', ['signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '24.0'])
+            ->addColumn('ht_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '6.0'])
+            ->addColumn('ft_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '12.0'])
+            ->addColumn('ovr_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '24.0'])
             ->addColumn('grad_level', 'enum', ['default' => 'No', 'values' => ['Yes', 'No']])
-            ->addColumn('comp_months', 'integer', ['signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_TINY])
+            ->addColumn('comp_months', 'integer', ['signed' => true, 'limit' => MysqlAdapter::INT_TINY])
             ->addIndex(['code'])
             ->create();
 

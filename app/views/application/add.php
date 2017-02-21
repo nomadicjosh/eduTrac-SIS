@@ -108,11 +108,7 @@ $screen = 'appl';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Age' );?></label>
                             <div class="col-md-8">
-                            	<?php if(_h($person->dob) > '0000-00-00') : ?>
-                            	<input class="form-control" readonly type="text" value="<?=getAge(_h($person->dob));?>" />
-                            	<?php else : ?>
-                            	<input class="form-control" readonly type="text" />
-                        		<?php endif; ?>
+                                <input class="form-control" readonly type="text" value="<?=get_age(_h($person->dob));?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -163,7 +159,7 @@ $screen = 'appl';
                             <label class="col-md-3 control-label"><?=_t( 'Application Date' );?></label>
                             <div class="col-md-8">
                             	<div class="input-group date" id="datepicker6">
-                                    <input class="form-control" name="applDate" type="text" />
+                                    <input class="form-control" name="applDate" type="text" value="<?=($app->req->post['applDate'] != '' ? $app->req->post['applDate'] : '');?>" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                         	</div>
@@ -176,7 +172,7 @@ $screen = 'appl';
                             <div class="col-md-8">
                                 <select name="acadProgCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('acad_program','currStatus = "A"','acadProgCode','acadProgCode','acadProgTitle'); ?>
+                                    <?php table_dropdown('acad_program','currStatus = "A"','acadProgCode','acadProgCode','acadProgTitle',($app->req->post['acadProgCode'] != '' ? $app->req->post['acadProgCode'] : '')); ?>
                                 </select>
                             </div>
                         </div>
@@ -188,7 +184,7 @@ $screen = 'appl';
                             <div class="col-md-8">
                                 <select name="startTerm" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required/>
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('term','termCode <> "NULL"','termCode','termCode','termName'); ?>
+                                    <?php table_dropdown('term','termCode <> "NULL"','termCode','termCode','termName',($app->req->post['startTerm'] != '' ? $app->req->post['startTerm'] : '')); ?>
                                 </select>
                             </div>
                         </div>
@@ -226,10 +222,10 @@ $screen = 'appl';
                         <div class="form-group<?=etsis_field_css_class('appl_psat_verbal');?>">
                             <label class="col-md-3 control-label"><?=_t( 'PSAT Verbal/Math' );?></label>
                             <div class="col-md-4">
-                                <input class="form-control" type="text" name="PSAT_Verbal" />
+                                <input class="form-control" type="text" name="PSAT_Verbal" value="<?=($app->req->post['PSAT_Verbal'] != '' ? $app->req->post['PSAT_Verbal'] : '');?>" />
                             </div>
                             <div class="col-md-4">
-                                <input class="form-control" type="text" name="PSAT_Math" />
+                                <input class="form-control" type="text" name="PSAT_Math" value="<?=($app->req->post['PSAT_Math'] != '' ? $app->req->post['PSAT_Math'] : '');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -238,10 +234,10 @@ $screen = 'appl';
                         <div class="form-group<?=etsis_field_css_class('appl_sat_verbal');?>">
                             <label class="col-md-3 control-label"><?=_t( 'SAT Verbal/Math' );?></label>
                             <div class="col-md-4">
-                                <input class="form-control" type="text" name="SAT_Verbal" />
+                                <input class="form-control" type="text" name="SAT_Verbal" value="<?=($app->req->post['SAT_Verbal'] != '' ? $app->req->post['SAT_Verbal'] : '');?>" />
                             </div>
                             <div class="col-md-4">
-                                <input class="form-control" type="text" name="SAT_Math" />
+                                <input class="form-control" type="text" name="SAT_Math" value="<?=($app->req->post['SAT_Math'] != '' ? $app->req->post['SAT_Math'] : '');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -250,10 +246,10 @@ $screen = 'appl';
                         <div class="form-group<?=etsis_field_css_class('appl_act_english');?>">
                             <label class="col-md-3 control-label"><?=_t( 'ACT English/Math' );?></label>
                             <div class="col-md-4">
-                                <input class="form-control" type="text" name="ACT_English" />
+                                <input class="form-control" type="text" name="ACT_English" value="<?=($app->req->post['ACT_English'] != '' ? $app->req->post['ACT_English'] : '');?>" />
                             </div>
                             <div class="col-md-4">
-                                <input class="form-control" type="text" name="ACT_Math" />
+                                <input class="form-control" type="text" name="ACT_Math" value="<?=($app->req->post['ACT_Math'] != '' ? $app->req->post['ACT_Math'] : '');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->

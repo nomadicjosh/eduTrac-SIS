@@ -86,7 +86,7 @@ jQuery(document).ready(function() {
                             <div class="col-md-8">
                             	<select name="fice_ceeb" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('institution',null,'fice_ceeb','fice_ceeb','instName'); ?>
+                                    <?php table_dropdown('institution',null,'fice_ceeb','fice_ceeb','instName',($app->req->post['fice_ceeb'] != '' ? $app->req->post['fice_ceeb'] : '')); ?>
                                 </select>
                         	</div>
                         </div>
@@ -97,7 +97,7 @@ jQuery(document).ready(function() {
                             <label class="col-md-3 control-label"><?=_t( 'Attend From Date' );?></label>
                             <div class="col-md-8">
                             	<div class="input-group date" id="datepicker6">
-                                    <input class="form-control" name="fromDate" type="text" />
+                                    <input class="form-control" name="fromDate" type="text" value="<?=($app->req->post['fromDate'] != '' ? $app->req->post['fromDate'] : '');?>" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                         	</div>
@@ -109,7 +109,7 @@ jQuery(document).ready(function() {
                             <label class="col-md-3 control-label"><?=_t( 'Attend To Date' );?></label>
                             <div class="col-md-8">
                             	<div class="input-group date" id="datepicker7">
-                                    <input class="form-control" name="toDate" type="text" />
+                                    <input class="form-control" name="toDate" type="text" value="<?=($app->req->post['toDate'] != '' ? $app->req->post['toDate'] : '');?>" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                         	</div>
@@ -126,7 +126,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Major' );?></label>
                             <div class="col-md-8">
-                            	<input class="form-control" type="text" name="major" />
+                            	<input class="form-control" type="text" name="major" value="<?=($app->req->post['major'] != '' ? $app->req->post['major'] : '');?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -135,7 +135,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'GPA' );?></label>
                             <div class="col-md-8">
-                            	<input class="form-control" type="text" name="GPA" />
+                            	<input class="form-control" type="text" name="GPA" value="<?=($app->req->post['GPA'] != '' ? $app->req->post['GPA'] : '');?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -144,7 +144,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Degree' );?></label>
                             <div class="col-md-8">
-                            	<input class="form-control" type="text" name="degree_awarded" />
+                            	<input class="form-control" type="text" name="degree_awarded" value="<?=($app->req->post['degree_awarded'] != '' ? $app->req->post['degree_awarded'] : '');?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -154,7 +154,7 @@ jQuery(document).ready(function() {
                             <label class="col-md-3 control-label"><?=_t( 'Conferral Date' );?></label>
                             <div class="col-md-8">
                             	<div class="input-group date" id="datepicker8">
-                                    <input class="form-control" name="degree_conferred_date" type="text" />
+                                    <input class="form-control" name="degree_conferred_date" type="text" value="<?=($app->req->post['degree_conferred_date'] != '' ? $app->req->post['degree_conferred_date'] : '');?>" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                         	</div>

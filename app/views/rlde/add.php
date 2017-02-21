@@ -236,7 +236,7 @@ var options = {
         <?php get_acad_terms(); ?>
     },
     optgroup: 'sttr',
-    operators: ['equal','in','not_in','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
+    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
   },
   {
     id: 'sttr.acadLevelCode',
@@ -247,7 +247,7 @@ var options = {
         <?php get_acad_levels(); ?>
     },
     optgroup: 'sttr',
-    operators: ['equal','in','not_in','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
+    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
   },
   {
     id: 'sttr.attCred',
@@ -296,7 +296,8 @@ var options = {
     label: 'Restriction Code',
     type: 'string',
     optgroup: 'strs',
-    operators: ['equal','not_equal','is_empty','is_not_empty','is_not','is_not_null']
+    value_separator: ',',
+    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
   },
   {
     id: 'strs.severity',
@@ -307,7 +308,7 @@ var options = {
       min: 0,
       step: 1
     },
-    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+    operators: ['equal','not_equal','is_empty','is_not_empty','is_not','is_not_null']
   },
   {
     id: 'strs.startDate',
@@ -324,7 +325,7 @@ var options = {
       autoclose: true
     },
     optgroup: 'strs',
-    operators: ['equal','not_equal','less','less_or_equal','greater','greater_or_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null','between','not_between']
+    operators: ['equal','not_equal','less','less_or_equal','greater','greater_or_equal','is_empty','is_not_empty','is_not','is_not_null','between','not_between']
   },
   {
     id: 'strs.endDate',
@@ -341,7 +342,7 @@ var options = {
       autoclose: true
     },
     optgroup: 'strs',
-    operators: ['equal','not_equal','less','less_or_equal','greater','greater_or_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null','between','not_between']
+    operators: ['equal','not_equal','less','less_or_equal','greater','greater_or_equal','is_empty','is_not_empty','is_not','is_not_null','between','not_between']
   }
   ]
 };

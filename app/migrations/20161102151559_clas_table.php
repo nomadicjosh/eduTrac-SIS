@@ -29,7 +29,7 @@ class ClasTable extends AbstractMigration
     {
         $table = $this->table('clas', ['id' => false, 'primary_key' => 'id']);
         $table
-            ->addColumn('id', 'integer', ['signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11])
+            ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => 11])
             ->addColumn('code', 'string', ['limit' => 11])
             ->addColumn('name', 'string', ['limit' => 80])
             ->addColumn('acadLevelCode', 'string', ['limit' => 11])

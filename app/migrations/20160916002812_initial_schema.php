@@ -41,7 +41,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table acad_program
         $table = $this->table('acad_program', array('id' => false, 'primary_key' => 'acadProgID'));
         $table
-            ->addColumn('acadProgID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('acadProgID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('acadProgCode', 'string', array('limit' => 20))
             ->addColumn('acadProgTitle', 'string', array('limit' => 180))
             ->addColumn('programDesc', 'string', array('limit' => 255))
@@ -61,7 +61,7 @@ class InitialSchema extends AbstractMigration
             ->addColumn('cipCode', 'string', array('null' => true, 'limit' => 11))
             ->addColumn('locationCode', 'string', array('null' => true, 'limit' => 11))
             ->addColumn('approvedDate', 'date', array())
-            ->addColumn('approvedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('acadProgCode', 'acadLevelCode', 'deptCode', 'schoolCode', 'acadYearCode', 'degreeCode', 'ccdCode', 'majorCode', 'minorCode', 'specCode', 'cipCode', 'locationCode'))
             ->addForeignKey('deptCode', 'department', 'deptCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -80,7 +80,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table acad_year
         $table = $this->table('acad_year', array('id' => false, 'primary_key' => 'acadYearID'));
         $table
-            ->addColumn('acadYearID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('acadYearID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('acadYearCode', 'string', array('limit' => 11))
             ->addColumn('acadYearDesc', 'string', array('limit' => 30))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
@@ -93,7 +93,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table activity_log
         $table = $this->table('activity_log', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('action', 'string', array('limit' => 50))
             ->addColumn('process', 'string', array('limit' => 255))
             ->addColumn('record', 'text', array('null' => true, 'limit' => MysqlAdapter::TEXT_LONG))
@@ -106,8 +106,8 @@ class InitialSchema extends AbstractMigration
         // Migration for table address
         $table = $this->table('address', array('id' => false, 'primary_key' => 'addressID'));
         $table
-            ->addColumn('addressID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('personID', 'integer', array('zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addressID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('personID', 'integer', array('limit' => MysqlAdapter::INT_BIG))
             ->addColumn('address1', 'string', array('limit' => 80))
             ->addColumn('address2', 'string', array('limit' => 80))
             ->addColumn('city', 'string', array('limit' => 30))
@@ -127,7 +127,7 @@ class InitialSchema extends AbstractMigration
             ->addColumn('email1', 'string', array('limit' => 80))
             ->addColumn('email2', 'string', array('limit' => 80))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('personID', 'addedBy'))
             ->addForeignKey('personID', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -140,8 +140,8 @@ class InitialSchema extends AbstractMigration
         // Migration for table application
         $table = $this->table('application', array('id' => false, 'primary_key' => 'applID'));
         $table
-            ->addColumn('applID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('personID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('applID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('acadProgCode', 'string', array('limit' => 20))
             ->addColumn('startTerm', 'string', array('limit' => 11))
             ->addColumn('admitStatus', 'string', array('null' => true, 'limit' => 2))
@@ -157,7 +157,7 @@ class InitialSchema extends AbstractMigration
             ->addColumn('appl_comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('staff_comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('personID', 'acadProgCode'), array('unique' => true))
             ->addIndex(array('startTerm', 'addedBy', 'acadProgcode'))
@@ -171,14 +171,14 @@ class InitialSchema extends AbstractMigration
         // Migration for table assignment
         $table = $this->table('assignment', array('id' => false, 'primary_key' => 'assignID'));
         $table
-            ->addColumn('assignID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('courseSecID', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('facID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('assignID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('courseSecID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('facID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('shortName', 'string', array('limit' => 6))
             ->addColumn('title', 'string', array('limit' => 180))
             ->addColumn('dueDate', 'date', array())
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('assignID', 'courseSecID'))
             ->addForeignKey('courseSecID', 'course_sec', 'courseSecID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -188,8 +188,8 @@ class InitialSchema extends AbstractMigration
         // Migration for table attendance
         $table = $this->table('attendance', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('courseSecID', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('courseSecID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('termCode', 'string', array('limit' => 11))
             ->addColumn('courseSecCode', 'string', array('limit' => 50))
             ->addColumn('stuID', 'integer', array())
@@ -204,9 +204,9 @@ class InitialSchema extends AbstractMigration
         // Migration for table billing_table
         $table = $this->table('billing_table', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('name', 'string', array('limit' => 180))
-            ->addColumn('amount', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 6, 'scale' => 2, 'default' => '0.00'))
+            ->addColumn('amount', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 2, 'default' => '0.00'))
             ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'I')))
             ->addColumn('addDate', 'date', array())
             ->create();
@@ -215,7 +215,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table building
         $table = $this->table('building', array('id' => false, 'primary_key' => 'buildingID'));
         $table
-            ->addColumn('buildingID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('buildingID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('buildingCode', 'string', array('limit' => 11))
             ->addColumn('buildingName', 'string', array('limit' => 180))
             ->addColumn('locationCode', 'string', array('null' => true, 'limit' => 11))
@@ -230,7 +230,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table ccd
         $table = $this->table('ccd', array('id' => false, 'primary_key' => 'ccdID'));
         $table
-            ->addColumn('ccdID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('ccdID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('ccdCode', 'string', array('limit' => 11))
             ->addColumn('ccdName', 'string', array('limit' => 80))
             ->addColumn('addDate', 'date', array())
@@ -244,7 +244,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table cip
         $table = $this->table('cip', array('id' => false, 'primary_key' => 'cipID'));
         $table
-            ->addColumn('cipID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('cipID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('cipCode', 'string', array('limit' => 11))
             ->addColumn('cipName', 'string', array('limit' => 80))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
@@ -257,7 +257,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table country
         $table = $this->table('country', array('id' => false, 'primary_key' => 'country_id'));
         $table
-            ->addColumn('country_id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 5))
+            ->addColumn('country_id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 5))
             ->addColumn('iso2', 'char', array('null' => true, 'limit' => 2))
             ->addColumn('short_name', 'string', array('default' => '', 'limit' => 80))
             ->addColumn('long_name', 'string', array('default' => '', 'limit' => 80))
@@ -523,16 +523,16 @@ class InitialSchema extends AbstractMigration
         // Migration for table course
         $table = $this->table('course', array('id' => false, 'primary_key' => 'courseID'));
         $table
-            ->addColumn('courseID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('courseNumber', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 6))
+            ->addColumn('courseID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('courseNumber', 'integer', array('signed' => true, 'limit' => 6))
             ->addColumn('courseCode', 'string', array('limit' => 25))
             ->addColumn('subjectCode', 'string', array('limit' => 11))
             ->addColumn('deptCode', 'string', array('limit' => 11))
             ->addColumn('courseDesc', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('creditType', 'string', array('default' => 'I', 'limit' => 6))
-            ->addColumn('minCredit', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-            ->addColumn('maxCredit', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-            ->addColumn('increCredit', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('minCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('maxCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('increCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
             ->addColumn('courseLevelCode', 'string', array('limit' => 5))
             ->addColumn('acadLevelCode', 'string', array('limit' => 4))
             ->addColumn('courseShortTitle', 'string', array('limit' => 25))
@@ -540,14 +540,14 @@ class InitialSchema extends AbstractMigration
             ->addColumn('preReq', 'text', array('limit' => MysqlAdapter::TEXT_REGULAR))
             ->addColumn('allowAudit', 'enum', array('default' => '0', 'values' => array('1', '0')))
             ->addColumn('allowWaitlist', 'enum', array('default' => '0', 'values' => array('1', '0')))
-            ->addColumn('minEnroll', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 3))
-            ->addColumn('seatCap', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 3))
+            ->addColumn('minEnroll', 'integer', array('signed' => true, 'limit' => 3))
+            ->addColumn('seatCap', 'integer', array('signed' => true, 'limit' => 3))
             ->addColumn('startDate', 'date', array())
             ->addColumn('endDate', 'date', array('null' => true))
             ->addColumn('currStatus', 'string', array('limit' => 1))
             ->addColumn('statusDate', 'date', array('default' => '0000-00-00'))
             ->addColumn('approvedDate', 'date', array('default' => '0000-00-00'))
-            ->addColumn('approvedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('courseCode', 'courseLevelCode', 'acadLevelCode', 'approvedBy', 'deptCode', 'subjectCode'))
             ->addForeignKey('subjectCode', 'subject', 'subjectCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -559,7 +559,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table course_sec
         $table = $this->table('course_sec', array('id' => false, 'primary_key' => 'courseSecID'));
         $table
-            ->addColumn('courseSecID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('courseSecID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('sectionNumber', 'string', array('limit' => 5))
             ->addColumn('courseSecCode', 'string', array('limit' => 50))
             ->addColumn('courseSection', 'string', array('limit' => 60))
@@ -571,7 +571,7 @@ class InitialSchema extends AbstractMigration
             ->addColumn('deptCode', 'string', array('limit' => 11))
             ->addColumn('facID', 'integer', array('limit' => MysqlAdapter::INT_BIG))
             ->addColumn('termCode', 'string', array('limit' => 11))
-            ->addColumn('courseID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('courseID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('courseCode', 'string', array('limit' => 25))
             ->addColumn('preReqs', 'text', array('limit' => MysqlAdapter::TEXT_REGULAR))
             ->addColumn('secShortTitle', 'string', array('limit' => 60))
@@ -580,23 +580,23 @@ class InitialSchema extends AbstractMigration
             ->addColumn('startTime', 'string', array('limit' => 8))
             ->addColumn('endTime', 'string', array('limit' => 8))
             ->addColumn('dotw', 'string', array('limit' => 7))
-            ->addColumn('minCredit', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-            ->addColumn('maxCredit', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-            ->addColumn('increCredit', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-            ->addColumn('ceu', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('minCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('maxCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('increCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('ceu', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
             ->addColumn('instructorMethod', 'string', array('limit' => 180))
-            ->addColumn('instructorLoad', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-            ->addColumn('contactHours', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('instructorLoad', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('contactHours', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
             ->addColumn('webReg', 'enum', array('default' => '1', 'values' => array('1', '0')))
-            ->addColumn('courseFee', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
-            ->addColumn('labFee', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
-            ->addColumn('materialFee', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
+            ->addColumn('courseFee', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
+            ->addColumn('labFee', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
+            ->addColumn('materialFee', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
             ->addColumn('secType', 'enum', array('default' => 'ONC', 'values' => array('ONL', 'HB', 'ONC')))
             ->addColumn('currStatus', 'string', array('limit' => 1))
             ->addColumn('statusDate', 'date', array())
             ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('approvedDate', 'date', array())
-            ->addColumn('approvedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('courseSection'), array('unique' => true))
             ->addIndex(array('courseSecCode', 'currStatus', 'approvedBy', 'facID', 'buildingCode', 'roomCode', 'locationCode', 'deptCode', 'termCode', 'courseCode', 'courseID'))
@@ -613,7 +613,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table degree
         $table = $this->table('degree', array('id' => false, 'primary_key' => 'degreeID'));
         $table
-            ->addColumn('degreeID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('degreeID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('degreeCode', 'string', array('limit' => 11))
             ->addColumn('degreeName', 'string', array('limit' => 180))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
@@ -626,7 +626,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table department
         $table = $this->table('department', array('id' => false, 'primary_key' => 'deptID'));
         $table
-            ->addColumn('deptID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('deptID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('deptTypeCode', 'string', array('limit' => 6))
             ->addColumn('deptCode', 'string', array('limit' => 11))
             ->addColumn('deptName', 'string', array('limit' => 180))
@@ -643,9 +643,9 @@ class InitialSchema extends AbstractMigration
         // Migration for table email_hold
         $table = $this->table('email_hold', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('personID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('queryID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 11))
+            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('queryID', 'integer', array('signed' => true, 'limit' => 11))
             ->addColumn('fromName', 'string', array('limit' => 118))
             ->addColumn('fromEmail', 'string', array('limit' => 118))
             ->addColumn('subject', 'string', array('limit' => 118))
@@ -658,9 +658,9 @@ class InitialSchema extends AbstractMigration
         // Migration for table email_queue
         $table = $this->table('email_queue', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('holdID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('personID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('holdID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('fromName', 'string', array('limit' => 118))
             ->addColumn('fromEmail', 'string', array('limit' => 118))
             ->addColumn('uname', 'string', array('limit' => 118))
@@ -677,7 +677,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table email_template
         $table = $this->table('email_template', array('id' => false, 'primary_key' => 'etID'));
         $table
-            ->addColumn('etID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('etID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('deptCode', 'string', array('limit' => 11))
             ->addColumn('email_key', 'string', array('limit' => 30))
             ->addColumn('email_name', 'string', array('limit' => 30))
@@ -690,12 +690,12 @@ class InitialSchema extends AbstractMigration
         // Migration for table error
         $table = $this->table('error', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('type', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 4))
-            ->addColumn('time', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 10))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('type', 'integer', array('signed' => true, 'limit' => 4))
+            ->addColumn('time', 'integer', array('signed' => true, 'limit' => 10))
             ->addColumn('string', 'string', array('limit' => 512))
             ->addColumn('file', 'string', array('limit' => 255))
-            ->addColumn('line', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 6))
+            ->addColumn('line', 'integer', array('signed' => true, 'limit' => 6))
             ->addColumn('addDate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->create();
 
@@ -703,23 +703,23 @@ class InitialSchema extends AbstractMigration
         // Migration for table event
         $table = $this->table('event', array('id' => false, 'primary_key' => 'eventID'));
         $table
-            ->addColumn('eventID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('eventID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('eventType', 'string', array('limit' => 255))
-            ->addColumn('catID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 11))
-            ->addColumn('requestor', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('catID', 'integer', array('signed' => true, 'limit' => 11))
+            ->addColumn('requestor', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('roomCode', 'string', array('null' => true, 'limit' => 11))
             ->addColumn('termCode', 'string', array('null' => true, 'limit' => 11))
             ->addColumn('title', 'string', array('limit' => 120))
             ->addColumn('description', 'text', array('null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR))
-            ->addColumn('weekday', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => 1))
+            ->addColumn('weekday', 'integer', array('signed' => true, 'null' => true, 'limit' => 1))
             ->addColumn('startDate', 'date', array('null' => true))
             ->addColumn('startTime', 'time', array('null' => true))
             ->addColumn('endTime', 'time', array('null' => true))
-            ->addColumn('repeats', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
-            ->addColumn('repeatFreq', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
+            ->addColumn('repeats', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
+            ->addColumn('repeatFreq', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
             ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'I')))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('roomCode', 'termCode', 'title', 'weekday', 'startDate', 'startTime', 'endTime'), array('unique' => true))
             ->addIndex(array('termCode', 'requestor', 'addedBy', 'catID'))
@@ -734,7 +734,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table event_category
         $table = $this->table('event_category', array('id' => false, 'primary_key' => 'catID'));
         $table
-            ->addColumn('catID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('catID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('cat_name', 'string', array('limit' => 30))
             ->addColumn('bgcolor', 'string', array('default' => '#000000', 'limit' => 11))
             ->create();
@@ -748,16 +748,16 @@ class InitialSchema extends AbstractMigration
         // Migration for table event_meta
         $table = $this->table('event_meta', array('id' => false, 'primary_key' => 'eventMetaID'));
         $table
-            ->addColumn('eventMetaID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('eventID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('eventMetaID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('eventID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('roomCode', 'string', array('null' => true, 'limit' => 11))
-            ->addColumn('requestor', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('requestor', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('start', 'datetime', array('null' => true))
             ->addColumn('end', 'datetime', array('null' => true))
             ->addColumn('title', 'string', array('limit' => 120))
             ->addColumn('description', 'text', array('null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('eventID', 'roomCode', 'start', 'end', 'title'), array('unique' => true))
             ->addIndex(array('roomCode', 'requestor', 'addedBy'))
@@ -771,21 +771,21 @@ class InitialSchema extends AbstractMigration
         // Migration for table event_request
         $table = $this->table('event_request', array('id' => false, 'primary_key' => 'requestID'));
         $table
-            ->addColumn('requestID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('requestID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('eventType', 'string', array('limit' => 255))
-            ->addColumn('catID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 11))
-            ->addColumn('requestor', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('catID', 'integer', array('signed' => true, 'limit' => 11))
+            ->addColumn('requestor', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('roomCode', 'string', array('null' => true, 'limit' => 11))
             ->addColumn('termCode', 'string', array('null' => true, 'limit' => 11))
             ->addColumn('title', 'string', array('limit' => 120))
             ->addColumn('description', 'text', array('null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR))
-            ->addColumn('weekday', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 1))
+            ->addColumn('weekday', 'integer', array('signed' => true, 'limit' => 1))
             ->addColumn('startDate', 'date', array())
             ->addColumn('endDate', 'date', array())
             ->addColumn('startTime', 'time', array())
             ->addColumn('endTime', 'time', array())
-            ->addColumn('repeats', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
-            ->addColumn('repeatFreq', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
+            ->addColumn('repeats', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
+            ->addColumn('repeatFreq', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
             ->addColumn('addDate', 'date', array())
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('roomCode', 'termCode', 'title', 'weekday', 'startDate', 'startTime', 'endTime'), array('unique' => true))
@@ -799,12 +799,12 @@ class InitialSchema extends AbstractMigration
         // Migration for table external_course
         $table = $this->table('external_course', array('id' => false, 'primary_key' => 'extrID'));
         $table
-            ->addColumn('extrID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('extrID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('courseTitle', 'string', array('limit' => 180))
             ->addColumn('instCode', 'string', array('limit' => 11))
             ->addColumn('courseName', 'string', array('limit' => 60))
             ->addColumn('term', 'string', array('limit' => 11))
-            ->addColumn('credits', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 2))
+            ->addColumn('credits', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 2))
             ->addColumn('currStatus', 'enum', array('default' => 'A', 'values' => array('A', 'I', 'P', 'O')))
             ->addColumn('statusDate', 'date', array())
             ->addColumn('minGrade', 'string', array('limit' => 2))
@@ -812,7 +812,7 @@ class InitialSchema extends AbstractMigration
             ->addColumn('startDate', 'date', array())
             ->addColumn('endDate', 'date', array())
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('instCode', 'addedBy'))
             ->addForeignKey('instCode', 'institution', 'fice_ceeb', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -823,7 +823,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table gl_account
         $table = $this->table('gl_account', array('id' => false, 'primary_key' => 'glacctID'));
         $table
-            ->addColumn('glacctID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('glacctID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('gl_acct_number', 'string', array('limit' => 200))
             ->addColumn('gl_acct_name', 'string', array('limit' => 200))
             ->addColumn('gl_acct_type', 'string', array('limit' => 200))
@@ -835,25 +835,25 @@ class InitialSchema extends AbstractMigration
         // Migration for table gl_journal_entry
         $table = $this->table('gl_journal_entry', array('id' => false, 'primary_key' => 'jeID'));
         $table
-            ->addColumn('jeID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('jeID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('gl_jentry_date', 'date', array())
             ->addColumn('gl_jentry_manual_id', 'string', array('null' => true, 'limit' => 100))
             ->addColumn('gl_jentry_title', 'string', array('null' => true, 'limit' => 100))
             ->addColumn('gl_jentry_description', 'string', array('null' => true, 'limit' => 200))
-            ->addColumn('gl_jentry_personID', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('gl_jentry_personID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->create();
 
 
         // Migration for table gl_transaction
         $table = $this->table('gl_transaction', array('id' => false, 'primary_key' => 'trID'));
         $table
-            ->addColumn('trID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
-            ->addColumn('jeID', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true))
-            ->addColumn('accountID', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true))
+            ->addColumn('trID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('jeID', 'integer', array('signed' => true, 'null' => true))
+            ->addColumn('accountID', 'integer', array('signed' => true, 'null' => true))
             ->addColumn('gl_trans_date', 'date', array('null' => true))
             ->addColumn('gl_trans_memo', 'string', array('null' => true, 'limit' => 400))
-            ->addColumn('gl_trans_debit', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 10, 'scale' => 2, 'null' => true))
-            ->addColumn('gl_trans_credit', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 10, 'scale' => 2, 'null' => true))
+            ->addColumn('gl_trans_debit', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'null' => true))
+            ->addColumn('gl_trans_credit', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'null' => true))
             ->addIndex(array('jeID'))
             ->addForeignKey('jeID', 'gl_journal_entry', 'jeID', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
             ->create();
@@ -862,10 +862,10 @@ class InitialSchema extends AbstractMigration
         // Migration for table grade_scale
         $table = $this->table('grade_scale', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('grade', 'string', array('limit' => 2))
             ->addColumn('percent', 'string', array('limit' => 10))
-            ->addColumn('points', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 6, 'scale' => 2))
+            ->addColumn('points', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 2))
             ->addColumn('count_in_gpa', 'enum', array('default' => '0', 'values' => array('1', '0')))
             ->addColumn('status', 'enum', array('default' => '1', 'values' => array('1', '0')))
             ->addColumn('description', 'text', array('limit' => MysqlAdapter::TEXT_REGULAR))
@@ -894,8 +894,8 @@ class InitialSchema extends AbstractMigration
         // Migration for table graduation_hold
         $table = $this->table('graduation_hold', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('queryID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 11))
+            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('queryID', 'integer', array('signed' => true, 'limit' => 11))
             ->addColumn('gradDate', 'date', array())
             ->create();
 
@@ -903,14 +903,14 @@ class InitialSchema extends AbstractMigration
         // Migration for table hiatus
         $table = $this->table('hiatus', array('id' => false, 'primary_key' => 'shisID'));
         $table
-            ->addColumn('shisID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('shisID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('shisCode', 'string', array('limit' => 6))
             ->addColumn('startDate', 'date', array())
             ->addColumn('endDate', 'date', array())
             ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('shisCode', 'stuID', 'addedBy'))
             ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -920,7 +920,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table institution
         $table = $this->table('institution', array('id' => false, 'primary_key' => 'institutionID'));
         $table
-            ->addColumn('institutionID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('institutionID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('fice_ceeb', 'string', array('null' => true, 'limit' => 11))
             ->addColumn('instType', 'string', array('limit' => 4))
             ->addColumn('instName', 'string', array('limit' => 180))
@@ -934,17 +934,17 @@ class InitialSchema extends AbstractMigration
         // Migration for table institution_attended
         $table = $this->table('institution_attended', array('id' => false, 'primary_key' => 'instAttID'));
         $table
-            ->addColumn('instAttID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('instAttID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('fice_ceeb', 'string', array('limit' => 11))
-            ->addColumn('personID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('fromDate', 'date', array())
             ->addColumn('toDate', 'date', array())
             ->addColumn('major', 'string', array('limit' => 255))
             ->addColumn('degree_awarded', 'string', array('limit' => 6))
             ->addColumn('degree_conferred_date', 'date', array())
-            ->addColumn('GPA', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 6, 'scale' => 4, 'null' => true))
+            ->addColumn('GPA', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 4, 'null' => true))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('fice_ceeb', 'personID'), array('unique' => true))
             ->addIndex(array('personID'))
@@ -954,14 +954,14 @@ class InitialSchema extends AbstractMigration
         // Migration for table job
         $table = $this->table('job', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
-            ->addColumn('pay_grade', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 11))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('pay_grade', 'integer', array('signed' => true, 'limit' => 11))
             ->addColumn('title', 'string', array('limit' => 180))
-            ->addColumn('hourly_wage', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 2, 'null' => true))
-            ->addColumn('weekly_hours', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => 4))
+            ->addColumn('hourly_wage', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 2, 'null' => true))
+            ->addColumn('weekly_hours', 'integer', array('signed' => true, 'null' => true, 'limit' => 4))
             ->addColumn('attachment', 'string', array('null' => true, 'limit' => 255))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->create();
 
@@ -971,7 +971,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table job_status
         $table = $this->table('job_status', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('typeCode', 'string', array('limit' => 6))
             ->addColumn('type', 'string', array('limit' => 180))
             ->addIndex(array('typeCode'), array('unique' => true))
@@ -990,7 +990,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table location
         $table = $this->table('location', array('id' => false, 'primary_key' => 'locationID'));
         $table
-            ->addColumn('locationID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('locationID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('locationCode', 'string', array('limit' => 11))
             ->addColumn('locationName', 'string', array('limit' => 80))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
@@ -1003,7 +1003,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table major
         $table = $this->table('major', array('id' => false, 'primary_key' => 'majorID'));
         $table
-            ->addColumn('majorID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('majorID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('majorCode', 'string', array('limit' => 11))
             ->addColumn('majorName', 'string', array('limit' => 180))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
@@ -1016,23 +1016,23 @@ class InitialSchema extends AbstractMigration
         // Migration for table met_link
         $table = $this->table('met_link', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('link_title', 'string', array('limit' => 180))
             ->addColumn('link_src', 'string', array('limit' => 255))
             ->addColumn('status', 'enum', array('values' => array('active', 'inactive')))
-            ->addColumn('sort', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_TINY))
+            ->addColumn('sort', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_TINY))
             ->create();
 
 
         // Migration for table met_news
         $table = $this->table('met_news', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('news_title', 'string', array('limit' => 255))
             ->addColumn('news_slug', 'string', array('limit' => 255))
             ->addColumn('news_content', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('status', 'enum', array('values' => array('draft', 'publish')))
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('addDate', 'date', array())
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('addedBy'))
@@ -1043,13 +1043,13 @@ class InitialSchema extends AbstractMigration
         // Migration for table met_page
         $table = $this->table('met_page', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('page_title', 'string', array('limit' => 255))
             ->addColumn('page_slug', 'string', array('limit' => 255))
             ->addColumn('page_content', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('status', 'enum', array('values' => array('draft', 'publish')))
-            ->addColumn('sort', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_TINY))
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('sort', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_TINY))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('addDate', 'date', array())
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('addedBy'))
@@ -1060,7 +1060,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table minor
         $table = $this->table('minor', array('id' => false, 'primary_key' => 'minorID'));
         $table
-            ->addColumn('minorID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('minorID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('minorCode', 'string', array('limit' => 11))
             ->addColumn('minorName', 'string', array('limit' => 180))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
@@ -1073,7 +1073,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table options_meta
         $table = $this->table('options_meta', array('id' => false, 'primary_key' => 'meta_id'));
         $table
-            ->addColumn('meta_id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('meta_id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('meta_key', 'string', array('default' => '', 'limit' => 60))
             ->addColumn('meta_value', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addIndex(array('meta_key'), array('unique' => true))
@@ -1093,7 +1093,7 @@ class InitialSchema extends AbstractMigration
         $this->execute("INSERT INTO `options_meta` VALUES(12, 'room_request_email', 'request@myschool.edu');");
         $this->execute("INSERT INTO `options_meta` VALUES(13, 'room_request_text', '<p>&nbsp;</p>\r\n<table border=\"0\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#F4F3F4\">\r\n<tbody>\r\n<tr>\r\n<td style=\"padding: 15px;\"><center>\r\n<table width=\"550\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td align=\"left\">\r\n<div style=\"border: solid 1px #d9d9d9;\">\r\n<table id=\"header\" style=\"line-height: 1.6; font-size: 12px; font-family: Helvetica, Arial, sans-serif; border: solid 1px #FFFFFF; color: #444;\" border=\"0\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td style=\"color: #ffffff;\" colspan=\"2\" valign=\"bottom\" height=\"30\">.</td>\r\n</tr>\r\n<tr>\r\n<td style=\"line-height: 32px; padding-left: 30px;\" valign=\"baseline\"><span style=\"font-size: 32px;\">eduTrac SIS</span></td>\r\n<td style=\"padding-right: 30px;\" align=\"right\" valign=\"baseline\"><span style=\"font-size: 14px; color: #777777;\">Room/Event Reservation Request</span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id=\"content\" style=\"margin-top: 15px; margin-right: 30px; margin-left: 30px; color: #444; line-height: 1.6; font-size: 12px; font-family: Arial, sans-serif;\" border=\"0\" width=\"490\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td style=\"border-top: solid 1px #d9d9d9;\" colspan=\"2\">\r\n<div style=\"padding: 15px 0;\">Below are the details of a new room request.</div>\r\n<div style=\"padding: 15px 0;\"><strong>Name:</strong> #name#<br /><br /><strong>Email:</strong> #email#<br /><br /><strong>Event Title:</strong> #title#<br /><strong>Description:</strong> #description#<br /><strong>Request Type:</strong> #request_type#<br /><strong>Category:</strong> #category#<br /><strong>Room#:</strong> #room#<br /><strong>Start Date:</strong> #firstday#<br /><strong>End Date:</strong> #lastday#<br /><strong>Start Time:</strong> #sTime#<br /><strong>End Time:</strong> #eTime#<br /><strong>Repeat?:</strong> #repeat#<br /><strong>Occurrence:</strong> #occurrence#<br /><br /><br />\r\n<h3>Legend</h3>\r\n<ul>\r\n<li>Repeat - 1 means yes it is an event that is repeated</li>\r\n<li>Occurrence - 1 = repeats everyday, 7 = repeats weekly, 14 = repeats biweekly</li>\r\n</ul>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id=\"footer\" style=\"line-height: 1.5; font-size: 12px; font-family: Arial, sans-serif; margin-right: 30px; margin-left: 30px;\" border=\"0\" width=\"490\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr style=\"font-size: 11px; color: #999999;\">\r\n<td style=\"border-top: solid 1px #d9d9d9;\" colspan=\"2\">\r\n<div style=\"padding-top: 15px; padding-bottom: 1px;\">Powered by eduTrac SIS</div>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style=\"color: #ffffff;\" colspan=\"2\" height=\"15\">.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</center></td>\r\n</tr>\r\n</tbody>\r\n</table>');");
         $this->execute("INSERT INTO `options_meta` VALUES(14, 'room_booking_confirmation_text', '<p>&nbsp;</p>\r\n<table border=\"0\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#F4F3F4\">\r\n<tbody>\r\n<tr>\r\n<td style=\"padding: 15px;\"><center>\r\n<table width=\"550\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td align=\"left\">\r\n<div style=\"border: solid 1px #d9d9d9;\">\r\n<table id=\"header\" style=\"line-height: 1.6; font-size: 12px; font-family: Helvetica, Arial, sans-serif; border: solid 1px #FFFFFF; color: #444;\" border=\"0\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td style=\"color: #ffffff;\" colspan=\"2\" valign=\"bottom\" height=\"30\">.</td>\r\n</tr>\r\n<tr>\r\n<td style=\"line-height: 32px; padding-left: 30px;\" valign=\"baseline\"><span style=\"font-size: 32px;\">eduTrac SIS</span></td>\r\n<td style=\"padding-right: 30px;\" align=\"right\" valign=\"baseline\"><span style=\"font-size: 14px; color: #777777;\">Room/Event&nbsp;Booking&nbsp;Confirmation</span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id=\"content\" style=\"margin-top: 15px; margin-right: 30px; margin-left: 30px; color: #444; line-height: 1.6; font-size: 12px; font-family: Arial, sans-serif;\" border=\"0\" width=\"490\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td style=\"border-top: solid 1px #d9d9d9;\" colspan=\"2\">\r\n<div style=\"padding: 15px 0;\">Your room request or event request entitled <strong>#title#</strong> has been booked. If you have any questions or concerns, please email our office at <a href=\"mailto:request@bdci.edu\">request@bdci.edu</a></div>\r\n<div style=\"padding: 15px 0;\">Sincerely,<br />Room Scheduler</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id=\"footer\" style=\"line-height: 1.5; font-size: 12px; font-family: Arial, sans-serif; margin-right: 30px; margin-left: 30px;\" border=\"0\" width=\"490\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr style=\"font-size: 11px; color: #999999;\">\r\n<td style=\"border-top: solid 1px #d9d9d9;\" colspan=\"2\">\r\n<div style=\"padding-top: 15px; padding-bottom: 1px;\">Powered by eduTrac SIS</div>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style=\"color: #ffffff;\" colspan=\"2\" height=\"15\">.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</center></td>\r\n</tr>\r\n</tbody>\r\n</table>');");
-        $this->execute("INSERT INTO `options_meta` VALUES(15, 'myet_welcome_message', '<p>Welcome to the <em>my</em>eduTrac campus portal. The <em>my</em>eduTrac campus portal&nbsp;is your personalized campus web site at Eastbound University.</p>\r\n<p>If you are a prospective student who is interested in applying to the college, checkout the <a href=\"pages/?pg=admissions\">admissions</a>&nbsp;page for more information.</p>');");
+        $this->execute("INSERT INTO `options_meta` VALUES(15, 'myet_welcome_message', '<p>Welcome to the <em>my</em>etSIS campus portal. The <em>my</em>etSIS campus portal&nbsp;is your personalized campus web site at Eastbound University.</p>\r\n<p>If you are a prospective student who is interested in applying to the college, checkout the <a href=\"pages/admissions/\">admissions</a>&nbsp;page for more information.</p>');");
         $this->execute("INSERT INTO `options_meta` VALUES(16, 'contact_phone', '888.888.8888');");
         $this->execute("INSERT INTO `options_meta` VALUES(17, 'contact_email', 'contact@colegio.edu');");
         $this->execute("INSERT INTO `options_meta` VALUES(18, 'mailing_address', '10 Eliot Street, Suite 2\r\nSomerville, MA 02140');");
@@ -1119,12 +1119,12 @@ class InitialSchema extends AbstractMigration
         // Migration for table pay_grade
         $table = $this->table('pay_grade', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('grade', 'string', array('limit' => 10))
-            ->addColumn('minimum_salary', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 10, 'scale' => 2))
-            ->addColumn('maximum_salary', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 10, 'scale' => 2))
+            ->addColumn('minimum_salary', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2))
+            ->addColumn('maximum_salary', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->create();
 
@@ -1134,18 +1134,18 @@ class InitialSchema extends AbstractMigration
         // Migration for table payment
         $table = $this->table('payment', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('termCode', 'string', array('limit' => 11))
-            ->addColumn('amount', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 10, 'scale' => 2, 'default' => '0'))
+            ->addColumn('amount', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'default' => '0'))
             ->addColumn('checkNum', 'string', array('null' => true, 'limit' => 8))
             ->addColumn('paypal_txnID', 'string', array('null' => true, 'limit' => 255))
             ->addColumn('paypal_payment_status', 'string', array('null' => true, 'limit' => 80))
             ->addColumn('paypal_txn_fee', 'string', array('default' => '0.00', 'limit' => 11))
-            ->addColumn('paymentTypeID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 11))
+            ->addColumn('paymentTypeID', 'integer', array('signed' => true, 'limit' => 11))
             ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('paymentDate', 'date', array())
-            ->addColumn('postedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('postedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('stuID', 'termCode', 'postedBy'))
             ->addForeignKey('postedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -1157,7 +1157,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table payment_type
         $table = $this->table('payment_type', array('id' => false, 'primary_key' => 'ptID'));
         $table
-            ->addColumn('ptID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('ptID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('type', 'string', array('limit' => 30))
             ->create();
 
@@ -1288,7 +1288,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table person
         $table = $this->table('person', array('id' => false, 'primary_key' => 'personID'));
         $table
-            ->addColumn('personID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('personID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('altID', 'string', array('null' => true, 'limit' => 255))
             ->addColumn('uname', 'string', array('limit' => 80))
             ->addColumn('prefix', 'string', array('limit' => 6))
@@ -1297,7 +1297,7 @@ class InitialSchema extends AbstractMigration
             ->addColumn('lname', 'string', array('limit' => 150))
             ->addColumn('mname', 'string', array('limit' => 2))
             ->addColumn('email', 'string', array('limit' => 150))
-            ->addColumn('ssn', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 9))
+            ->addColumn('ssn', 'integer', array('signed' => true, 'limit' => 9))
             ->addColumn('dob', 'date', array())
             ->addColumn('veteran', 'enum', array('values' => array('1', '0')))
             ->addColumn('ethnicity', 'string', array('limit' => 30))
@@ -1310,7 +1310,7 @@ class InitialSchema extends AbstractMigration
             ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'I')))
             ->addColumn('auth_token', 'string', array('null' => true, 'limit' => 255))
             ->addColumn('approvedDate', 'datetime', array())
-            ->addColumn('approvedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastLogin', 'datetime', array())
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('uname'), array('unique' => true))
@@ -1325,7 +1325,7 @@ class InitialSchema extends AbstractMigration
         $table = $this->table('person_perms', array('id' => false, 'primary_key' => 'ID'));
         $table
             ->addColumn('ID', 'integer', array('signed' => false, 'zerofill' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('personID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('permission', 'text', array('limit' => MysqlAdapter::TEXT_REGULAR))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('personID'), array('unique' => true))
@@ -1336,9 +1336,9 @@ class InitialSchema extends AbstractMigration
         // Migration for table person_roles
         $table = $this->table('person_roles', array('id' => false, 'primary_key' => 'rID'));
         $table
-            ->addColumn('rID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
-            ->addColumn('personID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('roleID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('rID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('roleID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('addDate', 'datetime', array())
             ->addIndex(array('personID', 'roleID'), array('unique' => true))
             ->addForeignKey('personID', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -1350,7 +1350,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table plugin
         $table = $this->table('plugin', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('location', 'text', array('limit' => MysqlAdapter::TEXT_REGULAR))
             ->create();
 
@@ -1358,13 +1358,13 @@ class InitialSchema extends AbstractMigration
         // Migration for table refund
         $table = $this->table('refund', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('termCode', 'string', array('limit' => 11))
-            ->addColumn('amount', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
+            ->addColumn('amount', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
             ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('refundDate', 'date', array())
-            ->addColumn('postedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('postedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('stuID', 'termCode', 'postedBy'))
             ->addForeignKey('postedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -1376,7 +1376,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table restriction_code
         $table = $this->table('restriction_code', array('id' => false, 'primary_key' => 'rstrCodeID'));
         $table
-            ->addColumn('rstrCodeID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('rstrCodeID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('rstrCode', 'string', array('limit' => 6))
             ->addColumn('description', 'string', array('limit' => 255))
             ->addColumn('deptCode', 'string', array('limit' => 11))
@@ -1388,15 +1388,15 @@ class InitialSchema extends AbstractMigration
         // Migration for table restriction
         $table = $this->table('restriction', array('id' => false, 'primary_key' => 'rstrID'));
         $table
-            ->addColumn('rstrID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('rstrID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('rstrCode', 'string', array('limit' => 6))
-            ->addColumn('severity', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 2))
+            ->addColumn('severity', 'integer', array('signed' => true, 'limit' => 2))
             ->addColumn('startDate', 'date', array())
             ->addColumn('endDate', 'date', array())
             ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('rstrCode', 'stuID', 'addedBy'))
             ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -1424,9 +1424,9 @@ class InitialSchema extends AbstractMigration
         $table = $this->table('role_perms', array('id' => false, 'primary_key' => 'ID'));
         $table
             ->addColumn('ID', 'integer', array('signed' => false, 'zerofill' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('roleID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('permID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('value', 'integer', array('signed' => true, 'zerofill' => true, 'default' => '0', 'limit' => MysqlAdapter::INT_TINY))
+            ->addColumn('roleID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('permID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('value', 'integer', array('signed' => true, 'default' => '0', 'limit' => MysqlAdapter::INT_TINY))
             ->addColumn('addDate', 'datetime', array())
             ->addIndex(array('roleID', 'permID'), array('unique' => true))
             ->create();
@@ -1559,11 +1559,11 @@ class InitialSchema extends AbstractMigration
         // Migration for table room
         $table = $this->table('room', array('id' => false, 'primary_key' => 'roomID'));
         $table
-            ->addColumn('roomID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('roomID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('roomCode', 'string', array('limit' => 11))
             ->addColumn('buildingCode', 'string', array('limit' => 11))
             ->addColumn('roomNumber', 'string', array('limit' => 11))
-            ->addColumn('roomCap', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 4))
+            ->addColumn('roomCap', 'integer', array('signed' => true, 'limit' => 4))
             ->addIndex(array('roomCode'), array('unique' => true))
             ->addIndex(array('buildingCode'))
             ->addForeignKey('buildingCode', 'building', 'buildingCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -1575,8 +1575,8 @@ class InitialSchema extends AbstractMigration
         // Migration for table saved_query
         $table = $this->table('saved_query', array('id' => false, 'primary_key' => 'savedQueryID'));
         $table
-            ->addColumn('savedQueryID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('personID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('savedQueryID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('savedQueryName', 'string', array('limit' => 80))
             ->addColumn('savedQuery', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('purgeQuery', 'enum', array('default' => '0', 'values' => array('0', '1')))
@@ -1591,7 +1591,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table school
         $table = $this->table('school', array('id' => false, 'primary_key' => 'schoolID'));
         $table
-            ->addColumn('schoolID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('schoolID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('schoolCode', 'string', array('limit' => 11))
             ->addColumn('schoolName', 'string', array('limit' => 180))
             ->addColumn('buildingCode', 'string', array('limit' => 11))
@@ -1607,7 +1607,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table screen
         $table = $this->table('screen', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('code', 'string', array('limit' => 6))
             ->addColumn('name', 'string', array('limit' => 255))
             ->addColumn('relativeURL', 'string', array('limit' => 255))
@@ -1673,7 +1673,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table semester
         $table = $this->table('semester', array('id' => false, 'primary_key' => 'semesterID'));
         $table
-            ->addColumn('semesterID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('semesterID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('acadYearCode', 'string', array('limit' => 11))
             ->addColumn('semCode', 'string', array('limit' => 11))
             ->addColumn('semName', 'string', array('limit' => 80))
@@ -1691,7 +1691,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table specialization
         $table = $this->table('specialization', array('id' => false, 'primary_key' => 'specID'));
         $table
-            ->addColumn('specID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('specID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('specCode', 'string', array('limit' => 11))
             ->addColumn('specName', 'string', array('limit' => 80))
             ->addIndex(array('specCode'), array('unique' => true))
@@ -1703,8 +1703,8 @@ class InitialSchema extends AbstractMigration
         // Migration for table staff
         $table = $this->table('staff', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('staffID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('staffID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('schoolCode', 'string', array('null' => true, 'limit' => 11))
             ->addColumn('buildingCode', 'string', array('null' => true, 'limit' => 11))
             ->addColumn('officeCode', 'string', array('null' => true, 'limit' => 11))
@@ -1712,7 +1712,7 @@ class InitialSchema extends AbstractMigration
             ->addColumn('deptCode', 'string', array('limit' => 11))
             ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'I')))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('approvedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('staffID'), array('unique' => true))
             ->addIndex(array('approvedBy', 'schoolCode', 'buildingCode', 'officeCode', 'deptCode'))
@@ -1730,17 +1730,17 @@ class InitialSchema extends AbstractMigration
         // Migration for table staff_meta
         $table = $this->table('staff_meta', array('id' => false, 'primary_key' => 'sMetaID'));
         $table
-            ->addColumn('sMetaID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('sMetaID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('jobStatusCode', 'string', array('limit' => 3))
-            ->addColumn('jobID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 11))
-            ->addColumn('staffID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('supervisorID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('jobID', 'integer', array('signed' => true, 'limit' => 11))
+            ->addColumn('staffID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('supervisorID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('staffType', 'string', array('limit' => 3))
             ->addColumn('hireDate', 'date', array())
             ->addColumn('startDate', 'date', array())
             ->addColumn('endDate', 'date', array('null' => true))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('approvedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('staffID', 'supervisorID', 'approvedBy', 'jobStatusCode'))
             ->addForeignKey('staffID', 'staff', 'staffID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -1830,10 +1830,10 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_acad_cred
         $table = $this->table('stu_acad_cred', array('id' => false, 'primary_key' => 'stuAcadCredID'));
         $table
-            ->addColumn('stuAcadCredID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('courseID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('courseSecID', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuAcadCredID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('courseID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('courseSecID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('courseCode', 'string', array('limit' => 25))
             ->addColumn('courseSecCode', 'string', array('null' => true, 'limit' => 50))
             ->addColumn('sectionNumber', 'string', array('null' => true, 'limit' => 5))
@@ -1844,10 +1844,10 @@ class InitialSchema extends AbstractMigration
             ->addColumn('deptCode', 'string', array('limit' => 11))
             ->addColumn('shortTitle', 'string', array('limit' => 25))
             ->addColumn('longTitle', 'string', array('limit' => 60))
-            ->addColumn('compCred', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1))
-            ->addColumn('gradePoints', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'))
-            ->addColumn('attCred', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1))
-            ->addColumn('ceu', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('compCred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1))
+            ->addColumn('gradePoints', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'))
+            ->addColumn('attCred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1))
+            ->addColumn('ceu', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
             ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'N', 'D', 'W', 'C')))
             ->addColumn('statusDate', 'date', array())
             ->addColumn('statusTime', 'string', array('limit' => 10))
@@ -1857,7 +1857,7 @@ class InitialSchema extends AbstractMigration
             ->addColumn('creditType', 'string', array('default' => 'I', 'limit' => 6))
             ->addColumn('startDate', 'date', array())
             ->addColumn('endDate', 'date', array('null' => true))
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('addDate', 'date', array('null' => true))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('stuID', 'courseSecID'), array('unique' => true))
@@ -1877,8 +1877,8 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_acad_level
         $table = $this->table('stu_acad_level', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('acadProgCode', 'string', array('limit' => 20))
             ->addColumn('acadLevelCode', 'string', array('limit' => 4))
             ->addColumn('addDate', 'date', array())
@@ -1892,15 +1892,15 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_acct_bill
         $table = $this->table('stu_acct_bill', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('billID', 'string', array('limit' => 11))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('termCode', 'string', array('limit' => 11))
             ->addColumn('authCode', 'string', array('limit' => 23))
             ->addColumn('stu_comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('staff_comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('balanceDue', 'enum', array('default' => '1', 'values' => array('1', '0')))
-            ->addColumn('postedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('postedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('billingDate', 'date', array())
             ->addColumn('billTimeStamp', 'datetime', array())
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
@@ -1915,16 +1915,16 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_acct_fee
         $table = $this->table('stu_acct_fee', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('billID', 'string', array('limit' => 11))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('termCode', 'string', array('limit' => 11))
             ->addColumn('type', 'string', array('limit' => 11))
             ->addColumn('description', 'string', array('limit' => 125))
-            ->addColumn('amount', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 6, 'scale' => 2))
+            ->addColumn('amount', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 2))
             ->addColumn('feeDate', 'date', array())
             ->addColumn('feeTimeStamp', 'datetime', array())
-            ->addColumn('postedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('postedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('billID', 'stuID', 'termCode', 'postedBy'))
             ->addForeignKey('billID', 'stu_acct_bill', 'billID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -1937,16 +1937,16 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_acct_pp
         $table = $this->table('stu_acct_pp', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('termCode', 'string', array('limit' => 11))
             ->addColumn('payFrequency', 'enum', array('values' => array('1', '7', '14', '30', '365')))
-            ->addColumn('amount', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 6, 'scale' => 2))
+            ->addColumn('amount', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 2))
             ->addColumn('startDate', 'date', array())
             ->addColumn('endDate', 'date', array())
             ->addColumn('comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('stuID', 'termCode', 'addedBy'))
             ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -1958,11 +1958,11 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_acct_tuition
         $table = $this->table('stu_acct_tuition', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('termCode', 'string', array('limit' => 11))
-            ->addColumn('total', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 6, 'scale' => 2))
-            ->addColumn('postedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('total', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 2))
+            ->addColumn('postedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('tuitionTimeStamp', 'datetime', array())
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('termCode', 'stuID', 'postedBy'))
@@ -1975,20 +1975,20 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_course_sec
         $table = $this->table('stu_course_sec', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('courseSecID', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('courseSecID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('courseSecCode', 'string', array('limit' => 50))
             ->addColumn('courseSection', 'string', array('limit' => 60))
             ->addColumn('termCode', 'string', array('limit' => 11))
-            ->addColumn('courseCredits', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-            ->addColumn('ceu', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('courseCredits', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('ceu', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
             ->addColumn('regDate', 'date', array('null' => true))
             ->addColumn('regTime', 'string', array('null' => true, 'limit' => 10))
             ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'N', 'D', 'W', 'C')))
             ->addColumn('statusDate', 'date', array())
             ->addColumn('statusTime', 'string', array('limit' => 10))
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('stuID', 'courseSecID'), array('unique' => true))
             ->addIndex(array('courseSecCode', 'termCode', 'addedBy', 'status', 'courseSecID', 'courseSection'))
@@ -2004,9 +2004,9 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_program
         $table = $this->table('stu_program', array('id' => false, 'primary_key' => 'stuProgID'));
         $table
-            ->addColumn('stuProgID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('advisorID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuProgID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('advisorID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('catYearCode', 'string', array('limit' => 11))
             ->addColumn('acadProgCode', 'string', array('limit' => 20))
             ->addColumn('currStatus', 'string', array('limit' => 1))
@@ -2017,7 +2017,7 @@ class InitialSchema extends AbstractMigration
             ->addColumn('startDate', 'date', array())
             ->addColumn('endDate', 'date', array())
             ->addColumn('comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-            ->addColumn('approvedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('stuID', 'acadProgCode'), array('unique' => true))
             ->addIndex(array('approvedBy', 'acadProgCode', 'currStatus', 'advisorID', 'catYearCode'))
@@ -2032,8 +2032,8 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_rgn_cart
         $table = $this->table('stu_rgn_cart', array('id' => false));
         $table
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('courseSecID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('courseSecID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('deleteDate', 'date', array())
             ->addIndex(array('stuID', 'courseSecID'), array('unique' => true))
             ->create();
@@ -2042,9 +2042,9 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_term
         $table = $this->table('stu_term', array('id' => false));
         $table
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('termCode', 'string', array('limit' => 11))
-            ->addColumn('termCredits', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 6, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('termCredits', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 1, 'default' => '0.0'))
             ->addColumn('addDateTime', 'datetime', array())
             ->addColumn('acadLevelCode', 'string', array('limit' => 4))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
@@ -2058,13 +2058,13 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_term_gpa
         $table = $this->table('stu_term_gpa', array('id' => false));
         $table
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('termCode', 'string', array('limit' => 11))
             ->addColumn('acadLevelCode', 'string', array('limit' => 4))
-            ->addColumn('attCred', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-            ->addColumn('compCred', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-            ->addColumn('gradePoints', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-            ->addColumn('termGPA', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'))
+            ->addColumn('attCred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('compCred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('gradePoints', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
+            ->addColumn('termGPA', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('stuID', 'termCode', 'acadLevelCode'), array('unique' => true))
             ->addIndex(array('termCode'))
@@ -2076,7 +2076,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table stu_term_load
         $table = $this->table('stu_term_load', array('id' => false));
         $table
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('termCode', 'string', array('limit' => 11))
             ->addColumn('stuLoad', 'string', array('limit' => 2))
             ->addColumn('acadLevelCode', 'string', array('limit' => 4))
@@ -2091,12 +2091,12 @@ class InitialSchema extends AbstractMigration
         // Migration for table student
         $table = $this->table('student', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'I')))
             ->addColumn('tags', 'string', array('limit' => 255))
             ->addColumn('addDate', 'datetime', array())
-            ->addColumn('approvedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('stuID'), array('unique' => true))
             ->addIndex(array('approvedBy', 'status'))
@@ -2107,10 +2107,10 @@ class InitialSchema extends AbstractMigration
         // Migration for table student_load_rule
         $table = $this->table('student_load_rule', array('id' => false, 'primary_key' => 'slrID'));
         $table
-            ->addColumn('slrID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('slrID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('status', 'string', array('limit' => 1))
-            ->addColumn('min_cred', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1))
-            ->addColumn('max_cred', 'decimal', array('signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1))
+            ->addColumn('min_cred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1))
+            ->addColumn('max_cred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1))
             ->addColumn('term', 'string', array('limit' => 255))
             ->addColumn('acadLevelCode', 'string', array('limit' => 255))
             ->addColumn('active', 'enum', array('values' => array('1', '0')))
@@ -2125,7 +2125,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table subject
         $table = $this->table('subject', array('id' => false, 'primary_key' => 'subjectID'));
         $table
-            ->addColumn('subjectID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => 11))
+            ->addColumn('subjectID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
             ->addColumn('subjectCode', 'string', array('limit' => 11))
             ->addColumn('subjectName', 'string', array('limit' => 180))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
@@ -2137,7 +2137,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table term
         $table = $this->table('term', array('id' => false, 'primary_key' => 'termID'));
         $table
-            ->addColumn('termID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('termID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('semCode', 'string', array('limit' => 11))
             ->addColumn('termCode', 'string', array('limit' => 11))
             ->addColumn('termName', 'string', array('default' => '', 'limit' => 180))
@@ -2157,17 +2157,17 @@ class InitialSchema extends AbstractMigration
         // Migration for table timesheet
         $table = $this->table('timesheet', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('employeeID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('jobID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => 11))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('employeeID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('jobID', 'integer', array('signed' => true, 'limit' => 11))
             ->addColumn('workWeek', 'date', array())
             ->addColumn('startDateTime', 'datetime', array())
             ->addColumn('endDateTime', 'datetime', array())
             ->addColumn('note', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addColumn('status', 'enum', array('default' => 'P', 'values' => array('P', 'R', 'A')))
             ->addColumn('addDate', 'string', array('limit' => 20))
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('approvedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('employeeID', 'addedBy'))
             ->addForeignKey('employeeID', 'staff', 'staffID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -2178,14 +2178,14 @@ class InitialSchema extends AbstractMigration
         // Migration for table transfer_equivalent
         $table = $this->table('transfer_equivalent', array('id' => false, 'primary_key' => 'equivID'));
         $table
-            ->addColumn('equivID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('extrID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('courseID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('equivID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('extrID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('courseID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('startDate', 'date', array())
             ->addColumn('endDate', 'date', array())
             ->addColumn('grade', 'string', array('limit' => 2))
             ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('addDate', 'date', array())
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('extrID', 'courseID', 'addedBy'))
@@ -2197,10 +2197,10 @@ class InitialSchema extends AbstractMigration
         // Migration for table transfer_credit
         $table = $this->table('transfer_credit', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('equivID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuAcadCredID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('equivID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuAcadCredID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('addDate', 'date', array())
             ->addIndex(array('equivID', 'stuAcadCredID', 'addedBy'))
             ->addForeignKey('equivID', 'transfer_equivalent', 'equivID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
@@ -2211,14 +2211,14 @@ class InitialSchema extends AbstractMigration
         // Migration for table gradebook
         $table = $this->table('gradebook', array('id' => false, 'primary_key' => 'gbID'));
         $table
-            ->addColumn('gbID', 'integer', array('signed' => true, 'zerofill' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('assignID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('courseSecID', 'integer', array('signed' => true, 'zerofill' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('facID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
-            ->addColumn('stuID', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('gbID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('assignID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('courseSecID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('facID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('grade', 'string', array('limit' => 2))
             ->addColumn('addDate', 'date', array())
-            ->addColumn('addedBy', 'integer', array('signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
             ->addIndex(array('assignID', 'facID', 'stuID'), array('unique' => true))
             ->addIndex(array('assignID', 'courseSecID', 'facID', 'stuID', 'addedBy'))

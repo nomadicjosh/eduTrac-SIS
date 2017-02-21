@@ -170,7 +170,7 @@ function hasAppl($id)
     $app = \Liten\Liten::getInstance();
     try {
         $appl = $app->db->application()
-            ->where('personID = ?', $id)
+            ->where('(personID = ? OR altID)', [$id, $id])
             ->findOne();
 
         return _h($appl->personID);

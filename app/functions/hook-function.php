@@ -1518,7 +1518,7 @@ function get_user_avatar($email, $s = 80, $class = '', $d = 'mm', $r = 'g', $img
 {
     $app = \Liten\Liten::getInstance();
 
-    if (function_exists('enable_url_ssl')) {
+    if ($app->hook->has_filter('base_url')) {
         $protocol = 'https://';
     } else {
         $protocol = 'http://';
@@ -1837,6 +1837,38 @@ function _etsis_student_router()
         require($router);
     }
     return $app->hook->apply_filter('student_router', $router);
+}
+
+/**
+ * myetSIS router function.
+ *
+ * @since 6.3.0
+ */
+function _etsis_myetsis_router()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $router = $app->config('routers_dir') . 'myet.router.php';
+    if (!$app->hook->has_filter('myetsis_router')) {
+        require($router);
+    }
+    return $app->hook->apply_filter('myetsis_router', $router);
+}
+
+/**
+ * Index router function.
+ *
+ * @since 6.3.0
+ */
+function _etsis_index_router()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $router = $app->config('routers_dir') . 'index.router.php';
+    if (!$app->hook->has_filter('index_router')) {
+        require($router);
+    }
+    return $app->hook->apply_filter('index_router', $router);
 }
 
 /**

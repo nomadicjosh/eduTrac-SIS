@@ -54,7 +54,7 @@ $screen = 'ainst';
 						<!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'FICE/CEEB Code' );?></label>
-                            <div class="col-md-8"><input class="form-control" name="fice_ceeb" type="text" required/></div>
+                            <div class="col-md-8"><input class="form-control" name="fice_ceeb" type="text" value="<?=($app->req->post['fice_ceeb'] != '' ? $app->req->post['fice_ceeb'] : '');?>" required/></div>
                         </div>
                         <!-- // Group END -->
 						
@@ -64,9 +64,9 @@ $screen = 'ainst';
                             <div class="col-md-8">
                                 <select name="instType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" >
                                     <option value="">&nbsp;</option>
-                                    <option value="HS"><?=_t( 'High School' );?></option>
-                                    <option value="COL"><?=_t( 'College' );?></option>
-                                    <option value="UNIV"><?=_t( 'University' );?></option>
+                                    <option value="HS"<?=selected('HS',($app->req->post['instType'] != '' ? $app->req->post['instType'] : ''),false);?>><?=_t( 'High School' );?></option>
+                                    <option value="COL"<?=selected('COL',($app->req->post['instType'] != '' ? $app->req->post['instType'] : ''),false);?>><?=_t( 'College' );?></option>
+                                    <option value="UNIV"<?=selected('UNIV',($app->req->post['instType'] != '' ? $app->req->post['instType'] : ''),false);?>><?=_t( 'University' );?></option>
                                 </select>
                             </div>
                         </div>
@@ -75,7 +75,7 @@ $screen = 'ainst';
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label" for="instName"><font color="red">*</font> <?=_t( 'Institution Name' );?></label>
-							<div class="col-md-8"><input class="form-control" id="instName" name="instName" type="text" required /></div>
+							<div class="col-md-8"><input class="form-control" id="instName" name="instName" type="text" value="<?=($app->req->post['instName'] != '' ? $app->req->post['instName'] : '');?>" required /></div>
 						</div>
 						<!-- // Group END -->
 						
@@ -88,14 +88,19 @@ $screen = 'ainst';
 					    <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="city"><?=_t( 'City' );?></label>
-                            <div class="col-md-8"><input class="form-control" id="city" name="city" type="text" /></div>
+                            <div class="col-md-8"><input class="form-control" id="city" name="city" type="text" value="<?=($app->req->post['city'] != '' ? $app->req->post['city'] : '');?>" /></div>
                         </div>
                         <!-- // Group END -->
 						
 						<!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="state"><?=_t( 'State' );?></label>
-                            <div class="col-md-8"><input class="form-control" id="state" name="state" type="text" /></div>
+                            <div class="col-md-8">
+                                <select name="state" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" >
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('state',null,'code','code','name',($app->req->post['state'] != '' ? $app->req->post['state'] : '')); ?>
+                                </select>
+                            </div>
                         </div>
                         <!-- // Group END -->
                         
@@ -105,7 +110,7 @@ $screen = 'ainst';
                             <div class="col-md-8">
                             	<select name="country" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" >
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('country',null,'iso2','iso2','short_name'); ?>
+                                    <?php table_dropdown('country',null,'iso2','iso2','short_name',($app->req->post['short_name'] != '' ? $app->req->post['short_name'] : '')); ?>
                                 </select>
                         	</div>
                         </div>

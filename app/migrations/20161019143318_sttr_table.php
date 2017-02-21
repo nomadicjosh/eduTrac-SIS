@@ -30,14 +30,14 @@ class SttrTable extends AbstractMigration
     {
         $table = $this->table('sttr', ['id' => false]);
         $table
-            ->addColumn('stuID', 'integer', ['signed' => true, 'zerofill' => true, 'limit' => MysqlAdapter::INT_BIG])
+            ->addColumn('stuID', 'integer', ['signed' => true, 'limit' => MysqlAdapter::INT_BIG])
             ->addColumn('termCode', 'string', ['limit' => 11])
             ->addColumn('acadLevelCode', 'string', ['limit' => 4])
-            ->addColumn('attCred', 'decimal', ['signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
-            ->addColumn('compCred', 'decimal', ['signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
-            ->addColumn('gradePoints', 'decimal', ['signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
+            ->addColumn('attCred', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
+            ->addColumn('compCred', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
+            ->addColumn('gradePoints', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
             ->addColumn('stuLoad', 'string', ['limit' => 2])
-            ->addColumn('gpa', 'decimal', ['signed' => true, 'zerofill' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'])
+            ->addColumn('gpa', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'])
             ->addColumn('created', 'datetime', [])
             ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
             ->addIndex(['stuID', 'termCode', 'acadLevelCode'], ['unique' => true])

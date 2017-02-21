@@ -39,7 +39,7 @@ tinymce.init({
 						<div class="col-md-12">
 							<h5 class="strong"><?=get_met_welcome_message_title();?></h5>
 							<div class="separator bottom"></div>
-							<?=_escape(the_myet_welcome_message());?>
+							<?=_escape(the_myetsis_welcome_message());?>
 							<p<?=ae('edit_myet_welcome_message');?> class="margin-none strong">
 								<a href="#welcome" data-toggle="modal" class="glyphicons single edit"><i></i><?=_t( 'Edit' );?></a>
 							</p>

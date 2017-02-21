@@ -28,11 +28,19 @@ function courseList($id = '')
             ->where('courseID <> ?', $id)->_and_()
             ->where('currStatus = "A"')->_and_()
             ->where('endDate <= "0000-00-00"');
-        $q = $crse->find();
+        $q = $crse->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
+        $a = [];
         foreach ($q as $r) {
-            return $r->courseCode;
+            $a[] = $r['courseCode'];
         }
+        return $a;
     } catch (NotFoundException $e) {
         _etsis_flash()->error($e->getMessage());
     } catch (Exception $e) {

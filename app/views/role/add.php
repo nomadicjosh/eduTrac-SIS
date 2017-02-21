@@ -65,7 +65,7 @@ $screen = 'role';
 							<!-- // Table heading END -->
 							
 							<tbody>
-								<?php rolePerm(); ?>
+								<?php rolePerm(null); ?>
 							</tbody>
 				
 					</table>

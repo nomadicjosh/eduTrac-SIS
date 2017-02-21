@@ -82,8 +82,7 @@ $(function () {
             },
             plotLines: [{
                     value: 0,
-                    width: 1,
-                    color: '#000000'
+                    width: 1
                 }]
         },
         tooltip: {
@@ -97,7 +96,7 @@ $(function () {
                 stacking: 'normal',
                 dataLabels: {
                     enabled: true,
-                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || '#000000'
                 },
                 showInLegend: true
             }

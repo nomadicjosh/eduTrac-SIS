@@ -11,7 +11,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$list = '"'.implode('","', courseList(_h($crse->preReq))).'"';
+$list = '"'.implode('","', courseList(_h($crse->courseID))).'"';
 $screen = 'vcrse';
 ?>
 
