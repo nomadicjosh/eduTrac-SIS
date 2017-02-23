@@ -1178,7 +1178,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table permission
         $table = $this->table('permission', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => false, 'zerofill' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('permKey', 'string', array('limit' => 30))
             ->addColumn('permName', 'string', array('limit' => 80))
             ->addIndex(array('permKey'), array('unique' => true))
@@ -1324,7 +1324,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table person_perms
         $table = $this->table('person_perms', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => false, 'zerofill' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('permission', 'text', array('limit' => MysqlAdapter::TEXT_REGULAR))
             ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
@@ -1407,7 +1407,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table role
         $table = $this->table('role', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => false, 'zerofill' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('roleName', 'string', array('limit' => 20))
             ->addColumn('permission', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
             ->addIndex(array('roleName'), array('unique' => true))
@@ -1423,7 +1423,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table role_perms
         $table = $this->table('role_perms', array('id' => false, 'primary_key' => 'ID'));
         $table
-            ->addColumn('ID', 'integer', array('signed' => false, 'zerofill' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
+            ->addColumn('ID', 'integer', array('signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('roleID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('permID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
             ->addColumn('value', 'integer', array('signed' => true, 'default' => '0', 'limit' => MysqlAdapter::INT_TINY))
@@ -1755,7 +1755,7 @@ class InitialSchema extends AbstractMigration
         // Migration for table state
         $table = $this->table('state', array('id' => false, 'primary_key' => 'id'));
         $table
-            ->addColumn('id', 'integer', array('signed' => false, 'zerofill' => false, 'identity' => true, 'limit' => 11))
+            ->addColumn('id', 'integer', array('signed' => false, 'identity' => true, 'limit' => 11))
             ->addColumn('code', 'string', array('limit' => 2))
             ->addColumn('name', 'string', array('limit' => 180))
             ->addIndex(array('code'), array('unique' => true))
