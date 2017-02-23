@@ -134,7 +134,7 @@ class InitialSchema extends AbstractMigration
             ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
             ->create();
 
-        $this->execute("INSERT INTO `address` VALUES(1, 1, '125 Montgomery Street', '#2', 'Cambridge', 'MA', '02140', 'US', 'P', '2013-08-01', '0000-00-00', 'C', '6718997836', '', '', '', 'CEL', '', 'edutrac@7mediaws.org', '', '$NOW', 00000001, '$NOW');");
+        $this->execute("INSERT INTO `address` VALUES(1, 1, '125 Montgomery Street', '#2', 'Cambridge', 'MA', '02140', 'US', 'P', '2013-08-01', '0000-00-00', 'C', '6718997836', '', '', '', 'CEL', '', 'etsis@campus.com', '', '$NOW', 00000001, '$NOW');");
 
 
         // Migration for table application
