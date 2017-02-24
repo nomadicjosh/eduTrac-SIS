@@ -4,6 +4,7 @@ use Phinx\Db\Adapter\MysqlAdapter;
 
 class StalTable extends AbstractMigration
 {
+
     /**
      * Change Method.
      *
@@ -27,12 +28,14 @@ class StalTable extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('stal', ['id' => false, 'primary_key' => 'id']);
-        $table
-            ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-            ->addColumn('code', 'string', ['limit' => 11])
-            ->addColumn('name', 'string', ['limit' => 108])
-            ->addIndex(['code'])
-            ->create();
+        if (!$this->hasTable('stal')) :
+            $table = $this->table('stal', ['id' => false, 'primary_key' => 'id']);
+            $table
+                ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
+                ->addColumn('code', 'string', ['limit' => 11])
+                ->addColumn('name', 'string', ['limit' => 108])
+                ->addIndex(['code'])
+                ->create();
+        endif;
     }
 }

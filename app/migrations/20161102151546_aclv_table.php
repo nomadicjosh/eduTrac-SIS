@@ -28,71 +28,73 @@ class AclvTable extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('aclv', ['id' => false, 'primary_key' => 'id']);
-        $table
-            ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => 11])
-            ->addColumn('code', 'string', ['limit' => 11])
-            ->addColumn('name', 'string', ['limit' => 80])
-            ->addColumn('grsc', 'string', ['limit' => 6])
-            ->addColumn('ht_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '6.0'])
-            ->addColumn('ft_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '12.0'])
-            ->addColumn('ovr_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '24.0'])
-            ->addColumn('grad_level', 'enum', ['default' => 'No', 'values' => ['Yes', 'No']])
-            ->addColumn('comp_months', 'integer', ['signed' => true, 'limit' => MysqlAdapter::INT_TINY])
-            ->addIndex(['code'])
-            ->create();
+        if (!$this->hasTable('aclv')) :
+            $table = $this->table('aclv', ['id' => false, 'primary_key' => 'id']);
+            $table
+                ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => 11])
+                ->addColumn('code', 'string', ['limit' => 11])
+                ->addColumn('name', 'string', ['limit' => 80])
+                ->addColumn('grsc', 'string', ['limit' => 6])
+                ->addColumn('ht_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '6.0'])
+                ->addColumn('ft_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '12.0'])
+                ->addColumn('ovr_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '24.0'])
+                ->addColumn('grad_level', 'enum', ['default' => 'No', 'values' => ['Yes', 'No']])
+                ->addColumn('comp_months', 'integer', ['signed' => true, 'limit' => MysqlAdapter::INT_TINY])
+                ->addIndex(['code'])
+                ->create();
 
-        $rows = [
-            [
-                'code' => 'NA',
-                'name' => 'Not Applicable',
-                'grad_level' => 'No',
-                'comp_months' => 0
-            ],
-            [
-                'code' => 'CE',
-                'name' => 'Continuing Education',
-                'grad_level' => 'No',
-                'comp_months' => 12
-            ],
-            [
-                'code' => 'CTF',
-                'name' => 'Certificate',
-                'grad_level' => 'No',
-                'comp_months' => 24
-            ],
-            [
-                'code' => 'DIP',
-                'name' => 'Diploma',
-                'grad_level' => 'No',
-                'comp_months' => 12
-            ],
-            [
-                'code' => 'UG',
-                'name' => 'Undergraduate',
-                'grad_level' => 'No',
-                'comp_months' => 48
-            ],
-            [
-                'code' => 'GR',
-                'name' => 'Graduate',
-                'grad_level' => 'Yes',
-                'comp_months' => 48
-            ],
-            [
-                'code' => 'PR',
-                'name' => 'Professional',
-                'grad_level' => 'Yes',
-                'comp_months' => 12
-            ],
-            [
-                'code' => 'PhD',
-                'name' => 'Doctorate',
-                'grad_level' => 'Yes',
-                'comp_months' => 12
-            ]
-        ];
-        
-        $this->insert('aclv', $rows);
+            $rows = [
+                [
+                    'code' => 'NA',
+                    'name' => 'Not Applicable',
+                    'grad_level' => 'No',
+                    'comp_months' => 0
+                ],
+                [
+                    'code' => 'CE',
+                    'name' => 'Continuing Education',
+                    'grad_level' => 'No',
+                    'comp_months' => 12
+                ],
+                [
+                    'code' => 'CTF',
+                    'name' => 'Certificate',
+                    'grad_level' => 'No',
+                    'comp_months' => 24
+                ],
+                [
+                    'code' => 'DIP',
+                    'name' => 'Diploma',
+                    'grad_level' => 'No',
+                    'comp_months' => 12
+                ],
+                [
+                    'code' => 'UG',
+                    'name' => 'Undergraduate',
+                    'grad_level' => 'No',
+                    'comp_months' => 48
+                ],
+                [
+                    'code' => 'GR',
+                    'name' => 'Graduate',
+                    'grad_level' => 'Yes',
+                    'comp_months' => 48
+                ],
+                [
+                    'code' => 'PR',
+                    'name' => 'Professional',
+                    'grad_level' => 'Yes',
+                    'comp_months' => 12
+                ],
+                [
+                    'code' => 'PhD',
+                    'name' => 'Doctorate',
+                    'grad_level' => 'Yes',
+                    'comp_months' => 12
+                ]
+            ];
+
+            $this->insert('aclv', $rows);
+        endif;
     }
 }

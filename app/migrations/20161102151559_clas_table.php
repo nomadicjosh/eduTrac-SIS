@@ -4,6 +4,7 @@ use Phinx\Db\Adapter\MysqlAdapter;
 
 class ClasTable extends AbstractMigration
 {
+
     /**
      * Change Method.
      *
@@ -27,15 +28,17 @@ class ClasTable extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('clas', ['id' => false, 'primary_key' => 'id']);
-        $table
-            ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => 11])
-            ->addColumn('code', 'string', ['limit' => 11])
-            ->addColumn('name', 'string', ['limit' => 80])
-            ->addColumn('acadLevelCode', 'string', ['limit' => 11])
-            ->addIndex(['code'])
-            ->addIndex(['acadLevelCode'])
-            ->addForeignKey('acadLevelCode', 'aclv', 'code', ['delete' => 'RESTRICT', 'update' => 'CASCADE'])
-            ->create();
+        if (!$this->hasTable('clas')) :
+            $table = $this->table('clas', ['id' => false, 'primary_key' => 'id']);
+            $table
+                ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => 11])
+                ->addColumn('code', 'string', ['limit' => 11])
+                ->addColumn('name', 'string', ['limit' => 80])
+                ->addColumn('acadLevelCode', 'string', ['limit' => 11])
+                ->addIndex(['code'])
+                ->addIndex(['acadLevelCode'])
+                ->addForeignKey('acadLevelCode', 'aclv', 'code', ['delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->create();
+        endif;
     }
 }

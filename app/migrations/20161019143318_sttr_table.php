@@ -28,26 +28,27 @@ class SttrTable extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('sttr', ['id' => false]);
-        $table
-            ->addColumn('stuID', 'integer', ['signed' => true, 'limit' => MysqlAdapter::INT_BIG])
-            ->addColumn('termCode', 'string', ['limit' => 11])
-            ->addColumn('acadLevelCode', 'string', ['limit' => 4])
-            ->addColumn('attCred', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
-            ->addColumn('compCred', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
-            ->addColumn('gradePoints', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
-            ->addColumn('stuLoad', 'string', ['limit' => 2])
-            ->addColumn('gpa', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'])
-            ->addColumn('created', 'datetime', [])
-            ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
-            ->addIndex(['stuID', 'termCode', 'acadLevelCode'], ['unique' => true])
-            ->addIndex(['termCode'])
-            ->addForeignKey('stuID', 'student', 'stuID', ['delete' => 'RESTRICT', 'update' => 'CASCADE'])
-            ->addForeignKey('termCode', 'term', 'termCode', ['delete' => 'RESTRICT', 'update' => 'CASCADE'])
-            ->create();
-        
-        $exists = $this->hasTable('stu_term');
-        if ($exists) {
+        if (!$this->hasTable('sttr')) :
+            $table = $this->table('sttr', ['id' => false]);
+            $table
+                ->addColumn('stuID', 'integer', ['signed' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('termCode', 'string', ['limit' => 11])
+                ->addColumn('acadLevelCode', 'string', ['limit' => 4])
+                ->addColumn('attCred', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('compCred', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('gradePoints', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('stuLoad', 'string', ['limit' => 2])
+                ->addColumn('gpa', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('created', 'datetime', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['stuID', 'termCode', 'acadLevelCode'], ['unique' => true])
+                ->addIndex(['termCode'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->create();
+        endif;
+
+        if ($this->hasTable('stu_term')) :
             $sql = $this->query('SELECT '
                 . 'a.stuID,a.termCode,a.acadLevelCode,a.addDateTime,b.attCred,b.compCred,b.gradePoints,b.termGPA,c.stuLoad'
                 . ' FROM stu_term a'
@@ -74,6 +75,6 @@ class SttrTable extends AbstractMigration
             $this->dropTable('stu_term');
             $this->dropTable('stu_term_gpa');
             $this->dropTable('stu_term_load');
-        }
+        endif;
     }
 }
