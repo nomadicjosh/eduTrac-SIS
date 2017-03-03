@@ -4,6 +4,7 @@ if (!defined('BASE_PATH'))
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 /**
  * eduTrac SIS Student Functions
@@ -41,7 +42,7 @@ function isStudent($id)
 
     $stu = get_person_by('personID', $id);
 
-    if ($stu->stuID != '') {
+    if (_h($stu->stuID) != '') {
         return true;
     }
     return false;
@@ -122,11 +123,14 @@ function studentsExist($id)
             return false;
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -158,14 +162,17 @@ function getstudentload($term, $creds, $level)
         ]);
         $q = $sql->find();
         foreach ($q as $r) {
-            return $r->status;
+            return _h($r->status);
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -195,17 +202,20 @@ function student_has_restriction()
         });
         if (count($q[0]['Restriction']) > 0) {
             foreach ($q as $r) {
-                return '<strong>' . $r['Restriction'] . '</strong>';
+                return '<strong>' . _h($r['Restriction']) . '</strong>';
             }
         } else {
             return false;
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -257,11 +267,14 @@ function is_ferpa($id)
             return _t('No');
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -279,11 +292,14 @@ function getStuSec($code, $term)
             return ' style="display:none;"';
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -332,11 +348,14 @@ function acadCredGradePoints($grade, $credits)
         }
         return $gradePoints;
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -423,11 +442,14 @@ function student_can_register()
             return true;
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -465,12 +487,12 @@ function prerequisite($stuID, $courseSecID)
         foreach ($q1 as $r1) {
             $array[] = $r1;
         }
-        $req = explode(",", $r1['preReq']);
+        $req = explode(",", _h($r1['preReq']));
         if (count($q1[0]['preReq']) > 0) {
             $stac = $app->db->query("SELECT
 	    					stuAcadCredID
 						FROM stu_acad_cred
-						WHERE courseCode IN('" . str_replace(",", "', '", $r1['preReq']) . "')
+						WHERE courseCode IN('" . str_replace(",", "', '", _h($r1['preReq'])) . "')
 						AND stuID = ?
 						AND status IN('A','N')
 						AND grade <> ''
@@ -488,15 +510,18 @@ function prerequisite($stuID, $courseSecID)
                 return $array;
             });
         }
-        if (empty($r1['preReq']) || count($req) == count($q2)) {
+        if (empty(_h($r1['preReq'])) || count($req) == count($q2)) {
             return true;
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -520,11 +545,14 @@ function shoppingCart()
             return true;
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -551,11 +579,14 @@ function removeFromCart($section)
             return true;
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -590,11 +621,14 @@ function tagList()
         }
         return $tags;
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -629,11 +663,14 @@ function get_stu_restriction($stu_id)
 
         return $q;
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -669,11 +706,14 @@ function get_sacp($stu_id)
 
         return $q;
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -721,11 +761,14 @@ function get_stu_shis($stu_id, $field)
             ->findOne();
         return _h($shis->{$field});
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -746,7 +789,7 @@ function get_stu_header($stu_id)
                 <?php if (get_persondata('personID') == $student->stuID && !hasPermission('access_dashboard')) : ?>
                     <a href="<?= get_base_url(); ?>profile/" class="heading pull-right"><?= _h($student->stuID); ?></a>
                 <?php else : ?>
-                    <a href="<?= get_base_url(); ?>stu/<?= _h($student->stuID); ?>/" class="heading pull-right"><?=(_h($student->altID) != '' ? $student->altID : $student->stuID); ?></a>
+                    <a href="<?= get_base_url(); ?>stu/<?= _h($student->stuID); ?>/" class="heading pull-right"><?= (_h($student->altID) != '' ? $student->altID : $student->stuID); ?></a>
                 <?php endif; ?>
             </div>
             <div class="widget-body">
@@ -786,10 +829,14 @@ function get_stu_header($stu_id)
                         </p>
                         <p><strong><?= _t('Restriction(s):'); ?></strong> 
                             <?php $rstr = '';
-                            foreach (get_stu_restriction($student->stuID) as $v) : ?>
+                            foreach (get_stu_restriction($student->stuID) as $v) :
+
+                                ?>
                                 <?= $rstr; ?><span data-toggle="popover" data-title="<?= _h($v['description']); ?>" data-content="Contact: <?= _h($v['deptName']); ?> <?= (_h($v['deptEmail']) != '') ? ' | ' . $v['deptEmail'] : ''; ?><?= (_h($v['deptPhone']) != '') ? ' | ' . $v['deptPhone'] : ''; ?><?= (_h($v['severity']) == 99) ? _t(' | Restricted from registering for courses.') : ''; ?>" data-placement="bottom"><a href="#"><?= _h($v['Restriction']); ?></a></span>
-                                <?php $rstr = ', ';
-                            endforeach; ?>
+        <?php $rstr = ', ';
+    endforeach;
+
+    ?>
                         </p>
                         <p><strong><?= _t('Entry Date:'); ?></strong> <?= date('D, M d, o', strtotime(_h($student->stuAddDate))); ?></p>
                     </div>
@@ -799,12 +846,15 @@ function get_stu_header($stu_id)
                     <div class="col-md-2">
                         <p><strong><?= _t('SACP:'); ?></strong> 
                             <?php $sacp = '';
-                            foreach (get_sacp($student->stuID) as $v) : ?>
-                                    <?= $sacp; ?><span data-toggle="popover" data-title="<?= _h($v['acadProgTitle']); ?> (<?= (_h($v['currStatus']) == 'A' ? _t('Active') : _t('Graduated')); ?>)" data-content="<?= _h($v['programDesc']); ?>" data-placement="bottom"><a href="#"><?= _h($v['SACP']); ?></a></span>
-                                    <?php $sacp = ', ';
-                                endforeach;
+                            foreach (get_sacp($student->stuID) as $v) :
 
                                 ?>
+        <?= $sacp; ?><span data-toggle="popover" data-title="<?= _h($v['acadProgTitle']); ?> (<?= (_h($v['currStatus']) == 'A' ? _t('Active') : _t('Graduated')); ?>)" data-content="<?= _h($v['programDesc']); ?>" data-placement="bottom"><a href="#"><?= _h($v['SACP']); ?></a></span>
+        <?php
+        $sacp = ', ';
+    endforeach;
+
+    ?>
                         </p>
                         <p><strong><?= _t('Admit Status:'); ?></strong> 
 
@@ -837,7 +887,8 @@ function get_stu_header($stu_id)
                     <p><?= _t('"FERPA gives parents certain rights with respect to their children\'s education records. 
                 These rights transfer to the student when he or she reaches the age of 18 or attends a school beyond 
                 the high school level. Students to whom the rights have transferred are \'eligible students.\'"'); ?></p>
-                    <p><?= _t('If the FERPA restriction states "Yes", then the student has requested that none of their 
+                    <p><?=
+                    _t('If the FERPA restriction states "Yes", then the student has requested that none of their 
                 information be given out without their permission. To get a better understanding of FERPA, visit 
                 the U.S. DOE\'s website @ ') .
                     '<a href="http://www2.ed.gov/policy/gen/guid/fpco/ferpa/index.html">http://www2.ed.gov/policy/gen/guid/fpco/ferpa/index.html</a>.';

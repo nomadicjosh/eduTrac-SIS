@@ -4,6 +4,7 @@ if (!defined('BASE_PATH'))
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 /**
  * eduTrac SIS Deprecated Functions.
@@ -49,11 +50,14 @@ function subject_code_dropdown($subjectCode = NULL)
             echo '<option value="' . _h($v['subjectCode']) . '"' . selected($subjectCode, _h($v['subjectCode']), false) . '>' . _h($v['subjectCode']) . ' ' . _h($v['subjectName']) . '</option>' . "\n";
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 

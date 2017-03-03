@@ -6,6 +6,7 @@ use app\src\Core\NodeQ\NodeQException;
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 /**
  * eduTrac SIS Rules Functions
@@ -47,9 +48,9 @@ try {
      */
     Node::dispense('rrsr');
 } catch (NodeQException $e) {
-    _etsis_flash()->error($e->getMessage());
+    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
 } catch (Exception $e) {
-    _etsis_flash()->error($e->getMessage());
+    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
 }
 
 /**
@@ -66,9 +67,9 @@ function get_rules($active = null)
             echo '<option value="' . _h($rule->code) . '"' . selected(_h($rule->code), $active, false) . '>' . '(' . _h($rule->code) . ') - ' . _h($rule->description) . '</option>';
         }
     } catch (NodeQException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
@@ -88,11 +89,14 @@ function get_department($code)
             return $d;
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -121,9 +125,9 @@ function is_node_count_zero($node, $field = null, $op = null, $value = null)
             }
         }
     } catch (NodeQException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
@@ -140,9 +144,9 @@ function get_rule_by_code($code)
         $rlde = Node::table('rlde')->where('code', '=', $code)->find();
         return $rlde;
     } catch (NodeQException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
@@ -160,15 +164,15 @@ function update_rlde_code_on_update($node, $id, $code)
         $find = Node::table("$node")->where('rid', '=', $id)->findAll();
         if ($find->count() > 0) {
             foreach ($find as $rule) {
-                $upd = Node::table("$node")->find($rule->id);
+                $upd = Node::table("$node")->find(_h($rule->id));
                 $upd->rule = $code;
                 $upd->save();
             }
         }
     } catch (NodeQException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
@@ -186,38 +190,49 @@ function update_aclv_code_on_update($node, $id, $code)
         $find = Node::table("$node")->where('aid', '=', $id)->findAll();
         if ($find->count() > 0) {
             foreach ($find as $rule) {
-                $upd = Node::table("$node")->find($rule->id);
+                $upd = Node::table("$node")->find(_h($rule->id));
                 $upd->level = $code;
                 $upd->save();
             }
         }
     } catch (NodeQException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
 function clas_dropdown($table, $where = null, $id, $code, $name, $bind = null)
 {
     $app = \Liten\Liten::getInstance();
-    if ($where !== null && $bind == null) {
-        $table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where");
-    } elseif ($bind !== null) {
-        $table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where", $bind);
-    } else {
-        $table = $app->db->query("SELECT $id, $code, $name FROM $table");
-    }
-    $q = $table->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+    try {
+        if ($where !== null && $bind == null) {
+            $table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where");
+        } elseif ($bind !== null) {
+            $table = $app->db->query("SELECT $id, $code, $name FROM $table WHERE $where", $bind);
+        } else {
+            $table = $app->db->query("SELECT $id, $code, $name FROM $table");
         }
-        return $array;
-    });
+        $q = $table->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
 
-    foreach ($q as $r) {
-        echo '<option value="' . _h($r[$code]) . '">' . _h($r[$code]) . ' ' . _h($r[$name]) . '</option>';
+        foreach ($q as $r) {
+            echo '<option value="' . _h($r[$code]) . '">' . _h($r[$code]) . ' ' . _h($r[$name]) . '</option>';
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -227,7 +242,7 @@ function clas_dropdown($table, $where = null, $id, $code, $name, $bind = null)
  * @since 6.3.0
  * @param int $stuID Student ID.
  */
-function etsis_reg_rstr_rule($stuID)
+function etsis_reg_rest_rule($stuID)
 {
     $app = \Liten\Liten::getInstance();
     try {
@@ -240,18 +255,21 @@ function etsis_reg_rstr_rule($stuID)
                 ->where("$rlde->rule")
                 ->findOne();
             if (false != $db) {
-                _etsis_flash()->error($rule->value, $app->req->server['HTTP_REFERER']);
+                _etsis_flash()->error(_h($rule->value), $app->req->server['HTTP_REFERER']);
                 exit();
             }
         }
     } catch (NodeQException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -263,10 +281,21 @@ function etsis_reg_rstr_rule($stuID)
 function get_acad_levels()
 {
     $app = \Liten\Liten::getInstance();
-    $q = $app->db->aclv()
-        ->find();
-    foreach ($q as $r) {
-        echo "'" . $r->code . "'" . ': ' . "'" . $r->code . " " . $r->name . "'" . ',' . "\n";
+    try {
+        $q = $app->db->aclv()
+            ->find();
+        foreach ($q as $r) {
+            echo "'" . _h($r->code) . "'" . ': ' . "'" . _h($r->code) . " " . _h($r->name) . "'" . ',' . "\n";
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -278,11 +307,22 @@ function get_acad_levels()
 function get_acad_terms()
 {
     $app = \Liten\Liten::getInstance();
-    $q = $app->db->term()
-        ->where('termCode <> "NULL"')
-        ->orderBy('termStartDate', 'DESC')
-        ->find();
-    foreach ($q as $r) {
-        echo "'" . $r->termCode . "'" . ': ' . "'" . $r->termCode . " " . $r->termName . "'" . ',' . "\n";
+    try {
+        $q = $app->db->term()
+            ->where('termCode <> "NULL"')
+            ->orderBy('termStartDate', 'DESC')
+            ->find();
+        foreach ($q as $r) {
+            echo "'" . _h($r->termCode) . "'" . ': ' . "'" . _h($r->termCode) . " " . _h($r->termName) . "'" . ',' . "\n";
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }

@@ -35,8 +35,8 @@ function get_persondata($field)
             ->_join('address', 'person.personID = address.personID')
             ->_join('staff', 'person.personID = staff.staffID')
             ->_join('student', 'person.personID = student.stuID')
-            ->where('person.personID = ?', $person->personID)->_and_()
-            ->where('person.uname = ?', $person->uname);
+            ->where('person.personID = ?', _h($person->personID))->_and_()
+            ->where('person.uname = ?', _h($person->uname));
         $q = $value->find(function ($data) {
             $array = [];
             foreach ($data as $d) {
@@ -48,11 +48,14 @@ function get_persondata($field)
             return _h($r[$field]);
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -68,7 +71,7 @@ function is_user_logged_in()
 
     $person = get_person_by('personID', get_persondata('personID'));
 
-    if ('' != $person->personID && $app->cookies->verifySecureCookie('ETSIS_COOKIENAME')) {
+    if ('' != _h($person->personID) && $app->cookies->verifySecureCookie('ETSIS_COOKIENAME')) {
         return true;
     }
 
@@ -420,11 +423,14 @@ function get_person_by($field, $value)
 
         return $person;
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -473,11 +479,14 @@ function etsis_authenticate($login, $password, $rememberme)
         etsis_logger_activity_log_write('Authentication', 'Login', get_name(_h($person->personID)), _h($person->uname));
         redirect(get_base_url());
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
     }
 }
 
@@ -508,14 +517,14 @@ function etsis_authenticate_person($login, $password, $rememberme)
     if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
         $person = get_person_by('email', $login);
 
-        if (false == $person->email) {
+        if (false == _h($person->email)) {
             _etsis_flash()->error(_t('<strong>ERROR</strong>: Invalid email address.'), $app->req->server['HTTP_REFERER']);
             return;
         }
     } else {
         $person = get_person_by('uname', $login);
 
-        if (false == $person->uname) {
+        if (false == _h($person->uname)) {
             _etsis_flash()->error(_t('<strong>ERROR</strong>: Invalid username.'), $app->req->server['HTTP_REFERER']);
             return;
         }

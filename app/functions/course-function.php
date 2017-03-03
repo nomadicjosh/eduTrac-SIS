@@ -42,11 +42,14 @@ function courseList($id = '')
         }
         return $a;
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -64,10 +67,10 @@ function get_course($course, $object = true)
     if ($course instanceof \app\src\Core\etsis_Course) {
         $_course = $course;
     } elseif (is_array($course)) {
-        if (empty($course['courseID'])) {
+        if (empty($course['id'])) {
             $_course = new \app\src\Core\etsis_Course($course);
         } else {
-            $_course = \app\src\Core\etsis_Course::get_instance($course['courseID']);
+            $_course = \app\src\Core\etsis_Course::get_instance($course['id']);
         }
     } else {
         $_course = \app\src\Core\etsis_Course::get_instance($course);

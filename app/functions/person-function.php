@@ -55,11 +55,14 @@ function isRecordActive($id)
         }
         return false;
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -90,25 +93,28 @@ function rolePerm($id)
             return $array;
         });
         foreach ($q2 as $r) {
-            $perm = maybe_unserialize($v['permission']);
+            $perm = maybe_unserialize(_h($v['permission']));
             echo '
 				<tr>
-					<td>' . $r['permName'] . '</td>
+					<td>' . _h($r['permName']) . '</td>
 					<td class="text-center">';
-            if (in_array($r['permKey'], $perm)) {
-                echo '<input type="checkbox" name="permission[]" value="' . $r['permKey'] . '" checked="checked" />';
+            if (in_array(_h($r['permKey']), $perm)) {
+                echo '<input type="checkbox" name="permission[]" value="' . _h($r['permKey']) . '" checked="checked" />';
             } else {
-                echo '<input type="checkbox" name="permission[]" value="' . $r['permKey'] . '" />';
+                echo '<input type="checkbox" name="permission[]" value="' . _h($r['permKey']) . '" />';
             }
             echo '</td>
             </tr>';
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -130,7 +136,7 @@ function personPerm($id)
         foreach ($q as $r) {
             $array[] = $r;
         }
-        $personPerm = maybe_unserialize($r['permission']);
+        $personPerm = maybe_unserialize(_h($r['permission']));
         /**
          * Select the role(s) of the person who's
          * personID = $id
@@ -167,7 +173,7 @@ function personPerm($id)
         foreach ($q2 as $r2) {
             $array2[] = $r2;
         }
-        $perm = maybe_unserialize($r2['permission']);
+        $perm = maybe_unserialize(_h($r2['permission']));
         $permission = $app->db->permission();
         $sql = $permission->find(function ($data) {
             $array = [];
@@ -179,24 +185,27 @@ function personPerm($id)
         foreach ($sql as $row) {
             echo '
             <tr>
-                <td>' . $row['permName'] . '</td>
+                <td>' . _h($row['permName']) . '</td>
                 <td class="text-center">';
-            if (in_array($row['permKey'], $perm)) {
-                echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" checked="checked" disabled="disabled" />';
-            } elseif ($personPerm != '' && in_array($row['permKey'], $personPerm)) {
-                echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" checked="checked" />';
+            if (in_array(_h($row['permKey']), $perm)) {
+                echo '<input type="checkbox" name="permission[]" value="' . _h($row['permKey']) . '" checked="checked" disabled="disabled" />';
+            } elseif ($personPerm != '' && in_array(_h($row['permKey']), $personPerm)) {
+                echo '<input type="checkbox" name="permission[]" value="' . _h($row['permKey']) . '" checked="checked" />';
             } else {
-                echo '<input type="checkbox" name="permission[]" value="' . $row['permKey'] . '" />';
+                echo '<input type="checkbox" name="permission[]" value="' . _h($row['permKey']) . '" />';
             }
             echo '</td>
             </tr>';
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -290,20 +299,23 @@ function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
         if ($nae !== false) {
             $photosize = getimagesize(get_base_url() . 'static/photos/' . $nae->photo);
             if (getPathInfo('/form/photo/') === '/form/photo/') {
-                $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . $nae->photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
+                $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . _h($nae->photo) . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
             } else {
-                $avatar = '<img src="' . get_base_url() . 'static/photos/' . $nae->photo . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
+                $avatar = '<img src="' . get_base_url() . 'static/photos/' . _h($nae->photo) . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
             }
         } else {
             $avatar = get_user_avatar($email, $s, $class);
         }
         return $avatar;
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -322,7 +334,7 @@ function getUserValue($id, $field)
 {
     $value = get_person_by('personID', $id);
 
-    return $value->$field;
+    return _h($value->$field);
 }
 
 /**
@@ -350,11 +362,14 @@ function get_perm_roles()
             echo '<option value="' . _h($r['roleID']) . '">' . _h($r['roleName']) . '</option>' . "\n";
         }
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -403,7 +418,7 @@ function get_person($person, $object = true)
 function username_exists($username)
 {
     if ($person = get_person_by('uname', $username)) {
-        return $person->personID;
+        return _h($person->personID);
     }
     return false;
 }
@@ -419,7 +434,7 @@ function username_exists($username)
 function email_exists($email)
 {
     if ($person = get_person_by('email', $email)) {
-        return $person->personID;
+        return _h($person->personID);
     }
     return false;
 }

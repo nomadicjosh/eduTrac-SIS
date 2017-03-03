@@ -23,6 +23,7 @@ use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\IOException;
 use Cascade\Cascade;
 use Jenssegers\Date\Date;
+use PDOException as ORMException;
 
 /**
  * Retrieves eduTrac site root url.
@@ -581,10 +582,21 @@ function etsis_check_password($password, $hash, $person_id = '')
 function etsis_set_password($password, $person_id)
 {
     $app = \Liten\Liten::getInstance();
-    $hash = etsis_hash_password($password);
-    $q = $app->db->person();
-    $q->password = $hash;
-    $q->where('personID = ?', $person_id)->update();
+    try {
+        $hash = etsis_hash_password($password);
+        $q = $app->db->person();
+        $q->password = $hash;
+        $q->where('personID = ?', $person_id)->update();
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
 }
 
 /**
@@ -1245,7 +1257,7 @@ function etsis_validate_plugin($plugin_name)
 
     $error = etsis_php_check_syntax($file);
     if (is_etsis_exception($error)) {
-        $app->flash('error_message', _t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br />') . $error->getMessage());
+        _etsis_flash()->error(_t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br />') . $error->getMessage());
         return false;
     }
 
@@ -1660,9 +1672,9 @@ function get_screen($screen)
 function set_email_template($body)
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $tpl = _file_get_contents(APP_PATH . 'views/setting/tpl/email_alert.tpl');
-    
+
     $template = $app->hook->apply_filter('email_template', $tpl);
 
     return str_replace('{content}', $body, $template);

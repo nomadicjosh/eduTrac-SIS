@@ -1,10 +1,10 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
-
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 /**
  * eduTrac SIS Hooks Helper & Wrapper
@@ -790,35 +790,38 @@ function dashboard_student_count()
     $app = \Liten\Liten::getInstance();
     try {
         $stu = $app->db->student()
-        ->select('COUNT(student.stuID) as count')
-        ->_join('stu_program', 'student.stuID = stu_program.stuID')
-        ->where('student.status = "A"')->_and_()
-        ->where('stu_program.currStatus = "A"');
-    $q = $stu->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+            ->select('COUNT(student.stuID) as count')
+            ->_join('stu_program', 'student.stuID = stu_program.stuID')
+            ->where('student.status = "A"')->_and_()
+            ->where('stu_program.currStatus = "A"');
+        $q = $stu->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        $a = [];
+        foreach ($q as $r) {
+            $a[] = $r;
         }
-        return $array;
-    });
-    $a = [];
-    foreach ($q as $r) {
-        $a[] = $r;
-    }
-    $stuCount = '<div class="col-md-4">';
-    $stuCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
-    $stuCount .= '<span class="glyphicons group"><i></i><span class="txt">' . _t('Active Students') . '</span></span>';
-    $stuCount .= '<div class="clearfix"></div>';
-    $stuCount .= '<span class="count">' . $r['count'] . '</span>';
-    $stuCount .= '</a>';
-    $stuCount .= '</div>';
-    echo $app->hook->apply_filter('dashboard_student_count', $stuCount);
+        $stuCount = '<div class="col-md-4">';
+        $stuCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
+        $stuCount .= '<span class="glyphicons group"><i></i><span class="txt">' . _t('Active Students') . '</span></span>';
+        $stuCount .= '<div class="clearfix"></div>';
+        $stuCount .= '<span class="count">' . $r['count'] . '</span>';
+        $stuCount .= '</a>';
+        $stuCount .= '</div>';
+        echo $app->hook->apply_filter('dashboard_student_count', $stuCount);
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -832,23 +835,26 @@ function dashboard_course_count()
     $app = \Liten\Liten::getInstance();
     try {
         $count = $app->db->course()
-        ->where('course.currStatus = "A" AND course.endDate = "0000-00-00"')
-        ->count('course.courseID');
+            ->where('course.currStatus = "A" AND course.endDate = "0000-00-00"')
+            ->count('course.courseID');
 
-    $crseCount = '<div class="col-md-4">';
-    $crseCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
-    $crseCount .= '<span class="glyphicons book"><i></i><span class="txt">' . _t('Active Courses') . '</span></span>';
-    $crseCount .= '<div class="clearfix"></div>';
-    $crseCount .= '<span class="count">' . $count . '</span>';
-    $crseCount .= '</a>';
-    $crseCount .= '</div>';
-    echo $app->hook->apply_filter('dashboard_course_count', $crseCount);
+        $crseCount = '<div class="col-md-4">';
+        $crseCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
+        $crseCount .= '<span class="glyphicons book"><i></i><span class="txt">' . _t('Active Courses') . '</span></span>';
+        $crseCount .= '<div class="clearfix"></div>';
+        $crseCount .= '<span class="count">' . $count . '</span>';
+        $crseCount .= '</a>';
+        $crseCount .= '</div>';
+        echo $app->hook->apply_filter('dashboard_course_count', $crseCount);
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -862,23 +868,26 @@ function dashboard_acadProg_count()
     $app = \Liten\Liten::getInstance();
     try {
         $count = $app->db->acad_program()
-        ->where('acad_program.currStatus = "A" AND acad_program.endDate = "0000-00-00"')
-        ->count('acad_program.acadProgID');
+            ->where('acad_program.currStatus = "A" AND acad_program.endDate = "0000-00-00"')
+            ->count('acad_program.acadProgID');
 
-    $progCount = '<div class="col-md-4">';
-    $progCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
-    $progCount .= '<span class="glyphicons keynote"><i></i><span class="txt">' . _t('Active Programs') . '</span></span>';
-    $progCount .= '<div class="clearfix"></div>';
-    $progCount .= '<span class="count">' . $count . '</span>';
-    $progCount .= '</a>';
-    $progCount .= '</div>';
-    echo $app->hook->apply_filter('dashboard_acadProg_count', $progCount);
+        $progCount = '<div class="col-md-4">';
+        $progCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
+        $progCount .= '<span class="glyphicons keynote"><i></i><span class="txt">' . _t('Active Programs') . '</span></span>';
+        $progCount .= '<div class="clearfix"></div>';
+        $progCount .= '<span class="count">' . $count . '</span>';
+        $progCount .= '</a>';
+        $progCount .= '</div>';
+        echo $app->hook->apply_filter('dashboard_acadProg_count', $progCount);
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -1414,26 +1423,29 @@ function grading_scale($grade = NULL)
     $app = \Liten\Liten::getInstance();
     try {
         $select = '<select name="grade[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>' . "\n";
-    $select .= '<option value="">&nbsp;</option>' . "\n";
-    $scale = $app->db->query('SELECT * FROM grade_scale WHERE status = "1"');
-    $q = $scale->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+        $select .= '<option value="">&nbsp;</option>' . "\n";
+        $scale = $app->db->query('SELECT * FROM grade_scale WHERE status = "1"');
+        $q = $scale->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        foreach ($q as $r) {
+            $select .= '<option value="' . _h($r['grade']) . '"' . selected($grade, _h($r['grade']), false) . '>' . _h($r['grade']) . '</option>' . "\n";
         }
-        return $array;
-    });
-    foreach ($q as $r) {
-        $select .= '<option value="' . _h($r['grade']) . '"' . selected($grade, _h($r['grade']), false) . '>' . _h($r['grade']) . '</option>' . "\n";
-    }
-    $select .= '</select>';
-    return $app->hook->apply_filter('grading_scale', $select, $grade);
+        $select .= '</select>';
+        return $app->hook->apply_filter('grading_scale', $select, $grade);
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -1442,28 +1454,31 @@ function grades($id, $aID)
     $app = \Liten\Liten::getInstance();
     try {
         $grade = $app->db->query('SELECT * FROM gradebook WHERE stuID = ? AND assignID = ?', [
-        $id,
-        $aID
-    ]);
-    $q = $grade->find(function ($data) {
+            $id,
+            $aID
+        ]);
+        $q = $grade->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
         $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+        foreach ($q as $r) {
+            $array[] = $r;
         }
-        return $array;
-    });
-    $array = [];
-    foreach ($q as $r) {
-        $array[] = $r;
-    }
-    $select = grading_scale(_h($r['grade']));
-    return $app->hook->apply_filter('grades', $select);
+        $select = grading_scale(_h($r['grade']));
+        return $app->hook->apply_filter('grades', $select);
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -1647,7 +1662,7 @@ function get_http_response_code($url)
 function etsis_plugin_activate_message($plugin_name)
 {
     $app = \Liten\Liten::getInstance();
-    $success = $app->flash('plugin_success_message', _t('Plugin <strong>activated</strong>.'));
+    $success = _etsis_flash()->success(_t('Plugin <strong>activated</strong>.'));
     /**
      * Filter the default plugin success activation message.
      *
@@ -1670,7 +1685,7 @@ function etsis_plugin_activate_message($plugin_name)
 function etsis_plugin_deactivate_message($plugin_name)
 {
     $app = \Liten\Liten::getInstance();
-    $success = $app->flash('plugin_success_message', _t('Plugin <strong>deactivated</strong>.'));
+    $success = _etsis_flash()->success(_t('Plugin <strong>deactivated</strong>.'));
     /**
      * Filter the default plugin success deactivation message.
      *
@@ -1695,21 +1710,24 @@ function acad_program_select($progCode = null)
     $app = \Liten\Liten::getInstance();
     try {
         $prog = $app->db->acad_program()
-        ->where('currStatus = "A"')
-        ->orderBy('deptCode');
-    $query = $prog->find();
+            ->where('currStatus = "A"')
+            ->orderBy('deptCode');
+        $query = $prog->find();
 
-    foreach ($query as $r) {
-        echo '<option value="' . _h($r->acadProgCode) . '"' . selected($progCode, _h($r->acadProgCode), false) . '>' . _h($r->acadProgCode) . ' ' . _h($r->acadProgTitle) . '</option>' . "\n";
-    }
+        foreach ($query as $r) {
+            echo '<option value="' . _h($r->acadProgCode) . '"' . selected($progCode, _h($r->acadProgCode), false) . '>' . _h($r->acadProgCode) . ' ' . _h($r->acadProgTitle) . '</option>' . "\n";
+        }
 
-    return $app->hook->apply_filter('academic_program', $query, $progCode);
+        return $app->hook->apply_filter('academic_program', $query, $progCode);
     } catch (NotFoundException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        _etsis_flash()->error($e->getMessage());
+        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
@@ -1931,7 +1949,7 @@ $app->hook->add_action('dashboard_right_widgets', 'dashboard_weather', 5);
 $app->hook->add_action('activated_plugin', 'etsis_plugin_activate_message', 5, 1);
 $app->hook->add_action('deactivated_plugin', 'etsis_plugin_deactivate_message', 5, 1);
 $app->hook->add_action('login_form_top', 'etsis_login_form_show_message', 5);
-$app->hook->add_action('execute_reg_rstr_rule', 'etsis_reg_rstr_rule', 5, 1);
+$app->hook->add_action('execute_reg_rest_rule', 'etsis_reg_rest_rule', 5, 1);
 $app->hook->add_filter('the_myet_page_content', 'etsis_autop');
 $app->hook->add_filter('the_myet_page_content', 'parsecode_unautop');
 $app->hook->add_filter('the_myet_page_content', 'do_parsecode', 5);
