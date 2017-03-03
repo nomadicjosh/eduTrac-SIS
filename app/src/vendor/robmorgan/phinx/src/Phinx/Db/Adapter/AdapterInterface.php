@@ -81,8 +81,9 @@ interface AdapterInterface
     public function getVersions();
 
     /**
-     * Get all migration log entries, indexed by version number.
-     *
+     * Get all migration log entries, indexed by version creation time and sorted ascendingly by the configuration's 
+     * version order option
+     * 
      * @return array
      */
     public function getVersionLog();
@@ -329,6 +330,15 @@ interface AdapterInterface
      * @return void
      */
     public function dropTable($tableName);
+
+
+    /**
+     * Truncates the specified table
+     *
+     * @param string $tableName
+     * @return void
+     */
+    public function truncateTable($tableName);
 
     /**
      * Returns table columns
