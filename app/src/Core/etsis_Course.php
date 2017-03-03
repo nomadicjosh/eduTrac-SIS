@@ -20,11 +20,11 @@ final class etsis_Course
 {
 
     /**
-     * Course ID.
+     * Course id.
      *
      * @var int
      */
-    public $courseID;
+    public $id;
 
     /**
      * Course number.
@@ -205,7 +205,7 @@ final class etsis_Course
      * @global app $app eduTrac SIS application array.
      *        
      * @param int $course_id
-     *            Course ID.
+     *            Course id.
      * @return etsis_Course|false Course array, false otherwise.
      */
     public static function get_instance($course_id)
@@ -216,7 +216,7 @@ final class etsis_Course
             return false;
         }
         try {
-            $q = $app->db->course()->where('courseID = ?', $course_id);
+            $q = $app->db->course()->where('id = ?', $course_id);
 
             $course = etsis_cache_get($course_id, 'crse');
             if (empty($course)) {
@@ -242,11 +242,14 @@ final class etsis_Course
 
             return $_course;
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 

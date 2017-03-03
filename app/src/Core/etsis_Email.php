@@ -1,8 +1,8 @@
-<?php
+<?php namespace app\src\Core;
 
-namespace app\src\Core;
+use Cascade\Cascade;
 
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
@@ -18,7 +18,6 @@ class etsis_Email
 {
 
     public $mailer;
-
     public $app;
 
     public function __construct()
@@ -51,7 +50,7 @@ class etsis_Email
     public function et_mail($to, $subject, $message, $headers = '', $attachments = array())
     {
         _deprecated_class_method(__METHOD__, '6.2.0', 'etsis_mail');
-        
+
         return $this->etsis_mail($to, $subject, $message, $headers, $attachments);
     }
 
@@ -79,7 +78,7 @@ class etsis_Email
     public function etsis_mail($to, $subject, $message, $headers = '', $attachments = array())
     {
         $charset = 'UTF-8';
-        
+
         /**
          * Filter the etsis_mail() arguments.
          *
@@ -90,7 +89,7 @@ class etsis_Email
          *            subject, message, headers, and attachments values.
          */
         $atts = $this->app->hook->apply_filter('etsis_mail', compact('to', 'subject', 'message', 'headers', 'attachments'));
-        
+
         if (isset($atts['to'])) {
             $to = $atts['to'];
         }
@@ -106,16 +105,16 @@ class etsis_Email
         if (isset($atts['attachments'])) {
             $attachments = $atts['attachments'];
         }
-        
-        if (! is_array($attachments)) {
+
+        if (!is_array($attachments)) {
             $attachments = explode("\n", str_replace("\r\n", "\n", $attachments));
         }
-        
+
         // Headers
         if (empty($headers)) {
             $headers = [];
         } else {
-            if (! is_array($headers)) {
+            if (!is_array($headers)) {
                 // Explode the headers out, so this function can take both
                 // string headers and an array of headers.
                 $tempheaders = explode("\n", str_replace("\r\n", "\n", $headers));
@@ -126,7 +125,7 @@ class etsis_Email
             $cc = [];
             $bcc = [];
             // If it's actually got contents
-            if (! empty($tempheaders)) {
+            if (!empty($tempheaders)) {
                 // Iterate through the raw headers
                 foreach ((array) $tempheaders as $header) {
                     if (strpos($header, ':') === false) {
@@ -135,7 +134,7 @@ class etsis_Email
                             $boundary = trim(str_replace(array(
                                 "'",
                                 '"'
-                            ), '', $parts[1]));
+                                    ), '', $parts[1]));
                         }
                         continue;
                     }
@@ -171,13 +170,13 @@ class etsis_Email
                                     $charset = trim(str_replace(array(
                                         'charset=',
                                         '"'
-                                    ), '', $charset_content));
+                                            ), '', $charset_content));
                                 } elseif (false !== stripos($charset_content, 'boundary=')) {
                                     $boundary = trim(str_replace(array(
                                         'BOUNDARY=',
                                         'boundary=',
                                         '"'
-                                    ), '', $charset_content));
+                                            ), '', $charset_content));
                                     $charset = '';
                                 }
                                 // Avoid setting an empty $content_type.
@@ -199,29 +198,29 @@ class etsis_Email
                 }
             }
         }
-        
+
         // Empty out the values that may be set
         $this->mailer->ClearAllRecipients();
         $this->mailer->ClearAttachments();
         $this->mailer->ClearCustomHeaders();
         $this->mailer->ClearReplyTos();
-        
+
         // From email and name
         // If we don't have a name from the input headers
-        if (! isset($from_name)) {
+        if (!isset($from_name)) {
             $from_name = 'eduTrac SIS';
         }
-        
-        if (! isset($from_email)) {
+
+        if (!isset($from_email)) {
             // Get the site domain and get rid of www.
             $sitename = strtolower($_SERVER['SERVER_NAME']);
             if (substr($sitename, 0, 4) == 'www.') {
                 $sitename = substr($sitename, 4);
             }
-            
+
             $from_email = 'etsis@' . $sitename;
         }
-        
+
         /**
          * Filter the email address to send from.
          *
@@ -231,7 +230,7 @@ class etsis_Email
          *            Email address to send from.
          */
         $this->mailer->From = $this->app->hook->apply_filter('etsis_mail_from', $from_email);
-        
+
         /**
          * Filter the name to associate with the "from" email address.
          *
@@ -241,12 +240,12 @@ class etsis_Email
          *            Name associated with the "from" email address.
          */
         $this->mailer->FromName = $this->app->hook->apply_filter('etsis_mail_from_name', $from_name);
-        
+
         // Set destination addresses
-        if (! is_array($to)) {
+        if (!is_array($to)) {
             $to = explode(',', $to);
         }
-        
+
         foreach ((array) $to as $recipient) {
             try {
                 // Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
@@ -259,16 +258,17 @@ class etsis_Email
                 }
                 $this->mailer->AddAddress($recipient, $recipient_name);
             } catch (phpmailerException $e) {
+                Cascade::getLogger('error')->error(sprintf('PHPMailer[%s]: Error: %s', $e->getCode(), $e->getMessage()));
                 continue;
             }
         }
-        
+
         // Set mail's subject and body
         $this->mailer->Subject = $subject;
         $this->mailer->Body = $message;
-        
+
         // Add any CC and BCC recipients
-        if (! empty($cc)) {
+        if (!empty($cc)) {
             foreach ((array) $cc as $recipient) {
                 try {
                     // Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
@@ -281,12 +281,13 @@ class etsis_Email
                     }
                     $this->mailer->AddCc($recipient, $recipient_name);
                 } catch (phpmailerException $e) {
+                    Cascade::getLogger('error')->error(sprintf('PHPMailer[%s]: Error: %s', $e->getCode(), $e->getMessage()));
                     continue;
                 }
             }
         }
-        
-        if (! empty($bcc)) {
+
+        if (!empty($bcc)) {
             foreach ((array) $bcc as $recipient) {
                 try {
                     // Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
@@ -299,20 +300,21 @@ class etsis_Email
                     }
                     $this->mailer->AddBcc($recipient, $recipient_name);
                 } catch (phpmailerException $e) {
+                    Cascade::getLogger('error')->error(sprintf('PHPMailer[%s]: Error: %s', $e->getCode(), $e->getMessage()));
                     continue;
                 }
             }
         }
-        
+
         // Set to use PHP's mail()
         $this->mailer->IsMail();
-        
+
         // Set Content-Type and charset
         // If we don't have a content-type from the input headers
-        if (! isset($content_type)) {
+        if (!isset($content_type)) {
             $content_type = 'text/plain';
         }
-        
+
         /**
          * Filter the etsis_mail() content type.
          *
@@ -322,16 +324,16 @@ class etsis_Email
          *            Default etsis_mail() content type.
          */
         $content_type = $this->app->hook->apply_filter('etsis_mail_content_type', $content_type);
-        
+
         $this->mailer->ContentType = $content_type;
-        
+
         // Set whether it's plaintext, depending on $content_type
         if ('text/html' == $content_type) {
             $this->mailer->IsHTML(true);
         }
-        
+
         // Set the content-type and charset
-        
+
         /**
          * Filter the default etsis_mail() charset.
          *
@@ -341,28 +343,29 @@ class etsis_Email
          *            Default email charset.
          */
         $this->mailer->CharSet = $this->app->hook->apply_filter('etsis_mail_charset', $charset);
-        
+
         // Set custom headers
-        if (! empty($headers)) {
+        if (!empty($headers)) {
             foreach ((array) $headers as $name => $content) {
                 $this->mailer->AddCustomHeader(sprintf('%1$s: %2$s', $name, $content));
             }
-            
-            if (false !== stripos($content_type, 'multipart') && ! empty($boundary)) {
+
+            if (false !== stripos($content_type, 'multipart') && !empty($boundary)) {
                 $this->mailer->AddCustomHeader(sprintf("Content-Type: %s;\n\t boundary=\"%s\"", $content_type, $boundary));
             }
         }
-        
-        if (! empty($attachments)) {
+
+        if (!empty($attachments)) {
             foreach ($attachments as $attachment) {
                 try {
                     $this->mailer->AddAttachment($attachment);
                 } catch (phpmailerException $e) {
+                    Cascade::getLogger('error')->error(sprintf('PHPMailer[%s]: Error: %s', $e->getCode(), $e->getMessage()));
                     continue;
                 }
             }
         }
-        
+
         /**
          * Fires after PHPMailer is initialized.
          *
@@ -374,12 +377,12 @@ class etsis_Email
         $this->app->hook->do_action_array('etsisMailer_init', [
             &$this->mailer
         ]);
-        
+
         // Send!
         try {
             return $this->mailer->Send();
         } catch (phpmailerException $e) {
-            
+
             $mail_error_data = compact($to, $subject, $message, $headers, $attachments);
             /**
              * Fires after a phpmailerException is caught.
@@ -391,9 +394,10 @@ class etsis_Email
              *            containing the mail recipient, subject, message, headers, and attachments.
              */
             $this->app->hook->do_action('etsis_mail_failed', new \app\src\Core\etsis_Error($e->getCode(), $e->getMessage(), $mail_error_data));
+            Cascade::getLogger('error')->error(sprintf('PHPMailer[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             return false;
         }
-        
+
         return true;
     }
 
@@ -414,7 +418,7 @@ class etsis_Email
         if (substr($sitename, 0, 4) == 'www.') {
             $sitename = substr($sitename, 4);
         }
-        
+
         $name = get_name($id);
         $site = _h(get_option('institution_name'));
         $body = "<p>Dear Registrar:</p>
@@ -438,13 +442,13 @@ class etsis_Email
         THIS IS AN AUTOMATED RESPONSE.<br />
         ***DO NOT RESPOND TO THIS EMAIL****</p>
         ";
-        
-        $message = process_email_html( $body, _t("Course Registration") );
+
+        $message = process_email_html($body, _t("Course Registration"));
         $headers = "From: $site <auto-reply@$sitename>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        
+
         $this->etsis_mail(_h(get_option('registrar_email_address')), _t("Course Registration"), $message, $headers);
         return $this->app->hook->apply_filter('course_registration', $message, $headers);
     }
@@ -473,7 +477,7 @@ class etsis_Email
         $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        
+
         $this->etsis_mail($email, $subject, $message, $headers, $attachment);
         return $this->app->hook->apply_filter('stu_email', $headers);
     }
@@ -500,7 +504,7 @@ class etsis_Email
         if (substr($sitename, 0, 4) == 'www.') {
             $sitename = substr($sitename, 4);
         }
-        
+
         $name = get_name($id);
         $site = _t('myetSIS::') . _h(get_option('institution_name'));
         $body = "<p>Hello $name:</p>
@@ -520,13 +524,13 @@ class etsis_Email
         THIS IS AN AUTOMATED RESPONSE.<br />
         ***DO NOT RESPOND TO THIS EMAIL****</p>
         ";
-        
-        $message = process_email_html( $body, _t(" Account Login Details") );
+
+        $message = process_email_html($body, _t(" Account Login Details"));
         $headers = "From: $site <auto-reply@$sitename>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        
+
         $this->etsis_mail($email, _h(get_option('institution_name')) . _t(" Account Login Details"), $message, $headers);
         return $this->app->hook->apply_filter('myetsis_appl_confirm', $message, $headers);
     }
@@ -546,7 +550,7 @@ class etsis_Email
         if (substr($sitename, 0, 4) == 'www.') {
             $sitename = substr($sitename, 4);
         }
-        
+
         $name = get_name($id);
         $site = _t('myetSIS::') . _h(get_option('institution_name'));
         $body = "<p>Dear Admissions:</p>
@@ -567,13 +571,13 @@ class etsis_Email
         THIS IS AN AUTOMATED RESPONSE.<br />
         ***DO NOT RESPOND TO THIS EMAIL****</p>
         ";
-        
-        $message = process_email_html( $body, _t("Application for Admissions") );
+
+        $message = process_email_html($body, _t("Application for Admissions"));
         $headers = "From: $site <auto-reply@$sitename>\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
         $headers .= "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        
+
         $this->etsis_mail(_h(get_option('admissions_email')), _t("Application for Admissions"), $message, $headers);
         return $this->app->hook->apply_filter('myetsis_application', $message, $headers);
     }

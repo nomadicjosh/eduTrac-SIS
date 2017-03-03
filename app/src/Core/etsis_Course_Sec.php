@@ -3,6 +3,7 @@
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -24,7 +25,7 @@ final class etsis_Course_Sec
      * 
      * @var int
      */
-    public $sectSecID;
+    public $courseSecID;
 
     /**
      * Course section number.
@@ -38,14 +39,14 @@ final class etsis_Course_Sec
      * 
      * @var string
      */
-    public $sectSecCode;
+    public $courseSecCode;
 
     /**
      * The course section.
      *
      * @var string
      */
-    public $sectSection;
+    public $courseSection;
 
     /**
      * The course section's building code.
@@ -73,7 +74,7 @@ final class etsis_Course_Sec
      *
      * @var string
      */
-    public $sectLevelCode;
+    public $courseSecLevelCode;
 
     /**
      * The course section's academic level.
@@ -108,14 +109,14 @@ final class etsis_Course_Sec
      * 
      * @var int
      */
-    public $sectID;
+    public $courseID;
 
     /**
      * The course section's course code.
      * 
      * @var string
      */
-    public $sectCode;
+    public $courseCode;
 
     /**
      * The course section's prerequisite(s).
@@ -227,7 +228,7 @@ final class etsis_Course_Sec
      *
      * @var int
      */
-    public $sectFee = 0.00;
+    public $courseSecFee = 0.00;
 
     /**
      * The course section's lab fee.
@@ -333,11 +334,14 @@ final class etsis_Course_Sec
 
             return $_sect;
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 

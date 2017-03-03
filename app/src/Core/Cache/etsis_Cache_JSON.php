@@ -453,7 +453,7 @@ class etsis_Cache_JSON extends \app\src\Core\Cache\etsis_Abstract_Cache
         $data = json_encode(array(
             time() + (int) $ttl,
             $data
-        ));
+        ), JSON_PRETTY_PRINT);
         if (fwrite($h, $data) === false) {
             throw new IOException(_t('Could not write to cache.'));
         }

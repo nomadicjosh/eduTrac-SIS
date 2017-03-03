@@ -3,6 +3,7 @@
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 /**
  * Liten - PHP 5 micro framework
@@ -197,11 +198,14 @@ class Hooks
                 'location' => $plugin
             ]);
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
@@ -221,11 +225,14 @@ class Hooks
                 ->where('location = ?', $plugin)
                 ->delete();
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
@@ -240,31 +247,42 @@ class Hooks
      */
     public function load_activated_plugins($plugins_dir)
     {
-        $plugin = $this->_app->db->plugin();
-        $q = $plugin->find();
+        try {
+            $plugin = $this->_app->db->plugin();
+            $q = $plugin->find();
 
-        foreach ($q as $v) {
-            $pluginFile = _h($v->location);
-            $plugin = str_replace('.plugin.php', '', $pluginFile);
+            foreach ($q as $v) {
+                $pluginFile = _h($v->location);
+                $plugin = str_replace('.plugin.php', '', $pluginFile);
 
-            if (!etsis_file_exists($plugins_dir . $plugin . DS . $pluginFile, false)) {
-                $file = $plugins_dir . $pluginFile;
-            } else {
-                $file = $plugins_dir . $plugin . DS . $pluginFile;
+                if (!etsis_file_exists($plugins_dir . $plugin . DS . $pluginFile, false)) {
+                    $file = $plugins_dir . $pluginFile;
+                } else {
+                    $file = $plugins_dir . $plugin . DS . $pluginFile;
+                }
+
+                $error = etsis_php_check_syntax($file);
+                if (is_etsis_exception($error)) {
+                    $this->deactivate_plugin(_h($v->location));
+                    $this->_app->flash('error_message', sprintf(_t('The plugin <strong>%s</strong> has been deactivated because your changes resulted in a <strong>fatal error</strong>. <br /><br />') . $error->getMessage(), _h($v->location)));
+                    return false;
+                }
+
+                if (etsis_file_exists($file, false)) {
+                    require_once ($file);
+                } else {
+                    $this->deactivate_plugin(_h($v->location));
+                }
             }
-
-            $error = etsis_php_check_syntax($file);
-            if (is_etsis_exception($error)) {
-                $this->deactivate_plugin(_h($v->location));
-                $this->_app->flash('error_message', sprintf(_t('The plugin <strong>%s</strong> has been deactivated because your changes resulted in a <strong>fatal error</strong>. <br /><br />') . $error->getMessage(), _h($v->location)));
-                return false;
-            }
-
-            if (etsis_file_exists($file, false)) {
-                require_once ($file);
-            } else {
-                $this->deactivate_plugin(_h($v->location));
-            }
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
@@ -291,11 +309,14 @@ class Hooks
                 return true;
             return false;
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
@@ -814,11 +835,14 @@ class Hooks
                 }
                 $this->_app->db->option[$meta_key] = $this->maybe_unserialize($value);
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
         /**
@@ -871,11 +895,14 @@ class Hooks
             }
             return false;
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
@@ -901,11 +928,14 @@ class Hooks
             $this->_app->db->option[$name] = $value;
             return;
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
@@ -936,11 +966,14 @@ class Hooks
             etsis_cache_delete($name, 'option');
             return true;
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 

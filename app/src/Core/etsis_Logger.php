@@ -3,6 +3,7 @@
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -54,11 +55,14 @@ class etsis_Logger
 
             $log->save();
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
@@ -72,11 +76,14 @@ class etsis_Logger
         try {
             $this->app->db->query("DELETE FROM activity_log WHERE expires_at <= ?", [ date('Y-m-d H:i:s', time())]);
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
@@ -111,11 +118,14 @@ class etsis_Logger
 
             $log->save();
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 

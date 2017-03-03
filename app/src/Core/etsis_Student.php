@@ -3,6 +3,7 @@
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -317,11 +318,14 @@ final class etsis_Student
 
             return $_stu;
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
@@ -338,7 +342,5 @@ final class etsis_Student
         }
 
         $this->app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
-
-        $this->stuHeader = $this->getStuHeader();
     }
 }

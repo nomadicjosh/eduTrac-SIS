@@ -3,6 +3,7 @@
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
@@ -27,11 +28,11 @@ final class etsis_Staff
     public $app;
 
     /**
-     * Primary key ID.
+     * Primary key id.
      *
      * @var int
      */
-    public $ID;
+    public $id;
 
     /**
      * Staff ID.
@@ -331,7 +332,7 @@ final class etsis_Staff
         }
         try {
             $q = $app->db->staff()
-                ->select('staff.ID,staff.staffID,staff.addDate AS staffAddDate,department.deptName')
+                ->select('staff.id,staff.staffID,staff.addDate AS staffAddDate,department.deptName')
                 ->select('CASE WHEN staff.status = "A" THEN "Active" ELSE "Inactive" END AS staffStatus')
                 ->select('person.altID,person.uname,person.prefix,person.fname')
                 ->select('person.lname,person.mname,person.email,person.personType')
@@ -340,16 +341,16 @@ final class etsis_Staff
                 ->select('person.photo,person.status AS naeStatus,person.approvedDate')
                 ->select('person.approvedBy,person.LastLogin,person.LastUpdate')
                 ->select('address.*,job.title,staff.office_phone,staff.officeCode')
-                ->select('meta.sMetaID,meta.jobStatusCode,meta.jobID,meta.supervisorID,meta.staffType')
+                ->select('meta.id AS sMetaID,meta.jobStatusCode,meta.jobID,meta.supervisorID,meta.staffType')
                 ->select('meta.hireDate,meta.startDate as metaStartDate,meta.endDate as metaEndDate')
                 ->select('meta.addDate as metaAddDate')
-                ->_join('person', 'staff.staffID = person.personID')
+                ->_join('person', 'staff.staffID = person.id')
                 ->_join('address', 'staff.staffID = address.personID')
                 ->_join('staff_meta', 'staff.staffID = meta.staffID', 'meta')
-                ->_join('job','meta.jobID = job.ID')
-                ->_join('department','staff.deptCode = department.deptCode')
+                ->_join('job', 'meta.jobID = job.id')
+                ->_join('department', 'staff.deptCode = department.deptCode')
                 ->where('staff.staffID = ?', $staff_id)->_and_()
-                ->where('meta.sMetaID = (SELECT sMetaID FROM staff_meta WHERE staffID = staff.staffID ORDER BY sMetaID DESC LIMIT 1)')->_and_()
+                ->where('meta.id = (SELECT id FROM staff_meta WHERE staffID = staff.staffID ORDER BY id DESC LIMIT 1)')->_and_()
                 ->where('address.addressStatus = "C"')->_and_()
                 ->where('(address.endDate = "" OR address.endDate = "0000-00-00")');
 
@@ -377,11 +378,14 @@ final class etsis_Staff
 
             return $_staff;
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
