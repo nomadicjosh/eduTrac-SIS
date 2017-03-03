@@ -262,3 +262,14 @@ function getAge($birthdate = '0000-00-00')
 
     return get_age($birthdate);
 }
+
+/**
+ * When enabled, appends url string in order to give
+ * benchmark statistics.
+ * 
+ * @deprecated since 6.3.0
+ */
+function bm()
+{
+    _deprecated_function(__FUNCTION__, '6.3.0');
+}

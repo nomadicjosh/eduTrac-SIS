@@ -328,19 +328,6 @@ function ml($func)
     }
 }
 
-/**
- * When enabled, appends url string in order to give
- * benchmark statistics.
- *
- * @since 1.0.0
- */
-function bm()
-{
-    if (get_option('enable_benchmark') == 1) {
-        return '?php-benchmark-test=1&display-data=1';
-    }
-}
-
 function _bool($num)
 {
     switch ($num) {
