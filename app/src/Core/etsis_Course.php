@@ -20,11 +20,11 @@ final class etsis_Course
 {
 
     /**
-     * Course id.
+     * Course courseID.
      *
      * @var int
      */
-    public $id;
+    public $courseID;
 
     /**
      * Course number.
@@ -216,7 +216,7 @@ final class etsis_Course
             return false;
         }
         try {
-            $q = $app->db->course()->where('id = ?', $course_id);
+            $q = $app->db->course()->where('courseID = ?', $course_id);
 
             $course = etsis_cache_get($course_id, 'crse');
             if (empty($course)) {
