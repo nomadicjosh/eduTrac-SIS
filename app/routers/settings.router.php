@@ -1,9 +1,6 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
-use app\src\Core\Exception\NotFoundException;
-use app\src\Core\Exception\Exception;
-use PDOException as ORMException;
 
 /**
  * Before route check.

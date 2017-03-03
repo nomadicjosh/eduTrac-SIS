@@ -71,69 +71,91 @@ $emailer = _etsis_phpmailer();
 
 $app->group('/cron', function () use($app, $emailer, $email) {
 
-    /**
-     * Before route checks to make sure the logged in user
-     * us allowed to manage options/settings.
-     */
     $app->before('GET', '/', function () {
         if (!hasPermission('access_cronjob_screen')) {
             _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
-    $app->match('GET|POST', '/', function () use($app) {
-        try {
-            if (!Validate::table('cronjob_setting')->exists()) {
-                Node::dispense('cronjob_setting');
-            }
-
-            if (!Validate::table('cronjob_handler')->exists()) {
-                Node::dispense('cronjob_handler');
-            }
-            
-            $set = Node::table('cronjob_setting')->findAll();
-            $job = Node::table('cronjob_handler')->findAll();
-        } catch (NodeQException $e) {
-            _etsis_flash()->error($e->getMessage());
-        } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+    try {
+        if (!Validate::table('cronjob_setting')->exists()) {
+            Node::dispense('cronjob_setting');
         }
+
+        if (!Validate::table('cronjob_handler')->exists()) {
+            Node::dispense('cronjob_handler');
+        }
+    } catch (NodeQException $e) {
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+
+    $app->match('GET|POST', '/', function () use($app) {
 
         if ($app->req->isPost()) {
             foreach ($app->req->post['cronjobs'] as $job) {
                 try {
                     Node::table('cronjob_handler')->find($job)->delete();
                 } catch (NodeQException $e) {
-                    _etsis_flash()->error($e->getMessage());
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 } catch (Exception $e) {
-                    _etsis_flash()->error($e->getMessage());
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             }
             redirect($app->req->server['HTTP_REFERER']);
         }
-        
+
+        try {
+
+            $set = Node::table('cronjob_setting')->findAll();
+            $job = Node::table('cronjob_handler')->findAll();
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+
         etsis_register_style('form');
         etsis_register_style('table');
         etsis_register_script('select');
         etsis_register_script('select2');
         etsis_register_script('datatables');
-        
+
         $app->view->display('cron/index', [
             'title' => 'Cronjob Handlers',
             'cron' => $job,
             'set' => $set
         ]);
     });
+    
+    $app->before('GET|POST', '/new/', function () {
+        if (!hasPermission('access_cronjob_screen')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
+    });
 
     $app->match('GET|POST', '/new/', function () use($app) {
         if ($app->req->isPost()) {
             if (filter_var($app->req->post['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
                 try {
-                    $url = Node::table('cronjob_handler')->where('url', '=', $app->req->_post('url'))->find();
+                    $url = Node::table('cronjob_handler')
+                        ->where('url', '=', $app->req->_post('url'))
+                        ->find();
                 } catch (NodeQException $e) {
-                    _etsis_flash()->error($e->getMessage());
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 } catch (Exception $e) {
-                    _etsis_flash()->error($e->getMessage());
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
 
                 $found = false;
@@ -151,6 +173,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                             $cron->url = (string) $app->req->_post('url');
                             $cron->each = (int) $app->req->_post('each');
                             $cron->eachtime = ((isset($app->req->post['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $app->req->post['eachtime'])) ? $app->req->post['eachtime'] : '');
+                            $cron->status = (int) $app->req->post['status'];
                             $cron->save();
 
                             if ($cron) {
@@ -159,9 +182,11 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                                 _etsis_flash()->error(_etsis_flash()->notice(409));
                             }
                         } catch (NodeQException $e) {
-                            _etsis_flash()->error($e->getMessage());
+                            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                            _etsis_flash()->error(_etsis_flash()->notice(409));
                         } catch (Exception $e) {
-                            _etsis_flash()->error($e->getMessage());
+                            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                            _etsis_flash()->error(_etsis_flash()->notice(409));
                         }
                     }
                 } else {
@@ -180,6 +205,35 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         $app->view->display('cron/new', [
             'title' => 'New Cronjob Handler',
         ]);
+    });
+
+    /**
+     * Before route checks to make sure the logged in user
+     * us allowed to manage options/settings.
+     */
+    $app->before('GET', '/(\d+)/reset/', function () {
+        if (!hasPermission('access_cronjob_screen')) {
+            _etsis_flash()->error(_t("You don't have permission to view the Cronjob Handler screen."), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
+    });
+
+    $app->get('/(\d+)/reset/', function ($id) {
+        try {
+            $reset = Node::table('cronjob_handler')->find($id);
+            $reset->runned = (int) 0;
+            $reset->save();
+            _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'cron' . '/');
+        } catch (NodeQException $e) {
+            _etsis_flash()->error($e->getMessage(), get_base_url() . 'cron' . '/');
+        }
+    });
+    
+    $app->before('GET|POST', '/setting/', function () {
+        if (!hasPermission('access_cronjob_screen')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
     });
 
     $app->match('GET|POST', '/setting/', function () use($app) {
@@ -205,9 +259,11 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                         _etsis_flash()->error(_etsis_flash()->notice(409));
                     }
                 } catch (NodeQException $e) {
-                    _etsis_flash()->error($e->getMessage());
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 } catch (Exception $e) {
-                    _etsis_flash()->error($e->getMessage());
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             }
             redirect($app->req->server['HTTP_REFERER']);
@@ -216,9 +272,11 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         try {
             $set = Node::table('cronjob_setting')->find(1);
         } catch (NodeQException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         etsis_register_style('form');
@@ -238,6 +296,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
     $app->before('GET|POST', '/(\d+)/', function () {
         if (!hasPermission('access_cronjob_screen')) {
             _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -251,17 +310,16 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                     $cron->url = (string) $app->req->_post('url');
                     $cron->each = (int) $app->req->_post('each');
                     $cron->eachtime = ((isset($app->req->post['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $app->req->post['eachtime'])) ? $app->req->post['eachtime'] : '');
+                    $cron->status = (int) $app->req->post['status'];
                     $cron->save();
 
-                    if ($cron) {
-                        _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
-                    } else {
-                        _etsis_flash()->error(_etsis_flash()->notice(409));
-                    }
+                    _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                 } catch (NodeQException $e) {
-                    _etsis_flash()->error($e->getMessage());
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 } catch (Exception $e) {
-                    _etsis_flash()->error($e->getMessage());
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } else {
                 _etsis_flash()->error(_t('Current URL is not correct; must begin with http(s):// and followed with a path.'));
@@ -271,9 +329,11 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         try {
             $sql = Node::table('cronjob_handler')->find($id);
         } catch (NodeQException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         /**
@@ -294,7 +354,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($sql->id) <= 0) {
+         */ elseif (_h($sql->id) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -315,101 +375,126 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             );
         }
     });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/cronjob/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 404);
+        exit();
+    });
 
     $app->get('/cronjob/', function () use($app) {
 
         try {
             $setting = Node::table('cronjob_setting')->find(1);
-            $cron = Node::table('cronjob_handler')->findAll();
+            $cron = Node::table('cronjob_handler')->where('status', '=', (int) 1)->findAll();
+        } catch (NodeQException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        }
 
-            if (!isset($_GET['password']) && !isset($argv[1])) {
-                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('No cronjob password found, use cronjob?password=<yourpassword>.')));
-                exit(_t('No cronjob handler password found, use cronjob?password=<yourpassword>.'));
-            } elseif (isset($_GET['password']) && $_GET['password'] != $setting->cronjobpassword) {
-                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid $_GET password')));
-                exit(_t('Invalid $_GET password'));
-            } elseif ($setting->cronjobpassword == 'changeme') {
-                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Cronjob handler password needs to be changed.')));
-                exit(_t('Cronjob handler password needs to be changed.'));
-            } elseif (isset($argv[0]) && (substr($argv[1], 0, 8) != 'password' or substr($argv[1], 9) != $setting->cronjobpassword)) {
-                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid argument password (password=yourpassword)')));
-                exit(_t('Invalid argument password (password=yourpassword)'));
-            }
+        if (!isset($app->req->get['password']) && !isset($argv[1])) {
+            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('No cronjob password found, use cronjob?password=<yourpassword>.')));
+            exit(_t('No cronjob handler password found, use cronjob?password=<yourpassword>.'));
+        } elseif (isset($app->req->get['password']) && $app->req->get['password'] != _h($setting->cronjobpassword)) {
+            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid $app->req->get password')));
+            exit(_t('Invalid $app->req->get password'));
+        } elseif (_h($setting->cronjobpassword) == 'changeme') {
+            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Cronjob handler password needs to be changed.')));
+            exit(_t('Cronjob handler password needs to be changed.'));
+        } elseif (isset($argv[0]) && (substr($argv[1], 0, 8) != 'password' or substr($argv[1], 9) != _h($setting->cronjobpassword))) {
+            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid argument password (password=yourpassword)')));
+            exit(_t('Invalid argument password (password=yourpassword)'));
+        }
 
-            if (isset($run) && $run == true) {
-                exit(_t('Cronjob already running'));
-            }
+        if (isset($run) && $run == true) {
+            exit(_t('Cronjob already running'));
+        }
 
-            $run = true;
+        $run = true;
 
-            if (is_object($cron) && count($cron) > 0) {
-                // execute only one job and then exit
-                foreach ($cron as $job) {
+        if (is_object($cron) && count($cron) > 0) {
+            $d = Jenssegers\Date\Date::now();
+            // execute only one job and then exit
+            foreach ($cron as $job) {
 
-                    if (isset($_GET['id']) && $job->id == $_GET['id']) {
-                        $run = true;
-                    } else {
-                        $run = false;
-                        if ($job->time != '') {
-                            if (substr($job->lastrun, 0, 10) != date('Y-m-d')) {
-                                if (strtotime(date('Y-m-d H:i')) > strtotime(date('Y-m-d ') . $job->time)) {
-                                    $run = true;
-                                }
-                            }
-                        } elseif ($job->each > 0) {
-                            if (strtotime($job->lastrun) + $job->each < strtotime("now")) {
+                if (isset($app->req->get['id']) && _h($job->id) == $app->req->get['id']) {
+                    $run = true;
+                } else {
+                    $run = false;
+                    if ($job->time != '') {
+                        if (substr(_h($job->lastrun), 0, 10) != $d) {
+                            if (strtotime($d->format('Y-m-d H:i')) > strtotime($d->format('Y-m-d ') . _h($job->time))) {
                                 $run = true;
-                                // if time set, daily after time...
-                                if ($job->each > (60 * 60 * 24) && strlen($job->eachtime) == 5 && strtotime(date('Y-m-d H:i')) < strtotime(date('Y-m-d') . $job->eachtime)) {
-                                    // only run 'today' at or after give time.
-                                    $run = false;
-                                }
                             }
-                        } elseif (substr($job->lastrun, 0, 10) != date('Y-m-d')) {
+                        }
+                    } elseif ($job->each > 0) {
+                        if (strtotime(_h($job->lastrun)) + _h($job->each) < strtotime($d)) {
                             $run = true;
+                            // if time set, daily after time...
+                            if (_h($job->each) > (60 * 60 * 24) && strlen(_h($job->eachtime)) == 5 && strtotime($d->format('Y-m-d H:i')) < strtotime($d->format('Y-m-d') . _h($job->eachtime))) {
+                                // only run 'today' at or after give time.
+                                $run = false;
+                            }
                         }
-                    }
-
-                    if ($run == true) {
-                        // save as executed
-                        echo _t('Running: ') . $job->url . PHP_EOL . PHP_EOL;
-
-                        $upd = Node::table('cronjob_handler')->find($job->id);
-                        $upd->lastrun = date('Y-m-d H:i:s');
-                        $upd->runned ++;
-                        $upd->save();
-
-                        echo _t('Connecting to cronjob') . PHP_EOL . PHP_EOL;
-
-                        // execute cronjob
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, $job->url);
-                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch, CURLOPT_TIMEOUT, (!empty($setting->timeout) ? $setting->timeout : 5));
-
-                        curl_exec($ch);
-
-                        if (curl_errno($ch)) {
-                            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[400]: Bad request: %s', curl_error($ch)));
-                            echo _t('Cronjob error: ') . curl_error($ch) . PHP_EOL;
-                        } else {
-                            echo _t('Cronjob data loaded') . PHP_EOL;
-                        }
-
-                        curl_close($ch);
+                    } elseif (substr(_h($job->lastrun), 0, 10) != $d->format('Y-m-d')) {
+                        $run = true;
                     }
                 }
+
+                if ($run == true) {
+                    // save as executed
+                    echo _t('Running: ') . _h($job->url) . PHP_EOL . PHP_EOL;
+
+                    try {
+                        $upd = Node::table('cronjob_handler')->find(_h($job->id));
+                        $upd->lastrun = $d->format('Y-m-d H:i:s');
+                        $upd->runned ++;
+                        $upd->save();
+                    } catch (NodeQException $e) {
+                        Cascade::getLogger('error')->error(sprintf('CRONSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                    } catch (Exception $e) {
+                        Cascade::getLogger('error')->error(sprintf('CRONSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    }
+
+                    echo _t('Connecting to cronjob') . PHP_EOL . PHP_EOL;
+
+                    // execute cronjob
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, _h($job->url));
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, (!empty($setting->timeout) ? $setting->timeout : 5));
+
+                    curl_exec($ch);
+
+                    if (curl_errno($ch)) {
+                        Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[400]: Bad request: %s', curl_error($ch)));
+                        echo _t('Cronjob error: ') . curl_error($ch) . PHP_EOL;
+                    } else {
+                        echo _t('Cronjob data loaded') . PHP_EOL;
+                    }
+
+                    curl_close($ch);
+                }
             }
-        } catch (NodeQException $e) {
-            _etsis_flash()->error($e->getMessage());
-        } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
         }
     });
 
+    $app->before('POST|PUT|DELETE|OPTIONS', '/purgeActivityLog/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
+    
     $app->get('/purgeActivityLog/', function () {
         etsis_logger_activity_log_purge();
+    });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runEmailHold/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
     $app->get('/runEmailHold/', function () use($app) {
@@ -454,9 +539,9 @@ $app->group('/cron', function () use($app, $emailer, $email) {
              * Use the savedQuery from $q1 to retrieve results
              * to input into the email_queue table for processing.
              */
-            if (count($r['fromEmail']) > 0) {
+            if (count(_h($r['fromEmail'])) > 0) {
                 if (count($q2) <= 0) {
-                    $query = $r['savedQuery'];
+                    $query = _h($r['savedQuery']);
                     $hold1 = $app->db->query($query);
                     $q = $hold1->find(function ($data) {
                         $array = [];
@@ -506,6 +591,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         } catch (ORMException $e) {
             Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
+    });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runEmailQueue/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
     $app->get('/runEmailQueue/', function () use($app, $emailer) {
@@ -563,7 +654,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                 $u = $app->db->email_queue();
                 $u->sent = 1;
                 $u->sentDate = $app->db->NOW();
-                $u->where('id = ?', $d->id);
+                $u->where('id = ?', _h($d->id));
                 $u->update();
             }
         } catch (NotFoundException $e) {
@@ -573,6 +664,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         } catch (ORMException $e) {
             Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
+    });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/purgeEmailHold/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
     $app->get('/purgeEmailHold/', function () use($app) {
@@ -590,6 +687,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
     });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/purgeEmailHold/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
 
     $app->get('/purgeEmailQueue/', function () use($app) {
 
@@ -605,6 +708,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         } catch (ORMException $e) {
             Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
+    });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runStuTerms/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
     $app->get('/runStuTerms/', function () use($app) {
@@ -642,6 +751,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
     });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/updateStuTerms/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
 
     $app->get('/updateStuTerms/', function () use($app) {
         try {
@@ -664,17 +779,17 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             });
 
             foreach ($q as $r) {
-                $GPA = $r['stacPoints'] / $r['stacAttCreds'];
-                if ($r['stacAttCreds'] != $r['sttrAttCreds'] || $r['sttrPoints'] != $r['stacPoints'] || $r['gpa'] != $GPA) {
+                $GPA = _h($r['stacPoints']) / _h($r['stacAttCreds']);
+                if (_h($r['stacAttCreds']) != _h($r['sttrAttCreds']) || _h($r['sttrPoints']) != _h($r['stacPoints']) || _h($r['gpa']) != $GPA) {
                     $q2 = $app->db->sttr();
-                    $q2->attCred = $r['stacAttCreds'];
-                    $q2->compCred = $r['stacCompCreds'];
-                    $q2->gradePoints = $r['stacPoints'];
+                    $q2->attCred = _h($r['stacAttCreds']);
+                    $q2->compCred = _h($r['stacCompCreds']);
+                    $q2->gradePoints = _h($r['stacPoints']);
                     $q2->stuLoad = getstudentload(_h($r['termCode']), _h($r['stacAttCreds']), _h($r['acadLevelCode']));
                     $q2->gpa = $GPA;
-                    $q2->where('stuID = ?', $r['stuID'])->_and_()
-                        ->where('termCode = ?', $r['termCode'])->_and_()
-                        ->where('acadLevelCode = ?', $r['acadLevelCode'])
+                    $q2->where('stuID = ?', _h($r['stuID']))->_and_()
+                        ->where('termCode = ?', _h($r['termCode']))->_and_()
+                        ->where('acadLevelCode = ?', _h($r['acadLevelCode']))
                         ->update();
                 }
             }
@@ -685,6 +800,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         } catch (ORMException $e) {
             Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
+    });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runGraduation/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
     $app->get('/runGraduation/', function () use($app) {
@@ -710,7 +831,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
              * then process the savedQuery.
              */
             if (count($q1Array) > 0) {
-                $sq = $app->db->query($r1['savedQuery']);
+                $sq = $app->db->query(_h($r1['savedQuery']));
                 $q2 = $sq->find(function ($data) {
                     $array = [];
                     foreach ($data as $d) {
@@ -730,7 +851,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                     $prog->currStatus = 'G';
                     $prog->statusDate = $app->db->NOW();
                     $prog->endDate = $app->db->NOW();
-                    $prog->where('stuID = ?', $r2['stuID'])
+                    $prog->where('stuID = ?', _h($r2['stuID']))
                         ->update();
                 }
             }
@@ -743,6 +864,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         } catch (ORMException $e) {
             Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
+    });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/purgeErrorLog/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
     $app->get('/purgeErrorLog/', function () use($app) {
@@ -761,6 +888,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
 
         etsis_logger_error_log_purge();
     });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/purgeSavedQuery/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
 
     $app->get('/purgeSavedQuery/', function () use($app) {
         $now = date('Y-m-d');
@@ -776,6 +909,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         } catch (ORMException $e) {
             Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
+    });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/checkStuBalance/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
     $app->get('/checkStuBalance/', function () use($app) {
@@ -801,17 +940,17 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                 return $array;
             });
             foreach ($q as $r) {
-                if ($r['Balance'] >= 0) {
+                if (_h($r['Balance']) >= 0) {
                     $result = $app->db->stu_acct_bill();
                     $result->balanceDue = '0';
-                    $result->where('stuID = ?', $r['stuID'])->_and_()
-                        ->where('termCode = ?', $r['termCode'])
+                    $result->where('stuID = ?', _h($r['stuID']))->_and_()
+                        ->where('termCode = ?', _h($r['termCode']))
                         ->update();
-                } elseif ($r['Balance'] < 0) {
+                } elseif (_h($r['Balance']) < 0) {
                     $result = $app->db->stu_acct_bill();
                     $result->balanceDue = '1';
-                    $result->where('stuID = ?', $r['stuID'])->_and_()
-                        ->where('termCode = ?', $r['termCode'])
+                    $result->where('stuID = ?', _h($r['stuID']))->_and_()
+                        ->where('termCode = ?', _h($r['termCode']))
                         ->update();
                 }
             }
@@ -822,6 +961,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         } catch (ORMException $e) {
             Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
+    });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runDBBackup/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
     $app->get('/runDBBackup/', function () use($app) {
@@ -852,6 +997,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                 }
             }
         }
+    });
+    
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runNodeQ/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
     $app->get('/runNodeQ/', function () {

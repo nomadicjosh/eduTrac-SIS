@@ -11,6 +11,7 @@ use \app\src\elFinder\elFinder;
 use \app\src\elFinder\elFinderVolumeDriver;
 use \app\src\elFinder\elFinderVolumeLocalFileSystem;
 use \app\src\elFinder\elFinderVolumeS3;
+use Cascade\Cascade;
 
 /**
  * Dashboard Router
@@ -33,20 +34,6 @@ $app->before('GET|POST', '/dashboard(.*)', function () {
 $app->group('/dashboard', function () use($app) {
 
     $app->get('/', function () use($app) {
-
-        $css = [
-            'css/admin/module.admin.page.index.min.css'
-        ];
-
-        $js = [
-            'components/modules/admin/charts/flot/assets/lib/jquery.flot.js?v=v2.1.0',
-            'components/modules/admin/charts/flot/assets/lib/jquery.flot.resize.js?v=v2.1.0',
-            'components/modules/admin/charts/flot/assets/lib/plugins/jquery.flot.tooltip.min.js?v=v2.1.0',
-            'components/modules/admin/charts/flot/assets/custom/js/flotcharts.common.js?v=v2.1.0',
-            'components/modules/admin/charts/flot/assets/custom/js/flotchart-simple.init.js?v=v2.1.0',
-            'components/modules/admin/charts/flot/custom/chart.js',
-            'components/modules/admin/charts/flot/custom/js/custom-flot.js'
-        ];
 
         try {
             $stuProg = $app->db->stu_program()
@@ -89,11 +76,14 @@ $app->group('/dashboard', function () use($app) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         etsis_register_style('dash');
@@ -140,11 +130,14 @@ $app->group('/dashboard', function () use($app) {
             $staf = $app->db->staff()->where("status = 'A'")->count('staffID');
             $error = $app->db->error()->count('ID');
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
         $app->view->display('dashboard/system-snapshot', [
             'title' => 'System Snapshot Report',
@@ -332,17 +325,20 @@ $app->group('/dashboard', function () use($app) {
             $q = $stuProg->find();
             $rows = [];
             foreach ($q as $r) {
-                $row[0] = $r->Prog;
-                $row[1] = $r->Count;
+                $row[0] = _h($r->Prog);
+                $row[1] = _h($r->Count);
                 array_push($rows, $row);
             }
             print json_encode($rows, JSON_NUMERIC_CHECK);
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
 
@@ -368,15 +364,15 @@ $app->group('/dashboard', function () use($app) {
 
             $q = $stuDept->find();
             $category = [];
-            $category['name'] = 'Academic Departments';
+            $category['name'] = _t('Academic Departments');
             $series1 = [];
-            $series1['name'] = 'Male';
+            $series1['name'] = _t('Male');
             $series2 = [];
-            $series2['name'] = 'Female';
+            $series2['name'] = _t('Female');
             foreach ($q as $r) {
-                $category['data'][] = $r->deptCode;
-                $series1['data'][] = $r->Male;
-                $series2['data'][] = $r->Female;
+                $category['data'][] = _h($r->deptCode);
+                $series1['data'][] = _h($r->Male);
+                $series2['data'][] = _h($r->Female);
             }
             $result = [];
             array_push($result, $category);
@@ -384,11 +380,14 @@ $app->group('/dashboard', function () use($app) {
             array_push($result, $series2);
             print json_encode($result, JSON_NUMERIC_CHECK);
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
 
@@ -418,7 +417,7 @@ $app->group('/dashboard', function () use($app) {
                         ->_join('address', 'person.personID = address.personID')
                         ->where('person.status = "A"')->_and_()
                         ->where('address.addressStatus = "C"')->_and_()
-                        ->where('address.phoneType1 <> "" or address.phoneType2 <> ""')
+                        ->where('(address.phoneType1 <> "" or address.phoneType2 <> "")')
                         ->find();
                 } elseif ($app->req->post['sms_group'] == 'staff') {
                     $sms = $app->db->staff()
@@ -426,7 +425,7 @@ $app->group('/dashboard', function () use($app) {
                         ->_join('address', 'staff.staffID = address.personID')
                         ->where('staff.status = "A"')->_and_()
                         ->where('address.addressStatus = "C"')->_and_()
-                        ->where('address.phoneType1 <> "" or address.phoneType2 <> ""')
+                        ->where('(address.phoneType1 <> "" or address.phoneType2 <> "")')
                         ->find();
                 } elseif ($app->req->post['sms_group'] == 'student') {
                     $sms = $app->db->student()
@@ -434,21 +433,24 @@ $app->group('/dashboard', function () use($app) {
                         ->_join('address', 'student.stuID = address.personID')
                         ->where('student.status = "A"')->_and_()
                         ->where('address.addressStatus = "C"')->_and_()
-                        ->where('address.phoneType1 <> "" or address.phoneType2 <> ""')
+                        ->where('(address.phoneType1 <> "" or address.phoneType2 <> "")')
                         ->find();
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
 
             $numItems = count($sms);
             $i = 0;
             foreach ($sms as $val) {
-                $phone = str_replace('-', '', $val->Phone);
+                $phone = str_replace(['-', '.'], '', _h($val->Phone));
                 try {
                     $node = Node::table('sms');
                     $node->number = _trim($phone);
@@ -459,9 +461,11 @@ $app->group('/dashboard', function () use($app) {
                         _etsis_flash()->success(_t('SMS messages have been queued for sending.'), $app->req->server['HTTP_REFERER']);
                     }
                 } catch (NodeQException $e) {
-                    _etsis_flash()->error($e->getMessage());
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 } catch (Exception $e) {
-                    _etsis_flash()->error($e->getMessage());
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             }
         }

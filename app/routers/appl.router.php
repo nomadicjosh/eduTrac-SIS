@@ -4,6 +4,7 @@ if (!defined('BASE_PATH'))
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 /**
  * Application Router
@@ -14,9 +15,16 @@ use PDOException as ORMException;
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-$email = _etsis_email();
+/**
+ * Before router check.
+ */
+$app->before('GET|POST', '/appl/(.*)', function() {
+    if (!is_user_logged_in()) {
+        redirect(get_base_url() . 'login' . '/');
+    }
+});
 
-$app->group('/appl', function () use($app, $email) {
+$app->group('/appl', function () use($app) {
 
     /**
      * Before router check.
@@ -34,7 +42,7 @@ $app->group('/appl', function () use($app, $email) {
                 $post = $app->req->post['appl'];
                 $appl = $app->db->application()
                     ->setTableAlias('a')
-                    ->select('a.applID,a.personID,b.termName,c.fname,c.lname,c.uname,c.email')
+                    ->select('a.applID,a.personID,b.termName,c.altID,c.fname,c.lname,c.uname,c.email')
                     ->_join('term', 'a.startTerm = b.termCode', 'b')
                     ->_join('person', 'a.personID = c.personID', 'c')
                     ->whereLike('CONCAT(c.fname," ",c.lname)', "%$post%")->_or_()
@@ -43,7 +51,8 @@ $app->group('/appl', function () use($app, $email) {
                     ->whereLike('c.fname', "%$post%")->_or_()
                     ->whereLike('c.lname', "%$post%")->_or_()
                     ->whereLike('c.uname', "%$post%")->_or_()
-                    ->whereLike('a.personID', "%$post%");
+                    ->whereLike('a.personID', "%$post%")->_or_()
+                    ->whereLike('c.altID', "%$post%");
                 $q = $appl->find(function($data) {
                     $array = [];
                     foreach ($data as $d) {
@@ -53,11 +62,14 @@ $app->group('/appl', function () use($app, $email) {
                 });
                 $spro = $app->db->student()->where('stuID = ?', $q[0]['personID'])->findOne();
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
 
@@ -112,11 +124,14 @@ $app->group('/appl', function () use($app, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         /**
@@ -196,13 +211,7 @@ $app->group('/appl', function () use($app, $email) {
              * @param object $appl Application object.
              */
             $app->hook->do_action('update_application_db_table', $appl);
-
-            if ($appl->update()) {
-                etsis_logger_activity_log_write('Update Record', 'Application', get_name($app->req->post['personID']), get_persondata('uname'));
-                _etsis_flash()->success(_etsis_flash()->notice(200));
-            } else {
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            }
+            $appl->update();
 
             $size = count($app->req->post['fice_ceeb']);
             $i = 0;
@@ -217,19 +226,20 @@ $app->group('/appl', function () use($app, $email) {
                 $inst->degree_conferred_date = $app->req->post['degree_conferred_date'][$i];
                 $inst->where('instAttID = ?', $app->req->post['instAttID'][$i])->_and_()
                     ->where('personID = ?', $app->req->post['personID']);
-                if ($inst->update()) {
-                    _etsis_flash()->success(_etsis_flash()->notice(200));
-                } else {
-                    _etsis_flash()->error(_etsis_flash()->notice(409));
-                }
+                $inst->update();
                 ++$i;
             }
+            etsis_logger_activity_log_write('Update Record', 'Application', get_name($app->req->post['personID']), get_persondata('uname'));
+            _etsis_flash()->success(_etsis_flash()->notice(200));
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         redirect(get_base_url() . 'appl' . '/' . $id . '/');
@@ -270,20 +280,20 @@ $app->group('/appl', function () use($app, $email) {
                  * @param object $appl Application object.
                  */
                 $app->hook->do_action('save_application_db_table', $appl);
+                $appl->save();
 
-                if ($appl->save()) {
-                    $ID = $appl->lastInsertId();
-                    etsis_logger_activity_log_write('New Record', 'Application', get_name($id), get_persondata('uname'));
-                    _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'appl' . '/' . $ID . '/');
-                } else {
-                    _etsis_flash()->error(_etsis_flash()->notice(409));
-                }
+                $ID = $appl->lastInsertId();
+                etsis_logger_activity_log_write('New Record', 'Application', get_name($id), get_persondata('uname'));
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'appl' . '/' . $ID . '/');
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
 
@@ -299,11 +309,14 @@ $app->group('/appl', function () use($app, $email) {
                 ->whereLte('endDate', '0000-00-00')
                 ->findOne();
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         /**
@@ -380,11 +393,14 @@ $app->group('/appl', function () use($app, $email) {
                     _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
 
@@ -424,11 +440,14 @@ $app->group('/appl', function () use($app, $email) {
                     return $array;
                 });
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
             }
         }
 
@@ -464,11 +483,14 @@ $app->group('/appl', function () use($app, $email) {
                     _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
 
@@ -492,27 +514,33 @@ $app->group('/appl', function () use($app, $email) {
                 $inst->where('institutionID = ?', $id);
                 if ($inst->update()) {
                     etsis_logger_activity_log_write('Update Record', 'Institution', _filter_input_string(INPUT_POST, 'instName'), get_persondata('uname'));
-                    _etsis_flash()->success(_etsis_flash()->notice(200),$app->req->server['HTTP_REFERER']);
+                    _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
                 } else {
-                    _etsis_flash()->error(_etsis_flash()->notice(409),$app->req->server['HTTP_REFERER']);
+                    _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
                 }
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage(),$app->req->server['HTTP_REFERER']);
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage(),$app->req->server['HTTP_REFERER']);
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage(),$app->req->server['HTTP_REFERER']);
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
             }
         }
 
         try {
             $inst = $app->db->institution()->where('institutionID = ?', (int) $id)->findOne();
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         etsis_register_style('form');
@@ -538,11 +566,14 @@ $app->group('/appl', function () use($app, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         $css = [ 'css/admin/module.admin.page.alt.form_elements.min.css', 'css/admin/module.admin.page.alt.tables.min.css'];
@@ -577,17 +608,17 @@ $app->group('/appl', function () use($app, $email) {
     $app->get('/deleteInstAttend/(\d+)/', function($id) use($app) {
         try {
             $inst = $app->db->institution_attended()->where('instAttID = ?', $id);
-            if ($inst->delete()) {
-                _etsis_flash()->success(_etsis_flash()->notice(200));
-            } else {
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            }
+            $inst->delete();
+            _etsis_flash()->success(_etsis_flash()->notice(200));
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
         redirect($app->req->server['HTTP_REFERER']);
     });

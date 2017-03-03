@@ -9,6 +9,7 @@ use \app\src\elFinder\elFinderVolumeS3;
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 /**
  * Staff Router
@@ -40,13 +41,11 @@ function access($attr, $path, $data, $volume)
  */
 $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff(.*)', function() {
     if (!is_user_logged_in()) {
-        _etsis_flash()->error(_t('You must be logged in.'), get_base_url() . 'login' . '/');
+        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url());
     }
 });
 
-$json_url = get_base_url() . 'api' . '/';
-
-$app->group('/staff', function () use($app, $json_url) {
+$app->group('/staff', function () use($app) {
 
     $app->match('GET|POST', '/', function () use($app) {
 
@@ -79,11 +78,14 @@ $app->group('/staff', function () use($app, $json_url) {
                     return $array;
                 });
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
 
@@ -237,11 +239,14 @@ $app->group('/staff', function () use($app, $json_url) {
                 etsis_logger_activity_log_write('Update Record', 'Staff', get_name($id), get_persondata('uname'));
                 _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
 
@@ -252,7 +257,7 @@ $app->group('/staff', function () use($app, $json_url) {
 
             $addr = $app->db->address()
                 ->setTableAlias('a')
-                ->select("*,person.email")
+                ->select("a.*,person.email")
                 ->_join('staff', 'a.personID = b.staffID', 'b')
                 ->_join('person', 'a.personID = person.personID')
                 ->where('a.addressType = "P"')->_and_()
@@ -266,11 +271,14 @@ $app->group('/staff', function () use($app, $json_url) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         /**
@@ -291,7 +299,7 @@ $app->group('/staff', function () use($app, $json_url) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($staf->staffID) <= 0) {
+         */ elseif (_h($staf->staffID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -306,7 +314,7 @@ $app->group('/staff', function () use($app, $json_url) {
             etsis_register_script('select2');
 
             $app->view->display('staff/view', [
-                'title' => get_name($staf->staffID),
+                'title' => get_name(_h($staf->staffID)),
                 'staff' => $staf,
                 'addr' => $q
                 ]
@@ -325,11 +333,8 @@ $app->group('/staff', function () use($app, $json_url) {
 
     $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $json_url) {
 
-        $json_p = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
-        $p_decode = json_decode($json_p, true);
-
-        $json_s = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
-        $s_decode = json_decode($json_s, true);
+        $get_person = get_person($id);
+        $get_staff = get_staff($id);
 
         if ($app->req->isPost()) {
             try {
@@ -394,11 +399,14 @@ $app->group('/staff', function () use($app, $json_url) {
                 etsis_logger_activity_log_write('New Record', 'Staff Member', get_name($id), get_persondata('uname'));
                 _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'staff' . '/' . $id . '/');
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage());
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
 
@@ -406,7 +414,7 @@ $app->group('/staff', function () use($app, $json_url) {
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($p_decode == false) {
+        if ($get_person == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -414,22 +422,22 @@ $app->group('/staff', function () use($app, $json_url) {
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($p_decode) == true) {
+         */ elseif (empty($get_person) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($p_decode[0]['personID']) <= 0) {
+         */ elseif (_h($get_person->personID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If staffID already exists, then redirect
          * the user to the staff record.
-         */ elseif (count($s_decode[0]['staffID']) > 0) {
+         */ elseif (_h($get_staff->staffID) > 0) {
 
-            redirect(get_base_url() . 'staff' . '/' . $s_decode[0]['staffID'] . '/');
+            redirect(get_base_url() . 'staff' . '/' . _h($get_staff->staffID) . '/');
         }
         /**
          * If we get to this point, the all is well
@@ -443,8 +451,8 @@ $app->group('/staff', function () use($app, $json_url) {
             etsis_register_script('datepicker');
 
             $app->view->display('staff/add', [
-                'title' => get_name($p_decode[0]['personID']),
-                'person' => $p_decode
+                'title' => get_name(_h($get_person->personID)),
+                'person' => (array) $get_person
                 ]
             );
         }

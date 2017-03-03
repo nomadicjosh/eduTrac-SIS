@@ -4,6 +4,7 @@ if (!defined('BASE_PATH'))
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
+use Cascade\Cascade;
 
 /**
  * Courses Router
@@ -78,20 +79,19 @@ $app->group('/courses', function() use ($app, $css, $js) {
                     $q2->stuID = get_persondata('personID');
                     $q2->courseSecID = $app->req->post['courseSecID'][$i];
                     $q2->deleteDate = $deleteDate;
-                    if ($q2->save()) {
-                        _etsis_flash()->success(_etsis_flash()->notice(200));
-                    } else {
-                        _etsis_flash()->error(_etsis_flash()->notice(409));
-                    }
+                    $q2->save();
                     ++$i;
-                    redirect(get_base_url() . 'courses/cart' . '/');
                 }
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'courses/cart' . '/');
             } catch (NotFoundException $e) {
-                _etsis_flash()->error($e->getMessage(), get_base_url() . 'courses/cart' . '/');
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'courses/cart' . '/');
             } catch (Exception $e) {
-                _etsis_flash()->error($e->getMessage(), get_base_url() . 'courses/cart' . '/');
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'courses/cart' . '/');
             } catch (ORMException $e) {
-                _etsis_flash()->error($e->getMessage(), get_base_url() . 'courses/cart' . '/');
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'courses/cart' . '/');
             }
         }
 
@@ -133,11 +133,14 @@ $app->group('/courses', function() use ($app, $css, $js) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         $app->view->display('courses/index', [
@@ -167,11 +170,14 @@ $app->group('/courses', function() use ($app, $css, $js) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         $app->view->display('courses/cart', [
@@ -237,7 +243,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
                 if ($app->req->post['regAction'][$r] == 'register') {
                     $sect = $app->db->course_sec()
                         ->setTableAlias('a')
-                        ->select('a.courseSecCode,a.termCode,a.minCredit')
+                        ->select('a.courseSecID,a.courseSecCode,a.termCode,a.minCredit')
                         ->select('a.courseID,a.sectionNumber,a.courseSection')
                         ->select('a.startDate,a.endDate,b.deptCode')
                         ->select('b.courseShortTitle,b.courseLongTitle')
@@ -246,21 +252,15 @@ $app->group('/courses', function() use ($app, $css, $js) {
                         ->_join('course', 'a.courseID = b.courseID', 'b')
                         ->_join('term', 'a.termCode = c.termCode', 'c')
                         ->where('a.courseSecID = ?', $app->req->post['courseSecID'][$r]);
-                    $sql = $sect->find(function($data) {
-                        $array = [];
-                        foreach ($data as $d) {
-                            $array[] = $d;
-                        }
-                        return $array;
-                    });
+                    $sect->findOne();
 
                     $stcs = $app->db->stu_course_sec();
                     $stcs->stuID = get_persondata('personID');
                     $stcs->courseSecID = $app->req->post['courseSecID'][$r];
-                    $stcs->courseSecCode = $sql[0]['courseSecCode'];
-                    $stcs->courseSection = $sql[0]['courseSection'];
-                    $stcs->termCode = $sql[0]['termCode'];
-                    $stcs->courseCredits = $sql[0]['minCredit'];
+                    $stcs->courseSecCode = _h($sect->courseSecCode);
+                    $stcs->courseSection = _h($sect->courseSection);
+                    $stcs->termCode = _h($sect->termCode);
+                    $stcs->courseCredits = _h($sect->minCredit);
                     $stcs->status = 'N';
                     $stcs->regDate = $app->db->NOW();
                     $stcs->regTime = date("h:i A");
@@ -271,28 +271,28 @@ $app->group('/courses', function() use ($app, $css, $js) {
                     if ($stcs->save()) {
                         $stac = $app->db->stu_acad_cred();
                         $stac->stuID = get_persondata('personID');
-                        $stac->courseID = $sql[0]['courseID'];
+                        $stac->courseID = _h($sect->courseID);
                         $stac->courseSecID = $app->req->post['courseSecID'][$r];
-                        $stac->courseCode = $sql[0]['courseCode'];
-                        $stac->courseSecCode = $sql[0]['courseSecCode'];
-                        $stac->sectionNumber = $sql[0]['sectionNumber'];
-                        $stac->courseSection = $sql[0]['courseSection'];
-                        $stac->termCode = $sql[0]['termCode'];
-                        $stac->reportingTerm = $sql[0]['reportingTerm'];
-                        $stac->subjectCode = $sql[0]['subjectCode'];
-                        $stac->deptCode = $sql[0]['deptCode'];
-                        $stac->shortTitle = $sql[0]['courseShortTitle'];
-                        $stac->longTitle = $sql[0]['courseLongTitle'];
+                        $stac->courseCode = _h($sect->courseCode);
+                        $stac->courseSecCode = _h($sect->courseSecCode);
+                        $stac->sectionNumber = _h($sect->sectionNumber);
+                        $stac->courseSection = _h($sect->courseSection);
+                        $stac->termCode = _h($sect->termCode);
+                        $stac->reportingTerm = _h($sect->reportingTerm);
+                        $stac->subjectCode = _h($sect->subjectCode);
+                        $stac->deptCode = _h($sect->deptCode);
+                        $stac->shortTitle = _h($sect->courseShortTitle);
+                        $stac->longTitle = _h($sect->courseLongTitle);
                         $stac->compCred = '0.0';
-                        $stac->attCred = $sql[0]['minCredit'];
+                        $stac->attCred = _h($sect->minCredit);
                         $stac->status = 'N';
                         $stac->statusDate = $app->db->NOW();
                         $stac->statusTime = date("h:i A");
-                        $stac->acadLevelCode = $sql[0]['acadLevelCode'];
-                        $stac->courseLevelCode = $sql[0]['courseLevelCode'];
-                        $stac->creditType = $sql[0]['creditType'];
-                        $stac->startDate = $sql[0]['startDate'];
-                        $stac->endDate = $sql[0]['endDate'];
+                        $stac->acadLevelCode = _h($sect->acadLevelCode);
+                        $stac->courseLevelCode = _h($sect->courseLevelCode);
+                        $stac->creditType = _h($sect->creditType);
+                        $stac->startDate = _h($sect->startDate);
+                        $stac->endDate = _h($sect->endDate);
                         $stac->addedBy = get_persondata('personID');
                         $stac->addDate = $app->db->NOW();
                         $stac->save();
@@ -328,7 +328,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
                             /**
                              * Generate bill and/or add fees.
                              */
-                            generate_stu_bill($sql[0]['termCode'], get_persondata('personID'), $app->req->post['courseSecID'][$r]);
+                            generate_stu_bill(_h($sect->termCode), get_persondata('personID'), $app->req->post['courseSecID'][$r]);
                         }
                     }
                 }
@@ -367,11 +367,14 @@ $app->group('/courses', function() use ($app, $css, $js) {
                 _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
             }
         } catch (NotFoundException $e) {
-            _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
         } catch (Exception $e) {
-            _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
         } catch (ORMException $e) {
-            _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
         }
     });
 });

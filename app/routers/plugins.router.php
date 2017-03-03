@@ -16,6 +16,7 @@ if (!defined('BASE_PATH'))
 $app->before('GET|POST', '/plugins.*', function () {
     if (!hasPermission('access_plugin_screen')) {
         _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
