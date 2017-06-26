@@ -225,7 +225,7 @@ class etsis_Cache_Cookie extends \app\src\Core\Cache\etsis_Abstract_Cache
             $namespace = 'default';
         }
 
-        $x = isset($_COOKIE[md5($key)]) ? $_COOKIE[md5($key)] : false;
+        $x = isset($this->app->req->cookie[md5($key)]) ? $this->app->req->cookie[md5($key)] : false;
         if ($x == false) {
             $this->cacheMisses();
             return null;
