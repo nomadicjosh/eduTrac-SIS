@@ -55,13 +55,13 @@ function isRecordActive($id)
         }
         return false;
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -70,9 +70,9 @@ function rolePerm($id)
 {
     $app = \Liten\Liten::getInstance();
     try {
-        $role = $app->db->query("SELECT permission from role WHERE ID = ?", [
-            $id
-        ]);
+        $role = $app->db->role()
+            ->select('permission')
+            ->where('id = ?', $id);
         $q1 = $role->find(function ($data) {
             $array = [];
             foreach ($data as $d) {
@@ -80,9 +80,8 @@ function rolePerm($id)
             }
             return $array;
         });
-        $a = [];
         foreach ($q1 as $v) {
-            $a[] = $v;
+            $perm = maybe_unserialize(_escape($v['permission']));
         }
         $sql = $app->db->permission();
         $q2 = $sql->find(function ($data) {
@@ -93,12 +92,11 @@ function rolePerm($id)
             return $array;
         });
         foreach ($q2 as $r) {
-            $perm = maybe_unserialize(_h($v['permission']));
             echo '
 				<tr>
 					<td>' . _h($r['permName']) . '</td>
 					<td class="text-center">';
-            if (in_array(_h($r['permKey']), $perm)) {
+            if (is_array($perm) && in_array(_h($r['permKey']), $perm)) {
                 echo '<input type="checkbox" name="permission[]" value="' . _h($r['permKey']) . '" checked="checked" />';
             } else {
                 echo '<input type="checkbox" name="permission[]" value="' . _h($r['permKey']) . '" />';
@@ -107,13 +105,13 @@ function rolePerm($id)
             </tr>';
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -123,9 +121,9 @@ function personPerm($id)
     $app = \Liten\Liten::getInstance();
     try {
         $array = [];
-        $pp = $app->db->query("SELECT permission FROM person_perms WHERE personID = ?", [
-            $id
-        ]);
+        $pp = $app->db->person_perms()
+            ->select('permission')
+            ->where('personID = ?', $id);
         $q = $pp->find(function ($data) {
             $array = [];
             foreach ($data as $d) {
@@ -136,15 +134,15 @@ function personPerm($id)
         foreach ($q as $r) {
             $array[] = $r;
         }
-        $personPerm = maybe_unserialize(_h($r['permission']));
+        $personPerm = maybe_unserialize(_escape($r['permission']));
         /**
          * Select the role(s) of the person who's
          * personID = $id
          */
         $array1 = [];
-        $pr = $app->db->query("SELECT roleID from person_roles WHERE personID = ?", [
-            $id
-        ]);
+        $pr = $app->db->person_roles()
+            ->select('roleID')
+            ->where('personID = ?', $id);
         $q1 = $pr->find(function ($data) {
             $array = [];
             foreach ($data as $d) {
@@ -160,9 +158,9 @@ function personPerm($id)
          * that are connected to the selected person.
          */
         $array2 = [];
-        $role = $app->db->query("SELECT permission from role WHERE ID = ?", [
-            _h($r1['roleID'])
-        ]);
+        $role = $app->db->role()
+            ->select('permission')
+            ->where('id = ?', $r1['roleID']);
         $q2 = $role->find(function ($data) {
             $array = [];
             foreach ($data as $d) {
@@ -173,7 +171,7 @@ function personPerm($id)
         foreach ($q2 as $r2) {
             $array2[] = $r2;
         }
-        $perm = maybe_unserialize(_h($r2['permission']));
+        $perm = maybe_unserialize(_escape($r2['permission']));
         $permission = $app->db->permission();
         $sql = $permission->find(function ($data) {
             $array = [];
@@ -187,7 +185,7 @@ function personPerm($id)
             <tr>
                 <td>' . _h($row['permName']) . '</td>
                 <td class="text-center">';
-            if (in_array(_h($row['permKey']), $perm)) {
+            if (is_array($perm) && in_array(_h($row['permKey']), $perm)) {
                 echo '<input type="checkbox" name="permission[]" value="' . _h($row['permKey']) . '" checked="checked" disabled="disabled" />';
             } elseif ($personPerm != '' && in_array(_h($row['permKey']), $personPerm)) {
                 echo '<input type="checkbox" name="permission[]" value="' . _h($row['permKey']) . '" checked="checked" />';
@@ -198,13 +196,13 @@ function personPerm($id)
             </tr>';
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -213,25 +211,25 @@ function personPerm($id)
  * Returns the name of a particular person.
  *
  * @since 1.0.0
- * @param int $ID
+ * @param int $id
  *            Person ID.
  * @return string
  */
-function get_name($ID)
+function get_name($id)
 {
-    if ('' == _trim($ID)) {
+    if ('' == _trim($id)) {
         $message = _t('Invalid person ID: empty ID given.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
 
-    if (!is_numeric($ID)) {
+    if (!is_numeric($id)) {
         $message = _t('Invalid person ID: person id must be numeric.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
 
-    $name = get_person_by('personID', $ID);
+    $name = get_person_by('personID', $id);
 
     return _h($name->lname) . ', ' . _h($name->fname);
 }
@@ -241,27 +239,27 @@ function get_name($ID)
  * his/her's full name.
  *
  * @since 4.1.6
- * @param int $ID
+ * @param int $id
  *            Person ID
  * @param int $initials
  *            Number of initials to show.
  * @return string
  */
-function get_initials($ID, $initials = 2)
+function get_initials($id, $initials = 2)
 {
-    if ('' == _trim($ID)) {
+    if ('' == _trim($id)) {
         $message = _t('Invalid person ID: empty ID given.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
 
-    if (!is_numeric($ID)) {
+    if (!is_numeric($id)) {
         $message = _t('Invalid person ID: person id must be numeric.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
 
-    $name = get_person_by('personID', $ID);
+    $name = get_person_by('personID', $id);
 
     if ($initials == 2) {
         return mb_substr(_h($name->fname), 0, 1, 'UTF-8') . '. ' . mb_substr(_h($name->lname), 0, 1, 'UTF-8') . '.';
@@ -274,7 +272,7 @@ function get_initials($ID, $initials = 2)
  * Function for retrieving a person's
  * uploaded school photo.
  *
- * @since 4.5
+ * @since 6.3.0
  * @param int $id
  *            Person ID.
  * @param string $email
@@ -285,7 +283,7 @@ function get_initials($ID, $initials = 2)
  *            HTML element for CSS.
  * @return mixed
  */
-function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
+function get_school_photo($id, $email, $s = 80, $class = 'thumb')
 {
     $app = \Liten\Liten::getInstance();
     try {
@@ -297,8 +295,8 @@ function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
             ->findOne();
 
         if ($nae !== false) {
-            $photosize = getimagesize(get_base_url() . 'static/photos/' . $nae->photo);
-            if (getPathInfo('/form/photo/') === '/form/photo/') {
+            $photosize = getimagesize(get_base_url() . 'static/photos/' . _h($nae->photo));
+            if (get_path_info('/form/photo/') === '/form/photo/') {
                 $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . _h($nae->photo) . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
             } else {
                 $avatar = '<img src="' . get_base_url() . 'static/photos/' . _h($nae->photo) . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
@@ -308,13 +306,13 @@ function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
         }
         return $avatar;
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -330,11 +328,11 @@ function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
  *            Data requested of particular person.
  * @return mixed
  */
-function getUserValue($id, $field)
+function get_user_value($id, $field)
 {
     $value = get_person_by('personID', $id);
 
-    return _h($value->$field);
+    return _h($value->{$field});
 }
 
 /**
@@ -348,7 +346,7 @@ function get_perm_roles()
     $app = \Liten\Liten::getInstance();
     try {
         $query = $app->db->query('SELECT
-    		trim(leading "0" from ID) AS roleID, roleName
+    		trim(leading "0" from id) AS roleID, roleName
 		FROM role');
         $result = $query->find(function ($data) {
             $array = [];
@@ -362,13 +360,13 @@ function get_perm_roles()
             echo '<option value="' . _h($r['roleID']) . '">' . _h($r['roleName']) . '</option>' . "\n";
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -437,4 +435,136 @@ function email_exists($email)
         return _h($person->personID);
     }
     return false;
+}
+
+/**
+ * Retrieve alternate ID if it exists.
+ * 
+ * @since 6.3.0
+ * @param int $id Person's unique system id.
+ * @return int Alt ID or system id.
+ */
+function get_alt_id($id)
+{
+    $app = \Liten\Liten::getInstance();
+    try {
+        $person = $app->db->person()
+            ->select('personID,altID')
+            ->where('personID = ?', $id)
+            ->findOne();
+
+        if (_h($person->altID) != '') {
+            return _h($person->altID);
+        } else {
+            return _h($person->personID);
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+}
+
+/**
+ * Checks if a person has an active restriction with 99 severity.
+ * 
+ * @since 6.3.0
+ * @return mixed
+ */
+function person_has_restriction()
+{
+    $app = \Liten\Liten::getInstance();
+    try {
+        $rest = $app->db->query("SELECT
+        				GROUP_CONCAT(DISTINCT c.deptName SEPARATOR ',') AS 'Restriction'
+    				FROM perc 
+					LEFT JOIN rest b ON perc.code = b.code
+					LEFT JOIN department c ON b.deptCode = c.deptCode
+					WHERE perc.severity = '99'
+                    AND perc.personID = ?
+					AND perc.endDate IS NULL
+					OR perc.endDate <= '0000-00-00'
+					GROUP BY perc.personID
+					HAVING perc.personID = ?", [
+            get_persondata('personID'),
+            get_persondata('personID')
+        ]);
+        $q = $rest->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        if (count($q[0]['Restriction']) > 0) {
+            foreach ($q as $r) {
+                return '<strong>' . _h($r['Restriction']) . '</strong>';
+            }
+        } else {
+            return false;
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+}
+
+/**
+ * is_ferpa function added to check for
+ * active FERPA restrictions for person/student.
+ *
+ * @since 4.5
+ * @param int $id
+ *            Person/Student's ID.
+ */
+function is_ferpa($id)
+{
+    $app = \Liten\Liten::getInstance();
+
+    if ('' == _trim($id)) {
+        $message = _t('Invalid person/student ID: empty ID given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
+        return;
+    }
+
+    if (!is_numeric($id)) {
+        $message = _t('Invalid person/student ID: person/student id must be numeric.');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
+        return;
+    }
+
+    try {
+        $ferpa = $app->db->perc()
+            ->where('personID = ?', $id)->_and_()
+            ->where('code = "FERPA"')->_and_()
+            ->where('endDate IS NULL')->_or_()
+            ->whereLte('endDate', '0000-00-00')
+            ->count('id');
+
+        if ($ferpa > 0) {
+            return _t('Yes');
+        } else {
+            return _t('No');
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
 }

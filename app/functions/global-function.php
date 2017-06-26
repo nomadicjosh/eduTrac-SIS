@@ -85,3 +85,16 @@ function _etsis_flash()
     $flash = new \app\src\Core\etsis_FlashMessages();
     return $flash;
 }
+
+/**
+ * Sets up random number and string generator global scope.
+ * 
+ * @since 6.3.0
+ * @return type
+ */
+function _etsis_random_lib()
+{
+    $factory = new RandomLib\Factory;
+    $generator = $factory->getGenerator(new SecurityLib\Strength(SecurityLib\Strength::MEDIUM));
+    return $generator;
+}

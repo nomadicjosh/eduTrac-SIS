@@ -35,13 +35,13 @@ function convertCourseSec($sect)
         }
         return $section;
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -78,4 +78,34 @@ function get_course_sec($section, $object = true)
     }
 
     return $_section;
+}
+
+/**
+ * Retrieve stcs info based on stuID and courseSecID.
+ * 
+ * @since 6.3.0
+ * @param type $stuID Student's id.
+ * @param type $sectID
+ * @return type
+ */
+function get_stcs($stuID, $sectID)
+{
+    $app = \Liten\Liten::getInstance();
+
+    try {
+        $stcs = $app->db->stcs()
+            ->where('stcs.stuID = ?', $stuID)->_and_()
+            ->where('stcs.courseSecID = ?', $sectID)
+            ->findOne();
+        return $stcs;
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
 }

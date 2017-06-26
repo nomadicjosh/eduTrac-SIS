@@ -26,10 +26,10 @@ function get_acad_program($program, $object = true)
     if ($program instanceof \app\src\Core\etsis_Acad_Program) {
         $_program = $program;
     } elseif (is_array($program)) {
-        if (empty($program['acadProgID'])) {
+        if (empty($program['id'])) {
             $_program = new \app\src\Core\etsis_Acad_Program($program);
         } else {
-            $_program = \app\src\Core\etsis_Acad_Program::get_instance($program['acadProgID']);
+            $_program = \app\src\Core\etsis_Acad_Program::get_instance($program['id']);
         }
     } else {
         $_program = \app\src\Core\etsis_Acad_Program::get_instance($program);

@@ -27,7 +27,8 @@ function courseList($id = '')
             ->select('courseCode')
             ->where('courseID <> ?', $id)->_and_()
             ->where('currStatus = "A"')->_and_()
-            ->where('endDate <= "0000-00-00"');
+            ->where('endDate IS NULL')->_or_()
+            ->whereLte('endDate','0000-00-00');
         $q = $crse->find(function ($data) {
             $array = [];
             foreach ($data as $d) {
@@ -42,13 +43,13 @@ function courseList($id = '')
         }
         return $a;
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }

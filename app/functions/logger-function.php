@@ -71,7 +71,7 @@ $config = [
             'formatter' => 'exception',
             'mailer' => new app\src\Core\etsis_Email(),
             'message' => 'This message will be replaced with the real one.',
-            'email_to' => $app->hook->{'apply_filter'}('system_alert_email', _h($app->hook->{'get_option'}('system_email'))),
+            'email_to' => $app->hook->apply_filter('system_alert_email', _h($app->hook->get_option('system_email'))),
             'subject' => _t('eduTrac SIS System Alert!')
         ]
     ],
@@ -99,7 +99,7 @@ $config = [
     ]
 ];
 
-Cascade::fileConfig($app->hook->{'apply_filter'}('monolog_cascade_config', $config));
+Cascade::fileConfig($app->hook->apply_filter('monolog_cascade_config', $config));
 
 /**
  * Default Error Handler
@@ -175,7 +175,7 @@ function etsis_logger_activity_log_purge()
 function etsis_monolog($name, $message)
 {
     $log = new \Monolog\Logger(_trim($name));
-    $log->pushHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp' . DS . 'logs' . DS . _trim($name) . '.' . date('m-d-Y') . '.txt'));
+    $log->pushHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp' . DS . 'logs' . DS . _trim($name) . '.' . \Jenssegers\Date\Date::now()->format('m-d-Y') . '.txt'));
     $log->addError($message);
 }
 
@@ -202,7 +202,7 @@ function etsis_set_environment()
         error_reporting(E_ALL & ~E_NOTICE);
         ini_set('display_errors', 'Off');
         ini_set('log_errors', 'On');
-        ini_set('error_log', APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-error-' . date('Y-m-d') . '.txt');
+        ini_set('error_log', APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-error-' . \Jenssegers\Date\Date::now()->format('Y-m-d') . '.txt');
         set_error_handler('etsis_error_handler', E_ALL & ~E_NOTICE);
     }
 }

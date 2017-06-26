@@ -57,13 +57,13 @@ function table_dropdown($table, $where = null, $id, $code, $name, $activeID = nu
             echo '<option value="' . _h($r->{$code}) . '"' . selected($activeID, _h($r->{$code}), false) . '>' . _h($r->{$code}) . ' ' . _h($r->{$name}) . '</option>' . "\n";
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -136,12 +136,12 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
  *
  * @since 4.5
  */
-function is_count_zero($table, $field, $ID)
+function is_count_zero($table, $field, $id)
 {
     $app = \Liten\Liten::getInstance();
     try {
         $zero = $app->db->query("SELECT $field FROM $table WHERE $field = ?", [
-            $ID
+            $id
         ]);
         $q = $zero->find(function ($data) {
             $array = [];
@@ -154,13 +154,13 @@ function is_count_zero($table, $field, $ID)
             return 'X';
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -182,13 +182,13 @@ function hasAppl($id)
 
         return _h($appl->personID);
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -217,13 +217,29 @@ function qt($table, $field, $where = null)
             return _h($r->{$field});
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
+}
+
+/**
+ * Retrieves student's admit status.
+ * 
+ * @since 6.3.0
+ * @param int $id
+ * @return string
+ */
+function get_admit_status($id)
+{
+    $app = \Liten\Liten::getInstance();
+    $appl = $app->db->application()
+        ->where('personID = ?', $id)
+        ->findOne();
+    return _h($appl->admitStatus);
 }

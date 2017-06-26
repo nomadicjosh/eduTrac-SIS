@@ -48,13 +48,13 @@ function get_persondata($field)
             return _h($r[$field]);
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -423,13 +423,13 @@ function get_person_by($field, $value)
 
         return $person;
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -477,15 +477,17 @@ function etsis_authenticate($login, $password, $rememberme)
         }
 
         etsis_logger_activity_log_write('Authentication', 'Login', get_name(_h($person->personID)), _h($person->uname));
-        redirect(get_base_url());
+
+        $redirect_to = ($app->req->post['redirect_to'] != null ? $app->req->post['redirect_to'] : get_base_url());
+        etsis_redirect($redirect_to);
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
     }
 }
@@ -628,7 +630,7 @@ function etsis_clear_auth_cookie()
     $vars2 = [];
     parse_str($app->cookies->get('SWITCH_USERBACK'), $vars2);
     /**
-     * Checks to see if the cookie is exists on the server.
+     * Checks to see if the cookie exists on the server.
      * It it exists, we need to delete it.
      */
     $file2 = $app->config('cookies.savepath') . 'cookies.' . $vars2['data'];

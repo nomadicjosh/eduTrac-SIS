@@ -3443,3 +3443,20 @@ function kses_hook($t, &$C, &$S)
     return $t;
     // eof
 }
+
+/**
+ * Concatenation with separator.
+ * 
+ * @since 1.0.8
+ * @param string $separator Delimeter to used between strings.
+ * @param type $string1 Left string.
+ * @param type $string2 Right string.
+ * @return type
+ */
+function concat_ws($separator, $string1, $string2)
+{
+    if (null == $separator) {
+        $separator = ',';
+    }
+    return $string1 . $separator . $string2;
+}

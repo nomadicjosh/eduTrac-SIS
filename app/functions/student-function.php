@@ -21,12 +21,12 @@ $app = \Liten\Liten::getInstance();
  * A function which returns true if the logged in user
  * is a student in the system.
  *
- * @since 4.3
+ * @since 6.3.0
  * @param int $id
  *            Student's ID.
  * @return bool
  */
-function isStudent($id)
+function is_student($id)
 {
     if ('' == _trim($id)) {
         $message = _t('Invalid student ID: Empty ID given.');
@@ -72,7 +72,7 @@ function checkStuMenuAccess($id)
         return;
     }
 
-    if (!isStudent($id)) {
+    if (!is_student($id)) {
         return ' style="display:none !important;"';
     }
 }
@@ -100,180 +100,69 @@ function checkStuAccess($id)
         return;
     }
 
-    return isStudent($id);
+    return is_student($id);
 }
 
 function studentsExist($id)
 {
     $app = \Liten\Liten::getInstance();
     try {
-        $stu = $app->db->query("SELECT * FROM stu_course_sec WHERE courseSecID = ?", [
-            $id
-        ]);
-        $q = $stu->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-        if (count($q[0]['id']) > 0) {
+        $sect = $app->db->stcs()
+            ->where('courseSecID = ?', $id)
+            ->count('courseSecID');
+
+        if ($sect > 0) {
             return true;
         } else {
             return false;
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
 /**
- *
- * @since 4.0.7
+ * Generates student load based on credits and academic level.
+ * 
+ * @since 6.3.0
+ * @param float $creds Number of credits to check for.
+ * @param string $level Academic level to check for.
+ * @return string
  */
-function getstudentload($term, $creds, $level)
+function get_stld($creds, $level)
 {
     $app = \Liten\Liten::getInstance();
     try {
-        $t = explode("/", $term);
-        $newTerm1 = $t[0];
-        $newTerm2 = $t[1];
-        $sql = $app->db->query("SELECT
-                        status
-                    FROM student_load_rule
-                    WHERE term REGEXP CONCAT('[[:<:]]', ?, '[[:>:]]')
-                    OR term REGEXP CONCAT('[[:<:]]', ?, '[[:>:]]')
-                    AND acadLevelCode REGEXP CONCAT('[[:<:]]', ?, '[[:>:]]')
-                    AND ?
-                    BETWEEN min_cred
-                    AND max_cred
-                    AND active = '1'", [
-            $newTerm1,
-            $newTerm2,
-            $level,
-            $creds
-        ]);
-        $q = $sql->find();
-        foreach ($q as $r) {
-            return _h($r->status);
+        $stld = $app->db->aclv()
+            ->where('code = ?', $level)
+            ->findOne();
+        $Q = 0.75 * _h($stld->ft_creds);
+        if ($creds < _h($stld->ht_creds)) {
+            return 'L';
+        } elseif ($creds >= _h($stld->ht_creds) && $creds < _h($stld->ft_creds)) {
+            return 'H';
+        } elseif ($Q > _h($stld->ht_creds) && $Q < _h($stld->ft_creds)) {
+            return 'Q';
+        } elseif ($creds >= _h($stld->ft_creds) && $creds < _h($stld->ovr_creds)) {
+            return 'F';
+        } elseif ($creds >= _h($stld->ovr_creds)) {
+            return 'O';
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    }
-}
-
-function student_has_restriction()
-{
-    $app = \Liten\Liten::getInstance();
-    try {
-        $rest = $app->db->query("SELECT
-        				GROUP_CONCAT(DISTINCT c.deptName SEPARATOR ',') AS 'Restriction'
-    				FROM restriction a
-					LEFT JOIN restriction_code b ON a.rstrCode = b.rstrCode
-					LEFT JOIN department c ON b.deptCode = c.deptCode
-					WHERE a.severity = '99'
-					AND a.endDate <= '0000-00-00'
-					AND a.stuID = ?
-					GROUP BY a.stuID
-					HAVING a.stuID = ?", [
-            get_persondata('personID'),
-            get_persondata('personID')
-        ]);
-        $q = $rest->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-        if (count($q[0]['Restriction']) > 0) {
-            foreach ($q as $r) {
-                return '<strong>' . _h($r['Restriction']) . '</strong>';
-            }
-        } else {
-            return false;
-        }
-    } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    }
-}
-
-/**
- * is_ferpa function added to check for
- * active FERPA restrictions for students.
- *
- * @since 4.5
- * @param int $id
- *            Student's ID.
- */
-function is_ferpa($id)
-{
-    $app = \Liten\Liten::getInstance();
-
-    if ('' == _trim($id)) {
-        $message = _t('Invalid student ID: empty ID given.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-
-    if (!is_numeric($id)) {
-        $message = _t('Invalid student ID: student id must be numeric.');
-        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
-        return;
-    }
-
-    try {
-        $ferpa = $app->db->query("SELECT
-                        rstrID
-                    FROM restriction
-                    WHERE stuID = ?
-                    AND rstrCode = 'FERPA'
-                    AND (endDate = '' OR endDate = '0000-00-00')", [
-            $id
-        ]);
-
-        $q = $ferpa->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        if (count($q) > 0) {
-            return _t('Yes');
-        } else {
-            return _t('No');
-        }
-    } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -282,7 +171,7 @@ function getStuSec($code, $term)
 {
     $app = \Liten\Liten::getInstance();
     try {
-        $stcs = $app->db->stu_course_sec()
+        $stcs = $app->db->stcs()
             ->where('stuID = ?', get_persondata('personID'))->_and_()
             ->where('courseSecCode = ?', $code)->_and_()
             ->where('termCode = ?', $term)
@@ -292,20 +181,20 @@ function getStuSec($code, $term)
             return ' style="display:none;"';
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
 
 function isRegistrationOpen()
 {
-    if (get_option('open_registration') == 0 || !isStudent(get_persondata('personID'))) {
+    if (get_option('open_registration') == 0 || !is_student(get_persondata('personID'))) {
         return ' style="display:none !important;"';
     }
 }
@@ -327,15 +216,16 @@ function gs($s)
 }
 
 /**
- * Calculates grade points for stu_acad_cred.
+ * Calculates grade points for stac.
  *
+ * @since 6.3.0
  * @param string $grade
  *            Letter grade.
  * @param float $credits
  *            Number of course credits.
  * @return mixed
  */
-function acadCredGradePoints($grade, $credits)
+function calculate_grade_points($grade, $credits)
 {
     $app = \Liten\Liten::getInstance();
     try {
@@ -344,17 +234,17 @@ function acadCredGradePoints($grade, $credits)
             ->where('grade = ?', $grade);
         $q = $gp->find();
         foreach ($q as $r) {
-            $gradePoints = $r->points * $credits;
+            $gradePoints = _h($r->points) * $credits;
         }
         return $gradePoints;
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -371,7 +261,7 @@ function student_can_register()
     try {
         $stcs = $app->db->query("SELECT
                         COUNT(courseSecCode) AS Courses
-                    FROM stu_course_sec
+                    FROM stcs
                     WHERE stuID = ?
                     AND termCode = ?
                     AND status IN('A','N')
@@ -390,16 +280,17 @@ function student_can_register()
             $courses = $r['Courses'];
         }
 
-        $rstr = $app->db->query("SELECT *
-                    FROM restriction
+        $rest = $app->db->query("SELECT *
+                    FROM perc
                     WHERE severity = '99'
-                    AND stuID = ?
-                    AND endDate = '0000-00-00'
+                    AND personID = ?
+                    AND endDate IS NULL
+                    OR endDate <= '0000-00-00'
                     OR endDate > ?", [
             get_persondata('personID'),
-            date('Y-m-d')
+            \Jenssegers\Date\Date::now()->format('Y-m-d')
         ]);
-        $sql1 = $rstr->find(function ($data) {
+        $sql1 = $rest->find(function ($data) {
             $array = [];
             foreach ($data as $d) {
                 $array[] = $d;
@@ -408,19 +299,19 @@ function student_can_register()
         });
 
         $stu = $app->db->query("SELECT
-        				a.ID
+        				a.id
     				FROM
     					student a
 					LEFT JOIN
-						stu_program b
+						sacp 
 					ON
-						a.stuID = b.stuID
+						a.stuID = sacp.stuID
 					WHERE
 						a.stuID = ?
 					AND
 						a.status = 'A'
 					AND
-						b.currStatus = 'A'", [
+						sacp.currStatus = 'A'", [
             get_persondata('personID')
         ]);
 
@@ -434,21 +325,21 @@ function student_can_register()
 
         if ($courses != NULL && $courses >= get_option('number_of_courses')) {
             return false;
-        } elseif (count($sql1[0]['rstrID']) > 0) {
+        } elseif (count($sql1[0]['id']) > 0) {
             return false;
-        } elseif (count($sql2[0]['ID']) <= 0) {
+        } elseif (count($sql2[0]['id']) <= 0) {
             return false;
         } else {
             return true;
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -490,8 +381,8 @@ function prerequisite($stuID, $courseSecID)
         $req = explode(",", _h($r1['preReq']));
         if (count($q1[0]['preReq']) > 0) {
             $stac = $app->db->query("SELECT
-	    					stuAcadCredID
-						FROM stu_acad_cred
+	    					id
+						FROM stac
 						WHERE courseCode IN('" . str_replace(",", "', '", _h($r1['preReq'])) . "')
 						AND stuID = ?
 						AND status IN('A','N')
@@ -514,13 +405,13 @@ function prerequisite($stuID, $courseSecID)
             return true;
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -545,13 +436,13 @@ function shoppingCart()
             return true;
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -566,7 +457,7 @@ function removeFromCart($section)
     try {
         $cart = $app->db->stu_rgn_cart()
             ->where('stuID = ?', get_persondata('personID'))->_and_()
-            ->whereGte('deleteDate', $app->db->NOW())->_and_()
+            ->whereGte('deleteDate', \Jenssegers\Date\Date::now())->_and_()
             ->where('courseSecID = ?', $section);
         $q = $cart->find(function ($data) {
             $array = [];
@@ -579,13 +470,13 @@ function removeFromCart($section)
             return true;
         }
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -621,13 +512,13 @@ function tagList()
         }
         return $tags;
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -642,16 +533,17 @@ function get_stu_restriction($stu_id)
     $app = \Liten\Liten::getInstance();
     try {
         $rest = $app->db->query("SELECT
-                        b.rstrCode,a.severity,b.description,c.deptEmail,c.deptPhone,c.deptName,
-        				GROUP_CONCAT(DISTINCT b.rstrCode SEPARATOR ',') AS 'Restriction'
-    				FROM restriction a
-					LEFT JOIN restriction_code b ON a.rstrCode = b.rstrCode
-					LEFT JOIN department c ON b.deptCode = c.deptCode
-					WHERE a.endDate <= '0000-00-00'
-					AND a.stuID = ?
-                    AND a.rstrCode <> 'FERPA'
-					GROUP BY a.rstrCode,a.stuID
-					HAVING a.stuID = ?", [ $stu_id, $stu_id]
+                        rest.code,perc.severity,rest.description,c.deptEmail,c.deptPhone,c.deptName,
+        				GROUP_CONCAT(DISTINCT rest.code SEPARATOR ',') AS 'Restriction'
+    				FROM perc 
+					LEFT JOIN rest ON perc.code = rest.code
+					LEFT JOIN department c ON rest.deptCode = c.deptCode
+					WHERE perc.stuID = ?
+                    AND perc.code <> 'FERPA'
+                    AND perc.endDate IS NULL
+                    OR perc.endDate <= '0000-00-00'
+					GROUP BY perc.code,perc.stuID
+					HAVING perc.stuID = ?", [ $stu_id, $stu_id]
         );
         $q = $rest->find(function($data) {
             $array = [];
@@ -663,13 +555,13 @@ function get_stu_restriction($stu_id)
 
         return $q;
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -686,17 +578,18 @@ function get_sacp($stu_id)
 {
     $app = \Liten\Liten::getInstance();
     try {
-        $rest = $app->db->query("SELECT
-                        a.acadProgCode,a.currStatus,b.acadProgTitle,b.programDesc,
-        				GROUP_CONCAT(DISTINCT a.acadProgCode SEPARATOR ',') AS 'SACP'
-    				FROM stu_program a
-					LEFT JOIN acad_program b ON a.acadProgCode = b.acadProgCode
-					WHERE a.stuID = ?
-                    AND a.currStatus IN('A','G')
-					GROUP BY a.acadProgCode,a.stuID
-					HAVING a.stuID = ?", [ $stu_id, $stu_id]
+        $sacp = $app->db->query("SELECT
+                        sacp.acadProgCode,sacp.currStatus,b.acadProgTitle,b.programDesc,
+        				GROUP_CONCAT(DISTINCT sacp.acadProgCode SEPARATOR ',') AS 'SACP',
+                        b.acadLevelCode 
+    				FROM sacp 
+					LEFT JOIN acad_program b ON sacp.acadProgCode = b.acadProgCode
+					WHERE sacp.stuID = ?
+                    AND sacp.currStatus IN('A','G')
+					GROUP BY sacp.acadProgCode,sacp.stuID
+					HAVING sacp.stuID = ?", [ $stu_id, $stu_id]
         );
-        $q = $rest->find(function($data) {
+        $q = $sacp->find(function($data) {
             $array = [];
             foreach ($data as $d) {
                 $array[] = $d;
@@ -706,13 +599,13 @@ function get_sacp($stu_id)
 
         return $q;
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -756,18 +649,96 @@ function get_stu_shis($stu_id, $field)
     $app = \Liten\Liten::getInstance();
     try {
         $shis = $app->db->hiatus()
-            ->where('endDate <= "0000-00-00"')->_and_()
-            ->where('stuID = ?', $stu_id)
+            ->where('stuID = ?', $stu_id)->_and_()
+            ->where('endDate IS NULL')->_or_()
+            ->whereLte('endDate','0000-00-00')
             ->findOne();
         return _h($shis->{$field});
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+}
+
+/**
+ * Get active SACP
+ * 
+ * Retrieve the student's active program.
+ *
+ * @since 6.3.0
+ * @return object
+ */
+function get_active_sacp($stu_id)
+{
+    $app = \Liten\Liten::getInstance();
+    try {
+        $sacp = $app->db->sacp()
+            ->where('stuID = ?', $stu_id)->_and_()
+            ->where('currStatus = "A"')
+            ->find();
+
+        return $sacp;
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+}
+
+/**
+ * Creates a new student sttr record is none exists or
+ * updates the attCreds if the student registers for a
+ * new course in the same term.
+ * 
+ * @since 6.3.0
+ * @param object $sacd Object holding the last insert into stac.
+ */
+function create_update_sttr_record($sacd)
+{
+    $app = \Liten\Liten::getInstance();
+    try {
+        $sttr = $app->db->sttr()
+            ->where('stuID = ?', _h($sacd->stuID))->_and_()
+            ->where('termCode = ?', _h($sacd->termCode))
+            ->count('id');
+
+        if ($sttr <= 0) {
+            $insert = $app->db->sttr();
+            $insert->insert([
+                'stuID' => _h($sacd->stuID),
+                'termCode' => _h($sacd->termCode),
+                'acadLevelCode' => _h($sacd->acadLevelCode),
+                'attCred' => _h($sacd->attCred)
+            ]);
+        } else {
+            $upd = $app->db->sttr()
+                ->where('stuID = ?', _h($sacd->stuID))->_and_()
+                ->where('termCode = ?', _h($sacd->termCode))
+                ->findOne();
+            $upd->set([
+                    'attCred' => _h($upd->attCred) + _h($sacd->attCred)
+                ])
+                ->update();
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -789,7 +760,7 @@ function get_stu_header($stu_id)
                 <?php if (get_persondata('personID') == $student->stuID && !hasPermission('access_dashboard')) : ?>
                     <a href="<?= get_base_url(); ?>profile/" class="heading pull-right"><?= _h($student->stuID); ?></a>
                 <?php else : ?>
-                    <a href="<?= get_base_url(); ?>stu/<?= _h($student->stuID); ?>/" class="heading pull-right"><?= (_h($student->altID) != '' ? $student->altID : $student->stuID); ?></a>
+                    <a href="<?= get_base_url(); ?>stu/<?= _h($student->stuID); ?>/" class="heading pull-right"><?= (_h($student->altID) != '' ? _h($student->altID) : _h($student->stuID)); ?></a>
                 <?php endif; ?>
             </div>
             <div class="widget-body">
@@ -798,7 +769,7 @@ function get_stu_header($stu_id)
 
                     <!-- One Fifth's Column -->
                     <div class="col-md-2">
-                        <?= getSchoolPhoto($student->stuID, $student->email1, '90'); ?>
+                        <?= get_school_photo(_h($student->stuID), _h($student->email1), '90'); ?>
                     </div>
                     <!-- // One Fifth's Column END -->
 
@@ -813,7 +784,7 @@ function get_stu_header($stu_id)
                     <!-- Three Fifth's Column -->
                     <div class="col-md-2">
                         <p><strong><?= _t('Email:'); ?></strong> <a href="mailto:<?= _h($student->email1); ?>"><?= _h($student->email1); ?></a></p>
-                        <p><strong><?= _t('Birth Date:'); ?></strong> <?= (_h($student->dob) > '0000-00-00' ? date('D, M d, o', strtotime(_h($student->dob))) : ''); ?></p>
+                        <p><strong><?= _t('Birth Date:'); ?></strong> <?= (_h($student->dob) > '0000-00-00' ? \Jenssegers\Date\Date::parse(_h($student->dob))->format('D, M d, o') : ''); ?></p>
                         <p><strong><?= _t('Status:'); ?></strong> <?= (_h($student->stuStatus) == 'A') ? _t('Active') : _t('Inactive'); ?></p>
                     </div>
                     <!-- // Three Fifth's Column END -->
@@ -828,39 +799,42 @@ function get_stu_header($stu_id)
                             <?php endif; ?>
                         </p>
                         <p><strong><?= _t('Restriction(s):'); ?></strong> 
-                            <?php $rstr = '';
+                            <?php
+                            $rest = '';
                             foreach (get_stu_restriction($student->stuID) as $v) :
 
                                 ?>
-                                <?= $rstr; ?><span data-toggle="popover" data-title="<?= _h($v['description']); ?>" data-content="Contact: <?= _h($v['deptName']); ?> <?= (_h($v['deptEmail']) != '') ? ' | ' . $v['deptEmail'] : ''; ?><?= (_h($v['deptPhone']) != '') ? ' | ' . $v['deptPhone'] : ''; ?><?= (_h($v['severity']) == 99) ? _t(' | Restricted from registering for courses.') : ''; ?>" data-placement="bottom"><a href="#"><?= _h($v['Restriction']); ?></a></span>
-        <?php $rstr = ', ';
-    endforeach;
+                                <?= $rest; ?><span data-toggle="popover" data-title="<?= _h($v['description']); ?>" data-content="Contact: <?= _h($v['deptName']); ?> <?= (_h($v['deptEmail']) != '') ? ' | ' . $v['deptEmail'] : ''; ?><?= (_h($v['deptPhone']) != '') ? ' | ' . $v['deptPhone'] : ''; ?><?= (_h($v['severity']) == 99) ? _t(' | Restricted from registering for courses.') : ''; ?>" data-placement="bottom"><a href="#"><?= _h($v['Restriction']); ?></a></span>
+                                <?php
+                                $rest = ', ';
+                            endforeach;
 
-    ?>
+                            ?>
                         </p>
-                        <p><strong><?= _t('Entry Date:'); ?></strong> <?= date('D, M d, o', strtotime(_h($student->stuAddDate))); ?></p>
+                        <p><strong><?= _t('Entry Date:'); ?></strong> <?= \Jenssegers\Date\Date::parse(_h($student->stuAddDate))->format('D, M d, o'); ?></p>
                     </div>
                     <!-- // Four Fifth's Column END -->
 
                     <!-- Five Fifth's Column -->
                     <div class="col-md-2">
                         <p><strong><?= _t('SACP:'); ?></strong> 
-                            <?php $sacp = '';
+                            <?php
+                            $sacp = '';
                             foreach (get_sacp($student->stuID) as $v) :
 
                                 ?>
-        <?= $sacp; ?><span data-toggle="popover" data-title="<?= _h($v['acadProgTitle']); ?> (<?= (_h($v['currStatus']) == 'A' ? _t('Active') : _t('Graduated')); ?>)" data-content="<?= _h($v['programDesc']); ?>" data-placement="bottom"><a href="#"><?= _h($v['SACP']); ?></a></span>
-        <?php
-        $sacp = ', ';
-    endforeach;
+                                <?= $sacp; ?><span data-toggle="popover" data-title="<?= _h($v['acadProgTitle']); ?> (<?= (_h($v['currStatus']) == 'A' ? _t('Active') : _t('Graduated')); ?>)" data-content="<?= _h($v['programDesc']); ?>" data-placement="bottom"><a href="#"><?= _h($v['SACP']); ?></a></span>
+                                <?php
+                                $sacp = ', ';
+                            endforeach;
 
-    ?>
+                            ?>
                         </p>
                         <p><strong><?= _t('Admit Status:'); ?></strong> 
-
+                            <?= get_admit_status($student->stuID); ?>
                         </p>
                         <p><strong><?= _t('Hiatus:'); ?></strong> 
-                            <span data-toggle="popover" data-title="<?= get_shis_name(get_stu_shis(_h($student->stuID), 'shisCode')); ?>" data-content="Start Date: <?= get_stu_shis(_h($student->stuID), 'startDate'); ?> | End Date: <?= (get_stu_shis(_h($student->stuID), 'endDate') <= '0000-00-00' ? '' : get_stu_shis(_h($student->stuID), 'endDate')); ?>" data-placement="bottom"><a href="#"><?= get_stu_shis(_h($student->stuID), 'shisCode'); ?></a></span>
+                            <span data-toggle="popover" data-title="<?= get_shis_name(get_stu_shis(_h($student->stuID), 'code')); ?>" data-content="Start Date: <?= get_stu_shis(_h($student->stuID), 'startDate'); ?> | End Date: <?= (get_stu_shis(_h($student->stuID), 'endDate') <= '0000-00-00' ? '' : get_stu_shis(_h($student->stuID), 'endDate')); ?>" data-placement="bottom"><a href="#"><?= get_stu_shis(_h($student->stuID), 'code'); ?></a></span>
                         </p>
                     </div>
                     <!-- // Five Fifth's Column END -->
@@ -884,16 +858,8 @@ function get_stu_header($stu_id)
                 <!-- // Modal heading END -->
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <p><?= _t('"FERPA gives parents certain rights with respect to their children\'s education records. 
-                These rights transfer to the student when he or she reaches the age of 18 or attends a school beyond 
-                the high school level. Students to whom the rights have transferred are \'eligible students.\'"'); ?></p>
-                    <p><?=
-                    _t('If the FERPA restriction states "Yes", then the student has requested that none of their 
-                information be given out without their permission. To get a better understanding of FERPA, visit 
-                the U.S. DOE\'s website @ ') .
-                    '<a href="http://www2.ed.gov/policy/gen/guid/fpco/ferpa/index.html">http://www2.ed.gov/policy/gen/guid/fpco/ferpa/index.html</a>.';
-
-                    ?></p>
+                    <p><?= _t('"FERPA gives parents certain rights with respect to their children\'s education records. These rights transfer to the student when he or she reaches the age of 18 or attends a school beyond the high school level. Students to whom the rights have transferred are \'eligible students.\'"'); ?></p>
+                    <p><?= sprintf(_t('If the FERPA restriction states "Yes", then the student has requested that none of their information be given out without their permission. To get a better understanding of FERPA, visit the U.S. DOE\'s website @ %s.'), '<a href="http://www2.ed.gov/policy/gen/guid/fpco/ferpa/index.html">http://www2.ed.gov/policy/gen/guid/fpco/ferpa/index.html</a>'); ?></p>
                 </div>
                 <!-- // Modal body END -->
                 <!-- Modal footer -->

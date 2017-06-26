@@ -664,11 +664,11 @@ function admin_head()
 }
 
 /**
- * Fires the myet_head action.
+ * Fires the myetsis_head action.
  *
  * @since 1.0.0
  */
-function myet_head()
+function myetsis_head()
 {
     $app = \Liten\Liten::getInstance();
     /**
@@ -677,7 +677,7 @@ function myet_head()
      *
      * @since 1.0.0
      */
-    $app->hook->do_action('myet_head');
+    $app->hook->do_action('myetsis_head');
 }
 
 /**
@@ -703,7 +703,7 @@ function footer()
  *
  * @since 6.1.12
  */
-function myet_footer()
+function myetsis_footer()
 {
     $app = \Liten\Liten::getInstance();
     /**
@@ -712,7 +712,7 @@ function myet_footer()
      *
      * @since 6.1.12
      */
-    $app->hook->do_action('myet_footer');
+    $app->hook->do_action('myetsis_footer');
 }
 
 /**
@@ -791,9 +791,9 @@ function dashboard_student_count()
     try {
         $stu = $app->db->student()
             ->select('COUNT(student.stuID) as count')
-            ->_join('stu_program', 'student.stuID = stu_program.stuID')
+            ->_join('sacp', 'student.stuID = sacp.stuID')
             ->where('student.status = "A"')->_and_()
-            ->where('stu_program.currStatus = "A"');
+            ->where('sacp.currStatus = "A"');
         $q = $stu->find(function ($data) {
             $array = [];
             foreach ($data as $d) {
@@ -814,13 +814,13 @@ function dashboard_student_count()
         $stuCount .= '</div>';
         echo $app->hook->apply_filter('dashboard_student_count', $stuCount);
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -835,7 +835,9 @@ function dashboard_course_count()
     $app = \Liten\Liten::getInstance();
     try {
         $count = $app->db->course()
-            ->where('course.currStatus = "A" AND course.endDate = "0000-00-00"')
+            ->where('course.currStatus = "A"')->_and_()
+            ->where('course.endDate IS NULL')->_or_()
+            ->whereLte('course.endDate','0000-00-00')
             ->count('course.courseID');
 
         $crseCount = '<div class="col-md-4">';
@@ -847,13 +849,13 @@ function dashboard_course_count()
         $crseCount .= '</div>';
         echo $app->hook->apply_filter('dashboard_course_count', $crseCount);
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -868,8 +870,10 @@ function dashboard_acadProg_count()
     $app = \Liten\Liten::getInstance();
     try {
         $count = $app->db->acad_program()
-            ->where('acad_program.currStatus = "A" AND acad_program.endDate = "0000-00-00"')
-            ->count('acad_program.acadProgID');
+            ->where('acad_program.currStatus = "A"')->_and_()
+            ->where('acad_program.endDate IS NULL')->_or_()
+            ->whereLte('acad_program.endDate','0000-00-00')
+            ->count('acad_program.id');
 
         $progCount = '<div class="col-md-4">';
         $progCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
@@ -880,13 +884,13 @@ function dashboard_acadProg_count()
         $progCount .= '</div>';
         echo $app->hook->apply_filter('dashboard_acadProg_count', $progCount);
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -907,7 +911,7 @@ function show_update_message()
       $update->setUpdateUrl('https://etsis.s3.amazonaws.com/core/1.1/update-check');
 
       // Optional:
-      $update->addLogHandler(new Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/core-update.' . date('m-d-Y') . '.txt'));
+      $update->addLogHandler(new Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/core-update.' . \Jenssegers\Date\Date::now()->format('m-d-Y') . '.txt'));
       $update->setCache(new Desarrolla2\Cache\Adapter\File(APP_PATH . 'tmp/cache'), 3600);
       if ($update->checkUpdate() !== false) {
       if ($update->newVersionAvailable()) {
@@ -1133,60 +1137,6 @@ function address_status_select($status = NULL)
 }
 
 /**
- * Acad Level select: shows general list of academic levels and
- * if $levelCode is not NULL, shows the academic level attached
- * to a particular record.
- *
- * @since 1.0.0
- * @param string $levelCode            
- * @return string Returns the record key if selected is true.
- */
-function acad_level_select($levelCode = null, $readonly = null, $required = '')
-{
-    $app = \Liten\Liten::getInstance();
-
-    $select = '<select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"' . $readonly . $required . '>
-            <option value="">&nbsp;</option>
-            <option value="NA"' . selected($levelCode, 'NA', false) . '>N/A Not Applicable</option>
-            <option value="CE"' . selected($levelCode, 'CE', false) . '>CE Continuing Education</option>
-            <option value="CTF"' . selected($levelCode, 'CTF', false) . '>CTF Certificate</option>
-            <option value="UG"' . selected($levelCode, 'UG', false) . '>UG Undergraduate</option>
-            <option value="GR"' . selected($levelCode, 'GR', false) . '>GR Graduate</option>
-            <option value="DIP"' . selected($levelCode, 'DIP', false) . '>DIP Diploma</option>
-            <option value="PR"' . selected($levelCode, 'PR', false) . '>PR Professional</option>
-            <option value="PhD"' . selected($levelCode, 'PhD', false) . '>PhD Doctorate</option>
-            </select>';
-    return $app->hook->apply_filter('acad_level', $select, $levelCode);
-}
-
-/**
- * Fee acad Level select: shows general list of academic levels and
- * if $levelCode is not NULL, shows the academic level attached
- * to a particular record.
- *
- * @since 4.1.7
- * @param string $levelCode            
- * @return string Returns the record key if selected is true.
- */
-function fee_acad_level_select($levelCode = null)
-{
-    $app = \Liten\Liten::getInstance();
-
-    $select = '<select name="acadLevelCode" class="form-control">
-            <option value="">&nbsp;</option>
-            <option value="NA"' . selected($levelCode, 'NA', false) . '>N/A Not Applicable</option>
-            <option value="CE"' . selected($levelCode, 'CE', false) . '>CE Continuing Education</option>
-            <option value="CTF"' . selected($levelCode, 'CTF', false) . '>CTF Certificate</option>
-            <option value="UG"' . selected($levelCode, 'UG', false) . '>UG Undergraduate</option>
-            <option value="GR"' . selected($levelCode, 'GR', false) . '>GR Graduate</option>
-            <option value="DIP"' . selected($levelCode, 'DIP', false) . '>DIP Diploma</option>
-            <option value="PR"' . selected($levelCode, 'PR', false) . '>PR Professional</option>
-            <option value="PhD"' . selected($levelCode, 'PhD', false) . '>PhD Doctorate</option>
-            </select>';
-    return $app->hook->apply_filter('fee_acad_level', $select, $levelCode);
-}
-
-/**
  * Status dropdown: shows general list of statuses and
  * if $status is not NULL, shows the current status
  * for a particular record.
@@ -1258,34 +1208,6 @@ function person_type_select($type = NULL)
 }
 
 /**
- * Course Level dropdown: shows general list of course levels and
- * if $levelCode is not NULL, shows the course level attached
- * to a particular record.
- *
- * @since 1.0.0
- * @param string $levelCode            
- * @return string Returns the record key if selected is true.
- */
-function course_level_select($levelCode = NULL, $readonly = null)
-{
-    $app = \Liten\Liten::getInstance();
-
-    $select = '<select name="courseLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required' . $readonly . '>
-			<option value="">&nbsp;</option>
-	    	<option value="100"' . selected($levelCode, '100', false) . '>100 Course Level</option>
-			<option value="200"' . selected($levelCode, '200', false) . '>200 Course Level</option>
-			<option value="300"' . selected($levelCode, '300', false) . '>300 Course Level</option>
-			<option value="400"' . selected($levelCode, '400', false) . '>400 Course Level</option>
-			<option value="500"' . selected($levelCode, '500', false) . '>500 Course Level</option>
-			<option value="600"' . selected($levelCode, '600', false) . '>600 Course Level</option>
-			<option value="700"' . selected($levelCode, '700', false) . '>700 Course Level</option>
-			<option value="800"' . selected($levelCode, '800', false) . '>800 Course Level</option>
-			<option value="900"' . selected($levelCode, '900', false) . '>900 Course Level</option>
-		    </select>';
-    return $app->hook->apply_filter('course_level', $select, $levelCode);
-}
-
-/**
  * Instructor method select: shows general list of instructor methods and
  * if $method is not NULL, shows the instructor method
  * for a particular course section.
@@ -1316,11 +1238,11 @@ function instructor_method($method = NULL)
  * if $status is not NULL, shows the status
  * for a particular student course section record.
  *
- * @since 1.0.0
+ * @since 6.3.0
  * @param string $status            
  * @return string Returns the record status if selected is true.
  */
-function stu_course_sec_status_select($status = NULL, $readonly = '')
+function stcs_status_select($status = NULL, $readonly = '')
 {
     $app = \Liten\Liten::getInstance();
 
@@ -1332,7 +1254,7 @@ function stu_course_sec_status_select($status = NULL, $readonly = '')
                 <option value="W"' . selected($status, 'W', false) . '>' . _t('W Withdrawn') . '</option>
                 <option value="C"' . selected($status, 'C', false) . '>' . _t('C Cancelled') . '</option>
                 </select>';
-    return $app->hook->apply_filter('stu_course_sec_status', $select, $status);
+    return $app->hook->apply_filter('stcs_status', $select, $status);
 }
 
 /**
@@ -1340,11 +1262,11 @@ function stu_course_sec_status_select($status = NULL, $readonly = '')
  * statuses and if $status is not NULL, shows the status
  * for a particular student program record.
  *
- * @since 1.0.0
+ * @since 6.3.0
  * @param string $status            
  * @return string Returns the record status if selected is true.
  */
-function stu_prog_status_select($status = NULL)
+function sacp_status_select($status = NULL)
 {
     $app = \Liten\Liten::getInstance();
 
@@ -1356,7 +1278,7 @@ function stu_prog_status_select($status = NULL)
                 <option value="C"' . selected($status, 'C', false) . '>' . _t('C Changed Mind') . '</option>
                 <option value="G"' . selected($status, 'G', false) . '>' . _t('G Graduated') . '</option>
                 </select>';
-    return $app->hook->apply_filter('stu_prog_status', $select, $status);
+    return $app->hook->apply_filter('sacp_status', $select, $status);
 }
 
 /**
@@ -1416,7 +1338,7 @@ function class_year($year = NULL)
  *
  * @since 1.0.0
  * @param string $grade            
- * @return string Returns the stu_course_sec grade if selected is true.
+ * @return string Returns the stcs grade if selected is true.
  */
 function grading_scale($grade = NULL)
 {
@@ -1438,13 +1360,13 @@ function grading_scale($grade = NULL)
         $select .= '</select>';
         return $app->hook->apply_filter('grading_scale', $select, $grade);
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -1471,13 +1393,13 @@ function grades($id, $aID)
         $select = grading_scale(_h($r['grade']));
         return $app->hook->apply_filter('grades', $select);
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -1574,7 +1496,7 @@ function nocache_headers()
  *
  * @since 6.1.12
  */
-function myet_wysiwyg_editor()
+function myetsis_wysiwyg_editor()
 {
     $app = \Liten\Liten::getInstance();
 
@@ -1587,11 +1509,11 @@ function myet_wysiwyg_editor()
             "searchreplace visualblocks code fullscreen",
             "insertdatetime media table contextmenu paste"
         ],
-        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image' . $app->hook->do_action('myet_wysiwyg_editor_toolbar') . '",
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image' . $app->hook->do_action('myetsis_wysiwyg_editor_toolbar') . '",
         autosave_ask_before_unload: false
     });
     </script>' . "\n";
-    return $app->hook->apply_filter('myet_wysiwyg_editor', $editor);
+    return $app->hook->apply_filter('myetsis_wysiwyg_editor', $editor);
 }
 
 /**
@@ -1720,13 +1642,13 @@ function acad_program_select($progCode = null)
 
         return $app->hook->apply_filter('academic_program', $query, $progCode);
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -1866,7 +1788,7 @@ function _etsis_myetsis_router()
 {
     $app = \Liten\Liten::getInstance();
 
-    $router = $app->config('routers_dir') . 'myet.router.php';
+    $router = $app->config('routers_dir') . 'myetsis.router.php';
     if (!$app->hook->has_filter('myetsis_router')) {
         require($router);
     }
@@ -1934,10 +1856,22 @@ function etsis_enqueue_script()
     $app = \Liten\Liten::getInstance();
     echo $app->asset->enqueue_script();
 }
+
+/**
+ * Shows an error message when system is in DEV mode.
+ * 
+ * @since 6.3.0
+ */
+function etsis_dev_mode()
+{
+    if (APP_ENV === 'DEV') {
+        echo '<div class="alert dismissable alert-danger center sticky">'._t('Your system is currently in DEV mode. Please remember to set your system back to PROD mode after testing. When PROD mode is set, this warning message will disappear.').'</div>';
+    }
+}
 $app->hook->add_action('etsis_dashboard_head', 'head_release_meta', 5);
 $app->hook->add_action('etsis_dashboard_head', 'etsis_enqueue_style', 1);
 $app->hook->add_action('etsis_dashboard_head', 'etsis_notify_style', 2);
-$app->hook->add_action('myet_head', 'head_release_meta', 5);
+$app->hook->add_action('myetsis_head', 'head_release_meta', 5);
 $app->hook->add_action('etsis_dashboard_footer', 'etsis_notify_script', 20);
 $app->hook->add_action('etsis_dashboard_footer', 'etsis_enqueue_script', 5);
 $app->hook->add_action('release', 'foot_release', 5);
@@ -1950,11 +1884,16 @@ $app->hook->add_action('activated_plugin', 'etsis_plugin_activate_message', 5, 1
 $app->hook->add_action('deactivated_plugin', 'etsis_plugin_deactivate_message', 5, 1);
 $app->hook->add_action('login_form_top', 'etsis_login_form_show_message', 5);
 $app->hook->add_action('execute_reg_rest_rule', 'etsis_reg_rest_rule', 5, 1);
-$app->hook->add_filter('the_myet_page_content', 'etsis_autop');
-$app->hook->add_filter('the_myet_page_content', 'parsecode_unautop');
-$app->hook->add_filter('the_myet_page_content', 'do_parsecode', 5);
-$app->hook->add_filter('the_myet_welcome_message', 'etsis_autop');
-$app->hook->add_filter('the_myet_welcome_message', 'parsecode_unautop');
-$app->hook->add_filter('the_myet_welcome_message', 'do_parsecode', 5);
+$app->hook->add_action('post_save_myetsis_reg', 'create_update_sttr_record', 5, 1);
+$app->hook->add_action('post_rgn_stu_crse_reg', 'create_update_sttr_record', 5, 1);
+$app->hook->add_action('post_brgn_stu_crse_reg', 'create_update_sttr_record', 5, 1);
+$app->hook->add_action('dashboard_admin_notices', 'etsis_dev_mode', 5);
+$app->hook->add_action('myetsis_admin_notices', 'etsis_dev_mode', 5);
+$app->hook->add_filter('the_myetsis_page_content', 'etsis_autop');
+$app->hook->add_filter('the_myetsis_page_content', 'parsecode_unautop');
+$app->hook->add_filter('the_myetsis_page_content', 'do_parsecode', 5);
+$app->hook->add_filter('the_myetsis_welcome_message', 'etsis_autop');
+$app->hook->add_filter('the_myetsis_welcome_message', 'parsecode_unautop');
+$app->hook->add_filter('the_myetsis_welcome_message', 'do_parsecode', 5);
 $app->hook->add_filter('etsis_authenticate_person', 'etsis_authenticate', 5, 3);
 $app->hook->add_filter('etsis_auth_cookie', 'etsis_set_auth_cookie', 5, 2);

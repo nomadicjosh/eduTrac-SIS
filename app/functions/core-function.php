@@ -10,7 +10,7 @@ if (!defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-define('CURRENT_RELEASE', '6.2.0');
+define('CURRENT_RELEASE', '6.3.0-RC3');
 define('RELEASE_TAG', trim(_file_get_contents(BASE_PATH . 'RELEASE')));
 
 $app = \Liten\Liten::getInstance();
@@ -24,6 +24,7 @@ use app\src\Core\Exception\IOException;
 use Cascade\Cascade;
 use Jenssegers\Date\Date;
 use PDOException as ORMException;
+use Respect\Validation\Validator as v;
 
 /**
  * Retrieves eduTrac site root url.
@@ -96,7 +97,7 @@ function _t($msgid, $domain = '')
     }
 }
 
-function getPathInfo($relative)
+function get_path_info($relative)
 {
     $app = \Liten\Liten::getInstance();
     $base = basename(BASE_PATH);
@@ -229,10 +230,10 @@ function resize_image($width, $height, $target)
     }
 
     // gets the new value and applies the percentage, then rounds the value
-    $width = round($width * $percentage);
-    $height = round($height * $percentage);
+    $new_width = round($width * $percentage);
+    $new_height = round($height * $percentage);
     // returns the new sizes in html image tag format...this is so you can plug this function inside an image tag so that it will set the image to the correct size, without putting a whole script into the tag.
-    return 'width="' . $width . '" height="' . $height . '"';
+    return 'width="' . $new_width . '" height="' . $new_height . '"';
 }
 
 // An alternative function of using the echo command.
@@ -575,13 +576,13 @@ function etsis_set_password($password, $person_id)
         $q->password = $hash;
         $q->where('personID = ?', $person_id)->update();
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 }
@@ -650,7 +651,7 @@ function get_age($birthdate = '0000-00-00')
     $date = new Date($birthdate);
     $age = $date->age;
 
-    if ($birthdate <= '0000-00-00' || $age == date('Y')) {
+    if ($birthdate <= '0000-00-00' || $age == \Jenssegers\Date\Date::now()->format('Y')) {
         return _t('Unknown');
     }
     return $age;
@@ -804,7 +805,7 @@ function forbidden_keyword()
 function the_myetsis_welcome_message()
 {
     $app = \Liten\Liten::getInstance();
-    $welcome_message = _escape(get_option('myet_welcome_message'));
+    $welcome_message = _escape(get_option('myetsis_welcome_message'));
     $welcome_message = $app->hook->apply_filter('the_myetsis_welcome_message', $welcome_message);
     $welcome_message = str_replace(']]>', ']]&gt;', $welcome_message);
     return $welcome_message;
@@ -931,16 +932,6 @@ function subdomain_as_directory()
         $subdomain = 'www';
     }
     return $subdomain;
-}
-
-/**
- * Returns the directory based on subdomain.
- *
- * @return mixed
- */
-function cronDir()
-{
-    return APP_PATH . 'views/cron/' . subdomain_as_directory() . '/';
 }
 
 /**
@@ -1634,7 +1625,7 @@ function get_screen($screen)
         'STAF' => 'staff',
         'TRAN' => 'stu/tran',
         'SLR' => 'form/student-load-rule',
-        'RSTR' => 'form/rstr-code',
+        'RSTR' => 'form/rest',
         'GRSC' => 'form/grade-scale',
         'SROS' => 'sect/sros',
         'EXTR' => 'crse/extr',
@@ -1717,4 +1708,243 @@ function process_email_html($text, $title)
     $message = $app->hook->apply_filter('email_template_body', template_vars_replacement($body));
 
     return $message;
+}
+
+/**
+ * Retrieve the domain name.
+ * 
+ * @since 6.3.0
+ * @return string
+ */
+function get_domain_name()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $server_name = strtolower($app->req->server['SERVER_NAME']);
+    if (substr($server_name, 0, 4) == 'www.') {
+        $server_name = substr($server_name, 4);
+    }
+    return $server_name;
+}
+
+/**
+ * SQL Like operator in PHP.
+ * 
+ * Returns true if match else false.
+ * 
+ * @since 6.3.0
+ * @param string $pattern
+ * @param string $subject
+ * @return bool
+ */
+function php_like($pattern, $subject)
+{
+    $match = str_replace('%', '.*', preg_quote($pattern, '/'));
+    return (bool) preg_match("/^{$match}$/i", $subject);
+}
+
+/**
+ * Url shortening function.
+ * 
+ * @since 6.3.0
+ * @param string $url URL
+ * @param int $length Characters to check against.
+ * @return string
+ */
+function etsis_url_shorten($url, $length = 80)
+{
+    if (strlen($url) > $length) {
+        $strlen = $length - 30;
+        $first = substr($url, 0, $strlen);
+        $last = substr($url, -15);
+        $short_url = $first . "[ ... ]" . $last;
+        return $short_url;
+    } else {
+        return $url;
+    }
+}
+
+/**
+ * Adds label to the cron's status.
+ * 
+ * @since 6.3.0
+ * @param string $status
+ * @return string
+ */
+function etsis_cron_status_label($status)
+{
+    $label = [
+        1 => 'label-success',
+        0 => 'label-danger'
+    ];
+
+    return $label[$status];
+}
+
+/**
+ * Redirects to another page.
+ * 
+ * @since 6.3.0
+ * @param string $location The path to redirect to
+ * @param int $status Status code to use
+ * @return bool False if $location is not set
+ */
+function etsis_redirect($location, $status = 302)
+{
+    $app = \Liten\Liten::getInstance();
+    /**
+     * Filters the redirect location.
+     *
+     * @since 6.3.0
+     *
+     * @param string $location The path to redirect to.
+     * @param int    $status   Status code to use.
+     */
+    $_location = $app->hook->apply_filter('etsis_redirect', $location, $status);
+    /**
+     * Filters the redirect status code.
+     *
+     * @since 6.3.0
+     *
+     * @param int    $status   Status code to use.
+     * @param string $_location The path to redirect to.
+     */
+    $_status = $app->hook->apply_filter('etsis_redirect_status', $status, $_location);
+
+    if (!$_location)
+        return false;
+
+    header("Location: $_location", true, $_status);
+    return true;
+}
+
+/**
+ * Retrieves a modified URL query string.
+ * 
+ * @since 6.3.0
+ * @param string $key A query variable key.
+ * @param string $value A query variable value, or a URL to act upon.
+ * @param string $url A URL to act upon.
+ * @return string
+ */
+function add_query_arg($key, $value, $url)
+{
+    $app = \Liten\Liten::getInstance();
+    $uri = parse_url($url);
+    $query = isset($uri['query']) ? $uri['query'] : '';
+    parse_str($query, $params);
+    $params[$key] = $value;
+    $query = http_build_query($params);
+    $result = '';
+    if ($uri['scheme']) {
+        $result .= $uri['scheme'] . ':';
+    }
+    if ($uri['host']) {
+        $result .= '//' . $uri['host'];
+    }
+    if ($uri['port']) {
+        $result .= $app->hook->apply_filter('query_arg_port', ':' . $uri['port']);
+    }
+    if ($uri['path']) {
+        $result .= $uri['path'];
+    }
+    if ($query) {
+        $result .= '?' . $query;
+    }
+    return $result;
+}
+
+/**
+ * Retrieves the login url.
+ * 
+ * @since 6.3.0
+ * @param string $redirect Path to redirect to on log in.
+ * @return string
+ */
+function etsis_login_url($redirect = '')
+{
+    $app = \Liten\Liten::getInstance();
+    $login_url = get_base_url() . 'login' . '/';
+
+    if (!empty($redirect)) {
+        $login_url = add_query_arg('redirect_to', $redirect, $login_url);
+    }
+
+    /**
+     * Validates & protects redirect url against XSS attacks.
+     * 
+     * @since 6.3.0
+     */
+    if (!empty($redirect) && !v::filterVar(FILTER_VALIDATE_URL)->validate($redirect)) {
+        $login_url = get_base_url() . 'login' . '/';
+    }
+    /**
+     * Filters the login URL.
+     *
+     * @since 6.3.0
+     *
+     * @param string $login_url    The login URL. Not HTML-encoded.
+     * @param string $redirect     The path to redirect to on login, if supplied.
+     */
+    return $app->hook->apply_filter('login_url', $login_url, $redirect);
+}
+
+/**
+ * Create a backup of etSIS install.
+ * 
+ * @since 6.3.0
+ * @param type $source Path/directory to zip.
+ * @param type $destination Target for zipped file.
+ * @return mixed
+ */
+function etsis_system_backup($source, $destination)
+{
+    if (!extension_loaded('zip') || !file_exists($source)) {
+        return false;
+    }
+
+    $zip = new \ZipArchive();
+    if (!$zip->open($destination, ZIPARCHIVE::CREATE)) {
+        return false;
+    }
+
+    $source = str_replace('\\', '/', realpath($source));
+
+    if (is_dir($source) === true) {
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($source), \RecursiveIteratorIterator::SELF_FIRST);
+
+        foreach ($files as $file) {
+            $file = str_replace('\\', '/', $file);
+
+            // Ignore "." and ".." folders
+            if (in_array(substr($file, strrpos($file, '/') + 1), array('.', '..')))
+                continue;
+
+            $file = realpath($file);
+
+            if (is_dir($file) === true) {
+                $zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
+            } else if (is_file($file) === true) {
+                $zip->addFromString(str_replace($source . '/', '', $file), _file_get_contents($file));
+            }
+        }
+    } else if (is_file($source) === true) {
+        $zip->addFromString(basename($source), _file_get_contents($source));
+    }
+
+    return $zip->close();
+}
+
+/**
+ * Used to retrieve values within a range.
+ * 
+ * @since 6.3.0
+ * @param mixed $val
+ * @param mixed $min
+ * @param mixed $max
+ * @return boolean
+ */
+function etsis_between($val, $min, $max)
+{
+    return ($val - $min) * ($val - $max) <= 0;
 }

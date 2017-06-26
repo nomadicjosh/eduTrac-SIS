@@ -672,6 +672,7 @@ $app->asset->registerScriptCollection('upload', ['admin/forms/elements/jasny-fil
 $app->asset->registerScriptCollection('highcharts', ['admin/Highcharts/highcharts.js', 'admin/Highcharts/modules/exporting.js', 'admin/Highcharts/highcharts-conf.js']);
 $app->asset->registerScriptCollection('bootstrap-datepicker', ['bootstrap-datepicker/js/bootstrap-datepicker.js']);
 $app->asset->registerScriptCollection('jquery-ui', ['jquery-ui/jquery-ui.min.js']);
+$app->asset->registerScriptCollection('momentjs', ['momentjs/moment.js']);
 
 require( APP_PATH . 'functions' . DS . 'global-function.php' );
 require( APP_PATH . 'functions' . DS . 'notify-function.php' );
