@@ -446,6 +446,31 @@ class Filesystem
         $startPathArr = explode('/', trim($startPath, '/'));
         $endPathArr = explode('/', trim($endPath, '/'));
 
+        if ('/' !== $startPath[0]) {
+            array_shift($startPathArr);
+        }
+
+        if ('/' !== $endPath[0]) {
+            array_shift($endPathArr);
+        }
+
+        $normalizePathArray = function ($pathSegments) {
+            $result = array();
+
+            foreach ($pathSegments as $segment) {
+                if ('..' === $segment) {
+                    array_pop($result);
+                } else {
+                    $result[] = $segment;
+                }
+            }
+
+            return $result;
+        };
+
+        $startPathArr = $normalizePathArray($startPathArr);
+        $endPathArr = $normalizePathArray($endPathArr);
+
         // Find for which directory the common path stops
         $index = 0;
         while (isset($startPathArr[$index]) && isset($endPathArr[$index]) && $startPathArr[$index] === $endPathArr[$index]) {
@@ -624,7 +649,7 @@ class Filesystem
      * @param string $filename The file to be written to
      * @param string $content  The data to write into the file
      *
-     * @throws IOException If the file cannot be written to.
+     * @throws IOException If the file cannot be written to
      */
     public function dumpFile($filename, $content)
     {
@@ -646,8 +671,34 @@ class Filesystem
             throw new IOException(sprintf('Failed to write file "%s".', $filename), 0, null, $filename);
         }
 
-        @chmod($tmpFile, 0666 & ~umask());
+        @chmod($tmpFile, file_exists($filename) ? fileperms($filename) : 0666 & ~umask());
+
         $this->rename($tmpFile, $filename, true);
+    }
+
+    /**
+     * Appends content to an existing file.
+     *
+     * @param string $filename The file to which to append content
+     * @param string $content  The content to append
+     *
+     * @throws IOException If the file is not writable
+     */
+    public function appendToFile($filename, $content)
+    {
+        $dir = dirname($filename);
+
+        if (!is_dir($dir)) {
+            $this->mkdir($dir);
+        }
+
+        if (!is_writable($dir)) {
+            throw new IOException(sprintf('Unable to write to the "%s" directory.', $dir), 0, null, $dir);
+        }
+
+        if (false === @file_put_contents($filename, $content, FILE_APPEND)) {
+            throw new IOException(sprintf('Failed to write file "%s".', $filename), 0, null, $filename);
+        }
     }
 
     /**

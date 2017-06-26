@@ -41,12 +41,12 @@ class ServiceContext extends InstanceContext {
      */
     public function __construct(Version $version, $sid) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array(
             'sid' => $sid,
         );
-        
+
         $this->uri = '/Services/' . rawurlencode($sid) . '';
     }
 
@@ -57,13 +57,13 @@ class ServiceContext extends InstanceContext {
      */
     public function fetch() {
         $params = Values::of(array());
-        
+
         $payload = $this->version->fetch(
             'GET',
             $this->uri,
             $params
         );
-        
+
         return new ServiceInstance(
             $this->version,
             $payload,
@@ -88,7 +88,7 @@ class ServiceContext extends InstanceContext {
      */
     public function update($options = array()) {
         $options = new Values($options);
-        
+
         $data = Values::of(array(
             'FriendlyName' => $options['friendlyName'],
             'DefaultServiceRoleSid' => $options['defaultServiceRoleSid'],
@@ -158,15 +158,17 @@ class ServiceContext extends InstanceContext {
             'Webhooks.OnMemberRemoved.Url' => $options['webhooksOnMemberRemovedUrl'],
             'Webhooks.OnMemberRemoved.Method' => $options['webhooksOnMemberRemovedMethod'],
             'Webhooks.OnMemberRemoved.Format' => $options['webhooksOnMemberRemovedFormat'],
+            'Limits.ChannelMembers' => $options['limitsChannelMembers'],
+            'Limits.UserChannels' => $options['limitsUserChannels'],
         ));
-        
+
         $payload = $this->version->update(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new ServiceInstance(
             $this->version,
             $payload,
@@ -186,7 +188,7 @@ class ServiceContext extends InstanceContext {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->_channels;
     }
 
@@ -202,7 +204,7 @@ class ServiceContext extends InstanceContext {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->_roles;
     }
 
@@ -218,7 +220,7 @@ class ServiceContext extends InstanceContext {
                 $this->solution['sid']
             );
         }
-        
+
         return $this->_users;
     }
 
@@ -234,7 +236,7 @@ class ServiceContext extends InstanceContext {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown subresource ' . $name);
     }
 
@@ -251,7 +253,7 @@ class ServiceContext extends InstanceContext {
         if (method_exists($property, 'getContext')) {
             return call_user_func_array(array($property, 'getContext'), $arguments);
         }
-        
+
         throw new TwilioException('Resource does not have a context');
     }
 

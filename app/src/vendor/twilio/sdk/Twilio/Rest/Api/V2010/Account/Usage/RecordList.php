@@ -54,12 +54,12 @@ class RecordList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array(
             'accountSid' => $accountSid,
         );
-        
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Usage/Records.json';
     }
 
@@ -84,9 +84,9 @@ class RecordList extends ListResource {
      */
     public function stream($options = array(), $limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($options, $limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -130,13 +130,29 @@ class RecordList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new RecordPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of RecordInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of RecordInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new RecordPage($this->version, $response, $this->solution);
     }
 
@@ -150,7 +166,7 @@ class RecordList extends ListResource {
                 $this->solution['accountSid']
             );
         }
-        
+
         return $this->_allTime;
     }
 
@@ -164,7 +180,7 @@ class RecordList extends ListResource {
                 $this->solution['accountSid']
             );
         }
-        
+
         return $this->_daily;
     }
 
@@ -178,7 +194,7 @@ class RecordList extends ListResource {
                 $this->solution['accountSid']
             );
         }
-        
+
         return $this->_lastMonth;
     }
 
@@ -192,7 +208,7 @@ class RecordList extends ListResource {
                 $this->solution['accountSid']
             );
         }
-        
+
         return $this->_monthly;
     }
 
@@ -206,7 +222,7 @@ class RecordList extends ListResource {
                 $this->solution['accountSid']
             );
         }
-        
+
         return $this->_thisMonth;
     }
 
@@ -220,7 +236,7 @@ class RecordList extends ListResource {
                 $this->solution['accountSid']
             );
         }
-        
+
         return $this->_today;
     }
 
@@ -234,7 +250,7 @@ class RecordList extends ListResource {
                 $this->solution['accountSid']
             );
         }
-        
+
         return $this->_yearly;
     }
 
@@ -248,7 +264,7 @@ class RecordList extends ListResource {
                 $this->solution['accountSid']
             );
         }
-        
+
         return $this->_yesterday;
     }
 
@@ -264,7 +280,7 @@ class RecordList extends ListResource {
             $method = 'get' . ucfirst($name);
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown subresource ' . $name);
     }
 
@@ -281,7 +297,7 @@ class RecordList extends ListResource {
         if (method_exists($property, 'getContext')) {
             return call_user_func_array(array($property, 'getContext'), $arguments);
         }
-        
+
         throw new TwilioException('Resource does not have a context');
     }
 

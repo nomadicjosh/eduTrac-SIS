@@ -102,6 +102,7 @@ class JsFunctionsScanner extends FunctionsScanner
 
                 case '(':
                     switch ($this->status()) {
+                        case 'simple-quote':
                         case 'double-quote':
                         case 'line-comment':
                         case 'block-comment':
@@ -134,6 +135,7 @@ class JsFunctionsScanner extends FunctionsScanner
                             $buffer = '';
                             continue 3;
                     }
+                    break;
 
                 case ',':
                     switch ($this->status()) {
@@ -145,6 +147,7 @@ class JsFunctionsScanner extends FunctionsScanner
                             $buffer = '';
                             continue 3;
                     }
+                    break;
 
                 case ' ':
                 case '\t':

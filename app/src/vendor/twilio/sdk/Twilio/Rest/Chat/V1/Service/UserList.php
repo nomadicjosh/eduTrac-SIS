@@ -24,12 +24,12 @@ class UserList extends ListResource {
      */
     public function __construct(Version $version, $serviceSid) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array(
             'serviceSid' => $serviceSid,
         );
-        
+
         $this->uri = '/Services/' . rawurlencode($serviceSid) . '/Users';
     }
 
@@ -42,21 +42,21 @@ class UserList extends ListResource {
      */
     public function create($identity, $options = array()) {
         $options = new Values($options);
-        
+
         $data = Values::of(array(
             'Identity' => $identity,
             'RoleSid' => $options['roleSid'],
             'Attributes' => $options['attributes'],
             'FriendlyName' => $options['friendlyName'],
         ));
-        
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new UserInstance(
             $this->version,
             $payload,
@@ -84,9 +84,9 @@ class UserList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -124,13 +124,29 @@ class UserList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new UserPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of UserInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of UserInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new UserPage($this->version, $response, $this->solution);
     }
 

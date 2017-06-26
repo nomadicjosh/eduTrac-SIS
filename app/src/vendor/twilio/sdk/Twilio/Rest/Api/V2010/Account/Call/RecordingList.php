@@ -26,13 +26,13 @@ class RecordingList extends ListResource {
      */
     public function __construct(Version $version, $accountSid, $callSid) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array(
             'accountSid' => $accountSid,
             'callSid' => $callSid,
         );
-        
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Calls/' . rawurlencode($callSid) . '/Recordings.json';
     }
 
@@ -57,9 +57,9 @@ class RecordingList extends ListResource {
      */
     public function stream($options = array(), $limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($options, $limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -103,13 +103,29 @@ class RecordingList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new RecordingPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of RecordingInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of RecordingInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new RecordingPage($this->version, $response, $this->solution);
     }
 

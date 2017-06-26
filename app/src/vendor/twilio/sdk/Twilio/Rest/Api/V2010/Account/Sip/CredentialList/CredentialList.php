@@ -24,13 +24,13 @@ class CredentialList extends ListResource {
      */
     public function __construct(Version $version, $accountSid, $credentialListSid) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array(
             'accountSid' => $accountSid,
             'credentialListSid' => $credentialListSid,
         );
-        
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/SIP/CredentialLists/' . rawurlencode($credentialListSid) . '/Credentials.json';
     }
 
@@ -54,9 +54,9 @@ class CredentialList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -94,13 +94,29 @@ class CredentialList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new CredentialPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of CredentialInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of CredentialInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new CredentialPage($this->version, $response, $this->solution);
     }
 
@@ -116,14 +132,14 @@ class CredentialList extends ListResource {
             'Username' => $username,
             'Password' => $password,
         ));
-        
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new CredentialInstance(
             $this->version,
             $payload,

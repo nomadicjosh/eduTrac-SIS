@@ -25,25 +25,25 @@ class ApplicationList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array(
             'accountSid' => $accountSid,
         );
-        
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/Applications.json';
     }
 
     /**
      * Create a new ApplicationInstance
      * 
-     * @param string $friendlyName Human readable description of this resource
+     * @param string $friendlyName The friendly_name
      * @param array|Options $options Optional Arguments
      * @return ApplicationInstance Newly created ApplicationInstance
      */
     public function create($friendlyName, $options = array()) {
         $options = new Values($options);
-        
+
         $data = Values::of(array(
             'FriendlyName' => $friendlyName,
             'ApiVersion' => $options['apiVersion'],
@@ -61,14 +61,14 @@ class ApplicationList extends ListResource {
             'SmsStatusCallback' => $options['smsStatusCallback'],
             'MessageStatusCallback' => $options['messageStatusCallback'],
         ));
-        
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new ApplicationInstance(
             $this->version,
             $payload,
@@ -97,9 +97,9 @@ class ApplicationList extends ListResource {
      */
     public function stream($options = array(), $limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($options, $limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -141,13 +141,29 @@ class ApplicationList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new ApplicationPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of ApplicationInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of ApplicationInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new ApplicationPage($this->version, $response, $this->solution);
     }
 

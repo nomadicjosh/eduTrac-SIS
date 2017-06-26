@@ -24,10 +24,10 @@ class AlertList extends ListResource {
      */
     public function __construct(Version $version) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array();
-        
+
         $this->uri = '/Alerts';
     }
 
@@ -52,9 +52,9 @@ class AlertList extends ListResource {
      */
     public function stream($options = array(), $limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($options, $limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -98,13 +98,29 @@ class AlertList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new AlertPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of AlertInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of AlertInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new AlertPage($this->version, $response, $this->solution);
     }
 

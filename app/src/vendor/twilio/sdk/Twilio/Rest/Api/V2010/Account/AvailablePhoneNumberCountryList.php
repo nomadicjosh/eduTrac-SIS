@@ -24,12 +24,12 @@ class AvailablePhoneNumberCountryList extends ListResource {
      */
     public function __construct(Version $version, $accountSid) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array(
             'accountSid' => $accountSid,
         );
-        
+
         $this->uri = '/Accounts/' . rawurlencode($accountSid) . '/AvailablePhoneNumbers.json';
     }
 
@@ -54,9 +54,9 @@ class AvailablePhoneNumberCountryList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -95,13 +95,30 @@ class AvailablePhoneNumberCountryList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new AvailablePhoneNumberCountryPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of AvailablePhoneNumberCountryInstance records from
+     * the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of AvailablePhoneNumberCountryInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new AvailablePhoneNumberCountryPage($this->version, $response, $this->solution);
     }
 

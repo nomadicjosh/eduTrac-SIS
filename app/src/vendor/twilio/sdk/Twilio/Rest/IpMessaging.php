@@ -12,16 +12,19 @@ namespace Twilio\Rest;
 use Twilio\Domain;
 use Twilio\Exceptions\TwilioException;
 use Twilio\Rest\IpMessaging\V1;
+use Twilio\Rest\IpMessaging\V2;
 
 /**
  * @property \Twilio\Rest\IpMessaging\V1 v1
- * @property \Twilio\Rest\IpMessaging\V1\CredentialList credentials
- * @property \Twilio\Rest\IpMessaging\V1\ServiceList services
- * @method \Twilio\Rest\IpMessaging\V1\CredentialContext credentials(string $sid)
- * @method \Twilio\Rest\IpMessaging\V1\ServiceContext services(string $sid)
+ * @property \Twilio\Rest\IpMessaging\V2 v2
+ * @property \Twilio\Rest\IpMessaging\V2\CredentialList credentials
+ * @property \Twilio\Rest\IpMessaging\V2\ServiceList services
+ * @method \Twilio\Rest\IpMessaging\V2\CredentialContext credentials(string $sid)
+ * @method \Twilio\Rest\IpMessaging\V2\ServiceContext services(string $sid)
  */
 class IpMessaging extends Domain {
     protected $_v1 = null;
+    protected $_v2 = null;
 
     /**
      * Construct the IpMessaging Domain
@@ -32,7 +35,7 @@ class IpMessaging extends Domain {
      */
     public function __construct(Client $client) {
         parent::__construct($client);
-        
+
         $this->baseUrl = 'https://ip-messaging.twilio.com';
     }
 
@@ -47,6 +50,16 @@ class IpMessaging extends Domain {
     }
 
     /**
+     * @return \Twilio\Rest\IpMessaging\V2 Version v2 of ip_messaging
+     */
+    protected function getV2() {
+        if (!$this->_v2) {
+            $this->_v2 = new V2($this);
+        }
+        return $this->_v2;
+    }
+
+    /**
      * Magic getter to lazy load version
      * 
      * @param string $name Version to return
@@ -58,7 +71,7 @@ class IpMessaging extends Domain {
         if (method_exists($this, $method)) {
             return $this->$method();
         }
-        
+
         throw new TwilioException('Unknown version ' . $name);
     }
 
@@ -75,38 +88,38 @@ class IpMessaging extends Domain {
         if (method_exists($this, $method)) {
             return call_user_func_array(array($this, $method), $arguments);
         }
-        
+
         throw new TwilioException('Unknown context ' . $name);
     }
 
     /**
-     * @return \Twilio\Rest\IpMessaging\V1\CredentialList 
+     * @return \Twilio\Rest\IpMessaging\V2\CredentialList 
      */
     protected function getCredentials() {
-        return $this->v1->credentials;
+        return $this->v2->credentials;
     }
 
     /**
      * @param string $sid The sid
-     * @return \Twilio\Rest\IpMessaging\V1\CredentialContext 
+     * @return \Twilio\Rest\IpMessaging\V2\CredentialContext 
      */
     protected function contextCredentials($sid) {
-        return $this->v1->credentials($sid);
+        return $this->v2->credentials($sid);
     }
 
     /**
-     * @return \Twilio\Rest\IpMessaging\V1\ServiceList 
+     * @return \Twilio\Rest\IpMessaging\V2\ServiceList 
      */
     protected function getServices() {
-        return $this->v1->services;
+        return $this->v2->services;
     }
 
     /**
      * @param string $sid The sid
-     * @return \Twilio\Rest\IpMessaging\V1\ServiceContext 
+     * @return \Twilio\Rest\IpMessaging\V2\ServiceContext 
      */
     protected function contextServices($sid) {
-        return $this->v1->services($sid);
+        return $this->v2->services($sid);
     }
 
     /**

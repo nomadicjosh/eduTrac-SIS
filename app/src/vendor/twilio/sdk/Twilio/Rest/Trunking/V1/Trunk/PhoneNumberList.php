@@ -23,12 +23,12 @@ class PhoneNumberList extends ListResource {
      */
     public function __construct(Version $version, $trunkSid) {
         parent::__construct($version);
-        
+
         // Path Solution
         $this->solution = array(
             'trunkSid' => $trunkSid,
         );
-        
+
         $this->uri = '/Trunks/' . rawurlencode($trunkSid) . '/PhoneNumbers';
     }
 
@@ -42,14 +42,14 @@ class PhoneNumberList extends ListResource {
         $data = Values::of(array(
             'PhoneNumberSid' => $phoneNumberSid,
         ));
-        
+
         $payload = $this->version->create(
             'POST',
             $this->uri,
             array(),
             $data
         );
-        
+
         return new PhoneNumberInstance(
             $this->version,
             $payload,
@@ -77,9 +77,9 @@ class PhoneNumberList extends ListResource {
      */
     public function stream($limit = null, $pageSize = null) {
         $limits = $this->version->readLimits($limit, $pageSize);
-        
+
         $page = $this->page($limits['pageSize']);
-        
+
         return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
     }
 
@@ -117,13 +117,29 @@ class PhoneNumberList extends ListResource {
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
         ));
-        
+
         $response = $this->version->page(
             'GET',
             $this->uri,
             $params
         );
-        
+
+        return new PhoneNumberPage($this->version, $response, $this->solution);
+    }
+
+    /**
+     * Retrieve a specific page of PhoneNumberInstance records from the API.
+     * Request is executed immediately
+     * 
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return \Twilio\Page Page of PhoneNumberInstance
+     */
+    public function getPage($targetUrl) {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
+
         return new PhoneNumberPage($this->version, $response, $this->solution);
     }
 

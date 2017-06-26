@@ -89,8 +89,8 @@ class HtmlView implements PerformanceResultViewInterface
     {
         return implode('; ', array(
             'position: fixed',
-            'top: 60px',
-            'left:1096px',
+            'top: 20px',
+            'left:20px',
             'box-shadow:0 0 8px #555',
             'background: #FFF',
             'padding: 5px',
@@ -106,31 +106,31 @@ class HtmlView implements PerformanceResultViewInterface
     protected function getTableCSS()
     {
         return '
-            #php-benchmark-result table {
+            table {
                 border: 0;
                 margin: 0;
                 padding: 0;
             }
-            #php-benchmark-result thead tr {
+            thead tr {
                 background: #EEE;
                 border: 0;
             }
-            #php-benchmark-result tbody tr:last-child td {
+            tbody tr:last-child td {
                 border-top: #333 solid 2px;
             }
-            #php-benchmark-result td {
+            td {
                 padding:5px 10px 5px 5px;
                 font-size: 11px;
                 border:#CCC solid 1px;
                 border:0;
             }
-            #php-benchmark-result .align-right {
+            .align-right {
                 text-align: right;
             }
-            #php-benchmark-result em {
+            em {
                 font-size:80%; color:#777
             }
-            #php-benchmark-result .footer {
+            .footer {
                 line-height: 140%;
             }
         ';

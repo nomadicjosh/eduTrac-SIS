@@ -36,6 +36,11 @@ dist: clean
 	  mv $$php.new $$php; \
 	done
 
+
+install:
+	# Composer: http://getcomposer.org/download/
+	$(COMPOSER) install
+
 vendor:
 	# Composer: http://getcomposer.org/download/
 	$(COMPOSER) install
@@ -58,7 +63,6 @@ docs-install:
 
 docs: docs-install
 	vendor/bin/apigen generate -s ./ -d docs/api --exclude="Tests/*" --exclude="vendor/*" --exclude="autoload.php" --template-theme bootstrap --main Twilio
-	sh docs-update.sh
 
 release-install:
 	pear channel-discover twilio.github.com/pear || true
