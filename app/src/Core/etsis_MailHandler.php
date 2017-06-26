@@ -70,7 +70,7 @@ class etsis_MailHandler extends MailHandler
             $headers .= sprintf("X-Mailer: eduTrac SIS %s\r\n", RELEASE_TAG);
             $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
             $body = process_email_html( $content, $subjectFormatter->format($this->getHighestRecord($records)) );
-            $message = $this->mailer->etsis_mail($this->email_to, $subjectFormatter->format($this->getHighestRecord($records)), $body, $headers);
+            $message = $this->mailer->etsisMail($this->email_to, $subjectFormatter->format($this->getHighestRecord($records)), $body, $headers);
         }
         return $message;
     }

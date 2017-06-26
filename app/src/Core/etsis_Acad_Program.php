@@ -25,7 +25,7 @@ final class etsis_Acad_Program
      *
      * @var int
      */
-    public $acadProgID;
+    public $id;
 
     /**
      * The academic program code.
@@ -191,7 +191,7 @@ final class etsis_Acad_Program
             return false;
         }
         try {
-            $q = $app->db->acad_program()->where('acadProgID = ?', $acad_prog_id);
+            $q = $app->db->acad_program()->where('id = ?', $acad_prog_id);
 
             $acad_prog = etsis_cache_get($acad_prog_id, 'prog');
             if (empty($acad_prog)) {
@@ -219,10 +219,10 @@ final class etsis_Acad_Program
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
+        } catch (ORMException $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (ORMException $e) {
+        } catch (Exception $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }

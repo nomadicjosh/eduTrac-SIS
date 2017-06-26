@@ -34,7 +34,7 @@ class etsis_Email
      * email successfully. It just only means that the method used was able to
      * process the request without any errors.
      *
-     * @since 1.0.0
+     * @since 6.3.0
      * @param string $to
      *            Recipient's email address.
      * @param string $subject
@@ -47,45 +47,17 @@ class etsis_Email
      *            Attachments to be sent with the email.
      * @return mixed
      */
-    public function et_mail($to, $subject, $message, $headers = '', $attachments = array())
-    {
-        _deprecated_class_method(__METHOD__, '6.2.0', 'etsis_mail');
-
-        return $this->etsis_mail($to, $subject, $message, $headers, $attachments);
-    }
-
-    /**
-     * Borrowed from WordPress
-     *
-     * Send mail, similar to PHP's mail
-     * A true return value does not automatically mean that the user received the
-     * email successfully. It just only means that the method used was able to
-     * process the request without any errors.
-     *
-     * @since 1.0.0
-     * @param string $to
-     *            Recipient's email address.
-     * @param string $subject
-     *            Subject of the email.
-     * @param mixed $message
-     *            The body of the email.
-     * @param mixed $headers
-     *            Email headers sent.
-     * @param mixed $attachments
-     *            Attachments to be sent with the email.
-     * @return mixed
-     */
-    public function etsis_mail($to, $subject, $message, $headers = '', $attachments = array())
+    public function etsisMail($to, $subject, $message, $headers = '', $attachments = array())
     {
         $charset = 'UTF-8';
 
         /**
-         * Filter the etsis_mail() arguments.
+         * Filter the etsisMail() arguments.
          *
          * @since 1.0.0
          *       
          * @param array $args
-         *            A compacted array of etsis_mail() arguments, including the "to" email,
+         *            A compacted array of etsisMail() arguments, including the "to" email,
          *            subject, message, headers, and attachments values.
          */
         $atts = $this->app->hook->apply_filter('etsis_mail', compact('to', 'subject', 'message', 'headers', 'attachments'));
@@ -316,12 +288,12 @@ class etsis_Email
         }
 
         /**
-         * Filter the etsis_mail() content type.
+         * Filter the etsisMail() content type.
          *
          * @since 1.0.0
          *       
          * @param string $content_type
-         *            Default etsis_mail() content type.
+         *            Default etsisMail() content type.
          */
         $content_type = $this->app->hook->apply_filter('etsis_mail_content_type', $content_type);
 
@@ -335,7 +307,7 @@ class etsis_Email
         // Set the content-type and charset
 
         /**
-         * Filter the default etsis_mail() charset.
+         * Filter the default etsisMail() charset.
          *
          * @since 1.0.0
          *       
@@ -402,183 +374,157 @@ class etsis_Email
     }
 
     /**
-     * Sends new course registration information to the registrar.
+     * When a prospects register via the eduTrac SIS self service portal, an
+     * email is sent with account login details.
      *
+     * @since 6.3.0
      * @param int $id
-     *            Student ID
-     * @param string $term
-     *            Term for which student is registering.
-     * @param string $host
-     *            Hostname of the current installation.
+     *            Person ID of the applicant.
+     * @param string $password
+     *            Login password of the new prospect.
      * @return mixed
      */
-    public function course_registration($id, $term, $host)
+    public function myetsisRegConfirm($id, $password)
     {
-        $sitename = strtolower($_SERVER['SERVER_NAME']);
-        if (substr($sitename, 0, 4) == 'www.') {
-            $sitename = substr($sitename, 4);
+        $site = _t('myetSIS::') . _h(get_option('institution_name'));
+        $domain = get_domain_name();
+        $nae = get_person_by('personID', $id);
+
+        $message = sprintf(_t('<p>Hello %s:</p>'), _h($nae->fname));
+        $message .= _t("<p>Below are your login details. Keep this email for future reference.</p>");
+        $message .= sprintf(_t('<p><strong>Username:</strong> %s</p>'), _h($nae->uname));
+        $message .= sprintf(_t("<p><strong>Password:</strong> %s</p>"), $password);
+        $message .= sprintf(_t('<p><a href="%s">%s</a></p>'), etsis_login_url(), etsis_login_url());
+        $message .= '______________________________________________________<br />';
+        $message .= _t("THIS IS AN AUTOMATED RESPONSE.<br />");
+        $message .= _t("****DO NOT RESPOND TO THIS EMAIL****");
+
+        $msg = process_email_html($message, _t(" Account Login Details"));
+        $headers = "From: $site <auto-reply@$domain>\r\n";
+        if (_h(get_option('etsis_smtp_smtpauth')) != 'yes') {
+            $headers .= "X-Mailer: tinyCampaign " . CURRENT_RELEASE . "\r\n";
+            $headers .= "MIME-Version: 1.0" . "\r\n";
         }
 
-        $name = get_name($id);
+        $this->etsisMail(_h($nae->email), _h(get_option('institution_name')) . _t(":: Account Login Details"), $msg, $headers);
+        return $this->app->hook->apply_filter('myetsis_appl_confirm', $msg, $headers);
+    }
+
+    /**
+     * Email sent to admissions to alert of a new application.
+     *
+     * @since 6.3.0
+     * @param int $id
+     *            Person ID of the applicant.
+     * @param int $applID Unique application id.
+     * @return mixed
+     */
+    public function myetsisApplication($id, $applID)
+    {
+        $site = _t('myetSIS::') . _h(get_option('institution_name'));
+        $domain = get_domain_name();
+        $redirect_to = etsis_login_url(get_base_url() . 'appl/' . $applID . '/');
+
+        $message = _t('<p>Dear Admissions:</p>');
+        $message .= _t("<p>A new application has been submitted via <em>my</em>eduTrac SIS self service.</p>");
+        $message .= _t('<p>Click on the link below and log into your account in order to view this new application.</p>');
+        $message .= sprintf(_t('<p><strong>Applicant:</strong> %s</p>'), get_name($id));
+        $message .= sprintf(_t("<p><strong>Applicant's ID:</strong> %s</p>"), $id);
+        $message .= sprintf(_t('<p><a href="%s">%s</a></p>'), $redirect_to, $redirect_to);
+        $message .= '______________________________________________________<br />';
+        $message .= _t("THIS IS AN AUTOMATED RESPONSE.<br />");
+        $message .= _t("****DO NOT RESPOND TO THIS EMAIL****");
+
+        $msg = process_email_html($message, _t("Application for Admissions"));
+        $headers = "From: $site <auto-reply@$domain>\r\n";
+        if (_h(get_option('etsis_smtp_smtpauth')) != 'yes') {
+            $headers .= "X-Mailer: eduTrac SIS " . RELEASE_TAG . "\r\n";
+            $headers .= "MIME-Version: 1.0" . "\r\n";
+        }
+
+        $this->etsisMail(_h(get_option('admissions_email')), _t("Application for Admissions"), $msg, $headers);
+        return $this->app->hook->apply_filter('myetsis_application', $msg, $headers);
+    }
+
+    /**
+     * Sends new course registration information to the registrar.
+     * 
+     * @since 6.3.0
+     *
+     * @param int $id
+     *            Student ID.
+     * @param mixed $courses
+     *            Courses student registered for.
+     * @return type
+     */
+    public function crseRGNEmail($id, $courses)
+    {
+        $nae = get_person_by('personID', $id);
+        $domain = get_domain_name();
         $site = _h(get_option('institution_name'));
-        $body = "<p>Dear Registrar:</p>
-        
-        <p>The following student submitted a new course registration.</p>
-        
-        <p><strong>Student Name:</strong> $name</p>
-        
-        <p><strong>Student ID:</strong> $id</p>
-        
-        <p><strong>Term:</strong> $term</p>
-        
-        <p>Log into your account to verify this student's registration.</p>
-        
-        <p>$host</p>
-        
-        <p>Thank You</p>
-        
-        <p>Administrator<br />
-        ______________________________________________________<br />
-        THIS IS AN AUTOMATED RESPONSE.<br />
-        ***DO NOT RESPOND TO THIS EMAIL****</p>
-        ";
+        $redirect_to = etsis_login_url(get_base_url() . 'stu/stac/' . $id . '/');
 
-        $message = process_email_html($body, _t("Course Registration"));
-        $headers = "From: $site <auto-reply@$sitename>\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion();
-        $headers .= "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+        $message = _t('<p>Dear Registrar:</p>');
+        $message .= _t("<p>This is a receipt for the following student's registration.</p>");
+        $message .= sprintf(_t('<p><strong>Student Name:</strong> %s</p>'), concat_ws(', ', _h($nae->lname), _h($nae->fname)));
+        $message .= sprintf(_t('<p><strong>Student ID:</strong> %s</p>'), $id);
+        $message .= sprintf(_t('<p><strong>Courses:</strong> %s</p>'), $courses);
+        $message .= _t("<p>Click on the link below and log into your account in order to verify this student's registration.</p>");
+        $message .= sprintf(_t('<p><a href="%s">%s</a></p>'), $redirect_to, $redirect_to);
+        $message .= '______________________________________________________<br />';
+        $message .= _t("THIS IS AN AUTOMATED RESPONSE.<br />");
+        $message .= _t("****DO NOT RESPOND TO THIS EMAIL****");
 
-        $this->etsis_mail(_h(get_option('registrar_email_address')), _t("Course Registration"), $message, $headers);
-        return $this->app->hook->apply_filter('course_registration', $message, $headers);
+        $msg = process_email_html($message, _t("Course Registration"));
+        $headers = "From: $site <auto-reply@$domain>\r\n";
+        if (_h(get_option('etsis_smtp_smtpauth')) != 'yes') {
+            $headers .= "X-Mailer: eduTrac SIS " . RELEASE_TAG . "\r\n";
+            $headers .= "MIME-Version: 1.0" . "\r\n";
+        }
+        try {
+            $this->etsisMail(_h($nae->email), _t('Course Registration'), $msg, $headers);
+        } catch (\phpmailerException $e) {
+            _etsis_flash()->error($e->getMessage());
+        }
+
+        return $this->app->hook->apply_filter('crse_rgn_email', $msg, $headers);
+    }
+
+    /**
+     * Borrowed from WordPress
+     *
+     * Send mail, similar to PHP's mail
+     * A true return value does not automatically mean that the user received the
+     * email successfully. It just only means that the method used was able to
+     * process the request without any errors.
+     *
+     * @since 1.0.0
+     * @param string $to
+     *            Recipient's email address.
+     * @param string $subject
+     *            Subject of the email.
+     * @param mixed $message
+     *            The body of the email.
+     * @param mixed $headers
+     *            Email headers sent.
+     * @param mixed $attachments
+     *            Attachments to be sent with the email.
+     * @return mixed
+     */
+    public function etsis_mail($to, $subject, $message, $headers = '', $attachments = array())
+    {
+        _deprecated_class_method(__METHOD__, '6.3.0', 'etsisMail');
+
+        return $this->etsisMail($to, $subject, $message, $headers, $attachments);
     }
 
     /**
      * Method used to send students an email currently via the faculty portal.
      *
      * @deprecated since release 6.2.11
-     * @param string $email
-     *            Student's email address.
-     * @param string $from
-     *            Sender's email address.
-     * @param string $subject
-     *            Subject of the email.
-     * @param mixed $message
-     *            Body of the email.
-     * @param mixed $attachment
-     *            Any attachment to be sent with the email.
-     * @return mixed
      */
-    public function stu_email($email, $from, $subject, $message, $attachment = '')
+    public function stu_email()
     {
-        $headers = "From: $from" . "\r\n";
-        $headers .= "Reply-To: " . get_persondata('email') . "\r\n";
-        $headers .= "CC: " . get_persondata('email') . "\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
-        $headers .= "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-
-        $this->etsis_mail($email, $subject, $message, $headers, $attachment);
-        return $this->app->hook->apply_filter('stu_email', $headers);
-    }
-
-    /**
-     * When a prospects register via the eduTrac SIS self service portal, an
-     * is sent with account login details.
-     *
-     * @param string $email
-     *            Email address of prospect.
-     * @param int $id
-     *            Person ID of the propect.
-     * @param string $username
-     *            Login username of the new prospect.
-     * @param string $password
-     *            Login password of the new prospect.
-     * @param string $host
-     *            Hostname of the current installation.
-     * @return mixed
-     */
-    public function myetRegConfirm($email, $id, $username, $password, $host)
-    {
-        $sitename = strtolower($_SERVER['SERVER_NAME']);
-        if (substr($sitename, 0, 4) == 'www.') {
-            $sitename = substr($sitename, 4);
-        }
-
-        $name = get_name($id);
-        $site = _t('myetSIS::') . _h(get_option('institution_name'));
-        $body = "<p>Hello $name:</p>
-        
-		<p>Below are your login details. Keep this email for future reference.</p>
-        
-        <p><strong>Username:</strong> $username</p>
-        
-        <p><strong>Password:</strong> $password</p>
-        
-        <p>$host</p>
-        
-        <p>Thank You</p>
-        
-        <p>Administrator<br />
-        ______________________________________________________<br />
-        THIS IS AN AUTOMATED RESPONSE.<br />
-        ***DO NOT RESPOND TO THIS EMAIL****</p>
-        ";
-
-        $message = process_email_html($body, _t(" Account Login Details"));
-        $headers = "From: $site <auto-reply@$sitename>\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion();
-        $headers .= "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-
-        $this->etsis_mail($email, _h(get_option('institution_name')) . _t(" Account Login Details"), $message, $headers);
-        return $this->app->hook->apply_filter('myetsis_appl_confirm', $message, $headers);
-    }
-
-    /**
-     * Email sent to admissions to alert of a new application.
-     *
-     * @param int $id
-     *            Person ID of the prospect.
-     * @param string $host
-     *            Hostname of the current installation.
-     * @return type
-     */
-    public function myetApplication($id, $host)
-    {
-        $sitename = strtolower($_SERVER['SERVER_NAME']);
-        if (substr($sitename, 0, 4) == 'www.') {
-            $sitename = substr($sitename, 4);
-        }
-
-        $name = get_name($id);
-        $site = _t('myetSIS::') . _h(get_option('institution_name'));
-        $body = "<p>Dear Admissions:</p>
-        
-		<p>A new application has been submitted via <em>my</em>eduTrac SIS self service.</p>
-        
-        <p>Log into your account to view this new application.</p>
-        
-        <p><strong>Applicant:</strong> $name</p>
-        <p><strong>Applicant's ID:</strong> $id</p>
-        
-        <p>$host</p>
-        
-        <p>Thank You</p>
-        
-        <p>Administrator<br />
-        ______________________________________________________<br />
-        THIS IS AN AUTOMATED RESPONSE.<br />
-        ***DO NOT RESPOND TO THIS EMAIL****</p>
-        ";
-
-        $message = process_email_html($body, _t("Application for Admissions"));
-        $headers = "From: $site <auto-reply@$sitename>\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion();
-        $headers .= "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-
-        $this->etsis_mail(_h(get_option('admissions_email')), _t("Application for Admissions"), $message, $headers);
-        return $this->app->hook->apply_filter('myetsis_application', $message, $headers);
+        _deprecated_class_method(__METHOD__, '6.2.11');
     }
 }

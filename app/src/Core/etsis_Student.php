@@ -32,7 +32,7 @@ final class etsis_Student
      *
      * @var int
      */
-    public $ID;
+    public $id;
 
     /**
      * Student ID.
@@ -280,7 +280,7 @@ final class etsis_Student
         try {
             $q = $app->db->student()
                 ->setTableAlias('stu')
-                ->select('stu.ID,stu.stuID,stu.status AS stuStatus,stu.addDate AS stuAddDate')
+                ->select('stu.id AS _ID,stu.stuID,stu.status AS stuStatus,stu.addDate AS stuAddDate')
                 ->select('person.altID,person.uname,person.prefix,person.fname')
                 ->select('person.lname,person.mname,person.email,person.personType')
                 ->select('person.ssn,person.dob,person.veteran,person.ethnicity')
@@ -292,7 +292,7 @@ final class etsis_Student
                 ->_join('address', 'stu.stuID = address.personID')
                 ->where('stu.stuID = ?', $stu_id)->_and_()
                 ->where('address.addressStatus = "C"')->_and_()
-                ->where('(address.endDate = "" OR address.endDate = "0000-00-00")');
+                ->where('(address.endDate IS NULL OR address.endDate <= "0000-00-00")');
 
             $stu = etsis_cache_get($stu_id, 'stu');
             if (empty($stu)) {
@@ -320,10 +320,10 @@ final class etsis_Student
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
+        } catch (ORMException $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (ORMException $e) {
+        } catch (Exception $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }

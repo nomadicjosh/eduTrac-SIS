@@ -59,7 +59,7 @@ class etsis_CustomField
             }
         } else {
             foreach ($this->_fields as $key => $field) {
-                echo $this->myet_appl_field($key, $field);
+                echo $this->myetsis_appl_field($key, $field);
             }
         }
     }
@@ -194,7 +194,7 @@ class etsis_CustomField
      * 
      * @since 6.1.10
      */
-    private function myet_appl_field($key, $field)
+    private function myetsis_appl_field($key, $field)
     {
         switch ($field['type']) {
             case 'text':

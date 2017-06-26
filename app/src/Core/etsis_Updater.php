@@ -197,12 +197,12 @@ class etsis_Updater
             $this->update->setUpdateUrl($this->url . 'core/1.1/update-check');
             
             // Optional:
-            $this->update->addLogHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp' . DS . 'logs' . DS . 'core-update.' . date('m-d-Y') . '.txt'));
+            $this->update->addLogHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp' . DS . 'logs' . DS . 'core-update.' . \Jenssegers\Date\Date::now()->format('m-d-Y') . '.txt'));
             $this->update->setCache(new \Desarrolla2\Cache\Adapter\File(APP_PATH . 'tmp/cache'), 3600);
             
             $cacheFile = APP_PATH . 'tmp/cache/__update-versions.php.cache';
             
-            echo '<p>' . sprintf(_t('Last checked on %s @ %s'), date('M d, Y', file_mod_time($cacheFile)), date('h:i A', file_mod_time($cacheFile)));
+            echo '<p>' . sprintf(_t('Last checked on %s @ %s'), \Jenssegers\Date\Date::parse(file_mod_time($cacheFile))->format('M d, Y'), \Jenssegers\Date\Date::parse(file_mod_time($cacheFile))->format('h:i A'));
             
             if ($this->update->checkUpdate() !== false) {
                 

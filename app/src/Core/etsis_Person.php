@@ -215,10 +215,10 @@ final class etsis_Person
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
+        } catch (ORMException $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (ORMException $e) {
+        } catch (Exception $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }

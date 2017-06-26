@@ -344,7 +344,7 @@ final class etsis_Staff
                 ->select('meta.id AS sMetaID,meta.jobStatusCode,meta.jobID,meta.supervisorID,meta.staffType')
                 ->select('meta.hireDate,meta.startDate as metaStartDate,meta.endDate as metaEndDate')
                 ->select('meta.addDate as metaAddDate')
-                ->_join('person', 'staff.staffID = person.id')
+                ->_join('person', 'staff.staffID = person.personID')
                 ->_join('address', 'staff.staffID = address.personID')
                 ->_join('staff_meta', 'staff.staffID = meta.staffID', 'meta')
                 ->_join('job', 'meta.jobID = job.id')
@@ -352,7 +352,7 @@ final class etsis_Staff
                 ->where('staff.staffID = ?', $staff_id)->_and_()
                 ->where('meta.id = (SELECT id FROM staff_meta WHERE staffID = staff.staffID ORDER BY id DESC LIMIT 1)')->_and_()
                 ->where('address.addressStatus = "C"')->_and_()
-                ->where('(address.endDate = "" OR address.endDate = "0000-00-00")');
+                ->where('(address.endDate IS NULL OR address.endDate <= "0000-00-00")');
 
             $staff = etsis_cache_get($staff_id, 'staff');
             if (empty($staff)) {
@@ -380,10 +380,10 @@ final class etsis_Staff
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
+        } catch (ORMException $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (ORMException $e) {
+        } catch (Exception $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
