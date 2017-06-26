@@ -524,11 +524,11 @@ function tagList()
 }
 
 /**
- * Retrieve student's FERPA restriction status.
+ * Retrieve person's FERPA restriction status.
  *
- * @return Student's FERPA restriction status.
+ * @return Person's FERPA restriction status.
  */
-function get_stu_restriction($stu_id)
+function get_perc($person_id)
 {
     $app = \Liten\Liten::getInstance();
     try {
@@ -538,12 +538,12 @@ function get_stu_restriction($stu_id)
     				FROM perc 
 					LEFT JOIN rest ON perc.code = rest.code
 					LEFT JOIN department c ON rest.deptCode = c.deptCode
-					WHERE perc.stuID = ?
+					WHERE perc.personID = ?
                     AND perc.code <> 'FERPA'
                     AND perc.endDate IS NULL
                     OR perc.endDate <= '0000-00-00'
-					GROUP BY perc.code,perc.stuID
-					HAVING perc.stuID = ?", [ $stu_id, $stu_id]
+					GROUP BY perc.code,perc.personID
+					HAVING perc.personID = ?", [ $person_id, $person_id]
         );
         $q = $rest->find(function($data) {
             $array = [];
@@ -801,7 +801,7 @@ function get_stu_header($stu_id)
                         <p><strong><?= _t('Restriction(s):'); ?></strong> 
                             <?php
                             $rest = '';
-                            foreach (get_stu_restriction($student->stuID) as $v) :
+                            foreach (get_perc($student->stuID) as $v) :
 
                                 ?>
                                 <?= $rest; ?><span data-toggle="popover" data-title="<?= _h($v['description']); ?>" data-content="Contact: <?= _h($v['deptName']); ?> <?= (_h($v['deptEmail']) != '') ? ' | ' . $v['deptEmail'] : ''; ?><?= (_h($v['deptPhone']) != '') ? ' | ' . $v['deptPhone'] : ''; ?><?= (_h($v['severity']) == 99) ? _t(' | Restricted from registering for courses.') : ''; ?>" data-placement="bottom"><a href="#"><?= _h($v['Restriction']); ?></a></span>

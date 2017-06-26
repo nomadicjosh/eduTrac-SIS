@@ -924,8 +924,10 @@ function get_layouts_header($layout_dir = '')
  */
 function subdomain_as_directory()
 {
+    $app = \Liten\Liten::getInstance();
+    
     $subdomain = '';
-    $domain_parts = explode('.', $_SERVER['SERVER_NAME']);
+    $domain_parts = explode('.', $app->req->server['SERVER_NAME']);
     if (count($domain_parts) == 3) {
         $subdomain = $domain_parts[0];
     } else {
