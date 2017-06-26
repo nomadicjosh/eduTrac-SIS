@@ -36,7 +36,7 @@ $screen = 'vprog';
     <?php jstree_sidebar_menu($screen,'','','','','',$prog); ?>
 
     <!-- Form -->
-    <form class="form-horizontal margin-none" action="<?=get_base_url();?>program/<?=_h($prog->acadProgID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+    <form class="form-horizontal margin-none" action="<?=get_base_url();?>program/<?=_h($prog->id);?>/" id="validateSubmitForm" method="post" autocomplete="off">
         
         <!-- Widget -->
         <div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -89,7 +89,7 @@ $screen = 'vprog';
                             </div>
                             
                             <div class="col-md-4">
-                                <input class="form-control" name="statusDate" type="text" readonly value="<?=date("D, M d, o",strtotime(_h($prog->statusDate)));?>" />
+                                <input class="form-control" name="statusDate" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($prog->statusDate))->format('D, M d, o');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -107,7 +107,7 @@ $screen = 'vprog';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Approval Date' );?></label>
                             <div class="col-md-8">
-                                <input class="form-control" type="text" readonly value="<?=date("D, M d, o",strtotime(_h($prog->approvedDate)));?>" />
+                                <input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($prog->approvedDate))->format("D, M d, o");?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -255,7 +255,10 @@ $screen = 'vprog';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($prog->acadLevelCode),csid().' ','required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csid();?> required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name',_h($prog->acadLevelCode)); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -306,7 +309,7 @@ $screen = 'vprog';
                 
                 <!-- Form actions -->
                 <div class="form-actions">
-                    <input class="form-control" type="hidden" name="acadProgID" value="<?=_h($prog->acadProgID);?>" />
+                    <input class="form-control" type="hidden" name="id" value="<?=_h($prog->id);?>" />
                     <button type="submit"<?=apids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
                     <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>program/'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>

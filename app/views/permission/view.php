@@ -33,7 +33,7 @@ $screen = 'perm';
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>permission/<?=_h($perm->ID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>permission/<?=_h($perm->id);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -55,14 +55,14 @@ $screen = 'perm';
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label" for="permName"><font color="red">*</font> <?=_t( 'Name' );?></label>
-							<div class="col-md-8"><input class="form-control" id="permName" name="permName" type="text" value="<?=$ePerm->getPermNameFromID(_h($perm->ID));?>" required /></div>
+							<div class="col-md-8"><input class="form-control" id="permName" name="permName" type="text" value="<?=$ePerm->getPermNameFromID(_h($perm->id));?>" required /></div>
 						</div>
 						<!-- // Group END -->
 						
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label" for="key"><font color="permKey">*</font> <?=_t( 'Key' );?></label>
-							<div class="col-md-8"><input class="form-control" id="permKey" name="permKey" type="text" value="<?=$ePerm->getPermKeyFromID(_h($perm->ID));?>" required /></div>
+							<div class="col-md-8"><input class="form-control" id="permKey" name="permKey" type="text" value="<?=$ePerm->getPermKeyFromID(_h($perm->id));?>" required /></div>
 						</div>
 						<!-- // Group END -->
 						

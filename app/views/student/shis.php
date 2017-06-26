@@ -12,7 +12,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$stu = get_student(_h($stu[0]['stuID']));
 ?>
 
 <script type="text/javascript">
@@ -49,7 +48,6 @@ document.getElementById(element_id).value += text;
             <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
             <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
             <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-            <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
             <li class="glyphicons history tab-stacked active"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/" data-toggle="tab"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
         </ul>
     </div>
@@ -79,23 +77,23 @@ document.getElementById(element_id).value += text;
 				<!-- Table row -->
 				<tr class="gradeA">
 					<td style="width:300px;">
-						<select name="shisCode[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+						<select name="code[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                             <option value="">&nbsp;</option>
-                            <option value="W"<?=selected('W',_h($v['shisCode']),false);?>><?=_t( 'Withdrawal' );?></option>
-                            <option value="LOA"<?=selected('LOA',_h($v['shisCode']),false);?>><?=_t( 'Leave of Absence' );?></option>
-                            <option value="SA"<?=selected('SA',_h($v['shisCode']),false);?>><?=_t( 'Study Abroad' );?></option>
-                            <option value="ILLN"<?=selected('ILLN',_h($v['shisCode']),false);?>><?=_t( 'Illness' );?></option>
-                            <option value="DISM"<?=selected('DISM',_h($v['shisCode']),false);?>><?=_t( 'Dismissal' );?></option>
+                            <option value="W"<?=selected('W',_h($v['code']),false);?>><?=_t( 'Withdrawal' );?></option>
+                            <option value="LOA"<?=selected('LOA',_h($v['code']),false);?>><?=_t( 'Leave of Absence' );?></option>
+                            <option value="SA"<?=selected('SA',_h($v['code']),false);?>><?=_t( 'Study Abroad' );?></option>
+                            <option value="ILLN"<?=selected('ILLN',_h($v['code']),false);?>><?=_t( 'Illness' );?></option>
+                            <option value="DISM"<?=selected('DISM',_h($v['code']),false);?>><?=_t( 'Dismissal' );?></option>
                         </select>
 					</td>
 					<td style="width:160px;">
-						<div class="input-group date" id="datepicker6<?=_h($v['shisID']);?>">
+						<div class="input-group date" id="datepicker6<?=_h($v['id']);?>">
                             <input type="text" name="startDate[]" class="form-control" value="<?=_h($v['startDate']);?>" required/>
                             <span class="input-group-addon"><i class="fa fa-th"></i></span>
                         </div>
 					</td>
 					<td style="width:160px;">
-						<div class="input-group date" id="datepicker7<?=_h($v['shisID']);?>">
+						<div class="input-group date" id="datepicker7<?=_h($v['id']);?>">
                             <?php if(_h($v['endDate']) != '0000-00-00') : ?>
                             <input type="text" name="endDate[]" class="form-control" value="<?=_h($v['endDate']);?>" />
                             <?php else : ?>
@@ -105,9 +103,9 @@ document.getElementById(element_id).value += text;
                         </div>
 					</td>
 					<td class="text-center">
-						<button type="button" title="Comment" class="btn <?=(_h($v['Comment']) == 'empty' ? 'btn-primary' : 'btn-danger');?>" data-toggle="modal" data-target="#comments-<?=_h($v['shisID']);?>"><i class="fa fa-comment"></i></button>
+						<button type="button" title="Comment" class="btn <?=(_h($v['Comment']) == 'empty' ? 'btn-primary' : 'btn-danger');?>" data-toggle="modal" data-target="#comments-<?=_h($v['id']);?>"><i class="fa fa-comment"></i></button>
 						<!-- Modal -->
-						<div class="modal fade" id="comments-<?=_h($v['shisID']);?>">
+						<div class="modal fade" id="comments-<?=_h($v['id']);?>">
 							
 							<div class="modal-dialog">
 								<div class="modal-content">
@@ -121,8 +119,8 @@ document.getElementById(element_id).value += text;
 									
 									<!-- Modal body -->
 									<div class="modal-body">
-										<textarea id="<?=_h($v['shisID']);?>" class="form-control" name="comment[]" rows="5" data-height="auto"><?=_h($v['comment']);?></textarea>
-                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=date('D, M d, o @ h:i A',strtotime(date('Y-m-d h:i A')));?> <?=get_name(get_persondata('personID'));?>','<?=_h($v['shisID']);?>'); return false;" />
+										<textarea id="<?=_h($v['id']);?>" class="form-control" name="comment[]" rows="5" data-height="auto"><?=_h($v['comment']);?></textarea>
+                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=\Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','<?=_h($v['id']);?>'); return false;" />
 									</div>
 									<!-- // Modal body END -->
 									
@@ -134,14 +132,14 @@ document.getElementById(element_id).value += text;
 						
 								</div>
 							</div>
-							<input type="hidden" name="shisID[]" value="<?=_h($v['shisID']);?>" />
+							<input type="hidden" name="id[]" value="<?=_h($v['id']);?>" />
 						</div>
 						<!-- // Modal END -->
 					</td>
 					<td class="text-center">
-						<button type="button" title="Delete" class="btn bt-sm" data-toggle="modal" data-target="#delete-<?=_h($v['shisID']);?>"><i class="fa fa-trash-o"></i></button>
+						<button type="button" title="Delete" class="btn bt-sm" data-toggle="modal" data-target="#delete-<?=_h($v['id']);?>"><i class="fa fa-trash-o"></i></button>
 						<!-- Modal -->
-						<div class="modal fade" id="delete-<?=_h($v['shisID']);?>">
+						<div class="modal fade" id="delete-<?=_h($v['id']);?>">
 							
 							<div class="modal-dialog">
 								<div class="modal-content">
@@ -161,7 +159,7 @@ document.getElementById(element_id).value += text;
 									
 									<!-- Modal footer -->
 									<div class="modal-footer">
-										<a href="<?=get_base_url();?>stu/deleteSHIS/<?=_h($v['shisID']);?>" class="btn btn-default"><?=_t( 'Delete' );?></a>
+										<a href="<?=get_base_url();?>stu/deleteSHIS/<?=_h($v['id']);?>" class="btn btn-default"><?=_t( 'Delete' );?></a>
 										<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Close' );?></a> 
 									</div>
 									<!-- // Modal footer END -->
@@ -212,7 +210,7 @@ document.getElementById(element_id).value += text;
 					<div class="form-group">
                         <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Hiatus' );?></label>
                         <div class="col-md-8">
-	                        <select name="shisCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+	                        <select name="code" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 	                            <option value="">&nbsp;</option>
 	                            <option value="W"><?=_t( 'Withdrawal' );?></option>
 	                            <option value="LOA"><?=_t( 'Leave of Absence' );?></option>
@@ -247,7 +245,7 @@ document.getElementById(element_id).value += text;
                     	<label class="col-md-3 control-label"><?=_t( 'Comment' );?></label>
                     	<div class="col-md-8">
 	                        <textarea id="comment" class="form-control" name="comment" rows="5" data-height="auto"></textarea>
-	                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=date('D, M d, o @ h:i A',strtotime(date('Y-m-d h:i A')));?> <?=get_name(get_persondata('personID'));?>','comment'); return false;" />
+	                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=\Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','comment'); return false;" />
                        </div>
                     </div>
 				</div>
@@ -256,7 +254,7 @@ document.getElementById(element_id).value += text;
 				<!-- Modal footer -->
 				<div class="modal-footer">
                     <input type="hidden" name="stuID" value="<?=_h($stu->stuID);?>" />
-                    <input type="hidden" name="addDate" value="<?=date('Y-m-d');?>" />
+                    <input type="hidden" name="addDate" value="<?=\Jenssegers\Date\Date::now()->format('Y-m-d');?>" />
                     <input type="hidden" name="addedBy" value="<?=get_persondata('personID');?>" />
 					<button type="submit" class="btn btn-default"><?=_t( 'Submit' );?></button>
 					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a>

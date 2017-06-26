@@ -12,19 +12,19 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$screen = 'rstr';
+$screen = 'rest';
 ?>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
 	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>form/rstr-code/" class="glyphicons ban"><i></i> <?=_t( 'Restriction Codes' );?></a></li>
+	<li><a href="<?=get_base_url();?>form/rest/" class="glyphicons ban"><i></i> <?=_t( 'Restriction' );?></a></li>
 	<li class="divider"></li>
-	<li><?=_t( 'Edit Restriction Code' );?></li>
+	<li><?=_t( 'Edit Restriction' );?></li>
 </ul>
 
-<h3><?=_t( 'Edit Restriction Code' );?></h3>
+<h3><?=_t( 'Edit Restriction' );?></h3>
 <div class="innerLR">
 	
 	<?=_etsis_flash()->showMessage();?>
@@ -32,7 +32,7 @@ $screen = 'rstr';
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>form/rstr-code/<?=_h($rstr[0]['rstrCodeID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>form/rest/<?=_h($rest[0]['id']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -54,14 +54,14 @@ $screen = 'rstr';
 						<!-- Group -->
 						<div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Code' );?></label>
-							<div class="col-md-8"><input class="form-control" name="rstrCode" type="text" value="<?=_h($rstr[0]['rstrCode']);?>" required /></div>
+							<div class="col-md-8"><input class="form-control" name="code" type="text" value="<?=_h($rest[0]['code']);?>" required /></div>
 						</div>
 						<!-- // Group END -->
 						
 						<!-- Group -->
 						<div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Description' );?></label>
-							<div class="col-md-8"><input class="form-control" name="description" type="text" value="<?=_h($rstr[0]['description']);?>" required /></div>
+							<div class="col-md-8"><input class="form-control" name="description" type="text" value="<?=_h($rest[0]['description']);?>" required /></div>
 						</div>
 						<!-- // Group END -->
 						
@@ -70,7 +70,7 @@ $screen = 'rstr';
                             <div class="col-md-8">
                                 <select name="deptCode" class="selectpicker col-md-12 form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?=table_dropdown('department', 'deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName',_h($rstr[0]['deptCode']));?>
+                                    <?=table_dropdown('department', 'deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName',_h($rest[0]['deptCode']));?>
                                 </select>
                             </div>
                         </div>
@@ -86,7 +86,7 @@ $screen = 'rstr';
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>form/rstr-code/'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>form/rest/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

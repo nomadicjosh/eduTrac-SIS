@@ -79,7 +79,7 @@ $screen = 'inst';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>appl/inst/<?=_h($v['institutionID']);?>/"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>appl/inst/<?=_h($v['id']);?>/"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

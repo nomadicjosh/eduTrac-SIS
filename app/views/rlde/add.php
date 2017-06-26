@@ -97,13 +97,14 @@ function addMsg(text,element_id) {
 					
 						<!-- Group -->
 						<div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'File' );?></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Primary File' );?></label>
                             <div class="col-md-8">
                                 <select name="file" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php foreach($table as $tbl) : ?>
-                                        <option value="<?=$tbl['Tables_in_' . DB_NAME];?>"><?=$tbl['Tables_in_' . DB_NAME];?></option>
-                                    <?php endforeach; ?>
+                                    <option value="sttr"><?=_t('(sttr) - Student Terms');?></option>
+                                    <option value="perc"><?=_t('(perc) - Person Restrictions');?></option>
+                                    <option value="stal"><?=_t('(stal) - Student Academic Level');?></option>
+                                    <option value="v_scrd"><?=_t('(v_scrd) - Student Credits');?></option>
                                 </select>
                             </div>
 						</div>
@@ -169,6 +170,8 @@ function addMsg(text,element_id) {
 <script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/interact/interact.js"></script>
 <script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/js/query-builder.js"></script>
 <script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/momentjs/moment.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/momentjs/moment.js"></script>
+<script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 
 <script>
 $('[data-toggle="tooltip"]').tooltip();
@@ -183,8 +186,14 @@ var options = {
     sttr: {
       en: 'Student Terms'
     },
-    strs: {
-      en: 'Student Restrictions'
+    perc: {
+      en: 'Person Restrictions'
+    },
+    stal: {
+      en: 'Student Academic Level'
+    },
+    v_scrd: {
+      en: 'Student Credits'
     }
   },
 
@@ -233,7 +242,7 @@ var options = {
     type: 'string',
     input: 'select',
     values: {
-        <?php get_acad_terms(); ?>
+        <?php get_rlde_terms(); ?>
     },
     optgroup: 'sttr',
     operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
@@ -244,7 +253,7 @@ var options = {
     type: 'string',
     input: 'select',
     values: {
-        <?php get_acad_levels(); ?>
+        <?php get_rlde_acad_levels(); ?>
     },
     optgroup: 'sttr',
     operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
@@ -289,21 +298,25 @@ var options = {
     operators: ['equal','less','less_or_equal','greater','greater_or_equal','between']
   },
   /*
-   * Student Restrictions
+   * Person Restrictions
    */
   {
-    id: 'strs.rstrCode',
+    id: 'perc.code',
     label: 'Restriction Code',
     type: 'string',
-    optgroup: 'strs',
+    input: 'select',
+    values: {
+        <?php get_rlde_rest(); ?>
+    },
+    optgroup: 'perc',
     value_separator: ',',
     operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
   },
   {
-    id: 'strs.severity',
+    id: 'perc.severity',
     label: 'Severity',
     type: 'integer',
-    optgroup: 'strs',
+    optgroup: 'perc',
     validation: {
       min: 0,
       step: 1
@@ -311,7 +324,7 @@ var options = {
     operators: ['equal','not_equal','is_empty','is_not_empty','is_not','is_not_null']
   },
   {
-    id: 'strs.startDate',
+    id: 'perc.startDate',
     label: 'Start Date',
     type: 'date',
     validation: {
@@ -324,13 +337,12 @@ var options = {
       todayHighlight: true,
       autoclose: true
     },
-    optgroup: 'strs',
-    operators: ['equal','not_equal','less','less_or_equal','greater','greater_or_equal','is_empty','is_not_empty','is_not','is_not_null','between','not_between']
+    optgroup: 'perc'
   },
   {
-    id: 'strs.endDate',
+    id: 'perc.endDate',
     label: 'End Date',
-    type: 'date',
+    type: 'string',
     validation: {
       format: 'yyyy-mm-dd'
     },
@@ -341,8 +353,123 @@ var options = {
       todayHighlight: true,
       autoclose: true
     },
-    optgroup: 'strs',
-    operators: ['equal','not_equal','less','less_or_equal','greater','greater_or_equal','is_empty','is_not_empty','is_not','is_not_null','between','not_between']
+    optgroup: 'perc'
+  },
+  /*
+   * Student Academic Level
+   */
+  {
+    id: 'stal.acadProgCode',
+    label: 'Academic Program',
+    type: 'string',
+    input: 'select',
+    values: {
+        <?php get_rlde_prog(); ?>
+    },
+    optgroup: 'stal',
+    value_separator: ',',
+    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+  },
+  {
+    id: 'stal.acadLevelCode',
+    label: 'Academic Level',
+    type: 'string',
+    input: 'select',
+    values: {
+        <?php get_rlde_acad_levels(); ?>
+    },
+    optgroup: 'stal',
+    value_separator: ',',
+    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+  },
+  {
+    id: 'stal.currentClassLevel',
+    label: 'Class Level',
+    type: 'string',
+    input: 'select',
+    values: {
+        <?php get_rlde_clas_levels(); ?>
+    },
+    optgroup: 'stal',
+    value_separator: ',',
+    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+  },
+  {
+    id: 'stal.gpa',
+    label: 'GPA',
+    type: 'integer',
+    optgroup: 'stal',
+    validation: {
+      min: 0,
+      step: 1
+    }
+  },
+  {
+    id: 'stal.startTerm',
+    label: 'Start Term',
+    type: 'string',
+    input: 'select',
+    values: {
+        <?php get_rlde_terms(); ?>
+    },
+    optgroup: 'stal',
+    value_separator: ',',
+    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+  },
+  /*
+   * Student Creds
+   */
+  {
+    id: 'v_scrd.acadLevel',
+    label: 'Academic Level',
+    type: 'string',
+    input: 'select',
+    values: {
+        <?php get_rlde_acad_levels(); ?>
+    },
+    optgroup: 'v_scrd',
+    value_separator: ',',
+    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+  },
+  {
+    id: 'v_scrd.attempted',
+    label: 'Attempted Credits',
+    type: 'integer',
+    optgroup: 'v_scrd',
+    validation: {
+      min: 0,
+      step: 1
+    }
+  },
+  {
+    id: 'v_scrd.completed',
+    label: 'Completed Credits',
+    type: 'integer',
+    optgroup: 'v_scrd',
+    validation: {
+      min: 0,
+      step: 1
+    }
+  },
+  {
+    id: 'v_scrd.points',
+    label: 'Grade Points',
+    type: 'integer',
+    optgroup: 'v_scrd',
+    validation: {
+      min: 0,
+      step: 1
+    }
+  },
+  {
+    id: 'v_scrd.gpa',
+    label: 'GPA',
+    type: 'integer',
+    optgroup: 'v_scrd',
+    validation: {
+      min: 0,
+      step: 1
+    }
   }
   ]
 };

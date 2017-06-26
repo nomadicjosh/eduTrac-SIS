@@ -84,7 +84,7 @@ $(window).load(function() {
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Student ID/Name' );?></label>
 							<div class="col-md-8">
 								<input type="text" id="stuID" class="form-control" required />
-                                <input type="text" id="StudentID" name="stuID" readonly="readonly" class="form-control text-center" />
+                                <input type="hidden" id="StudentID" name="stuID" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -103,19 +103,13 @@ $(window).load(function() {
                             </div>
                         </div>
                         <!-- // Group END -->
-						
-					</div>
-					<!-- // Column END -->
-					
-					<!-- Column -->
-					<div class="col-md-6">
                         
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Section' );?></label>
                             <div class="col-md-8">
 	                        	<select id="section" name="courseSecID" class="form-control" required></select>
-                                <span id="message" style="color:red; display:hidden;"></span>
+                                <span id="message" style="color:green; display:hidden;"></span>
                             </div>
                         </div>
                         <!-- // Group END -->

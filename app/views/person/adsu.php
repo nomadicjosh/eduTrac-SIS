@@ -48,7 +48,7 @@ $screen = 'adsu';
                     
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label" for="address"><?=_t( 'Address' );?> <a href="<?=get_base_url();?>nae/addr/<?=_h($v['addressID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <label class="col-md-3 control-label" for="address"><?=_t( 'Address' );?> <a href="<?=get_base_url();?>nae/addr/<?=_h($v['id']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-8">
                                 <input class="form-control" type="text" readonly value="<?=_h($v['address1']);?> <?=_h($v['address2']);?>" />
                             </div>

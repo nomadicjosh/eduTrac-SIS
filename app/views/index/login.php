@@ -10,8 +10,8 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
-$app->view->block('myet');
+$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->block('myetsis');
 ?>
 
 <div id="login" class="col-md-12">
@@ -51,6 +51,7 @@ $app->view->block('myet');
 								<div class="uniformjs"><label class="checkbox"><input type="checkbox" name="rememberme" value="yes"><?=_t( 'Remember me' );?></label></div>
 							</div>
 							<div class="col-md-4 center">
+                                <input type="hidden" name="redirect_to" value="<?=($app->req->get['redirect_to'] != null ? '?redirect_to=' . $app->req->get['redirect_to'] : '');?>" />
 								<button class="btn btn-block btn-inverse" type="submit"><?=_t( 'Sign in' );?></button>
 							</div>
 						</div>

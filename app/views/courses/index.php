@@ -10,8 +10,8 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
-$app->view->block('myet');
+$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->block('myetsis');
 ?>
 
 <script type='text/javascript'>//<![CDATA[ 
@@ -50,11 +50,11 @@ $(window).load(function(){
 		</div>
 	<?php } ?>
 	
-	<?php if(student_has_restriction() != false) { ?>
+	<?php if(person_has_restriction() != false) { ?>
 		<div class="widget widget-heading-simple widget-body-white">
 			<div class="widget-body">
 				<div class="alerts alerts-error">
-					<p><?=_t( 'You have a hold on your account which is currently restricting you from registering for a course(s). Please contact the following office(s)/department(s) to inquire about the hold(s) on your account: ' );?><?=student_has_restriction();?></p>
+					<p><?=_t( 'You have a hold on your account which is currently restricting you from registering for a course(s). Please contact the following office(s)/department(s) to inquire about the hold(s) on your account: ' );?><?=person_has_restriction();?></p>
 				</div>
 			</div>
 		</div>
@@ -126,15 +126,15 @@ $(window).load(function(){
                                 		</tr>
                                 		<tr>
                                 			<td><strong><?=_t( 'Course Fee:' );?></strong></td>
-                                			<td><?=money_format('%i',_h($v['courseFee']));?></td>
+                                			<td><?=money_format('%i',(double)_h($v['courseFee']));?></td>
                                 		</tr>
                                 		<tr>
                                 			<td><strong><?=_t( 'Lab Fee:' );?></strong></td>
-                                			<td><?=money_format('%i',_h($v['labFee']));?></td>
+                                			<td><?=money_format('%i',(double)_h($v['labFee']));?></td>
                                 		</tr>
                                 		<tr>
                                 			<td style="width:100px;"><strong><?=_t( 'Material Fee:' );?></strong></td>
-                                			<td><?=money_format('%i',_h($v['materialFee']));?></td>
+                                			<td><?=money_format('%i',(double)_h($v['materialFee']));?></td>
                                 		</tr>
                                 	</table>
 								</div>

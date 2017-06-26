@@ -40,7 +40,7 @@ $staffInfo = get_staff(_h($staff->staffID));
                     
                     <!-- One Third Column -->
                     <div class="col-md-1">
-                        <?=getSchoolPhoto($staffInfo->staffID, $staffInfo->email, '90');?>
+                        <?=get_school_photo(_h($staffInfo->staffID), _h($staffInfo->email), '90');?>
                     </div>
                     <!-- // One Third Column END -->
     
@@ -219,7 +219,7 @@ $staffInfo = get_staff(_h($staff->staffID));
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Add Date' );?></label>
                             <div class="col-md-8">
-                                <input type="text" readonly value="<?=date('D, M d, o',strtotime(_h($staff->addDate)));?>" class="form-control" />
+                                <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($staff->addDate))->format('D, M d, o');?>" class="form-control" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -237,7 +237,7 @@ $staffInfo = get_staff(_h($staff->staffID));
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Last Update' );?></label>
                             <div class="col-md-8">
-                                <input type="text" readonly value="<?=date('D, M d, o @ h:i A',strtotime(_h($staff->LastUpdate)));?>" class="form-control" />
+                                <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($staff->LastUpdate))->format('D, M d, o @ h:i A');?>" class="form-control" />
                             </div>
                         </div>
                         <!-- // Group END -->

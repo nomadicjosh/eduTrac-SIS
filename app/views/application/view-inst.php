@@ -32,7 +32,7 @@ $screen = 'inst';
 	<?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/inst/<?=_h($inst->institutionID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/inst/<?=_h($inst->id);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -121,7 +121,7 @@ $screen = 'inst';
 				
 				<!-- Form actions -->
 				<div class="form-actions">
-                    <input name="institutionID" type="hidden" value="<?=_h($inst->institutionID);?>" />
+                    <input name="institutionID" type="hidden" value="<?=_h($inst->id);?>" />
 					<button type="submit"<?=gids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Submit' );?></button>
                     <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>appl/inst/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>

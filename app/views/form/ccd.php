@@ -117,7 +117,7 @@ $screen = 'ccd';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=url('/');?>form/ccd/<?=_h($value['ccdID']);?>/"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=url('/');?>form/ccd/<?=_h($value['id']);?>/"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

@@ -57,7 +57,6 @@ $(function() {
                     <li class="glyphicons user active"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/" data-toggle="tab"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
                     <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
                     <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-                    <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
                     <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
                 </ul>
             </div>
@@ -90,12 +89,12 @@ $(function() {
                             <tbody>
                             <?php if($prog != '') : foreach($prog as $k => $v) { ?>
                             <tr class="gradeX">
-                                <td class="text-center"><a href="<?=get_base_url();?>stu/sacp/<?=_h($v['stuProgID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></td>
+                                <td class="text-center"><a href="<?=get_base_url();?>stu/sacp/<?=_h($v['id']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></td>
                                 <td><input class="form-control center" type="text" readonly value="<?=_h($v['acadProgCode']);?>" /></td>
                                 <td><input class="form-control center" type="text" readonly value="<?=_h($v['progAcadLevel']);?>" /></td>
                                 <td><input class="form-control center" type="text" readonly value="<?=_h($v['currStatus']);?>" /></td>
                                 <td><input class="form-control center" type="text" readonly value="<?=_h($v['statusDate']);?>" /></td>
-                                <td><input class="form-control center" type="text" readonly value="<?=_h($admit[0]['admitStatus']);?>" /></td>
+                                <td><input class="form-control center" type="text" readonly value="<?=_h($admit->admitStatus);?>" /></td>
                             </tr>
                             <?php } endif; ?>
                             </tbody>

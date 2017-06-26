@@ -15,6 +15,23 @@ $app->view->block('dashboard');
 $screen = 'grad';
 ?>
 
+<script type="text/javascript">
+$(document).ready(function(){
+  $("#stuID").autocomplete({
+        source: '<?=get_base_url();?>stu/stuLookup/', // The source of the AJAX results
+        minLength: 2, // The minimum amount of characters that must be typed before the autocomplete is triggered
+        focus: function( event, ui ) { // What happens when an autocomplete result is focused on
+            $("#stuID").val( ui.item.value );
+            return false;
+      },
+      select: function ( event, ui ) { // What happens when an autocomplete result is selected
+          $("#stuID").val( ui.item.value );
+          $('#StudentID').val( ui.item.id );
+      }
+  });
+});
+</script>
+
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
 	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
@@ -50,18 +67,25 @@ $screen = 'grad';
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><?=_t( 'Student ID' );?></label>
+							<label class="col-md-3 control-label"><?=_t( 'Student ID/Name' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="studentID" id="studentID" class="form-control" />
+								<input type="text" id="stuID" class="form-control" required />
+                                <input type="hidden" id="StudentID" name="stuID" />
 							</div>
 						</div>
+						
+					</div>
+					<!-- // Column END -->
+                    
+                    <div class="col-md-6">
+                        
 						<!-- // Group END -->
 						<?php if(function_exists('savedquery_module')) : ?>
 						<!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Saved Query' );?></label>
                             <div class="col-md-8">
-                                <select name="queryID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                                <select name="id" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
 							        <option value="">&nbsp;</option>
 							        <?php userQuery(); ?>
 						        </select>

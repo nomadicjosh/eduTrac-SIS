@@ -80,18 +80,18 @@ $options = [
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Cronjob URL' );?></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Handler Name' );?></label>
 							<div class="col-md-8">
-								<input type="text" id="cronjobpassword" name="url" class="form-control" required/>
+								<input type="text" name="name" class="form-control" required/>
 							</div>
 						</div>
 						<!-- // Group END -->
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Cronjob Name" );?></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Cronjob URL" );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="name" class="form-control" required/>
+                                <input type="text" name="url" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -133,9 +133,23 @@ $options = [
                             </div>
                         </div>
                         <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Status" );?></label>
+                            <div class="col-md-8">
+                                <select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option>&nbsp;</option>
+                                    <option value="1"><?=_t( "Active" );?></option>
+                                    <option value="0"><?=_t( "Inactive" );?></option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
 						
 					</div>
 					<!-- // Column END -->
+                    
 				</div>
 				<!-- // Row END -->
 			

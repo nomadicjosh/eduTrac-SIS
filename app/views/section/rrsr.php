@@ -50,6 +50,18 @@ $screen = 'rgn';
         <!-- Widget -->
         <div class="widget widget-heading-simple widget-body-gray <?= (has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10'; ?>">
             <div class="widget-body">
+                
+                <div class="tab-pane">
+                    <div class="widget widget-heading-simple widget-body-white margin-none">
+                        <div class="widget-body">
+                            
+                            <div class="alerts alerts-info">
+                                <p><?=_t("The Value field is where you would write a custom error message which will appear on the screen when a staff member tries to register a student with a registration restriction. There are several placeholders you can use in your message such as student's name {name}, department name {deptName}, department email {deptEmail} and department phone {deptPhone}.");?></p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
 
                 <div class="separator bottom"></div>
 

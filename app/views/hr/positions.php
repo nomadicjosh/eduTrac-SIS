@@ -41,7 +41,7 @@ $staffInfo = get_staff(_h($positions[0]['staffID']));
                     
                     <!-- One Third Column -->
                     <div class="col-md-1">
-                        <?=getSchoolPhoto($staffInfo->staffID, $staffInfo->email, '90');?>
+                        <?=get_school_photo(_h($staffInfo->staffID), _h($staffInfo->email), '90');?>
                     </div>
                     <!-- // One Third Column END -->
     
@@ -123,20 +123,20 @@ $staffInfo = get_staff(_h($positions[0]['staffID']));
                 <tr class="gradeX">
                     <td class="text-center"><?=_h($v['grade']);?></td>
                     <td class="text-center"><?=_h($v['title']);?></td>
-                    <td class="text-center">$<?=money_format("%i",_h($v['hourly_wage']));?></td>
+                    <td class="text-center">$<?=money_format("%i",(double)_h($v['hourly_wage']));?></td>
                     <td class="text-center"><?=_h($v['weekly_hours']);?></td>
-                    <td class="text-center">$<?=money_format("%i",_h($v['hourly_wage'])*_h($v['weekly_hours'])*4);?></td>
-                    <td class="text-center"><?=date('D, M d, o',strtotime(_h($v['hireDate'])));?></td>
-                    <td class="text-center"><?=date('D, M d, o',strtotime(_h($v['startDate'])));?></td>
+                    <td class="text-center">$<?=money_format("%i",(double)_h($v['hourly_wage'])*_h($v['weekly_hours'])*4);?></td>
+                    <td class="text-center"><?=\Jenssegers\Date\Date::parse(_h($v['hireDate']))->format('D, M d, o');?></td>
+                    <td class="text-center"><?=\Jenssegers\Date\Date::parse(_h($v['startDate']))->format('D, M d, o');?></td>
                     <td class="text-center">
                     	<?php if(_h($v['endDate']) == NULL || _h($v['endDate']) == '0000-00-00') : ?>
                     	<?=_t('Not Set');?>
                     	<?php else : ?>
-                		<?=date('D, M d, o',strtotime(_h($v['endDate'])));?>
+                		<?=\Jenssegers\Date\Date::parse(_h($v['endDate']))->format('D, M d, o');?>
                 		<?php endif; ?>
                     </td>
                     <td class="text-center">
-                        <a href="#position<?=_h($v['sMetaID']);?>" data-toggle="modal" title="Edit Position" class="btn btn-default"><i class="fa fa-edit"></i></a>
+                        <a href="#position<?=_h($v['id']);?>" data-toggle="modal" title="Edit Position" class="btn btn-default"><i class="fa fa-edit"></i></a>
                     </td>
                 </tr>
 				<?php } endif; ?>
@@ -151,7 +151,7 @@ $staffInfo = get_staff(_h($positions[0]['staffID']));
 	<div class="separator bottom"></div>
 	
 	<?php if($positions != '') : foreach($positions as $k => $v) { ?>
-    <div class="modal fade" id="position<?=_h($v['sMetaID']);?>">
+    <div class="modal fade" id="position<?=_h($v['id']);?>">
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>hr/positions/<?=_h($v['staffID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -212,7 +212,7 @@ $staffInfo = get_staff(_h($positions[0]['staffID']));
 				                <div class="col-md-8">
 				                    <select name="jobID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 				                        <option value="">&nbsp;</option>
-				                        <?php table_dropdown('job',NULL,'ID','ID','title',_h($v['jobID'])); ?>
+				                        <?php table_dropdown('job',NULL,'id','id','title',_h($v['jobID'])); ?>
 				                    </select>
 				                </div>
 				            </div>
@@ -261,7 +261,7 @@ $staffInfo = get_staff(_h($positions[0]['staffID']));
 		            </div>
 	            </div>
 		        <div class="modal-footer">
-                    <input name="sMetaID" type="hidden" value="<?=$v['sMetaID'];?>" />
+                    <input name="id" type="hidden" value="<?=$v['id'];?>" />
 		            <button type="submit" class="btn btn-default"><?=_t( 'Update' );?></button>
 		            <button data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></button>
 		        </div>

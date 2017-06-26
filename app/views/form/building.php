@@ -133,7 +133,7 @@ $screen = 'bldg';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>form/building/<?=_h($value['buildingID']);?>/"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>form/building/<?=_h($value['id']);?>/"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

@@ -38,7 +38,7 @@ function addMsg(text,element_id) {
 	<?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/editAppl/<?=_h($appl->applID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>appl/editAppl/<?=_h($appl->id);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -96,7 +96,7 @@ function addMsg(text,element_id) {
                             <label class="col-md-3 control-label"><?=_t( 'DOB' );?></label>
                             <div class="col-md-8">
                             	<?php if(_h($appl->dob) > '0000-00-00') : ?>
-                            	<input class="form-control" readonly type="text" value="<?=date('D, M d, o',strtotime(_h($appl->dob)));?>" />
+                            	<input class="form-control" readonly type="text" value="<?=\Jenssegers\Date\Date::parse(_h($appl->dob))->format('D, M d, o');?>" />
                             	<?php else : ?>
                             	<input class="form-control" readonly type="text" />
                         		<?php endif; ?>
@@ -317,7 +317,7 @@ function addMsg(text,element_id) {
 									<!-- // Modal heading END -->
                                     <div class="modal-body">
                                         <textarea id="appl-<?=_h($appl->personID);?>" name="appl_comments" class="form-control" rows="5"><?=_h($appl->appl_comments);?></textarea>
-                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=date('D, M d, o @ h:i A',strtotime(date('Y-m-d h:i A')));?> <?=get_name(get_persondata('personID'));?>','appl-<?=_h($appl->personID);?>'); return false;" />
+                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=\Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','appl-<?=_h($appl->personID);?>'); return false;" />
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></button>
@@ -336,7 +336,7 @@ function addMsg(text,element_id) {
 									<!-- // Modal heading END -->
                                     <div class="modal-body">
                                         <textarea id="staff-<?=_h($appl->personID);?>" name="staff_comments" class="form-control" rows="5"><?=_h($appl->staff_comments);?></textarea>
-                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=date('D, M d, o @ h:i A',strtotime(date('Y-m-d h:i A')));?> <?=get_name(get_persondata('personID'));?>','staff-<?=_h($appl->personID);?>'); return false;" />
+                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=\Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','staff-<?=_h($appl->personID);?>'); return false;" />
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></button>
@@ -471,10 +471,10 @@ function addMsg(text,element_id) {
                         <!-- // Group END -->
                     </td>
                     <td class="text-center">
-                    	<a href="<?=get_base_url();?>appl/deleteInstAttend/<?=_h($value['instAttID']);?>/" title="Delete Institution Attended" class="btn btn-danger"><i class="fa fa-trash-o"></i></a>
+                    	<a href="<?=get_base_url();?>appl/deleteInstAttend/<?=_h($value['id']);?>/" title="Delete Institution Attended" class="btn btn-danger"><i class="fa fa-trash-o"></i></a>
                     </td>
                     <td style="display:none;">
-                    	<input type="hidden" name="instAttID[]" value="<?=_h($value['instAttID']);?>" />
+                    	<input type="hidden" name="id[]" value="<?=_h($value['id']);?>" />
                     </td>
                 </tr>
                 <?php } endif; ?>
@@ -491,7 +491,7 @@ function addMsg(text,element_id) {
 			<!-- Form actions -->
 			<div class="form-actions">
 				<input type="hidden" name="personID" value="<?=_h($appl->personID);?>" />
-                <input type="hidden" name="applID" value="<?=_h($appl->applID);?>" />
+                <input type="hidden" name="id" value="<?=_h($appl->id);?>" />
 				<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
                 <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>appl/'"><i></i><?=_t( 'Cancel' );?></button>
 			</div>

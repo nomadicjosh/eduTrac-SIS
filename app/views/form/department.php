@@ -159,7 +159,7 @@ $screen = 'dept';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>form/department/<?=_h($value['deptID']);?>/"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>form/department/<?=_h($value['id']);?>/"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

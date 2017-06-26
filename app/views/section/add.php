@@ -144,7 +144,10 @@ $(function(){
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Level' );?></label>
                             <div class="col-md-8">
-                                <?=course_level_select(_h($sect->courseLevelCode));?>
+                                <select name="courseLevelCode" id="courseLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('crlv', null, 'code', 'code', 'name', _h($sect->courseLevelCode)); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -153,7 +156,10 @@ $(function(){
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($sect->acadLevelCode),null,'required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name',_h($sect->acadLevelCode)); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -310,7 +316,7 @@ $(function(){
                             </div>
                             
                             <div class="col-md-4">
-                                <input class="form-control" type="text" readonly="readonly" value="<?=date('D, M d, o',strtotime(date('Y-m-d')));?>" />
+                                <input class="form-control" type="text" readonly="readonly" value="<?=\Jenssegers\Date\Date::now()->format('D, M d, o');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->

@@ -82,7 +82,7 @@ $screen = 'prog';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>program/<?=_h($v['acadProgID']);?>/"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>program/<?=_h($v['id']);?>/"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

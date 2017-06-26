@@ -212,13 +212,16 @@ $screen = 'vnae';
                 <br /><br />
                 
                 <fieldset>
-                    <legend><?=_t( 'User Role, Permission & Status' );?></legend>
-                    <div data-row-span="3">
+                    <legend><?=_t( 'User Role, Permission, PERC & Status' );?></legend>
+                    <div data-row-span="4">
                         <div<?=ae('access_user_role_screen');?> data-field-span="1" class="readonly">
                             <label><?=_t( 'Role' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/role/<?=_h($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                         </div>
                         <div<?=ae('access_user_permission_screen');?> data-field-span="1" class="readonly">
                             <label><?=_t( 'Permission' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/perms/<?=_h($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                        </div>
+                        <div<?=ae('access_person_screen');?> data-field-span="1" class="readonly">
+                            <label><?=_t( 'PERC' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/perc/<?=_h($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                         </div>
                          <div<?=ae('access_user_permission_screen');?> data-field-span="1">
                             <label><font color="red">*</font> <?=_t( 'Status' );?> <a class="hidden-print" href="#status" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
@@ -250,7 +253,7 @@ $screen = 'vnae';
                     <div data-row-span="4">
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Approved Date' );?></label>
-                            <input type="text" readonly value="<?=date('D, M d, o',strtotime(_h($nae[0]['approvedDate'])));?>" />
+                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($nae[0]['approvedDate']))->format('D, M d, o');?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Approved By' );?></label>
@@ -258,11 +261,11 @@ $screen = 'vnae';
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Last Login' );?></label>
-                            <input type="text" readonly value="<?=date('D, M d, o @ h:i A',strtotime(_h($nae[0]['LastLogin'])));?>" />
+                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($nae[0]['LastLogin']))->format('D, M d, o @ h:i A');?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Last Update' );?></label>
-                            <input type="text" readonly value="<?=date('D, M d, o @ h:i A',strtotime(_h($nae[0]['LastUpdate'])));?>" />
+                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($nae[0]['LastUpdate']))->format('D, M d, o @ h:i A');?>" />
                         </div>
                     </div>
                 </fieldset>

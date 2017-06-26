@@ -67,7 +67,7 @@ $app->view->block('dashboard');
 				<tbody>
 				<?php if($search != '') : foreach($search as $k => $v) { ?>
                 <tr class="gradeX">
-                	<td class="text-center"><?=getSchoolPhoto(_h($v['stuID']), _h($v['email']), 48, 'avatar-frame');?></td>
+                	<td class="text-center"><?=get_school_photo(_h($v['stuID']), _h($v['email']), 48, 'avatar-frame');?></td>
                     <td class="text-center"><?=(_h($v['altID']) != '' ? _h($v['altID']) : _h($v['stuID']));?></td>
                     <td class="text-center"><?=_h($v['lname']);?></td>
                     <td class="text-center"><?=_h($v['fname']);?></td>
@@ -81,7 +81,6 @@ $app->view->block('dashboard');
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
                                 <li><a href="<?=get_base_url();?>stu/<?=_h($v['stuID']);?>/"><?=_t( 'View' ); ?></a></li>
                                 <li><a href="<?=get_base_url();?>stu/stac/<?=_h($v['stuID']);?>/"><?=_t( 'Academic Credits (STAC)' ); ?></a></li>
-                                <li><a href="<?=get_base_url();?>stu/strc/<?=_h($v['stuID']);?>/"><?=_t( 'Restriction (RSTR)' ); ?></a></li>
                                 <li><a href="<?=get_base_url();?>stu/shis/<?=_h($v['stuID']);?>/"><?=_t( 'Hiatus (SHIS)' ); ?></a></li>
                             </ul>
                         </div>

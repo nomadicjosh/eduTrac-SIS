@@ -178,7 +178,7 @@ $screen = 'grsc';
                     <td class="text-center"><?=_h($value['points']);?></td>
                     <td class="text-center"><?=_bool(_h($value['status']));?></td>
                     <td class="center">
-                        <a href="<?=get_base_url(); ?>form/grade-scale/<?=_h($value['ID']); ?>/" title="View" class="btn btn-default"><i class="fa fa-eye"></i></a>
+                        <a href="<?=get_base_url(); ?>form/grade-scale/<?=_h($value['id']); ?>/" title="View" class="btn btn-default"><i class="fa fa-eye"></i></a>
                     </td>
                 </tr>
                 <?php } endif; ?>

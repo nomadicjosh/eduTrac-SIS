@@ -38,7 +38,7 @@ $screen = 'addr';
     <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none grid-form" action="<?=get_base_url();?>nae/addr/<?=_h($addr[0]['addressID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none grid-form" action="<?=get_base_url();?>nae/addr/<?=_h($addr[0]['id']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-white <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -214,7 +214,7 @@ $screen = 'addr';
                     <div data-row-span="2">
                         <div data-field-span="1" class="readonly">
                             <label><?= _t("Add Date"); ?></label>
-                            <input type="text" readonly value="<?=date('D, M d, o',strtotime(_h($addr[0]['addDate'])));?>" />
+                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($addr[0]['addDate']))->format('D, M d, o');?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Added By' );?></label>

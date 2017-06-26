@@ -10,8 +10,8 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
-$app->view->block('myet');
+$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->block('myetsis');
 ?>
 
 <div class="col-md-12">
@@ -46,9 +46,9 @@ $app->view->block('myet');
                     <td class="text-center"><?=_h($v['startTerm']);?></td>
                     <td class="text-center"><?=_h($v['applStatus']);?></td>
                     <td class="text-center">
-						<a href="#appl-<?=_h($v['applID']);?>" data-toggle="modal" class="glyphicons single eye_open"><i></i><?=_t( 'View' );?></a>
+						<a href="#appl-<?=_h($v['id']);?>" data-toggle="modal" class="glyphicons single eye_open"><i></i><?=_t( 'View' );?></a>
 						<!-- Modal -->
-						<div class="modal fade" id="appl-<?=_h($v['applID']);?>">
+						<div class="modal fade" id="appl-<?=_h($v['id']);?>">
 							<div class="modal-dialog">
 								<div class="modal-content">
 									<!-- Modal heading -->

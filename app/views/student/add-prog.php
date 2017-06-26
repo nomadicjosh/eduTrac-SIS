@@ -12,7 +12,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$stu = get_student(_h($stu[0]['stuID']));
 $antGradDate = date("05/d/y",strtotime("+4 years"));
 ?>
 
@@ -98,7 +97,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Status' );?></label>
                             <div class="col-md-8">
-                                <?=stu_prog_status_select();?>
+                                <?=sacp_status_select();?>
                             </div>
                         </div>
                         <!-- // Group END -->

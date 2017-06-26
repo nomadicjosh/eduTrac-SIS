@@ -55,10 +55,10 @@ $screen = 'hrpay';
 				<?php if($grades != '') : foreach($grades as $k => $v) { ?>
                 <tr class="gradeX">
                     <td class="text-center"><?=_h($v['grade']);?></td>
-                    <td class="text-center">$<?=money_format("%i",_h($v['minimum_salary']));?></td>
-                    <td class="text-center">$<?=money_format("%i",_h($v['maximum_salary']));?></td>
+                    <td class="text-center">$<?=money_format("%i",(double)_h($v['minimum_salary']));?></td>
+                    <td class="text-center">$<?=money_format("%i",(double)_h($v['maximum_salary']));?></td>
                     <td class="text-center">
-                    	<a href="#editPayGrade<?=_h($v['ID']);?>" data-toggle="modal" title="Edit Pay Grade" class="btn btn-default"><i class="fa fa-edit"></i></a>
+                    	<a href="#editPayGrade<?=_h($v['id']);?>" data-toggle="modal" title="Edit Pay Grade" class="btn btn-default"><i class="fa fa-edit"></i></a>
                     </td>
                 </tr>
 				<?php } endif; ?>
@@ -115,7 +115,7 @@ $screen = 'hrpay';
 				<!-- // Modal body END -->
 				<!-- Modal footer -->
 				<div class="modal-footer">
-					<input type="hidden" name="addDate" value="<?=date('Y-m-d');?>" />
+                    <input type="hidden" name="addDate" value="<?=\Jenssegers\Date\Date::now()->format('Y-m-d');?>" />
                     <input type="hidden" name="addedBy" value="<?=get_persondata('personID');?>" />
 		        	<button type="submit" class="btn btn-default"><?=_t( 'Submit' );?></button>
 					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a>
@@ -129,7 +129,7 @@ $screen = 'hrpay';
     
     <?php if($grades != '') : foreach($grades as $k => $v) { ?>
 	<!-- Modal -->
-	<div class="modal fade" id="editPayGrade<?=_h($v['ID']);?>">
+	<div class="modal fade" id="editPayGrade<?=_h($v['id']);?>">
 		<form class="form-horizontal margin-none" action="<?=get_base_url();?>hr/grades/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -171,7 +171,7 @@ $screen = 'hrpay';
 				<!-- // Modal body END -->
 				<!-- Modal footer -->
 				<div class="modal-footer">
-                    <input type="hidden" name="ID" value="<?=_h($v['ID']);?>" />
+                    <input type="hidden" name="id" value="<?=_h($v['id']);?>" />
         			<button type="submit" class="btn btn-default"><?=_t( 'Update' );?></button>
 					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a>
 				</div>

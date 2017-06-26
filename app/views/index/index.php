@@ -10,8 +10,8 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
-$app->view->block('myet');
+$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->block('myetsis');
 ?>
 
 <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
@@ -40,14 +40,14 @@ tinymce.init({
 							<h5 class="strong"><?=get_met_welcome_message_title();?></h5>
 							<div class="separator bottom"></div>
 							<?=_escape(the_myetsis_welcome_message());?>
-							<p<?=ae('edit_myet_welcome_message');?> class="margin-none strong">
+							<p<?=ae('edit_myetsis_welcome_message');?> class="margin-none strong">
 								<a href="#welcome" data-toggle="modal" class="glyphicons single edit"><i></i><?=_t( 'Edit' );?></a>
 							</p>
 						</div>
 					</div>
 				</div>
 			</div>
-			<?php if(function_exists('myet_module')) : ?>
+			<?php if(function_exists('myetsis_module')) : ?>
 			<?php if(metNewsExist()) : ?>
 			<h3 class="glyphicons chat"><i></i><?=_t( 'News &amp; Announcements' );?></h3>
 			<div class="separator bottom"></div>
@@ -58,8 +58,8 @@ tinymce.init({
 					<div class="widget widget-heading-simple widget-body-white">
 						<div class="widget-body">
 							<h5 class="strong text-uppercase"><?=_h($v['news_title']);?></h5>
-							<span class="glyphicons single regular user"><i></i> <?=_t( 'by');?> <?=getUserValue(_h($v['addedBy']),'uname');?></span>
-							<span class="glyphicons single regular calendar"><i></i> <?=date('D, M d, o',strtotime(_h($v['addDate'])));?></span>
+							<span class="glyphicons single regular user"><i></i> <?=_t( 'by');?> <?=get_user_value(_h($v['addedBy']),'uname');?></span>
+							<span class="glyphicons single regular calendar"><i></i> <?=\Jenssegers\Date\Date::parse(_h($v['addDate']))->format('D, M d, o');?></span>
 							<div class="separator bottom"></div>
 							<?=_escape(safe_truncate($v['news_content'],125,' . . .'));?>
 							<p class="margin-none strong"><a href="<?=get_base_url();?>news/<?=_h($v['news_slug']);?>/"><?=_t( 'read more' );?></a></p>
@@ -89,7 +89,7 @@ tinymce.init({
 					<!-- Group -->
 		            <div class="form-group">
 		                <div class="col-md-12">
-		                    <textarea name="myet_welcome_message" class="form-control" rows="5"><?=_escape(get_option('myet_welcome_message'));?></textarea>
+		                    <textarea name="myetsis_welcome_message" class="form-control" rows="5"><?=_escape(get_option('myetsis_welcome_message'));?></textarea>
 		                </div>
 		            </div>
 		            <!-- // Group END -->

@@ -13,7 +13,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myet/');
+$layouts_header = get_layouts_header(APP_PATH . 'views/_layouts/myetsis/');
 $screen = 'setting';
 ?>
 
@@ -86,12 +86,12 @@ $screen = 'setting';
                         
                         <!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myeT Layout' );?> <a href="#myetLayout" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myeT Layout' );?> <a href="#myetsisLayout" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
-						        <select name="myet_layout" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+						        <select name="myetsis_layout" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
                             		<?php foreach($layouts_header as $layout) { ?>
-                                    <option value="<?=$layout['Slug'];?>"<?=selected( _h(get_option( 'myet_layout' )), $layout['Slug'], false ); ?>><?=$layout['Name'];?></option>
+                                    <option value="<?=$layout['Slug'];?>"<?=selected( _h(get_option( 'myetsis_layout' )), $layout['Slug'], false ); ?>><?=$layout['Name'];?></option>
                                     <?php } ?>
                             	</select>
 							</div>
@@ -100,12 +100,12 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myeT Mode' );?> <a href="#portal" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myetSIS Mode' );?> <a href="#portal" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <select name="enable_myet_portal" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                <select name="enable_myetsis_portal" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h(get_option( 'enable_myet_portal' )), '1', false ); ?>><?=_t( "Online" );?></option>
-                                    <option value="0"<?=selected( _h(get_option( 'enable_myet_portal' )), '0', false ); ?>><?=_t( "Offline" );?></option>
+                                    <option value="1"<?=selected( _h(get_option( 'enable_myetsis_portal' )), '1', false ); ?>><?=_t( "Online" );?></option>
+                                    <option value="0"<?=selected( _h(get_option( 'enable_myetsis_portal' )), '0', false ); ?>><?=_t( "Offline" );?></option>
                                 </select>
                             </div>
                         </div>
@@ -115,7 +115,7 @@ $screen = 'setting';
     					<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Offline Message' );?> <a href="#portaloff" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
-								<textarea name="myet_offline_message" class="form-control" rows="5" required><?=_h(get_option('myet_offline_message'));?></textarea>
+								<textarea name="myetsis_offline_message" class="form-control" rows="5" required><?=_h(get_option('myetsis_offline_message'));?></textarea>
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -124,10 +124,10 @@ $screen = 'setting';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Application' );?> <a href="#appl" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <select name="enable_myet_appl_form" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                <select name="enable_myetsis_appl_form" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="1"<?=selected( _h(get_option( 'enable_myet_appl_form' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
-                                    <option value="0"<?=selected( _h(get_option( 'enable_myet_appl_form' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
+                                    <option value="1"<?=selected( _h(get_option( 'enable_myetsis_appl_form' )), '1', false ); ?>><?=_t( "Enabled" );?></option>
+                                    <option value="0"<?=selected( _h(get_option( 'enable_myetsis_appl_form' )), '0', false ); ?>><?=_t( "Disabled" );?></option>
                                 </select>
                             </div>
                         </div>
@@ -150,9 +150,9 @@ $screen = 'setting';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Language' );?></label>
                             <div class="col-md-8">
-                                <select name="et_core_locale" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                <select name="etsis_core_locale" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 	<option value="">&nbsp;</option>
-                                    <?php etsis_dropdown_languages(_h(get_option( 'et_core_locale' ))); ?>
+                                    <?php etsis_dropdown_languages(_h(get_option( 'etsis_core_locale' ))); ?>
                                 </select>
                             </div>
                         </div>
@@ -278,7 +278,7 @@ $screen = 'setting';
 						
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'eduTrac Analytics' );?> <a href="#ea" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'etSIS Analytics' );?> <a href="#ea" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
                                 <input type="text" name="edutrac_analytics_url" value="<?=_h(get_option('edutrac_analytics_url'));?>" class="form-control" />
                             </div>
@@ -316,7 +316,7 @@ $screen = 'setting';
 	</form>
 	<!-- // Form END -->
     
-    <div class="modal fade" id="myetLayout">
+    <div class="modal fade" id="myetsisLayout">
     	<div class="modal-dialog">
 			<div class="modal-content">
 	
@@ -327,7 +327,7 @@ $screen = 'setting';
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t("You can create your own layout for myetSIS self service portal. Make a duplicate of the default layout (/app/views/_layouts/myet/default.php), modify it and add your own css styling.");?></p>
+		            <p><?=_t("You can create your own layout for myetSIS self service portal. Make a duplicate of the default layout (/app/views/_layouts/myetsis/default.php), modify it and add your own css styling.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
@@ -346,7 +346,7 @@ $screen = 'setting';
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t("Some screens in eduTrac rely on the internal REST API, so you will need and API Key.");?> <a href="http://www.edutracsis.com/api-key/1.1/"><?=_t('Click here');?></a> <?=_t("to generate an api key for your account.");?></p>
+		            <p><?=_t("Some screens in eduTrac SIS rely on the internal REST API, so you will need and API Key.");?> <a href="http://www.edutracsis.com/api-key/1.1/"><?=_t('Click here');?></a> <?=_t("to generate an api key for your account.");?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
@@ -437,11 +437,11 @@ $screen = 'setting';
                 <!-- Modal heading -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h3 class="modal-title"><?=_t( 'eduTrac Analytics' );?></h3>
+                    <h3 class="modal-title"><?=_t( 'etSIS Analytics' );?></h3>
                 </div>
                 <!-- // Modal heading END -->
                 <div class="modal-body">
-                    <p><?=_t("If you are using eduTrac Analytics, enter the base url where it is installed (i.e. http://example.com/ea/).");?></p>
+                    <p><?=_t("If you are using etSIS Analytics, enter the base url where it is installed (i.e. http://example.com/ea/).");?></p>
                 </div>
                 <div class="modal-footer">
                     <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>

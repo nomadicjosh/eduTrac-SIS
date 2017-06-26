@@ -41,7 +41,7 @@ $staffInfo = get_staff(_h($staff->staffID));
                     
                     <!-- One Third Column -->
                     <div class="col-md-1">
-                        <?=getSchoolPhoto($staffInfo->staffID, $staffInfo->email, '90');?>
+                        <?=get_school_photo(_h($staffInfo->staffID), _h($staffInfo->email), '90');?>
                     </div>
                     <!-- // One Third Column END -->
     
@@ -314,7 +314,7 @@ $staffInfo = get_staff(_h($staff->staffID));
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Add Date' );?></label>
                             <div class="col-md-6">
-                                <input class="form-control" type="text" readonly value="<?=date('D, M d, o',strtotime(_h($staff->addDate)));?>" required />
+                                <input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($staff->addDate))->format('D, M d, o');?>" required />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -332,7 +332,7 @@ $staffInfo = get_staff(_h($staff->staffID));
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Last Update' );?></label>
                             <div class="col-md-6">
-                                <input class="form-control" type="text" readonly value="<?=date('D, M d, o @ h:i A',strtotime(_h($staff->LastUpdate)));?>" required />
+                                <input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($staff->LastUpdate))->format('D, M d, o @ h:i A');?>" required />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -346,7 +346,7 @@ $staffInfo = get_staff(_h($staff->staffID));
                 
                 <!-- Form actions -->
                 <div class="form-actions">
-                    <input type="hidden" name="sMetaID" value="<?=_h($staff->sMetaID);?>" />
+                    <input type="hidden" name="id" value="<?=_h($staff->sMetaID);?>" />
                     <button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
                     <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>hr/'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>

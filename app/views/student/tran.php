@@ -71,7 +71,7 @@ $(document).ready(function(){
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Student ID' );?></label>
 							<div class="col-md-8">
 								<input type="text" id="stuID" class="form-control" required />
-                                <input type="text" id="StudentID" name="stuID" readonly="readonly" class="form-control text-center" />
+                                <input type="hidden" id="StudentID" name="stuID"/>
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -86,7 +86,10 @@ $(document).ready(function(){
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Tran Type' );?></label>
 							<div class="col-md-8">
-						        <?=acad_level_select(null,null,'required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name'); ?>
+                                </select>
 							</div>
 						</div>
 						<!-- // Group END -->

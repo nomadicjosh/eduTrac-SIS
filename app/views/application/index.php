@@ -70,7 +70,7 @@ $screen = 'appl';
 				<tbody>
 				<?php if($search != '') : foreach($search as $k => $v) { ?>
                 <tr class="gradeX">
-                	<td class="text-center"><?=getSchoolPhoto(_h($v['personID']), _h($v['email']), 48, 'avatar-frame');?></td>
+                	<td class="text-center"><?=get_school_photo(_h($v['personID']), _h($v['email']), 48, 'avatar-frame');?></td>
                     <td class="text-center"><?=_h($v['personID']);?></td>
                     <td class="text-center"><?=get_name(_h($v['personID']));?></td>
                     <td class="text-center"><?=_h($v['termName']);?></td>
@@ -82,7 +82,7 @@ $screen = 'appl';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>appl/<?=_h($v['applID']);?>/"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>appl/<?=_h($v['id']);?>/"><?=_t( 'View' ); ?></a></li>
                                 <?php if($appl->stuID == NULL) { ?>
                                 <li><a href="<?=get_base_url();?>stu/add/<?=_h($v['personID']);?>/"><?=_t( 'Create Student' ); ?></a></li>
                                 <?php } ?>

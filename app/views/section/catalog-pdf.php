@@ -13,6 +13,8 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/blank');
 $app->view->block('blank');
 
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+
 // create new PDF document
 $pdf = new \app\src\tcpdf\Tcpdf('landscape', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 

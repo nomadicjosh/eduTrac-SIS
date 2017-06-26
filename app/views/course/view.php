@@ -100,7 +100,10 @@ $screen = 'vcrse';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Level' );?></label>
                             <div class="col-md-8">
-                                <?=course_level_select(_h($crse->courseLevelCode));?>
+                                <select name="courseLevelCode" id="courseLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+									<option value="">&nbsp;</option>
+	                        		<?php table_dropdown('crlv', null, 'code', 'code', 'name', _h($crse->courseLevelCode)); ?>
+	                        	</select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -186,7 +189,10 @@ $screen = 'vcrse';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($crse->acadLevelCode),null,'required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name',_h($crse->acadLevelCode)); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -199,7 +205,7 @@ $screen = 'vcrse';
 							</div>
 							
 							<div class="col-md-4">
-						    	<input class="form-control"<?=cio();?> name="statusDate" type="text" readonly value="<?=date('D, M d, o',strtotime(_h($crse->statusDate)));?>" />
+						    	<input class="form-control"<?=cio();?> name="statusDate" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($crse->statusDate))->format('D, M d, o');?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -230,7 +236,7 @@ $screen = 'vcrse';
 						<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Approval Date' );?></label>
 							<div class="col-md-6">
-								<input class="form-control" type="text" readonly value="<?=date('D, M d, o',strtotime(_h($crse->approvedDate)));?>" />
+								<input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($crse->approvedDate))->format('D, M d, o');?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -239,7 +245,7 @@ $screen = 'vcrse';
 						<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Last Update' );?></label>
 							<div class="col-md-6">
-								<input class="form-control" type="text" readonly value="<?=date('D, M d, o h:i A',strtotime(_h($crse->LastUpdate)));?>" />
+								<input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($crse->LastUpdate))->format('D, M d, o h:i A');?>" />
 							</div>
 						</div>
 						<!-- // Group END -->

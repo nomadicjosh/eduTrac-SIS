@@ -140,7 +140,10 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($student[0]['acadLevelCode']),null,'required');?>
+                                <select name="acadLevelCode" class="form-control" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name',_h($student[0]['acadLevelCode'])); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -221,7 +224,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Add Date' );?></label>
                             <div class="col-md-8">
-                                <input class="form-control" type="text" readonly value="<?=date("Y-m-d");?>" />
+                                <input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::now()->format("Y-m-d");?>" />
                             </div>
                         </div>
                         <!-- // Group END -->

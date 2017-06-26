@@ -35,7 +35,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
 	<!--[if lt IE 9]><link rel="stylesheet" href="<?=get_base_url();?>static/assets/components/library/bootstrap/css/bootstrap.min.css" /><![endif]-->
 	<link rel="stylesheet" href="<?=get_base_url();?>static/assets/css/front/module.front.page.index.min.css" />
 	<link rel="stylesheet" href="<?=get_base_url();?>static/assets/css/admin/custom.css" />
-	<link rel="stylesheet" href="<?=get_base_url();?>static/assets/css/admin/custom/myet.custom.css" />
+	<link rel="stylesheet" href="<?=get_base_url();?>static/assets/css/admin/custom/myetsis.custom.css" />
 	
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -56,7 +56,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
         }
     }
 	?>
-<?php myet_head(); ?>
+<?php myetsis_head(); ?>
 </head>
 <body>
 	
@@ -82,7 +82,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
 						<li class="glyphs2 hidden-xs">
 							<ul>
 								<li><a href="<?=get_base_url();?>login/" class="glyphicons unlock"><i></i> <?=_t( 'Sign in' );?></a></li>
-								<?php if(_h(get_option('enable_myet_appl_form')) == 1) : ?>
+								<?php if(_h(get_option('enable_myetsis_appl_form')) == 1) : ?>
                                 <?php 
                                     /**
                                      * Apply Online
@@ -92,9 +92,9 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                      * 
                                      * @since 5.0.0
                                      */
-                                    do_action('apply_online'); 
+                                    $app->hook->do_action('apply_online'); 
                                 ?>
-								<li<?= ml('myet_module'); ?><?= hl('apply_online'); ?>><a href="<?=get_base_url();?>online-app/" class="glyphicons user_add"><i></i> <?=_t( 'Apply' );?></a></li>
+								<li<?= ml('myetsis_module'); ?><?= hl('apply_online'); ?>><a href="<?=get_base_url();?>online-app/" class="glyphicons user_add"><i></i> <?=_t( 'Apply' );?></a></li>
 								<?php endif; ?>
 							</ul>
 						</li>
@@ -106,7 +106,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
 							</ul>
 						</li>
 						<?php endif; ?>
-						<li<?=ae('access_myet_admin');?><?=ml('myet_module');?> class="glyphs2 hidden-xs">
+						<li<?=ae('access_myetsis_admin');?><?=ml('myetsis_module');?> class="glyphs2 hidden-xs">
 							<ul>
 								<li class="single"><a href="<?=get_base_url();?>admin/" class="no-ajaxify glyphicons keys"><i></i> <?=_t( 'Admin' );?></a></li>
 							</ul>
@@ -118,7 +118,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
 							</ul>
 						</li>
 						<?php endif; ?>
-						<?php if(isset($_COOKIE['SWITCH_USERBACK'])) : ?>
+						<?php if(isset($app->req->cookie['SWITCH_USERBACK'])) : ?>
 						<li class="glyphs2 hidden-xs">
 							<ul>
 								<li class="single">
@@ -165,11 +165,11 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                      * 
                                      * @since 6.1.05
                                      */
-                                    do_action('student_my_menu'); 
+                                    $app->hook->do_action('student_my_menu'); 
                                 ?>
                             </ul>
                         </li>
-						<li<?=ml('myet_module');?> class="dropdown submenu">
+						<li<?=ml('myetsis_module');?> class="dropdown submenu">
                             <a data-toggle="dropdown" class="dropdown-toggle glyphicons chevron-right"><i></i><?=_t( 'Forms' );?></a>
                             <ul class="dropdown-menu submenu-show submenu-hide pull-right">
                                 <li><a href="<?=get_base_url();?>form/address/"><?=_t( 'Change of Address Form' );?></a></li>
@@ -185,7 +185,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                      * 
                                      * @since 6.1.05
                                      */
-                                    do_action('forms_my_menu'); 
+                                    $app->hook->do_action('forms_my_menu'); 
                                 ?>
                             </ul>
                         </li>
@@ -199,7 +199,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                              * 
                              * @since 5.0.0
                              */
-                            do_action('my_menu'); 
+                            $app->hook->do_action('my_menu'); 
                         ?>
                         <li><a href="<?=get_base_url();?>appl/applications/"><?=_t( 'Applications' );?></a></li>
 						<li><a href="<?=get_base_url();?>profile/"><?=_t( 'Profile' );?></a></li>
@@ -208,7 +208,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
 					</ul>
 				</li>
 				<?php endif; ?>
-                <?php if(function_exists('myet_module')) : ?>
+                <?php if(function_exists('myetsis_module')) : ?>
 				<?php if(metPageExist()) : ?>
 				<li class="dropdown dd-1">
 					<a href="" data-toggle="dropdown" class="glyphicons circle_info"><i></i><?=_t( 'Info Pages' );?> <span class="caret"></span></a>
@@ -235,7 +235,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                      * 
                      * @since 6.1.05
                      */
-                    do_action('myet_main_menu'); 
+                    $app->hook->do_action('myetsis_main_menu'); 
                 ?>
 				<?php endif; ?>
 				<li><a href="<?=get_base_url();?>courses/" class="glyphicons search"><i></i><?=_t( 'Search Courses' );?></a></li>
@@ -252,7 +252,9 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
 
 	<div class="row">
         
-        <?= $app->view->show('myet'); ?>
+        <?php $app->hook->do_action('myetsis_admin_notices'); ?>
+        
+        <?= $app->view->show('myetsis'); ?>
         
     		<div id="custom-footer" class="hidden-print">
 				

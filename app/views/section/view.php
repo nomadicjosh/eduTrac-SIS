@@ -156,7 +156,10 @@ $(function(){
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Level' );?></label>
                             <div class="col-md-8">
-                                <?=course_level_select(_h($sect->courseLevelCode), csid());?>
+                                <select name="courseLevelCode" id="courseLevelCode"<?=csid();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+									<option value="">&nbsp;</option>
+	                        		<?php table_dropdown('crlv', null, 'code', 'code', 'name', _h($sect->courseLevelCode)); ?>
+	                        	</select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -165,7 +168,10 @@ $(function(){
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($sect->acadLevelCode), csid().' ','required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csid();?> required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name',_h($sect->acadLevelCode)); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -227,7 +233,7 @@ $(function(){
                             </div>
                             
                             <div class="col-md-4">
-                                <input class="form-control" type="text" readonly value="<?=date('D, M d, o',strtotime(_h($sect->statusDate)));?>" />
+                                <input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($sect->statusDate))->format('D, M d, o');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -255,7 +261,7 @@ $(function(){
 						<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Approval Date' );?></label>
 							<div class="col-md-8">
-								<input type="text" readonly value="<?=date('D, M d, o',strtotime(_h($sect->approvedDate)));?>" class="form-control" />
+								<input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($sect->approvedDate))->format('D, M d, o');?>" class="form-control" />
 							</div>
 						</div>
 						<!-- // Group END -->

@@ -88,7 +88,10 @@ $screen = 'acrse';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Level' );?></label>
                             <div class="col-md-8">
-                                <?=course_level_select(($app->req->post['courseLevelCode'] != '' ? $app->req->post['courseLevelCode'] : ''));?>
+                                <select name="courseLevelCode" id="courseLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+									<option value="">&nbsp;</option>
+	                        		<?php table_dropdown('crlv', null, 'code', 'code', 'name', ($app->req->post['courseLevelCode'] != '' ? $app->req->post['courseLevelCode'] : '')); ?>
+	                        	</select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -162,7 +165,10 @@ $screen = 'acrse';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(($app->req->post['acadLevelCode'] != '' ? $app->req->post['acadLevelCode'] : null),null,'required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name',($app->req->post['acadLevelCode'] != '' ? $app->req->post['acadLevelCode'] : null)); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -174,7 +180,7 @@ $screen = 'acrse';
 								<?=status_select(($app->req->post['currStatus'] != '' ? $app->req->post['currStatus'] : ''));?>
 							</div>
 							<div class="col-md-4">
-								<input class="form-control" type="text" readonly value="<?=date('D, M d, o',strtotime(date('Y-m-d')));?>" />
+								<input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::now()->format('D, M d, o');?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -201,7 +207,7 @@ $screen = 'acrse';
 						<!-- Group -->
 						<div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Approval Date' );?></label>
-							<div class="col-md-6"><input class="form-control" type="text" readonly value="<?=date('D, M d, o',strtotime(date('Y-m-d')));?>" /></div>
+							<div class="col-md-6"><input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::now()->format('D, M d, o');?>" /></div>
 						</div>
 						<!-- // Group END -->
 						

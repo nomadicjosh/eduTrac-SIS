@@ -77,6 +77,9 @@
                                 <?php if(_he('not_hidden')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_65"><a<?=($screen === 'update') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>dashboard/core-update/"><?=_t( 'Automatic Update' );?></a></li>
                                 <?php endif; ?>
+                                <?php if(_he('access_ftp')) : ?>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_105"><a<?=($screen === 'ftp') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>dashboard/ftp/"><?=_t( 'FTP' );?></a></li>
+                                <?php endif; ?>
                             </ul>
                         </li>
                         <?php endif; ?>
@@ -96,14 +99,13 @@
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_6"><a<?=($screen === 'term') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/term/"><?=_t( '(TERM) - Term' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_7"><a<?=($screen === 'dept') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/department/"><?=_t( '(DEPT) - Department' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_8"><a<?=($screen === 'subj') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/subject/"><?=_t( '(SUBJ) - Subject' );?></a></li>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_9"><a<?=($screen === 'slr') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/student-load-rule/"><?=_t( '(SLR) - Stu Load Rules' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_10"><a<?=($screen === 'deg') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/degree/"><?=_t( '(DEG) - Degree' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_11"><a<?=($screen === 'majr') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/major/"><?=_t( '(MAJR) - Major' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_12"><a<?=($screen === 'minr') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/minor/"><?=_t( '(MINR) - Minor' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_13"><a<?=($screen === 'ccd') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/ccd/"><?=_t( '(CCD) - CCD' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_14"><a<?=($screen === 'spec') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/specialization/"><?=_t( '(SPEC) - Specialization' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_15"><a<?=($screen === 'cip') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/cip/"><?=_t( '(CIP) - CIP' );?></a></li>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_16"><a<?=($screen === 'rstr') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/rstr-code/"><?=_t( '(RSTR) - Restrict. Codes' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_16"><a<?=($screen === 'rest') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/rest/"><?=_t( '(REST) - Restriction' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_17"><a<?=($screen === 'loc') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/location/"><?=_t( '(LOC) - Location' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_18"><a<?=($screen === 'bldg') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/building/"><?=_t( '(BLDG) - Building' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_19"><a<?=($screen === 'room') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>form/room/"><?=_t( '(ROOM) - Room' );?></a></li>
@@ -195,7 +197,7 @@
                                 <?php endif; ?>
                                 
                                 <?php if($nae !== '') : ?>
-                                <?php if(isStudent($nae[0]['personID']) && _he('access_student_screen')) : ?>
+                                <?php if(is_student($nae[0]['personID']) && _he('access_student_screen')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_52"><a<?=($screen === 'spro') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>stu/<?=_h($nae[0]['personID']);?>/"><?=_t( '(SPRO) - Stu. Profile' );?></a></li>
                                 <?php endif; ?>
                                 <?php endif; ?>
@@ -208,6 +210,10 @@
                                 
                                 <?php if(_he('access_user_role_screen')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_55"><a<?=($screen === 'prole') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>nae/role/<?=_h($nae[0]['personID']);?>/"><?=_t( 'Person Role' );?></a></li>
+                                <?php endif; ?>
+                                
+                                <?php if(_he('access_person_screen')) : ?>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_106"><a<?=($screen === 'perc') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>nae/perc/<?=_h($nae[0]['personID']);?>/"><?=_t( 'Person Restriction (PERC)' );?></a></li>
                                 <?php endif; ?>
                                 
                                 <?php if(_he('access_user_permission_screen')) : ?>
@@ -234,7 +240,7 @@
                             <ul>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_22"><a<?=($screen === 'prog') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>program/"><?=_t( 'Program Lookup' );?></a></li>
                                 <?php if($prog !== '') : ?>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_23"><a<?=($screen === 'vprog') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>program/<?=_h( $prog->acadProgID );?>"><?=_h( $prog->acadProgCode );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_23"><a<?=($screen === 'vprog') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>program/<?=_h( $prog->id );?>"><?=_h( $prog->acadProgCode );?></a></li>
                                 <?php endif; ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_24"><a<?=($screen === 'aprog') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>program/add/"><?=_t( '(APRG) - Add Program' );?></a></li>
                             </ul>

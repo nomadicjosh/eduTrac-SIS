@@ -62,7 +62,7 @@ $screen = 'cat';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>sect/catalog/<?=_h($v['termCode']);?>/" target="_blank"><?=_t( 'PDF Export' );?></a></li>
+                                <li><a href="<?=get_base_url();?>sect/catalog/<?=_h($v['id']);?>/" target="_blank"><?=_t( 'PDF Export' );?></a></li>
                             </ul>
                         </div>
                     </td>

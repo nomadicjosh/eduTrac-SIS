@@ -53,11 +53,12 @@ $screen = 'cron';
 				<thead>
 					<tr>
                         <th class="text-center"></th>
-						<th class="text-center"><?=_t( 'Cronjob' );?></th>
-						<th class="text-center"><?=_t( 'Time/Each' );?></th>
-						<th class="text-center"><?=_t( 'Last Run' );?></th>
-						<th class="text-center"><?=_t( '# Runs' );?></th>
-                        <th class="text-center"><?=_t( 'Logs/Run' );?></th>
+						<th class="text-center"><?= _t('Cronjob'); ?></th>
+                        <th class="text-center"><?= _t('Time/Each'); ?></th>
+                        <th class="text-center"><?= _t('Last Run'); ?></th>
+                        <th class="text-center"><?= _t('# Runs'); ?></th>
+                        <th class="text-center"><?= _t('Status'); ?></th>
+                        <th class="text-center"><?= _t('Action'); ?></th>
 					</tr>
 				</thead>
 				<!-- // Table heading END -->
@@ -66,13 +67,26 @@ $screen = 'cron';
 				<tbody>
                 <?php foreach ($cron as $job) {?>
                 <tr class="gradeX">
-                    <td class="text-center"><input type="checkbox" value="<?=$job->id;?>" name="cronjobs[<?=$job->id;?>]" /></td>
-                    <td class="text-center"><a href="<?=get_base_url() . 'cron/' . $job->id . '/';?>" title="Edit"><?=$job->name;?></a></td>
-                    <td class="text-center">Each <?=($job->time != 0) ? "day on " . $job->time  . ' hours' : etsis_seconds_to_time($job->each) . (strlen($job->eachtime > 0) ? ' at ' . $job->eachtime : '');?></td>
-                    <td class="text-center"><?=($job->lastrun !== '') ? date('M d, Y @ h:i A', strtotime($job->lastrun)) : '';?></td>
-                    <td class="text-center"><?=$job->runned;?></td>
+                    <td class="text-center"><input type="checkbox" value="<?=_h((int)$job->id);?>" name="cronjobs[<?=_h((int)$job->id);?>]" /></td>
+                    <td class="text-center"><?= _h($job->name); ?></td>
+                    <td class="text-center"><?= _t('Each'); ?> <?= (_h($job->time) != 0) ? "day on " . _h($job->time) . ' hours' : etsis_seconds_to_time(_h($job->each)) . (strlen(_h($job->eachtime) > 0) ? ' at ' . _h($job->eachtime) : ''); ?></td>
+                    <td class="text-center"><?= (_h($job->lastrun) !== '' ? Jenssegers\Date\Date::parse(_h($job->lastrun))->format('M. d, Y @ h:i A') : ''); ?></td>
+                    <td class="text-center">
+                        <span class="label label-inverse" style="font-size:1em;font-weight: bold;">
+                            <?= _h((int)$job->runned); ?>
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="label <?=etsis_cron_status_label(_h($job->status));?>" style="font-size:1em;font-weight: bold;">
+                            <?= (_h((int)$job->status) == 1 ? _t('Active') : _t('Inactive')); ?>
+                        </span>
+                    </td>
                     <?php foreach ($set as $s) : ?>
-                    <td class="text-center"><?=isset($s) ? '<a target="_blank" href="'.get_base_url(). 'cron/cronjob' . '/' . '?password=' . $s->cronjobpassword . '&id=' . $job->id . '">'._t('Run').'</a>' : '';?></td>
+                        <td class="text-center">
+                            <?= isset($s) ? '<a href="' . get_base_url() . 'cron' . '/' . _h((int)$job->id) . '/" data-toggle="tooltip" data-placement="top" title="View/Edit"><button type="button" class="button bg-yellow"><i class="fa fa-edit"></i></button></a>' : ''; ?>
+                            <?= isset($s) ? '<a target="_blank" href="' . get_base_url() . 'cron/cronjob' . '/' . '?password=' . _h($s->cronjobpassword) . '&id=' . _h((int)$job->id) . '" data-toggle="tooltip" data-placement="top" title="Run"><button type="button" class="button bg-purple"><i class="fa fa-chevron-right"></i></button></a>' : ''; ?>
+                            <?= isset($s) ? '<a href="' . get_base_url() . 'cron' . '/' . _h((int)$job->id) . '/' . 'reset' . '/" data-toggle="tooltip" data-placement="top" title="Reset Runs"><button type="button" class="button bg-blue"><i class="fa fa-refresh"></i></button></a>' : ''; ?>
+                        </td>
                     <?php endforeach; ?>
                 </tr>
                 <?php } ?>

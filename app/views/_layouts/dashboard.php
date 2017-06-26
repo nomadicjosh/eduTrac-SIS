@@ -23,6 +23,7 @@ ob_implicit_flush(0);
         <!--[if lt IE 9]><link rel="stylesheet" href="<?= get_base_url(); ?>static/assets/components/library/bootstrap/css/bootstrap.min.css" /><![endif]-->
         <link rel="stylesheet" href="<?= get_css_directory_uri(); ?>admin/module.admin.page.layout.section.layout-fluid-menu-top-full.min.css" />
         <link rel="stylesheet" href="<?= get_css_directory_uri(); ?>admin/custom.css" />
+        <link rel="stylesheet" href="<?= get_base_url(); ?>static/assets/components/library/bootstrap/css/bootstrap-lumen.css" />
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>

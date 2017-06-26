@@ -77,6 +77,15 @@ $options = [
 				<div class="row">
 					<!-- Column -->
 					<div class="col-md-6">
+                        
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Handler Name' );?></label>
+							<div class="col-md-8">
+								<input type="text" name="name" class="form-control" value="<?=$cron->name;?>" required/>
+							</div>
+						</div>
+						<!-- // Group END -->
 						
 						<!-- Group -->
 						<div class="form-group">
@@ -125,6 +134,19 @@ $options = [
                         </div>
                         <!-- // Group END -->
                         
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Status" );?></label>
+                            <div class="col-md-8">
+                                <select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option>&nbsp;</option>
+                                    <option value="1"<?=selected('1', _h($cron->status), false);?>><?=_t( "Active" );?></option>
+                                    <option value="0"<?=selected('0', _h($cron->status), false);?>><?=_t( "Inactive" );?></option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
 					</div>
 					<!-- // Column END -->
 				</div>
@@ -136,7 +158,6 @@ $options = [
 				
 				<!-- Form actions -->
 				<div class="form-actions">
-                    <input type="hidden" name="name" class="form-control" value="<?=$cron->name;?>" />
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
 				</div>
 				<!-- // Form actions END -->

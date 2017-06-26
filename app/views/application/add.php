@@ -90,7 +90,7 @@ $screen = 'appl';
                             <label class="col-md-3 control-label"><?=_t( 'DOB' );?></label>
                             <div class="col-md-8">
                             	<?php if(_h($person->dob) > '0000-00-00') : ?>
-                            	<input class="form-control" readonly type="text" value="<?=date('D, M d, o',strtotime(_h($person->dob)));?>" />
+                                <input class="form-control" readonly type="text" value="<?=\Jenssegers\Date\Date::parse(_h($person->dob))->format('D, M d, o');?>" />
                             	<?php else : ?>
                             	<input class="form-control" readonly type="text" />
                         		<?php endif; ?>

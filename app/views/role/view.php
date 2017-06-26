@@ -49,7 +49,7 @@ $screen = 'role';
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-4 control-label" for="roleName"><font color="red">*</font> <?=_t( 'Role Name' );?></label>
-							<div class="col-md-6"><input class="form-control" name="roleName" type="text" value="<?=$eRole->getRoleNameFromID(_h($role->ID));?>" required/></div>
+							<div class="col-md-6"><input class="form-control" name="roleName" type="text" value="<?=$eRole->getRoleNameFromID(_h($role->id));?>" required/></div>
 						</div>
 						<!-- // Group END -->
 						
@@ -66,7 +66,7 @@ $screen = 'role';
 							<!-- // Table heading END -->
 							
 							<tbody>
-								<?php rolePerm(_h($role->ID)); ?>
+								<?php rolePerm(_h($role->id)); ?>
 							</tbody>
 				
 					</table>
@@ -77,7 +77,7 @@ $screen = 'role';
 				<!-- Form actions -->
 				<div class="form-actions">
 					<input type="hidden" name="action" value="saveRole" />
-					<input type="hidden" name="roleID" value="<?=_h($role->ID);?>" />
+					<input type="hidden" name="id" value="<?=_h($role->id);?>" />
 					<button type="submit" name="Submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
 					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>role/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>

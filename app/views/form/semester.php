@@ -166,8 +166,8 @@ $screen = 'sem';
                 <?php if($semester != '') : foreach($semester as $key => $value) { ?>
                 <tr class="gradeX">
                     <td class="text-center"><?=_h($value['semName']);?></td>
-                    <td class="text-center"><?=date('D, M d, o',strtotime(_h($value['semStartDate'])));?></td>
-                    <td class="text-center"><?=date('D, M d, o',strtotime(_h($value['semEndDate'])));?></td>
+                    <td class="text-center"><?=\Jenssegers\Date\Date::parse(_h($value['semStartDate']))->format('D, M d, o');?></td>
+                    <td class="text-center"><?=\Jenssegers\Date\Date::parse(_h($value['semEndDate']))->format('D, M d, o');?></td>
                     <td class="text-center"><?php if($value['active'] == 1) {echo 'Active';}else{'Inactive';} ?></td>
                     <td class="text-center">
                     	<div class="btn-group dropup">
@@ -177,7 +177,7 @@ $screen = 'sem';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>form/semester/<?=_h($value['semesterID']);?>/"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>form/semester/<?=_h($value['id']);?>/"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

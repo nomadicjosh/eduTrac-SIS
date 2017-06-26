@@ -20,7 +20,7 @@ $screen = 'pperm';
 	<li><?=_t( 'You are here');?></li>
 	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>nae/" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
+	<li><a href="<?=get_base_url();?>nae/" class="glyphicons search"><i></i> <?=_t( 'Person Lookup' );?></a></li>
 	<li class="divider"></li>
     <li><a href="<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/" class="glyphicons vcard"><i></i> <?=get_name(_h($nae[0]['personID']));?></a></li>
     <li class="divider"></li>

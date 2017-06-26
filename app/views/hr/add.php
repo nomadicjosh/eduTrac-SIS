@@ -40,7 +40,7 @@ $staffInfo = get_staff(_h($job[0]['staffID']));
                     
                     <!-- One Third Column -->
                     <div class="col-md-1">
-                        <?=getSchoolPhoto($staffInfo->staffID, $staffInfo->email, '90');?>
+                        <?=get_school_photo(_h($staffInfo->staffID), _h($staffInfo->email), '90');?>
                     </div>
                     <!-- // One Third Column END -->
     
@@ -154,7 +154,7 @@ $staffInfo = get_staff(_h($job[0]['staffID']));
                             <div class="col-md-8">
                                 <select name="jobID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('job',NULL,'ID','ID','title'); ?>
+                                    <?php table_dropdown('job',NULL,'id','id','title'); ?>
                                 </select>
                             </div>
                         </div>
@@ -221,7 +221,7 @@ $staffInfo = get_staff(_h($job[0]['staffID']));
 				<!-- Form actions -->
 				<div class="form-actions">
 				    <input type="hidden" name="staffID" value="<?=_h($job[0]['staffID']);?>" />
-				    <input type="hidden" name="addDate" value="<?=date("Y-m-d");?>" />
+                    <input type="hidden" name="addDate" value="<?=\Jenssegers\Date\Date::now()->format('Y-m-d');?>" />
                     <input type="hidden" name="approvedBy" value="<?=get_persondata('personID');?>" />
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
 					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>hr/'"><i></i><?=_t( 'Cancel' );?></button>

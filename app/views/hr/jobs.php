@@ -57,10 +57,10 @@ $screen = 'hrjob';
                 <tr class="gradeX">
                     <td class="text-center"><?=_h($v['grade']);?></td>
                     <td class="text-center"><?=_h($v['title']);?></td>
-                    <td class="text-center">$<?=money_format("%i",_h($v['hourly_wage']));?></td>
+                    <td class="text-center">$<?=money_format("%i",(double)_h($v['hourly_wage']));?></td>
                     <td class="text-center"><?=_h($v['weekly_hours']);?></td>
                     <td class="text-center">
-                    	<a href="#editJob<?=_h($v['ID']);?>" data-toggle="modal" title="Edit Job Title" class="btn btn-default"><i class="fa fa-edit"></i></a>
+                    	<a href="#editJob<?=_h($v['id']);?>" data-toggle="modal" title="Edit Job Title" class="btn btn-default"><i class="fa fa-edit"></i></a>
                     </td>
                 </tr>
 				<?php } endif; ?>
@@ -95,7 +95,7 @@ $screen = 'hrjob';
 		                <div class="col-md-8">
 		                    <select name="pay_grade" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 		                		<option value="">&nbsp;</option>
-		                		<?php table_dropdown('pay_grade',NULL,'ID','ID','grade'); ?>
+		                		<?php table_dropdown('pay_grade',NULL,'id','id','grade'); ?>
 		                	</select>
 		                </div>
 		            </div>
@@ -133,7 +133,7 @@ $screen = 'hrjob';
 				<!-- // Modal body END -->
 				<!-- Modal footer -->
 				<div class="modal-footer">
-					<input type="hidden" name="addDate" value="<?=date('Y-m-d');?>" />
+                    <input type="hidden" name="addDate" value="<?=\Jenssegers\Date\Date::now()->format('Y-m-d');?>" />
                     <input type="hidden" name="addedBy" value="<?=get_persondata('personID');?>" />
 		        	<button type="submit" class="btn btn-default"><?=_t( 'Submit' );?></button>
 					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a>
@@ -147,7 +147,7 @@ $screen = 'hrjob';
     
     <?php if($jobs != '') : foreach($jobs as $k => $v) { ?>
 	<!-- Modal -->
-	<div class="modal fade" id="editJob<?=_h($v['ID']);?>">
+	<div class="modal fade" id="editJob<?=_h($v['id']);?>">
 		<form class="form-horizontal margin-none" action="<?=get_base_url();?>hr/jobs/" id="validateSubmitForm" method="post" autocomplete="off" enctype="multipart/form-data">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -167,7 +167,7 @@ $screen = 'hrjob';
 		                <div class="col-md-8">
 		                    <select name="pay_grade" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 		                		<option value="">&nbsp;</option>
-		                		<?php table_dropdown('pay_grade',NULL,'ID','ID','grade',_h($v['pay_grade'])); ?>
+		                		<?php table_dropdown('pay_grade',NULL,'id','id','grade',_h($v['pay_grade'])); ?>
 		                	</select>
 		                </div>
 		            </div>
@@ -205,7 +205,7 @@ $screen = 'hrjob';
 				<!-- // Modal body END -->
 				<!-- Modal footer -->
 				<div class="modal-footer">
-                    <input type="hidden" name="ID" value="<?=_h($v['ID']);?>" />
+                    <input type="hidden" name="id" value="<?=_h($v['id']);?>" />
         			<button type="submit" class="btn btn-default"><?=_t( 'Update' );?></button>
 					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a>
 				</div>

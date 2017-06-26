@@ -77,7 +77,7 @@ $screen = 'clas';
 							<div class="col-md-8">
                                 <select name="acadLevelCode" id="term" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=gio();?> required>
 									<option value="">&nbsp;</option>
-                                    <?php table_dropdown("aclv", 'code <> "NULL"', "code", "code", "name", _h($class[0]['acadLevelCode'])); ?>
+                                    <?php table_dropdown("aclv", null, "code", "code", "name", _h($class[0]['acadLevelCode'])); ?>
                             	</select>
                             </div>
 						</div>

@@ -61,9 +61,18 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                         <li<?= hl('errorlogs', 'access_error_log_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= get_base_url(); ?>err/logs/"> <?= _t('Error Log'); ?></a></li>
                                         <li<?= hl('audit_trail', 'access_audit_trail_screen'); ?><?= ml('event_log_module'); ?>><a href="<?= get_base_url(); ?>audit-trail/"> <?= _t('Audit Trail'); ?></a></li>
                                         <li<?= hl('automatic_update', 'not_hidden'); ?>><a href="<?= get_base_url(); ?>dashboard/core-update/"> <?= _t('Automatic Update'); ?></a></li>
+                                        <li<?= hl('ftp_server', 'access_ftp'); ?>><a href="<?= get_base_url(); ?>dashboard/ftp/"> <?= _t('FTP'); ?></a></li>
                                     </ul>
                                 </li>
-                                
+                                <?php if (hasPermission('access_forms') || hasPermission('access_report_screen') || hasPermission('access_save_query_screens')) : ?>
+                                <li class="dropdown submenu">
+                                    <a href="" data-toggle="dropdown" class="dropdown-toggle glyphicons ruller"><i></i><?= _t('Rule Definition (RLDE)'); ?> <span class="caret"></span></a>
+                                    <ul class="dropdown-menu submenu-show submenu-hide pull-right">
+                                        <li><a href="<?= get_base_url(); ?>rlde/"><?= _t('Rules'); ?></a></li>
+                                        <li><a href="<?= get_base_url(); ?>rlde/add/"><?= _t('Add Rule'); ?></a></li>
+                                    </ul>
+                                </li>
+                                <?php endif; ?>
                                 <li<?= hl('snapshot', 'access_error_log_screen'); ?>><a href="<?= get_base_url(); ?>dashboard/system-snapshot/" class="glyphicons camera"><i></i><?= _t('System Snapshot Report'); ?></a></li>
                                 
                                 <li<?= ae('access_plugin_screen'); ?> class="dropdown submenu">
@@ -84,14 +93,13 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                         <li class=""><a href="<?= get_base_url(); ?>form/acad-year/"><?= _t('(AYR) - Academic Year'); ?></a></li>
                                         <li class=""><a href="<?= get_base_url(); ?>form/department/"><?= _t('(DEPT) - Department'); ?></a></li>
                                         <li class=""><a href="<?= get_base_url(); ?>form/subject/"><?= _t('(SUBJ) - Subject'); ?></a></li>
-                                        <li class=""><a href="<?= get_base_url(); ?>form/student-load-rule/"><?= _t('(SLR) - Student Load Rules'); ?></a></li>
                                         <li class=""><a href="<?= get_base_url(); ?>form/degree/"><?= _t('(DEG) - Degree'); ?></a></li>
                                         <li class=""><a href="<?= get_base_url(); ?>form/major/"><?= _t('(MAJR) - Major'); ?></a></li>
                                         <li class=""><a href="<?= get_base_url(); ?>form/minor/"><?= _t('(MINR) - Minor'); ?></a></li>
                                         <li class=""><a href="<?= get_base_url(); ?>form/ccd/"><?= _t('(CCD) - CCD'); ?></a></li>
                                         <li class=""><a href="<?= get_base_url(); ?>form/specialization/"><?= _t('(SPEC) - Specialization'); ?></a></li>
                                         <li class=""><a href="<?= get_base_url(); ?>form/cip/"><?= _t('(CIP) - CIP'); ?></a></li>
-                                        <li class=""><a href="<?= get_base_url(); ?>form/rstr-code/"><?= _t('(RSTR) - Restriction Codes'); ?></a></li>
+                                        <li class=""><a href="<?= get_base_url(); ?>form/rest/"><?= _t('(REST) - Restriction'); ?></a></li>
                                         <li class=""><a href="<?= get_base_url(); ?>form/location/"><?= _t('(LOC) - Location'); ?></a></li>
                                         <li class=""><a href="<?= get_base_url(); ?>form/building/"><?= _t('(BLDG) - Building'); ?></a></li>
                                         <li class=""><a href="<?= get_base_url(); ?>form/room/"><?= _t('(ROOM) - Room'); ?></a></li>
@@ -277,23 +285,22 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                     </ul>
                                 </li>
 
-                        <?= $app->hook->do_action('main_nav_end'); ?>
+                                <?= $app->hook->do_action('main_nav_end'); ?>
 
                             </ul>
                         </li>
-
-                        <li<?= ae('access_ea'); ?>><a href="<?= _h(get_option('edutrac_analytics_url')); ?>" class="glyphicons stats"><i></i> <?= _t('eduTrac Analytics'); ?></a></li>
+                        <?php if(_h(get_option('edutrac_analytics_url')) != null) : ?>
+                        <li<?= ae('access_ea'); ?>><a href="<?= _h(get_option('edutrac_analytics_url')); ?>" class="glyphicons stats"><i></i> <?= _t('etSIS Analytics'); ?></a></li>
+                        <?php endif; ?>
 
                         <?= $app->hook->do_action('custom_list_menu_item'); ?>
 
-                        <?php if (get_persondata('personType') != 'STU') { ?>
-                            <li class="search open">
-                                <form autocomplete="off" class="dropdown dd-1" method="post" action="<?= get_base_url(); ?>dashboard/search/">
-                                    <input type="text" name="screen" placeholder="Type for suggestions . . ." data-toggle="screen" />
-                                    <button type="button" class="glyphicons search"><i></i></button>
-                                </form>
-                            </li>
-                        <?php } ?>
+                        <li class="search open">
+                            <form autocomplete="off" class="dropdown dd-1" method="post" action="<?= get_base_url(); ?>dashboard/search/">
+                                <input type="text" name="screen" placeholder="Type for suggestions . . ." data-toggle="screen" />
+                                <button type="button" class="glyphicons search"><i></i></button>
+                            </form>
+                        </li>
 
                         <li class="glyphs">
                             <ul>
@@ -308,10 +315,6 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                     <!-- Top Menu Right -->
                     <ul class="topnav pull-right hidden-xs hidden-sm">
 
-                        <!-- Themer -->
-                        <!-- <li><a href="#themer" data-toggle="collapse" class="glyphicons eyedropper single-icon"><i></i></a></li> -->
-                        <!-- // Themer END -->
-
                         <!-- Profile / Logout menu -->
                         <li class="account dropdown dd-1">
                             <a data-toggle="dropdown" href="" class="glyphicons logout lock"><span class="hidden-tablet hidden-xs hidden-desktop-1"><?= get_persondata('uname'); ?></span><i></i></a>
@@ -320,7 +323,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                     <span>
                                         <span class="heading"><?= _t('Profile'); ?> <a href="<?= get_base_url(); ?>profile/" class="pull-right"><?= _t('edit'); ?></a></span>
                                         <span class="media display-block margin-none">
-                                            <span class="pull-left display-block thumb"><?= getSchoolPhoto(get_persondata('personID'), get_persondata('email'), '38'); ?></span>
+                                            <span class="pull-left display-block thumb"><?= get_school_photo(get_persondata('personID'), get_persondata('email'), '38'); ?></span>
                                             <a href="<?= get_base_url(); ?>profile/"><?= get_persondata('fname') . ' ' . get_persondata('lname'); ?></a><br />
                                             <?= get_persondata('email'); ?>
                                         </span>
@@ -329,7 +332,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                 </li>
                                 <?php if (isset($_COOKIE['SWITCH_USERBACK'])) : ?>
                                     <li>
-                                        <a href="<?= get_base_url(); ?>switchUserBack/<?=$cookie->personID;?>/"><?=_t('Switch Back to');?> <?=$cookie->uname;?></a>
+                                        <a href="<?= get_base_url(); ?>switchUserBack/<?=_h($cookie->personID);?>/"><?=_t('Switch Back to');?> <?=_h($cookie->uname);?></a>
                                     </li>
                                 <?php endif; ?>
                                 <li class="innerTB half">

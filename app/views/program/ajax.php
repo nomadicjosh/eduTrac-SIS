@@ -425,7 +425,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <input name="addDate" id="addDate" value="<?= date('Y-m-d'); ?>" type="hidden" />
+                    <input name="addDate" id="addDate" value="<?= \Jenssegers\Date\Date::now()->format('Y-m-d'); ?>" type="hidden" />
                     <button type="button" id="btn_ccd" class="btn btn-icon btn-default"><i></i><?= _t('Add'); ?></button>
                     <button type="button" data-dismiss="modal" class="btn btn-icon btn-primary"><i></i><?= _t('Cancel'); ?></button>
                 </div>
