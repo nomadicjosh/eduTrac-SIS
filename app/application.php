@@ -40,6 +40,33 @@ try {
     Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
 }
 
+try {
+    /**
+     * Creates the parent backup directory with proper permissions.
+     */
+    _mkdir($app->config('file.savepath') . 'backups' . DS);
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
+
+try {
+    /**
+     * Creates the database backup directory with proper permissions.
+     */
+    _mkdir($app->config('file.savepath') . 'backups' . DS . 'database' . DS);
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
+
+try {
+    /**
+     * Creates the system backup directory with proper permissions.
+     */
+    _mkdir($app->config('file.savepath') . 'backups' . DS . 'system' . DS);
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
+
 /**
  * Error log setting
  */
