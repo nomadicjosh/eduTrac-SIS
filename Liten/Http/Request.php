@@ -39,24 +39,42 @@ class Request
      * @var bool
      */
     public $_ssl = false;
-
-    /**
-     * Global server variables
-     * @var bool
-     */
-    public $server = [];
     
     /**
-     * Global post variables
+     * Global cookie variable
+     * @var bool
+     */
+    public $cookie = [];
+    
+    /**
+     * Global get variable
+     * @var bool
+     */
+    public $get = [];
+    
+    /**
+     * Global globals variable
+     * @var bool
+     */
+    public $globals = [];
+    
+    /**
+     * Global post variable
      * @var bool
      */
     public $post = [];
     
     /**
-     * Global get variables
+     * Global request variable
      * @var bool
      */
-    public $get = [];
+    public $request = [];
+
+    /**
+     * Global server variable
+     * @var bool
+     */
+    public $server = [];
 
     /**
      * URI prefix
@@ -69,9 +87,12 @@ class Request
      */
     public function __construct()
     {
-        $this->server = $_SERVER;
-        $this->post = $_POST;
+        $this->cookie = $_COOKIE;
         $this->get = $_GET;
+        $this->globals = $GLOBALS;
+        $this->post = $_POST;
+        $this->request = $_REQUEST;
+        $this->server = $_SERVER;
     }
 
     /**
