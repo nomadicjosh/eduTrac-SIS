@@ -9,10 +9,12 @@ class CurrencyTable extends AbstractMigration
     {
         // Migration for table currency_code
         if (!$this->hasTable('currency_code')) :
-            $table = $this->table('currency_code', array('id' => false, 'primary_key' => 'id'));
+            // CREATE table string for table: "currency_code"
+            // Migration for table currency_code
+            $table = $this->table('currency_code', array('id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci'));
             $table
                 ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('country_currency', 'string', array('limit' => 180))
+                ->addColumn('country_currency', 'string', array('limit' => 191))
                 ->addColumn('currency_code', 'string', array('limit' => 3))
                 ->addColumn('code_2000', 'string', array('limit' => 6))
                 ->addColumn('arial_unicode_ms', 'string', array('limit' => 6))
@@ -136,7 +138,7 @@ class CurrencyTable extends AbstractMigration
 
     public function down()
     {
-        if (!$this->hasTable('currency_code')) :
+        if ($this->hasTable('currency_code')) :
             $this->dropTable('currency_code');
         endif;
     }

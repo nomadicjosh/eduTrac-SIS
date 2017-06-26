@@ -6,25 +6,11 @@ class InitialSchema extends AbstractMigration
 {
 
     /**
-     * Change Method.
+     * Initial Schema
      *
-     * Write your reversible migrations using this method.
-     *
-     * More information on writing migrations is available here:
-     * http://docs.phinx.org/en/latest/migrations.html#the-abstractmigration-class
-     *
-     * The following commands can be used in this method and Phinx will
-     * automatically reverse them when rolling back:
-     *
-     *    createTable
-     *    renameTable
-     *    addColumn
-     *    renameColumn
-     *    addIndex
-     *    addForeignKey
-     *
-     * Remember to call "create()" or "update()" and NOT "save()" when working
-     * with the Table class.
+     * Creates and populates a new database on first migration.
+     * 
+     * @since 6.2.10
      */
     public function change()
     {
@@ -40,216 +26,293 @@ class InitialSchema extends AbstractMigration
         // Automatically created phinx migration commands for tables from database et
         // Migration for table acad_program
         if (!$this->hasTable('acad_program')) :
-            $table = $this->table('acad_program', array('id' => false, 'primary_key' => 'acadProgID'));
+            $table = $this->table('acad_program', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('acadProgID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('acadProgCode', 'string', array('limit' => 20))
-                ->addColumn('acadProgTitle', 'string', array('limit' => 180))
-                ->addColumn('programDesc', 'string', array('limit' => 255))
-                ->addColumn('currStatus', 'string', array('limit' => 1))
-                ->addColumn('statusDate', 'date', array())
-                ->addColumn('deptCode', 'string', array('limit' => 11))
-                ->addColumn('schoolCode', 'string', array('limit' => 11))
-                ->addColumn('acadYearCode', 'string', array('limit' => 11))
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array('null' => true))
-                ->addColumn('degreeCode', 'string', array('limit' => 11))
-                ->addColumn('ccdCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('majorCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('minorCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('specCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('acadLevelCode', 'string', array('limit' => 11))
-                ->addColumn('cipCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('locationCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('approvedDate', 'date', array())
-                ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('acadProgCode', 'acadLevelCode', 'deptCode', 'schoolCode', 'acadYearCode', 'degreeCode', 'ccdCode', 'majorCode', 'minorCode', 'specCode', 'cipCode', 'locationCode'))
-                ->addForeignKey('deptCode', 'department', 'deptCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('locationCode', 'location', 'locationCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('schoolCode', 'school', 'schoolCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('acadYearCode', 'acad_year', 'acadYearCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('degreeCode', 'degree', 'degreeCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('ccdCode', 'ccd', 'ccdCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('majorCode', 'major', 'majorCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('minorCode', 'minor', 'minorCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('specCode', 'specialization', 'specCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('cipCode', 'cip', 'cipCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('acadProgCode', 'string', ['limit' => 80])
+                ->addColumn('acadProgTitle', 'string', ['limit' => 191])
+                ->addColumn('programDesc', 'string', ['limit' => 191])
+                ->addColumn('currStatus', 'char', ['limit' => 4])
+                ->addColumn('statusDate', 'date', [])
+                ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('schoolCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('acadYearCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('degreeCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('ccdCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('majorCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('minorCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('specCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('acadLevelCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('cipCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('locationCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('approvedDate', 'date', [])
+                ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['acadProgCode'], ['unique' => true])
+                ->addForeignKey('deptCode', 'department', 'deptCode', ['constraint' => 'acad_program_deptCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('locationCode', 'location', 'locationCode', ['constraint' => 'acad_program_locationCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('schoolCode', 'school', 'schoolCode', ['constraint' => 'acad_program_schoolCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('acadYearCode', 'acad_year', 'acadYearCode', ['constraint' => 'acad_program_acadYearCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('degreeCode', 'degree', 'degreeCode', ['constraint' => 'acad_program_degreeCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('ccdCode', 'ccd', 'ccdCode', ['constraint' => 'acad_program_ccdCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('majorCode', 'major', 'majorCode', ['constraint' => 'acad_program_majorCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('minorCode', 'minor', 'minorCode', ['constraint' => 'acad_program_minorCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('specCode', 'specialization', 'specCode', ['constraint' => 'acad_program_specCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('cipCode', 'cip', 'cipCode', ['constraint' => 'acad_program_cipCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('acadLevelCode', 'aclv', 'code', ['constraint' => 'acad_program_acadLevelCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('approvedBy', 'staff', 'staffID', ['constraint' => 'acad_program_approvedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
 
         // Migration for table acad_year
         if (!$this->hasTable('acad_year')) :
-            $table = $this->table('acad_year', array('id' => false, 'primary_key' => 'acadYearID'));
+            $table = $this->table('acad_year', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('acadYearID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('acadYearCode', 'string', array('limit' => 11))
-                ->addColumn('acadYearDesc', 'string', array('limit' => 30))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('acadYearCode'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('acadYearCode', 'char', ['limit' => 22])
+                ->addColumn('acadYearDesc', 'string', ['limit' => 60])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['acadYearCode'], ['unique' => true])
                 ->create();
 
             $this->execute("INSERT INTO `acad_year` VALUES(1, 'NULL', 'Null', '$NOW');");
         endif;
 
+        if (!$this->hasTable('aclv')) :
+            $table = $this->table('aclv', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => 11])
+                ->addColumn('code', 'char', ['limit' => 22])
+                ->addColumn('name', 'string', ['limit' => 80])
+                ->addColumn('grsc', 'string', ['limit' => 6])
+                ->addColumn('ht_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '6.0'])
+                ->addColumn('ft_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '12.0'])
+                ->addColumn('ovr_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '24.0'])
+                ->addColumn('grad_level', 'enum', ['default' => 'No', 'values' => ['Yes', 'No']])
+                ->addColumn('comp_months', 'integer', ['signed' => true, 'limit' => MysqlAdapter::INT_TINY])
+                ->addIndex(['code'], ['unique' => true])
+                ->create();
+
+            $rows = [
+                [
+                    'code' => 'NA',
+                    'name' => 'Not Applicable',
+                    'grad_level' => 'No',
+                    'comp_months' => 0
+                ],
+                [
+                    'code' => 'CE',
+                    'name' => 'Continuing Education',
+                    'grad_level' => 'No',
+                    'comp_months' => 12
+                ],
+                [
+                    'code' => 'CTF',
+                    'name' => 'Certificate',
+                    'grad_level' => 'No',
+                    'comp_months' => 24
+                ],
+                [
+                    'code' => 'DIP',
+                    'name' => 'Diploma',
+                    'grad_level' => 'No',
+                    'comp_months' => 12
+                ],
+                [
+                    'code' => 'UG',
+                    'name' => 'Undergraduate',
+                    'grad_level' => 'No',
+                    'comp_months' => 48
+                ],
+                [
+                    'code' => 'GR',
+                    'name' => 'Graduate',
+                    'grad_level' => 'Yes',
+                    'comp_months' => 48
+                ],
+                [
+                    'code' => 'PR',
+                    'name' => 'Professional',
+                    'grad_level' => 'Yes',
+                    'comp_months' => 12
+                ],
+                [
+                    'code' => 'PhD',
+                    'name' => 'Doctorate',
+                    'grad_level' => 'Yes',
+                    'comp_months' => 12
+                ]
+            ];
+
+            $this->insert('aclv', $rows);
+        endif;
 
         // Migration for table activity_log
         if (!$this->hasTable('activity_log')) :
-            $table = $this->table('activity_log', array('id' => false, 'primary_key' => 'id'));
+            $table = $this->table('activity_log', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('action', 'string', array('limit' => 50))
-                ->addColumn('process', 'string', array('limit' => 255))
-                ->addColumn('record', 'text', array('null' => true, 'limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('uname', 'string', array('limit' => 180))
-                ->addColumn('created_at', 'datetime', array())
-                ->addColumn('expires_at', 'datetime', array())
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('action', 'string', ['limit' => 60])
+                ->addColumn('process', 'string', ['limit' => 191])
+                ->addColumn('record', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('uname', 'string', ['limit' => 191])
+                ->addColumn('created_at', 'datetime', [])
+                ->addColumn('expires_at', 'datetime', [])
                 ->create();
         endif;
 
         // Migration for table address
         if (!$this->hasTable('address')) :
-            $table = $this->table('address', array('id' => false, 'primary_key' => 'addressID'));
+            $table = $this->table('address', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('addressID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('personID', 'integer', array('limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('address1', 'string', array('limit' => 80))
-                ->addColumn('address2', 'string', array('limit' => 80))
-                ->addColumn('city', 'string', array('limit' => 30))
-                ->addColumn('state', 'string', array('limit' => 2))
-                ->addColumn('zip', 'string', array('limit' => 10))
-                ->addColumn('country', 'string', array('limit' => 2))
-                ->addColumn('addressType', 'string', array('limit' => 2))
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array())
-                ->addColumn('addressStatus', 'string', array('limit' => 2))
-                ->addColumn('phone1', 'string', array('limit' => 15))
-                ->addColumn('phone2', 'string', array('limit' => 15))
-                ->addColumn('ext1', 'string', array('limit' => 5))
-                ->addColumn('ext2', 'string', array('limit' => 5))
-                ->addColumn('phoneType1', 'string', array('limit' => 3))
-                ->addColumn('phoneType2', 'string', array('limit' => 3))
-                ->addColumn('email1', 'string', array('limit' => 80))
-                ->addColumn('email2', 'string', array('limit' => 80))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('personID', 'addedBy'))
-                ->addForeignKey('personID', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('personID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('address1', 'string', ['limit' => 80])
+                ->addColumn('address2', 'string', ['limit' => 80])
+                ->addColumn('city', 'string', ['limit' => 60])
+                ->addColumn('state', 'char', ['limit' => 4])
+                ->addColumn('zip', 'char', ['limit' => 10])
+                ->addColumn('country', 'char', ['limit' => 4])
+                ->addColumn('addressType', 'char', ['limit' => 4])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('addressStatus', 'char', ['limit' => 4])
+                ->addColumn('phone1', 'char', ['limit' => 22])
+                ->addColumn('phone2', 'char', ['limit' => 22])
+                ->addColumn('ext1', 'char', ['limit' => 8])
+                ->addColumn('ext2', 'char', ['limit' => 8])
+                ->addColumn('phoneType1', 'char', ['limit' => 8])
+                ->addColumn('phoneType2', 'char', ['limit' => 8])
+                ->addColumn('email1', 'string', ['limit' => 191])
+                ->addColumn('email2', 'string', ['limit' => 191])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('personID', 'person', 'personID', ['constraint' => 'address_personID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'address_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
 
-            $this->execute("INSERT INTO `address` VALUES(1, 1, '125 Montgomery Street', '#2', 'Cambridge', 'MA', '02140', 'US', 'P', '2013-08-01', '0000-00-00', 'C', '6718997836', '', '', '', 'CEL', '', 'etsis@campus.com', '', '$NOW', 00000001, '$NOW');");
+            $this->execute("INSERT INTO `address` VALUES(1, 1, '125 Montgomery Street', '#2', 'Cambridge', 'MA', '02140', 'US', 'P', '2013-08-01', 'NULL', 'C', '6718997836', '', '', '', 'CEL', '', 'etsis@campus.com', '', '$NOW', 1, '$NOW');");
         endif;
 
 
         // Migration for table application
         if (!$this->hasTable('application')) :
-            $table = $this->table('application', array('id' => false, 'primary_key' => 'applID'));
+            $table = $this->table('application', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('applID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('acadProgCode', 'string', array('limit' => 20))
-                ->addColumn('startTerm', 'string', array('limit' => 11))
-                ->addColumn('admitStatus', 'string', array('null' => true, 'limit' => 2))
-                ->addColumn('exam', 'string', array('limit' => 5))
-                ->addColumn('PSAT_Verbal', 'string', array('limit' => 5))
-                ->addColumn('PSAT_Math', 'string', array('limit' => 5))
-                ->addColumn('SAT_Verbal', 'string', array('limit' => 5))
-                ->addColumn('SAT_Math', 'string', array('limit' => 5))
-                ->addColumn('ACT_English', 'string', array('limit' => 5))
-                ->addColumn('ACT_Math', 'string', array('limit' => 5))
-                ->addColumn('applStatus', 'enum', array('values' => array('Pending', 'Under Review', 'Accepted', 'Not Accepted')))
-                ->addColumn('applDate', 'date', array())
-                ->addColumn('appl_comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('staff_comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('personID', 'acadProgCode'), array('unique' => true))
-                ->addIndex(array('startTerm', 'addedBy', 'acadProgcode'))
-                ->addForeignKey('acadProgCode', 'acad_program', 'acadProgCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('startTerm', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('personID', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('personID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('acadProgCode', 'string', ['limit' => 80])
+                ->addColumn('startTerm', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('admitStatus', 'char', ['null' => true, 'limit' => 4])
+                ->addColumn('exam', 'char', ['limit' => 8])
+                ->addColumn('PSAT_Verbal', 'char', ['limit' => 8])
+                ->addColumn('PSAT_Math', 'char', ['limit' => 8])
+                ->addColumn('SAT_Verbal', 'char', ['limit' => 8])
+                ->addColumn('SAT_Math', 'char', ['limit' => 8])
+                ->addColumn('ACT_English', 'char', ['limit' => 8])
+                ->addColumn('ACT_Math', 'char', ['limit' => 8])
+                ->addColumn('applStatus', 'enum', ['values' => ['Pending', 'Under Review', 'Accepted', 'Not Accepted']])
+                ->addColumn('applDate', 'date', [])
+                ->addColumn('appl_comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('staff_comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['personID', 'acadProgCode'], ['unique' => true])
+                ->addForeignKey('personID', 'person', 'personID', ['constraint' => 'application_personID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('acadProgCode', 'acad_program', 'acadProgCode', ['constraint' => 'application_acadProgCode', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->addForeignKey('startTerm', 'term', 'termCode', ['constraint' => 'application_startTerm', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'application_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table assignment
         if (!$this->hasTable('assignment')) :
-            $table = $this->table('assignment', array('id' => false, 'primary_key' => 'assignID'));
+            $table = $this->table('assignment', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('assignID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseSecID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('facID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('shortName', 'string', array('limit' => 6))
-                ->addColumn('title', 'string', array('limit' => 180))
-                ->addColumn('dueDate', 'date', array())
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('assignID', 'courseSecID'))
-                ->addForeignKey('courseSecID', 'course_sec', 'courseSecID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->create();
-        endif;
-
-        // Migration for table attendance
-        if (!$this->hasTable('attendance')) :
-            $table = $this->table('attendance', array('id' => false, 'primary_key' => 'id'));
-            $table
-                ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseSecID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('courseSecCode', 'string', array('limit' => 50))
-                ->addColumn('stuID', 'integer', array())
-                ->addColumn('status', 'string', array('null' => true, 'limit' => 1))
-                ->addColumn('date', 'date', array('null' => true))
-                ->addIndex(array('courseSecCode', 'stuID', 'date', 'termCode'), array('unique' => true))
-                ->addIndex(array('stuID', 'termCode'))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseSecID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('facID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('shortName', 'char', ['limit' => 12])
+                ->addColumn('title', 'string', ['limit' => 191])
+                ->addColumn('dueDate', 'date', ['null' => true])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['id', 'courseSecID'], ['name' => 'assignID'])
+                ->addForeignKey('courseSecID', 'course_sec', 'courseSecID', ['constraint' => 'assignment_courseSecID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('facID', 'staff', 'staffID', ['constraint' => 'assignment_facID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'assignment_staffID', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table billing_table
         if (!$this->hasTable('billing_table')) :
-            $table = $this->table('billing_table', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('billing_table', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('name', 'string', array('limit' => 180))
-                ->addColumn('amount', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 2, 'default' => '0.00'))
-                ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'I')))
-                ->addColumn('addDate', 'date', array())
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('name', 'string', ['limit' => 191])
+                ->addColumn('amount', 'decimal', ['precision' => 10, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'I']])
+                ->addColumn('addDate', 'date', [])
                 ->create();
         endif;
 
 
         // Migration for table building
         if (!$this->hasTable('building')) :
-            $table = $this->table('building', array('id' => false, 'primary_key' => 'buildingID'));
+            $table = $this->table('building', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('buildingID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('buildingCode', 'string', array('limit' => 11))
-                ->addColumn('buildingName', 'string', array('limit' => 180))
-                ->addColumn('locationCode', 'string', array('null' => true, 'limit' => 11))
-                ->addIndex(array('buildingCode'), array('unique' => true))
-                ->addIndex(array('locationCode'))
-                ->addForeignKey('locationCode', 'location', 'locationCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('buildingCode', 'char', ['limit' => 22])
+                ->addColumn('buildingName', 'string', ['limit' => 191])
+                ->addColumn('locationCode', 'char', ['null' => true, 'limit' => 22])
+                ->addIndex(['buildingCode'], ['unique' => true])
+                ->addForeignKey('locationCode', 'location', 'locationCode', ['constraint' => 'building_locationCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
 
             $this->execute("INSERT INTO `building` VALUES(1, 'NULL', '', 'NULL');");
         endif;
 
+        if (!$this->hasTable('campaign')) :
+            $table = $this->table('campaign', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('subject', 'string', ['limit' => 191])
+                ->addColumn('from_name', 'string', ['limit' => 191])
+                ->addColumn('from_email', 'string', ['limit' => 191])
+                ->addColumn('html', 'string', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('text', 'string', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('footer', 'string', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('attachment', 'string', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('status', 'enum', ['default' => 'ready', 'values' => ['ready', 'processing', 'paused', 'sent']])
+                ->addColumn('sendstart', 'date', ['null' => true])
+                ->addColumn('sendfinish', 'date', ['null' => true])
+                ->addColumn('recipients', 'integer', ['default' => '0', 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('viewed', 'integer', ['default' => '0', 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('bounces', 'integer', ['default' => '0', 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('archive', 'enum', ['default' => '0', 'values' => ['1', '0']])
+                ->addColumn('addedBy', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'campaign_addedBy', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->create();
+        endif;
+
         // Migration for table ccd
         if (!$this->hasTable('ccd')) :
-            $table = $this->table('ccd', array('id' => false, 'primary_key' => 'ccdID'));
+            $table = $this->table('ccd', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ccdID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('ccdCode', 'string', array('limit' => 11))
-                ->addColumn('ccdName', 'string', array('limit' => 80))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('ccdCode'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('ccdCode', 'char', ['limit' => 22])
+                ->addColumn('ccdName', 'string', ['limit' => 191])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['ccdCode'], ['unique' => true])
                 ->create();
 
             $this->execute("INSERT INTO `ccd` VALUES(1, 'NULL', 'Null', '$NOW', '$NOW');");
@@ -257,31 +320,43 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table cip
         if (!$this->hasTable('cip')) :
-            $table = $this->table('cip', array('id' => false, 'primary_key' => 'cipID'));
+            $table = $this->table('cip', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('cipID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('cipCode', 'string', array('limit' => 11))
-                ->addColumn('cipName', 'string', array('limit' => 80))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('cipCode'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('cipCode', 'char', ['limit' => 22])
+                ->addColumn('cipName', 'string', ['limit' => 191])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['cipCode'], ['unique' => true])
                 ->create();
 
             $this->execute("INSERT INTO `cip` VALUES(1, 'NULL', 'Null', '$NOW');");
         endif;
 
+        if (!$this->hasTable('clas')) :
+            $table = $this->table('clas', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => 11])
+                ->addColumn('code', 'char', ['limit' => 22])
+                ->addColumn('name', 'string', ['limit' => 80])
+                ->addColumn('acadLevelCode', 'char', ['limit' => 22])
+                ->addIndex(['code'])
+                ->addForeignKey('acadLevelCode', 'aclv', 'code', ['delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->create();
+        endif;
+
         // Migration for table country
         if (!$this->hasTable('country')) :
-            $table = $this->table('country', array('id' => false, 'primary_key' => 'country_id'));
+            $table = $this->table('country', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('country_id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 5))
-                ->addColumn('iso2', 'char', array('null' => true, 'limit' => 2))
-                ->addColumn('short_name', 'string', array('default' => '', 'limit' => 80))
-                ->addColumn('long_name', 'string', array('default' => '', 'limit' => 80))
-                ->addColumn('iso3', 'char', array('null' => true, 'limit' => 3))
-                ->addColumn('numcode', 'string', array('null' => true, 'limit' => 6))
-                ->addColumn('un_member', 'string', array('null' => true, 'limit' => 12))
-                ->addColumn('calling_code', 'string', array('null' => true, 'limit' => 8))
-                ->addColumn('cctld', 'string', array('null' => true, 'limit' => 5))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 5])
+                ->addColumn('iso2', 'char', ['null' => true, 'limit' => 4])
+                ->addColumn('short_name', 'string', ['default' => '', 'limit' => 80])
+                ->addColumn('long_name', 'string', ['default' => '', 'limit' => 191])
+                ->addColumn('iso3', 'char', ['null' => true, 'limit' => 6])
+                ->addColumn('numcode', 'string', ['null' => true, 'limit' => 8])
+                ->addColumn('un_member', 'string', ['null' => true, 'limit' => 12])
+                ->addColumn('calling_code', 'string', ['null' => true, 'limit' => 10])
+                ->addColumn('cctld', 'char', ['null' => true, 'limit' => 20])
                 ->create();
 
             $this->execute("INSERT INTO `country` VALUES(1, 'AF', 'Afghanistan', 'Islamic Republic of Afghanistan', 'AFG', '004', 'yes', '93', '.af');");
@@ -538,232 +613,245 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table course
         if (!$this->hasTable('course')) :
-            $table = $this->table('course', array('id' => false, 'primary_key' => 'courseID'));
+            $table = $this->table('course', ['id' => false, 'primary_key' => 'courseID', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('courseID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseNumber', 'integer', array('signed' => true, 'limit' => 6))
-                ->addColumn('courseCode', 'string', array('limit' => 25))
-                ->addColumn('subjectCode', 'string', array('limit' => 11))
-                ->addColumn('deptCode', 'string', array('limit' => 11))
-                ->addColumn('courseDesc', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('creditType', 'string', array('default' => 'I', 'limit' => 6))
-                ->addColumn('minCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('maxCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('increCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('courseLevelCode', 'string', array('limit' => 5))
-                ->addColumn('acadLevelCode', 'string', array('limit' => 4))
-                ->addColumn('courseShortTitle', 'string', array('limit' => 25))
-                ->addColumn('courseLongTitle', 'string', array('limit' => 60))
-                ->addColumn('preReq', 'text', array('limit' => MysqlAdapter::TEXT_REGULAR))
-                ->addColumn('allowAudit', 'enum', array('default' => '0', 'values' => array('1', '0')))
-                ->addColumn('allowWaitlist', 'enum', array('default' => '0', 'values' => array('1', '0')))
-                ->addColumn('minEnroll', 'integer', array('signed' => true, 'limit' => 3))
-                ->addColumn('seatCap', 'integer', array('signed' => true, 'limit' => 3))
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array('null' => true))
-                ->addColumn('currStatus', 'string', array('limit' => 1))
-                ->addColumn('statusDate', 'date', array('default' => '0000-00-00'))
-                ->addColumn('approvedDate', 'date', array('default' => '0000-00-00'))
-                ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('courseCode', 'courseLevelCode', 'acadLevelCode', 'approvedBy', 'deptCode', 'subjectCode'))
-                ->addForeignKey('subjectCode', 'subject', 'subjectCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('deptCode', 'department', 'deptCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('approvedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('courseID', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseNumber', 'integer', ['limit' => 8])
+                ->addColumn('courseCode', 'string', ['limit' => 50])
+                ->addColumn('subjectCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('courseDesc', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('creditType', 'char', ['default' => 'I', 'limit' => 6])
+                ->addColumn('minCredit', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('maxCredit', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('increCredit', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('courseLevelCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('acadLevelCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('courseShortTitle', 'string', ['limit' => 60])
+                ->addColumn('courseLongTitle', 'string', ['limit' => 80])
+                ->addColumn('preReq', 'text', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('allowAudit', 'enum', ['default' => '0', 'values' => ['1', '0']])
+                ->addColumn('allowWaitlist', 'enum', ['default' => '0', 'values' => ['1', '0']])
+                ->addColumn('minEnroll', 'integer', ['limit' => 3])
+                ->addColumn('seatCap', 'integer', ['limit' => 3])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('currStatus', 'string', ['limit' => 1])
+                ->addColumn('statusDate', 'date', ['null' => true])
+                ->addColumn('approvedDate', 'date', ['null' => true])
+                ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['courseCode', 'courseLevelCode'])
+                ->addForeignKey('subjectCode', 'subject', 'subjectCode', ['constraint' => 'course_subjectCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('deptCode', 'department', 'deptCode', ['constraint' => 'course_deptCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('courseLevelCode', 'crlv', 'code', ['constraint' => 'course_courseLevelCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('acadLevelCode', 'aclv', 'code', ['constraint' => 'course_acadLevelCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('approvedBy', 'staff', 'staffID', ['constraint' => 'course_approvedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table course_sec
         if (!$this->hasTable('course_sec')) :
-            $table = $this->table('course_sec', array('id' => false, 'primary_key' => 'courseSecID'));
+            $table = $this->table('course_sec', ['id' => false, 'primary_key' => 'courseSecID', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('courseSecID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('sectionNumber', 'string', array('limit' => 5))
-                ->addColumn('courseSecCode', 'string', array('limit' => 50))
-                ->addColumn('courseSection', 'string', array('limit' => 60))
-                ->addColumn('buildingCode', 'string', array('default' => 'NULL', 'limit' => 11))
-                ->addColumn('roomCode', 'string', array('default' => 'NULL', 'limit' => 11))
-                ->addColumn('locationCode', 'string', array('limit' => 11))
-                ->addColumn('courseLevelCode', 'string', array('limit' => 5))
-                ->addColumn('acadLevelCode', 'string', array('limit' => 4))
-                ->addColumn('deptCode', 'string', array('limit' => 11))
-                ->addColumn('facID', 'integer', array('limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('courseID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseCode', 'string', array('limit' => 25))
-                ->addColumn('preReqs', 'text', array('limit' => MysqlAdapter::TEXT_REGULAR))
-                ->addColumn('secShortTitle', 'string', array('limit' => 60))
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array())
-                ->addColumn('startTime', 'string', array('limit' => 8))
-                ->addColumn('endTime', 'string', array('limit' => 8))
-                ->addColumn('dotw', 'string', array('limit' => 7))
-                ->addColumn('minCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('maxCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('increCredit', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('ceu', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('instructorMethod', 'string', array('limit' => 180))
-                ->addColumn('instructorLoad', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('contactHours', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('webReg', 'enum', array('default' => '1', 'values' => array('1', '0')))
-                ->addColumn('courseFee', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
-                ->addColumn('labFee', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
-                ->addColumn('materialFee', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
-                ->addColumn('secType', 'enum', array('default' => 'ONC', 'values' => array('ONL', 'HB', 'ONC')))
-                ->addColumn('currStatus', 'string', array('limit' => 1))
-                ->addColumn('statusDate', 'date', array())
-                ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('approvedDate', 'date', array())
-                ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('courseSection'), array('unique' => true))
-                ->addIndex(array('courseSecCode', 'currStatus', 'approvedBy', 'facID', 'buildingCode', 'roomCode', 'locationCode', 'deptCode', 'termCode', 'courseCode', 'courseID'))
-                ->addForeignKey('buildingCode', 'building', 'buildingCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('roomCode', 'room', 'roomCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('locationCode', 'location', 'locationCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('deptCode', 'department', 'deptCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('courseID', 'course', 'courseID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('approvedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('courseSecID', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('sectionNumber', 'char', ['limit' => 8])
+                ->addColumn('courseSecCode', 'string', ['limit' => 50])
+                ->addColumn('courseSection', 'string', ['limit' => 60])
+                ->addColumn('buildingCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('roomCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('locationCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('courseLevelCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('acadLevelCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('facID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('courseID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseCode', 'string', ['limit' => 25])
+                ->addColumn('preReqs', 'text', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('secShortTitle', 'string', ['limit' => 60])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('startTime', 'string', ['limit' => 8])
+                ->addColumn('endTime', 'string', ['limit' => 8])
+                ->addColumn('dotw', 'string', ['limit' => 7])
+                ->addColumn('minCredit', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('maxCredit', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('increCredit', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('ceu', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('instructorMethod', 'string', ['limit' => 191])
+                ->addColumn('instructorLoad', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('contactHours', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('webReg', 'enum', ['default' => '1', 'values' => ['1', '0']])
+                ->addColumn('courseFee', 'decimal', ['precision' => 10, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('labFee', 'decimal', ['precision' => 10, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('materialFee', 'decimal', ['precision' => 10, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('secType', 'enum', ['default' => 'ONC', 'values' => ['ONL', 'HB', 'ONC']])
+                ->addColumn('currStatus', 'string', ['limit' => 1])
+                ->addColumn('statusDate', 'date', [])
+                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('approvedDate', 'date', [])
+                ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['courseSection'], ['unique' => true])
+                ->addIndex(['courseSecCode', 'currStatus', 'facID', 'courseCode'])
+                ->addForeignKey('buildingCode', 'building', 'buildingCode', ['constraint' => 'course_sec_buildingCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('roomCode', 'room', 'roomCode', ['constraint' => 'course_sec_roomCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('locationCode', 'location', 'locationCode', ['constraint' => 'course_sec_locationCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('deptCode', 'department', 'deptCode', ['constraint' => 'course_sec_deptCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'course_sec_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('courseLevelCode', 'crlv', 'code', ['constraint' => 'course_sec_courseLevelCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('acadLevelCode', 'aclv', 'code', ['constraint' => 'course_sec_acadLevelCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('courseID', 'course', 'courseID', ['constraint' => 'course_sec_courseID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('approvedBy', 'person', 'personID', ['constraint' => 'course_sec_approvedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
+        endif;
+
+        if (!$this->hasTable('crlv')) :
+            $table = $this->table('crlv', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => 11])
+                ->addColumn('code', 'char', ['limit' => 22])
+                ->addColumn('name', 'string', ['limit' => 80])
+                ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'I']])
+                ->addIndex(['code'], ['unique' => true])
+                ->create();
+
+            $rows = [
+                [
+                    'code' => '100',
+                    'name' => '100 Course Level',
+                    'status' => 'A'
+                ],
+                [
+                    'code' => '200',
+                    'name' => '200 Course Level',
+                    'status' => 'A'
+                ],
+                [
+                    'code' => '300',
+                    'name' => '300 Course Level',
+                    'status' => 'A'
+                ],
+                [
+                    'code' => '400',
+                    'name' => '400 Course Level',
+                    'status' => 'A'
+                ],
+                [
+                    'code' => '500',
+                    'name' => '500 Course Level',
+                    'status' => 'A'
+                ],
+                [
+                    'code' => '600',
+                    'name' => '600 Course Level',
+                    'status' => 'A'
+                ],
+                [
+                    'code' => '700',
+                    'name' => '700 Course Level',
+                    'status' => 'A'
+                ],
+                [
+                    'code' => '800',
+                    'name' => '800 Course Level',
+                    'status' => 'A'
+                ],
+                [
+                    'code' => '900',
+                    'name' => '900 Course Level',
+                    'status' => 'A'
+                ]
+            ];
+
+            $this->insert('crlv', $rows);
         endif;
 
         // Migration for table degree
         if (!$this->hasTable('degree')) :
-            $table = $this->table('degree', array('id' => false, 'primary_key' => 'degreeID'));
+            $table = $this->table('degree', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('degreeID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('degreeCode', 'string', array('limit' => 11))
-                ->addColumn('degreeName', 'string', array('limit' => 180))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('degreeCode'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('degreeCode', 'char', ['limit' => 22])
+                ->addColumn('degreeName', 'string', ['limit' => 191])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['degreeCode'], ['unique' => true])
                 ->create();
 
-            $this->execute("INSERT INTO `degree` VALUES(00000000001, 'NULL', '', '$NOW');");
+            $this->execute("INSERT INTO `degree` VALUES(1, 'NULL', '', '$NOW');");
         endif;
 
         // Migration for table department
         if (!$this->hasTable('department')) :
-            $table = $this->table('department', array('id' => false, 'primary_key' => 'deptID'));
+            $table = $this->table('department', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('deptID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('deptTypeCode', 'string', array('limit' => 6))
-                ->addColumn('deptCode', 'string', array('limit' => 11))
-                ->addColumn('deptName', 'string', array('limit' => 180))
-                ->addColumn('deptEmail', 'string', array('limit' => 180))
-                ->addColumn('deptPhone', 'string', array('limit' => 20))
-                ->addColumn('deptDesc', 'string', array('limit' => 255))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('deptCode'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('deptTypeCode', 'char', ['limit' => 22])
+                ->addColumn('deptCode', 'char', ['limit' => 22])
+                ->addColumn('deptName', 'string', ['limit' => 191])
+                ->addColumn('deptEmail', 'string', ['limit' => 191])
+                ->addColumn('deptPhone', 'string', ['limit' => 80])
+                ->addColumn('deptDesc', 'string', ['limit' => 191])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['deptCode'], ['unique' => true])
                 ->create();
 
             $this->execute("INSERT INTO `department` VALUES(1, 'NULL', 'NULL', 'Null', '', '', 'Default', '$NOW');");
         endif;
 
-        // Migration for table email_hold
-        if (!$this->hasTable('email_hold')) :
-            $table = $this->table('email_hold', array('id' => false, 'primary_key' => 'id'));
-            $table
-                ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('queryID', 'integer', array('signed' => true, 'limit' => 11))
-                ->addColumn('fromName', 'string', array('limit' => 118))
-                ->addColumn('fromEmail', 'string', array('limit' => 118))
-                ->addColumn('subject', 'string', array('limit' => 118))
-                ->addColumn('body', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('processed', 'enum', array('default' => '0', 'values' => array('1', '0')))
-                ->addColumn('dateTime', 'datetime', array())
-                ->create();
-        endif;
-
-        // Migration for table email_queue
-        if (!$this->hasTable('email_queue')) :
-            $table = $this->table('email_queue', array('id' => false, 'primary_key' => 'id'));
-            $table
-                ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('holdID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('fromName', 'string', array('limit' => 118))
-                ->addColumn('fromEmail', 'string', array('limit' => 118))
-                ->addColumn('uname', 'string', array('limit' => 118))
-                ->addColumn('email', 'string', array('limit' => 118))
-                ->addColumn('fname', 'string', array('limit' => 118))
-                ->addColumn('lname', 'string', array('limit' => 118))
-                ->addColumn('subject', 'string', array('limit' => 150))
-                ->addColumn('body', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('sent', 'enum', array('default' => '0', 'values' => array('1', '0')))
-                ->addColumn('sentDate', 'date', array())
-                ->create();
-        endif;
-
-        // Migration for table email_template
-        if (!$this->hasTable('email_template')) :
-            $table = $this->table('email_template', array('id' => false, 'primary_key' => 'etID'));
-            $table
-                ->addColumn('etID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('deptCode', 'string', array('limit' => 11))
-                ->addColumn('email_key', 'string', array('limit' => 30))
-                ->addColumn('email_name', 'string', array('limit' => 30))
-                ->addColumn('email_value', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('deptCode'), array('unique' => true))
-                ->addForeignKey('deptCode', 'department', 'deptCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->create();
-        endif;
-
         // Migration for table error
         if (!$this->hasTable('error')) :
-            $table = $this->table('error', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('error', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('type', 'integer', array('signed' => true, 'limit' => 4))
-                ->addColumn('time', 'integer', array('signed' => true, 'limit' => 10))
-                ->addColumn('string', 'string', array('limit' => 512))
-                ->addColumn('file', 'string', array('limit' => 255))
-                ->addColumn('line', 'integer', array('signed' => true, 'limit' => 6))
-                ->addColumn('addDate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('type', 'integer', ['limit' => 10])
+                ->addColumn('time', 'integer', ['limit' => 10])
+                ->addColumn('string', 'string', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('file', 'string', ['limit' => 191])
+                ->addColumn('line', 'integer', ['limit' => 10])
+                ->addColumn('addDate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
                 ->create();
         endif;
 
         // Migration for table event
         if (!$this->hasTable('event')) :
-            $table = $this->table('event', array('id' => false, 'primary_key' => 'eventID'));
+            $table = $this->table('event', ['id' => false, 'primary_key' => 'eventID', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('eventID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('eventType', 'string', array('limit' => 255))
-                ->addColumn('catID', 'integer', array('signed' => true, 'limit' => 11))
-                ->addColumn('requestor', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('roomCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('termCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('title', 'string', array('limit' => 120))
-                ->addColumn('description', 'text', array('null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR))
-                ->addColumn('weekday', 'integer', array('signed' => true, 'null' => true, 'limit' => 1))
-                ->addColumn('startDate', 'date', array('null' => true))
-                ->addColumn('startTime', 'time', array('null' => true))
-                ->addColumn('endTime', 'time', array('null' => true))
-                ->addColumn('repeats', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
-                ->addColumn('repeatFreq', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
-                ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'I')))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('roomCode', 'termCode', 'title', 'weekday', 'startDate', 'startTime', 'endTime'), array('unique' => true))
-                ->addIndex(array('termCode', 'requestor', 'addedBy', 'catID'))
-                ->addForeignKey('catID', 'event_category', 'catID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('requestor', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('roomCode', 'room', 'roomCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('eventID', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('eventType', 'string', ['limit' => 191])
+                ->addColumn('catID', 'integer', ['null' => true, 'limit' => 11])
+                ->addColumn('requestor', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('roomCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('title', 'string', ['limit' => 191])
+                ->addColumn('description', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('weekday', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_TINY])
+                ->addColumn('startDate', 'date', ['null' => true])
+                ->addColumn('startTime', 'time', ['null' => true])
+                ->addColumn('endTime', 'time', ['null' => true])
+                ->addColumn('repeats', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_TINY])
+                ->addColumn('repeatFreq', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_TINY])
+                ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'I']])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['roomCode', 'termCode', 'title', 'weekday', 'startDate', 'startTime', 'endTime'], ['unique' => true])
+                ->addForeignKey('catID', 'event_category', 'catID', ['constraint' => 'event_catID', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('requestor', 'person', 'personID', ['constraint' => 'event_requestor', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('roomCode', 'room', 'roomCode', ['constraint' => 'event_roomCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'event_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'event_addedBy', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table event_category
         if (!$this->hasTable('event_category')) :
-            $table = $this->table('event_category', array('id' => false, 'primary_key' => 'catID'));
+            $table = $this->table('event_category', ['id' => false, 'primary_key' => 'catID', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('catID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('cat_name', 'string', array('limit' => 30))
-                ->addColumn('bgcolor', 'string', array('default' => '#000000', 'limit' => 11))
+                ->addColumn('catID', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('cat_name', 'string', ['limit' => 80])
+                ->addColumn('bgcolor', 'char', ['default' => '#', 'limit' => 22])
                 ->create();
 
             $this->execute("INSERT INTO `event_category` VALUES(1, 'Course', '#8C7BC6');");
@@ -774,249 +862,269 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table event_meta
         if (!$this->hasTable('event_meta')) :
-            $table = $this->table('event_meta', array('id' => false, 'primary_key' => 'eventMetaID'));
+            $table = $this->table('event_meta', ['id' => false, 'primary_key' => 'eventMetaID', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('eventMetaID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('eventID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('roomCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('requestor', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('start', 'datetime', array('null' => true))
-                ->addColumn('end', 'datetime', array('null' => true))
-                ->addColumn('title', 'string', array('limit' => 120))
-                ->addColumn('description', 'text', array('null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('eventID', 'roomCode', 'start', 'end', 'title'), array('unique' => true))
-                ->addIndex(array('roomCode', 'requestor', 'addedBy'))
-                ->addForeignKey('eventID', 'event', 'eventID', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
-                ->addForeignKey('roomCode', 'room', 'roomCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('requestor', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('eventMetaID', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('eventID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('roomCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('requestor', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('start', 'datetime', ['null' => true])
+                ->addColumn('end', 'datetime', ['null' => true])
+                ->addColumn('title', 'string', ['limit' => 191])
+                ->addColumn('description', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['eventID', 'roomCode', 'start', 'end', 'title'], ['unique' => true])
+                ->addForeignKey('eventID', 'event', 'eventID', ['constraint' => 'event_meta_eventID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('roomCode', 'room', 'roomCode', ['constraint' => 'event_meta_roomCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('requestor', 'person', 'personID', ['constraint' => 'event_meta_requestor', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'event_meta_addedBy', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table event_request
         if (!$this->hasTable('event_request')) :
-            $table = $this->table('event_request', array('id' => false, 'primary_key' => 'requestID'));
+            $table = $this->table('event_request', ['id' => false, 'primary_key' => 'requestID', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('requestID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('eventType', 'string', array('limit' => 255))
-                ->addColumn('catID', 'integer', array('signed' => true, 'limit' => 11))
-                ->addColumn('requestor', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('roomCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('termCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('title', 'string', array('limit' => 120))
-                ->addColumn('description', 'text', array('null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR))
-                ->addColumn('weekday', 'integer', array('signed' => true, 'limit' => 1))
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array())
-                ->addColumn('startTime', 'time', array())
-                ->addColumn('endTime', 'time', array())
-                ->addColumn('repeats', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
-                ->addColumn('repeatFreq', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_TINY))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('roomCode', 'termCode', 'title', 'weekday', 'startDate', 'startTime', 'endTime'), array('unique' => true))
-                ->addIndex(array('termCode', 'requestor'))
-                ->addForeignKey('requestor', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('roomCode', 'room', 'roomCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('requestID', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('eventType', 'string', ['limit' => 191])
+                ->addColumn('catID', 'integer', ['limit' => 11])
+                ->addColumn('requestor', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('roomCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('title', 'string', ['limit' => 191])
+                ->addColumn('description', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('weekday', 'integer', ['limit' => MysqlAdapter::INT_TINY])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('startTime', 'time', [])
+                ->addColumn('endTime', 'time', [])
+                ->addColumn('repeats', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_TINY])
+                ->addColumn('repeatFreq', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_TINY])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['roomCode', 'termCode', 'title', 'weekday', 'startDate', 'startTime', 'endTime'], ['unique' => true])
+                ->addForeignKey('requestor', 'person', 'personID', ['constraint' => 'event_request_requestor', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('roomCode', 'room', 'roomCode', ['constraint' => 'event_request_roomCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'event_request_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table external_course
         if (!$this->hasTable('external_course')) :
-            $table = $this->table('external_course', array('id' => false, 'primary_key' => 'extrID'));
+            $table = $this->table('external_course', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('extrID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseTitle', 'string', array('limit' => 180))
-                ->addColumn('instCode', 'string', array('limit' => 11))
-                ->addColumn('courseName', 'string', array('limit' => 60))
-                ->addColumn('term', 'string', array('limit' => 11))
-                ->addColumn('credits', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 2))
-                ->addColumn('currStatus', 'enum', array('default' => 'A', 'values' => array('A', 'I', 'P', 'O')))
-                ->addColumn('statusDate', 'date', array())
-                ->addColumn('minGrade', 'string', array('limit' => 2))
-                ->addColumn('comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array())
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('instCode', 'addedBy'))
-                ->addForeignKey('instCode', 'institution', 'fice_ceeb', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseTitle', 'string', ['limit' => 191])
+                ->addColumn('instCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('courseName', 'string', ['limit' => 191])
+                ->addColumn('term', 'char', ['limit' => 22])
+                ->addColumn('credits', 'decimal', ['precision' => 4, 'scale' => 2])
+                ->addColumn('currStatus', 'enum', ['default' => 'A', 'values' => ['A', 'I', 'P', 'O']])
+                ->addColumn('statusDate', 'date', [])
+                ->addColumn('minGrade', 'char', ['limit' => 6])
+                ->addColumn('comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('instCode', 'institution', 'fice_ceeb', ['constraint' => 'external_course_instCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'external_course_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table gl_account
         if (!$this->hasTable('gl_account')) :
-            $table = $this->table('gl_account', array('id' => false, 'primary_key' => 'glacctID'));
+            $table = $this->table('gl_account', ['id' => false, 'primary_key' => 'glacctID', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('glacctID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('gl_acct_number', 'string', array('limit' => 200))
-                ->addColumn('gl_acct_name', 'string', array('limit' => 200))
-                ->addColumn('gl_acct_type', 'string', array('limit' => 200))
-                ->addColumn('gl_acct_memo', 'string', array('null' => true, 'limit' => 200))
-                ->addIndex(array('gl_acct_number'), array('unique' => true))
+                ->addColumn('glacctID', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('gl_acct_number', 'string', ['limit' => 191])
+                ->addColumn('gl_acct_name', 'string', ['limit' => 191])
+                ->addColumn('gl_acct_type', 'string', ['limit' => 191])
+                ->addColumn('gl_acct_memo', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addIndex(['gl_acct_number'], ['unique' => true])
                 ->create();
         endif;
 
         // Migration for table gl_journal_entry
         if (!$this->hasTable('gl_journal_entry')) :
-            $table = $this->table('gl_journal_entry', array('id' => false, 'primary_key' => 'jeID'));
+            $table = $this->table('gl_journal_entry', ['id' => false, 'primary_key' => 'jeID', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('jeID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('gl_jentry_date', 'date', array())
-                ->addColumn('gl_jentry_manual_id', 'string', array('null' => true, 'limit' => 100))
-                ->addColumn('gl_jentry_title', 'string', array('null' => true, 'limit' => 100))
-                ->addColumn('gl_jentry_description', 'string', array('null' => true, 'limit' => 200))
-                ->addColumn('gl_jentry_personID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
+                ->addColumn('jeID', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('gl_jentry_date', 'date', [])
+                ->addColumn('gl_jentry_manual_id', 'string', ['null' => true, 'limit' => 191])
+                ->addColumn('gl_jentry_title', 'string', ['null' => true, 'limit' => 191])
+                ->addColumn('gl_jentry_description', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('gl_jentry_personID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->create();
         endif;
 
         // Migration for table gl_transaction
         if (!$this->hasTable('gl_transaction')) :
-            $table = $this->table('gl_transaction', array('id' => false, 'primary_key' => 'trID'));
+            $table = $this->table('gl_transaction', ['id' => false, 'primary_key' => 'trID', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('trID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('jeID', 'integer', array('signed' => true, 'null' => true))
-                ->addColumn('accountID', 'integer', array('signed' => true, 'null' => true))
-                ->addColumn('gl_trans_date', 'date', array('null' => true))
-                ->addColumn('gl_trans_memo', 'string', array('null' => true, 'limit' => 400))
-                ->addColumn('gl_trans_debit', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'null' => true))
-                ->addColumn('gl_trans_credit', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'null' => true))
-                ->addIndex(array('jeID'))
-                ->addForeignKey('jeID', 'gl_journal_entry', 'jeID', array('delete' => 'CASCADE', 'update' => 'CASCADE'))
+                ->addColumn('trID', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('jeID', 'integer', ['null' => true])
+                ->addColumn('accountID', 'integer', ['null' => true])
+                ->addColumn('gl_trans_date', 'date', ['null' => true])
+                ->addColumn('gl_trans_memo', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('gl_trans_debit', 'decimal', ['precision' => 10, 'scale' => 2, 'null' => true])
+                ->addColumn('gl_trans_credit', 'decimal', ['precision' => 10, 'scale' => 2, 'null' => true])
+                ->addForeignKey('jeID', 'gl_journal_entry', 'jeID', ['constraint' => 'gl_transaction_jeID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->create();
+        endif;
+
+        // Migration for table gradebook
+        if (!$this->hasTable('gradebook')) :
+            $table = $this->table('gradebook', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('assignID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseSecID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('facID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('grade', 'char', ['limit' => 6])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['assignID', 'facID', 'stuID'], ['unique' => true])
+                ->addForeignKey('assignID', 'assignment', 'id', ['constraint' => 'gradebook_assignID', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->addForeignKey('courseSecID', 'course_sec', 'courseSecID', ['constraint' => 'gradebook_courseSecID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('facID', 'staff', 'staffID', ['constraint' => 'gradebook_facID', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'gradebook_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'gradebook_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table grade_scale
         if (!$this->hasTable('grade_scale')) :
-            $table = $this->table('grade_scale', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('grade_scale', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('grade', 'string', array('limit' => 2))
-                ->addColumn('percent', 'string', array('limit' => 10))
-                ->addColumn('points', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 2))
-                ->addColumn('count_in_gpa', 'enum', array('default' => '0', 'values' => array('1', '0')))
-                ->addColumn('status', 'enum', array('default' => '1', 'values' => array('1', '0')))
-                ->addColumn('description', 'text', array('limit' => MysqlAdapter::TEXT_REGULAR))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('grade', 'char', ['limit' => 6])
+                ->addColumn('percent', 'string', ['limit' => 12])
+                ->addColumn('points', 'decimal', ['precision' => 6, 'scale' => 2])
+                ->addColumn('count_in_gpa', 'enum', ['default' => '0', 'values' => ['1', '0']])
+                ->addColumn('status', 'enum', ['default' => '1', 'values' => ['1', '0']])
+                ->addColumn('description', 'text', ['limit' => MysqlAdapter::TEXT_REGULAR])
                 ->create();
 
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000001, 'A+', '97-100', '4.00', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000002, 'A', '93-96', '4.00', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000003, 'A-', '90-92', '3.70', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000004, 'B+', '87-89', '3.30', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000005, 'B', '83-86', '3.00', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000006, 'B-', '80-82', '2.70', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000007, 'P', '80-82', '2.70', '1', '1', 'Minimum for Pass/Fail courses');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000008, 'C+', '77-79', '2.30', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000009, 'C', '73-76', '2.00', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000010, 'C-', '70-72', '1.70', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000011, 'D+', '67-69', '1.30', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000012, 'D', '65-66', '1.00', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000013, 'F', 'Below 65', '0.00', '1', '1', '');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000014, 'I', '0', '0.00', '0', '1', 'Incomplete grades');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000015, 'AW', '0', '0.00', '0', '1', '\"AW\" is an administrative grade assigned to students who have attended no more than the first two classes, but who have not officially dropped or withdrawn from the course. Does not count against GPA.');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000016, 'NA', '0', '0.00', '0', '1', '\"NA\" is an administrative grade assigned to students who are officially registered for the course and whose name appears on the grade roster, but who have never attended class. Does not count against GPA.');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000017, 'W', '0', '0.00', '0', '1', 'Withdrew');");
-            $this->execute("INSERT INTO `grade_scale` VALUES(00000000018, 'IP', '90-98', '4.00', '0', '1', 'Incomplete passing');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(1, 'A+', '97-100', '4.00', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(2, 'A', '93-96', '4.00', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(3, 'A-', '90-92', '3.70', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(4, 'B+', '87-89', '3.30', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(5, 'B', '83-86', '3.00', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(6, 'B-', '80-82', '2.70', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(7, 'P', '80-82', '2.70', '1', '1', 'Minimum for Pass/Fail courses');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(8, 'C+', '77-79', '2.30', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(9, 'C', '73-76', '2.00', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(10, 'C-', '70-72', '1.70', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(11, 'D+', '67-69', '1.30', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(12, 'D', '65-66', '1.00', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(13, 'F', 'Below 65', '0.00', '1', '1', '');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(14, 'I', '0', '0.00', '0', '1', 'Incomplete grades');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(15, 'AW', '0', '0.00', '0', '1', '\"AW\" is an administrative grade assigned to students who have attended no more than the first two classes, but who have not officially dropped or withdrawn from the course. Does not count against GPA.');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(16, 'NA', '0', '0.00', '0', '1', '\"NA\" is an administrative grade assigned to students who are officially registered for the course and whose name appears on the grade roster, but who have never attended class. Does not count against GPA.');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(17, 'W', '0', '0.00', '0', '1', 'Withdrew');");
+            $this->execute("INSERT INTO `grade_scale` VALUES(18, 'IP', '90-98', '4.00', '0', '1', 'Incomplete passing');");
         endif;
 
 
         // Migration for table graduation_hold
         if (!$this->hasTable('graduation_hold')) :
-            $table = $this->table('graduation_hold', array('id' => false, 'primary_key' => 'id'));
+            $table = $this->table('graduation_hold', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('queryID', 'integer', array('signed' => true, 'limit' => 11))
-                ->addColumn('gradDate', 'date', array())
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('queryID', 'integer', ['limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('gradDate', 'date', [])
                 ->create();
         endif;
 
         // Migration for table hiatus
         if (!$this->hasTable('hiatus')) :
-            $table = $this->table('hiatus', array('id' => false, 'primary_key' => 'shisID'));
+            $table = $this->table('hiatus', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('shisID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('shisCode', 'string', array('limit' => 6))
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array())
-                ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('shisCode', 'stuID', 'addedBy'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('code', 'char', ['limit' => 22])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'hiatus_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'hiatus_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table institution
         if (!$this->hasTable('institution')) :
-            $table = $this->table('institution', array('id' => false, 'primary_key' => 'institutionID'));
+            $table = $this->table('institution', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('institutionID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('fice_ceeb', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('instType', 'string', array('limit' => 4))
-                ->addColumn('instName', 'string', array('limit' => 180))
-                ->addColumn('city', 'string', array('limit' => 30))
-                ->addColumn('state', 'string', array('limit' => 2))
-                ->addColumn('country', 'string', array('limit' => 2))
-                ->addIndex(array('fice_ceeb'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('fice_ceeb', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('instType', 'char', ['limit' => 10])
+                ->addColumn('instName', 'string', ['limit' => 191])
+                ->addColumn('city', 'string', ['limit' => 60])
+                ->addColumn('state', 'char', ['limit' => 4])
+                ->addColumn('country', 'char', ['limit' => 4])
+                ->addIndex(['fice_ceeb'])
                 ->create();
         endif;
 
         // Migration for table institution_attended
         if (!$this->hasTable('institution_attended')) :
-            $table = $this->table('institution_attended', array('id' => false, 'primary_key' => 'instAttID'));
+            $table = $this->table('institution_attended', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('instAttID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('fice_ceeb', 'string', array('limit' => 11))
-                ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('fromDate', 'date', array())
-                ->addColumn('toDate', 'date', array())
-                ->addColumn('major', 'string', array('limit' => 255))
-                ->addColumn('degree_awarded', 'string', array('limit' => 6))
-                ->addColumn('degree_conferred_date', 'date', array())
-                ->addColumn('GPA', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 4, 'null' => true))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('fice_ceeb', 'personID'), array('unique' => true))
-                ->addIndex(array('personID'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('fice_ceeb', 'char', ['limit' => 22])
+                ->addColumn('personID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('fromDate', 'date', [])
+                ->addColumn('toDate', 'date', [])
+                ->addColumn('major', 'string', ['limit' => 191])
+                ->addColumn('degree_awarded', 'char', ['limit' => 22])
+                ->addColumn('degree_conferred_date', 'date', [])
+                ->addColumn('GPA', 'decimal', ['precision' => 6, 'scale' => 4, 'null' => true])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['fice_ceeb', 'personID'], ['unique' => true])
+                ->addForeignKey('personID', 'person', 'personID', ['constraint' => 'institution_attended_personID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'institution_attended_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table job
         if (!$this->hasTable('job')) :
-            $table = $this->table('job', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('job', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('pay_grade', 'integer', array('signed' => true, 'limit' => 11))
-                ->addColumn('title', 'string', array('limit' => 180))
-                ->addColumn('hourly_wage', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 2, 'null' => true))
-                ->addColumn('weekly_hours', 'integer', array('signed' => true, 'null' => true, 'limit' => 4))
-                ->addColumn('attachment', 'string', array('null' => true, 'limit' => 255))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('pay_grade', 'integer', ['limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('title', 'string', ['limit' => 191])
+                ->addColumn('hourly_wage', 'decimal', ['precision' => 10, 'scale' => 2, 'null' => true])
+                ->addColumn('weekly_hours', 'integer', ['null' => true, 'limit' => 6])
+                ->addColumn('attachment', 'string', ['null' => true, 'limit' => 191])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'job_addedBy', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
 
-            $this->execute("INSERT INTO `job` VALUES(1, 1, 'IT Support', '34.00', 40, NULL, '$NOW', 00000001, '$NOW');");
+            $this->execute("INSERT INTO `job` VALUES(1, 1, 'IT Support', '34.00', 40, NULL, '$NOW', 1, '$NOW');");
         endif;
 
 
         // Migration for table job_status
         if (!$this->hasTable('job_status')) :
-            $table = $this->table('job_status', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('job_status', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('typeCode', 'string', array('limit' => 6))
-                ->addColumn('type', 'string', array('limit' => 180))
-                ->addIndex(array('typeCode'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('typeCode', 'char', ['limit' => 22])
+                ->addColumn('type', 'string', ['limit' => 191])
+                ->addIndex(['typeCode'], ['unique' => true])
                 ->create();
 
             $this->execute("INSERT INTO `job_status` VALUES(1, 'FT', 'Full Time');");
@@ -1032,13 +1140,13 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table location
         if (!$this->hasTable('location')) :
-            $table = $this->table('location', array('id' => false, 'primary_key' => 'locationID'));
+            $table = $this->table('location', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('locationID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('locationCode', 'string', array('limit' => 11))
-                ->addColumn('locationName', 'string', array('limit' => 80))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('locationCode'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('locationCode', 'char', ['limit' => 22])
+                ->addColumn('locationName', 'string', ['limit' => 191])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['locationCode'], ['unique' => true])
                 ->create();
 
             $this->execute("INSERT INTO `location` VALUES(1, 'NULL', '', '$NOW');");
@@ -1046,13 +1154,13 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table major
         if (!$this->hasTable('major')) :
-            $table = $this->table('major', array('id' => false, 'primary_key' => 'majorID'));
+            $table = $this->table('major', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('majorID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('majorCode', 'string', array('limit' => 11))
-                ->addColumn('majorName', 'string', array('limit' => 180))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('majorCode'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('majorCode', 'char', ['limit' => 22])
+                ->addColumn('majorName', 'string', ['limit' => 191])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['majorCode'], ['unique' => true])
                 ->create();
 
             $this->execute("INSERT INTO `major` VALUES(1, 'NULL', '', '$NOW');");
@@ -1060,60 +1168,58 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table met_link
         if (!$this->hasTable('met_link')) :
-            $table = $this->table('met_link', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('met_link', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('link_title', 'string', array('limit' => 180))
-                ->addColumn('link_src', 'string', array('limit' => 255))
-                ->addColumn('status', 'enum', array('values' => array('active', 'inactive')))
-                ->addColumn('sort', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_TINY))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('link_title', 'string', ['limit' => 191])
+                ->addColumn('link_src', 'string', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('status', 'enum', ['values' => ['active', 'inactive']])
+                ->addColumn('sort', 'integer', ['limit' => MysqlAdapter::INT_TINY])
                 ->create();
         endif;
 
         // Migration for table met_news
         if (!$this->hasTable('met_news')) :
-            $table = $this->table('met_news', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('met_news', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('news_title', 'string', array('limit' => 255))
-                ->addColumn('news_slug', 'string', array('limit' => 255))
-                ->addColumn('news_content', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('status', 'enum', array('values' => array('draft', 'publish')))
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('addedBy'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('news_title', 'string', ['limit' => 191])
+                ->addColumn('news_slug', 'string', ['limit' => 191])
+                ->addColumn('news_content', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('status', 'enum', ['values' => ['draft', 'publish']])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table met_page
         if (!$this->hasTable('met_page')) :
-            $table = $this->table('met_page', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('met_page', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('page_title', 'string', array('limit' => 255))
-                ->addColumn('page_slug', 'string', array('limit' => 255))
-                ->addColumn('page_content', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('status', 'enum', array('values' => array('draft', 'publish')))
-                ->addColumn('sort', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_TINY))
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('addedBy'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('page_title', 'string', ['limit' => 191])
+                ->addColumn('page_slug', 'string', ['limit' => 191])
+                ->addColumn('page_content', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('status', 'enum', ['values' => ['draft', 'publish']])
+                ->addColumn('sort', 'integer', ['limit' => MysqlAdapter::INT_TINY])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table minor
         if (!$this->hasTable('minor')) :
-            $table = $this->table('minor', array('id' => false, 'primary_key' => 'minorID'));
+            $table = $this->table('minor', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('minorID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('minorCode', 'string', array('limit' => 11))
-                ->addColumn('minorName', 'string', array('limit' => 180))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('minorCode'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('minorCode', 'char', ['limit' => 22])
+                ->addColumn('minorName', 'string', ['limit' => 191])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['minorCode'], ['unique' => true])
                 ->create();
 
             $this->execute("INSERT INTO `minor` VALUES(1, 'NULL', '', '$NOW');");
@@ -1122,12 +1228,12 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table options_meta
         if (!$this->hasTable('options_meta')) :
-            $table = $this->table('options_meta', array('id' => false, 'primary_key' => 'meta_id'));
+            $table = $this->table('options_meta', ['id' => false, 'primary_key' => 'meta_id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('meta_id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('meta_key', 'string', array('default' => '', 'limit' => 60))
-                ->addColumn('meta_value', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addIndex(array('meta_key'), array('unique' => true))
+                ->addColumn('meta_id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('meta_key', 'string', ['default' => '', 'limit' => 191])
+                ->addColumn('meta_value', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addIndex(['meta_key'], ['unique' => true])
                 ->create();
 
             $this->execute("INSERT INTO `options_meta` VALUES(1, 'system_email', 'email@gmail.com');");
@@ -1139,81 +1245,81 @@ class InitialSchema extends AbstractMigration
             $this->execute("INSERT INTO `options_meta` VALUES(7, 'current_term_code', '');");
             $this->execute("INSERT INTO `options_meta` VALUES(8, 'open_registration', '1');");
             $this->execute("INSERT INTO `options_meta` VALUES(9, 'help_desk', 'https://www.edutracsis.com/');");
-            $this->execute("INSERT INTO `options_meta` VALUES(10, 'reset_password_text', '<b>eduTrac Password Reset</b><br>Password &amp; Login Information<br><br>You or someone else requested a new password to the eduTrac online system. If you did not request this change, please contact the administrator as soon as possible @ #adminemail#.&nbsp; To log into the eduTrac system, please visit #url# and login with your username and password.<br><br>FULL NAME:&nbsp; #fname# #lname#<br>USERNAME:&nbsp; #uname#<br>PASSWORD:&nbsp; #password#<br><br>If you need further assistance, please read the documentation at #helpdesk#.<br><br>KEEP THIS IN A SAFE AND SECURE LOCATION.<br><br>Thank You,<br>eduTrac Web Team<br>');");
+            $this->execute("INSERT INTO `options_meta` VALUES(10, 'reset_password_text', '<b>eduTrac SIS Password Reset</b><br>Password &amp; Login Information<br><br>You or someone else requested a new password to the eduTrac SIS online system. If you did not request this change, please contact the administrator as soon as possible @ #adminemail#.&nbsp; To log into the eduTrac system, please visit #url# and login with your username and password.<br><br>FULL NAME:&nbsp; #fname# #lname#<br>USERNAME:&nbsp; #uname#<br>PASSWORD:&nbsp; #password#<br><br>If you need further assistance, please read the documentation at #helpdesk#.<br><br>KEEP THIS IN A SAFE AND SECURE LOCATION.<br><br>Thank You,<br>eduTrac SIS Web Team<br>');");
             $this->execute("INSERT INTO `options_meta` VALUES(11, 'api_key', '');");
             $this->execute("INSERT INTO `options_meta` VALUES(12, 'room_request_email', 'request@myschool.edu');");
             $this->execute("INSERT INTO `options_meta` VALUES(13, 'room_request_text', '<p>&nbsp;</p>\r\n<table border=\"0\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#F4F3F4\">\r\n<tbody>\r\n<tr>\r\n<td style=\"padding: 15px;\"><center>\r\n<table width=\"550\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td align=\"left\">\r\n<div style=\"border: solid 1px #d9d9d9;\">\r\n<table id=\"header\" style=\"line-height: 1.6; font-size: 12px; font-family: Helvetica, Arial, sans-serif; border: solid 1px #FFFFFF; color: #444;\" border=\"0\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td style=\"color: #ffffff;\" colspan=\"2\" valign=\"bottom\" height=\"30\">.</td>\r\n</tr>\r\n<tr>\r\n<td style=\"line-height: 32px; padding-left: 30px;\" valign=\"baseline\"><span style=\"font-size: 32px;\">eduTrac SIS</span></td>\r\n<td style=\"padding-right: 30px;\" align=\"right\" valign=\"baseline\"><span style=\"font-size: 14px; color: #777777;\">Room/Event Reservation Request</span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id=\"content\" style=\"margin-top: 15px; margin-right: 30px; margin-left: 30px; color: #444; line-height: 1.6; font-size: 12px; font-family: Arial, sans-serif;\" border=\"0\" width=\"490\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td style=\"border-top: solid 1px #d9d9d9;\" colspan=\"2\">\r\n<div style=\"padding: 15px 0;\">Below are the details of a new room request.</div>\r\n<div style=\"padding: 15px 0;\"><strong>Name:</strong> #name#<br /><br /><strong>Email:</strong> #email#<br /><br /><strong>Event Title:</strong> #title#<br /><strong>Description:</strong> #description#<br /><strong>Request Type:</strong> #request_type#<br /><strong>Category:</strong> #category#<br /><strong>Room#:</strong> #room#<br /><strong>Start Date:</strong> #firstday#<br /><strong>End Date:</strong> #lastday#<br /><strong>Start Time:</strong> #sTime#<br /><strong>End Time:</strong> #eTime#<br /><strong>Repeat?:</strong> #repeat#<br /><strong>Occurrence:</strong> #occurrence#<br /><br /><br />\r\n<h3>Legend</h3>\r\n<ul>\r\n<li>Repeat - 1 means yes it is an event that is repeated</li>\r\n<li>Occurrence - 1 = repeats everyday, 7 = repeats weekly, 14 = repeats biweekly</li>\r\n</ul>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id=\"footer\" style=\"line-height: 1.5; font-size: 12px; font-family: Arial, sans-serif; margin-right: 30px; margin-left: 30px;\" border=\"0\" width=\"490\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr style=\"font-size: 11px; color: #999999;\">\r\n<td style=\"border-top: solid 1px #d9d9d9;\" colspan=\"2\">\r\n<div style=\"padding-top: 15px; padding-bottom: 1px;\">Powered by eduTrac SIS</div>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style=\"color: #ffffff;\" colspan=\"2\" height=\"15\">.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</center></td>\r\n</tr>\r\n</tbody>\r\n</table>');");
             $this->execute("INSERT INTO `options_meta` VALUES(14, 'room_booking_confirmation_text', '<p>&nbsp;</p>\r\n<table border=\"0\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#F4F3F4\">\r\n<tbody>\r\n<tr>\r\n<td style=\"padding: 15px;\"><center>\r\n<table width=\"550\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td align=\"left\">\r\n<div style=\"border: solid 1px #d9d9d9;\">\r\n<table id=\"header\" style=\"line-height: 1.6; font-size: 12px; font-family: Helvetica, Arial, sans-serif; border: solid 1px #FFFFFF; color: #444;\" border=\"0\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td style=\"color: #ffffff;\" colspan=\"2\" valign=\"bottom\" height=\"30\">.</td>\r\n</tr>\r\n<tr>\r\n<td style=\"line-height: 32px; padding-left: 30px;\" valign=\"baseline\"><span style=\"font-size: 32px;\">eduTrac SIS</span></td>\r\n<td style=\"padding-right: 30px;\" align=\"right\" valign=\"baseline\"><span style=\"font-size: 14px; color: #777777;\">Room/Event&nbsp;Booking&nbsp;Confirmation</span></td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id=\"content\" style=\"margin-top: 15px; margin-right: 30px; margin-left: 30px; color: #444; line-height: 1.6; font-size: 12px; font-family: Arial, sans-serif;\" border=\"0\" width=\"490\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr>\r\n<td style=\"border-top: solid 1px #d9d9d9;\" colspan=\"2\">\r\n<div style=\"padding: 15px 0;\">Your room request or event request entitled <strong>#title#</strong> has been booked. If you have any questions or concerns, please email our office at <a href=\"mailto:request@bdci.edu\">request@bdci.edu</a></div>\r\n<div style=\"padding: 15px 0;\">Sincerely,<br />Room Scheduler</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table id=\"footer\" style=\"line-height: 1.5; font-size: 12px; font-family: Arial, sans-serif; margin-right: 30px; margin-left: 30px;\" border=\"0\" width=\"490\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">\r\n<tbody>\r\n<tr style=\"font-size: 11px; color: #999999;\">\r\n<td style=\"border-top: solid 1px #d9d9d9;\" colspan=\"2\">\r\n<div style=\"padding-top: 15px; padding-bottom: 1px;\">Powered by eduTrac SIS</div>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td style=\"color: #ffffff;\" colspan=\"2\" height=\"15\">.</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n</center></td>\r\n</tr>\r\n</tbody>\r\n</table>');");
-            $this->execute("INSERT INTO `options_meta` VALUES(15, 'myet_welcome_message', '<p>Welcome to the <em>my</em>etSIS campus portal. The <em>my</em>etSIS campus portal&nbsp;is your personalized campus web site at Eastbound University.</p>\r\n<p>If you are a prospective student who is interested in applying to the college, checkout the <a href=\"pages/admissions/\">admissions</a>&nbsp;page for more information.</p>');");
+            $this->execute("INSERT INTO `options_meta` VALUES(15, 'myetsis_welcome_message', '<p>Welcome to the <em>my</em>etSIS campus portal. The <em>my</em>etSIS campus portal&nbsp;is your personalized campus web site at Eastbound University.</p>\r\n<p>If you are a prospective student who is interested in applying to the college, checkout the <a href=\"pages/admissions/\">admissions</a>&nbsp;page for more information.</p>');");
             $this->execute("INSERT INTO `options_meta` VALUES(16, 'contact_phone', '888.888.8888');");
             $this->execute("INSERT INTO `options_meta` VALUES(17, 'contact_email', 'contact@colegio.edu');");
             $this->execute("INSERT INTO `options_meta` VALUES(18, 'mailing_address', '10 Eliot Street, Suite 2\r\nSomerville, MA 02140');");
-            $this->execute("INSERT INTO `options_meta` VALUES(19, 'enable_myet_portal', '0');");
+            $this->execute("INSERT INTO `options_meta` VALUES(19, 'enable_myetsis_portal', '0');");
             $this->execute("INSERT INTO `options_meta` VALUES(20, 'screen_caching', '1');");
             $this->execute("INSERT INTO `options_meta` VALUES(21, 'db_caching', '1');");
             $this->execute("INSERT INTO `options_meta` VALUES(22, 'admissions_email', 'admissions@colegio.edu');");
             $this->execute("INSERT INTO `options_meta` VALUES(23, 'coa_form_text', '<p>Dear Admin,</p>\r\n<p>#name# has submitted a change of address. Please see below for details.</p>\r\n<p><strong>ID:</strong> #id#</p>\r\n<p><strong>Address1:</strong> #address1#</p>\r\n<p><strong>Address2:</strong> #address2#</p>\r\n<p><strong>City:</strong> #city#</p>\r\n<p><strong>State:</strong> #state#</p>\r\n<p><strong>Zip:</strong> #zip#</p>\r\n<p><strong>Country:</strong> #country#</p>\r\n<p><strong>Phone:</strong> #phone#</p>\r\n<p><strong>Email:</strong> #email#</p>\r\n<p>&nbsp;</p>\r\n<p>----<br /><em>This is a system generated email.</em></p>');");
-            $this->execute("INSERT INTO `options_meta` VALUES(24, 'enable_myet_appl_form', '0');");
-            $this->execute("INSERT INTO `options_meta` VALUES(25, 'myet_offline_message', 'Please excuse the dust. We are giving the portal a new facelift. Please try back again in an hour.\r\n\r\nSincerely,\r\nIT Department');");
+            $this->execute("INSERT INTO `options_meta` VALUES(24, 'enable_myetsis_appl_form', '0');");
+            $this->execute("INSERT INTO `options_meta` VALUES(25, 'myetsis_offline_message', 'Please excuse the dust. We are giving the portal a new facelift. Please try back again in an hour.\r\n\r\nSincerely,\r\nIT Department');");
             $this->execute("INSERT INTO `options_meta` VALUES(26, 'curl', '1');");
             $this->execute("INSERT INTO `options_meta` VALUES(27, 'system_timezone', 'America/New_York');");
             $this->execute("INSERT INTO `options_meta` VALUES(28, 'number_of_courses', '3');");
             $this->execute("INSERT INTO `options_meta` VALUES(29, 'account_balance', '');");
             $this->execute("INSERT INTO `options_meta` VALUES(30, 'reg_instructions', '');");
-            $this->execute("INSERT INTO `options_meta` VALUES(31, 'et_core_locale', 'en_US');");
+            $this->execute("INSERT INTO `options_meta` VALUES(31, 'etsis_core_locale', 'en_US');");
             $this->execute("INSERT INTO `options_meta` VALUES(32, 'send_acceptance_email', '0');");
             $this->execute("INSERT INTO `options_meta` VALUES(33, 'person_login_details', '<p>Dear #fname#:</p>\r\n<p>An account has just been created for you. Below are your login details.</p>\r\n<p>Username: #uname#</p>\r\n<p>Password: #password#</p>\r\n<p>ID: #id#</p>\r\n<p>Alternate ID:&nbsp;#altID#</p>\r\n<p>You may log into your account at the url below:</p>\r\n<p><a href=\"#url#\">#url#</a></p>');");
-            $this->execute("INSERT INTO `options_meta` VALUES(34, 'myet_layout', 'default');");
+            $this->execute("INSERT INTO `options_meta` VALUES(34, 'myetsis_layout', 'default');");
             $this->execute("INSERT INTO `options_meta` VALUES(35, 'open_terms', '');");
             $this->execute("INSERT INTO `options_meta` VALUES(36, 'elfinder_driver', 'elf_local_driver');");
         endif;
 
         // Migration for table pay_grade
         if (!$this->hasTable('pay_grade')) :
-            $table = $this->table('pay_grade', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('pay_grade', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('grade', 'string', array('limit' => 10))
-                ->addColumn('minimum_salary', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2))
-                ->addColumn('maximum_salary', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('grade', 'char', ['limit' => 22])
+                ->addColumn('minimum_salary', 'decimal', ['precision' => 10, 'scale' => 2])
+                ->addColumn('maximum_salary', 'decimal', ['precision' => 10, 'scale' => 2])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
 
-            $this->execute("INSERT INTO `pay_grade` VALUES(1, '24', '40000.00', '44999.00', '$NOW', 00000001, '$NOW');");
+            $this->execute("INSERT INTO `pay_grade` VALUES(1, '24', '40000.00', '44999.00', '$NOW', 1, '$NOW');");
         endif;
 
         // Migration for table payment
         if (!$this->hasTable('payment')) :
-            $table = $this->table('payment', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('payment', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('amount', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'default' => '0'))
-                ->addColumn('checkNum', 'string', array('null' => true, 'limit' => 8))
-                ->addColumn('paypal_txnID', 'string', array('null' => true, 'limit' => 255))
-                ->addColumn('paypal_payment_status', 'string', array('null' => true, 'limit' => 80))
-                ->addColumn('paypal_txn_fee', 'string', array('default' => '0.00', 'limit' => 11))
-                ->addColumn('paymentTypeID', 'integer', array('signed' => true, 'limit' => 11))
-                ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('paymentDate', 'date', array())
-                ->addColumn('postedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('stuID', 'termCode', 'postedBy'))
-                ->addForeignKey('postedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('amount', 'decimal', ['precision' => 10, 'scale' => 2, 'default' => '0'])
+                ->addColumn('checkNum', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('paypal_txnID', 'string', ['null' => true, 'limit' => 191])
+                ->addColumn('paypal_payment_status', 'string', ['null' => true, 'limit' => 191])
+                ->addColumn('paypal_txn_fee', 'decimal', ['precision' => 6, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('paymentTypeID', 'integer', ['limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('paymentDate', 'date', [])
+                ->addColumn('postedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('postedBy', 'staff', 'staffID', ['constraint' => 'payment_postedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'payment_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'payment_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table payment_type
         if (!$this->hasTable('payment_type')) :
-            $table = $this->table('payment_type', array('id' => false, 'primary_key' => 'ptID'));
+            $table = $this->table('payment_type', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ptID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('type', 'string', array('limit' => 30))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('type', 'string', ['limit' => 60])
                 ->create();
 
             $this->execute("INSERT INTO `payment_type` VALUES(1, 'Cash');");
@@ -1232,147 +1338,169 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table permission
         if (!$this->hasTable('permission')) :
-            $table = $this->table('permission', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('permission', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('permKey', 'string', array('limit' => 30))
-                ->addColumn('permName', 'string', array('limit' => 80))
-                ->addIndex(array('permKey'), array('unique' => true))
+                ->addColumn('id', 'integer', ['signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('permKey', 'string', ['limit' => 60])
+                ->addColumn('permName', 'string', ['limit' => 191])
+                ->addIndex(['permKey'], ['unique' => true])
                 ->create();
 
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000017, 'edit_settings', 'Edit Settings');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000018, 'access_audit_trail_screen', 'Audit Trail Logs');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000019, 'access_sql_interface_screen', 'SQL Interface Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000036, 'access_course_screen', 'Course Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000040, 'access_faculty_screen', 'Faculty Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000044, 'access_parent_screen', 'Parent Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000048, 'access_student_screen', 'Student Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000052, 'access_plugin_screen', 'Plugin Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000057, 'access_role_screen', 'Role Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000061, 'access_permission_screen', 'Permission Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000065, 'access_user_role_screen', 'User Role Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000069, 'access_user_permission_screen', 'User Permission Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000073, 'access_email_template_screen', 'Email Template Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000074, 'access_course_sec_screen', 'Course Section Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000075, 'add_course_sec', 'Add Course Section');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000078, 'course_sec_inquiry_only', 'Course Section Inquiry Only');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000079, 'course_inquiry_only', 'Course Inquiry Only');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000080, 'access_person_screen', 'Person Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000081, 'add_person', 'Add Person');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000085, 'access_acad_prog_screen', 'Academic Program Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000086, 'add_acad_prog', 'Add Academic Program');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000089, 'acad_prog_inquiry_only', 'Academic Program Inquiry Only');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000090, 'access_nslc', 'NSLC');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000091, 'access_error_log_screen', 'Error Log Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000092, 'access_student_portal', 'Student Portal');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000093, 'access_cronjob_screen', 'Cronjob Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000097, 'access_report_screen', 'Report Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000098, 'add_address', 'Add Address');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000100, 'address_inquiry_only', 'Address Inquiry Only');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000101, 'general_inquiry_only', 'General Inquiry Only');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000102, 'faculty_inquiry_only', 'Faculty Inquiry Only');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000103, 'parent_inquiry_only', 'Parent Inquiry Only');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000104, 'student_inquiry_only', 'Student Inquiry Only');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000106, 'access_plugin_admin_page', 'Plugin Admin Page');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000108, 'access_save_query_screens', 'Save Query Screens');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000109, 'access_forms', 'Forms');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000110, 'create_stu_record', 'Create Student Record');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000111, 'create_fac_record', 'Create Faculty Record');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000112, 'create_par_record', 'Create Parent Record');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000113, 'reset_person_password', 'Reset Person Password');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000114, 'register_students', 'Register Students');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000167, 'access_ftp', 'FTP');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000168, 'access_stu_roster_screen', 'Access Student Roster Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000169, 'access_grading_screen', 'Grading Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000170, 'access_bill_tbl_screen', 'Billing Table Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000171, 'add_crse_sec_bill', 'Add Course Sec Billing');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000176, 'access_parent_portal', 'Parent Portal');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000177, 'import_data', 'Import Data');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000178, 'add_course', 'Add Course');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000179, 'person_inquiry_only', 'Person Inquiry Only');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000180, 'room_request', 'Room Request');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000201, 'activate_course_sec', 'Activate Course Section');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000202, 'cancel_course_sec', 'Cancel Course Section');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000203, 'access_institutions_screen', 'Access Institutions Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000204, 'add_institution', 'Add Institution');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000205, 'access_application_screen', 'Access Application Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000206, 'create_application', 'Create Application');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000207, 'access_staff_screen', 'Staff Screen');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000208, 'staff_inquiry_only', 'Staff Inquiry Only');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000209, 'create_staff_record', 'Create Staff Record');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000210, 'graduate_students', 'Graduate Students');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000211, 'generate_transcripts', 'Generate Transcripts');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000212, 'access_student_accounts', 'Access Student Accounts');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000213, 'student_account_inquiry_only', 'Student Account Inquiry Only');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000214, 'restrict_edit_profile', 'Restrict Edit Profile');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000215, 'access_general_ledger', 'Access General Ledger');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000216, 'login_as_user', 'Login as User');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000217, 'access_academics', 'Access Academics');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000218, 'access_financials', 'Access Financials');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000219, 'access_human_resources', 'Access Human Resources');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000220, 'submit_timesheets', 'Submit Timesheets');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000221, 'access_sql', 'Access SQL');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000222, 'access_person_mgmt', 'Access Person Management');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000223, 'create_campus_site', 'Create Campus Site');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000224, 'access_dashboard', 'Access Dashboard');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000225, 'access_myet_admin', 'Access myetSIS Admin');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000226, 'manage_myet_pages', 'Manage myetSIS Pages');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000227, 'manage_myet_links', 'Manage myetSIS Links');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000228, 'manage_myet_news', 'Manage myetSIS News');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000229, 'add_myet_page', 'Add myetSIS Page');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000230, 'edit_myet_page', 'Edit myetSIS Page');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000231, 'delete_myet_page', 'Delete myetSIS Page');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000232, 'add_myet_link', 'Add myetSIS Link');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000233, 'edit_myet_link', 'Edit myetSIS Link');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000234, 'delete_myet_link', 'Delete myetSIS Link');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000235, 'add_myet_news', 'Add myetSIS News');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000236, 'edit_myet_news', 'Edit myetSIS News');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000237, 'delete_myet_news', 'Delete myetSIS News');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000238, 'clear_screen_cache', 'Clear Screen Cache');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000239, 'clear_database_cache', 'Clear Database Cache');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000240, 'access_myet_appl_form', 'Access myetSIS Application Form');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000241, 'edit_myet_css', 'Edit myetSIS CSS');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000242, 'edit_myet_welcome_message', 'Edit myetSIS Welcome Message');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000243, 'access_communication_mgmt', 'Access Communication Management');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000244, 'delete_student', 'Delete Student');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000245, 'access_payment_gateway', 'Access Payment Gateway');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000246, 'access_ea', 'Access eduTrac Analytics');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000247, 'execute_saved_query', 'Execute Saved Query');");
-            $this->execute("INSERT INTO `permission` VALUES(00000000000000000248, 'submit_final_grades', 'Submit Final Grades');");
+            $this->execute("INSERT INTO `permission` VALUES(17, 'edit_settings', 'Edit Settings');");
+            $this->execute("INSERT INTO `permission` VALUES(18, 'access_audit_trail_screen', 'Audit Trail Logs');");
+            $this->execute("INSERT INTO `permission` VALUES(19, 'access_sql_interface_screen', 'SQL Interface Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(36, 'access_course_screen', 'Course Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(40, 'access_faculty_screen', 'Faculty Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(44, 'access_parent_screen', 'Parent Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(48, 'access_student_screen', 'Student Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(52, 'access_plugin_screen', 'Plugin Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(57, 'access_role_screen', 'Role Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(61, 'access_permission_screen', 'Permission Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(65, 'access_user_role_screen', 'User Role Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(69, 'access_user_permission_screen', 'User Permission Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(73, 'access_email_template_screen', 'Email Template Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(74, 'access_course_sec_screen', 'Course Section Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(75, 'add_course_sec', 'Add Course Section');");
+            $this->execute("INSERT INTO `permission` VALUES(78, 'course_sec_inquiry_only', 'Course Section Inquiry Only');");
+            $this->execute("INSERT INTO `permission` VALUES(79, 'course_inquiry_only', 'Course Inquiry Only');");
+            $this->execute("INSERT INTO `permission` VALUES(80, 'access_person_screen', 'Person Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(81, 'add_person', 'Add Person');");
+            $this->execute("INSERT INTO `permission` VALUES(85, 'access_acad_prog_screen', 'Academic Program Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(86, 'add_acad_prog', 'Add Academic Program');");
+            $this->execute("INSERT INTO `permission` VALUES(89, 'acad_prog_inquiry_only', 'Academic Program Inquiry Only');");
+            $this->execute("INSERT INTO `permission` VALUES(90, 'access_nslc', 'NSLC');");
+            $this->execute("INSERT INTO `permission` VALUES(91, 'access_error_log_screen', 'Error Log Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(92, 'access_student_portal', 'Student Portal');");
+            $this->execute("INSERT INTO `permission` VALUES(93, 'access_cronjob_screen', 'Cronjob Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(97, 'access_report_screen', 'Report Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(98, 'add_address', 'Add Address');");
+            $this->execute("INSERT INTO `permission` VALUES(100, 'address_inquiry_only', 'Address Inquiry Only');");
+            $this->execute("INSERT INTO `permission` VALUES(101, 'general_inquiry_only', 'General Inquiry Only');");
+            $this->execute("INSERT INTO `permission` VALUES(102, 'faculty_inquiry_only', 'Faculty Inquiry Only');");
+            $this->execute("INSERT INTO `permission` VALUES(103, 'parent_inquiry_only', 'Parent Inquiry Only');");
+            $this->execute("INSERT INTO `permission` VALUES(104, 'student_inquiry_only', 'Student Inquiry Only');");
+            $this->execute("INSERT INTO `permission` VALUES(106, 'access_plugin_admin_page', 'Plugin Admin Page');");
+            $this->execute("INSERT INTO `permission` VALUES(108, 'access_save_query_screens', 'Save Query Screens');");
+            $this->execute("INSERT INTO `permission` VALUES(109, 'access_forms', 'Forms');");
+            $this->execute("INSERT INTO `permission` VALUES(110, 'create_stu_record', 'Create Student Record');");
+            $this->execute("INSERT INTO `permission` VALUES(111, 'create_fac_record', 'Create Faculty Record');");
+            $this->execute("INSERT INTO `permission` VALUES(112, 'create_par_record', 'Create Parent Record');");
+            $this->execute("INSERT INTO `permission` VALUES(113, 'reset_person_password', 'Reset Person Password');");
+            $this->execute("INSERT INTO `permission` VALUES(114, 'register_students', 'Register Students');");
+            $this->execute("INSERT INTO `permission` VALUES(167, 'access_ftp', 'FTP');");
+            $this->execute("INSERT INTO `permission` VALUES(168, 'access_stu_roster_screen', 'Access Student Roster Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(169, 'access_grading_screen', 'Grading Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(170, 'access_bill_tbl_screen', 'Billing Table Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(171, 'add_crse_sec_bill', 'Add Course Sec Billing');");
+            $this->execute("INSERT INTO `permission` VALUES(176, 'access_parent_portal', 'Parent Portal');");
+            $this->execute("INSERT INTO `permission` VALUES(177, 'import_data', 'Import Data');");
+            $this->execute("INSERT INTO `permission` VALUES(178, 'add_course', 'Add Course');");
+            $this->execute("INSERT INTO `permission` VALUES(179, 'person_inquiry_only', 'Person Inquiry Only');");
+            $this->execute("INSERT INTO `permission` VALUES(180, 'room_request', 'Room Request');");
+            $this->execute("INSERT INTO `permission` VALUES(201, 'activate_course_sec', 'Activate Course Section');");
+            $this->execute("INSERT INTO `permission` VALUES(202, 'cancel_course_sec', 'Cancel Course Section');");
+            $this->execute("INSERT INTO `permission` VALUES(203, 'access_institutions_screen', 'Access Institutions Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(204, 'add_institution', 'Add Institution');");
+            $this->execute("INSERT INTO `permission` VALUES(205, 'access_application_screen', 'Access Application Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(206, 'create_application', 'Create Application');");
+            $this->execute("INSERT INTO `permission` VALUES(207, 'access_staff_screen', 'Staff Screen');");
+            $this->execute("INSERT INTO `permission` VALUES(208, 'staff_inquiry_only', 'Staff Inquiry Only');");
+            $this->execute("INSERT INTO `permission` VALUES(209, 'create_staff_record', 'Create Staff Record');");
+            $this->execute("INSERT INTO `permission` VALUES(210, 'graduate_students', 'Graduate Students');");
+            $this->execute("INSERT INTO `permission` VALUES(211, 'generate_transcripts', 'Generate Transcripts');");
+            $this->execute("INSERT INTO `permission` VALUES(212, 'access_student_accounts', 'Access Student Accounts');");
+            $this->execute("INSERT INTO `permission` VALUES(213, 'student_account_inquiry_only', 'Student Account Inquiry Only');");
+            $this->execute("INSERT INTO `permission` VALUES(214, 'restrict_edit_profile', 'Restrict Edit Profile');");
+            $this->execute("INSERT INTO `permission` VALUES(215, 'access_general_ledger', 'Access General Ledger');");
+            $this->execute("INSERT INTO `permission` VALUES(216, 'login_as_user', 'Login as User');");
+            $this->execute("INSERT INTO `permission` VALUES(217, 'access_academics', 'Access Academics');");
+            $this->execute("INSERT INTO `permission` VALUES(218, 'access_financials', 'Access Financials');");
+            $this->execute("INSERT INTO `permission` VALUES(219, 'access_human_resources', 'Access Human Resources');");
+            $this->execute("INSERT INTO `permission` VALUES(220, 'submit_timesheets', 'Submit Timesheets');");
+            $this->execute("INSERT INTO `permission` VALUES(221, 'access_sql', 'Access SQL');");
+            $this->execute("INSERT INTO `permission` VALUES(222, 'access_person_mgmt', 'Access Person Management');");
+            $this->execute("INSERT INTO `permission` VALUES(223, 'create_campus_site', 'Create Campus Site');");
+            $this->execute("INSERT INTO `permission` VALUES(224, 'access_dashboard', 'Access Dashboard');");
+            $this->execute("INSERT INTO `permission` VALUES(225, 'access_myetsis_admin', 'Access myetSIS Admin');");
+            $this->execute("INSERT INTO `permission` VALUES(226, 'manage_myetsis_pages', 'Manage myetSIS Pages');");
+            $this->execute("INSERT INTO `permission` VALUES(227, 'manage_myetsis_links', 'Manage myetSIS Links');");
+            $this->execute("INSERT INTO `permission` VALUES(228, 'manage_myetsis_news', 'Manage myetSIS News');");
+            $this->execute("INSERT INTO `permission` VALUES(229, 'add_myetsis_page', 'Add myetSIS Page');");
+            $this->execute("INSERT INTO `permission` VALUES(230, 'edit_myetsis_page', 'Edit myetSIS Page');");
+            $this->execute("INSERT INTO `permission` VALUES(231, 'delete_myetsis_page', 'Delete myetSIS Page');");
+            $this->execute("INSERT INTO `permission` VALUES(232, 'add_myetsis_link', 'Add myetSIS Link');");
+            $this->execute("INSERT INTO `permission` VALUES(233, 'edit_myetsis_link', 'Edit myetSIS Link');");
+            $this->execute("INSERT INTO `permission` VALUES(234, 'delete_myetsis_link', 'Delete myetSIS Link');");
+            $this->execute("INSERT INTO `permission` VALUES(235, 'add_myetsis_news', 'Add myetSIS News');");
+            $this->execute("INSERT INTO `permission` VALUES(236, 'edit_myetsis_news', 'Edit myetSIS News');");
+            $this->execute("INSERT INTO `permission` VALUES(237, 'delete_myetsis_news', 'Delete myetSIS News');");
+            $this->execute("INSERT INTO `permission` VALUES(238, 'clear_screen_cache', 'Clear Screen Cache');");
+            $this->execute("INSERT INTO `permission` VALUES(239, 'clear_database_cache', 'Clear Database Cache');");
+            $this->execute("INSERT INTO `permission` VALUES(240, 'access_myetsis_appl_form', 'Access myetSIS Application Form');");
+            $this->execute("INSERT INTO `permission` VALUES(241, 'edit_myetsis_css', 'Edit myetSIS CSS');");
+            $this->execute("INSERT INTO `permission` VALUES(242, 'edit_myetsis_welcome_message', 'Edit myetSIS Welcome Message');");
+            $this->execute("INSERT INTO `permission` VALUES(243, 'access_communication_mgmt', 'Access Communication Management');");
+            $this->execute("INSERT INTO `permission` VALUES(244, 'delete_student', 'Delete Student');");
+            $this->execute("INSERT INTO `permission` VALUES(245, 'access_payment_gateway', 'Access Payment Gateway');");
+            $this->execute("INSERT INTO `permission` VALUES(246, 'access_ea', 'Access eduTrac Analytics');");
+            $this->execute("INSERT INTO `permission` VALUES(247, 'access_gradebook', 'Access Gradebook');");
+            $this->execute("INSERT INTO `permission` VALUES(248, 'execute_saved_query', 'Execute Saved Query');");
+            $this->execute("INSERT INTO `permission` VALUES(249, 'submit_final_grades', 'Submit Final Grades');");
+        endif;
+        
+        // Migration for table restriction => perc
+        if (!$this->hasTable('perc')) :
+            $table = $this->table('perc', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('personID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('code', 'char', ['limit' => 22])
+                ->addColumn('severity', 'integer', ['limit' => MysqlAdapter::INT_TINY])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('personID', 'person', 'personID', ['constraint' => 'perc_personID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('code', 'rest', 'code', ['constraint' => 'perc_code', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'perc_staffID', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->create();
         endif;
 
         // Migration for table person
         if (!$this->hasTable('person')) :
-            $table = $this->table('person', array('id' => false, 'primary_key' => 'personID'));
+            $table = $this->table('person', ['id' => false, 'primary_key' => 'personID', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('personID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('altID', 'string', array('null' => true, 'limit' => 255))
-                ->addColumn('uname', 'string', array('limit' => 80))
-                ->addColumn('prefix', 'string', array('limit' => 6))
-                ->addColumn('personType', 'string', array('limit' => 3))
-                ->addColumn('fname', 'string', array('limit' => 150))
-                ->addColumn('lname', 'string', array('limit' => 150))
-                ->addColumn('mname', 'string', array('limit' => 2))
-                ->addColumn('email', 'string', array('limit' => 150))
-                ->addColumn('ssn', 'integer', array('signed' => true, 'limit' => 9))
-                ->addColumn('dob', 'date', array())
-                ->addColumn('veteran', 'enum', array('values' => array('1', '0')))
-                ->addColumn('ethnicity', 'string', array('limit' => 30))
-                ->addColumn('nationality', 'string', array('limit' => 11))
-                ->addColumn('gender', 'enum', array('values' => array('M', 'F')))
-                ->addColumn('emergency_contact', 'string', array('limit' => 150))
-                ->addColumn('emergency_contact_phone', 'string', array('limit' => 50))
-                ->addColumn('photo', 'string', array('null' => true, 'limit' => 255))
-                ->addColumn('password', 'string', array('limit' => 255))
-                ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'I')))
-                ->addColumn('auth_token', 'string', array('null' => true, 'limit' => 255))
-                ->addColumn('approvedDate', 'datetime', array())
-                ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastLogin', 'datetime', array())
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('uname'), array('unique' => true))
-                ->addIndex(array('personType', 'approvedBy'))
-                ->addForeignKey('approvedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('personID', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('altID', 'string', ['null' => true, 'limit' => 191])
+                ->addColumn('uname', 'char', ['limit' => 80])
+                ->addColumn('prefix', 'char', ['limit' => 6])
+                ->addColumn('personType', 'char', ['limit' => 8])
+                ->addColumn('fname', 'string', ['limit' => 191])
+                ->addColumn('lname', 'string', ['limit' => 191])
+                ->addColumn('mname', 'char', ['limit' => 4])
+                ->addColumn('email', 'string', ['limit' => 191])
+                ->addColumn('ssn', 'integer', ['limit' => 9])
+                ->addColumn('dob', 'date', ['null' => true])
+                ->addColumn('veteran', 'enum', ['values' => ['1', '0']])
+                ->addColumn('ethnicity', 'string', ['limit' => 191])
+                ->addColumn('nationality', 'char', ['limit' => 22])
+                ->addColumn('gender', 'enum', ['values' => ['M', 'F']])
+                ->addColumn('emergency_contact', 'string', ['limit' => 191])
+                ->addColumn('emergency_contact_phone', 'string', ['limit' => 60])
+                ->addColumn('photo', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('password', 'string', ['limit' => 191])
+                ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'I']])
+                ->addColumn('auth_token', 'string', ['null' => true, 'limit' => 191])
+                ->addColumn('approvedDate', 'datetime', [])
+                ->addColumn('approvedBy', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastLogin', 'datetime', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['uname'], ['unique' => true])
+                ->addIndex(['altID'], ['unique' => true])
+                ->addIndex(['personType'])
+                ->addForeignKey('approvedBy', 'person', 'personID', ['constraint' => 'person_approvedBy', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
 
             $this->execute('INSERT INTO `person` (`personID`, `uname`, `password`, `fname`, `lname`, `email`,`personType`,`approvedDate`,`approvedBy`) VALUES (\'\', \'etsis\', \'$P$BAHklrhrmcZMglABG9VF6PB7c1zD5H/\', \'eduTrac\', \'SIS\', \'sis@gmail.com\', \'STA\', \'' . $NOW . '\', \'1\');');
@@ -1380,27 +1508,27 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table person_perms
         if (!$this->hasTable('person_perms')) :
-            $table = $this->table('person_perms', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('person_perms', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('permission', 'text', array('limit' => MysqlAdapter::TEXT_REGULAR))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('personID'), array('unique' => true))
-                ->addForeignKey('personID', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('personID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('permission', 'text', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['personID'], ['unique' => true])
+                ->addForeignKey('personID', 'person', 'personID', ['constraint' => 'person_perms_personID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table person_roles
         if (!$this->hasTable('person_roles')) :
-            $table = $this->table('person_roles', array('id' => false, 'primary_key' => 'rID'));
+            $table = $this->table('person_roles', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('rID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('roleID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('addDate', 'datetime', array())
-                ->addIndex(array('personID', 'roleID'), array('unique' => true))
-                ->addForeignKey('personID', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('personID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('roleID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('addDate', 'datetime', [])
+                ->addIndex(['personID', 'roleID'], ['unique' => true])
+                ->addForeignKey('personID', 'person', 'personID', ['constraint' => 'person_roles_personID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
 
             $this->execute("INSERT INTO `person_roles` VALUES(1, 1, 8, '$NOW');");
@@ -1408,233 +1536,209 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table plugin
         if (!$this->hasTable('plugin')) :
-            $table = $this->table('plugin', array('id' => false, 'primary_key' => 'id'));
+            $table = $this->table('plugin', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('location', 'text', array('limit' => MysqlAdapter::TEXT_REGULAR))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('location', 'text', ['limit' => MysqlAdapter::TEXT_REGULAR])
                 ->create();
         endif;
 
         // Migration for table refund
         if (!$this->hasTable('refund')) :
-            $table = $this->table('refund', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('refund', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('amount', 'decimal', array('signed' => true, 'precision' => 10, 'scale' => 2, 'default' => '0.00'))
-                ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('refundDate', 'date', array())
-                ->addColumn('postedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('stuID', 'termCode', 'postedBy'))
-                ->addForeignKey('postedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('amount', 'decimal', ['precision' => 10, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('refundDate', 'date', [])
+                ->addColumn('postedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('postedBy', 'person', 'personID', ['constraint' => 'refund_personID', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'refund_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'refund_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
-        // Migration for table restriction_code
-        if (!$this->hasTable('restriction_code')) :
-            $table = $this->table('restriction_code', array('id' => false, 'primary_key' => 'rstrCodeID'));
+        // Migration for table restriction_code => rest
+        if (!$this->hasTable('rest')) :
+            $table = $this->table('rest', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('rstrCodeID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('rstrCode', 'string', array('limit' => 6))
-                ->addColumn('description', 'string', array('limit' => 255))
-                ->addColumn('deptCode', 'string', array('limit' => 11))
-                ->addIndex(array('rstrCode'), array('unique' => true))
-                ->addIndex(array('deptCode'))
-                ->addForeignKey('deptCode', 'department', 'deptCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->create();
-        endif;
-
-        // Migration for table restriction
-        if (!$this->hasTable('restriction')) :
-            $table = $this->table('restriction', array('id' => false, 'primary_key' => 'rstrID'));
-            $table
-                ->addColumn('rstrID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('rstrCode', 'string', array('limit' => 6))
-                ->addColumn('severity', 'integer', array('signed' => true, 'limit' => 2))
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array())
-                ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('rstrCode', 'stuID', 'addedBy'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('rstrCode', 'restriction_code', 'rstrCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'staff', 'staffID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('code', 'char', ['limit' => 22])
+                ->addColumn('description', 'string', ['limit' => 191])
+                ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
+                ->addIndex(['code'], ['unique' => true])
+                ->addForeignKey('deptCode', 'department', 'deptCode', ['constraint' => 'rest_deptCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table role
         if (!$this->hasTable('role')) :
-            $table = $this->table('role', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('role', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('roleName', 'string', array('limit' => 20))
-                ->addColumn('permission', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addIndex(array('roleName'), array('unique' => true))
+                ->addColumn('id', 'integer', ['signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('roleName', 'string', ['limit' => 191])
+                ->addColumn('permission', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addIndex(['roleName'], ['unique' => true])
                 ->create();
 
-            $this->execute("INSERT INTO `role` VALUES(00000000000000000008, 'Super Administrator', 'a:82:{i:0;s:13:\"edit_settings\";i:1;s:25:\"access_audit_trail_screen\";i:2;s:27:\"access_sql_interface_screen\";i:3;s:20:\"access_course_screen\";i:4;s:20:\"access_parent_screen\";i:5;s:21:\"access_student_screen\";i:6;s:20:\"access_plugin_screen\";i:7;s:18:\"access_role_screen\";i:8;s:24:\"access_permission_screen\";i:9;s:23:\"access_user_role_screen\";i:10;s:29:\"access_user_permission_screen\";i:11;s:28:\"access_email_template_screen\";i:12;s:24:\"access_course_sec_screen\";i:13;s:14:\"add_course_sec\";i:14;s:20:\"access_person_screen\";i:15;s:10:\"add_person\";i:16;s:23:\"access_acad_prog_screen\";i:17;s:13:\"add_acad_prog\";i:18;s:11:\"access_nslc\";i:19;s:23:\"access_error_log_screen\";i:20;s:21:\"access_student_portal\";i:21;s:21:\"access_cronjob_screen\";i:22;s:20:\"access_report_screen\";i:23;s:11:\"add_address\";i:24;s:24:\"access_plugin_admin_page\";i:25;s:25:\"access_save_query_screens\";i:26;s:12:\"access_forms\";i:27;s:17:\"create_stu_record\";i:28;s:17:\"create_fac_record\";i:29;s:17:\"create_par_record\";i:30;s:21:\"reset_person_password\";i:31;s:17:\"register_students\";i:32;s:10:\"access_ftp\";i:33;s:24:\"access_stu_roster_screen\";i:34;s:21:\"access_grading_screen\";i:35;s:22:\"access_bill_tbl_screen\";i:36;s:17:\"add_crse_sec_bill\";i:37;s:20:\"access_parent_portal\";i:38;s:11:\"import_data\";i:39;s:10:\"add_course\";i:40;s:12:\"room_request\";i:41;s:19:\"activate_course_sec\";i:42;s:17:\"cancel_course_sec\";i:43;s:26:\"access_institutions_screen\";i:44;s:15:\"add_institution\";i:45;s:25:\"access_application_screen\";i:46;s:18:\"create_application\";i:47;s:19:\"access_staff_screen\";i:48;s:19:\"create_staff_record\";i:49;s:16:\"access_dashboard\";i:50;s:17:\"graduate_students\";i:51;s:20:\"generate_transcripts\";i:52;s:23:\"access_student_accounts\";i:53;s:21:\"access_general_ledger\";i:54;s:13:\"login_as_user\";i:55;s:16:\"access_academics\";i:56;s:17:\"access_financials\";i:57;s:22:\"access_human_resources\";i:58;s:17:\"submit_timesheets\";i:59;s:10:\"access_sql\";i:60;s:18:\"access_person_mgmt\";i:61;s:22:\"access_payment_gateway\";i:62;s:18:\"create_campus_site\";i:63;s:17:\"access_myet_admin\";i:64;s:17:\"manage_myet_pages\";i:65;s:17:\"manage_myet_links\";i:66;s:16:\"manage_myet_news\";i:67;s:13:\"add_myet_page\";i:68;s:14:\"edit_myet_page\";i:69;s:16:\"delete_myet_page\";i:70;s:13:\"add_myet_link\";i:71;s:14:\"edit_myet_link\";i:72;s:16:\"delete_myet_link\";i:73;s:13:\"add_myet_news\";i:74;s:14:\"edit_myet_news\";i:75;s:16:\"delete_myet_news\";i:76;s:18:\"clear_screen_cache\";i:77;s:20:\"clear_database_cache\";i:78;s:21:\"access_myet_appl_form\";i:79;s:13:\"edit_myet_css\";i:80;s:25:\"edit_myet_welcome_message\";i:81;s:25:\"access_communication_mgmt\";}');");
-            $this->execute("INSERT INTO `role` VALUES(00000000000000000009, 'Faculty', 'a:18:{i:0;s:21:\"access_student_screen\";i:1;s:24:\"access_course_sec_screen\";i:2;s:23:\"course_sec_inquiry_only\";i:3;s:19:\"course_inquiry_only\";i:4;s:23:\"access_acad_prog_screen\";i:5;s:22:\"acad_prog_inquiry_only\";i:6;s:20:\"address_inquiry_only\";i:7;s:20:\"general_inquiry_only\";i:8;s:20:\"student_inquiry_only\";i:9;s:24:\"access_stu_roster_screen\";i:10;s:21:\"access_grading_screen\";i:11;s:19:\"person_inquiry_only\";i:12;s:19:\"access_staff_screen\";i:13;s:18:\"staff_inquiry_only\";i:14;s:16:\"access_dashboard\";i:15;s:21:\"restrict_edit_profile\";i:16;s:16:\"access_academics\";i:17;s:18:\"access_person_mgmt\";}');");
-            $this->execute("INSERT INTO `role` VALUES(00000000000000000010, 'Parent', '');");
-            $this->execute("INSERT INTO `role` VALUES(00000000000000000011, 'Student', 'a:1:{i:0;s:21:\"access_student_portal\";}');");
-            $this->execute("INSERT INTO `role` VALUES(00000000000000000012, 'Staff', 'a:32:{i:0;s:27:\"access_sql_interface_screen\";i:1;s:20:\"access_course_screen\";i:2;s:21:\"access_student_screen\";i:3;s:28:\"access_email_template_screen\";i:4;s:24:\"access_course_sec_screen\";i:5;s:23:\"course_sec_inquiry_only\";i:6;s:19:\"course_inquiry_only\";i:7;s:20:\"access_person_screen\";i:8;s:23:\"access_acad_prog_screen\";i:9;s:22:\"acad_prog_inquiry_only\";i:10;s:23:\"access_error_log_screen\";i:11;s:20:\"access_report_screen\";i:12;s:20:\"address_inquiry_only\";i:13;s:25:\"access_save_query_screens\";i:14;s:12:\"access_forms\";i:15;s:17:\"create_fac_record\";i:16;s:24:\"access_stu_roster_screen\";i:17;s:22:\"access_bill_tbl_screen\";i:18;s:17:\"add_crse_sec_bill\";i:19;s:11:\"import_data\";i:20;s:19:\"person_inquiry_only\";i:21;s:19:\"access_staff_screen\";i:22;s:18:\"staff_inquiry_only\";i:23;s:19:\"create_staff_record\";i:24;s:16:\"access_dashboard\";i:25;s:23:\"access_student_accounts\";i:26;s:16:\"access_academics\";i:27;s:22:\"access_human_resources\";i:28;s:17:\"submit_timesheets\";i:29;s:10:\"access_sql\";i:30;s:18:\"access_person_mgmt\";i:31;s:22:\"access_payment_gateway\";}');");
+            $this->execute("INSERT INTO `role` VALUES(8, 'Super Administrator', 'a:82:{i:0;s:13:\"edit_settings\";i:1;s:25:\"access_audit_trail_screen\";i:2;s:27:\"access_sql_interface_screen\";i:3;s:20:\"access_course_screen\";i:4;s:20:\"access_parent_screen\";i:5;s:21:\"access_student_screen\";i:6;s:20:\"access_plugin_screen\";i:7;s:18:\"access_role_screen\";i:8;s:24:\"access_permission_screen\";i:9;s:23:\"access_user_role_screen\";i:10;s:29:\"access_user_permission_screen\";i:11;s:28:\"access_email_template_screen\";i:12;s:24:\"access_course_sec_screen\";i:13;s:14:\"add_course_sec\";i:14;s:20:\"access_person_screen\";i:15;s:10:\"add_person\";i:16;s:23:\"access_acad_prog_screen\";i:17;s:13:\"add_acad_prog\";i:18;s:11:\"access_nslc\";i:19;s:23:\"access_error_log_screen\";i:20;s:21:\"access_student_portal\";i:21;s:21:\"access_cronjob_screen\";i:22;s:20:\"access_report_screen\";i:23;s:11:\"add_address\";i:24;s:24:\"access_plugin_admin_page\";i:25;s:25:\"access_save_query_screens\";i:26;s:12:\"access_forms\";i:27;s:17:\"create_stu_record\";i:28;s:17:\"create_fac_record\";i:29;s:17:\"create_par_record\";i:30;s:21:\"reset_person_password\";i:31;s:17:\"register_students\";i:32;s:10:\"access_ftp\";i:33;s:24:\"access_stu_roster_screen\";i:34;s:21:\"access_grading_screen\";i:35;s:22:\"access_bill_tbl_screen\";i:36;s:17:\"add_crse_sec_bill\";i:37;s:20:\"access_parent_portal\";i:38;s:11:\"import_data\";i:39;s:10:\"add_course\";i:40;s:12:\"room_request\";i:41;s:19:\"activate_course_sec\";i:42;s:17:\"cancel_course_sec\";i:43;s:26:\"access_institutions_screen\";i:44;s:15:\"add_institution\";i:45;s:25:\"access_application_screen\";i:46;s:18:\"create_application\";i:47;s:19:\"access_staff_screen\";i:48;s:19:\"create_staff_record\";i:49;s:16:\"access_dashboard\";i:50;s:17:\"graduate_students\";i:51;s:20:\"generate_transcripts\";i:52;s:23:\"access_student_accounts\";i:53;s:21:\"access_general_ledger\";i:54;s:13:\"login_as_user\";i:55;s:16:\"access_academics\";i:56;s:17:\"access_financials\";i:57;s:22:\"access_human_resources\";i:58;s:17:\"submit_timesheets\";i:59;s:10:\"access_sql\";i:60;s:18:\"access_person_mgmt\";i:61;s:22:\"access_payment_gateway\";i:62;s:18:\"create_campus_site\";i:63;s:17:\"access_myetsis_admin\";i:64;s:17:\"manage_myetsis_pages\";i:65;s:17:\"manage_myetsis_links\";i:66;s:16:\"manage_myetsis_news\";i:67;s:13:\"add_myetsis_page\";i:68;s:14:\"edit_myetsis_page\";i:69;s:16:\"delete_myetsis_page\";i:70;s:13:\"add_myetsis_link\";i:71;s:14:\"edit_myetsis_link\";i:72;s:16:\"delete_myetsis_link\";i:73;s:13:\"add_myetsis_news\";i:74;s:14:\"edit_myetsis_news\";i:75;s:16:\"delete_myetsis_news\";i:76;s:18:\"clear_screen_cache\";i:77;s:20:\"clear_database_cache\";i:78;s:21:\"access_myetsis_appl_form\";i:79;s:13:\"edit_myetsis_css\";i:80;s:25:\"edit_myetsis_welcome_message\";i:81;s:25:\"access_communication_mgmt\";}');");
+            $this->execute("INSERT INTO `role` VALUES(9, 'Faculty', 'a:18:{i:0;s:21:\"access_student_screen\";i:1;s:24:\"access_course_sec_screen\";i:2;s:23:\"course_sec_inquiry_only\";i:3;s:19:\"course_inquiry_only\";i:4;s:23:\"access_acad_prog_screen\";i:5;s:22:\"acad_prog_inquiry_only\";i:6;s:20:\"address_inquiry_only\";i:7;s:20:\"general_inquiry_only\";i:8;s:20:\"student_inquiry_only\";i:9;s:24:\"access_stu_roster_screen\";i:10;s:21:\"access_grading_screen\";i:11;s:19:\"person_inquiry_only\";i:12;s:19:\"access_staff_screen\";i:13;s:18:\"staff_inquiry_only\";i:14;s:16:\"access_dashboard\";i:15;s:21:\"restrict_edit_profile\";i:16;s:16:\"access_academics\";i:17;s:18:\"access_person_mgmt\";}');");
+            $this->execute("INSERT INTO `role` VALUES(10, 'Parent', '');");
+            $this->execute("INSERT INTO `role` VALUES(11, 'Student', 'a:1:{i:0;s:21:\"access_student_portal\";}');");
+            $this->execute("INSERT INTO `role` VALUES(12, 'Staff', 'a:32:{i:0;s:27:\"access_sql_interface_screen\";i:1;s:20:\"access_course_screen\";i:2;s:21:\"access_student_screen\";i:3;s:28:\"access_email_template_screen\";i:4;s:24:\"access_course_sec_screen\";i:5;s:23:\"course_sec_inquiry_only\";i:6;s:19:\"course_inquiry_only\";i:7;s:20:\"access_person_screen\";i:8;s:23:\"access_acad_prog_screen\";i:9;s:22:\"acad_prog_inquiry_only\";i:10;s:23:\"access_error_log_screen\";i:11;s:20:\"access_report_screen\";i:12;s:20:\"address_inquiry_only\";i:13;s:25:\"access_save_query_screens\";i:14;s:12:\"access_forms\";i:15;s:17:\"create_fac_record\";i:16;s:24:\"access_stu_roster_screen\";i:17;s:22:\"access_bill_tbl_screen\";i:18;s:17:\"add_crse_sec_bill\";i:19;s:11:\"import_data\";i:20;s:19:\"person_inquiry_only\";i:21;s:19:\"access_staff_screen\";i:22;s:18:\"staff_inquiry_only\";i:23;s:19:\"create_staff_record\";i:24;s:16:\"access_dashboard\";i:25;s:23:\"access_student_accounts\";i:26;s:16:\"access_academics\";i:27;s:22:\"access_human_resources\";i:28;s:17:\"submit_timesheets\";i:29;s:10:\"access_sql\";i:30;s:18:\"access_person_mgmt\";i:31;s:22:\"access_payment_gateway\";}');");
         endif;
 
         // Migration for table role_perms
         if (!$this->hasTable('role_perms')) :
-            $table = $this->table('role_perms', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('role_perms', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('roleID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('permID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('value', 'integer', array('signed' => true, 'default' => '0', 'limit' => MysqlAdapter::INT_TINY))
-                ->addColumn('addDate', 'datetime', array())
-                ->addIndex(array('roleID', 'permID'), array('unique' => true))
+                ->addColumn('id', 'integer', ['signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('roleID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('permID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('value', 'integer', ['default' => '0', 'limit' => MysqlAdapter::INT_TINY])
+                ->addColumn('addDate', 'datetime', [])
+                ->addIndex(['roleID', 'permID'], ['unique' => true])
                 ->create();
 
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000156, 11, 92, 1, '2013-09-03 11:30:43');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000201, 8, 21, 1, '2013-09-03 12:03:29');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000238, 8, 23, 1, '2013-09-03 12:03:29');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000268, 8, 22, 1, '2013-09-03 12:04:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000292, 8, 20, 1, '2013-09-03 12:04:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000309, 9, 84, 1, '2013-09-03 12:05:33');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000310, 9, 107, 1, '2013-09-03 12:05:33');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000462, 10, 176, 1, '2013-09-03 12:36:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000470, 12, 84, 1, '2013-09-03 12:37:49');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000471, 12, 107, 1, '2013-09-03 12:37:49');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000712, 13, 24, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000713, 13, 25, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000714, 13, 156, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000715, 13, 140, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000716, 13, 144, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000717, 13, 164, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000718, 13, 124, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000719, 13, 128, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000720, 13, 116, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000721, 13, 152, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000722, 13, 132, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000723, 13, 136, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000724, 13, 160, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000725, 13, 173, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000726, 13, 29, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000727, 13, 148, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000728, 13, 120, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000729, 13, 33, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000730, 13, 155, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000731, 13, 139, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000732, 13, 143, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000733, 13, 163, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000734, 13, 123, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000735, 13, 127, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000736, 13, 27, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000737, 13, 158, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000738, 13, 142, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000739, 13, 146, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000740, 13, 166, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000741, 13, 126, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000742, 13, 130, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000743, 13, 118, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000744, 13, 154, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000745, 13, 134, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000746, 13, 138, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000747, 13, 162, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000748, 13, 175, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000749, 13, 31, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000750, 13, 150, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000751, 13, 122, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000752, 13, 35, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000753, 13, 115, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000754, 13, 26, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000755, 13, 99, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000756, 13, 157, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000757, 13, 141, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000758, 13, 145, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000759, 13, 165, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000760, 13, 125, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000761, 13, 129, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000762, 13, 117, 1, '2013-09-03 22:37:31');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000763, 13, 153, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000764, 13, 133, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000765, 13, 137, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000766, 13, 161, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000767, 13, 174, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000768, 13, 30, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000769, 13, 149, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000770, 13, 121, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000771, 13, 34, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000772, 13, 109, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000773, 13, 151, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000774, 13, 131, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000775, 13, 135, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000776, 13, 159, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000777, 13, 172, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000778, 13, 28, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000779, 13, 147, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000780, 13, 119, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000781, 13, 32, 1, '2013-09-03 22:40:18');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000971, 11, 180, 1, '2013-09-04 04:51:52');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000993, 9, 89, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000994, 9, 85, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000995, 9, 218, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000996, 9, 223, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000997, 9, 168, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000998, 9, 100, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000000999, 9, 79, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001000, 9, 36, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001001, 9, 78, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001002, 9, 74, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001003, 9, 102, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001004, 9, 40, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001005, 9, 101, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001006, 9, 169, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001007, 9, 103, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001008, 9, 44, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001009, 9, 179, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001010, 9, 80, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001011, 9, 180, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001012, 9, 208, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001013, 9, 104, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001014, 9, 48, 1, '2014-02-13 09:56:10');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001015, 12, 89, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001016, 12, 85, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001017, 12, 218, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001018, 12, 223, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001019, 12, 100, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001020, 12, 79, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001021, 12, 36, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001022, 12, 78, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001023, 12, 74, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001024, 12, 102, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001025, 12, 40, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001026, 12, 101, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001027, 12, 103, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001028, 12, 44, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001029, 12, 179, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001030, 12, 80, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001031, 12, 180, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001032, 12, 208, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001033, 12, 104, 1, '2014-02-13 09:56:35');");
-            $this->execute("INSERT INTO `role_perms` VALUES(00000000000000001034, 12, 48, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(156, 11, 92, 1, '2013-09-03 11:30:43');");
+            $this->execute("INSERT INTO `role_perms` VALUES(201, 8, 21, 1, '2013-09-03 12:03:29');");
+            $this->execute("INSERT INTO `role_perms` VALUES(238, 8, 23, 1, '2013-09-03 12:03:29');");
+            $this->execute("INSERT INTO `role_perms` VALUES(268, 8, 22, 1, '2013-09-03 12:04:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(292, 8, 20, 1, '2013-09-03 12:04:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(309, 9, 84, 1, '2013-09-03 12:05:33');");
+            $this->execute("INSERT INTO `role_perms` VALUES(310, 9, 107, 1, '2013-09-03 12:05:33');");
+            $this->execute("INSERT INTO `role_perms` VALUES(462, 10, 176, 1, '2013-09-03 12:36:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(470, 12, 84, 1, '2013-09-03 12:37:49');");
+            $this->execute("INSERT INTO `role_perms` VALUES(471, 12, 107, 1, '2013-09-03 12:37:49');");
+            $this->execute("INSERT INTO `role_perms` VALUES(712, 13, 24, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(713, 13, 25, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(714, 13, 156, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(715, 13, 140, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(716, 13, 144, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(717, 13, 164, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(718, 13, 124, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(719, 13, 128, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(720, 13, 116, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(721, 13, 152, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(722, 13, 132, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(723, 13, 136, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(724, 13, 160, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(725, 13, 173, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(726, 13, 29, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(727, 13, 148, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(728, 13, 120, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(729, 13, 33, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(730, 13, 155, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(731, 13, 139, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(732, 13, 143, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(733, 13, 163, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(734, 13, 123, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(735, 13, 127, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(736, 13, 27, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(737, 13, 158, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(738, 13, 142, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(739, 13, 146, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(740, 13, 166, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(741, 13, 126, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(742, 13, 130, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(743, 13, 118, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(744, 13, 154, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(745, 13, 134, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(746, 13, 138, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(747, 13, 162, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(748, 13, 175, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(749, 13, 31, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(750, 13, 150, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(751, 13, 122, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(752, 13, 35, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(753, 13, 115, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(754, 13, 26, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(755, 13, 99, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(756, 13, 157, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(757, 13, 141, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(758, 13, 145, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(759, 13, 165, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(760, 13, 125, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(761, 13, 129, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(762, 13, 117, 1, '2013-09-03 22:37:31');");
+            $this->execute("INSERT INTO `role_perms` VALUES(763, 13, 153, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(764, 13, 133, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(765, 13, 137, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(766, 13, 161, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(767, 13, 174, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(768, 13, 30, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(769, 13, 149, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(770, 13, 121, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(771, 13, 34, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(772, 13, 109, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(773, 13, 151, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(774, 13, 131, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(775, 13, 135, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(776, 13, 159, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(777, 13, 172, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(778, 13, 28, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(779, 13, 147, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(780, 13, 119, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(781, 13, 32, 1, '2013-09-03 22:40:18');");
+            $this->execute("INSERT INTO `role_perms` VALUES(971, 11, 180, 1, '2013-09-04 04:51:52');");
+            $this->execute("INSERT INTO `role_perms` VALUES(993, 9, 89, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(994, 9, 85, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(995, 9, 218, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(996, 9, 223, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(997, 9, 168, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(998, 9, 100, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(999, 9, 79, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1000, 9, 36, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1001, 9, 78, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1002, 9, 74, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1003, 9, 102, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1004, 9, 40, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1005, 9, 101, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1006, 9, 169, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1007, 9, 103, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1008, 9, 44, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1009, 9, 179, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1010, 9, 80, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1011, 9, 180, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1012, 9, 208, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1013, 9, 104, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1014, 9, 48, 1, '2014-02-13 09:56:10');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1015, 12, 89, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1016, 12, 85, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1017, 12, 218, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1018, 12, 223, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1019, 12, 100, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1020, 12, 79, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1021, 12, 36, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1022, 12, 78, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1023, 12, 74, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1024, 12, 102, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1025, 12, 40, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1026, 12, 101, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1027, 12, 103, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1028, 12, 44, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1029, 12, 179, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1030, 12, 80, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1031, 12, 180, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1032, 12, 208, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1033, 12, 104, 1, '2014-02-13 09:56:35');");
+            $this->execute("INSERT INTO `role_perms` VALUES(1034, 12, 48, 1, '2014-02-13 09:56:35');");
         endif;
 
         // Migration for table room
         if (!$this->hasTable('room')) :
-            $table = $this->table('room', array('id' => false, 'primary_key' => 'roomID'));
+            $table = $this->table('room', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('roomID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('roomCode', 'string', array('limit' => 11))
-                ->addColumn('buildingCode', 'string', array('limit' => 11))
-                ->addColumn('roomNumber', 'string', array('limit' => 11))
-                ->addColumn('roomCap', 'integer', array('signed' => true, 'limit' => 4))
-                ->addIndex(array('roomCode'), array('unique' => true))
-                ->addIndex(array('buildingCode'))
-                ->addForeignKey('buildingCode', 'building', 'buildingCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
+                ->addColumn('roomCode', 'char', ['limit' => 22])
+                ->addColumn('buildingCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('roomNumber', 'char', ['limit' => 22])
+                ->addColumn('roomCap', 'integer', ['limit' => MysqlAdapter::INT_TINY])
+                ->addIndex(['roomCode'], ['unique' => true])
+                ->addForeignKey('buildingCode', 'building', 'buildingCode', ['constraint' => 'room_buildingCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
 
             $this->execute("INSERT INTO `room` VALUES(1, 'NULL', 'NULL', '', 0);");
@@ -1642,132 +1746,62 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table saved_query
         if (!$this->hasTable('saved_query')) :
-            $table = $this->table('saved_query', array('id' => false, 'primary_key' => 'savedQueryID'));
+            $table = $this->table('saved_query', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('savedQueryID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('personID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('savedQueryName', 'string', array('limit' => 80))
-                ->addColumn('savedQuery', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('purgeQuery', 'enum', array('default' => '0', 'values' => array('0', '1')))
-                ->addColumn('shared', 'text', array('null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR))
-                ->addColumn('createdDate', 'date', array())
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('personID'))
-                ->addForeignKey('personID', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('personID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('savedQueryName', 'string', ['limit' => 191])
+                ->addColumn('savedQuery', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('purgeQuery', 'enum', ['default' => '0', 'values' => ['0', '1']])
+                ->addColumn('shared', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('createdDate', 'date', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('personID', 'person', 'personID', ['constraint' => 'saved_query_personID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table school
         if (!$this->hasTable('school')) :
-            $table = $this->table('school', array('id' => false, 'primary_key' => 'schoolID'));
+            $table = $this->table('school', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('schoolID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('schoolCode', 'string', array('limit' => 11))
-                ->addColumn('schoolName', 'string', array('limit' => 180))
-                ->addColumn('buildingCode', 'string', array('limit' => 11))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('schoolCode'), array('unique' => true))
-                ->addIndex(array('buildingCode'))
-                ->addForeignKey('buildingCode', 'building', 'buildingCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('schoolCode', 'char', ['limit' => 22])
+                ->addColumn('schoolName', 'string', ['limit' => 191])
+                ->addColumn('buildingCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['schoolCode'], ['unique' => true])
+                ->addForeignKey('buildingCode', 'building', 'buildingCode', ['constraint' => 'school_buildingCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
 
-            $this->execute("INSERT INTO `school` VALUES(00000000001, 'NULL', 'NULL', 'NULL', '$NOW');");
-        endif;
-
-        // Migration for table screen
-        if (!$this->hasTable('screen')) :
-            $table = $this->table('screen', array('id' => false, 'primary_key' => 'id'));
-            $table
-                ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('code', 'string', array('limit' => 6))
-                ->addColumn('name', 'string', array('limit' => 255))
-                ->addColumn('relativeURL', 'string', array('limit' => 255))
-                ->addIndex(array('code'), array('unique' => true))
-                ->create();
-
-            $this->execute("INSERT INTO `screen` VALUES(1, 'SYSS', 'System Settings', 'setting/');");
-            $this->execute("INSERT INTO `screen` VALUES(2, 'MPRM', 'Manage Permissions', 'permission/');");
-            $this->execute("INSERT INTO `screen` VALUES(3, 'APRM', 'Add Permission', 'permission/add/');");
-            $this->execute("INSERT INTO `screen` VALUES(4, 'MRLE', 'Manage Roles', 'role/');");
-            $this->execute("INSERT INTO `screen` VALUES(5, 'AUDT', 'Audit Trail', 'audit-trail/');");
-            $this->execute("INSERT INTO `screen` VALUES(6, 'SQL', 'SQL Interface', 'sql/');");
-            $this->execute("INSERT INTO `screen` VALUES(7, 'ARLE', 'Add Role', 'role/add/');");
-            $this->execute("INSERT INTO `screen` VALUES(8, 'SCH', 'School Form', 'form/school/');");
-            $this->execute("INSERT INTO `screen` VALUES(9, 'SEM', 'Semester Form', 'form/semester/');");
-            $this->execute("INSERT INTO `screen` VALUES(10, 'TERM', 'Term Form', 'form/term/');");
-            $this->execute("INSERT INTO `screen` VALUES(11, 'AYR', 'Acad Year Form', 'form/acad-year/');");
-            $this->execute("INSERT INTO `screen` VALUES(12, 'CRSE', 'Course', 'crse/');");
-            $this->execute("INSERT INTO `screen` VALUES(13, 'DEPT', 'Department Form', 'form/department/');");
-            $this->execute("INSERT INTO `screen` VALUES(14, 'CRL', 'Credit Load Form', 'form/credit-load/');");
-            $this->execute("INSERT INTO `screen` VALUES(15, 'DEG', 'Degree Form', 'form/degree/');");
-            $this->execute("INSERT INTO `screen` VALUES(16, 'MAJR', 'Major Form', 'form/major/');");
-            $this->execute("INSERT INTO `screen` VALUES(17, 'MINR', 'Minor Form', 'form/minor/');");
-            $this->execute("INSERT INTO `screen` VALUES(18, 'PROG', 'Academic Program', 'program/');");
-            $this->execute("INSERT INTO `screen` VALUES(19, 'CCD', 'CCD Form', 'form/ccd/');");
-            $this->execute("INSERT INTO `screen` VALUES(20, 'CIP', 'CIP Form', 'form/cip/');");
-            $this->execute("INSERT INTO `screen` VALUES(21, 'LOC', 'Location Form', 'form/location/');");
-            $this->execute("INSERT INTO `screen` VALUES(22, 'BLDG', 'Building Form', 'form/building/');");
-            $this->execute("INSERT INTO `screen` VALUES(23, 'ROOM', 'Room Form', 'form/room/');");
-            $this->execute("INSERT INTO `screen` VALUES(24, 'SPEC', 'Specialization From', 'form/specialization/');");
-            $this->execute("INSERT INTO `screen` VALUES(25, 'SUBJ', 'Subject Form', 'form/subject/');");
-            $this->execute("INSERT INTO `screen` VALUES(26, 'CLYR', 'Class Year Form', 'form/class-year/');");
-            $this->execute("INSERT INTO `screen` VALUES(27, 'APRG', 'Add Acad Program', 'program/add/');");
-            $this->execute("INSERT INTO `screen` VALUES(28, 'ACRS', 'Add Course', 'crse/add/');");
-            $this->execute("INSERT INTO `screen` VALUES(29, 'SECT', 'Course Section', 'sect/');");
-            $this->execute("INSERT INTO `screen` VALUES(30, 'RGN', 'Course Registration', 'sect/rgn/');");
-            $this->execute("INSERT INTO `screen` VALUES(31, 'NSCP', 'NSLC Purge', 'nslc/purge/');");
-            $this->execute("INSERT INTO `screen` VALUES(32, 'NSCS', 'NSLC Setup', 'nslc/setup/');");
-            $this->execute("INSERT INTO `screen` VALUES(33, 'NSCX', 'NSLC Extraction', 'nslc/extraction/');");
-            $this->execute("INSERT INTO `screen` VALUES(34, 'NSCE', 'NSLC Verification', 'nslc/verification/');");
-            $this->execute("INSERT INTO `screen` VALUES(35, 'NSCC', 'NSLC Correction', 'nslc/');");
-            $this->execute("INSERT INTO `screen` VALUES(36, 'NSCT', 'NSLC File', 'nslc/file/');");
-            $this->execute("INSERT INTO `screen` VALUES(37, 'NAE', 'Name & Address', 'nae/');");
-            $this->execute("INSERT INTO `screen` VALUES(38, 'APER', 'Add Person', 'nae/add/');");
-            $this->execute("INSERT INTO `screen` VALUES(39, 'SPRO', 'Student Profile', 'stu/');");
-            $this->execute("INSERT INTO `screen` VALUES(40, 'FAC', 'Faculty Profile', 'faculty/');");
-            $this->execute("INSERT INTO `screen` VALUES(41, 'INST', 'Institution', 'appl/inst/');");
-            $this->execute("INSERT INTO `screen` VALUES(42, 'AINST', 'New Institution', 'appl/inst/add/');");
-            $this->execute("INSERT INTO `screen` VALUES(43, 'APPL', 'Application', 'appl/');");
-            $this->execute("INSERT INTO `screen` VALUES(44, 'BRGN', 'Batch Course Registration', 'sect/brgn/');");
-            $this->execute("INSERT INTO `screen` VALUES(45, 'STAF', 'Staff', 'staff/');");
-            $this->execute("INSERT INTO `screen` VALUES(46, 'TRAN', 'Transcript', 'stu/tran/');");
-            $this->execute("INSERT INTO `screen` VALUES(47, 'SLR', 'Student Load Rules', 'form/student-load-rule/');");
-            $this->execute("INSERT INTO `screen` VALUES(48, 'RSTR', 'Restriction Codes', 'form/rstr-code/');");
-            $this->execute("INSERT INTO `screen` VALUES(49, 'GRSC', 'Grade Scale', 'form/grade-scale/');");
-            $this->execute("INSERT INTO `screen` VALUES(50, 'SROS', 'Student Roster', 'sect/sros/');");
-            $this->execute("INSERT INTO `screen` VALUES(51, 'EXTR', 'External Course', 'crse/extr/');");
-            $this->execute("INSERT INTO `screen` VALUES(52, 'ATCEQ', 'New Transfer Course Equivalency', 'crse/atceq/');");
-            $this->execute("INSERT INTO `screen` VALUES(53, 'TCEQ', 'Transfer Course Equivalency', 'crse/tceq/');");
-            $this->execute("INSERT INTO `screen` VALUES(54, 'TCRE', 'Transfer Credit', 'crse/tcre/');");
+            $this->execute("INSERT INTO `school` VALUES(1, 'NULL', 'NULL', 'NULL', '$NOW');");
         endif;
 
         // Migration for table semester
         if (!$this->hasTable('semester')) :
-            $table = $this->table('semester', array('id' => false, 'primary_key' => 'semesterID'));
+            $table = $this->table('semester', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('semesterID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('acadYearCode', 'string', array('limit' => 11))
-                ->addColumn('semCode', 'string', array('limit' => 11))
-                ->addColumn('semName', 'string', array('limit' => 80))
-                ->addColumn('semStartDate', 'date', array('default' => '0000-00-00'))
-                ->addColumn('semEndDate', 'date', array('default' => '0000-00-00'))
-                ->addColumn('active', 'enum', array('default' => '1', 'values' => array('1', '0')))
-                ->addIndex(array('semCode'), array('unique' => true))
-                ->addIndex(array('acadYearCode'))
-                ->addForeignKey('acadYearCode', 'acad_year', 'acadYearCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('acadYearCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('semCode', 'char', ['limit' => 22])
+                ->addColumn('semName', 'string', ['limit' => 191])
+                ->addColumn('semStartDate', 'date', ['null' => true])
+                ->addColumn('semEndDate', 'date', ['null' => true])
+                ->addColumn('active', 'enum', ['default' => '1', 'values' => ['1', '0']])
+                ->addIndex(['semCode'], ['unique' => true])
+                ->addForeignKey('acadYearCode', 'acad_year', 'acadYearCode', ['constraint' => 'semester_acadYearCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
 
-            $this->execute("INSERT INTO `semester` VALUES(00000000001, 'NULL', 'NULL', '', '$NOW', '$NOW', '1');");
+            $this->execute("INSERT INTO `semester` VALUES(1, 'NULL', 'NULL', '', '$NOW', '$NOW', '1');");
         endif;
 
         // Migration for table specialization
         if (!$this->hasTable('specialization')) :
-            $table = $this->table('specialization', array('id' => false, 'primary_key' => 'specID'));
+            $table = $this->table('specialization', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('specID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('specCode', 'string', array('limit' => 11))
-                ->addColumn('specName', 'string', array('limit' => 80))
-                ->addIndex(array('specCode'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('specCode', 'char', ['limit' => 22])
+                ->addColumn('specName', 'string', ['limit' => 191])
+                ->addIndex(['specCode'], ['unique' => true])
                 ->create();
 
             $this->execute("INSERT INTO `specialization` VALUES(1, 'NULL', '');");
@@ -1775,27 +1809,26 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table staff
         if (!$this->hasTable('staff')) :
-            $table = $this->table('staff', array('id' => false, 'primary_key' => 'id'));
+            $table = $this->table('staff', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('staffID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('schoolCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('buildingCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('officeCode', 'string', array('null' => true, 'limit' => 11))
-                ->addColumn('office_phone', 'string', array('limit' => 15))
-                ->addColumn('deptCode', 'string', array('limit' => 11))
-                ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'I')))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('staffID'), array('unique' => true))
-                ->addIndex(array('approvedBy', 'schoolCode', 'buildingCode', 'officeCode', 'deptCode'))
-                ->addForeignKey('schoolCode', 'school', 'schoolCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('buildingCode', 'building', 'buildingCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('officeCode', 'room', 'roomCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('deptCode', 'department', 'deptCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('staffID', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('approvedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('staffID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('schoolCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('buildingCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('officeCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('office_phone', 'char', ['limit' => 22])
+                ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'I']])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['staffID'], ['unique' => true])
+                ->addForeignKey('schoolCode', 'school', 'schoolCode', ['constraint' => 'staff_schoolCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('buildingCode', 'building', 'buildingCode', ['constraint' => 'staff_buildingCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('officeCode', 'room', 'roomCode', ['constraint' => 'staff_officeCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('deptCode', 'department', 'deptCode', ['constraint' => 'staff_deptCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('staffID', 'person', 'personID', ['constraint' => 'staff_staffID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('approvedBy', 'staff', 'staffID', ['constraint' => 'staff_approvedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
 
             $this->execute("INSERT INTO `staff` VALUES(1, 1, 'NULL', 'NULL', 'NULL', '', 'NULL', 'A', '$NOW', 1, '$NOW');");
@@ -1803,534 +1836,610 @@ class InitialSchema extends AbstractMigration
 
         // Migration for table staff_meta
         if (!$this->hasTable('staff_meta')) :
-            $table = $this->table('staff_meta', array('id' => false, 'primary_key' => 'sMetaID'));
+            $table = $this->table('staff_meta', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('sMetaID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('jobStatusCode', 'string', array('limit' => 3))
-                ->addColumn('jobID', 'integer', array('signed' => true, 'limit' => 11))
-                ->addColumn('staffID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('supervisorID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('staffType', 'string', array('limit' => 3))
-                ->addColumn('hireDate', 'date', array())
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array('null' => true))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('staffID', 'supervisorID', 'approvedBy', 'jobStatusCode'))
-                ->addForeignKey('staffID', 'staff', 'staffID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('supervisorID', 'staff', 'staffID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('jobStatusCode', 'job_status', 'typeCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('approvedBy', 'staff', 'staffID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('jobStatusCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('jobID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('staffID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('supervisorID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('staffType', 'char', ['limit' => 8])
+                ->addColumn('hireDate', 'date', ['null' => true])
+                ->addColumn('startDate', 'date', ['null' => true])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('addDate', 'date', ['null' => true])
+                ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('staffID', 'staff', 'staffID', ['constraint' => 'staff_meta_staffID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('supervisorID', 'staff', 'staffID', ['constraint' => 'staff_meta_supervisorID', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('jobStatusCode', 'job_status', 'typeCode', ['constraint' => 'staff_meta_jobStatusCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('jobID', 'job', 'id', ['constraint' => 'staff_meta_jobID', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('approvedBy', 'staff', 'staffID', ['constraint' => 'staff_meta_approvedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
 
-            $this->execute("INSERT INTO `staff_meta` VALUES(1, 'FT', 1, 1, 1, 'STA', '2013-11-04', '2013-11-18', '0000-00-00', '$NOW', 1, '$NOW');");
+            $this->execute("INSERT INTO `staff_meta` VALUES(1, 'FT', 1, 1, 1, 'STA', '2013-11-04', '2013-11-18', 'NULL', '$NOW', 1, '$NOW');");
         endif;
 
         // Migration for table state
         if (!$this->hasTable('state')) :
-            $table = $this->table('state', array('id' => false, 'primary_key' => 'id'));
+            $table = $this->table('state', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('id', 'integer', array('signed' => false, 'identity' => true, 'limit' => 11))
-                ->addColumn('code', 'string', array('limit' => 2))
-                ->addColumn('name', 'string', array('limit' => 180))
-                ->addIndex(array('code'), array('unique' => true))
+                ->addColumn('id', 'integer', ['signed' => false, 'identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('code', 'char', ['limit' => 4])
+                ->addColumn('name', 'string', ['limit' => 191])
+                ->addIndex(['code'], ['unique' => true])
                 ->create();
 
-            $this->execute("INSERT INTO `state` VALUES(00000000001, 'AL', 'Alabama');");
-            $this->execute("INSERT INTO `state` VALUES(00000000002, 'AK', 'Alaska');");
-            $this->execute("INSERT INTO `state` VALUES(00000000003, 'AZ', 'Arizona');");
-            $this->execute("INSERT INTO `state` VALUES(00000000004, 'AR', 'Arkansas');");
-            $this->execute("INSERT INTO `state` VALUES(00000000005, 'CA', 'California');");
-            $this->execute("INSERT INTO `state` VALUES(00000000006, 'CO', 'Colorado');");
-            $this->execute("INSERT INTO `state` VALUES(00000000007, 'CT', 'Connecticut');");
-            $this->execute("INSERT INTO `state` VALUES(00000000008, 'DE', 'Delaware');");
-            $this->execute("INSERT INTO `state` VALUES(00000000009, 'DC', 'District of Columbia');");
-            $this->execute("INSERT INTO `state` VALUES(00000000010, 'FL', 'Florida');");
-            $this->execute("INSERT INTO `state` VALUES(00000000011, 'GA', 'Georgia');");
-            $this->execute("INSERT INTO `state` VALUES(00000000012, 'HI', 'Hawaii');");
-            $this->execute("INSERT INTO `state` VALUES(00000000013, 'ID', 'Idaho');");
-            $this->execute("INSERT INTO `state` VALUES(00000000014, 'IL', 'Illinois');");
-            $this->execute("INSERT INTO `state` VALUES(00000000015, 'IN', 'Indiana');");
-            $this->execute("INSERT INTO `state` VALUES(00000000016, 'IA', 'Iowa');");
-            $this->execute("INSERT INTO `state` VALUES(00000000017, 'KS', 'Kansas');");
-            $this->execute("INSERT INTO `state` VALUES(00000000018, 'KY', 'Kentucky');");
-            $this->execute("INSERT INTO `state` VALUES(00000000019, 'LA', 'Louisiana');");
-            $this->execute("INSERT INTO `state` VALUES(00000000020, 'ME', 'Maine');");
-            $this->execute("INSERT INTO `state` VALUES(00000000021, 'MD', 'Maryland');");
-            $this->execute("INSERT INTO `state` VALUES(00000000022, 'MA', 'Massachusetts');");
-            $this->execute("INSERT INTO `state` VALUES(00000000023, 'MI', 'Michigan');");
-            $this->execute("INSERT INTO `state` VALUES(00000000024, 'MN', 'Minnesota');");
-            $this->execute("INSERT INTO `state` VALUES(00000000025, 'MS', 'Mississippi');");
-            $this->execute("INSERT INTO `state` VALUES(00000000026, 'MO', 'Missouri');");
-            $this->execute("INSERT INTO `state` VALUES(00000000027, 'MT', 'Montana');");
-            $this->execute("INSERT INTO `state` VALUES(00000000028, 'NE', 'Nebraska');");
-            $this->execute("INSERT INTO `state` VALUES(00000000029, 'NV', 'Nevada');");
-            $this->execute("INSERT INTO `state` VALUES(00000000030, 'NH', 'New Hampshire');");
-            $this->execute("INSERT INTO `state` VALUES(00000000031, 'NJ', 'New Jersey');");
-            $this->execute("INSERT INTO `state` VALUES(00000000032, 'NM', 'New Mexico');");
-            $this->execute("INSERT INTO `state` VALUES(00000000033, 'NY', 'New York');");
-            $this->execute("INSERT INTO `state` VALUES(00000000034, 'NC', 'North Carolina');");
-            $this->execute("INSERT INTO `state` VALUES(00000000035, 'ND', 'North Dakota');");
-            $this->execute("INSERT INTO `state` VALUES(00000000036, 'OH', 'Ohio');");
-            $this->execute("INSERT INTO `state` VALUES(00000000037, 'OK', 'Oklahoma');");
-            $this->execute("INSERT INTO `state` VALUES(00000000038, 'OR', 'Oregon');");
-            $this->execute("INSERT INTO `state` VALUES(00000000039, 'PA', 'Pennsylvania');");
-            $this->execute("INSERT INTO `state` VALUES(00000000040, 'RI', 'Rhode Island');");
-            $this->execute("INSERT INTO `state` VALUES(00000000041, 'SC', 'South Carolina');");
-            $this->execute("INSERT INTO `state` VALUES(00000000042, 'SD', 'South Dakota');");
-            $this->execute("INSERT INTO `state` VALUES(00000000043, 'TN', 'Tennessee');");
-            $this->execute("INSERT INTO `state` VALUES(00000000044, 'TX', 'Texas');");
-            $this->execute("INSERT INTO `state` VALUES(00000000045, 'UT', 'Utah');");
-            $this->execute("INSERT INTO `state` VALUES(00000000046, 'VT', 'Vermont');");
-            $this->execute("INSERT INTO `state` VALUES(00000000047, 'VA', 'Virginia');");
-            $this->execute("INSERT INTO `state` VALUES(00000000048, 'WA', 'Washington');");
-            $this->execute("INSERT INTO `state` VALUES(00000000049, 'WV', 'West Virginia');");
-            $this->execute("INSERT INTO `state` VALUES(00000000050, 'WI', 'Wisconsin');");
-            $this->execute("INSERT INTO `state` VALUES(00000000051, 'WY', 'Wyoming');");
-            $this->execute("INSERT INTO `state` VALUES(00000000052, 'AB', 'Alberta');");
-            $this->execute("INSERT INTO `state` VALUES(00000000053, 'BC', 'British Columbia');");
-            $this->execute("INSERT INTO `state` VALUES(00000000054, 'MB', 'Manitoba');");
-            $this->execute("INSERT INTO `state` VALUES(00000000055, 'NL', 'Newfoundland');");
-            $this->execute("INSERT INTO `state` VALUES(00000000056, 'NB', 'New Brunswick');");
-            $this->execute("INSERT INTO `state` VALUES(00000000057, 'NS', 'Nova Scotia');");
-            $this->execute("INSERT INTO `state` VALUES(00000000058, 'NT', 'Northwest Territories');");
-            $this->execute("INSERT INTO `state` VALUES(00000000059, 'NU', 'Nunavut');");
-            $this->execute("INSERT INTO `state` VALUES(00000000060, 'ON', 'Ontario');");
-            $this->execute("INSERT INTO `state` VALUES(00000000061, 'PE', 'Prince Edward Island');");
-            $this->execute("INSERT INTO `state` VALUES(00000000062, 'QC', 'Quebec');");
-            $this->execute("INSERT INTO `state` VALUES(00000000063, 'SK', 'Saskatchewan');");
-            $this->execute("INSERT INTO `state` VALUES(00000000064, 'YT', 'Yukon Territory');");
+            $this->execute("INSERT INTO `state` VALUES(1, 'AL', 'Alabama');");
+            $this->execute("INSERT INTO `state` VALUES(2, 'AK', 'Alaska');");
+            $this->execute("INSERT INTO `state` VALUES(3, 'AZ', 'Arizona');");
+            $this->execute("INSERT INTO `state` VALUES(4, 'AR', 'Arkansas');");
+            $this->execute("INSERT INTO `state` VALUES(5, 'CA', 'California');");
+            $this->execute("INSERT INTO `state` VALUES(6, 'CO', 'Colorado');");
+            $this->execute("INSERT INTO `state` VALUES(7, 'CT', 'Connecticut');");
+            $this->execute("INSERT INTO `state` VALUES(8, 'DE', 'Delaware');");
+            $this->execute("INSERT INTO `state` VALUES(9, 'DC', 'District of Columbia');");
+            $this->execute("INSERT INTO `state` VALUES(10, 'FL', 'Florida');");
+            $this->execute("INSERT INTO `state` VALUES(11, 'GA', 'Georgia');");
+            $this->execute("INSERT INTO `state` VALUES(12, 'HI', 'Hawaii');");
+            $this->execute("INSERT INTO `state` VALUES(13, 'ID', 'Idaho');");
+            $this->execute("INSERT INTO `state` VALUES(14, 'IL', 'Illinois');");
+            $this->execute("INSERT INTO `state` VALUES(15, 'IN', 'Indiana');");
+            $this->execute("INSERT INTO `state` VALUES(16, 'IA', 'Iowa');");
+            $this->execute("INSERT INTO `state` VALUES(17, 'KS', 'Kansas');");
+            $this->execute("INSERT INTO `state` VALUES(18, 'KY', 'Kentucky');");
+            $this->execute("INSERT INTO `state` VALUES(19, 'LA', 'Louisiana');");
+            $this->execute("INSERT INTO `state` VALUES(20, 'ME', 'Maine');");
+            $this->execute("INSERT INTO `state` VALUES(21, 'MD', 'Maryland');");
+            $this->execute("INSERT INTO `state` VALUES(22, 'MA', 'Massachusetts');");
+            $this->execute("INSERT INTO `state` VALUES(23, 'MI', 'Michigan');");
+            $this->execute("INSERT INTO `state` VALUES(24, 'MN', 'Minnesota');");
+            $this->execute("INSERT INTO `state` VALUES(25, 'MS', 'Mississippi');");
+            $this->execute("INSERT INTO `state` VALUES(26, 'MO', 'Missouri');");
+            $this->execute("INSERT INTO `state` VALUES(27, 'MT', 'Montana');");
+            $this->execute("INSERT INTO `state` VALUES(28, 'NE', 'Nebraska');");
+            $this->execute("INSERT INTO `state` VALUES(29, 'NV', 'Nevada');");
+            $this->execute("INSERT INTO `state` VALUES(30, 'NH', 'New Hampshire');");
+            $this->execute("INSERT INTO `state` VALUES(31, 'NJ', 'New Jersey');");
+            $this->execute("INSERT INTO `state` VALUES(32, 'NM', 'New Mexico');");
+            $this->execute("INSERT INTO `state` VALUES(33, 'NY', 'New York');");
+            $this->execute("INSERT INTO `state` VALUES(34, 'NC', 'North Carolina');");
+            $this->execute("INSERT INTO `state` VALUES(35, 'ND', 'North Dakota');");
+            $this->execute("INSERT INTO `state` VALUES(36, 'OH', 'Ohio');");
+            $this->execute("INSERT INTO `state` VALUES(37, 'OK', 'Oklahoma');");
+            $this->execute("INSERT INTO `state` VALUES(38, 'OR', 'Oregon');");
+            $this->execute("INSERT INTO `state` VALUES(39, 'PA', 'Pennsylvania');");
+            $this->execute("INSERT INTO `state` VALUES(40, 'RI', 'Rhode Island');");
+            $this->execute("INSERT INTO `state` VALUES(41, 'SC', 'South Carolina');");
+            $this->execute("INSERT INTO `state` VALUES(42, 'SD', 'South Dakota');");
+            $this->execute("INSERT INTO `state` VALUES(43, 'TN', 'Tennessee');");
+            $this->execute("INSERT INTO `state` VALUES(44, 'TX', 'Texas');");
+            $this->execute("INSERT INTO `state` VALUES(45, 'UT', 'Utah');");
+            $this->execute("INSERT INTO `state` VALUES(46, 'VT', 'Vermont');");
+            $this->execute("INSERT INTO `state` VALUES(47, 'VA', 'Virginia');");
+            $this->execute("INSERT INTO `state` VALUES(48, 'WA', 'Washington');");
+            $this->execute("INSERT INTO `state` VALUES(49, 'WV', 'West Virginia');");
+            $this->execute("INSERT INTO `state` VALUES(50, 'WI', 'Wisconsin');");
+            $this->execute("INSERT INTO `state` VALUES(51, 'WY', 'Wyoming');");
+            $this->execute("INSERT INTO `state` VALUES(52, 'AB', 'Alberta');");
+            $this->execute("INSERT INTO `state` VALUES(53, 'BC', 'British Columbia');");
+            $this->execute("INSERT INTO `state` VALUES(54, 'MB', 'Manitoba');");
+            $this->execute("INSERT INTO `state` VALUES(55, 'NL', 'Newfoundland');");
+            $this->execute("INSERT INTO `state` VALUES(56, 'NB', 'New Brunswick');");
+            $this->execute("INSERT INTO `state` VALUES(57, 'NS', 'Nova Scotia');");
+            $this->execute("INSERT INTO `state` VALUES(58, 'NT', 'Northwest Territories');");
+            $this->execute("INSERT INTO `state` VALUES(59, 'NU', 'Nunavut');");
+            $this->execute("INSERT INTO `state` VALUES(60, 'ON', 'Ontario');");
+            $this->execute("INSERT INTO `state` VALUES(61, 'PE', 'Prince Edward Island');");
+            $this->execute("INSERT INTO `state` VALUES(62, 'QC', 'Quebec');");
+            $this->execute("INSERT INTO `state` VALUES(63, 'SK', 'Saskatchewan');");
+            $this->execute("INSERT INTO `state` VALUES(64, 'YT', 'Yukon Territory');");
         endif;
 
-        // Migration for table stu_acad_cred
-        if (!$this->hasTable('stu_acad_cred')) :
-            $table = $this->table('stu_acad_cred', array('id' => false, 'primary_key' => 'stuAcadCredID'));
+        // Migration for table stu_acad_cred => stac
+        if (!$this->hasTable('stac')) :
+            $table = $this->table('stac', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('stuAcadCredID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseSecID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseCode', 'string', array('limit' => 25))
-                ->addColumn('courseSecCode', 'string', array('null' => true, 'limit' => 50))
-                ->addColumn('sectionNumber', 'string', array('null' => true, 'limit' => 5))
-                ->addColumn('courseSection', 'string', array('null' => true, 'limit' => 60))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('reportingTerm', 'string', array('limit' => 5))
-                ->addColumn('subjectCode', 'string', array('limit' => 11))
-                ->addColumn('deptCode', 'string', array('limit' => 11))
-                ->addColumn('shortTitle', 'string', array('limit' => 25))
-                ->addColumn('longTitle', 'string', array('limit' => 60))
-                ->addColumn('compCred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1))
-                ->addColumn('gradePoints', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'))
-                ->addColumn('attCred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1))
-                ->addColumn('ceu', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'N', 'D', 'W', 'C')))
-                ->addColumn('statusDate', 'date', array())
-                ->addColumn('statusTime', 'string', array('limit' => 10))
-                ->addColumn('acadLevelCode', 'string', array('limit' => 4))
-                ->addColumn('courseLevelCode', 'string', array('limit' => 5))
-                ->addColumn('grade', 'string', array('null' => true, 'limit' => 2))
-                ->addColumn('creditType', 'string', array('default' => 'I', 'limit' => 6))
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array('null' => true))
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('addDate', 'date', array('null' => true))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('stuID', 'courseSecID'), array('unique' => true))
-                ->addIndex(array('courseSecCode', 'termCode', 'status', 'courseID', 'courseSecID', 'courseCode', 'courseSection', 'subjectCode', 'deptCode', 'addedBy'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('courseID', 'course', 'courseID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('courseSecID', 'course_sec', 'courseSecID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('courseSecCode', 'course_sec', 'courseSecCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('courseSection', 'course_sec', 'courseSection', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('subjectCode', 'subject', 'subjectCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('deptCode', 'department', 'deptCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseSecID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseCode', 'string', ['limit' => 50])
+                ->addColumn('courseSecCode', 'string', ['null' => true, 'limit' => 80])
+                ->addColumn('sectionNumber', 'char', ['null' => true, 'limit' => 8])
+                ->addColumn('courseSection', 'string', ['null' => true, 'limit' => 80])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('reportingTerm', 'char', ['limit' => 22])
+                ->addColumn('subjectCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('shortTitle', 'char', ['limit' => 60])
+                ->addColumn('longTitle', 'char', ['limit' => 80])
+                ->addColumn('compCred', 'decimal', ['precision' => 4, 'scale' => 1])
+                ->addColumn('gradePoints', 'decimal', ['precision' => 4, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('attCred', 'decimal', ['precision' => 4, 'scale' => 1])
+                ->addColumn('ceu', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'N', 'D', 'W', 'C']])
+                ->addColumn('statusDate', 'date', [])
+                ->addColumn('statusTime', 'char', ['limit' => 10])
+                ->addColumn('acadLevelCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('courseLevelCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('grade', 'char', ['null' => true, 'limit' => 6])
+                ->addColumn('creditType', 'char', ['default' => 'I', 'limit' => 4])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('addDate', 'date', ['null' => true])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['stuID', 'courseSecID'], ['unique' => true])
+                ->addIndex(['status', 'courseCode'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'stac_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('courseID', 'course', 'courseID', ['constraint' => 'stac_courseID', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('courseSecID', 'course_sec', 'courseSecID', ['constraint' => 'stac_courseSecID', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('courseSecCode', 'course_sec', 'courseSecCode', ['constraint' => 'stac_courseSecCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('courseSection', 'course_sec', 'courseSection', ['constraint' => 'stac_courseSection', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'stac_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('subjectCode', 'subject', 'subjectCode', ['constraint' => 'stac_subjectCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('deptCode', 'department', 'deptCode', ['constraint' => 'stac_deptCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('acadLevelCode', 'aclv', 'code', ['constraint' => 'stac_acadLevelCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('courseLevelCode', 'crlv', 'code', ['constraint' => 'stac_courseLevelCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'stac_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table stu_acad_level
-        if (!$this->hasTable('stu_acad_level')) :
-            $table = $this->table('stu_acad_level', array('id' => false, 'primary_key' => 'id'));
+        if (!$this->hasTable('stal')) :
+            $table = $this->table('stal', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('acadProgCode', 'string', array('limit' => 20))
-                ->addColumn('acadLevelCode', 'string', array('limit' => 4))
-                ->addColumn('addDate', 'date', array())
-                ->addIndex(array('stuID', 'acadProgCode'), array('unique' => true))
-                ->addIndex(array('acadProgCode'))
-                ->addForeignKey('acadProgCode', 'acad_program', 'acadProgCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('acadProgCode', 'string', ['limit' => 80])
+                ->addColumn('acadLevelCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('currentClassLevel', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('enrollmentStatus', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('gpa', 'decimal', ['precision' => 4, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('startTerm', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['stuID', 'acadProgCode'], ['unique' => true])
+                ->addForeignKey('acadProgCode', 'acad_program', 'acadProgCode', ['constraint' => 'stal_acadProgCode', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('acadLevelCode', 'aclv', 'code', ['constraint' => 'stal_acadLevelCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('currentClassLevel', 'clas', 'code', ['constraint' => 'stal_currentClassLevel', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('startTerm', 'term', 'termCode', ['constraint' => 'stal_startTerm', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'stal_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table stu_acct_bill
         if (!$this->hasTable('stu_acct_bill')) :
-            $table = $this->table('stu_acct_bill', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('stu_acct_bill', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('billID', 'string', array('limit' => 11))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('authCode', 'string', array('limit' => 23))
-                ->addColumn('stu_comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('staff_comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('balanceDue', 'enum', array('default' => '1', 'values' => array('1', '0')))
-                ->addColumn('postedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('billingDate', 'date', array())
-                ->addColumn('billTimeStamp', 'datetime', array())
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('billID'), array('unique' => true))
-                ->addIndex(array('stuID', 'termCode', 'postedBy'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('postedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('billID', 'char', ['limit' => 22])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('authCode', 'string', ['limit' => 30])
+                ->addColumn('stu_comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('staff_comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('balanceDue', 'enum', ['default' => '1', 'values' => ['1', '0']])
+                ->addColumn('postedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('billingDate', 'date', [])
+                ->addColumn('billTimeStamp', 'datetime', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['billID'], ['unique' => true])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'stu_acct_bill_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'stu_acct_bill_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('postedBy', 'person', 'personID', ['constraint' => 'stu_acct_bill_postedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table stu_acct_fee
         if (!$this->hasTable('stu_acct_fee')) :
-            $table = $this->table('stu_acct_fee', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('stu_acct_fee', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('billID', 'string', array('limit' => 11))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('type', 'string', array('limit' => 11))
-                ->addColumn('description', 'string', array('limit' => 125))
-                ->addColumn('amount', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 2))
-                ->addColumn('feeDate', 'date', array())
-                ->addColumn('feeTimeStamp', 'datetime', array())
-                ->addColumn('postedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('billID', 'stuID', 'termCode', 'postedBy'))
-                ->addForeignKey('billID', 'stu_acct_bill', 'billID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('postedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('billID', 'char', ['limit' => 22])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('type', 'char', ['limit' => 22])
+                ->addColumn('description', 'string', ['limit' => 191])
+                ->addColumn('amount', 'decimal', ['precision' => 10, 'scale' => 2])
+                ->addColumn('feeDate', 'date', [])
+                ->addColumn('feeTimeStamp', 'datetime', [])
+                ->addColumn('postedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('billID', 'stu_acct_bill', 'billID', ['constraint' => 'stu_acct_fee_billID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('postedBy', 'person', 'personID', ['constraint' => 'stu_acct_fee_postedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'stu_acct_fee_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'stu_acct_fee_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table stu_acct_pp
         if (!$this->hasTable('stu_acct_pp')) :
-            $table = $this->table('stu_acct_pp', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('stu_acct_pp', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('payFrequency', 'enum', array('values' => array('1', '7', '14', '30', '365')))
-                ->addColumn('amount', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 2))
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array())
-                ->addColumn('comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('stuID', 'termCode', 'addedBy'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('payFrequency', 'enum', ['values' => ['1', '7', '14', '30', '365']])
+                ->addColumn('amount', 'decimal', ['precision' => 10, 'scale' => 2])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'stu_acct_pp_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'stu_acct_pp_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'stu_acct_pp_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table stu_acct_tuition
         if (!$this->hasTable('stu_acct_tuition')) :
-            $table = $this->table('stu_acct_tuition', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('stu_acct_tuition', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('total', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 2))
-                ->addColumn('postedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('tuitionTimeStamp', 'datetime', array())
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('termCode', 'stuID', 'postedBy'))
-                ->addForeignKey('postedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('total', 'decimal', ['precision' => 10, 'scale' => 2])
+                ->addColumn('postedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('tuitionTimeStamp', 'datetime', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('postedBy', 'person', 'personID', ['constraint' => 'stu_acct_tuition_postedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'stu_acct_tuition_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'stu_acct_tuition_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
-        // Migration for table stu_course_sec
-        if (!$this->hasTable('stu_course_sec')) :
-            $table = $this->table('stu_course_sec', array('id' => false, 'primary_key' => 'id'));
+        // Migration for table stu_course_sec => stcs
+        if (!$this->hasTable('stcs')) :
+            $table = $this->table('stcs', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('id', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseSecID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseSecCode', 'string', array('limit' => 50))
-                ->addColumn('courseSection', 'string', array('limit' => 60))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('courseCredits', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('ceu', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('regDate', 'date', array('null' => true))
-                ->addColumn('regTime', 'string', array('null' => true, 'limit' => 10))
-                ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'N', 'D', 'W', 'C')))
-                ->addColumn('statusDate', 'date', array())
-                ->addColumn('statusTime', 'string', array('limit' => 10))
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('stuID', 'courseSecID'), array('unique' => true))
-                ->addIndex(array('courseSecCode', 'termCode', 'addedBy', 'status', 'courseSecID', 'courseSection'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('courseSecID', 'course_sec', 'courseSecID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('courseSecCode', 'course_sec', 'courseSecCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('courseSection', 'course_sec', 'courseSection', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseSecID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseSecCode', 'string', ['null' => true, 'limit' => 80])
+                ->addColumn('courseSection', 'string', ['null' => true, 'limit' => 80])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('courseCredits', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('ceu', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('regDate', 'date', ['null' => true])
+                ->addColumn('regTime', 'string', ['null' => true, 'limit' => 10])
+                ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'N', 'D', 'W', 'C']])
+                ->addColumn('statusDate', 'date', [])
+                ->addColumn('statusTime', 'string', ['limit' => 10])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['stuID', 'courseSecID'], ['unique' => true])
+                ->addIndex(['status'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'stcs_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('courseSecID', 'course_sec', 'courseSecID', ['constraint' => 'stcs_courseSecID', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('courseSecCode', 'course_sec', 'courseSecCode', ['constraint' => 'stcs_courseSecCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('courseSection', 'course_sec', 'courseSection', ['constraint' => 'stcs_courseSection', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'stcs_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'stcs_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
-        // Migration for table stu_program
-        if (!$this->hasTable('stu_program')) :
-            $table = $this->table('stu_program', array('id' => false, 'primary_key' => 'stuProgID'));
+        // Migration for table student_program => sacp
+        if (!$this->hasTable('sacp')) :
+            $table = $this->table('sacp', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('stuProgID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('advisorID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('catYearCode', 'string', array('limit' => 11))
-                ->addColumn('acadProgCode', 'string', array('limit' => 20))
-                ->addColumn('currStatus', 'string', array('limit' => 1))
-                ->addColumn('eligible_to_graduate', 'enum', array('default' => '0', 'values' => array('1', '0')))
-                ->addColumn('antGradDate', 'string', array('null' => true, 'limit' => 8))
-                ->addColumn('graduationDate', 'date', array())
-                ->addColumn('statusDate', 'date', array())
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array())
-                ->addColumn('comments', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('stuID', 'acadProgCode'), array('unique' => true))
-                ->addIndex(array('approvedBy', 'acadProgCode', 'currStatus', 'advisorID', 'catYearCode'))
-                ->addForeignKey('acadProgCode', 'acad_program', 'acadProgCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('approvedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('advisorID', 'staff', 'staffID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('catYearCode', 'acad_year', 'acadYearCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('advisorID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('catYearCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('acadProgCode', 'string', ['limit' => 80])
+                ->addColumn('currStatus', 'char', ['limit' => 4])
+                ->addColumn('eligible_to_graduate', 'enum', ['default' => '0', 'values' => ['1', '0']])
+                ->addColumn('antGradDate', 'char', ['null' => true, 'limit' => 12])
+                ->addColumn('graduationDate', 'date', ['null' => true])
+                ->addColumn('statusDate', 'date', [])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['stuID', 'acadProgCode'], ['unique' => true])
+                ->addIndex(['currStatus'])
+                ->addForeignKey('acadProgCode', 'acad_program', 'acadProgCode', ['constraint' => 'sacp_acadProgCode', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'sacp_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('approvedBy', 'person', 'personID', ['constraint' => 'sacp_approvedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->addForeignKey('advisorID', 'staff', 'staffID', ['constraint' => 'sacp_advisorID', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('catYearCode', 'acad_year', 'acadYearCode', ['constraint' => 'sacp_catYearCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table stu_rgn_cart
         if (!$this->hasTable('stu_rgn_cart')) :
-            $table = $this->table('stu_rgn_cart', array('id' => false));
+            $table = $this->table('stu_rgn_cart', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseSecID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('deleteDate', 'date', array())
-                ->addIndex(array('stuID', 'courseSecID'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseSecID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('deleteDate', 'date', [])
+                ->addIndex(['stuID', 'courseSecID'], ['unique' => true])
                 ->create();
         endif;
 
-        // Migration for table stu_term
-        if (!$this->hasTable('stu_term')) :
-            $table = $this->table('stu_term', array('id' => false));
+        // Migration for table stu_term => sttr
+        if (!$this->hasTable('sttr')) :
+            $table = $this->table('sttr', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('termCredits', 'decimal', array('signed' => true, 'precision' => 6, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('addDateTime', 'datetime', array())
-                ->addColumn('acadLevelCode', 'string', array('limit' => 4))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('stuID', 'termCode', 'acadLevelCode'), array('unique' => true))
-                ->addIndex(array('termCode'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->create();
-        endif;
-
-        // Migration for table stu_term_gpa
-        if (!$this->hasTable('stu_term_gpa')) :
-            $table = $this->table('stu_term_gpa', array('id' => false));
-            $table
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('acadLevelCode', 'string', array('limit' => 4))
-                ->addColumn('attCred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('compCred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('gradePoints', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'))
-                ->addColumn('termGPA', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('stuID', 'termCode', 'acadLevelCode'), array('unique' => true))
-                ->addIndex(array('termCode'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->create();
-        endif;
-
-        // Migration for table stu_term_load
-        if (!$this->hasTable('stu_term_load')) :
-            $table = $this->table('stu_term_load', array('id' => false));
-            $table
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('stuLoad', 'string', array('limit' => 2))
-                ->addColumn('acadLevelCode', 'string', array('limit' => 4))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('stuID', 'termCode', 'acadLevelCode'), array('unique' => true))
-                ->addIndex(array('stuLoad', 'termCode'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('termCode', 'term', 'termCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('acadLevelCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('attCred', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('compCred', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('gradePoints', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('stuLoad', 'char', ['limit' => 4])
+                ->addColumn('gpa', 'decimal', ['precision' => 4, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('created', 'datetime', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['stuID', 'termCode', 'acadLevelCode'], ['unique' => true])
+                ->addForeignKey('stuID', 'student', 'stuID', ['constraint' => 'sttr_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'sttr_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('acadLevelCode', 'aclv', 'code', ['constraint' => 'sttr_acadLevelCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table student
         if (!$this->hasTable('student')) :
-            $table = $this->table('student', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('student', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('status', 'enum', array('default' => 'A', 'values' => array('A', 'I')))
-                ->addColumn('tags', 'string', array('limit' => 255))
-                ->addColumn('addDate', 'datetime', array())
-                ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('stuID'), array('unique' => true))
-                ->addIndex(array('approvedBy', 'status'))
-                ->addForeignKey('stuID', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('approvedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'I']])
+                ->addColumn('tags', 'string', ['limit' => 191])
+                ->addColumn('addDate', 'datetime', [])
+                ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['stuID'], ['unique' => true])
+                ->addIndex(['status'])
+                ->addForeignKey('stuID', 'person', 'personID', ['constraint' => 'student_stuID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('approvedBy', 'person', 'personID', ['constraint' => 'student_approvedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
-        endif;
-
-        // Migration for table student_load_rule
-        if (!$this->hasTable('student_load_rule')) :
-            $table = $this->table('student_load_rule', array('id' => false, 'primary_key' => 'slrID'));
-            $table
-                ->addColumn('slrID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('status', 'string', array('limit' => 1))
-                ->addColumn('min_cred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1))
-                ->addColumn('max_cred', 'decimal', array('signed' => true, 'precision' => 4, 'scale' => 1))
-                ->addColumn('term', 'string', array('limit' => 255))
-                ->addColumn('acadLevelCode', 'string', array('limit' => 255))
-                ->addColumn('active', 'enum', array('values' => array('1', '0')))
-                ->create();
-
-            $this->execute("INSERT INTO `student_load_rule` VALUES(00000000001, 'F', 12.0, 24.0, 'FA\\\\SP\\\\SU', 'CE\\\\UG\\\\GR\\\\PhD', '1');");
-            $this->execute("INSERT INTO `student_load_rule` VALUES(00000000002, 'Q', 9.0, 11.0, 'FA\\\\SP\\\\SU', 'CE\\\\UG\\\\GR\\\\PhD', '1');");
-            $this->execute("INSERT INTO `student_load_rule` VALUES(00000000003, 'H', 6.0, 8.0, 'FA\\\\SP\\\\SU', 'CE\\\\UG\\\\GR\\\\PhD', '1');");
-            $this->execute("INSERT INTO `student_load_rule` VALUES(00000000004, 'L', 0.0, 5.0, 'FA\\\\SP\\\\SU', 'CE\\\\UG\\\\GR\\\\PhD', '1');");
         endif;
 
         // Migration for table subject
         if (!$this->hasTable('subject')) :
-            $table = $this->table('subject', array('id' => false, 'primary_key' => 'subjectID'));
+            $table = $this->table('subject', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('subjectID', 'integer', array('signed' => true, 'identity' => true, 'limit' => 11))
-                ->addColumn('subjectCode', 'string', array('limit' => 11))
-                ->addColumn('subjectName', 'string', array('limit' => 180))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('subjectCode'), array('unique' => true))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('subjectCode', 'char', ['limit' => 22])
+                ->addColumn('subjectName', 'string', ['limit' => 191])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addIndex(['subjectCode'], ['unique' => true])
                 ->create();
 
             $this->execute("INSERT INTO `subject` VALUES(1, 'NULL', '', '$NOW');");
         endif;
 
+        if (!$this->hasTable('template')) :
+            $table = $this->table('template', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('name', 'string', ['limit' => 191])
+                ->addColumn('description', 'string', ['limit' => 191])
+                ->addColumn('content', 'string', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('addedBy', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'template_addedBy', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->create();
+        endif;
+
         // Migration for table term
         if (!$this->hasTable('term')) :
-            $table = $this->table('term', array('id' => false, 'primary_key' => 'termID'));
+            $table = $this->table('term', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('termID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('semCode', 'string', array('limit' => 11))
-                ->addColumn('termCode', 'string', array('limit' => 11))
-                ->addColumn('termName', 'string', array('default' => '', 'limit' => 180))
-                ->addColumn('reportingTerm', 'string', array('limit' => 5))
-                ->addColumn('dropAddEndDate', 'date', array('default' => '0000-00-00'))
-                ->addColumn('termStartDate', 'date', array('default' => '0000-00-00'))
-                ->addColumn('termEndDate', 'date', array('default' => '0000-00-00'))
-                ->addColumn('active', 'enum', array('default' => '1', 'values' => array('1', '0')))
-                ->addIndex(array('termCode'), array('unique' => true))
-                ->addIndex(array('semCode'))
-                ->addForeignKey('semCode', 'semester', 'semCode', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('semCode', 'char', ['limit' => 22])
+                ->addColumn('termCode', 'char', ['limit' => 22])
+                ->addColumn('termName', 'string', ['default' => null, 'limit' => 191])
+                ->addColumn('reportingTerm', 'char', ['limit' => 22])
+                ->addColumn('dropAddEndDate', 'date', ['null' => true])
+                ->addColumn('termStartDate', 'date', ['null' => true])
+                ->addColumn('termEndDate', 'date', ['null' => true])
+                ->addColumn('active', 'enum', ['default' => '1', 'values' => ['1', '0']])
+                ->addIndex(['termCode'], ['unique' => true])
+                ->addForeignKey('semCode', 'semester', 'semCode', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
 
-            $this->execute("INSERT INTO `term` VALUES(00000000001, 'NULL', 'NULL', '', '', '$NOW', '$NOW', '$NOW', '1');");
+            $this->execute("INSERT INTO `term` VALUES(1, 'NULL', 'NULL', '', '', '$NOW', '$NOW', '$NOW', '1');");
         endif;
 
         // Migration for table timesheet
         if (!$this->hasTable('timesheet')) :
-            $table = $this->table('timesheet', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('timesheet', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('employeeID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('jobID', 'integer', array('signed' => true, 'limit' => 11))
-                ->addColumn('workWeek', 'date', array())
-                ->addColumn('startDateTime', 'datetime', array())
-                ->addColumn('endDateTime', 'datetime', array())
-                ->addColumn('note', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('status', 'enum', array('default' => 'P', 'values' => array('P', 'R', 'A')))
-                ->addColumn('addDate', 'string', array('limit' => 20))
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('approvedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('employeeID', 'addedBy'))
-                ->addForeignKey('employeeID', 'staff', 'staffID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'staff', 'staffID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('employeeID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('jobID', 'integer', ['limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('workWeek', 'date', ['null' => true])
+                ->addColumn('startDateTime', 'datetime', [])
+                ->addColumn('endDateTime', 'datetime', ['null' => true])
+                ->addColumn('note', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('status', 'enum', ['default' => 'P', 'values' => ['P', 'R', 'A']])
+                ->addColumn('addDate', 'string', ['limit' => 80])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('employeeID', 'staff', 'staffID', ['constraint' => 'timesheet_employeeID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'timesheet_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->create();
+        endif;
+
+        if (!$this->hasTable('tracking')) :
+            $table = $this->table('tracking', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('cid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('pid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('first_open', 'date', ['null' => true])
+                ->addColumn('viewed', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('cid', 'campaign', 'id', ['constraint' => 'tracking_cid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('pid', 'person', 'personID', ['constraint' => 'tracking_pid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->create();
+        endif;
+
+        if (!$this->hasTable('tracking_link')) :
+            $table = $this->table('tracking_link', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('cid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('pid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('source', 'string', ['limit' => 191])
+                ->addColumn('medium', 'string', ['limit' => 191])
+                ->addColumn('url', 'string', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('clicked', 'integer', ['limit' => MysqlAdapter::INT_REGULAR])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('cid', 'campaign', 'id', ['constraint' => 'tracking_link_cid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('pid', 'person', 'personID', ['constraint' => 'tracking_link_pid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table transfer_equivalent
         if (!$this->hasTable('transfer_equivalent')) :
-            $table = $this->table('transfer_equivalent', array('id' => false, 'primary_key' => 'equivID'));
+            $table = $this->table('transfer_equivalent', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('equivID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('extrID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('startDate', 'date', array())
-                ->addColumn('endDate', 'date', array())
-                ->addColumn('grade', 'string', array('limit' => 2))
-                ->addColumn('comment', 'text', array('limit' => MysqlAdapter::TEXT_LONG))
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('extrID', 'courseID', 'addedBy'))
-                ->addForeignKey('extrID', 'external_course', 'extrID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('courseID', 'course', 'courseID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('extrID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('courseID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('startDate', 'date', [])
+                ->addColumn('endDate', 'date', ['null' => true])
+                ->addColumn('grade', 'char', ['limit' => 6])
+                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('addDate', 'date', [])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('extrID', 'external_course', 'id', ['constraint' => 'transfer_equivalent_extrID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('courseID', 'course', 'courseID', ['constraint' => 'transfer_equivalent_courseID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'transfer_equivalent_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
         // Migration for table transfer_credit
         if (!$this->hasTable('transfer_credit')) :
-            $table = $this->table('transfer_credit', array('id' => false, 'primary_key' => 'ID'));
+            $table = $this->table('transfer_credit', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
-                ->addColumn('ID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('equivID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuAcadCredID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('addDate', 'date', array())
-                ->addIndex(array('equivID', 'stuAcadCredID', 'addedBy'))
-                ->addForeignKey('equivID', 'transfer_equivalent', 'equivID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('stuAcadCredID', 'stu_acad_cred', 'stuAcadCredID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('equivID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('stacID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('addDate', 'date', [])
+                ->addForeignKey('equivID', 'transfer_equivalent', 'id', ['constraint' => 'transfer_credit_equivID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('stacID', 'stac', 'id', ['constraint' => 'transfer_credit_stacID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'transfer_credit_addedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
-        // Migration for table gradebook
-        if (!$this->hasTable('gradebook')) :
-            $table = $this->table('gradebook', array('id' => false, 'primary_key' => 'gbID'));
-            $table
-                ->addColumn('gbID', 'integer', array('signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('assignID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('courseSecID', 'integer', array('signed' => true, 'null' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('facID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('stuID', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('grade', 'string', array('limit' => 2))
-                ->addColumn('addDate', 'date', array())
-                ->addColumn('addedBy', 'integer', array('signed' => true, 'limit' => MysqlAdapter::INT_BIG))
-                ->addColumn('LastUpdate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'))
-                ->addIndex(array('assignID', 'facID', 'stuID'), array('unique' => true))
-                ->addIndex(array('assignID', 'courseSecID', 'facID', 'stuID', 'addedBy'))
-                ->addForeignKey('assignID', 'assignment', 'assignID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('courseSecID', 'course_sec', 'courseSecID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('facID', 'staff', 'staffID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('stuID', 'student', 'stuID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->addForeignKey('addedBy', 'person', 'personID', array('delete' => 'RESTRICT', 'update' => 'CASCADE'))
-                ->create();
+        if (!$this->hasTable('v_stld')) :
+            $this->execute(
+                "CREATE VIEW v_stld AS
+                    SELECT
+                        a.stuID,a.acadLevelCode,a.stuLoad
+                    FROM
+                        sttr a
+                    WHERE
+                        a.created = (SELECT MAX(b.created) FROM sttr b WHERE a.stuID = b.stuID AND a.acadLevelCode = b.acadLevelCode)
+                    GROUP BY
+                        a.stuID,a.acadLevelCode"
+            );
+        endif;
+
+        if (!$this->hasTable('v_sttr')) :
+            $this->execute(
+                "CREATE VIEW v_sttr AS
+                    SELECT
+                        x.stuID,x.acadLevelCode,x.termCode
+                    FROM
+                        sttr x
+                    WHERE
+                        x.created = (SELECT MIN(y.created) FROM sttr y WHERE x.stuID = y.stuID AND x.acadLevelCode = y.acadLevelCode)
+                    GROUP BY
+                        x.stuID,x.acadLevelCode"
+            );
+        endif;
+
+        if (!$this->hasTable('v_scrd')) :
+            $this->execute(
+                "CREATE VIEW v_scrd AS
+                    SELECT 
+                        sttr.stuID,sttr.acadLevelCode AS acadLevel,sacp.acadProgCode AS prog,SUM(sttr.attCred) attempted,SUM(sttr.compCred) completed,SUM(sttr.gradePoints) points,SUM(sttr.gpa)/COUNT(*) gpa,
+                        v_stld.stuLoad AS enrollmentStatus,sacp.catYearCode AS year,v_sttr.termCode AS term
+                    FROM
+                        sttr
+                    JOIN
+                        sacp
+                    ON
+                        sttr.stuID = sacp.stuID
+                    JOIN
+                        acad_program
+                    ON
+                        sacp.acadProgCode = acad_program.acadProgCode
+                    JOIN
+                        v_stld
+                    ON
+                        sttr.stuID = v_stld.stuID AND sttr.acadLevelCode = v_stld.acadLevelCode
+                    JOIN
+                        v_sttr
+                    ON
+                        sttr.stuID = v_sttr.stuID AND sttr.acadLevelCode = v_sttr.acadLevelCode
+                    WHERE
+                        sttr.stuID = sacp.stuID
+                    AND
+                        sttr.acadLevelCode = acad_program.acadLevelCode
+                    AND
+                        sacp.currStatus = 'A'
+                    GROUP BY sttr.stuID,sttr.acadLevelCode
+                    ORDER BY sttr.stuID;"
+            );
+        endif;
+        
+        if (!$this->hasTable('v_rgn')) :
+            $this->execute(
+                "CREATE VIEW v_rgn AS
+                    SELECT
+                        courseID AS crseID,courseSecID AS sectID,courseSection AS section,termCode AS term,longTitle AS title,SUM(attCred) AS attempted,SUM(compCred) AS completed,SUM(gradePoints) AS points,acadLevelCode AS acadLevel,COUNT(stuID) AS registrations
+                    FROM
+                        stac
+                    WHERE
+                        status IN('A','N')
+                    GROUP BY
+                        courseSecID"
+            );
         endif;
 
         $this->execute("SET FOREIGN_KEY_CHECKS=1;");
+
+        if (strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false && !file_exists('.htaccess')) {
+            $f = fopen('.htaccess', 'w');
+            fclose($f);
+
+            $htaccess_file = <<<EOF
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# Some hosts may require you to use the `RewriteBase` directive.
+# If you need to use the `RewriteBase` directive, it should be the
+# absolute physical path to the directory that contains this htaccess file.
+#
+# RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php [L]
+</IfModule>
+
+EOF;
+            file_put_contents('.htaccess', $htaccess_file);
+        }
 
         if (!file_exists('config.php')) {
             copy('config.sample.php', 'config.php');
@@ -2340,7 +2449,7 @@ class InitialSchema extends AbstractMigration
 
         $config = str_replace('{product}', 'eduTrac SIS', $config);
         $config = str_replace('{release}', trim(file_get_contents('RELEASE')), $config);
-        $config = str_replace('{datenow}', date('Y-m-d h:m:s'), $config);
+        $config = str_replace('{datenow}', $NOW, $config);
         $config = str_replace('{hostname}', $host, $config);
         $config = str_replace('{database}', $name, $config);
         $config = str_replace('{username}', $user, $config);
