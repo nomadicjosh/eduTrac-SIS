@@ -44,11 +44,11 @@ class ACL
      */
     protected $_userRoles = [];
     
-    protected $_app;
+    public $app;
 
     public function __construct($personID = '')
     {
-        $this->_app = \Liten\Liten::getInstance();
+        $this->app = \Liten\Liten::getInstance();
 
         if ($personID != '') {
             $this->_personID = floatval($personID);
@@ -77,9 +77,9 @@ class ACL
 
     public function getPermKeyFromID($permID)
     {
-        $strSQL = $this->_app->db->permission()
+        $strSQL = $this->app->db->permission()
             ->select('permission.permKey')
-            ->where('ID = ?', floatval($permID))
+            ->where('id = ?', floatval($permID))
             ->limit(1);
         $q = $strSQL->find(function($data) {
             $array = [];
@@ -96,9 +96,9 @@ class ACL
 
     public function getPermNameFromID($permID)
     {
-        $strSQL = $this->_app->db->permission()
+        $strSQL = $this->app->db->permission()
             ->select('permission.permName')
-            ->where('ID = ?', floatval($permID))
+            ->where('id = ?', floatval($permID))
             ->limit(1);
         $q = $strSQL->find(function($data) {
             $array = [];
@@ -115,9 +115,9 @@ class ACL
 
     public function getRoleNameFromID($roleID)
     {
-        $strSQL = $this->_app->db->role()
+        $strSQL = $this->app->db->role()
             ->select('role.roleName')
-            ->where('ID = ?', floatval($roleID))
+            ->where('id = ?', floatval($roleID))
             ->limit(1);
         $q = $strSQL->find(function($data) {
             $array = [];
@@ -134,7 +134,7 @@ class ACL
 
     public function getUserRoles()
     {
-        $strSQL = $this->_app->db->person_roles()
+        $strSQL = $this->app->db->person_roles()
             ->where('personID = ?', floatval($this->_personID))
             ->orderBy('addDate', 'ASC');
         $q = $strSQL->find(function($data) {
@@ -157,7 +157,7 @@ class ACL
     {
         $format = strtolower($format);
 
-        $strSQL = $this->_app->db->role()
+        $strSQL = $this->app->db->role()
             ->orderBy('roleName', 'ASC');
         $q = $strSQL->find(function($data) {
             $array = [];
@@ -171,9 +171,9 @@ class ACL
         foreach($q as $r) {
             if ($format == 'full')
 			{
-				$resp[] = [ "ID" => $r['ID'],"Name" => $r['roleName'] ];
+				$resp[] = [ "ID" => $r['id'],"Name" => $r['roleName'] ];
 			} else {
-				$resp[] = $r['ID'];
+				$resp[] = $r['id'];
 			}
         }
         return $resp;
@@ -183,7 +183,7 @@ class ACL
     {
         $format = strtolower($format);
 
-        $strSQL = $this->_app->db->permission()
+        $strSQL = $this->app->db->permission()
             ->orderBy('permName', 'ASC');
         $q = $strSQL->find(function($data) {
             $array = [];
@@ -196,9 +196,9 @@ class ACL
         $resp = [];
         foreach($q as $r) {
             if ($format == 'full') {
-				$resp[$r['permKey']] = [ 'ID' => $r['ID'], 'Name' => $r['permName'], 'Key' => $r['permKey'] ];
+				$resp[$r['permKey']] = [ 'ID' => $r['id'], 'Name' => $r['permName'], 'Key' => $r['permKey'] ];
 			} else {
-				$resp[] = $r['ID'];
+				$resp[] = $r['id'];
 			}
         }
         return $resp;
@@ -207,11 +207,11 @@ class ACL
     public function getRolePerms($role)
     {
         if (is_array($role)) {
-            $roleSQL = $this->_app->db->query("SELECT * FROM role_perms WHERE roleID IN (" . implode(",",$role) . ") ORDER BY ID ASC");
+            $roleSQL = $this->app->db->query("SELECT * FROM role_perms WHERE roleID IN (" . implode(",",$role) . ") ORDER BY id ASC");
         } else {
-            $roleSQL = $this->_app->db->role_perms()
+            $roleSQL = $this->app->db->role_perms()
                 ->where('roleID = ?', floatval($role))
-                ->orderBy('ID', 'ASC');
+                ->orderBy('id', 'ASC');
         }
 
        $q = $roleSQL->find(function($data) {
@@ -238,7 +238,7 @@ class ACL
 
     public function getUserPerms($personID)
     {
-        $strSQL = $this->_app->db->person_perms()
+        $strSQL = $this->app->db->person_perms()
             ->where('personID = ?', floatval($personID))
             ->orderBy('LastUpdate', 'ASC');
 
@@ -268,7 +268,7 @@ class ACL
 
     public function userHasRole($roleID)
     {
-        foreach ($this->_userRoles as $k => $v) {
+        foreach ($this->_userRoles as $v) {
             if (floatval($v) === floatval($roleID)) {
                 return true;
             }
@@ -278,14 +278,14 @@ class ACL
 
     public function hasPermission($permKey)
     {
-        $roles = $this->_app->db->query("SELECT 
-						a.ID 
+        $roles = $this->app->db->query("SELECT 
+						a.id 
 					FROM 
 						role a 
 					LEFT JOIN 
 						person_roles b 
 					ON 
-						a.ID = b.roleID 
+						a.id = b.roleID 
 					WHERE 
 						a.permission LIKE ? 
 					AND 
@@ -299,7 +299,7 @@ class ACL
             return $array;
         });
         
-        $perms = $this->_app->db->query('SELECT ID FROM person_perms WHERE permission LIKE ? AND personID = ?', ["%$permKey%", get_persondata('personID')]);
+        $perms = $this->app->db->query('SELECT id FROM person_perms WHERE permission LIKE ? AND personID = ?', ["%$permKey%", get_persondata('personID')]);
         
         $q2 = $perms->find(function($data) {
             $array = [];
@@ -320,7 +320,7 @@ class ACL
 
     public function getUsername($personID)
     {
-        $strSQL = $this->_app->db->person()
+        $strSQL = $this->app->db->person()
             ->select('person.uname')
             ->where('personID = ?', floatval($personID))
             ->limit(1);
