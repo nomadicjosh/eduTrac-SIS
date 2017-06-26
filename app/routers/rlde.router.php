@@ -20,7 +20,7 @@ use Cascade\Cascade;
  */
 $app->before('GET|POST', '/rlde(.*)', function () {
     if (!hasPermission('access_forms') || !hasPermission('access_report_screen') || !hasPermission('access_save_query_screens')) {
-        redirect(get_base_url());
+        etsis_redirect(get_base_url());
         exit();
     }
 });
@@ -53,16 +53,16 @@ $app->match('GET|POST', '/rlde/add/', function () use($app) {
     if ($app->req->isPost()) {
         try {
             $rlde = Node::table('rlde');
-            $rlde->description = (string) $app->req->_post('description');
-            $rlde->code = _trim((string) $app->req->_post('code'));
-            $rlde->dept = (string) $app->req->_post('dept');
-            $rlde->file = (string) $app->req->_post('file');
-            $rlde->comment = (string) $app->req->_post('comment');
-            $rlde->rule = (string) $app->req->_post('rule');
+            $rlde->description = (string) $app->req->post['description'];
+            $rlde->code = _trim((string) $app->req->post['code']);
+            $rlde->dept = (string) $app->req->post['dept'];
+            $rlde->file = (string) $app->req->post['file'];
+            $rlde->comment = (string) $app->req->post['comment'];
+            $rlde->rule = (string) $app->req->post['rule'];
             $rlde->save();
 
-            $ID = $rlde->lastId();
-            _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'rlde' . '/' . $ID . '/');
+            $_id = $rlde->lastId();
+            _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'rlde' . '/' . $_id . '/');
         } catch (NodeQException $e) {
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -82,23 +82,19 @@ $app->match('GET|POST', '/rlde/add/', function () use($app) {
             return $array;
         });
     } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     } catch (ORMException $e) {
-        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
 
     etsis_register_style('form');
     etsis_register_style('bootstrap-datepicker');
     etsis_register_style('querybuilder');
-    etsis_register_script('select');
-    etsis_register_script('select2');
-    etsis_register_script('maxlength');
-    etsis_register_script('bootstrap-datepicker');
 
     $app->view->display('rlde/add', [
         'title' => 'Add Rule Definition',
@@ -111,16 +107,16 @@ $app->match('GET|POST', '/rlde/(\d+)/', function ($id) use($app) {
     if ($app->req->isPost()) {
         try {
             $rlde = Node::table('rlde')->find($id);
-            $rlde->description = (string) $app->req->_post('description');
-            $rlde->code = _trim((string) $app->req->_post('code'));
-            $rlde->dept = (string) $app->req->_post('dept');
-            $rlde->file = (string) $app->req->_post('file');
-            $rlde->comment = (string) $app->req->_post('comment');
-            $rlde->rule = (string) $app->req->_post('rule');
+            $rlde->description = (string) $app->req->post['description'];
+            $rlde->code = _trim((string) $app->req->post['code']);
+            $rlde->dept = (string) $app->req->post['dept'];
+            $rlde->file = (string) $app->req->post['file'];
+            $rlde->comment = (string) $app->req->post['comment'];
+            $rlde->rule = (string) $app->req->post['rule'];
             $rlde->save();
 
-            update_rlde_code_on_update('stld', $id, _trim((string) $app->req->_post('code')));
-            update_rlde_code_on_update('clvr', $id, _trim((string) $app->req->_post('code')));
+            update_rlde_code_on_update('stld', $id, _trim((string) $app->req->post['code']));
+            update_rlde_code_on_update('clvr', $id, _trim((string) $app->req->post['code']));
             _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
         } catch (NodeQException $e) {
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
@@ -144,10 +140,6 @@ $app->match('GET|POST', '/rlde/(\d+)/', function ($id) use($app) {
     etsis_register_style('form');
     etsis_register_style('bootstrap-datepicker');
     etsis_register_style('querybuilder');
-    etsis_register_script('select');
-    etsis_register_script('select2');
-    etsis_register_script('maxlength');
-    etsis_register_script('bootstrap-datepicker');
 
     $app->view->display('rlde/view', [
         'title' => _h($rule->code) . ' Rule',
@@ -162,7 +154,7 @@ $app->before('GET', '/rlde/(\d+)/d/', function () use($app) {
     }
 });
 
-$app->get('/rlde/(\d+)/d/', function ($id) use($app) {
+$app->get('/rlde/(\d+)/d/', function ($id) {
     try {
         $rlde = Node::table('rlde');
 
@@ -170,14 +162,15 @@ $app->get('/rlde/(\d+)/d/', function ($id) use($app) {
             $rlde->find($id)->delete();
             Node::table('stld')->where('rid', '=', $id)->delete();
             Node::table('clvr')->where('rid', '=', $id)->delete();
-            _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            Node::table('rrsr')->where('rid', '=', $id)->delete();
         }
+        _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'rlde' . '/');
     } catch (NodeQException $e) {
         Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+        _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'rlde' . '/');
     } catch (Exception $e) {
         Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-        _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+        _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'rlde' . '/');
     }
 });
 

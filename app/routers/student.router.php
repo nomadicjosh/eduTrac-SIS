@@ -32,9 +32,7 @@ $js = [
     'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js'
 ];
 
-$email = _etsis_email();
-
-$app->group('/stu', function() use ($app, $css, $js, $email) {
+$app->group('/stu', function() use ($app, $css, $js) {
 
     /**
      * Before route check.
@@ -69,20 +67,21 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
-        
+
+        etsis_register_style('form');
         etsis_register_style('table');
-    etsis_register_script('select');
-    etsis_register_script('select2');
-    etsis_register_script('datatables');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datatables');
 
         $app->view->display('student/index', [
             'title' => 'Student Search',
@@ -100,7 +99,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js) {
         if ($app->req->isPost()) {
             $spro = $app->db->student();
             foreach (_filter_input_array(INPUT_POST) as $k => $v) {
@@ -131,24 +130,27 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         }
 
         try {
-            $spro = $app->db->student()->where('stuID', $id)->findOne();
+            $spro = $app->db->student()
+                ->where('stuID', $id)
+                ->findOne();
+
             $admit = $app->db->application()
                 ->where('personID = ?', (int) $id)
                 ->findOne();
 
             $prog = $app->db->query("SELECT 
-                    a.stuProgID,a.stuID,a.acadProgCode,a.currStatus,
-                    a.statusDate,a.startDate,a.approvedBy,b.acadLevelCode AS progAcadLevel,
+                    sacp.id,sacp.stuID,sacp.acadProgCode,sacp.currStatus,
+                    sacp.statusDate,sacp.startDate,sacp.approvedBy,b.acadLevelCode AS progAcadLevel,
                     b.locationCode,
                     CASE c.status 
                     WHEN 'A' Then 'Active' 
                     ELSE 'Inactive' 
                     END AS 'stuStatus',c.tags 
-                FROM stu_program a 
-                LEFT JOIN acad_program b ON a.acadProgCode = b.acadProgCode 
-                LEFT JOIN student c ON a.stuID = c.stuID 
-                WHERE a.stuID = ? 
-                ORDER BY a.statusDate", [$id]
+                FROM sacp 
+                LEFT JOIN acad_program b ON sacp.acadProgCode = b.acadProgCode 
+                LEFT JOIN student c ON sacp.stuID = c.stuID 
+                WHERE sacp.stuID = ? 
+                ORDER BY sacp.statusDate", [$id]
             );
 
             $q = $prog->find(function($data) {
@@ -159,13 +161,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -196,16 +198,16 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * and it is ok to process the query and print
          * the results in a html format.
          */ else {
-             
-             etsis_register_style('form');
-        etsis_register_style('table');
-        etsis_register_script('select');
-        etsis_register_script('select2');
+
+            etsis_register_style('form');
+            etsis_register_style('table');
+            etsis_register_script('select');
+            etsis_register_script('select2');
 
             $app->view->display('student/view', [
                 'title' => get_name($id),
                 'prog' => $q,
-                'admit' => (array) $admit
+                'admit' => $admit
                 ]
             );
         }
@@ -220,7 +222,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $email) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app) {
         if ($app->req->isPost()) {
             try {
                 $nae = get_person_by('personID', $id);
@@ -237,15 +239,15 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 $student = $app->db->student();
                 $student->stuID = $id;
                 $student->status = $app->req->post['status'];
-                $student->addDate = $app->db->NOW();
+                $student->addDate = \Jenssegers\Date\Date::now();
                 $student->approvedBy = get_persondata('personID');
                 $student->save();
 
-                $sacp = $app->db->stu_program();
+                $sacp = $app->db->sacp();
                 $sacp->stuID = $id;
                 $sacp->acadProgCode = _trim($app->req->post['acadProgCode']);
                 $sacp->currStatus = 'A';
-                $sacp->statusDate = $app->db->NOW();
+                $sacp->statusDate = \Jenssegers\Date\Date::now();
                 $sacp->startDate = $app->req->post['startDate'];
                 $sacp->approvedBy = get_persondata('personID');
                 $sacp->antGradDate = $app->req->post['antGradDate'];
@@ -253,11 +255,10 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 $sacp->catYearCode = _trim($app->req->post['catYearCode']);
                 $sacp->save();
 
-                $al = $app->db->stu_acad_level();
+                $al = $app->db->stal();
                 $al->stuID = $id;
                 $al->acadProgCode = _trim($app->req->post['acadProgCode']);
                 $al->acadLevelCode = _trim($app->req->post['acadLevelCode']);
-                $al->addDate = $app->db->NOW();
                 $al->save();
 
                 /**
@@ -295,7 +296,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                     $headers .= "MIME-Version: 1.0" . "\r\n";
                     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
                     try {
-                        $email->etsis_mail(_h(get_option('admissions_email')), _t("Student Acceptance Letter"), $message, $headers);
+                        _etsis_email()->etsisMail(_h($nae->email), _t("Student Acceptance Letter"), $message, $headers);
                     } catch (phpmailerException $e) {
                         Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
                         _etsis_flash()->error($e->getMessage());
@@ -320,17 +321,17 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                  * @param array $spro Student data object.
                  */
                 $app->hook->do_action('post_save_stu', $spro);
-                
+
                 etsis_logger_activity_log_write('New Record', 'Student', get_name($id), get_persondata('uname'));
                 _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'stu/' . $id . '/');
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -338,7 +339,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         try {
             $stu = $app->db->acad_program()
                 ->setTableAlias('a')
-                ->select('a.acadProgID,a.acadProgCode,a.acadProgTitle')
+                ->select('a.id,a.acadProgCode,a.acadProgTitle')
                 ->select('a.acadLevelCode,b.majorName,c.locationName')
                 ->select('d.schoolName,e.personID,e.startTerm')
                 ->_join('major', 'a.majorCode = b.majorCode', 'b')
@@ -357,13 +358,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -380,7 +381,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * student record.
          */ elseif (count($q) <= 0) {
 
-            redirect(get_base_url() . 'stu' . '/' . $id . '/');
+            etsis_redirect(get_base_url() . 'stu' . '/' . $id . '/');
         }
         /**
          * If we get to this point, the all is well
@@ -388,10 +389,12 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+
             $app->view->display('student/add', [
                 'title' => 'Create Student Record',
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'student' => $q
                 ]
             );
@@ -407,11 +410,11 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         }
     });
 
-    $app->match('GET|POST', '/stac/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/stac/(\d+)/', function ($id) use($app) {
 
         try {
-            $stac = $app->db->stu_acad_cred()
-                ->select('stuAcadCredID,stuID,attCred,ceu')
+            $stac = $app->db->stac()
+                ->select('id,stuID,attCred,ceu')
                 ->select('status,termCode,courseCode')
                 ->select('shortTitle,grade,courseSection')
                 ->where('stuID = ?', $id)
@@ -425,13 +428,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -457,10 +460,14 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_style('table');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datatables');
+
             $app->view->display('student/stac', [
                 'title' => get_name($id),
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'stac' => $q,
                 'stu' => $id
                 ]
@@ -477,7 +484,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         }
     });
 
-    $app->match('GET|POST', '/sttr/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/sttr/(\d+)/', function ($id) use($app) {
 
         try {
             $sttr = $app->db->sttr()
@@ -485,7 +492,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 ->select('sttr.stuID,sttr.gradePoints,sttr.gpa,sttr.stuLoad')
                 ->select('b.termStartDate,b.termEndDate')
                 ->_join('term', 'sttr.termCode = b.termCode', 'b')
-                ->_join('stu_course_sec', 'sttr.termCode = c.termCode AND sttr.stuID = c.stuID', 'c')
+                ->_join('stcs', 'sttr.termCode = c.termCode AND sttr.stuID = c.stuID', 'c')
                 ->where('sttr.stuID = ?', $id)
                 ->groupBy('sttr.termCode, sttr.stuID')
                 ->orderBy('sttr.termCode', 'ASC');
@@ -498,13 +505,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -530,10 +537,14 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_style('table');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datatables');
+
             $app->view->display('student/sttr', [
                 'title' => get_name($id),
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'sttr' => $q,
                 'stu' => $id
                 ]
@@ -550,24 +561,26 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         }
     });
 
-    $app->match('GET|POST', '/shis/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/shis/(\d+)/', function ($id) use($app) {
 
         if ($app->req->isPost()) {
             try {
-                if (isset($app->req->post['shisID'])) {
-                    $size = count($app->req->post['shisID']);
+                if (isset($app->req->post['id'])) {
+                    $size = count($app->req->post['id']);
                     $i = 0;
                     while ($i < $size) {
                         $shis = $app->db->hiatus();
-                        $shis->shisCode = $app->req->post['shisCode'][$i];
-                        $shis->startDate = $app->req->post['startDate'][$i];
-                        $shis->endDate = $app->req->post['endDate'][$i];
-                        $shis->comment = $app->req->post['comment'][$i];
-                        $shis->where('stuID = ?', $id)->_and_()->where('shisID = ?', $app->req->post['shisID'][$i]);
-                        $shis->update();
+                        $shis->set([
+                                'code' => $app->req->post['code'][$i],
+                                'startDate' => $app->req->post['startDate'][$i],
+                                'endDate' => ($app->req->post['endDate'][$i] != '' ? $app->req->post['endDate'][$i] : NULL),
+                                'comment' => $app->req->post['comment'][$i]
+                            ])
+                            ->where('stuID = ?', $id)->_and_()
+                            ->where('id = ?', $app->req->post['id'][$i])
+                            ->update();
                         ++$i;
                     }
-                    $app->flash('success_message', $flashNow->notice(200));
                     etsis_logger_activity_log_write('Update Record', 'Student Hiatus', get_name($id), get_persondata('uname'));
                 } else {
                     $shis = $app->db->hiatus();
@@ -575,40 +588,37 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                         $shis->$k = $v;
                     }
                     $shis->save();
-
-                    $app->flash('success_message', $flashNow->notice(200));
                     etsis_logger_activity_log_write('New Record', 'Student Hiatus (SHIS)', get_name($id), get_persondata('uname'));
                 }
                 etsis_cache_delete($id, 'stu');
-                redirect($app->req->server['HTTP_REFERER']);
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
 
         try {
-            $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/?key=' . get_option('api_key'));
-            $decode = json_decode($json, true);
+            $spro = get_student($id);
 
             $shis = $app->db->query("SELECT 
-                    CASE shisCode 
+                    CASE code 
                 	WHEN 'W' THEN 'Withdrawal'
                 	WHEN 'LOA' THEN 'Leave of Absence'
                 	WHEN 'SA' THEN 'Study Abroad'
                 	WHEN 'ILL' THEN 'Illness'
                 	ELSE 'Dismissed'
                 	END AS 'Code',
-                	shisID,stuID,shisCode,startDate,endDate,comment 
+                	id,stuID,code,startDate,endDate,comment 
                     FROM hiatus 
                     WHERE stuID = ? 
-                    ORDER BY shisID DESC", [$id]
+                    ORDER BY id DESC", [_h($spro->stuID)]
             );
 
             $q = $shis->find(function($data) {
@@ -619,13 +629,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -633,7 +643,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($spro == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -641,13 +651,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($spro) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (_h($decode[0]['stuID']) <= 0) {
+         */ elseif (_h($spro->stuID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -656,135 +666,17 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * and it is ok to process the query and print
          * the results in a html format.
          */ else {
+
+            etsis_register_style('form');
+            etsis_register_style('table');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datatables');
 
             $app->view->display('student/shis', [
                 'title' => get_name($id),
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'shis' => $q,
-                'stu' => $decode
-                ]
-            );
-        }
-    });
-
-    /**
-     * Before route check.
-     */
-    $app->before('GET|POST', '/strc/(\d+)/', function() {
-        if (!hasPermission('access_student_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
-        }
-    });
-
-    $app->match('GET|POST', '/strc/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
-
-        if ($app->req->isPost()) {
-            try {
-                if (isset($app->req->post['rstrID'])) {
-                    $size = count($app->req->post['rstrID']);
-                    $i = 0;
-                    while ($i < $size) {
-                        $strc = $app->db->restriction();
-                        $strc->rstrCode = $app->req->post['rstrCode'][$i];
-                        $strc->severity = $app->req->post['severity'][$i];
-                        $strc->startDate = $app->req->post['startDate'][$i];
-                        $strc->endDate = $app->req->post['endDate'][$i];
-                        $strc->comment = $app->req->post['comment'][$i];
-                        $strc->where('stuID = ?', $id)->_and_()->where('rstrID = ?', $app->req->post['rstrID'][$i]);
-                        $strc->update();
-                        ++$i;
-                    }
-                    $app->flash('success_message', $flashNow->notice(200));
-                    etsis_logger_activity_log_write('Update Record', 'Student Restriction', get_name($id), get_persondata('uname'));
-                } else {
-                    $strc = $app->db->restriction();
-                    foreach (_filter_input_array(INPUT_POST) as $k => $v) {
-                        $strc->$k = $v;
-                    }
-                    $strc->save();
-
-                    $app->flash('success_message', $flashNow->notice(200));
-                    etsis_logger_activity_log_write('New Record', 'Student Restriction (STRC)', get_name($id), get_persondata('uname'));
-                }
-                etsis_cache_delete($id, 'stu');
-                redirect($app->req->server['HTTP_REFERER']);
-            } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            }
-        }
-
-        try {
-            $json = _file_get_contents($json_url . 'student/stuID/' . $id . '/?key=' . get_option('api_key'));
-            $decode = json_decode($json, true);
-
-            $strc = $app->db->query("SELECT 
-                        a.*,b.deptCode 
-                    FROM restriction a 
-                    LEFT JOIN restriction_code b ON a.rstrCode = b.rstrCode 
-                    WHERE a.stuID = ? 
-                    ORDER BY a.rstrID", [$id]
-            );
-
-            $q = $strc->find(function($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-        } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        }
-
-        /**
-         * If the database table doesn't exist, then it
-         * is false and a 404 should be sent.
-         */
-        if ($decode == false) {
-
-            $app->view->display('error/404', ['title' => '404 Error']);
-        }
-        /**
-         * If the query is legit, but there
-         * is no data in the table, then 404
-         * will be shown.
-         */ elseif (empty($decode) == true) {
-
-            $app->view->display('error/404', ['title' => '404 Error']);
-        }
-        /**
-         * If data is zero, 404 not found.
-         */ elseif (_h($decode[0]['stuID']) <= 0) {
-
-            $app->view->display('error/404', ['title' => '404 Error']);
-        }
-        /**
-         * If we get to this point, the all is well
-         * and it is ok to process the query and print
-         * the results in a html format.
-         */ else {
-
-            $app->view->display('student/strc', [
-                'title' => get_name($id),
-                'cssArray' => $css,
-                'jsArray' => $js,
-                'strc' => $q,
-                'stu' => $decode
+                'stu' => $spro
                 ]
             );
         }
@@ -799,28 +691,30 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         }
     });
 
-    $app->match('GET|POST', '/sacd/(\d+)/', function ($id) use($app, $css, $js, $json_url) {
+    $app->match('GET|POST', '/sacd/(\d+)/', function ($id) use($app) {
 
-        $json = _file_get_contents($json_url . 'stu_acad_cred/stuAcadCredID/' . (int) $id . '/?key=' . get_option('api_key'));
-        $decode = json_decode($json, true);
+        $stac = $app->db->stac()
+            ->where('id = ?', (int) $id)
+            ->findOne();
 
-        $date = date("Y-m-d");
-        $time = date("h:m A");
+        $date = \Jenssegers\Date\Date::now()->format("Y-m-d");
+        $time = \Jenssegers\Date\Date::now()->format("h:m A");
 
         if ($app->req->isPost()) {
             try {
-                $rterm = _file_get_contents($json_url . 'term/termCode/' . $app->req->post['termCode'] . '/?key=' . get_option('api_key'));
-                $term = json_decode($rterm, true);
+                $term = $app->db->term()
+                    ->where('termCode = ?', $app->req->post['termCode'])
+                    ->findOnbe();
 
-                $detail = $app->db->stu_acad_cred();
+                $detail = $app->db->stac();
                 $detail->courseID = $app->req->post['courseID'];
-                $detail->courseSecID = $decode[0]['courseSecID'];
+                $detail->courseSecID = _h($stac->courseSecID);
                 $detail->courseCode = $app->req->post['courseCode'];
-                $detail->courseSecCode = $decode[0]['courseSecCode'];
+                $detail->courseSecCode = _h($stac->courseSecCode);
                 $detail->sectionNumber = $app->req->post['sectionNumber'];
-                $detail->courseSection = $decode[0]['courseSection'];
+                $detail->courseSection = _h($stac->courseSection);
                 $detail->termCode = $app->req->post['termCode'];
-                $detail->reportingTerm = $term[0]['reportingTerm'];
+                $detail->reportingTerm = _h($term->reportingTerm);
                 $detail->subjectCode = $app->req->post['subjectCode'];
                 $detail->deptCode = $app->req->post['deptCode'];
                 $detail->shortTitle = $app->req->post['shortTitle'];
@@ -832,8 +726,8 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 $detail->courseLevelCode = $app->req->post['courseLevelCode'];
                 $detail->creditType = $app->req->post['creditType'];
                 $detail->startDate = $app->req->post['startDate'];
-                $detail->endDate = $app->req->post['endDate'];
-                if (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= $term[0]['termStartDate'] && $date > $term[0]['dropAddEndDate']) {
+                $detail->endDate = ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL);
+                if (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= _h($term->termStartDate) && $date > _h($term->dropAddEndDate)) {
                     $detail->compCred = '0.0';
                     $detail->gradePoints = acadCredGradePoints($app->req->post['grade'], '0.0');
                     $detail->statusTime = $time;
@@ -852,36 +746,36 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                     $detail->gradePoints = acadCredGradePoints($app->req->post['grade'], $app->req->post['attCred']);
                     $detail->grade = $app->req->post['grade'];
                 }
-                $detail->where('stuAcadCredID = ?', $id);
+                $detail->where('id = ?', $id);
 
                 /**
                  * If the posted status is 'W' or 'D' and today's date is less than the 
                  * primary term start date, then delete all student course sec as well as 
                  * student acad cred records.
                  */
-                if (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date < $term[0]['termStartDate']) {
-                    $q = $app->db->stu_course_sec()
-                        ->where('stuID = ?', $decode[0]['stuID'])->_and_()
-                        ->where('courseSection = ?', $decode[0]['courseSection'])
+                if (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date < _h($term->termStartDate)) {
+                    $q = $app->db->stcs()
+                        ->where('stuID = ?', _h((int) $stac->stuID))->_and_()
+                        ->where('courseSection = ?', _h($stac->courseSection))
                         ->delete();
-                    $q = $app->db->stu_acad_cred()->where('stuAcadCredID = ?', $id)->delete();
+                    $q = $app->db->stac()->where('id = ?', $id)->delete();
 
                     if (function_exists('financial_module')) {
-                        $q = $app->db->stu_acct_fee()->where('stuID = ?', $decode[0]['stuID'])->_and_()->where('description = ?', $decode[0]['courseSection'])->delete();
+                        $q = $app->db->stu_acct_fee()->where('stuID = ?', $stac->stuID)->_and_()->where('description = ?', _h($stac->courseSection))->delete();
                         /**
                          * Begin Updating tuition totals.
                          */
-                        $total = qt('course_sec', 'courseFee', 'courseSection = "' . $decode[0]['courseSection'] . '"') + qt('course_sec', 'labFee', 'courseSection = "' . $decode[0]['courseSection'] . '"') + qt('course_sec', 'materialFee', 'courseSection = "' . $decode[0]['courseSection'] . '"');
-                        $stuTuition = $app->db->stu_acct_tuition()->where('stuID = ? AND termCode = ?', [$decode[0]['stuID'], $app->req->post['termCode']])->findOne();
+                        $total = qt('course_sec', 'courseFee', 'courseSection = "' . _h($stac->courseSection) . '"') + qt('course_sec', 'labFee', 'courseSection = "' . _h($stac->courseSection) . '"') + qt('course_sec', 'materialFee', 'courseSection = "' . _h($stac->courseSection) . '"');
+                        $stuTuition = $app->db->stu_acct_tuition()->where('stuID = ? AND termCode = ?', [_h($stac->stuID), $app->req->post['termCode']])->findOne();
                         $q = $app->db->stu_acct_tuition();
                         $q->total = bcsub($stuTuition->total, $total);
-                        $q->where('stuID = ?', $decode[0]['stuID'])->_and_()->where('termCode = ?', $app->req->post['termCode'])->update();
+                        $q->where('stuID = ?', _h((int) $stac->stuID))->_and_()->where('termCode = ?', $app->req->post['termCode'])->update();
                         /**
                          * End updating tuition totals.
                          */
                     }
 
-                    redirect(get_base_url() . 'stu/stac' . '/' . $decode[0]['stuID'] . '/' . bm());
+                    etsis_redirect(get_base_url() . 'stu/stac' . '/' . _h((int) $stac->stuID) . '/');
                     return;
                 }
                 /**
@@ -889,28 +783,28 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                  * primary term start date, and today's date is less than the term's drop/add 
                  * end date, then delete all student course sec as well as student acad cred 
                  * records.
-                 */ elseif (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= $term[0]['termStartDate'] && $date < $term[0]['dropAddEndDate']) {
-                    $q = $app->db->stu_course_sec()
-                        ->where('stuID = ?', $decode[0]['stuID'])->_and_()
-                        ->where('courseSection = ?', $decode[0]['courseSection'])
+                 */ elseif (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= _h($term->termStartDate) && $date < _h($term->dropAddEndDate)) {
+                    $q = $app->db->stcs()
+                        ->where('stuID = ?', _h((int) $stac->stuID))->_and_()
+                        ->where('courseSection = ?', _h($stac->courseSection))
                         ->delete();
-                    $q = $app->db->stu_acad_cred()->where('stuAcadCredID = ?', $id)->delete();
+                    $q = $app->db->stac()->where('id = ?', $id)->delete();
 
                     if (function_exists('financial_module')) {
-                        $q = $app->db->stu_acct_fee()->where('stuID = ?', $decode[0]['stuID'])->_and_()->where('description = ?', $decode[0]['courseSection'])->delete();
+                        $q = $app->db->stu_acct_fee()->where('stuID = ?', _h((int) $stac->stuID))->_and_()->where('description = ?', _h($stac->courseSection))->delete();
                         /**
                          * Begin Updating tuition totals.
                          */
-                        $total = qt('course_sec', 'courseFee', 'courseSection = "' . $decode[0]['courseSection'] . '"') + qt('course_sec', 'labFee', 'courseSection = "' . $decode[0]['courseSection'] . '"') + qt('course_sec', 'materialFee', 'courseSection = "' . $decode[0]['courseSection'] . '"');
+                        $total = qt('course_sec', 'courseFee', 'courseSection = "' . _h($stac->courseSection) . '"') + qt('course_sec', 'labFee', 'courseSection = "' . _h($stac->courseSection) . '"') + qt('course_sec', 'materialFee', 'courseSection = "' . _h($stac->courseSection) . '"');
                         $q = $app->db->stu_acct_tuition();
                         $q->total = bcsub($q->total, $total);
-                        $q->where('stuID = ?', $decode[0]['stuID'])->_and_()->where('termCode = ?', $app->req->post['termCode'])->update();
+                        $q->where('stuID = ?', _h((int) $stac->stuID))->_and_()->where('termCode = ?', $app->req->post['termCode'])->update();
                         /**
                          * End updating tuition totals.
                          */
                     }
 
-                    redirect(get_base_url() . 'stu/stac' . '/' . $decode[0]['stuID'] . '/' . bm());
+                    etsis_redirect(get_base_url() . 'stu/stac' . '/' . _h((int) $stac->stuID) . '/');
                     return;
                 }
                 /**
@@ -918,44 +812,43 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                  * primary term start date, and today's date is greater than the term's drop/add 
                  * end date, then update student course sec record with a 'W' status and update  
                  * student acad record with a 'W' grade and 0.0 completed credits.
-                 */ elseif (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= $term[0]['termStartDate'] && $date > $term[0]['dropAddEndDate']) {
-                    $q = $app->db->stu_course_sec();
+                 */ elseif (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= _h($term->termStartDate) && $date > _h($term->dropAddEndDate)) {
+                    $q = $app->db->stcs();
                     $q->courseSecCode = $app->req->post['courseSecCode'];
                     $q->termCode = $app->req->post['termCode'];
                     $q->courseCredits = $app->req->post['attCred'];
                     $q->status = $app->req->post['status'];
-                    $q->statusDate = $q->NOW();
+                    $q->statusDate = \Jenssegers\Date\Date::now();
                     $q->statusTime = $time;
-                    $q->where('stuID = ?', $decode[0]['stuID'])->_and_()
-                        ->where('courseSecID = ?', $app->req->post['courseSecID'])
+                    $q->where('stuID = ?', _h((int) $stac->stuID))->_and_()
+                        ->where('id = ?', $app->req->post['courseSecID'])
                         ->update();
                     $detail->update();
                 }
                 /**
                  * If there is no status change or the status change is not a 'W', 
-                 * just update stu_course_sec and stu_acad_cred records with the 
+                 * just update stcs and stac records with the 
                  * changed information.
                  */ else {
-                    $q = $app->db->stu_course_sec();
+                    $q = $app->db->stcs();
                     $q->courseSecCode = $app->req->post['courseSecCode'];
                     $q->termCode = $app->req->post['termCode'];
                     $q->courseCredits = $app->req->post['attCred'];
                     $q->status = $app->req->post['status'];
                     $q->statusDate = $app->req->post['statusDate'];
                     $q->statusTime = $app->req->post['statusTime'];
-                    $q->where('stuID = ?', $decode[0]['stuID'])->_and_()
-                        ->where('courseSecID = ?', $app->req->post['courseSecID'])
+                    $q->where('stuID = ?', _h((int) $stac->stuID))->_and_()
+                        ->where('id = ?', $app->req->post['courseSecID'])
                         ->update();
                     $detail->update();
                 }
                 /**
                  * @since 6.1.08
                  */
-                $sacd = $app->db->stu_acad_cred()
-                    ->setTableAlias('sacd')
-                    ->select('sacd.*,nae.uname,nae.fname,nae.lname,nae.email')
-                    ->_join('person', 'sacd.stuID = nae.personID', 'nae')
-                    ->where('stuAcadCredID = ?', $id)
+                $sacd = $app->db->stac()
+                    ->select('stac.*,nae.uname,nae.fname,nae.lname,nae.email')
+                    ->_join('person', 'stac.stuID = nae.personID', 'nae')
+                    ->where('stac.id = ?', $id)
                     ->findOne();
                 /**
                  * Triggers after SACD record is updated.
@@ -965,15 +858,15 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                  */
                 $app->hook->do_action('post_update_sacd', $sacd);
                 etsis_cache_delete($id, 'stu');
-                redirect($app->req->server['HTTP_REFERER']);
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -983,7 +876,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($decode == false) {
+        if ($stac == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -991,13 +884,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($decode) == true) {
+         */ elseif (empty($stac) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($decode) <= 0) {
+         */ elseif (count($stac) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1007,11 +900,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+
             $app->view->display('student/sacd', [
-                'title' => get_name(_h($decode[0]['stuID'])),
-                'cssArray' => $css,
-                'jsArray' => $js,
-                'sacd' => $decode
+                'title' => get_name(_h((int) $stac->stuID)),
+                'sacd' => $stac
                 ]
             );
         }
@@ -1026,44 +921,58 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         }
     });
 
-    $app->match('GET|POST', '/sacp/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/sacp/(\d+)/', function ($id) use($app) {
         if ($app->req->isPost()) {
             try {
-                $sacp = $app->db->stu_program();
+                $sacp = $app->db->sacp();
                 foreach (_filter_input_array(INPUT_POST) as $k => $v) {
                     $sacp->$k = $v;
                 }
-                $sacp->where('stuProgID = ?', $id);
-                if ($sacp->update()) {
-                    $app->flash('success_message', $flashNow->notice(200));
-                    etsis_logger_activity_log_write('Update Record', 'Student Acad Program (SACP)', get_name($app->req->post['stuID']), get_persondata('uname'));
-                } else {
-                    $app->flash('error_message', $flashNow->notice(409));
+                $sacp->where('id = ?', $id);
+                $sacp->update();
+
+                if ($app->req->post['currStatus'] == 'C' || $app->req->post['currStatus'] == 'W') {
+                    $_sacp = $app->db->sacp()
+                        ->select('acadProgCode')
+                        ->where('stuID = ?', $app->req->post['stuID'])->_and_()
+                        ->where('id = ?', $id)
+                        ->findOne();
+
+                    $stal = $app->db->stal()
+                        ->where('stuID = ?', $app->req->post['stuID'])->_and_()
+                        ->where('acadProgCode = ?', _h($_sacp->acadProgCode))
+                        ->findOne();
+                    $stal->set([
+                            'endDate' => ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL)
+                        ])
+                        ->update();
                 }
+
+                etsis_logger_activity_log_write('Update Record', 'Student Acad Program (SACP)', get_name($app->req->post['stuID']), get_persondata('uname'));
                 etsis_cache_delete($id, 'stu');
-                redirect($app->req->server['HTTP_REFERER']);
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
         try {
             $sacp = $app->db->acad_program()
                 ->setTableAlias('a')
-                ->select('a.acadProgCode,a.schoolCode,a.acadLevelCode,b.stuProgID')
-                ->select('b.eligible_to_graduate,b.graduationDate,b.antGradDate')
-                ->select('b.stuID,b.advisorID,b.catYearCode,b.currStatus')
-                ->select('b.statusDate,b.startDate,b.endDate,b.comments')
-                ->select('b.approvedBy,b.LastUpdate,c.schoolName')
-                ->_join('stu_program', 'a.acadProgCode = b.acadProgCode', 'b')
+                ->select('a.acadProgCode,a.schoolCode,a.acadLevelCode,sacp.id')
+                ->select('sacp.eligible_to_graduate,sacp.graduationDate,sacp.antGradDate')
+                ->select('sacp.stuID,sacp.advisorID,sacp.catYearCode,sacp.currStatus')
+                ->select('sacp.statusDate,sacp.startDate,sacp.endDate,sacp.comments')
+                ->select('sacp.approvedBy,sacp.LastUpdate,c.schoolName')
+                ->_join('sacp', 'a.acadProgCode = sacp.acadProgCode')
                 ->_join('school', 'a.schoolCode = c.schoolCode', 'c')
-                ->where('b.stuProgID = ?', $id);
+                ->where('sacp.id = ?', $id);
             $q = $sacp->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1072,13 +981,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -1110,11 +1019,115 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datepicker');
+
             $app->view->display('student/sacp', [
                 'title' => get_name(_h($q[0]['stuID'])),
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'sacp' => $q
+                ]
+            );
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/sacp/(\d+)/stal/', function() {
+        if (!hasPermission('access_student_screen')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/sacp/(\d+)/stal/', function ($id) use($app) {
+        if ($app->req->isPost()) {
+            try {
+                $stal = $app->db->stal()
+                    ->where('id = ?', $app->req->post['stalID'])
+                    ->findOne();
+                $stal->set([
+                        'acadLevelCode' => $app->req->post['acadLevelCode'],
+                        'currentClassLevel' => $app->req->post['currentClassLevel'],
+                        'enrollmentStatus' => $app->req->post['enrollmentStatus'],
+                        'gpa' => $app->req->post['gpa'],
+                        'startTerm' => $app->req->post['startTerm'],
+                        'startDate' => $app->req->post['startDate'],
+                        'endDate' => ($app->req->post['endDate'] == '' ? NULL : $app->req->post['endDate'])
+                    ])
+                    ->update();
+
+                etsis_logger_activity_log_write('Update Record', 'Student Academic Level (STAL)', get_name($app->req->post['stuID']), get_persondata('uname'));
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            }
+        }
+
+        try {
+            $stal = $app->db->sacp()
+                ->select('sacp.id AS sacpID,sacp.stuID,stal.id AS stalID,stal.acadProgCode')
+                ->select('stal.acadLevelCode,stal.currentClassLevel,stal.enrollmentStatus')
+                ->select('stal.gpa,stal.startTerm,stal.startDate,stal.endDate,acad_program.acadProgTitle')
+                ->_join('stal', 'sacp.stuID = stal.stuID AND sacp.acadProgCode = stal.acadProgCode')
+                ->_join('acad_program', 'sacp.acadProgCode = acad_program.acadProgCode')
+                ->where('sacp.id = ?', $id)
+                ->findOne();
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($stal === false) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($stal) === true) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If data is zero, 404 not found.
+         */ elseif (_h($stal->sacpID) <= 0) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datepicker');
+
+            $app->view->display('student/stal', [
+                'title' => get_name(_h($stal->stuID)),
+                'stal' => $stal
                 ]
             );
         }
@@ -1129,79 +1142,65 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         }
     });
 
-    $app->match('GET|POST', '/add-prog/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/add-prog/(\d+)/', function ($id) use($app) {
         if ($app->req->isPost()) {
             try {
-                $json = _file_get_contents($json_url . 'acad_program/acadProgCode/' . $app->req->post['acadProgCode'] . '/?key=' . get_option('api_key'));
-                $decode = json_decode($json, true);
+                $prog = $app->db->acad_program()
+                    ->where('acadProgCode = ?', $app->req->post['acadProgCode'])
+                    ->findOne();
 
-                $level = $app->db->stu_acad_level()
+                $stal = $app->db->stal()
                     ->where('stuID = ?', $id)->_and_()
-                    ->where('acadProgCode = ?', $app->req->post['acadProgCode']);
-                $sql = $level->find(function($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
-                    }
-                    return $array;
-                });
+                    ->where('acadProgCode = ?', $app->req->post['acadProgCode'])
+                    ->count('id');
 
-                $sacp = $app->db->stu_program();
-                $sacp->stuID = $id;
-                $sacp->acadProgCode = _trim($app->req->post['acadProgCode']);
-                $sacp->currStatus = $app->req->post['currStatus'];
-                $sacp->statusDate = $app->db->NOW();
-                $sacp->startDate = $app->req->post['startDate'];
-                $sacp->endDate = $app->req->post['endDate'];
-                $sacp->approvedBy = get_persondata('personID');
-                $sacp->antGradDate = $app->req->post['antGradDate'];
-                $sacp->advisorID = $app->req->post['advisorID'];
-                $sacp->catYearCode = $app->req->post['catYearCode'];
-                if ($sacp->save()) {
-                    if (count($sql[0]['id']) <= 0) {
-                        $al = $app->db->stu_acad_level();
-                        $al->stuID = $id;
-                        $al->acadProgCode = _trim($app->req->post['acadProgCode']);
-                        $al->acadLevelCode = $decode[0]['acadLevelCode'];
-                        $al->addDate = $app->db->NOW();
-                        $al->save();
-                    }
-                    $app->flash('success_message', $flashNow->notice(200));
-                    etsis_logger_activity_log_write('New Record', 'Student Academic Program', get_name($id), get_persondata('uname'));
-                    redirect(get_base_url() . 'stu' . '/' . $id . '/' . bm());
-                } else {
-                    $app->flash('error_message', $flashNow->notice(409));
-                    $app->req->server['HTTP_REFERER'];
+                $sacp = $app->db->sacp();
+                $sacp->insert([
+                    'stuID' => $id,
+                    'acadProgCode' => _trim($app->req->post['acadProgCode']),
+                    'currStatus' => $app->req->post['currStatus'],
+                    'statusDate' => \Jenssegers\Date\Date::now(),
+                    'startDate' => $app->req->post['startDate'],
+                    'endDate' => ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL),
+                    'approvedBy' => get_persondata('personID'),
+                    'antGradDate' => $app->req->post['antGradDate'],
+                    'advisorID' => $app->req->post['advisorID'],
+                    'catYearCode' => $app->req->post['catYearCode']
+                ]);
+
+                if ($stal <= 0) {
+                    $al = $app->db->stal();
+                    $al->insert([
+                        'stuID' => $id,
+                        'acadProgCode' => _trim($app->req->post['acadProgCode']),
+                        'acadLevelCode' => _h($prog->acadLevelCode)
+                    ]);
                 }
+
+                etsis_logger_activity_log_write('New Record', 'Student Academic Program', get_name($id), get_persondata('uname'));
                 etsis_cache_delete($id, 'stu');
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'stu' . '/' . $id . '/');
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
         try {
-            $stu = $app->db->student()->where('stuID = ?', $id);
-            $q = $stu->find(function($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
+            $spro = get_student($id);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -1209,7 +1208,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($q === false) {
+        if ($spro === false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1217,13 +1216,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($q) === true) {
+         */ elseif (empty($spro) === true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($q) <= 0) {
+         */ elseif (_h($spro->stuID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1233,11 +1232,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+
             $app->view->display('student/add-prog', [
                 'title' => get_name($id),
-                'cssArray' => $css,
-                'jsArray' => $js,
-                'stu' => $q
+                'stu' => $spro
                 ]
             );
         }
@@ -1252,49 +1253,51 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         }
     });
 
-    $app->match('GET|POST', '/graduation/', function () use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/graduation/', function () use($app) {
         if ($app->req->isPost()) {
             try {
                 if (!empty($app->req->post['studentID'])) {
-                    $grad = $app->db->stu_program();
-                    $grad->statusDate = $grad->NOW();
-                    $grad->endDate = $grad->NOW();
-                    $grad->currStatus = 'G';
-                    $grad->graduationDate = $app->req->post['gradDate'];
-                    $grad->where('stuID = ?', $app->req->post['studentID'])->_and_()->where('eligible_to_graduate = "1"');
-                    if ($grad->update()) {
-                        $app->flash('success_message', $flashNow->notice(200));
-                    } else {
-                        $app->flash('error_message', $flashNow->notice(409));
-                    }
-                    redirect($app->req->server['HTTP_REFERER']);
+                    $grad = $app->db->sacp()
+                        ->where('stuID = ?', $app->req->post['studentID'])->_and_()
+                        ->where('eligible_to_graduate = "1"')
+                        ->findOne();
+                    $grad->set([
+                            'statusDate' => \Jenssegers\Date\Date::now(),
+                            'endDate' => \Jenssegers\Date\Date::now(),
+                            'currStatus' => 'G',
+                            'graduationDate' => $app->req->post['gradDate']
+                        ])
+                        ->update();
                 } else {
                     $grad = $app->db->graduation_hold();
-                    $grad->queryID = $app->req->post['queryID'];
-                    $grad->gradDate = $app->req->post['gradDate'];
-                    if ($grad->save()) {
-                        etsis_logger_activity_log_write('Update Record', 'Graduation', get_name($app->req->post['stuID']), get_persondata('uname'));
-                        $app->flash('success_message', $flashNow->notice(200));
-                    } else {
-                        $app->flash('error_message', $flashNow->notice(409));
-                    }
-                    redirect($app->req->server['HTTP_REFERER']);
+                    $grad->insert([
+                        'queryID' => $app->req->post['id'],
+                        'gradDate' => $app->req->post['gradDate']
+                    ]);
                 }
+                etsis_logger_activity_log_write('Update Record', 'Graduation', get_name($app->req->post['stuID']), get_persondata('uname'));
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
+
+        etsis_register_style('form');
+        etsis_register_style('jquery-ui');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('jquery-ui');
+        etsis_register_script('datepicker');
+
         $app->view->display('student/graduation', [
-            'title' => 'Graduation',
-            'cssArray' => $css,
-            'jsArray' => $js
+            'title' => 'Graduation'
             ]
         );
     });
@@ -1308,46 +1311,49 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         }
     });
 
-    $app->match('GET|POST', '/tran/', function () use($app, $css, $js) {
+    $app->match('GET|POST', '/tran/', function () use($app) {
         if ($app->req->isPost()) {
-            redirect(get_base_url() . 'stu/tran' . '/' . $app->req->post['stuID'] . '/' . $app->req->post['acadLevelCode'] . '/' . $app->req->post['template'] . '/');
+            etsis_redirect(get_base_url() . 'stu/tran' . '/' . $app->req->post['stuID'] . '/' . $app->req->post['acadLevelCode'] . '/' . $app->req->post['template'] . '/');
         }
 
+        etsis_register_style('form');
+        etsis_register_style('jquery-ui');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('jquery-ui');
+
         $app->view->display('student/tran', [
-            'title' => 'Transcript',
-            'cssArray' => $css,
-            'jsArray' => $js
+            'title' => 'Transcript'
             ]
         );
     });
 
-    $app->get('/tran/(\d+)/(\w+)/(\w+)/', function ($id, $level, $template) use($app, $css, $js, $flashNow) {
+    $app->get('/tran/(\d+)/(\w+)/(\w+)/', function ($id, $level, $template) use($app, $css, $js) {
 
         try {
-            $tranInfo = $app->db->stu_acad_cred()
-                ->setTableAlias('a')
-                ->select('CASE a.acadLevelCode WHEN "UG" THEN "Undergraduate" WHEN "GR" THEN "Graduate" '
+            $tranInfo = $app->db->stac()
+                ->select('CASE stac.acadLevelCode WHEN "UG" THEN "Undergraduate" WHEN "GR" THEN "Graduate" '
                     . 'WHEN "Phd" THEN "Doctorate" WHEN "CE" THEN "Continuing Education" WHEN "CTF" THEN "Certificate" '
                     . 'WHEN "DIP" THEN "Diploma" WHEN "PR" THEN "Professional" ELSE "Non-Degree" END AS "Level"')
-                ->select('a.stuID,b.address1,b.address2,b.city,b.state')
-                ->select('b.zip,c.ssn,c.dob,d.graduationDate,f.degreeCode')
+                ->select('stac.stuID,b.address1,b.address2,b.city,b.state')
+                ->select('b.zip,c.altID,c.ssn,c.dob,sacp.graduationDate,f.degreeCode')
                 ->select('f.degreeName,g.majorCode,g.majorName,h.minorCode')
                 ->select('h.minorName,i.specCode,i.specName,j.ccdCode,j.ccdName')
-                ->_join('address', 'a.stuID = b.personID', 'b')
-                ->_join('person', 'a.stuID = c.personID', 'c')
-                ->_join('stu_program', 'a.stuID = d.stuID', 'd')
-                ->_join('acad_program', 'd.acadProgCode = e.acadProgCode', 'e')
+                ->_join('address', 'stac.stuID = b.personID', 'b')
+                ->_join('person', 'stac.stuID = c.personID', 'c')
+                ->_join('sacp', 'stac.stuID = sacp.stuID')
+                ->_join('acad_program', 'sacp.acadProgCode = e.acadProgCode', 'e')
                 ->_join('degree', 'e.degreeCode = f.degreeCode', 'f')
                 ->_join('major', 'e.majorCode = g.majorCode', 'g')
                 ->_join('minor', 'e.minorCode = h.minorCode', 'h')
                 ->_join('specialization', 'e.specCode = i.specCode', 'i')
                 ->_join('ccd', 'e.ccdCode = j.ccdCode', 'j')
-                ->where('a.stuID = ?', $id)->_and_()
-                ->where('a.acadLevelCode = ?', $level)->_and_()
+                ->where('stac.stuID = ?', $id)->_and_()
+                ->where('stac.acadLevelCode = ?', $level)->_and_()
                 ->where('b.addressStatus = "C"')->_and_()
                 ->where('b.addressType = "P"')->_and_()
                 ->where('e.acadLevelCode = ?', $level)->_and_()
-                ->where('(d.currStatus = "A" OR d.currStatus = "G")');
+                ->where('(sacp.currStatus = "A" OR sacp.currStatus = "G")');
             $info = $tranInfo->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1361,7 +1367,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                         stac.termCode,stac.creditType,
                         stac.shortTitle,REPLACE(stac.courseCode,'-',' ') AS CourseName,stac.courseSecCode,
                         stac.startDate,stac.endDate 
-                    FROM stu_acad_cred stac
+                    FROM stac
                     LEFT JOIN term ON stac.termCode = term.termCode
                     WHERE stac.stuID = ? 
                     AND stac.acadLevelCode = ? 
@@ -1376,8 +1382,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
 
-            $tranGPA = $app->db->stu_acad_cred()
-                ->setTableAlias('stac')
+            $tranGPA = $app->db->stac()
                 ->select('SUM(stac.attCred) as Attempted')
                 ->select('SUM(stac.compCred) as Completed')
                 ->select('SUM(stac.gradePoints) as Points')
@@ -1399,7 +1404,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                         compCred,attCred,grade,gradePoints,
                         termCode,creditType,
                         shortTitle,REPLACE(courseCode,'-',' ') AS CourseName,courseSecCode 
-                    FROM stu_acad_cred  
+                    FROM stac  
                     WHERE stuID = ? 
                     AND acadLevelCode = ? 
                     AND creditType = 'TR'", [$id, $level]);
@@ -1411,8 +1416,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
 
-            $transferGPA = $app->db->stu_acad_cred()
-                ->setTableAlias('stac')
+            $transferGPA = $app->db->stac()
                 ->select('SUM(stac.attCred) as Attempted')
                 ->select('SUM(stac.compCred) as Completed')
                 ->select('SUM(stac.gradePoints) as Points')
@@ -1430,13 +1434,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -1446,8 +1450,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          */
         if ($info == false) {
 
-            $app->flash('error_message', $flashNow->notice(204));
-            redirect(get_base_url() . 'stu/tran' . '/');
+            _etsis_flash()->error(_etsis_flash()->notice(204), get_base_url() . 'stu/tran' . '/');
         }
         /**
          * If the query is legit, but there
@@ -1455,15 +1458,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
          * will be shown.
          */ elseif (empty($info) == true) {
 
-            $app->flash('error_message', $flashNow->notice(204));
-            redirect(get_base_url() . 'stu/tran' . '/');
+            _etsis_flash()->error(_etsis_flash()->notice(204), get_base_url() . 'stu/tran' . '/');
         }
         /**
          * If data is zero, 404 not found.
          */ elseif (count($info) <= 0) {
 
-            $app->flash('error_message', $flashNow->notice(204));
-            redirect(get_base_url() . 'stu/tran' . '/');
+            _etsis_flash()->error(_etsis_flash()->notice(204), get_base_url() . 'stu/tran' . '/');
         }
         /**
          * If we get to this point, the all is well
@@ -1473,8 +1474,6 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
 
             $app->view->display('student/templates/transcript/' . $template . '.template', [
                 'title' => 'Print Transcript',
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'stuInfo' => $info,
                 'courses' => $course,
                 'tranGPA' => $gpa,
@@ -1490,11 +1489,11 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
      */
     $app->before('GET|POST', '/timetable/', function() {
         if (!checkStuAccess(get_persondata('personID'))) {
-            redirect(get_base_url() . 'profile' . '/');
+            etsis_redirect(get_base_url() . 'profile' . '/');
         }
 
-        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-            redirect(get_base_url() . 'offline' . '/');
+        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+            etsis_redirect(get_base_url() . 'offline' . '/');
         }
     });
 
@@ -1516,11 +1515,11 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
      */
     $app->before('GET|POST', '/terms/', function() {
         if (!checkStuAccess(get_persondata('personID'))) {
-            redirect(get_base_url() . 'profile' . '/');
+            etsis_redirect(get_base_url() . 'profile' . '/');
         }
 
-        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-            redirect(get_base_url() . 'offline' . '/');
+        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+            etsis_redirect(get_base_url() . 'offline' . '/');
         }
     });
 
@@ -1534,8 +1533,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
             'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
         ];
         try {
-            $terms = $app->db->stu_acad_cred()
-                ->setTableAlias('stac')
+            $terms = $app->db->stac()
                 ->select('stac.stuID,stac.termCode,COUNT(stac.termCode) AS Courses')
                 ->where('stac.stuID = ?', get_persondata('personID'))
                 ->groupBy('stac.termCode')
@@ -1548,13 +1546,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -1572,11 +1570,11 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
      */
     $app->before('GET|POST', '/schedule.*', function() {
         if (!checkStuAccess(get_persondata('personID'))) {
-            redirect(get_base_url() . 'profile' . '/');
+            etsis_redirect(get_base_url() . 'profile' . '/');
         }
 
-        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-            redirect(get_base_url() . 'offline' . '/');
+        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+            etsis_redirect(get_base_url() . 'offline' . '/');
         }
     });
 
@@ -1594,11 +1592,11 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
             $terms = $app->db->course_sec()
                 ->setTableAlias('a')
                 ->select('a.courseSecID,a.courseSecCode,a.secShortTitle,a.startTime,a.termCode')
-                ->select('a.endTime,a.dotw,a.facID,b.buildingName,c.roomNumber,d.stuID,e.stuAcadCredID')
+                ->select('a.endTime,a.dotw,a.facID,b.buildingName,c.roomNumber,d.stuID,e.id')
                 ->_join('building', 'a.buildingCode = b.buildingCode', 'b')
                 ->_join('room', 'a.roomCode = c.roomCode', 'c')
-                ->_join('stu_course_sec', 'a.courseSecCode = d.courseSecCode', 'd')
-                ->_join('stu_acad_cred', 'd.courseSecID = e.courseSecID', 'e')
+                ->_join('stcs', 'a.courseSecCode = d.courseSecCode', 'd')
+                ->_join('stac', 'd.id = e.courseSecID', 'e')
                 ->where('a.termCode = ?', $term)
                 ->where('d.stuID = ?', get_persondata('personID'))
                 ->where('d.termCode = ?', $term)
@@ -1613,13 +1611,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -1666,11 +1664,11 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
      */
     $app->before('GET|POST', '/final-grades/', function() {
         if (!checkStuAccess(get_persondata('personID'))) {
-            redirect(get_base_url() . 'profile' . '/');
+            etsis_redirect(get_base_url() . 'profile' . '/');
         }
 
-        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-            redirect(get_base_url() . 'offline' . '/');
+        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+            etsis_redirect(get_base_url() . 'offline' . '/');
         }
     });
 
@@ -1685,7 +1683,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         ];
 
         try {
-            $final = $app->db->stu_acad_cred()
+            $final = $app->db->stac()
                 ->setTableAlias('a')
                 ->select('a.stuID,a.grade,a.termCode')
                 ->select('b.courseSecCode,b.secShortTitle')
@@ -1701,13 +1699,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -1720,46 +1718,46 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
         );
     });
 
-    $app->get('/deleteSHIS/(\d+)/', function ($id) use($app, $flashNow) {
+    $app->get('/deleteSHIS/(\d+)/', function ($id) use($app) {
         try {
-            $q = $app->db->hiatus()->where('shisID = ?', $id);
-
+            $q = $app->db->hiatus()->where('id = ?', $id);
             $q->delete();
-            $app->flash('success_message', $flashNow->notice(200));
-            redirect($app->req->server['HTTP_REFERER']);
+
+            _etsis_flash()->success(_etsis_flash()->notice(200));
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
+        etsis_redirect($app->req->server['HTTP_REFERER']);
     });
 
-    $app->get('/deleteSTAC/(\d+)/', function ($id) use($app, $flashNow) {
+    $app->get('/deleteSTAC/(\d+)/', function ($id) use($app) {
         try {
             $app->db->query("DELETE 
 						a.*,b.*,c.* 
 						FROM transfer_credit a 
-						LEFT JOIN stu_acad_cred b ON a.stuAcadCredID = b.stuAcadCredID  
-						LEFT JOIN stu_course_sec c ON b.stuID = c.stuID AND b.courseSecID = c.courseSecID 
-						WHERE a.stuAcadCredID = ?", [$id]
+						LEFT JOIN stac b ON a.stacID = b.id  
+						LEFT JOIN stcs c ON b.stuID = c.stuID AND b.courseSecID = c.id 
+						WHERE a.stacID = ?", [$id]
             );
-            $app->flash('success_message', $flashNow->notice(200));
-            redirect($app->req->server['HTTP_REFERER']);
+            _etsis_flash()->success(_etsis_flash()->notice(200));
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
+        etsis_redirect($app->req->server['HTTP_REFERER']);
     });
 
     $app->get('/getEvents/', function () use($app) {
@@ -1771,7 +1769,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 ->_join('building', 'b.buildingCode = c.buildingCode', 'c')
                 ->_join('event', 'a.eventID = d.eventID', 'd')
                 ->_join('event_category', 'd.catID = e.catID', 'e')
-                ->_join('stu_acad_cred', 'd.termCode = f.termCode AND d.title = f.courseSecCode', 'f')
+                ->_join('stac', 'd.termCode = f.termCode AND d.title = f.courseSecCode', 'f')
                 ->where('f.stuID = ?', get_persondata('personID'));
             $q = $meta->find(function($data) {
                 $array = [];
@@ -1797,18 +1795,18 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 echo json_encode($events);
             }
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
 
-    $app->post('/progLookup/', function () use($app, $flashNow) {
+    $app->post('/progLookup/', function () use($app) {
         try {
             $prog = $app->db->acad_program()
                 ->setTableAlias('a')
@@ -1819,6 +1817,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 ->_join('school', 'a.schoolCode = d.schoolCode', 'd')
                 ->where('a.acadProgCode = ?', $app->req->post['acadProgCode'])->_and_()
                 ->where('a.currStatus = "A"')->_and_()
+                ->where('a.endDate IS NULL')->_or_()
                 ->whereLte('a.endDate', '0000-00-00');
             $q = $prog->find(function($data) {
                 $array = [];
@@ -1827,7 +1826,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 }
                 return $array;
             });
-            foreach ($q as $k => $v) {
+            foreach ($q as $v) {
                 $json = [
                     '#acadProgTitle' => $v['acadProgTitle'], '#locationName' => $v['locationName'],
                     "#majorName" => $v['majorName'], "#schoolName" => $v['schoolCode'] . ' ' . $v['schoolName'],
@@ -1836,13 +1835,48 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
             }
             echo json_encode($json);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+    });
+
+    $app->match('GET|POST', '/stuLookup/', function() use($app) {
+        try {
+            $term = $app->req->get['term'];
+            $stu = $app->db->student()
+                ->select('student.stuID,person.altID,person.fname,person.lname')
+                ->_join('person', 'student.stuID = person.personID')
+                ->whereLike('student.stuID', "%" . $term . "%")->_or_()
+                ->whereLike('person.altID', "%" . $term . "%")->_or_()
+                ->whereLike('person.fname', "%" . $term . "%")->_or_()
+                ->whereLike('person.lname', "%" . $term . "%")->_or_()
+                ->whereLike('CONCAT(person.lname,", ",person.fname)', "%" . $term . "%")->_or_()
+                ->whereLike('CONCAT(person.fname," ",person.lname)', "%" . $term . "%")
+                ->find();
+            $items = [];
+            foreach ($stu as $x) {
+                $option = array(
+                    'id' => _h($x->stuID),
+                    'label' => get_name(_h($x->stuID)),
+                    'value' => get_name(_h($x->stuID))
+                );
+                $items[] = $option;
+            }
+            echo json_encode($items);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
@@ -1859,7 +1893,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
      */
     $app->before('GET|POST', '/stu/payment-cancel/', function () {
         if (!is_user_logged_in()) {
-            redirect(get_base_url() . 'login' . '/');
+            etsis_redirect(get_base_url() . 'login' . '/');
         }
     });
 
@@ -1875,7 +1909,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
      */
     $app->before('GET|POST', '/stu/payment-success/', function () {
         if (!is_user_logged_in()) {
-            redirect(get_base_url() . 'login' . '/');
+            etsis_redirect(get_base_url() . 'login' . '/');
         }
     });
 
@@ -1889,19 +1923,19 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
     $app->post('/stu/redirectPaypal/', function () use($app) {
 
         $vars = [];
-        $vars['amount'] = $app->req->_post('amount');
-        $vars['cmd'] = $app->req->_post('cmd');
-        $vars['business'] = $app->req->_post('business');
-        $vars['currency_code'] = $app->req->_post('currency_code');
-        $vars['item_name'] = $app->req->_post('item_name');
-        $vars['return'] = $app->req->_post('return');
-        $vars['notify_url'] = $app->req->_post('notify_url');
-        $vars['cancel_return'] = $app->req->_post('cancel_return');
-        $vars['custom'] = $app->req->_post('custom');
-        $vars['item_number'] = $app->req->_post('item_number');
-        $vars['shipping'] = $app->req->_post('shipping');
+        $vars['amount'] = $app->req->post['amount'];
+        $vars['cmd'] = $app->req->post['cmd'];
+        $vars['business'] = $app->req->post['business'];
+        $vars['currency_code'] = $app->req->post['currency_code'];
+        $vars['item_name'] = $app->req->post['item_name'];
+        $vars['return'] = $app->req->post['return'];
+        $vars['notify_url'] = $app->req->post['notify_url'];
+        $vars['cancel_return'] = $app->req->post['cancel_return'];
+        $vars['custom'] = $app->req->post['custom'];
+        $vars['item_number'] = $app->req->post['item_number'];
+        $vars['shipping'] = $app->req->post['shipping'];
         etsis_cache_flush_namespace('student_account');
-        redirect($app->req->_post('ppurl') . '?' . http_build_query($vars));
+        etsis_redirect($app->req->post['ppurl'] . '?' . http_build_query($vars));
     });
 
     /**
@@ -1909,11 +1943,11 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
      */
     $app->before('GET|POST', '/stu/bill/', function () {
         if (!checkStuAccess(get_persondata('personID'))) {
-            redirect(get_base_url() . 'profile' . '/');
+            etsis_redirect(get_base_url() . 'profile' . '/');
         }
 
-        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-            redirect(get_base_url() . 'offline' . '/');
+        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+            etsis_redirect(get_base_url() . 'offline' . '/');
         }
     });
 
@@ -1946,13 +1980,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 etsis_cache_add('students_bill' . get_persondata('personID'), $q, 'student_account');
             }
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -2013,7 +2047,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 });
                 etsis_cache_add('tuition' . $id, $q2, 'student_account');
             }
-            $fee = $app->db->query('SELECT ' . 'ID, description, amount as Fee ' . 'FROM stu_acct_fee ' . 'WHERE billID = ? ' . 'AND type = "Fee"', [
+            $fee = $app->db->query('SELECT ' . 'id, description, amount as Fee ' . 'FROM stu_acct_fee ' . 'WHERE billID = ? ' . 'AND type = "Fee"', [
                 $id
             ]);
             $q3 = etsis_cache_get('fee' . $id, 'student_account');
@@ -2087,13 +2121,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 etsis_cache_add('sumRefund' . $id, $q6, 'student_account');
             }
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -2132,9 +2166,9 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 'title' => $q1[0]['termCode'] . ' Bill',
                 'bill' => $q1,
                 'tuition1' => $query,
-                'tuition2' => money_format('%n', $q2[0]['sum']),
+                'tuition2' => money_format('%n', (double)$q2[0]['sum']),
                 'fee' => $q3,
-                'begin' => money_format('-%n', bcadd($query[0]['total'], $q4[0]['sum'])),
+                'begin' => money_format('-%n', (double) $query[0]['total']+$q4[0]['sum']),
                 'sumFee' => $q4[0]['sum'],
                 'sumPayments' => $q5[0]['sum'],
                 'sumRefund' => $q6[0]['sum']
@@ -2147,15 +2181,15 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
      */
     $app->before('GET|POST', '/stu/account-history/', function () {
         if (!checkStuAccess(get_persondata('personID'))) {
-            redirect(get_base_url() . 'profile' . '/');
+            etsis_redirect(get_base_url() . 'profile' . '/');
         }
 
-        if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-            redirect(get_base_url() . 'offline' . '/');
+        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+            etsis_redirect(get_base_url() . 'offline' . '/');
         }
     });
 
-    $app->get('/stu/account-history/', function () use($app, $js, $flashNow) {
+    $app->get('/stu/account-history/', function () use($app) {
         $css = [
             'css/admin/module.admin.page.alt.tables.min.css'
         ];
@@ -2181,7 +2215,7 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 etsis_cache_add('payment_plan' . get_persondata('personID'), $sql, 'student_account');
             }
             $history = $app->db->query('SELECT 
-            ID AS FeeID, billID AS billID, stuID AS stuID,
+            id AS FeeID, billID AS billID, stuID AS stuID,
             termCode AS termCode, type as type, description AS description,
             amount AS FeeAmount, NULL AS PayAmount, NULL AS method, feeDate AS dateStamp 
             FROM stu_acct_fee 
@@ -2216,13 +2250,13 @@ $app->group('/stu', function() use ($app, $css, $js, $email) {
                 etsis_cache_add('history' . get_persondata('personID'), $q, 'student_account');
             }
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 

@@ -55,7 +55,7 @@ $app->group('/plugins', function () use($app) {
         }
         ob_end_clean();
 
-        redirect($app->req->server['HTTP_REFERER']);
+        etsis_redirect($app->req->server['HTTP_REFERER']);
     });
 
     $app->get('/deactivate/', function () use($app) {
@@ -98,7 +98,7 @@ $app->group('/plugins', function () use($app) {
          */
         $app->hook->do_action('deactivated_plugin', $pluginName);
 
-        redirect($app->req->server['HTTP_REFERER']);
+        etsis_redirect($app->req->server['HTTP_REFERER']);
     });
 
     $app->match('GET|POST', '/options/', function () use($app) {

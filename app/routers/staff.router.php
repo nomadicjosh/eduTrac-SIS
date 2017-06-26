@@ -78,13 +78,13 @@ $app->group('/staff', function () use($app) {
                     return $array;
                 });
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -181,7 +181,7 @@ $app->group('/staff', function () use($app) {
      */
     $app->before('GET|POST', '/file-manager/', function() {
         if (!hasPermission('access_dashboard')) {
-            redirect(get_base_url());
+            etsis_redirect(get_base_url());
         }
     });
     $app->get('/file-manager/', function () use($app) {
@@ -199,7 +199,7 @@ $app->group('/staff', function () use($app) {
      */
     $app->before('GET|POST', '/elfinder/', function() {
         if (!hasPermission('access_dashboard')) {
-            redirect(get_base_url());
+            etsis_redirect(get_base_url());
         }
     });
     $app->match('GET|POST', '/elfinder/', function () use($app) {
@@ -239,13 +239,13 @@ $app->group('/staff', function () use($app) {
                 etsis_logger_activity_log_write('Update Record', 'Staff', get_name($id), get_persondata('uname'));
                 _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -271,13 +271,13 @@ $app->group('/staff', function () use($app) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -331,7 +331,7 @@ $app->group('/staff', function () use($app) {
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $json_url) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app) {
 
         $get_person = get_person($id);
         $get_staff = get_staff($id);
@@ -347,7 +347,7 @@ $app->group('/staff', function () use($app) {
                     'office_phone' => $app->req->post['office_phone'],
                     'deptCode' => $app->req->post['deptCode'],
                     'status' => $app->req->post['status'],
-                    'addDate' => $staff->NOW(),
+                    'addDate' => \Jenssegers\Date\Date::now(),
                     'approvedBy' => get_persondata('personID')
                 ]);
                 /**
@@ -368,8 +368,8 @@ $app->group('/staff', function () use($app) {
                     'staffType' => $app->req->post['staffType'],
                     'hireDate' => $app->req->post['hireDate'],
                     'startDate' => $app->req->post['startDate'],
-                    'endDate' => $app->req->post['endDate'],
-                    'addDate' => $meta->NOW(),
+                    'endDate' => ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL),
+                    'addDate' => \Jenssegers\Date\Date::now(),
                     'approvedBy' => get_persondata('personID')
                 ]);
                 /**
@@ -399,13 +399,13 @@ $app->group('/staff', function () use($app) {
                 etsis_logger_activity_log_write('New Record', 'Staff Member', get_name($id), get_persondata('uname'));
                 _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'staff' . '/' . $id . '/');
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -437,7 +437,7 @@ $app->group('/staff', function () use($app) {
          * the user to the staff record.
          */ elseif (_h($get_staff->staffID) > 0) {
 
-            redirect(get_base_url() . 'staff' . '/' . _h($get_staff->staffID) . '/');
+            etsis_redirect(get_base_url() . 'staff' . '/' . _h($get_staff->staffID) . '/');
         }
         /**
          * If we get to this point, the all is well

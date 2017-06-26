@@ -21,7 +21,7 @@ use Cascade\Cascade;
  */
 $app->before('GET|POST', '/program(.*)', function() {
     if (!is_user_logged_in()) {
-        redirect(get_base_url());
+        etsis_redirect(get_base_url());
         exit();
     }
 });
@@ -39,7 +39,7 @@ $app->group('/program', function() use ($app) {
                     WHEN 'P' THEN 'Pending' 
                     ELSE 'Obsolete' 
                     END AS 'Status', 
-                    acadProgID,
+                    id,
                     acadProgCode,
                     acadProgTitle,
                     startDate,
@@ -56,13 +56,13 @@ $app->group('/program', function() use ($app) {
                     return $array;
                 });
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -91,13 +91,13 @@ $app->group('/program', function() use ($app) {
                 $prog->programDesc = $app->req->post['programDesc'];
                 $prog->currStatus = $app->req->post['currStatus'];
                 if ($program->currStatus !== $app->req->post['currStatus']) {
-                    $prog->statusDate = $app->db->NOW();
+                    $prog->statusDate = \Jenssegers\Date\Date::now();
                 }
                 $prog->deptCode = $app->req->post['deptCode'];
                 $prog->schoolCode = $app->req->post['schoolCode'];
                 $prog->acadYearCode = $app->req->post['acadYearCode'];
                 $prog->startDate = $app->req->post['startDate'];
-                $prog->endDate = $app->req->post['endDate'];
+                $prog->endDate = ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL);
                 $prog->degreeCode = $app->req->post['degreeCode'];
                 $prog->ccdCode = $app->req->post['ccdCode'];
                 $prog->majorCode = $app->req->post['majorCode'];
@@ -106,7 +106,7 @@ $app->group('/program', function() use ($app) {
                 $prog->acadLevelCode = $app->req->post['acadLevelCode'];
                 $prog->cipCode = $app->req->post['cipCode'];
                 $prog->locationCode = $app->req->post['locationCode'];
-                $prog->where('acadProdID = ?', $app->req->post['acadProgID']);
+                $prog->where('id = ?', $app->req->post['id']);
 
                 /**
                  * Fires during the update of an academic program.
@@ -114,20 +114,20 @@ $app->group('/program', function() use ($app) {
                  * @since 6.1.10
                  * @param array $prog Academic program object.
                  */
-                $app->hook->{'do_action'}('update_acad_program_db_table', $prog);
+                $app->hook->do_action('update_acad_program_db_table', $prog);
                 $prog->update();
 
                 etsis_cache_delete($id, 'prog');
                 etsis_logger_activity_log_write('Update', 'Acad Program', _h($program->acadProgCode), get_persondata('uname'));
                 _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -150,7 +150,7 @@ $app->group('/program', function() use ($app) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (_h($program->acadProgID) <= 0) {
+         */ elseif (_h($program->id) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -193,14 +193,14 @@ $app->group('/program', function() use ($app) {
                 $prog->acadProgTitle = $app->req->post['acadProgTitle'];
                 $prog->programDesc = $app->req->post['programDesc'];
                 $prog->currStatus = $app->req->post['currStatus'];
-                $prog->statusDate = $app->db->NOW();
-                $prog->approvedDate = $app->db->NOW();
+                $prog->statusDate = \Jenssegers\Date\Date::now();
+                $prog->approvedDate = \Jenssegers\Date\Date::now();
                 $prog->approvedBy = get_persondata('personID');
                 $prog->deptCode = $app->req->post['deptCode'];
                 $prog->schoolCode = $app->req->post['schoolCode'];
                 $prog->acadYearCode = $app->req->post['acadYearCode'];
                 $prog->startDate = $app->req->post['startDate'];
-                $prog->endDate = $app->req->post['endDate'];
+                $prog->endDate = ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL);
                 $prog->degreeCode = $app->req->post['degreeCode'];
                 $prog->ccdCode = $app->req->post['ccdCode'];
                 $prog->majorCode = $app->req->post['majorCode'];
@@ -219,18 +219,18 @@ $app->group('/program', function() use ($app) {
                 $app->hook->do_action('save_acad_program_db_table', $prog);
                 $prog->save();
 
-                $ID = $prog->lastInsertId();
+                $_id = $prog->lastInsertId();
                 etsis_cache_flush_namespace('prog');
                 etsis_logger_activity_log_write('New Record', 'Acad Program', $app->req->post['acadProgCode'], get_persondata('uname'));
-                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'program' . '/' . $ID . '/');
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'program' . '/' . $_id . '/');
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -255,10 +255,10 @@ $app->group('/program', function() use ($app) {
                 $year->$k = $v;
             }
             $year->save();
-            $ID = $year->lastInsertId();
+            $_id = $year->lastInsertId();
 
             $acad = $app->db->acad_year()
-                ->where('acadYearID = ?', $ID);
+                ->where('id = ?', $_id);
             $q = $acad->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -268,13 +268,13 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
@@ -287,10 +287,10 @@ $app->group('/program', function() use ($app) {
                 $deg->$k = $v;
             }
             $deg->save();
-            $ID = $deg->lastInsertId();
+            $_id = $deg->lastInsertId();
 
             $degree = $app->db->degree()
-                ->where('degreeID = ?', $ID);
+                ->where('id = ?', $_id);
             $q = $degree->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -300,13 +300,13 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
@@ -319,10 +319,10 @@ $app->group('/program', function() use ($app) {
                 $c->$k = $v;
             }
             $c->save();
-            $ID = $c->lastInsertId();
+            $_id = $c->lastInsertId();
 
             $ccd = $app->db->ccd()
-                ->where('ccdID = ?', $ID);
+                ->where('id = ?', $_id);
             $q = $ccd->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -332,13 +332,13 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
@@ -351,10 +351,10 @@ $app->group('/program', function() use ($app) {
                 $maj->$k = $v;
             }
             $maj->save();
-            $ID = $maj->lastInsertId();
+            $_id = $maj->lastInsertId();
 
             $major = $app->db->major()
-                ->where('majorID = ?', $ID);
+                ->where('id = ?', $_id);
             $q = $major->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -364,13 +364,13 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
@@ -383,10 +383,10 @@ $app->group('/program', function() use ($app) {
                 $min->$k = $v;
             }
             $min->save();
-            $ID = $min->lastInsertId();
+            $_id = $min->lastInsertId();
 
             $minor = $app->db->minor()
-                ->where('minorID = ?', $ID);
+                ->where('id = ?', $_id);
             $q = $minor->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -396,13 +396,13 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
@@ -415,10 +415,10 @@ $app->group('/program', function() use ($app) {
                 $spec->$k = $v;
             }
             $spec->save();
-            $ID = $spec->lastInsertId();
+            $_id = $spec->lastInsertId();
 
             $specialization = $app->db->specialization()
-                ->where('specID = ?', $ID);
+                ->where('id = ?', $_id);
             $q = $specialization->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -428,13 +428,13 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
@@ -447,10 +447,10 @@ $app->group('/program', function() use ($app) {
                 $c->$k = $v;
             }
             $c->save();
-            $ID = $c->lastInsertId();
+            $_id = $c->lastInsertId();
 
             $cip = $app->db->cip()
-                ->where('cipID = ?', $ID);
+                ->where('id = ?', $_id);
             $q = $cip->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -460,13 +460,13 @@ $app->group('/program', function() use ($app) {
             });
             echo json_encode($q);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });

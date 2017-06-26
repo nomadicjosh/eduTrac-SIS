@@ -8,6 +8,7 @@ use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
 use Cascade\Cascade;
+use app\src\Core\etsis_Mysqldump as Mysqldump;
 
 /**
  * Cron Router
@@ -108,7 +109,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                     _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             }
-            redirect($app->req->server['HTTP_REFERER']);
+            etsis_redirect($app->req->server['HTTP_REFERER']);
         }
 
         try {
@@ -135,7 +136,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             'set' => $set
         ]);
     });
-    
+
     $app->before('GET|POST', '/new/', function () {
         if (!hasPermission('access_cronjob_screen')) {
             _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
@@ -148,7 +149,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             if (filter_var($app->req->post['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
                 try {
                     $url = Node::table('cronjob_handler')
-                        ->where('url', '=', $app->req->_post('url'))
+                        ->where('url', '=', $app->req->post['url'])
                         ->find();
                 } catch (NodeQException $e) {
                     Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
@@ -164,23 +165,19 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                 }
 
                 if ($found == false) {
-                    if ($app->req->_post('each') == '') {
+                    if ($app->req->post['each'] == '') {
                         _etsis_flash()->error(_t('Time setting missing, please add time settings.'));
                     } else {
                         try {
                             $cron = Node::table('cronjob_handler');
-                            $cron->name = (string) $app->req->_post('name');
-                            $cron->url = (string) $app->req->_post('url');
-                            $cron->each = (int) $app->req->_post('each');
+                            $cron->name = (string) $app->req->post['name'];
+                            $cron->url = (string) $app->req->post['url'];
+                            $cron->each = (int) $app->req->post['each'];
                             $cron->eachtime = ((isset($app->req->post['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $app->req->post['eachtime'])) ? $app->req->post['eachtime'] : '');
                             $cron->status = (int) $app->req->post['status'];
                             $cron->save();
 
-                            if ($cron) {
-                                _etsis_flash()->success(_etsis_flash()->notice(200));
-                            } else {
-                                _etsis_flash()->error(_etsis_flash()->notice(409));
-                            }
+                            _etsis_flash()->success(_etsis_flash()->notice(200));
                         } catch (NodeQException $e) {
                             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
                             _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -195,7 +192,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             } else {
                 _etsis_flash()->error(_t('Cronjob URL is wrong.'));
             }
-            redirect(get_base_url() . 'cron/');
+            etsis_redirect(get_base_url() . 'cron/');
         }
 
         etsis_register_style('form');
@@ -228,7 +225,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             _etsis_flash()->error($e->getMessage(), get_base_url() . 'cron' . '/');
         }
     });
-    
+
     $app->before('GET|POST', '/setting/', function () {
         if (!hasPermission('access_cronjob_screen')) {
             _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
@@ -249,15 +246,11 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             if ($good == true) {
                 try {
                     $cron = Node::table('cronjob_setting')->find(1);
-                    $cron->cronjobpassword = (string) $app->req->_post('cronjobpassword');
-                    $cron->timeout = (isset($app->req->post['timeout']) && is_numeric($app->req->post['timeout']) ? (int) $app->req->_post('timeout') : 30);
+                    $cron->cronjobpassword = (string) $app->req->post['cronjobpassword'];
+                    $cron->timeout = (isset($app->req->post['timeout']) && is_numeric($app->req->post['timeout']) ? (int) $app->req->post['timeout'] : 30);
                     $cron->save();
 
-                    if ($cron) {
-                        _etsis_flash()->success(_etsis_flash()->notice(200));
-                    } else {
-                        _etsis_flash()->error(_etsis_flash()->notice(409));
-                    }
+                    _etsis_flash()->success(_etsis_flash()->notice(200));
                 } catch (NodeQException $e) {
                     Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
                     _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -266,7 +259,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                     _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             }
-            redirect($app->req->server['HTTP_REFERER']);
+            etsis_redirect($app->req->server['HTTP_REFERER']);
         }
 
         try {
@@ -306,9 +299,9 @@ $app->group('/cron', function () use($app, $emailer, $email) {
 
                 try {
                     $cron = Node::table('cronjob_handler')->find($id);
-                    $cron->name = (string) $app->req->_post('name');
-                    $cron->url = (string) $app->req->_post('url');
-                    $cron->each = (int) $app->req->_post('each');
+                    $cron->name = (string) $app->req->post['name'];
+                    $cron->url = (string) $app->req->post['url'];
+                    $cron->each = (int) $app->req->post['each'];
                     $cron->eachtime = ((isset($app->req->post['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $app->req->post['eachtime'])) ? $app->req->post['eachtime'] : '');
                     $cron->status = (int) $app->req->post['status'];
                     $cron->save();
@@ -375,7 +368,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             );
         }
     });
-    
+
     $app->before('POST|PUT|DELETE|OPTIONS', '/cronjob/', function () use($app) {
         header('Content-Type: application/json');
         $app->res->_format('json', 404);
@@ -387,97 +380,132 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         try {
             $setting = Node::table('cronjob_setting')->find(1);
             $cron = Node::table('cronjob_handler')->where('status', '=', (int) 1)->findAll();
+
+            if (!isset($app->req->get['password']) && !isset($argv[1])) {
+                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('No cronjob password found, use cronjob?password=<yourpassword>.')));
+                exit(_t('No cronjob handler password found, use cronjob?password=<yourpassword>.'));
+            } elseif (isset($app->req->get['password']) && $app->req->get['password'] != _h($setting->cronjobpassword)) {
+                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid $app->req->get password')));
+                exit(_t('Invalid $app->req->get password'));
+            } elseif (_h($setting->cronjobpassword) == 'changeme') {
+                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Cronjob handler password needs to be changed.')));
+                exit(_t('Cronjob handler password needs to be changed.'));
+            } elseif (isset($argv[0]) && (substr($argv[1], 0, 8) != 'password' or substr($argv[1], 9) != _h($setting->cronjobpassword))) {
+                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid argument password (password=yourpassword)')));
+                exit(_t('Invalid argument password (password=yourpassword)'));
+            }
+
+            if (isset($run) && $run == true) {
+                exit(_t('Cronjob already running . . .'));
+            }
+
+            $run = true;
+
+            if (is_object($cron) && count($cron) > 0) {
+                $d = Jenssegers\Date\Date::now();
+                // execute only one job and then exit
+                foreach ($cron as $job) {
+
+                    if (isset($app->req->get['id']) && _h($job->id) == $app->req->get['id']) {
+                        $run = true;
+                    } else {
+                        $run = false;
+                        if ($job->time != '') {
+                            if (substr(_h($job->lastrun), 0, 10) != $d) {
+                                if (strtotime($d->format('Y-m-d H:i')) > strtotime($d->format('Y-m-d ') . _h($job->time))) {
+                                    $run = true;
+                                }
+                            }
+                        } elseif ($job->each > 0) {
+                            if (strtotime(_h($job->lastrun)) + _h($job->each) < strtotime($d)) {
+                                $run = true;
+                                // if time set, daily after time...
+                                if (_h($job->each) > (60 * 60 * 24) && strlen(_h($job->eachtime)) == 5 && strtotime($d->format('Y-m-d H:i')) < strtotime($d->format('Y-m-d') . _h($job->eachtime))) {
+                                    // only run 'today' at or after give time.
+                                    $run = false;
+                                }
+                            }
+                        } elseif (substr(_h($job->lastrun), 0, 10) != $d->format('Y-m-d')) {
+                            $run = true;
+                        }
+                    }
+
+                    if ($run == true) {
+                        // save as executed
+                        echo _t('Running: ') . _h($job->url) . PHP_EOL . PHP_EOL;
+
+                        try {
+                            $upd = Node::table('cronjob_handler')->find(_h($job->id));
+                            $upd->lastrun = $d->format('Y-m-d H:i:s');
+                            $upd->runned ++;
+                            $upd->save();
+                        } catch (NodeQException $e) {
+                            Cascade::getLogger('error')->error(sprintf('CRONSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                        } catch (Exception $e) {
+                            Cascade::getLogger('error')->error(sprintf('CRONSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                        }
+
+                        echo _t('Connecting to cronjob') . PHP_EOL . PHP_EOL;
+
+                        // execute cronjob
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, _h($job->url));
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_TIMEOUT, (!empty($setting->timeout) ? $setting->timeout : 5));
+
+                        curl_exec($ch);
+
+                        if (curl_errno($ch)) {
+                            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[400]: Bad request: %s', curl_error($ch)));
+                            echo _t('Cronjob error: ') . curl_error($ch) . PHP_EOL;
+                        } else {
+                            echo _t('Cronjob data loaded') . PHP_EOL;
+                        }
+
+                        curl_close($ch);
+                    }
+                }
+            }
         } catch (NodeQException $e) {
             Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         } catch (Exception $e) {
             Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
+    });
 
-        if (!isset($app->req->get['password']) && !isset($argv[1])) {
-            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('No cronjob password found, use cronjob?password=<yourpassword>.')));
-            exit(_t('No cronjob handler password found, use cronjob?password=<yourpassword>.'));
-        } elseif (isset($app->req->get['password']) && $app->req->get['password'] != _h($setting->cronjobpassword)) {
-            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid $app->req->get password')));
-            exit(_t('Invalid $app->req->get password'));
-        } elseif (_h($setting->cronjobpassword) == 'changeme') {
-            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Cronjob handler password needs to be changed.')));
-            exit(_t('Cronjob handler password needs to be changed.'));
-        } elseif (isset($argv[0]) && (substr($argv[1], 0, 8) != 'password' or substr($argv[1], 9) != _h($setting->cronjobpassword))) {
-            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid argument password (password=yourpassword)')));
-            exit(_t('Invalid argument password (password=yourpassword)'));
-        }
+    $app->before('POST|PUT|DELETE|OPTIONS', '/master/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 404);
+        exit();
+    });
 
-        if (isset($run) && $run == true) {
-            exit(_t('Cronjob already running'));
-        }
+    $app->get('/master/', function () {
+        $jobby = new \Jobby\Jobby();
 
-        $run = true;
+        try {
+            $setting = Node::table('cronjob_setting')->find(1);
 
-        if (is_object($cron) && count($cron) > 0) {
-            $d = Jenssegers\Date\Date::now();
-            // execute only one job and then exit
-            foreach ($cron as $job) {
 
-                if (isset($app->req->get['id']) && _h($job->id) == $app->req->get['id']) {
-                    $run = true;
-                } else {
-                    $run = false;
-                    if ($job->time != '') {
-                        if (substr(_h($job->lastrun), 0, 10) != $d) {
-                            if (strtotime($d->format('Y-m-d H:i')) > strtotime($d->format('Y-m-d ') . _h($job->time))) {
-                                $run = true;
-                            }
-                        }
-                    } elseif ($job->each > 0) {
-                        if (strtotime(_h($job->lastrun)) + _h($job->each) < strtotime($d)) {
-                            $run = true;
-                            // if time set, daily after time...
-                            if (_h($job->each) > (60 * 60 * 24) && strlen(_h($job->eachtime)) == 5 && strtotime($d->format('Y-m-d H:i')) < strtotime($d->format('Y-m-d') . _h($job->eachtime))) {
-                                // only run 'today' at or after give time.
-                                $run = false;
-                            }
-                        }
-                    } elseif (substr(_h($job->lastrun), 0, 10) != $d->format('Y-m-d')) {
-                        $run = true;
-                    }
-                }
+            // Every job has a name
+            $jobby->add('MasterCronJob', [
+                // Run a shell command
+                'command' => '/usr/bin/curl -s ' . get_base_url() . 'cron/cronjob/?password=' . _h($setting->cronjobpassword),
+                // Ordinary crontab schedule format is supported.
+                // This schedule runs every 5 minutes.
+                // You could also insert DateTime string in the format of Y-m-d H:i:s.
+                'schedule' => '*/5 * * * *',
+                // Stdout and stderr is sent to the specified file
+                'output' => APP_PATH . 'tmp/logs/etsis-error-' . \Jenssegers\Date\Date::now()->format('Y-m-d') . '.txt',
+                // You can turn off a job by setting 'enabled' to false
+                'enabled' => (_h(get_option('enable_cron_jobs') == 1 ? (bool) true : (bool) false)),
+            ]);
 
-                if ($run == true) {
-                    // save as executed
-                    echo _t('Running: ') . _h($job->url) . PHP_EOL . PHP_EOL;
-
-                    try {
-                        $upd = Node::table('cronjob_handler')->find(_h($job->id));
-                        $upd->lastrun = $d->format('Y-m-d H:i:s');
-                        $upd->runned ++;
-                        $upd->save();
-                    } catch (NodeQException $e) {
-                        Cascade::getLogger('error')->error(sprintf('CRONSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                    } catch (Exception $e) {
-                        Cascade::getLogger('error')->error(sprintf('CRONSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-                    }
-
-                    echo _t('Connecting to cronjob') . PHP_EOL . PHP_EOL;
-
-                    // execute cronjob
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, _h($job->url));
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_TIMEOUT, (!empty($setting->timeout) ? $setting->timeout : 5));
-
-                    curl_exec($ch);
-
-                    if (curl_errno($ch)) {
-                        Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[400]: Bad request: %s', curl_error($ch)));
-                        echo _t('Cronjob error: ') . curl_error($ch) . PHP_EOL;
-                    } else {
-                        echo _t('Cronjob data loaded') . PHP_EOL;
-                    }
-
-                    curl_close($ch);
-                }
-            }
+            $jobby->run();
+        } catch (NodeQException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
     });
 
@@ -486,286 +514,162 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         $app->res->_format('json', 401);
         exit();
     });
-    
+
     $app->get('/purgeActivityLog/', function () {
         etsis_logger_activity_log_purge();
     });
-    
-    $app->before('POST|PUT|DELETE|OPTIONS', '/runEmailHold/', function () use($app) {
-        header('Content-Type: application/json');
-        $app->res->_format('json', 401);
-        exit();
-    });
 
-    $app->get('/runEmailHold/', function () use($app) {
-        try {
-            session_start();
-            /**
-             * SELECT all records from the email_hold table
-             * and join with the saved_query table to retrieve
-             * the savedQuery for $q2.
-             */
-            $email = $app->db->email_hold()
-                ->select('email_hold.*, b.savedQuery')
-                ->_join('saved_query', ' email_hold.queryID = b.savedQueryID', 'b')
-                ->where('email_hold.processed = "0"');
-            $q = $email->find(function ($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-            $array = [];
-            foreach ($q as $r) {
-                $array[] = $r;
-            }
-
-            $hold2 = $app->db->email_queue()
-                ->where('holdID = ?', _h($r['id']))->_and_()
-                ->where('email <> ""')->_and_()
-                ->where('sent = "0"');
-            $q2 = $hold2->find(function ($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-
-            $sess = _h($r['id']);
-
-            /**
-             * Use the savedQuery from $q1 to retrieve results
-             * to input into the email_queue table for processing.
-             */
-            if (count(_h($r['fromEmail'])) > 0) {
-                if (count($q2) <= 0) {
-                    $query = _h($r['savedQuery']);
-                    $hold1 = $app->db->query($query);
-                    $q = $hold1->find(function ($data) {
-                        $array = [];
-                        foreach ($data as $d) {
-                            $array[] = $d;
-                        }
-                        return $array;
-                    });
-                    foreach ($q as $v) {
-                        $body = _escape($r['body']);
-                        $body = str_replace('#uname#', _h($v['uname']), $body);
-                        $body = str_replace('#email#', _h($v['email']), $body);
-                        $body = str_replace('#fname#', _h($v['fname']), $body);
-                        $body = str_replace('#lname#', _h($v['lname']), $body);
-                        $body = str_replace('#personID#', _h($v['personID']), $body);
-
-                        $queue = $app->db->email_queue();
-                        $queue->personID = _h($r['personID']);
-                        $queue->uname = _h($v['uname']);
-                        $queue->lname = _h($v['lname']);
-                        $queue->email = _h($v['email']);
-                        $queue->fname = _h($v['fname']);
-                        $queue->fromName = _h($r['fromName']);
-                        $queue->fromEmail = _h($r['fromEmail']);
-                        $queue->subject = _h($r['subject']);
-                        $queue->holdID = _h($r['id']);
-                        $queue->body = $body;
-                        if ($queue->save()) {
-                            $_SESSION["email_hold$sess"] = $sess;
-                        }
-                    }
-                    if (isset($_SESSION["email_hold$sess"])) {
-                        $update = $app->db->email_hold();
-                        $update->processed = "1";
-                        $update->dateTime = $app->db->NOW();
-                        $update->where('id = ?', _h($r['id']))
-                            ->update();
-                        $app->cookies->remove('email_hold' . _h($r['id']));
-                        session_destroy();
-                    }
-                }
-            }
-        } catch (NotFoundException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (Exception $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (ORMException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        }
-    });
-    
     $app->before('POST|PUT|DELETE|OPTIONS', '/runEmailQueue/', function () use($app) {
         header('Content-Type: application/json');
         $app->res->_format('json', 401);
         exit();
     });
 
-    $app->get('/runEmailQueue/', function () use($app, $emailer) {
+    $app->get('/runEmailQueue/', function () use($app) {
+        return false;
         try {
-            $data = $app->db->email_queue()
-                ->where('sent = "0"')->_and_()
-                ->where('email <> ""')
-                ->find();
-            foreach ($data as $d) {
-                if ($app->hook->has_action('etsisMailer_init', 'etsis_smtp')) {
-                    try {
-                        $emailer->IsSMTP();
-                        $emailer->CharSet = 'UTF-8';
-                        $emailer->Mailer = "smtp";
-                        $emailer->Host = _h(get_option('etsis_smtp_host'));
-                        $emailer->SMTPSecure = _h(get_option('etsis_smtp_smtpsecure'));
-                        $emailer->Port = _h(get_option('etsis_smtp_port'));
-                        $emailer->SMTPAuth = (_h(get_option("etsis_smtp_smtpauth")) == "yes") ? TRUE : FALSE;
-                        if ($emailer->SMTPAuth) {
-                            $emailer->Username = _h(get_option('etsis_smtp_username'));
-                            $emailer->Password = _h(get_option('etsis_smtp_password'));
+            $cpgn = $app->db->campaign()
+                ->where('campaign.status = "processing"')
+                ->findOne();
+
+            if ($cpgn != false) {
+                try {
+                    /**
+                     * Checks if any unsent emails are left in the queue.
+                     * If not, mark campaign as `sent`.
+                     */
+                    $sent = Node::table('campaign_queue')
+                        ->where('is_sent', '=', 'false')
+                        ->andWhere('cid', '=', _h($cpgn->id))
+                        ->findAll()
+                        ->count();
+                    if ($sent <= 0 && _h($cpgn->status) != 'sent') {
+                        $complete = $app->db->campaign()
+                            ->where('id = ?', _h($cpgn->id))->_and_()
+                            ->where('status <> "sent"')
+                            ->findOne();
+                        $complete->status = 'sent';
+                        $complete->update();
+                        return true;
+                    }
+
+                    // instantiate the message queue
+                    $queue = new \app\src\Core\etsis_Queue();
+
+                    // get messages from the queue
+                    $messages = $queue->getEmails();
+                    $i = 0;
+                    $last = Node::table('campaign_queue')->where('cid', '=', _h($cpgn->id))->orderBy('id', 'DESC')->limit(1)->find();
+                    // iterate messages
+                    foreach ($messages as $message) {
+                        $sub = get_person_by('email', $message->getToEmail());
+                        $slist = $app->db->subscriber_list()
+                            ->where('subscriber_list.lid = ?', $message->getListId())->_and_()
+                            ->where('subscriber_list.sid = ?', $message->getSubscriberId())
+                            ->findOne();
+
+                        $list = get_list_by('id', $message->getListId());
+                        $server = get_server_info(_h($list->server));
+
+                        /**
+                         * Generate slug from subject. Useful for Google Analytics.
+                         */
+                        $slug = _etsis_unique_campaign_slug(_h($cpgn->subject));
+                        /**
+                         * Create an array to merge later.
+                         */
+                        $custom_headers = [
+                            'xcampaignid' => $message->getMessageId(),
+                            'xlistid' => $message->getListId(),
+                            'xsubscriberid' => $message->getSubscriberId(),
+                            'xsubscriberemail' => $message->getToEmail(),
+                            'slist_code' => $slist->code,
+                            'uniqueid' => $message->getId()
+                        ];
+                        $footer = _escape($cpgn->footer);
+                        $footer = str_replace('{email}', _h($sub->email), $footer);
+                        $footer = str_replace('{from_email}', _h($cpgn->from_email), $footer);
+                        //$footer = str_replace('{personal_preferences}', get_base_url() . 'preferences/' . _h($sub->code) . '/subscriber/' . _h($sub->id) . '/', $footer);
+                        //$footer = str_replace('{unsubscribe_url}', get_base_url() . 'unsubscribe/' . _h($slist->code) . '/lid/' . _h($slist->lid) . '/sid/' . _h($slist->sid) . '/rid/' . _h($message->getId()) . '/', $footer);
+
+                        $msg = _escape($cpgn->html);
+                        $msg = str_replace('{todays_date}', \Jenssegers\Date\Date::now()->format('M d, Y'), $msg);
+                        $msg = str_replace('{subject}', _h($cpgn->subject), $msg);
+                        $msg = str_replace('{view_online}', '<a href="' . get_base_url() . 'archive/' . _h($cpgn->id) . '/">' . _t('View this email in your browser') . '</a>', $msg);
+                        $msg = str_replace('{first_name}', _h($sub->fname), $msg);
+                        $msg = str_replace('{last_name}', _h($sub->lname), $msg);
+                        $msg = str_replace('{email}', _h($sub->email), $msg);
+                        $msg = str_replace('{address1}', _h($sub->address1), $msg);
+                        $msg = str_replace('{address2}', _h($sub->address2), $msg);
+                        $msg = str_replace('{city}', _h($sub->city), $msg);
+                        $msg = str_replace('{state}', _h($sub->state), $msg);
+                        $msg = str_replace('{postal_code}', _h($sub->postal_code), $msg);
+                        $msg = str_replace('{country}', _h($sub->country), $msg);
+                        //$msg = str_replace('{unsubscribe_url}', '<a href="' . get_base_url() . 'unsubscribe/' . _h($slist->code) . '/lid/' . _h($slist->lid) . '/sid/' . _h($slist->sid) . '/rid/' . _h($message->getId()) . '/">' . _t('unsubscribe') . '</a>', $msg);
+                        //$msg = str_replace('{personal_preferences}', '<a href="' . get_base_url() . 'preferences/' . _h($sub->code) . '/subscriber/' . _h($sub->id) . '/">' . _t('preferences page') . '</a>', $msg);
+                        $msg .= $footer;
+                        $msg .= etsis_footer_logo();
+                        $msg .= campaign_tracking_code(_h($cpgn->id), _h($sub->id));
+
+                        if (++$i === 1) {
+                            $q = $app->db->campaign()
+                                ->where('id = ?', _h($cpgn->id))
+                                ->findOne();
+                            $finish = strtotime($last->timestamp_to_send);
+                            $q->sendfinish = date("Y-m-d H:i:s", strtotime('+10 minutes', $finish));
+                            $q->update();
                         }
-                        $emailer->AddAddress($d->email, $d->lname . ', ' . $d->fname);
-                        $emailer->From = $d->fromEmail;
-                        $emailer->FromName = $d->fromName;
-                        $emailer->Sender = $emailer->From; // Return-Path
-                        $emailer->AddReplyTo($emailer->From, $emailer->FromName); // Reply-To
-                        $emailer->IsHTML(true);
-                        $emailer->Subject = $d->subject;
-                        $emailer->Body = $d->body;
-                        $emailer->Send();
-                        $emailer->ClearAddresses();
-                        $emailer->ClearAttachments();
-                    } catch (phpmailerException $e) {
-                        Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                        /**
+                         * Turn server object to array, join with another 
+                         * array, and then merge them back into an object.
+                         */
+                        $data = [];
+                        foreach ($server as $k => $v) {
+                            $data[$k] = $v;
+                        }
+                        $obj_merged = (object) array_merge($custom_headers, $data);
+                        // send email
+                        $app->hook->{'do_action_array'}('etsis_email_init', [
+                            $obj_merged,
+                            $message->getToEmail(),
+                            _h($cpgn->subject),
+                            etsis_link_tracking($msg, _h($cpgn->id), _h($sub->id), $slug),
+                            etsis_link_tracking(_h($cpgn->text), _h($cpgn->id), _h($sub->id), $slug),
+                            $message
+                            ]
+                        );
                     }
-                } else {
-                    try {
-                        $emailer->CharSet = 'UTF-8';
-                        $emailer->AddAddress($d->email, $d->lname . ', ' . $d->fname);
-                        $emailer->From = $d->fromEmail;
-                        $emailer->FromName = $d->fromName;
-                        $emailer->Sender = $emailer->From; // Return-Path
-                        $emailer->AddReplyTo($emailer->From, $emailer->FromName); // Reply-To
-                        $emailer->IsHTML(true);
-                        $emailer->Subject = $d->subject;
-                        $emailer->Body = $d->body;
-                        $emailer->Send();
-                        $emailer->ClearAddresses();
-                        $emailer->ClearAttachments();
-                    } catch (phpmailerException $e) {
-                        Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-                    }
+                } catch (NodeQException $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                } catch (InvalidArgumentException $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                } catch (Exception $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
                 }
-                $u = $app->db->email_queue();
-                $u->sent = 1;
-                $u->sentDate = $app->db->NOW();
-                $u->where('id = ?', _h($d->id));
-                $u->update();
             }
         } catch (NotFoundException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (Exception $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert(sprintf('QUEUESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
         } catch (ORMException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert(sprintf('QUEUESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('QUEUESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
         }
     });
-    
-    $app->before('POST|PUT|DELETE|OPTIONS', '/purgeEmailHold/', function () use($app) {
-        header('Content-Type: application/json');
-        $app->res->_format('json', 401);
-        exit();
-    });
 
-    $app->get('/purgeEmailHold/', function () use($app) {
-        $now = date('Y-m-d');
-        try {
-            $app->db->email_hold()
-                ->where('email_hold.processed = "1"')->_and_()
-                ->where('DATE_ADD(email_hold.dateTime, INTERVAL 15 DAY) <= ?', $now)
-                ->delete();
-        } catch (NotFoundException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (Exception $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (ORMException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        }
-    });
-    
-    $app->before('POST|PUT|DELETE|OPTIONS', '/purgeEmailHold/', function () use($app) {
-        header('Content-Type: application/json');
-        $app->res->_format('json', 401);
-        exit();
-    });
-
-    $app->get('/purgeEmailQueue/', function () use($app) {
-
-        try {
-            $app->db->email_queue()
-                ->where('sent = "1"')->_or_()
-                ->where('email = ""')
-                ->delete();
-        } catch (NotFoundException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (Exception $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (ORMException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        }
-    });
-    
-    $app->before('POST|PUT|DELETE|OPTIONS', '/runStuTerms/', function () use($app) {
-        header('Content-Type: application/json');
-        $app->res->_format('json', 401);
-        exit();
-    });
-
-    $app->get('/runStuTerms/', function () use($app) {
-        try {
-            /**
-             * Select all records from the stu_acad_cred table.
-             */
-            $terms = $app->db->stu_acad_cred()
-                ->setTableAlias('stac')
-                ->select('stac.stuID,stac.courseSecCode,stac.termCode,stac.acadLevelCode,SUM(stac.attCred)')
-                ->groupBy('stac.stuID,stac.termCode,stac.acadLevelCode');
-            $q = $terms->find(function ($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-
-            if (count($q) > 0) {
-                /**
-                 * If a student ID exists in the stu_acad_cred table,
-                 * but does not exist in the sttr table, then insert
-                 * that new record into the sttr table.
-                 */
-                $app->db->query("INSERT IGNORE INTO sttr (stuID,termCode,attCred,created,acadLevelCode) 
-				SELECT stuID,termCode,SUM(attCred),NOW(),acadLevelCode FROM stu_acad_cred 
-				GROUP BY stuID,termCode,acadLevelCode");
-            }
-        } catch (NotFoundException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (Exception $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (ORMException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        }
-    });
-    
     $app->before('POST|PUT|DELETE|OPTIONS', '/updateStuTerms/', function () use($app) {
         header('Content-Type: application/json');
         $app->res->_format('json', 401);
         exit();
     });
 
-    $app->get('/updateStuTerms/', function () use($app) {
+    $app->get('/updateSTTR/', function () use($app) {
         try {
             $terms = $app->db->query("SELECT 
                     SUM(stac.attCred) AS stacAttCreds,SUM(stac.compCred) AS stacCompCreds,
                     stac.stuID,stac.termCode,stac.acadLevelCode,SUM(stac.gradePoints) AS stacPoints,
                     sttr.attCred AS sttrAttCreds,sttr.gradePoints AS sttrPoints,
                     sttr.gpa 
-                FROM stu_acad_cred stac 
+                FROM stac 
                 LEFT JOIN sttr ON stac.stuID = sttr.stuID 
                 WHERE stac.termCode = sttr.termCode 
                 AND stac.acadLevelCode = sttr.acadLevelCode 
@@ -782,26 +686,84 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                 $GPA = _h($r['stacPoints']) / _h($r['stacAttCreds']);
                 if (_h($r['stacAttCreds']) != _h($r['sttrAttCreds']) || _h($r['sttrPoints']) != _h($r['stacPoints']) || _h($r['gpa']) != $GPA) {
                     $q2 = $app->db->sttr();
-                    $q2->attCred = _h($r['stacAttCreds']);
-                    $q2->compCred = _h($r['stacCompCreds']);
-                    $q2->gradePoints = _h($r['stacPoints']);
-                    $q2->stuLoad = getstudentload(_h($r['termCode']), _h($r['stacAttCreds']), _h($r['acadLevelCode']));
-                    $q2->gpa = $GPA;
-                    $q2->where('stuID = ?', _h($r['stuID']))->_and_()
+                    $q2->set([
+                            'attCred' => _h($r['stacAttCreds']),
+                            'compCred' => _h($r['stacCompCreds']),
+                            'gradePoints' => _h($r['stacPoints']),
+                            'stuLoad' => etsis_stld_rule(_h($r['stuID']), _h($r['stacAttCreds']), _h($r['acadLevelCode'])),
+                            'gpa' => $GPA
+                        ])
+                        ->where('stuID = ?', _h($r['stuID']))->_and_()
                         ->where('termCode = ?', _h($r['termCode']))->_and_()
                         ->where('acadLevelCode = ?', _h($r['acadLevelCode']))
                         ->update();
                 }
             }
         } catch (NotFoundException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (Exception $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         } catch (ORMException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         }
     });
-    
+
+    $app->before('POST|PUT|DELETE|OPTIONS', '/updateSTAL/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
+
+    $app->get('/updateSTAL/', function () use($app) {
+        try {
+            $spro = $app->db->sacp()
+                ->select('sacp.stuID,acad_program.acadLevelCode')
+                ->_join('acad_program', 'sacp.acadProgCode = acad_program.acadProgCode')
+                ->where('sacp.currStatus = "A"');
+            $q = $spro->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+
+            foreach ($q as $r) {
+                $clas = etsis_clas_rule(_h($r['stuID']), _h($r['acadLevelCode']));
+                $scrd = $app->db->v_scrd()
+                    ->select('gpa,enrollmentStatus,term')
+                    ->where('stuID = ?', _h($r['stuID']))->_and_()
+                    ->where('acadLevel = ?', _h($r['acadLevelCode']))
+                    ->findOne();
+
+                $term = $app->db->stac()
+                    ->select('term.termStartDate')
+                    ->_join('term', 'stac.termCode = term.termCode')
+                    ->where('stuID = ?', _h($r['stuID']))
+                    ->orderBy('stac.addDate', 'DESC')
+                    ->findOne();
+
+                $stal = $app->db->stal();
+                $stal->set([
+                        'currentClassLevel' => $clas,
+                        'enrollmentStatus' => _h($scrd->enrollmentStatus),
+                        'gpa' => _h($scrd->gpa),
+                        'startTerm' => _h($scrd->term),
+                        'startDate' => _h($term->termStartDate)
+                    ])
+                    ->where('stuID = ?', _h($r['stuID']))->_and_()
+                    ->where('acadLevelCode = ?', _h($r['acadLevelCode']))
+                    ->update();
+            }
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (ORMException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        }
+    });
+
     $app->before('POST|PUT|DELETE|OPTIONS', '/runGraduation/', function () use($app) {
         header('Content-Type: application/json');
         $app->res->_format('json', 401);
@@ -812,7 +774,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         try {
             $hold = $app->db->graduation_hold()
                 ->select('graduation_hold.id,graduation_hold.queryID,graduation_hold.gradDate,b.savedQuery')
-                ->_join('saved_query', 'graduation_hold.queryID = b.savedQueryID', 'b');
+                ->_join('saved_query', 'graduation_hold.queryID = b.id', 'b');
             $q1 = $hold->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -846,26 +808,35 @@ $app->group('/cron', function () use($app, $emailer, $email) {
              */
             if ($q2) {
                 foreach ($q2 as $r2) {
-                    $prog = $app->db->stu_program();
+                    $prog = $app->db->sacp();
                     $prog->graduationDate = _h($r1['gradDate']);
                     $prog->currStatus = 'G';
-                    $prog->statusDate = $app->db->NOW();
-                    $prog->endDate = $app->db->NOW();
+                    $prog->statusDate = \Jenssegers\Date\Date::now();
+                    $prog->endDate = \Jenssegers\Date\Date::now();
                     $prog->where('stuID = ?', _h($r2['stuID']))
+                        ->update();
+
+                    $stal = $app->db->stal()
+                        ->where('stuID = ?', _h($r2['stuID']))->_and_()
+                        ->where('acadProgCode = ?', _h($r2['acadProgCode']))
+                        ->findOne();
+                    $stal->set([
+                            'endDate' => _h($r1['gradDate'])
+                        ])
                         ->update();
                 }
             }
             /* Delete records from graduation_hold after above queries have been processed. */
             $app->db->query("TRUNCATE graduation_hold");
         } catch (NotFoundException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (Exception $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         } catch (ORMException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         }
     });
-    
+
     $app->before('POST|PUT|DELETE|OPTIONS', '/purgeErrorLog/', function () use($app) {
         header('Content-Type: application/json');
         $app->res->_format('json', 401);
@@ -873,22 +844,22 @@ $app->group('/cron', function () use($app, $emailer, $email) {
     });
 
     $app->get('/purgeErrorLog/', function () use($app) {
-        $now = date('Y-m-d');
+        $now = \Jenssegers\Date\Date::now()->format('Y-m-d');
         try {
             $app->db->error()
                 ->where('DATE_ADD(error.addDate, INTERVAL 5 DAY) <= ?', $now)
                 ->delete();
         } catch (NotFoundException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (Exception $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         } catch (ORMException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         }
 
         etsis_logger_error_log_purge();
     });
-    
+
     $app->before('POST|PUT|DELETE|OPTIONS', '/purgeSavedQuery/', function () use($app) {
         header('Content-Type: application/json');
         $app->res->_format('json', 401);
@@ -896,21 +867,21 @@ $app->group('/cron', function () use($app, $emailer, $email) {
     });
 
     $app->get('/purgeSavedQuery/', function () use($app) {
-        $now = date('Y-m-d');
+        $now = \Jenssegers\Date\Date::now()->format('Y-m-d');
         try {
             $app->db->saved_query()
                 ->where('DATE_ADD(saved_query.createdDate, INTERVAL 30 DAY) <= ?', $now)->_and_()
                 ->where('saved_query.purgeQuery = "1"')
                 ->delete();
         } catch (NotFoundException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (Exception $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         } catch (ORMException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         }
     });
-    
+
     $app->before('POST|PUT|DELETE|OPTIONS', '/checkStuBalance/', function () use($app) {
         header('Content-Type: application/json');
         $app->res->_format('json', 401);
@@ -955,14 +926,14 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                 }
             }
         } catch (NotFoundException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-        } catch (Exception $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         } catch (ORMException $e) {
-            Cascade::getLogger('system_email')->alert(sprintf('SQLSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         }
     });
-    
+
     $app->before('POST|PUT|DELETE|OPTIONS', '/runDBBackup/', function () use($app) {
         header('Content-Type: application/json');
         $app->res->_format('json', 401);
@@ -975,30 +946,72 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         $dbpass = DB_PASS;
         $dbname = DB_NAME;
 
+        $dumpSettings = [
+            'no-data' => $app->hook->apply_filter('db_table_no_data', ['']),
+            'compress' => Mysqldump::NONE,
+            'default-character-set' => Mysqldump::UTF8MB4,
+            'add-drop-table' => true,
+            'complete-insert' => false,
+            'extended-insert' => false,
+        ];
+
         try {
-            $backupDir = $app->config('file.savepath') . 'backups' . DS;
+            $backupDir = $app->config('file.savepath') . 'backups' . DS . 'database' . DS;
             if (!etsis_file_exists($backupDir, false)) {
                 _mkdir($backupDir);
             }
         } catch (\app\src\Core\Exception\IOException $e) {
-            Cascade\Cascade::getLogger('system_email')->alert(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('system_email')->alert(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+            return false;
         }
 
-        $backupFile = $backupDir . $dbname . '-' . date("Y-m-d-H-i-s") . '.gz';
-        if (!etsis_file_exists($backupFile, false)) {
-            $command = "mysqldump --opt -h $dbhost -u $dbuser -p$dbpass $dbname | gzip > $backupFile";
-            system($command);
+        try {
+            $dump = new Mysqldump("mysql:host=$dbhost;dbname=$dbname", "$dbuser", "$dbpass", $dumpSettings);
+            $dump->start($backupDir . DB_NAME . '_dump_' . Jenssegers\Date\Date::now()->format('Y-m-d-H-i') . '.sql');
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (\Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         }
-        $files = glob($backupDir . "*.gz");
+
+        $files = glob($backupDir . "*.sql");
         if (is_array($files)) {
             foreach ($files as $file) {
-                if (is_file($file) && time() - filemtime($file) >= 20 * 24 * 3600) { // 20 days
+                if (is_file($file) && time() - file_mod_time($file) >= $app->hook->apply_filter('backup_database', 10 * 24 * 3600)) { // 10 days
                     unlink($file);
                 }
             }
         }
     });
-    
+
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runSiteBackup/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
+
+    $app->get('/runSiteBackup/', function () use($app) {
+        try {
+            $backupDir = $app->config('file.savepath') . 'backups' . DS . 'system' . DS;
+            if (!etsis_file_exists($backupDir, false)) {
+                _mkdir($backupDir);
+            }
+        } catch (\app\src\Core\Exception\IOException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+        }
+
+        etsis_system_backup(BASE_PATH, $backupDir . 'system_' . Jenssegers\Date\Date::now()->format('Y-m-d-H-i') . '.zip');
+
+        $files = glob($backupDir . "*.zip");
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                if (is_file($file) && time() - file_mod_time($file) >= $app->hook->apply_filter('backup_system', 10 * 24 * 3600)) { // 10 days
+                    unlink($file);
+                }
+            }
+        }
+    });
+
     $app->before('POST|PUT|DELETE|OPTIONS', '/runNodeQ/', function () use($app) {
         header('Content-Type: application/json');
         $app->res->_format('json', 401);
@@ -1011,6 +1024,8 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         etsis_nodeq_csv_email();
         etsis_nodeq_change_address();
         etsis_nodeq_send_sms();
+        etsis_nodeq_course_registration();
+        etsis_nodeq_student_email();
     });
 });
 

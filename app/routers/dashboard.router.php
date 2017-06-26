@@ -27,7 +27,7 @@ use Cascade\Cascade;
  */
 $app->before('GET|POST', '/dashboard(.*)', function () {
     if (!hasPermission('access_dashboard')) {
-        redirect(get_base_url());
+        etsis_redirect(get_base_url());
     }
 });
 
@@ -36,14 +36,14 @@ $app->group('/dashboard', function () use($app) {
     $app->get('/', function () use($app) {
 
         try {
-            $stuProg = $app->db->stu_program()
-                ->select('COUNT(stu_program.stuProgID) as ProgCount,stu_program.acadProgCode')
-                ->_join('acad_program', 'stu_program.acadProgCode = b.acadProgCode', 'b')
-                ->_join('student', 'stu_program.stuID = student.stuID')
-                ->where('stu_program.currStatus <> "G"')->_and_()
+            $stuProg = $app->db->sacp()
+                ->select('COUNT(sacp.id) as ProgCount,sacp.acadProgCode')
+                ->_join('acad_program', 'sacp.acadProgCode = b.acadProgCode', 'b')
+                ->_join('student', 'sacp.stuID = student.stuID')
+                ->where('sacp.currStatus <> "G"')->_and_()
                 ->where('student.status = "A"')
-                ->groupBy('stu_program.acadProgCode')
-                ->orderBY('stu_program.acadProgCode', 'DESC')
+                ->groupBy('sacp.acadProgCode')
+                ->orderBY('sacp.acadProgCode', 'DESC')
                 ->limit(10);
 
             $prog = $stuProg->find(function ($data) {
@@ -57,10 +57,10 @@ $app->group('/dashboard', function () use($app) {
             $stuDept = $app->db->person()
                 ->select('SUM(person.gender="M") AS Male,SUM(person.gender="F") AS Female,d.deptCode')
                 ->_join('student', 'person.personID = student.stuID')
-                ->_join('stu_program', 'student.stuID = b.stuID', 'b')
+                ->_join('sacp', 'student.stuID = b.stuID', 'b')
                 ->_join('acad_program', 'b.acadProgCode = c.acadProgCode', 'c')
                 ->_join('department', 'c.deptCode = d.deptCode', 'd')
-                ->where('b.startDate = (SELECT MAX(startDate) FROM stu_program WHERE stuID = b.stuID)')->_and_()
+                ->where('b.startDate = (SELECT MAX(startDate) FROM sacp WHERE stuID = b.stuID)')->_and_()
                 ->where('student.status = "A"')->_and_()
                 ->where('b.currStatus = "A"')->_and_()
                 ->where('d.deptTypeCode = "ACAD"')
@@ -76,13 +76,13 @@ $app->group('/dashboard', function () use($app) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -101,9 +101,9 @@ $app->group('/dashboard', function () use($app) {
         $screen = explode(" ", $acro);
 
         if (get_screen($screen[0]) == '') {
-            redirect(get_base_url() . 'err/screen-error?code=' . _h($screen[0]));
+            etsis_redirect(get_base_url() . 'err/screen-error?code=' . _h($screen[0]));
         } else {
-            redirect(get_base_url() . get_screen($screen[0]) . '/');
+            etsis_redirect(get_base_url() . get_screen($screen[0]) . '/');
         }
     });
 
@@ -128,15 +128,15 @@ $app->group('/dashboard', function () use($app) {
             $nae = $app->db->person()->where("status = 'A'")->count('personID');
             $stu = $app->db->student()->where("status = 'A'")->count('stuID');
             $staf = $app->db->staff()->where("status = 'A'")->count('staffID');
-            $error = $app->db->error()->count('ID');
+            $error = $app->db->error()->count('id');
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
         $app->view->display('dashboard/system-snapshot', [
@@ -283,6 +283,51 @@ $app->group('/dashboard', function () use($app) {
                     'uploadMaxSize' => '500M',
                     'uploadAllow' => ['text/plain'],
                     'uploadOrder' => ['allow', 'deny']
+                ],
+                [
+                    'driver' => 'LocalFileSystem',
+                    'path' => $app->config('file.savepath'),
+                    'alias' => 'Files',
+                    'mimeDetect' => 'auto',
+                    'accessControl' => 'access',
+                    'attributes' => [
+                        [
+                            'read' => true,
+                            'write' => true,
+                            'locked' => false
+                        ],
+                        [
+                            'pattern' => '/\.tmb/',
+                            'read' => false,
+                            'write' => false,
+                            'hidden' => true,
+                            'locked' => false
+                        ],
+                        [
+                            'pattern' => '/\.quarantine/',
+                            'read' => false,
+                            'write' => false,
+                            'hidden' => true,
+                            'locked' => false
+                        ],
+                        [
+                            'pattern' => '/\.DS_Store/',
+                            'read' => false,
+                            'write' => false,
+                            'hidden' => true,
+                            'locked' => false
+                        ],
+                        [
+                            'pattern' => '/\.json$/',
+                            'read' => true,
+                            'write' => true,
+                            'hidden' => false,
+                            'locked' => false
+                        ]
+                    ],
+                    'uploadMaxSize' => '500M',
+                    'uploadAllow' => ['text/plain'],
+                    'uploadOrder' => ['allow', 'deny']
                 ]
             ]
         ];
@@ -295,8 +340,8 @@ $app->group('/dashboard', function () use($app) {
      * Before route middleware check.
      */
     $app->before('GET|POST', '/ftp/', function() {
-        if (!hasPermission('access_dashboard')) {
-            redirect(get_base_url());
+        if (!hasPermission('access_ftp')) {
+            _etsis_flash()->error(_t("You don't have permission to access FTP server."), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -312,15 +357,15 @@ $app->group('/dashboard', function () use($app) {
     $app->get('/getSACP/', function () use($app) {
 
         try {
-            $stuProg = $app->db->stu_program()
-                ->select('COUNT(stu_program.stuProgID) AS Count,stu_program.acadProgCode AS Prog')
-                ->_join('acad_program', 'stu_program.acadProgCode = b.acadProgCode', 'b')
-                ->_join('student', 'stu_program.stuID = student.stuID')
-                ->where('stu_program.currStatus <> "G"')->_and_()
-                ->where('stu_program.currStatus <> "C"')->_and_()
+            $stuProg = $app->db->sacp()
+                ->select('COUNT(sacp.id) AS Count,sacp.acadProgCode AS Prog')
+                ->_join('acad_program', 'sacp.acadProgCode = b.acadProgCode', 'b')
+                ->_join('student', 'sacp.stuID = student.stuID')
+                ->where('sacp.currStatus <> "G"')->_and_()
+                ->where('sacp.currStatus <> "C"')->_and_()
                 ->where('student.status = "A"')
-                ->groupBy('stu_program.acadProgCode')
-                ->orderBY('stu_program.acadProgCode', 'DESC')
+                ->groupBy('sacp.acadProgCode')
+                ->orderBY('sacp.acadProgCode', 'DESC')
                 ->limit(10);
             $q = $stuProg->find();
             $rows = [];
@@ -331,13 +376,13 @@ $app->group('/dashboard', function () use($app) {
             }
             print json_encode($rows, JSON_NUMERIC_CHECK);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
@@ -351,10 +396,10 @@ $app->group('/dashboard', function () use($app) {
                 ->select('SUM(CASE person.gender WHEN "F" THEN 1 ELSE 0 END) AS Female,d.deptCode')
                 //->select('SUM(person.gender="M") AS Male,SUM(person.gender="F") AS Female,d.deptCode')
                 ->_join('student', 'person.personID = student.stuID')
-                ->_join('stu_program', 'student.stuID = b.stuID', 'b')
+                ->_join('sacp', 'student.stuID = b.stuID', 'b')
                 ->_join('acad_program', 'b.acadProgCode = c.acadProgCode', 'c')
                 ->_join('department', 'c.deptCode = d.deptCode', 'd')
-                ->where('b.startDate = (SELECT MAX(startDate) FROM stu_program WHERE stuID = b.stuID)')->_and_()
+                ->where('b.startDate = (SELECT MAX(startDate) FROM sacp WHERE stuID = b.stuID)')->_and_()
                 ->where('student.status = "A"')->_and_()
                 ->where('b.currStatus = "A"')->_and_()
                 ->where('d.deptTypeCode = "ACAD"')
@@ -380,13 +425,13 @@ $app->group('/dashboard', function () use($app) {
             array_push($result, $series2);
             print json_encode($result, JSON_NUMERIC_CHECK);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
@@ -437,13 +482,13 @@ $app->group('/dashboard', function () use($app) {
                         ->find();
                 }
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
 

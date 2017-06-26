@@ -21,7 +21,7 @@ $app->get('404', function () use($app) {
  */
 $app->before('GET', '/err/screen-error.*', function() use($app) {
     if (!hasPermission('access_dashboard')) {
-        redirect(get_base_url());
+        etsis_redirect(get_base_url());
     }
     
     if(empty($app->req->server['HTTP_REFERER']) === true) {

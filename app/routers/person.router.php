@@ -54,13 +54,13 @@ $app->group('/nae', function () use($app) {
                     return $array;
                 });
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -86,7 +86,7 @@ $app->group('/nae', function () use($app) {
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $json_url) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app) {
 
         if ($app->req->isPost()) {
             try {
@@ -94,7 +94,7 @@ $app->group('/nae', function () use($app) {
                 foreach (_filter_input_array(INPUT_POST) as $k => $v) {
                     $nae->$k = $v;
                 }
-                $nae->where('personID = ?', $id);
+                $nae->where('personID = ?', (int) $id);
 
                 /**
                  * Fires before person record is updated.
@@ -106,8 +106,10 @@ $app->group('/nae', function () use($app) {
                 $nae->update();
 
                 $email = $app->db->address();
-                $email->email1 = $app->req->post['email'];
-                $email->where('personID = ?', $id)
+                $email->set([
+                        'email1' => $app->req->post['email']
+                    ])
+                    ->where('personID = ?', (int) $id)
                     ->update();
 
                 etsis_logger_activity_log_write('Update Record', 'Person (NAE)', get_name($id), get_persondata('uname'));
@@ -116,7 +118,7 @@ $app->group('/nae', function () use($app) {
                  *
                  * @since 6.1.07
                  */
-                $person = get_person_by('personID', $id);
+                $person = get_person_by('personID', (int) $id);
                 /**
                  * Fires after person record has been updated.
                  *
@@ -130,20 +132,20 @@ $app->group('/nae', function () use($app) {
 
                 _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
 
         try {
             $person = $app->db->person()
-                ->where('personID = ?', $id);
+                ->where('personID = ?', (int) $id);
             $sql = $person->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -153,18 +155,19 @@ $app->group('/nae', function () use($app) {
             });
 
             $staff = $app->db->staff()
-                ->where('staffID = ?', $id)
+                ->where('staffID = ?', (int) $id)
                 ->findOne();
 
             $appl = $app->db->application()
-                ->where('personID = ?', $id)
+                ->where('personID = ?', (int) $id)
                 ->findOne();
 
             $addr = $app->db->address()
                 ->where('addressType = "P"')->_and_()
-                ->where('endDate = "0000-00-00"')->_and_()
                 ->where('addressStatus = "C"')->_and_()
-                ->where('personID = ?', $id);
+                ->where('personID = ?', (int) $id)->_and_()
+                ->where('endDate IS NULL')->_or_()
+                ->whereLte('endDate','0000-00-00');
 
             $q = $addr->find(function ($data) {
                 $array = [];
@@ -174,13 +177,13 @@ $app->group('/nae', function () use($app) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -231,6 +234,143 @@ $app->group('/nae', function () use($app) {
             ]);
         }
     });
+    
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/perc/(\d+)/', function() {
+        if (!hasPermission('access_person_screen')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/perc/(\d+)/', function ($id) use($app) {
+
+        if ($app->req->isPost()) {
+            try {
+                if (isset($app->req->post['id'])) {
+                    $size = count($app->req->post['id']);
+                    $i = 0;
+                    while ($i < $size) {
+                        $perc = $app->db->perc();
+                        $perc->set([
+                                'code' => $app->req->post['code'][$i],
+                                'severity' => $app->req->post['severity'][$i],
+                                'startDate' => $app->req->post['startDate'][$i],
+                                'endDate' => ($app->req->post['endDate'][$i] != '' ? $app->req->post['endDate'][$i] : NULL),
+                                'comment' => $app->req->post['comment'][$i]
+                            ])
+                            ->where('personID = ?', $id)->_and_()
+                            ->where('id = ?', $app->req->post['id'][$i])
+                            ->update();
+                        ++$i;
+                    }
+                    etsis_logger_activity_log_write('Update Record', 'Person Restriction (PERC)', get_name($id), get_persondata('uname'));
+                } else {
+                    $perc = $app->db->perc();
+                    foreach ($app->req->post as $k => $v) {
+                        $perc->$k = $v;
+                    }
+                    $perc->save();
+                    etsis_logger_activity_log_write('New Record', 'Person Restriction (PERC)', get_name($id), get_persondata('uname'));
+                }
+                etsis_cache_delete($id, 'person');
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            }
+        }
+
+        try {
+            $nae = $app->db->person()
+                ->select('personID,altID')
+                ->where('personID = ?', $id);
+            $q1 = $nae->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+
+            $perc = $app->db->perc()
+                ->select('perc.*,rest.deptCode')
+                ->_join('rest', 'perc.code = rest.code')
+                ->where('perc.personID = ?', $id)
+                ->orderBy('perc.id');
+            $q2 = $perc->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            
+            $staff = $app->db->staff()
+                ->where('staffID = ?', (int) $id)
+                ->findOne();
+            
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($nae == false) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($nae) == true) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If data is zero, 404 not found.
+         */ elseif (_h($q1[0]['personID']) <= 0) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+
+            etsis_register_style('form');
+            etsis_register_style('table');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datatables');
+
+            $app->view->display('person/perc', [
+                'title' => get_name($id),
+                'perc' => $q2,
+                'nae' => $q1,
+                'staff' => $staff
+                ]
+            );
+        }
+    });
 
     /**
      * Before route check.
@@ -241,7 +381,7 @@ $app->group('/nae', function () use($app) {
         }
     });
 
-    $app->match('GET|POST', '/add/', function () use($app, $json_url) {
+    $app->match('GET|POST', '/add/', function () use($app) {
 
         $passSuffix = 'etSIS*';
 
@@ -276,7 +416,7 @@ $app->group('/nae', function () use($app) {
                 $nae->emergency_contact_phone = $app->req->post['emergency_contact_phone'];
                 $nae->status = "A";
                 $nae->approvedBy = get_persondata('personID');
-                $nae->approvedDate = $app->db->NOW();
+                $nae->approvedDate = \Jenssegers\Date\Date::now();
                 $nae->password = $password;
 
                 /**
@@ -295,90 +435,87 @@ $app->group('/nae', function () use($app) {
                  */
                 $app->hook->do_action('save_person_db_table', $nae);
 
-                if ($nae->save()) {
-                    $ID = $nae->lastInsertId();
+                $nae->save();
 
-                    $role = $app->db->person_roles();
-                    $role->personID = $ID;
-                    $role->roleID = $app->req->post['roleID'];
-                    $role->addDate = $app->db->NOW();
-                    $role->save();
+                $_id = $nae->lastInsertId();
 
-                    $addr = $app->db->address();
-                    $addr->personID = $ID;
-                    $addr->address1 = $app->req->post['address1'];
-                    $addr->address2 = $app->req->post['address2'];
-                    $addr->city = $app->req->post['city'];
-                    $addr->state = $app->req->post['state'];
-                    $addr->zip = $app->req->post['zip'];
-                    $addr->country = $app->req->post['country'];
-                    $addr->addressType = "P";
-                    $addr->addressStatus = "C";
-                    $addr->startDate = $addr->NOW();
-                    $addr->addDate = $addr->NOW();
-                    $addr->addedBy = get_persondata('personID');
-                    $addr->phone1 = $app->req->post['phone'];
-                    $addr->email1 = $app->req->post['email'];
+                $role = $app->db->person_roles();
+                $role->insert([
+                    'personID' => (int) $_id,
+                    'roleID' => $app->req->post['roleID'],
+                    'addDate' => \Jenssegers\Date\Date::now()
+                ]);
 
-                    if (isset($app->req->post['sendemail']) && $app->req->post['sendemail'] == 'send') {
-                        if ($app->req->post['ssn'] > 0) {
-                            $pass = (int) $ssn . $passSuffix;
-                        } elseif (!empty($app->req->post['dob'])) {
-                            $pass = (int) $dob . $passSuffix;
-                        } else {
-                            $pass = 'myaccount' . $passSuffix;
-                        }
+                $addr = $app->db->address();
+                $addr->personID = (int) $_id;
+                $addr->address1 = $app->req->post['address1'];
+                $addr->address2 = $app->req->post['address2'];
+                $addr->city = $app->req->post['city'];
+                $addr->state = $app->req->post['state'];
+                $addr->zip = $app->req->post['zip'];
+                $addr->country = $app->req->post['country'];
+                $addr->addressType = "P";
+                $addr->addressStatus = "C";
+                $addr->startDate = \Jenssegers\Date\Date::now();
+                $addr->addDate = \Jenssegers\Date\Date::now();
+                $addr->addedBy = get_persondata('personID');
+                $addr->phone1 = $app->req->post['phone'];
+                $addr->email1 = $app->req->post['email'];
 
-                        try {
-                            Node::dispense('login_details');
-                            $node = Node::table('login_details');
-                            $node->uname = (string) $app->req->post['uname'];
-                            $node->email = (string) $app->req->post['email'];
-                            $node->personid = (int) $ID;
-                            $node->fname = (string) $app->req->post['fname'];
-                            $node->lname = (string) $app->req->post['lname'];
-                            $node->password = (string) $pass;
-                            $node->altid = (string) $app->req->post['altID'];
-                            $node->sent = (int) 0;
-                            $node->save();
-                        } catch (NodeQException $e) {
-                            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-                        } catch (Exception $e) {
-                            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-                        }
-                    }
-                    if ($addr->save()) {
-
-                        /**
-                         * Fires after person record has been created.
-                         *
-                         * @since 6.1.07
-                         * @param string $pass
-                         *            Plaintext password.
-                         * @param array $nae
-                         *            Person data object.
-                         */
-                        $app->hook->do_action_array('post_save_person', [
-                            $pass,
-                            $nae
-                        ]);
-
-                        etsis_logger_activity_log_write('New Record', 'Name and Address', get_name($ID), get_persondata('uname'));
-                        _etsis_flash()->success(_t('200 - Success: Ok. If checked `Send username & password to the user`, email has been sent to the queue.'), get_base_url() . 'nae' . '/' . $ID . '/');
+                if (isset($app->req->post['sendemail']) && $app->req->post['sendemail'] == 'send') {
+                    if ($app->req->post['ssn'] > 0) {
+                        $pass = (int) $ssn . $passSuffix;
+                    } elseif (!empty($app->req->post['dob'])) {
+                        $pass = (int) $dob . $passSuffix;
                     } else {
-                        _etsis_flash()->error(_etsis_flash()->notice(409));
+                        $pass = 'myaccount' . $passSuffix;
                     }
-                } else {
-                    _etsis_flash()->error(_etsis_flash()->notice(409));
+
+                    try {
+                        Node::dispense('login_details');
+                        $node = Node::table('login_details');
+                        $node->uname = (string) $app->req->post['uname'];
+                        $node->email = (string) $app->req->post['email'];
+                        $node->personid = (int) $_id;
+                        $node->fname = (string) $app->req->post['fname'];
+                        $node->lname = (string) $app->req->post['lname'];
+                        $node->password = (string) $pass;
+                        $node->altid = (string) $app->req->post['altID'];
+                        $node->sent = (int) 0;
+                        $node->save();
+                    } catch (NodeQException $e) {
+                        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    } catch (Exception $e) {
+                        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    }
                 }
+
+                $addr->save();
+
+                /**
+                 * Fires after person record has been created.
+                 *
+                 * @since 6.1.07
+                 * @param string $pass
+                 *            Plaintext password.
+                 * @param array $nae
+                 *            Person data object.
+                 */
+                $app->hook->do_action_array('post_save_person', [
+                    $pass,
+                    $nae
+                ]);
+
+                etsis_logger_activity_log_write('New Record', 'Name and Address', get_name($_id), get_persondata('uname'));
+                _etsis_flash()->success(_t('200 - Success: Ok. If checked `Send username & password to the user`, email has been sent to the queue.'), get_base_url() . 'nae' . '/' . (int) $_id . '/');
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -404,20 +541,20 @@ $app->group('/nae', function () use($app) {
         }
     });
 
-    $app->get('/adsu/(\d+)/', function ($id) use($app, $json_url) {
+    $app->get('/adsu/(\d+)/', function ($id) use($app) {
 
         try {
             $staff = $app->db->staff()
-                ->where('staffID = ?', $id)
+                ->where('staffID = ?', (int) $id)
                 ->findOne();
 
             $adsu = $app->db->person()
                 ->setTableAlias('a')
                 ->select('a.personID,a.fname,a.lname,a.mname,a.altID')
-                ->select('b.addressID,b.address1,b.address2,b.city')
+                ->select('b.id,b.address1,b.address2,b.city')
                 ->select('b.state,b.zip,b.addressType,b.addressStatus')
                 ->_join('address', 'a.personID = b.personID', 'b')
-                ->where('a.personID = ?', $id)->_and_()
+                ->where('a.personID = ?', (int) $id)->_and_()
                 ->where('b.personID <> "NULL"');
 
             $q = $adsu->find(function ($data) {
@@ -428,13 +565,13 @@ $app->group('/nae', function () use($app) {
                 return $array;
             });
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -494,7 +631,7 @@ $app->group('/nae', function () use($app) {
 
         try {
             $person = $app->db->person()
-                ->where('personID = ?', $id);
+                ->where('personID = ?', (int) $id);
             $sql = $person->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -504,23 +641,23 @@ $app->group('/nae', function () use($app) {
             });
 
             $staff = $app->db->staff()
-                ->where('staffID = ?', $id)
+                ->where('staffID = ?', (int) $id)
                 ->findOne();
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         if ($app->req->isPost()) {
             try {
                 $addr = $app->db->address();
-                $addr->personID = _h($sql[0]['personID']);
+                $addr->personID = (int) _h($sql[0]['personID']);
                 $addr->address1 = $app->req->post['address1'];
                 $addr->address2 = $app->req->post['address2'];
                 $addr->city = $app->req->post['city'];
@@ -529,7 +666,7 @@ $app->group('/nae', function () use($app) {
                 $addr->country = $app->req->post['country'];
                 $addr->addressType = $app->req->post['addressType'];
                 $addr->startDate = $app->req->post['startDate'];
-                $addr->endDate = $app->req->post['endDate'];
+                $addr->endDate = ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL);
                 $addr->addressStatus = $app->req->post['addressStatus'];
                 $addr->phone1 = $app->req->post['phone1'];
                 $addr->phone2 = $app->req->post['phone2'];
@@ -539,23 +676,23 @@ $app->group('/nae', function () use($app) {
                 $addr->phoneType2 = $app->req->post['phoneType2'];
                 $addr->email1 = $app->req->post['email1'];
                 $addr->email2 = $app->req->post['email2'];
-                $addr->addDate = $addr->NOW();
+                $addr->addDate = \Jenssegers\Date\Date::now();
                 $addr->addedBy = get_persondata('personID');
                 $addr->save();
 
-                $ID = $addr->lastInsertId();
+                $_id = $addr->lastInsertId();
                 etsis_logger_activity_log_write('New Record', 'Address', get_name(_h($sql[0]['personID'])), get_persondata('uname'));
                 etsis_cache_delete($id, 'stu');
                 etsis_cache_delete($id, 'person');
-                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'nae/addr' . '/' . $ID . '/');
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'nae/addr' . '/' . (int) $_id . '/');
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -619,7 +756,7 @@ $app->group('/nae', function () use($app) {
 
         try {
             $addr = $app->db->address()
-                ->where('addressID = ?', $id);
+                ->where('id = ?', (int) $id);
             $q = $addr->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -629,7 +766,7 @@ $app->group('/nae', function () use($app) {
             });
 
             $person = $app->db->person()
-                ->where('personID = ?', $q[0]['personID']);
+                ->where('personID = ?', (int) _h($q[0]['personID']));
             $sql = $person->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -639,16 +776,16 @@ $app->group('/nae', function () use($app) {
             });
 
             $staff = $app->db->staff()
-                ->where('staffID = ?', $id)
+                ->where('staffID = ?', (int) $id)
                 ->findOne();
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -658,7 +795,7 @@ $app->group('/nae', function () use($app) {
                 foreach ($app->req->post as $k => $v) {
                     $addr->$k = $v;
                 }
-                $addr->where('addressID = ?', $id);
+                $addr->where('id = ?', (int) $id);
                 $addr->update();
 
                 etsis_logger_activity_log_write('Update Record', 'Address', get_name($q[0]['personID']), get_persondata('uname'));
@@ -666,13 +803,13 @@ $app->group('/nae', function () use($app) {
                 etsis_cache_delete($q[0]['personID'], 'person');
                 _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -697,7 +834,7 @@ $app->group('/nae', function () use($app) {
             ]);
         } /**
          * If data is zero, 404 not found.
-         */ elseif (_h($q[0]['addressID']) <= 0) {
+         */ elseif (_h($q[0]['id']) <= 0) {
 
             $app->view->display('error/404', [
                 'title' => '404 Error'
@@ -733,11 +870,11 @@ $app->group('/nae', function () use($app) {
         }
     });
 
-    $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
+    $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app) {
 
         try {
             $person = $app->db->person()
-                ->where('personID = ?', $id);
+                ->where('personID = ?', (int) $id);
             $sql = $person->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -747,16 +884,16 @@ $app->group('/nae', function () use($app) {
             });
 
             $staff = $app->db->staff()
-                ->where('staffID = ?', $id)
+                ->where('staffID = ?', (int) $id)
                 ->findOne();
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
@@ -768,7 +905,7 @@ $app->group('/nae', function () use($app) {
                         if ($v == '0' || $v == 'x') {
                             $strSQL = sprintf("DELETE FROM `person_roles` WHERE `personID` = %u AND `roleID` = %u", $id, $roleID);
                         } else {
-                            $strSQL = sprintf("REPLACE INTO `person_roles` SET `personID` = %u, `roleID` = %u, `addDate` = '%s'", $id, $roleID, $app->db->NOW());
+                            $strSQL = sprintf("REPLACE INTO `person_roles` SET `personID` = %u, `roleID` = %u, `addDate` = '%s'", $id, $roleID, \Jenssegers\Date\Date::now());
                         }
                         $q = $app->db->query($strSQL);
                     }
@@ -779,13 +916,13 @@ $app->group('/nae', function () use($app) {
                     _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -843,11 +980,11 @@ $app->group('/nae', function () use($app) {
         }
     });
 
-    $app->match('GET|POST', '/perms/(\d+)/', function ($id) use($app, $json_url) {
+    $app->match('GET|POST', '/perms/(\d+)/', function ($id) use($app) {
 
         try {
             $person = $app->db->person()
-                ->where('personID = ?', $id);
+                ->where('personID = ?', (int) $id);
             $sql = $person->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -857,19 +994,18 @@ $app->group('/nae', function () use($app) {
             });
 
             $staff = $app->db->staff()
-                ->where('staffID = ?', $id)
+                ->where('staffID = ?', (int) $id)
                 ->findOne();
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
-
 
         if ($app->req->isPost()) {
             try {
@@ -879,18 +1015,18 @@ $app->group('/nae', function () use($app) {
                     $q = $app->db->query(sprintf("DELETE FROM person_perms WHERE personID = %u", $id));
                 }
                 if ($q) {
-                    _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'nae/perms' . '/' . $id . '/');
+                    _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'nae/perms' . '/' . (int) $id . '/');
                 } else {
                     _etsis_flash()->error(_etsis_flash()->notice(409));
                 }
             } catch (NotFoundException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-                _etsis_flash()->error(_etsis_flash()->notice(409));
-            } catch (Exception $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             } catch (ORMException $e) {
-                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
                 _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
@@ -989,14 +1125,15 @@ $app->group('/nae', function () use($app) {
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
 
-
         $password = etsis_hash_password($pass);
 
         try {
             $q2 = $app->db->person();
-            $q2->password = $password;
-            $q2->where('personID = ?', $id);
-            $q2->update();
+            $q2->set([
+                    'password' => $password
+                ])
+                ->where('personID = ?', (int) $id)
+                ->update();
 
             /**
              *
@@ -1004,11 +1141,11 @@ $app->group('/nae', function () use($app) {
              */
             $pass = [];
             $pass['pass'] = $pass;
-            $pass['personID'] = $id;
-            $pass['uname'] = $person->uname;
-            $pass['fname'] = $person->fname;
-            $pass['lname'] = $person->lname;
-            $pass['email'] = $person->email;
+            $pass['personID'] = (int) $id;
+            $pass['uname'] = _h($person->uname);
+            $pass['fname'] = _h($person->fname);
+            $pass['lname'] = _h($person->lname);
+            $pass['email'] = _h($person->email);
             /**
              * Fires after successful reset of person's password.
              *
@@ -1024,14 +1161,14 @@ $app->group('/nae', function () use($app) {
             etsis_logger_activity_log_write(_t('Update Record'), _t('Reset Password'), get_name($id), get_persondata('uname'));
             _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
         } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         } catch (ORMException $e) {
-            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
-            _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
 });
