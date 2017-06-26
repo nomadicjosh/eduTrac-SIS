@@ -188,9 +188,9 @@ class etsis_FlashMessages
 
     public function showMessage()
     {
-        $plugin_success_message[] = $_COOKIE['plugin_success_message'];
-        $plugin_error_message[] = $_COOKIE['plugin_error_message'];
-        $pnotify[] = $_COOKIE['pnotify'];
+        $plugin_success_message[] = $this->app->req->cookie['plugin_success_message'];
+        $plugin_error_message[] = $this->app->req->cookie['plugin_error_message'];
+        $pnotify[] = $this->app->req->cookie['pnotify'];
 
         // echo out positive messages
         if ($this->hasMessages(self::SUCCESS)) {
@@ -203,7 +203,7 @@ class etsis_FlashMessages
         }
 
         // echo out positive plugin messages
-        if (isset($_COOKIE['plugin_success_message'])) {
+        if (isset($this->app->req->cookie['plugin_success_message'])) {
             foreach ($plugin_success_message as $message) {
                 $this->app->cookies->remove('plugin_success_message');
                 return '<section class="flash_message"><div class="alert alert-success alert-dismissable center"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' . $message . '</div></section>';
@@ -211,7 +211,7 @@ class etsis_FlashMessages
         }
 
         // echo out negative plugin messages
-        if (isset($_COOKIE['plugin_error_message'])) {
+        if (isset($this->app->req->cookie['plugin_error_message'])) {
             foreach ($plugin_error_message as $message) {
                 $this->app->cookies->remove('plugin_error_message');
                 return '<section class="flash_message"><div class="alert alert-danger alert-dismissable center"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' . sprintf(_t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br /> %s</div></section>'), $message);
@@ -219,7 +219,7 @@ class etsis_FlashMessages
         }
 
         // return a browser notification if set
-        if (isset($_COOKIE['pnotify'])) {
+        if (isset($this->app->req->cookie['pnotify'])) {
             foreach ($pnotify as $message) {
                 $this->app->cookies->remove('pnotify');
                 return $message;

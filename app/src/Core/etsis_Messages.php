@@ -31,14 +31,14 @@ class etsis_Messages
     public function showMessage()
     {
         // get the message (they are arrays, to make multiple positive/negative messages possible)
-        $success_message[] = $_COOKIE['success_message'];
-        $error_message[] = $_COOKIE['error_message'];
-        $plugin_success_message[] = $_COOKIE['plugin_success_message'];
-        $plugin_error_message[] = $_COOKIE['plugin_error_message'];
-        $pnotify[] = $_COOKIE['pnotify'];
+        $success_message[] = $this->app->req->cookie['success_message'];
+        $error_message[] = $this->app->req->cookie['error_message'];
+        $plugin_success_message[] = $this->app->req->cookie['plugin_success_message'];
+        $plugin_error_message[] = $this->app->req->cookie['plugin_error_message'];
+        $pnotify[] = $this->app->req->cookie['pnotify'];
 
         // echo out positive messages
-        if (isset($_COOKIE['success_message'])) {
+        if (isset($this->app->req->cookie['success_message'])) {
             foreach ($success_message as $message) {
                 $this->app->cookies->remove('success_message');
                 return '<section style="margin-bottom:1.5em;" class="flash_message success-panel"><div class="alerts alerts-success center"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $message . '</div></section>';
@@ -46,7 +46,7 @@ class etsis_Messages
         }
 
         // echo out negative messages
-        if (isset($_COOKIE['error_message'])) {
+        if (isset($this->app->req->cookie['error_message'])) {
             foreach ($error_message as $message) {
                 $this->app->cookies->remove('error_message');
                 return '<section style="margin-bottom:1.5em;" class="flash_message error-panel"><div class="alerts alerts-error center"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $message . '</div></section>';
@@ -54,7 +54,7 @@ class etsis_Messages
         }
 
         // echo out positive plugin messages
-        if (isset($_COOKIE['plugin_success_message'])) {
+        if (isset($this->app->req->cookie['plugin_success_message'])) {
             foreach ($plugin_success_message as $message) {
                 $this->app->cookies->remove('plugin_success_message');
                 return '<section style="margin-bottom:1.5em;" class="flash_message success-panel"><div class="alerts alerts-success center"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $message . '</div></section>';
@@ -62,7 +62,7 @@ class etsis_Messages
         }
 
         // echo out negative plugin messages
-        if (isset($_COOKIE['plugin_error_message'])) {
+        if (isset($this->app->req->cookie['plugin_error_message'])) {
             foreach ($plugin_error_message as $message) {
                 $this->app->cookies->remove('plugin_error_message');
                 return '<section style="margin-bottom:1.5em;" class="flash_message error-panel"><div class="alerts alerts-error center"><button type="button" class="close" data-dismiss="alert">&times;</button>' . sprintf(_t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br /> %s</div></section>'), $message);
@@ -70,7 +70,7 @@ class etsis_Messages
         }
         
         // return a browser notification if set
-        if (isset($_COOKIE['pnotify'])) {
+        if (isset($this->app->req->cookie['pnotify'])) {
             foreach ($pnotify as $message) {
                 $this->app->cookies->remove('pnotify');
                 return $message;
