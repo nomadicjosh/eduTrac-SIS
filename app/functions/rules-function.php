@@ -371,36 +371,20 @@ function get_rlde_rest()
 }
 
 /**
- * Registration restriction rule check.
+ * Retrieve a list of distinct courses.
  * 
  * @since 6.3.0
- * @param int $pID Person ID.
  */
-function etsis_reg_rest_rule($pID)
+function get_rlde_crse()
 {
     $app = \Liten\Liten::getInstance();
     try {
-        $node = Node::table('rrsr')->findAll();
-        foreach ($node as $rule) {
-            $rlde = get_rule_by_code($rule->rule);
-            $db = $app->db->perc()
-                ->where('perc.personID = ?', $pID)->_and_()
-                ->where("$rlde->rule")
-                ->findOne();
-            $dept = get_department(_h($rlde->dept));
-            if (false != $db) {
-                $message = _escape($rule->value);
-                $message = str_replace('{name}', get_name($pID), $message);
-                $message = str_replace('{stuID}', get_alt_id($pID), $message);
-                $message = str_replace('{deptName}', _h($dept->deptName), $message);
-                $message = str_replace('{deptEmail}', _h($dept->deptEmail), $message);
-                $message = str_replace('{deptPhone}', _h($dept->deptPhone), $message);
-                _etsis_flash()->error($message, $app->req->server['HTTP_REFERER']);
-                exit();
-            }
+        $q = $app->db->course()
+            ->select('DISTINCT course.courseCode,course.courseShortTitle')
+            ->find();
+        foreach ($q as $r) {
+            echo "'" . _h($r->courseCode) . "'" . ': ' . "'" . _h($r->courseCode) . " " . _h($r->courseShortTitle) . "'" . ',' . "\n";
         }
-    } catch (NodeQException $e) {
-        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     } catch (NotFoundException $e) {
         Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -410,6 +394,147 @@ function etsis_reg_rest_rule($pID)
     } catch (Exception $e) {
         Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+}
+
+/**
+ * Retrieve a list of subjects.
+ * 
+ * @since 6.3.0
+ */
+function get_rlde_subj()
+{
+    $app = \Liten\Liten::getInstance();
+    try {
+        $q = $app->db->subject()
+            ->select('subjectCode, subjectName')
+            ->where('subjectCode <> "NULL"')
+            ->find();
+        foreach ($q as $r) {
+            echo "'" . _h($r->subjectCode) . "'" . ': ' . "'" . _h($r->subjectCode) . " " . _h($r->subjectName) . "'" . ',' . "\n";
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+}
+
+/**
+ * Retrieve a list of departments.
+ * 
+ * @since 6.3.0
+ */
+function get_rlde_dept()
+{
+    $app = \Liten\Liten::getInstance();
+    try {
+        $q = $app->db->department()
+            ->select('deptCode, deptName')
+            ->where('deptCode <> "NULL"')
+            ->find();
+        foreach ($q as $r) {
+            echo "'" . _h($r->deptCode) . "'" . ': ' . "'" . _h($r->deptCode) . " " . _h($r->deptName) . "'" . ',' . "\n";
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+}
+
+/**
+ * Retrieve a list of course levels.
+ * 
+ * @since 6.3.0
+ */
+function get_rlde_crlv()
+{
+    $app = \Liten\Liten::getInstance();
+    try {
+        $q = $app->db->crlv()
+            ->select('code,name')
+            ->where('code <> "NULL"')
+            ->find();
+        foreach ($q as $r) {
+            echo "'" . _h($r->code) . "'" . ': ' . "'" . _h($r->code) . " " . _h($r->name) . "'" . ',' . "\n";
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+}
+
+/**
+ * Registration restriction rule check.
+ * 
+ * @since 6.3.0
+ * @param int $pID Person ID.
+ */
+function etsis_reg_rest_rule($pID)
+{
+    $app = \Liten\Liten::getInstance();
+    /**
+     * If staff member has this permission, then he/she
+     * will be able to register a student into a course section
+     * in spite of the student's restriction.
+     */
+    if (hasPermission('override_rule')) {
+        return true;
+    }
+
+    try {
+        $node = Node::table('rrsr')->findAll();
+        foreach ($node as $rule) {
+            $rlde = get_rule_by_code($rule->rule);
+            try {
+                $db = $app->db->{_h($rlde->file)}()
+                    ->where('perc.personID = ?', $pID)->_and_()
+                    ->where("$rlde->rule")
+                    ->findOne();
+                $dept = get_department(_h($rlde->dept));
+                if (false != $db) {
+                    $message = _escape($rule->value);
+                    $message = str_replace('{name}', get_name($pID), $message);
+                    $message = str_replace('{stuID}', get_alt_id($pID), $message);
+                    $message = str_replace('{deptName}', _h($dept->deptName), $message);
+                    $message = str_replace('{deptEmail}', _h($dept->deptEmail), $message);
+                    $message = str_replace('{deptPhone}', _h($dept->deptPhone), $message);
+                    _etsis_flash()->error($message, $app->req->server['HTTP_REFERER']);
+                    exit();
+                }
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            }
+        }
+        return true;
+    } catch (NodeQException $e) {
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
@@ -434,7 +559,7 @@ function etsis_stld_rule($stuID, $creds, $level)
             foreach ($node as $stld) {
                 $rlde = get_rule_by_code($stld->rule);
                 try {
-                    $load = $app->db->sttr()
+                    $load = $app->db->{_h($rlde->file)}()
                         ->where('sttr.stuID = ?', $stuID)->_and_()
                         ->where("$rlde->rule")
                         ->count('sttr.id');
@@ -476,13 +601,13 @@ function etsis_clas_rule($stuID, $level)
         foreach ($node as $clvr) {
             $rlde = get_rule_by_code(_escape($clvr->rule));
             try {
-                $clas = $app->db->v_scrd()
+                $clas = $app->db->{_h($rlde->file)}()
                     ->_join('stal', 'v_scrd.stuID = stal.stuID AND v_scrd.acadLevel = stal.acadLevelCode')
                     ->where('v_scrd.stuID = ?', $stuID)->_and_()
                     ->where('v_scrd.acadLevel = ?', _h($clvr->level))->_and_()
                     ->where("$rlde->rule")->_and_()
                     ->where('stal.endDate IS NULL')->_or_()
-                    ->whereLte('stal.endDate','0000-00-00')
+                    ->whereLte('stal.endDate', '0000-00-00')
                     ->count('v_scrd.stuID');
                 if ($clas > 0) {
                     return _escape($clvr->value);
