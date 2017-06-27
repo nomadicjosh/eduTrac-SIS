@@ -1145,7 +1145,7 @@ $app->group('/sect', function() use ($app) {
                 ->select('course_sec.courseSecCode,course_sec.termCode,course_sec.secShortTitle,course_sec.facID')
                 ->select('course_sec.dotw,course_sec.startTime,course_sec.endTime,course_sec.buildingCode,course_sec.roomCode')
                 ->select('course_sec.locationCode,course_sec.minCredit,term.id')
-                ->_join('term','course_sec.termCode = term.termCode')
+                ->_join('term', 'course_sec.termCode = term.termCode')
                 ->where('term.id = ?', $id)
                 ->orderBy('course_sec.courseSecCode');
 
@@ -1388,6 +1388,42 @@ $app->group('/sect', function() use ($app) {
                 return $array;
             });
             echo json_encode($q);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+    });
+
+    $app->post('/sectLookup/', function() use($app) {
+        try {
+            $equiv = $app->db->course_sec()
+                ->setTableAlias('sect')
+                ->select('sect.buildingCode,sect.roomCode,course.courseLongTitle')
+                ->select('sect.startTime,sect.endTime,sect.dotw,sect.minCredit')
+                ->select('sect.facID')
+                ->_join('course', 'sect.courseID = course.courseID')
+                ->where('sect.courseSecID = ?', $app->req->post['courseSecID']);
+            $q = $equiv->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            foreach ($q as $v) {
+                $json = [
+                    'input#meeting' => _h($v['buildingCode']) . ' ' . _h($v['roomCode']), 'input#title' => _h($v['courseLongTitle']),
+                    'input#time' => _h($v['startTime']) . ' - ' . _h($v['endTime']), 'input#dotw' => _h($v['dotw']),
+                    'input#credit' => number_format(_h($v['minCredit']), 6), 'input#fac' => get_name(_h($v['facID']))
+                ];
+            }
+            echo json_encode($json);
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
