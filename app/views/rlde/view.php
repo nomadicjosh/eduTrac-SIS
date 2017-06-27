@@ -103,9 +103,10 @@ function addMsg(text,element_id) {
                             <div class="col-md-8">
                                 <select name="file" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="sttr"<?=selected('sttr', _h($rule->file), false);?>><?=_t('(sttr) - Student Terms');?></option>
                                     <option value="perc"<?=selected('perc', _h($rule->file), false);?>><?=_t('(perc) - Person Restrictions');?></option>
+                                    <option value="stac"<?=selected('stac', _h($rule->file), false);?>><?=_t('(stac) - Student Academic Credit');?></option>
                                     <option value="stal"<?=selected('stal', _h($rule->file), false);?>><?=_t('(stal) - Student Academic Level');?></option>
+                                    <option value="sttr"<?=selected('sttr', _h($rule->file), false);?>><?=_t('(sttr) - Student Terms');?></option>
                                     <option value="v_scrd"<?=selected('v_scrd', _h($rule->file), false);?>><?=_t('(v_scrd) - Student Credits');?></option>
                                 </select>
                             </div>
@@ -146,7 +147,7 @@ function addMsg(text,element_id) {
 				<div class="form-actions">
                     <div class="btn-group">
                         <div id="result" class="hide">
-                            <input style="width: 800px;" id="rldeRule" class="rldeRule form-control" name="rule" type="text" readonly="readonly" required/>
+                            <textarea id="rldeRule" style="resize: none;height:10em; width:800px;" name="rule" class="rldeRule form-control" readonly="readonly" required></textarea>
                             <button type="submit" class="btn btn-success"><?=_t( 'Update' );?></button><br /><br />
                          </div>
                     <a class="btn btn-danger reset"><?=_t( 'Reset' );?></a>
@@ -187,14 +188,17 @@ var options = {
   sort_filters: true,
 
   optgroups: {
-    sttr: {
-      en: 'Student Terms'
-    },
     perc: {
       en: 'Person Restrictions'
     },
+    stac: {
+      en: 'Student Academic Credit'
+    },
     stal: {
       en: 'Student Academic Level'
+    },
+    sttr: {
+      en: 'Student Terms'
     },
     v_scrd: {
       en: 'Student Credits'
@@ -237,6 +241,105 @@ var options = {
   ],
 
   filters: [
+  /*
+   * Person Restrictions
+   */
+  {
+    id: 'perc.code',
+    label: 'Restriction Code',
+    type: 'string',
+    input: 'select',
+    values: {
+        <?php get_rlde_rest(); ?>
+    },
+    optgroup: 'perc',
+    value_separator: ',',
+    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+  },
+  {
+    id: 'perc.severity',
+    label: 'Severity',
+    type: 'integer',
+    optgroup: 'perc',
+    validation: {
+      min: 0,
+      step: 1
+    },
+    operators: ['equal','not_equal','is_empty','is_not_empty','is_not','is_not_null']
+  },
+  {
+    id: 'perc.startDate',
+    label: 'Start Date',
+    type: 'date',
+    plugin: 'datepicker',
+    plugin_config: {
+      format: 'yyyy-mm-dd',
+      todayBtn: 'linked',
+      todayHighlight: true,
+      autoclose: true
+    },
+    optgroup: 'perc'
+  },
+  {
+    id: 'perc.endDate',
+    label: 'End Date',
+    type: 'string',
+    plugin: 'datepicker',
+    plugin_config: {
+      format: 'yyyy-mm-dd',
+      todayBtn: 'linked',
+      todayHighlight: true,
+      autoclose: true
+    },
+    optgroup: 'perc'
+  },
+  /*
+   * Student Academic Credits
+   */
+  {
+    id: 'stac.courseCode',
+    label: 'Course',
+    type: 'string',
+    input: 'select',
+    values: {
+        <?php get_rlde_crse(); ?>
+    },
+    optgroup: 'stac',
+    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
+  },
+  {
+    id: 'stac.subjectCode',
+    label: 'Subject',
+    type: 'string',
+    input: 'select',
+    values: {
+        <?php get_rlde_subj(); ?>
+    },
+    optgroup: 'stac',
+    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
+  },
+  {
+    id: 'stac.deptCode',
+    label: 'Department',
+    type: 'string',
+    input: 'select',
+    values: {
+        <?php get_rlde_dept(); ?>
+    },
+    optgroup: 'stac',
+    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
+  },
+  {
+    id: 'stac.courseLevelCode',
+    label: 'Course Level',
+    type: 'string',
+    input: 'select',
+    values: {
+        <?php get_rlde_crlv(); ?>
+    },
+    optgroup: 'stac',
+    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
+  },
   /*
    * Student Terms
    */
@@ -288,9 +391,6 @@ var options = {
     id: 'sttr.created',
     label: 'Created Date',
     type: 'date',
-    validation: {
-      format: 'yyyy-mm-dd'
-    },
     plugin: 'datepicker',
     plugin_config: {
       format: 'yyyy-mm-dd',
@@ -300,64 +400,6 @@ var options = {
     },
     optgroup: 'sttr',
     operators: ['equal','less','less_or_equal','greater','greater_or_equal','between']
-  },
-  /*
-   * Person Restrictions
-   */
-  {
-    id: 'perc.code',
-    label: 'Restriction Code',
-    type: 'string',
-    input: 'select',
-    values: {
-        <?php get_rlde_rest(); ?>
-    },
-    optgroup: 'perc',
-    value_separator: ',',
-    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
-  },
-  {
-    id: 'perc.severity',
-    label: 'Severity',
-    type: 'integer',
-    optgroup: 'perc',
-    validation: {
-      min: 0,
-      step: 1
-    },
-    operators: ['equal','not_equal','is_empty','is_not_empty','is_not','is_not_null']
-  },
-  {
-    id: 'perc.startDate',
-    label: 'Start Date',
-    type: 'date',
-    validation: {
-      format: 'yyyy-mm-dd'
-    },
-    plugin: 'datepicker',
-    plugin_config: {
-      format: 'yyyy-mm-dd',
-      todayBtn: 'linked',
-      todayHighlight: true,
-      autoclose: true
-    },
-    optgroup: 'perc'
-  },
-  {
-    id: 'perc.endDate',
-    label: 'End Date',
-    type: 'string',
-    validation: {
-      format: 'yyyy-mm-dd'
-    },
-    plugin: 'datepicker',
-    plugin_config: {
-      format: 'yyyy-mm-dd',
-      todayBtn: 'linked',
-      todayHighlight: true,
-      autoclose: true
-    },
-    optgroup: 'perc'
   },
   /*
    * Student Academic Level
