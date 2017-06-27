@@ -29,7 +29,6 @@ $(document).ready(function(){
       }
   });
 });
-
 $(window).load(function() {
 	$("#terms").jCombo({url: "<?=get_base_url();?>sect/regTermLookup/" });
 	$("#section").jCombo({
@@ -43,6 +42,22 @@ $(window).load(function() {
 			});
 		}
 	});
+});
+jQuery(document).ready(function() {
+    jQuery('#section').live('change', function(event) {
+        $.ajax({
+            type    : 'POST',
+            url     : '<?=get_base_url();?>sect/sectLookup/',
+            dataType: 'json',
+            data    : $('#validateSubmitForm').serialize(),
+            cache: false,
+            success: function( data ) {
+                   for(var id in data) {        
+                          $(id).val( data[id] );
+                   }
+            }
+        });
+    });
 });
 </script>
 
@@ -120,6 +135,78 @@ $(window).load(function() {
 				<!-- // Row END -->
 				
 				<hr class="separator" />
+                <h3><?=_t('Course Section Info');?></h3>
+                <!-- Row -->
+				<div class="row">
+					<!-- Column -->
+					<div class="col-md-6">
+						
+						<!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><?=_t( 'Title' );?></label>
+							<div class="col-md-8">
+								<input type="text" id="title" class="form-control" readonly/>
+							</div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><?=_t( 'Credits' );?></label>
+							<div class="col-md-8">
+								<input type="text" id="credit" class="form-control" readonly/>
+							</div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><?=_t( 'Professor' );?></label>
+							<div class="col-md-8">
+                                <input type="text" id="fac" class="form-control" readonly/>
+							</div>
+						</div>
+						<!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+					
+					<!-- Column -->
+					<div class="col-md-6">
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Meeting Place' );?></label>
+                            <div class="col-md-8">
+	                        	<input type="text" id="meeting" class="form-control" readonly/>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Meeting Time' );?></label>
+                            <div class="col-md-8">
+	                        	<input type="text" id="time" class="form-control" readonly/>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Meeting Days' );?></label>
+                            <div class="col-md-8">
+	                        	<input type="text" id="dotw" class="form-control" readonly/>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+				</div>
+				<!-- // Row END -->
+                
+                <hr class="separator" />
                 
                 <!-- Row -->
 				<div class="row">
