@@ -31,6 +31,7 @@ require_once ETSIS_CLI_ROOT . '/ETSIS-CLI/etsis_CLI.php';
 require_once ETSIS_CLI_ROOT . '/ETSIS-CLI/etsis_CLI_Command.php';
 require_once ETSIS_CLI_ROOT . '/php/Mysqldump.php';
 require_once ETSIS_CLI_ROOT . '/php/notify.php';
+// Autoload libraries.
 require_once 'app/src/vendor/autoload.php';
 
 // Load dependencies
