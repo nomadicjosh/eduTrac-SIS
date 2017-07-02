@@ -39,7 +39,7 @@ class Core_Command extends ETSIS_CLI_Command
     public function info()
     {
         ETSIS_CLI::line('eduTrac SIS ' . file_get_contents('RELEASE'));
-        ETSIS_CLI::line('Copyright (c) 2013-2016 Joshua Parker <joshmac3@icloud.com>');
+        ETSIS_CLI::line('Copyright (c) 2013-2017 Joshua Parker <joshmac3@icloud.com>');
     }
     
     /**
