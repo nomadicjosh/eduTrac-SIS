@@ -128,7 +128,7 @@ if (window.location != window.parent.location)
 			"RGN - Course Registration","NSCP - NSLC Purge","NSCS - NSLC Setup","NSCX - NSLC Extraction",
 			"NSCE - NSLC Verification","NSCC - NSLC Correction","NSCT - NSLC File","NAE - Name & Address",
 			"APER - Add Person","SPRO - Student Profile","FAC - Faculty Profile",
-			"TRAN - Generate Transcript","SLR - Student Load Rules","RSTR - Restriction Codes",
+			"TRAN - Generate Transcript","REST - Restriction",
 			"GRSC - Grade Scale","BRGN - Batch Registration","SROS - Student Roster","STAF - Staff",
 			"EXTR - External Course","ATCEQ - New Transfer Course Equivalency",
 			"TCEQ - Transfer Course Equivalency","TCRE - Transfer Credit", "RLDE - Rule Definition",
