@@ -25,6 +25,12 @@ function hasPermission($perm)
     }
 }
 
+/**
+ * Retrieve info of the logged in user.
+ * 
+ * @param mixed $field The field you want returned.
+ * @return mixed
+ */
 function get_persondata($field)
 {
     try {
