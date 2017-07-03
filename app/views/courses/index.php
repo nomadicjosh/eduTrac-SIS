@@ -155,7 +155,7 @@ $(window).load(function(){
                 <td<?=isRegistrationOpen();?> class="text-center">
                     <?php if(_h($v['termCode']) == _h(get_option('registration_term'))) : ?>
                     <?php if(student_can_register()) : ?>
-                    <?php if(prerequisite(get_persondata('personID'),_h($v['courseSecID']))) : ?>
+                    <?php if(crse_prereq(get_persondata('personID'),_h($v['courseSecID'])) && etsis_prereq_rule(get_persondata('personID'), _h($v['courseID']))) : ?>
                     <input<?=getStuSec(_h($v['courseSecCode']),_h($v['termCode']));?> type="checkbox" name="courseSecID[]" value="<?=_h($v['courseSecID']);?>" />
                     <?php endif; endif; endif; ?>
                 </td>

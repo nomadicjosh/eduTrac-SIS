@@ -249,10 +249,19 @@ $screen = 'vcrse';
 							</div>
 						</div>
 						<!-- // Group END -->
-						
+                        <?php if(hasPermission('manage_business_rules')) : ?>
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Prerequisite' );?> <a href="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/prrl/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <div class="col-md-1">
+                                <input class="form-control" type="text" disabled value="<?=is_count_zero('course', 'rule', _escape($crse->rule));?>" class="center" />
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+						<?php endif; ?>
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Additional Info' );?> <a href="<?=get_base_url();?>crse/addnl/<?=_h($crse->courseID);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Additional Info' );?> <a href="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/addnl/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-1">
                                 <?php
                                      if($crse->preReq != '' || $crse->allowAudit != 0  || $crse->allowWaitlist != 0 || 
@@ -314,7 +323,7 @@ $screen = 'vcrse';
                 <!-- // Modal body END -->
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse->courseID);?>/" class="btn btn-default"><?=_t( 'Yes' );?></a>
+                    <a href="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/clone/" class="btn btn-default"><?=_t( 'Yes' );?></a>
                     <a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'No' );?></a> 
                 </div>
                 <!-- // Modal footer END -->

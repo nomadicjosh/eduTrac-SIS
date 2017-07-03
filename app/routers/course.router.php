@@ -196,13 +196,183 @@ $app->group('/crse', function() use ($app) {
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/addnl/(\d+)/', function() {
+    $app->before('GET|POST', '/(\d+)/prrl/', function() {
+        if (!hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t('Permission denied to view the Prerequisite screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/(\d+)/prrl/', function ($id) use($app) {
+        $course = get_course($id);
+
+        if ($app->req->isPost()) {
+            try {
+                $crse = $app->db->course();
+                $crse->set([
+                        'preReq' => ($app->req->post['preReq'] != '' ? $app->req->post['preReq'] : NULL),
+                        'rule' => ($app->req->post['rule'] != '' ? $app->req->post['rule'] : NULL),
+                        'printText' => ($app->req->post['printText'] != '' ? $app->req->post['printText'] : NULL)
+                    ])
+                    ->where('courseID = ?', (int) $id)
+                    ->update();
+
+                etsis_cache_delete($id, 'crse');
+                etsis_logger_activity_log_write('Update Record', 'Course Prerequisite', _h($course->courseCode), get_persondata('uname'));
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            }
+        }
+
+        $q = $app->db->student()
+            ->select('stuID')
+            ->where('status = "A"');
+        $stu = $q->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($course == false) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($course) == true) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If data is zero, 404 not found.
+         */ elseif (_h($course->courseID) <= 0) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+
+            etsis_register_style('form');
+            etsis_register_style('querybuilder');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+
+            $app->view->display('course/prrl', [
+                'title' => _h($course->courseShortTitle) . ' :: Course',
+                'crse' => $course,
+                'stu' => $stu
+                ]
+            );
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('POST', '/(\d+)/prrl/test/', function() {
+        if (!hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t('Permission denied to view the Prerequisite screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->post('/(\d+)/prrl/test/', function ($id) use($app) {
+        try {
+            $crse = get_course($id);
+            $rule = _escape($crse->rule);
+            $prrl = $app->db->query(
+                    "SELECT v_sacp.stuID FROM v_sacp"
+                    . " INNER JOIN stal ON v_sacp.stuID = stal.stuID AND v_sacp.prog = stal.acadProgCode"
+                    . " INNER JOIN v_scrd ON v_sacp.stuID = v_scrd.stuID AND v_sacp.prog = v_scrd.prog"
+                    . " WHERE v_sacp.stuID = ?"
+                    . " AND $rule", [$app->req->post['stuID']]
+                )
+                ->findOne();
+
+            if (_escape($prrl->stuID) <> $app->req->post['stuID']) {
+                $dept = get_department(_escape($crse->deptCode));
+
+                $message = _escape($crse->printText);
+                $message = str_replace('{name}', get_name($app->req->post['stuID']), $message);
+                $message = str_replace('{stuID}', get_alt_id($app->req->post['stuID']), $message);
+                $message = str_replace('{course}', _h($crse->courseCode), $message);
+                $message = str_replace('{deptName}', _h($dept->deptName), $message);
+                $message = str_replace('{deptEmail}', _h($dept->deptEmail), $message);
+                $message = str_replace('{deptPhone}', _h($dept->deptPhone), $message);
+                _etsis_flash()->error($message, $app->req->server['HTTP_REFERER']);
+            } else {
+                _etsis_flash()->success(sprintf(_t('<strong>%s</strong> passed the prerequisite rule.'), get_name($app->req->post['stuID'])), $app->req->server['HTTP_REFERER']);
+            }
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'crse' . '/' . $id . '/prrl/');
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'crse' . '/' . $id . '/prrl/');
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'crse' . '/' . $id . '/prrl/');
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET', '/(\d+)/prrl/c/', function() {
+        if (!hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t('Permission denied to view the Prerequisite screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->get('/(\d+)/prrl/c/', function ($id) use($app) {
+        try {
+            $clear = $app->db->course();
+            $clear->set([
+                    'rule' => NULL
+                ])
+                ->where('courseID = ?', $id)
+                ->update();
+            etsis_cache_delete($id, 'crse');
+            _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'crse' . '/' . $id . '/prrl/');
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'crse' . '/' . $id . '/prrl/');
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'crse' . '/' . $id . '/prrl/');
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'crse' . '/' . $id . '/prrl/');
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/(\d+)/addnl/', function() {
         if (!hasPermission('access_course_screen')) {
             _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app) {
+    $app->match('GET|POST', '/(\d+)/addnl/', function ($id) use($app) {
         $course = get_course($id);
 
         if ($app->req->isPost()) {
@@ -400,40 +570,42 @@ $app->group('/crse', function() use ($app) {
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/clone/(\d+)/', function() {
+    $app->before('GET|POST', '/(\d+)/clone/', function() {
         if (!hasPermission('add_course')) {
             _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
-    $app->get('/clone/(\d+)/', function($id) use($app) {
+    $app->get('/(\d+)/clone/', function($id) use($app) {
         try {
             $crse = get_course($id);
+
             $clone = $app->db->course();
-            $clone->courseNumber = _h($crse->courseNumber);
-            $clone->courseCode = _h($crse->courseCode);
-            $clone->subjectCode = _h($crse->subjectCode);
-            $clone->deptCode = _h($crse->deptCode);
-            $clone->courseDesc = _h($crse->courseDesc);
-            $clone->creditType = _h($crse->creditType);
-            $clone->minCredit = _h($crse->minCredit);
-            $clone->maxCredit = _h($crse->maxCredit);
-            $clone->increCredit = _h($crse->increCredit);
-            $clone->acadLevelCode = _h($crse->acadLevelCode);
-            $clone->courseLevelCode = _h($crse->courseLevelCode);
-            $clone->courseLongTitle = _h($crse->courseLongTitle) . ' (COPY)';
-            $clone->courseShortTitle = _h($crse->courseShortTitle);
-            $clone->preReq = _h($crse->preReq);
-            $clone->allowAudit = _h($crse->allowAudit);
-            $clone->allowWaitlist = _h($crse->allowWaitlist);
-            $clone->minEnroll = _h($crse->minEnroll);
-            $clone->seatCap = _h($crse->seatCap);
-            $clone->startDate = _h($crse->startDate);
-            $clone->currStatus = _h($crse->currStatus);
-            $clone->statusDate = \Jenssegers\Date\Date::now();
-            $clone->approvedDate = \Jenssegers\Date\Date::now();
-            $clone->approvedBy = get_persondata('personID');
-            $clone->save();
+            $clone->insert([
+                'courseNumber' => _h($crse->courseNumber),
+                'courseCode' => _h($crse->courseCode),
+                'subjectCode' => _h($crse->subjectCode),
+                'deptCode' => _h($crse->deptCode),
+                'courseDesc' => _h($crse->courseDesc),
+                'creditType' => _h($crse->creditType),
+                'minCredit' => _h($crse->minCredit),
+                'maxCredit' => _h($crse->maxCredit),
+                'increCredit' => _h($crse->increCredit),
+                'acadLevelCode' => _h($crse->acadLevelCode),
+                'courseLevelCode' => _h($crse->courseLevelCode),
+                'courseLongTitle' => _h($crse->courseLongTitle) . ' (COPY)',
+                'courseShortTitle' => _h($crse->courseShortTitle),
+                'preReq' => _h($crse->preReq),
+                'allowAudit' => _h($crse->allowAudit),
+                'allowWaitlist' => _h($crse->allowWaitlist),
+                'minEnroll' => _h($crse->minEnroll),
+                'seatCap' => _h($crse->seatCap),
+                'startDate' => _h($crse->startDate),
+                'currStatus' => _h($crse->currStatus),
+                'statusDate' => \Jenssegers\Date\Date::now(),
+                'approvedDate' => \Jenssegers\Date\Date::now(),
+                'approvedBy' => get_persondata('personID')
+            ]);
 
             $_id = $clone->lastInsertId();
             etsis_cache_flush_namespace('crse');
@@ -503,6 +675,41 @@ $app->group('/crse', function() use ($app) {
                 return $array;
             });
             echo json_encode($q);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+    });
+
+    $app->match('GET|POST', '/stuLookup/', function() use($app) {
+        try {
+            $term = $app->req->get['term'];
+            $stu = $app->db->student()
+                ->select('student.stuID,person.altID,person.fname,person.lname')
+                ->_join('person', 'student.stuID = person.personID')
+                ->whereLike('student.stuID', "%" . $term . "%")->_or_()
+                ->whereLike('person.altID', "%" . $term . "%")->_or_()
+                ->whereLike('person.fname', "%" . $term . "%")->_or_()
+                ->whereLike('person.lname', "%" . $term . "%")->_or_()
+                ->whereLike('CONCAT(person.lname,", ",person.fname)', "%" . $term . "%")->_or_()
+                ->whereLike('CONCAT(person.fname," ",person.lname)', "%" . $term . "%")
+                ->find();
+            $items = [];
+            foreach ($stu as $x) {
+                $option = array(
+                    'id' => _h($x->stuID),
+                    'label' => get_name(_h($x->stuID)),
+                    'value' => get_name(_h($x->stuID))
+                );
+                $items[] = $option;
+            }
+            echo json_encode($items);
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));

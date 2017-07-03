@@ -40,7 +40,7 @@ $(function() {
     <?php jstree_sidebar_menu($screen,$crse); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>crse/addnl/<?=_h($crse->courseID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/addnl/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -57,13 +57,6 @@ $(function() {
 				<div class="row">
 					<!-- Column -->
 					<div class="col-md-6">
-					
-						<!-- Group -->
-						<div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Prerequisites' );?></label>
-							<div class="col-md-8"><input id="select2_5" style="width:100%;" type="hidden"<?=cio();?> name="preReq" value="<?=_h($crse->preReq);?>" /></div>
-						</div>
-						<!-- // Group END -->
 						
 						<!-- Group -->
 						<div class="form-group">

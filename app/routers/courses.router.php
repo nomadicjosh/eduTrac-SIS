@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\NodeQ\etsis_NodeQ as Node;
+use app\src\Core\NodeQ\NodeQException;
 use app\src\Core\Exception\NotFoundException;
 use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
@@ -98,7 +100,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
                     ->select('a.courseSecID,a.courseSecCode,a.secShortTitle,a.dotw')
                     ->select('a.startTime,a.endTime,a.minCredit,a.termCode')
                     ->select('a.courseFee,a.labFee,a.materialFee,a.facID')
-                    ->select('a.comment,a.courseSection,b.locationName,c.courseDesc')
+                    ->select('a.comment,a.courseSection,b.locationName,c.courseDesc,c.courseID')
                     ->_join('location', 'a.locationCode = b.locationCode', 'b')
                     ->_join('course', 'a.courseID = c.courseID', 'c')
                     ->_join('prog_crse', 'c.courseCode = d.crseCode', 'd')
@@ -113,7 +115,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
                     ->select('a.courseSecID,a.courseSecCode,a.secShortTitle,a.dotw')
                     ->select('a.startTime,a.endTime,a.minCredit,a.termCode')
                     ->select('a.courseFee,a.labFee,a.materialFee,a.facID')
-                    ->select('a.comment,a.courseSection,b.locationName,c.courseDesc')
+                    ->select('a.comment,a.courseSection,b.locationName,c.courseDesc,c.courseID')
                     ->_join('location', 'a.locationCode = b.locationCode', 'b')
                     ->_join('course', 'a.courseID = c.courseID', 'c')
                     ->where('a.currStatus = "A"')->_and_()
@@ -239,83 +241,82 @@ $app->group('/courses', function() use ($app, $css, $js) {
                         ->select('b.acadLevelCode,b.courseLevelCode,c.reportingTerm')
                         ->_join('course', 'a.courseID = b.courseID', 'b')
                         ->_join('term', 'a.termCode = c.termCode', 'c')
-                        ->where('a.courseSecID = ?', $app->req->post['courseSecID'][$r]);
-                    $sect->findOne();
+                        ->where('a.courseSecID = ?', $app->req->post['courseSecID'][$r])
+                        ->findOne();
 
                     $stcs = $app->db->stcs();
                     $stcs->stuID = get_persondata('personID');
                     $stcs->courseSecID = $app->req->post['courseSecID'][$r];
-                    $stcs->courseSecCode = _h($sect->courseSecCode);
-                    $stcs->courseSection = _h($sect->courseSection);
-                    $stcs->termCode = _h($sect->termCode);
-                    $stcs->courseCredits = _h($sect->minCredit);
+                    $stcs->courseSecCode = _escape($sect->courseSecCode);
+                    $stcs->courseSection = _escape($sect->courseSection);
+                    $stcs->termCode = _escape($sect->termCode);
+                    $stcs->courseCredits = _escape($sect->minCredit);
                     $stcs->status = 'N';
-                    $stcs->regDate = \Jenssegers\Date\Date::now();
-                    $stcs->regTime = \Jenssegers\Date\Date::now()->format('h:i A');
-                    $stcs->statusDate = \Jenssegers\Date\Date::now();
-                    $stcs->statusTime = \Jenssegers\Date\Date::now()->format('h:i A');
+                    $stcs->regDate = Jenssegers\Date\Date::now();
+                    $stcs->regTime = Jenssegers\Date\Date::now()->format('h:i A');
+                    $stcs->statusDate = Jenssegers\Date\Date::now();
+                    $stcs->statusTime = Jenssegers\Date\Date::now()->format('h:i A');
                     $stcs->addedBy = get_persondata('personID');
+                    $stcs->save();
 
-                    if ($stcs->save()) {
-                        $stac = $app->db->stac();
-                        $stac->stuID = get_persondata('personID');
-                        $stac->courseID = _h($sect->courseID);
-                        $stac->courseSecID = $app->req->post['courseSecID'][$r];
-                        $stac->courseCode = _h($sect->courseCode);
-                        $stac->courseSecCode = _h($sect->courseSecCode);
-                        $stac->sectionNumber = _h($sect->sectionNumber);
-                        $stac->courseSection = _h($sect->courseSection);
-                        $stac->termCode = _h($sect->termCode);
-                        $stac->reportingTerm = _h($sect->reportingTerm);
-                        $stac->subjectCode = _h($sect->subjectCode);
-                        $stac->deptCode = _h($sect->deptCode);
-                        $stac->shortTitle = _h($sect->courseShortTitle);
-                        $stac->longTitle = _h($sect->courseLongTitle);
-                        $stac->compCred = '0.0';
-                        $stac->attCred = _h($sect->minCredit);
-                        $stac->status = 'N';
-                        $stac->statusDate = \Jenssegers\Date\Date::now();
-                        $stac->statusTime = \Jenssegers\Date\Date::now()->format('h:i A');
-                        $stac->acadLevelCode = _h($sect->acadLevelCode);
-                        $stac->courseLevelCode = _h($sect->courseLevelCode);
-                        $stac->creditType = _h($sect->creditType);
-                        $stac->startDate = _h($sect->startDate);
-                        $stac->endDate = (_h($sect->endDate) != '' ? _h($sect->endDate) : NULL);
-                        $stac->addedBy = get_persondata('personID');
-                        $stac->addDate = \Jenssegers\Date\Date::now();
-                        $stac->save();
-                        $_id = $stac->lastInsertId();
-                        /**
-                         * @since 6.1.07
-                         */
-                        $sacd = $app->db->stac()
-                            ->select('stac.*,nae.uname,nae.fname,nae.lname,nae.email')
-                            ->_join('person', 'stac.stuID = nae.personID', 'nae')
-                            ->where('stac.id = ?', $_id)
-                            ->findOne();
-                        /**
-                         * Fires after registration and after new STAC record
-                         * is added to the database.
-                         * 
-                         * @since 6.1.05
-                         * @param array $sacd Student Academic Credit detail data object.
-                         */
-                        $app->hook->do_action('post_save_myetsis_reg', $sacd);
-                        /**
-                         * Delete the record from the shopping cart after
-                         * registration is complete.
-                         */
-                        $app->db->stu_rgn_cart()
-                            ->where('stuID = ?', get_persondata('personID'))->_and_()
-                            ->where('courseSecID = ?', $app->req->post['courseSecID'][$r])
-                            ->delete();
+                    $stac = $app->db->stac();
+                    $stac->stuID = get_persondata('personID');
+                    $stac->courseID = _escape($sect->courseID);
+                    $stac->courseSecID = $app->req->post['courseSecID'][$r];
+                    $stac->courseCode = _escape($sect->courseCode);
+                    $stac->courseSecCode = _escape($sect->courseSecCode);
+                    $stac->sectionNumber = _escape($sect->sectionNumber);
+                    $stac->courseSection = _escape($sect->courseSection);
+                    $stac->termCode = _escape($sect->termCode);
+                    $stac->reportingTerm = _escape($sect->reportingTerm);
+                    $stac->subjectCode = _escape($sect->subjectCode);
+                    $stac->deptCode = _escape($sect->deptCode);
+                    $stac->shortTitle = _escape($sect->courseShortTitle);
+                    $stac->longTitle = _escape($sect->courseLongTitle);
+                    $stac->compCred = '0.0';
+                    $stac->attCred = _escape($sect->minCredit);
+                    $stac->status = 'N';
+                    $stac->statusDate = Jenssegers\Date\Date::now();
+                    $stac->statusTime = Jenssegers\Date\Date::now()->format('h:i A');
+                    $stac->acadLevelCode = _escape($sect->acadLevelCode);
+                    $stac->courseLevelCode = _escape($sect->courseLevelCode);
+                    $stac->creditType = _escape($sect->creditType);
+                    $stac->startDate = _escape($sect->startDate);
+                    $stac->endDate = (_escape($sect->endDate) != '' ? _escape($sect->endDate) : NULL);
+                    $stac->addedBy = get_persondata('personID');
+                    $stac->addDate = Jenssegers\Date\Date::now();
+                    $stac->save();
+                    $_id = $stac->lastInsertId();
+                    /**
+                     * @since 6.1.07
+                     */
+                    $sacd = $app->db->stac()
+                        ->select('stac.*,nae.uname,nae.fname,nae.lname,nae.email')
+                        ->_join('person', 'stac.stuID = nae.personID', 'nae')
+                        ->where('stac.id = ?', $_id)
+                        ->findOne();
+                    /**
+                     * Fires after registration and after new STAC record
+                     * is added to the database.
+                     * 
+                     * @since 6.1.05
+                     * @param array $sacd Student Academic Credit detail data object.
+                     */
+                    $app->hook->do_action('post_save_myetsis_reg', $sacd);
+                    /**
+                     * Delete the record from the shopping cart after
+                     * registration is complete.
+                     */
+                    $app->db->stu_rgn_cart()
+                        ->where('stuID = ?', get_persondata('personID'))->_and_()
+                        ->where('courseSecID = ?', $app->req->post['courseSecID'][$r])
+                        ->delete();
 
-                        if (function_exists('financial_module')) {
-                            /**
-                             * Generate bill and/or add fees.
-                             */
-                            generate_stu_bill(_h($sect->termCode), get_persondata('personID'), $app->req->post['courseSecID'][$r]);
-                        }
+                    if (function_exists('financial_module')) {
+                        /**
+                         * Generate bill and/or add fees.
+                         */
+                        generate_stu_bill(_escape($sect->termCode), get_persondata('personID'), $app->req->post['courseSecID'][$r]);
                     }
                 }
                 ++$r;
@@ -329,40 +330,36 @@ $app->group('/courses', function() use ($app, $css, $js) {
              */
             $app->hook->do_action('myetsis_student_course_registration');
 
-            // Flash messages for success or error
-            if ($_id > 0) {
-                /**
-                 * Check if student has a student terms (sttr) record.
-                 * 
-                 * @since 6.3.0
-                 */
-                /**
-                 * Add registerd courses to registration node for later processing.
-                 * 
-                 * @since 6.3.0
-                 */
-                $st = $app->db->stac()
-                    ->select('courseSection')
-                    ->where('stuID = ?', get_persondata('personID'))->_and_()
-                    ->where('LastUpdate BETWEEN ? AND ?', [\Jenssegers\Date\Date::now()->sub('2 minutes'), \Jenssegers\Date\Date::now()]);
-                $st->find(function($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = _h($d['courseSection']);
-                    }
+            /**
+             * Add registerd courses to registration node for later processing.
+             * 
+             * @since 6.3.0
+             */
+            $st = $app->db->stac()
+                ->select('courseSection')
+                ->where('stuID = ?', get_persondata('personID'))->_and_()
+                ->where('LastUpdate BETWEEN ? AND ?', [Jenssegers\Date\Date::now()->sub('2 minutes'), Jenssegers\Date\Date::now()]);
+            $st->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = _escape($d['courseSection']);
+                }
+                try {
                     Node::dispense('crse_rgn');
                     $sect = Node::table('crse_rgn');
-                    $sect->stuid = 1;
+                    $sect->stuid = (int) get_persondata('personID');
                     $sect->sections = implode(',', $array);
-                    $sect->timestamp = \Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');
+                    $sect->timestamp = Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');
                     $sect->sent = 0;
                     $sect->save();
-                });
-                etsis_cache_flush_namespace('student_account');
-                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
-            } else {
-                _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
-            }
+                } catch (NodeQException $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                } catch (Exception $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                }
+            });
+            etsis_cache_flush_namespace('student_account');
+            _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);

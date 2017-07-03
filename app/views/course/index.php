@@ -118,7 +118,7 @@ $screen = 'crse';
                         <!-- // Modal body END -->
                         <!-- Modal footer -->
                         <div class="modal-footer">
-                            <a href="<?=get_base_url();?>crse/clone/<?=_h($v['courseID']);?>/" class="btn btn-default"><?=_t( 'Yes' );?></a>
+                            <a href="<?=get_base_url();?>crse/<?=_h($v['courseID']);?>/clone/" class="btn btn-default"><?=_t( 'Yes' );?></a>
                             <a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'No' );?></a> 
                         </div>
                         <!-- // Modal footer END -->
