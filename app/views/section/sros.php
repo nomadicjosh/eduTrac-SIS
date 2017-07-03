@@ -85,7 +85,7 @@ $(window).load(function() {
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Section' );?></label>
                             <div class="col-md-8">
                                 <select id="section" name="sectionID" class="form-control" required></select>
-                                <span id="message" style="color:red; display:hidden;"></span>
+                                <span id="message" style="color:green; display:hidden;"></span>
                             </div>
                         </div>
                         <!-- // Group END -->

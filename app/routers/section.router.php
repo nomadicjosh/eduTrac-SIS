@@ -99,8 +99,8 @@ $app->group('/sect', function() use ($app) {
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app) {
         $section = get_course_sec($id);
 
-        $date = \Jenssegers\Date\Date::now()->format("Y-m-d");
-        $time = \Jenssegers\Date\Date::now()->format("h:i A");
+        $date = Jenssegers\Date\Date::now()->format("Y-m-d");
+        $time = Jenssegers\Date\Date::now()->format("h:i A");
 
         if ($app->req->isPost()) {
             try {
@@ -328,8 +328,8 @@ $app->group('/sect', function() use ($app) {
                     'sectionNumber' => $app->req->post['sectionNumber'],
                     'courseSecCode' => _trim($sc),
                     'courseSection' => _trim($courseSection),
-                    'buildingCode' => 'NULL',
-                    'roomCode' => 'NULL',
+                    'buildingCode' => NULL,
+                    'roomCode' => NULL,
                     'locationCode' => $app->req->post['locationCode'],
                     'courseLevelCode' => $app->req->post['courseLevelCode'],
                     'acadLevelCode' => $app->req->post['acadLevelCode'],
@@ -349,9 +349,9 @@ $app->group('/sect', function() use ($app) {
                     'endTime' => $app->req->post['endTime'],
                     'webReg' => $app->req->post['webReg'],
                     'currStatus' => $app->req->post['currStatus'],
-                    'statusDate' => \Jenssegers\Date\Date::now(),
+                    'statusDate' => Jenssegers\Date\Date::now(),
                     'comment' => $app->req->post['comment'],
-                    'approvedDate' => \Jenssegers\Date\Date::now(),
+                    'approvedDate' => Jenssegers\Date\Date::now(),
                     'approvedBy' => get_persondata('personID')
                 ]);
 
@@ -790,6 +790,14 @@ $app->group('/sect', function() use ($app) {
              */
             $app->hook->do_action('execute_reg_rest_rule', $app->req->post['stuID']);
 
+            /**
+             * Execute prereq check to make sure the student has met specific
+             * requirements before being registered into a course section.
+             * 
+             * @since 6.3.0
+             */
+            $app->hook->do_action_array('execute_reg_prereq_rule', [$app->req->post['stuID'], $app->req->post['courseSecID']]);
+
             try {
                 $sect = get_course_sec($app->req->post['courseSecID']);
                 $crse = $app->db->course()->where('courseID = ?', (int) _h($sect->courseID))->findOne();
@@ -818,9 +826,9 @@ $app->group('/sect', function() use ($app) {
                     'courseCredits' => _h($sect->minCredit),
                     'ceu' => _h($sect->ceu),
                     'status' => 'A',
-                    'regDate' => \Jenssegers\Date\Date::now(),
-                    'regTime' => \Jenssegers\Date\Date::now()->format("h:i A"),
-                    'statusDate' => \Jenssegers\Date\Date::now(),
+                    'regDate' => Jenssegers\Date\Date::now(),
+                    'regTime' => Jenssegers\Date\Date::now()->format("h:i A"),
+                    'statusDate' => Jenssegers\Date\Date::now(),
                     'statusTime' => $time,
                     'addedBy' => get_persondata('personID')
                 ]);
@@ -841,14 +849,14 @@ $app->group('/sect', function() use ($app) {
                     'longTitle' => _h($crse->courseLongTitle),
                     'attCred' => _h($sect->minCredit),
                     'status' => 'A',
-                    'statusDate' => \Jenssegers\Date\Date::now(),
+                    'statusDate' => Jenssegers\Date\Date::now(),
                     'statusTime' => $time,
                     'acadLevelCode' => _h($sect->acadLevelCode),
                     'courseLevelCode' => _h($sect->courseLevelCode),
                     'startDate' => _h($sect->startDate),
                     'endDate' => (_h($sect->endDate) != '' ? _h($sect->endDate) : NULL),
                     'addedBy' => get_persondata('personID'),
-                    'addDate' => \Jenssegers\Date\Date::now()
+                    'addDate' => Jenssegers\Date\Date::now()
                 ]);
 
                 /**

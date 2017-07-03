@@ -42,7 +42,7 @@ $(function(){
 	<li><?=_t( 'You are here' );?></li>
 	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>sect/" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
+	<li><a href="<?=get_base_url();?>sect/" class="glyphicons search"><i></i> <?=_t( 'Section Lookup' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_h($sect->courseSection);?></li>
 </ul>
