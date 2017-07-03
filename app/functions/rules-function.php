@@ -26,6 +26,13 @@ try {
      * @since 6.3.0
      */
     Node::dispense('rlde');
+    
+    /**
+     * Creates alst node if it does not exist.
+     * 
+     * @since 6.3.0
+     */
+    Node::dispense('alst');
 
     /**
      * Creates stld node if it does not exist.
@@ -539,15 +546,60 @@ function etsis_reg_rest_rule($pID)
 }
 
 /**
+ * Academic Level Standing rule.
+ * 
+ * @since 6.3.0
+ * @param int $stuID Unique student ID.
+ * @param string $level Student academic level.
+ * @return string
+ */
+function etsis_alst_rule($stuID, $level)
+{
+    $app = \Liten\Liten::getInstance();
+    try {
+        $node = Node::table('alst')->where('level', '=', $level)->findAll();
+        foreach ($node as $alst) {
+            $rlde = get_rule_by_code(_escape($alst->rule));
+            try {
+                $aclv = $app->db->query(
+                        "SELECT v_scrd.stuID FROM $rlde->file"
+                        . " WHERE v_scrd.stuID = ?"
+                        . " AND v_scrd.acadLevel = ?"
+                        . " AND $rlde->rule", [$stuID, _escape($alst->level)]
+                    )
+                    ->findOne();
+                if (_escape($aclv->stuID) == $stuID) {
+                    return _escape($alst->value);
+                }
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            }
+        }
+    } catch (NodeQException $e) {
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    }
+}
+
+/**
  * Student load rule.
  * 
  * @since 6.3.0
  * @param int $stuID Unique student ID.
- * @param float $creds Number of credits to check for.
- * @param string $level Academic level to check for.
+ * @param float $creds Number of credits to check against.
+ * @param string $level Academic level to check against.
+ * @param string $term Academic term to check against.
  * @return string
  */
-function etsis_stld_rule($stuID, $creds, $level)
+function etsis_stld_rule($stuID, $creds, $level, $term)
 {
     $app = \Liten\Liten::getInstance();
     try {
@@ -559,11 +611,15 @@ function etsis_stld_rule($stuID, $creds, $level)
             foreach ($node as $stld) {
                 $rlde = get_rule_by_code($stld->rule);
                 try {
-                    $load = $app->db->{_h($rlde->file)}()
-                        ->where('sttr.stuID = ?', $stuID)->_and_()
-                        ->where("$rlde->rule")
-                        ->count('sttr.id');
-                    if ($load > 0) {
+                    $load = $app->db->query(
+                            "SELECT sttr.stuID FROM $rlde->file"
+                            . " INNER JOIN term ON sttr.termCode = term.termCode"
+                            . " WHERE sttr.stuID = ?"
+                            . " AND sttr.termCode = ?"
+                            . " AND $rlde->rule", [$stuID, $term]
+                        )
+                        ->findOne();
+                    if (_escape($load->stuID) == $stuID) {
                         return _escape($stld->value);
                     }
                 } catch (NotFoundException $e) {
@@ -586,14 +642,14 @@ function etsis_stld_rule($stuID, $creds, $level)
 }
 
 /**
- * Student classification.
+ * Student class level rule.
  * 
  * @since 6.3.0
  * @param int $stuID Unique student ID.
  * @param string $level Student academic level.
  * @return string
  */
-function etsis_clas_rule($stuID, $level)
+function etsis_clvr_rule($stuID, $level)
 {
     $app = \Liten\Liten::getInstance();
     try {
@@ -601,15 +657,17 @@ function etsis_clas_rule($stuID, $level)
         foreach ($node as $clvr) {
             $rlde = get_rule_by_code(_escape($clvr->rule));
             try {
-                $clas = $app->db->{_h($rlde->file)}()
-                    ->_join('stal', 'v_scrd.stuID = stal.stuID AND v_scrd.acadLevel = stal.acadLevelCode')
-                    ->where('v_scrd.stuID = ?', $stuID)->_and_()
-                    ->where('v_scrd.acadLevel = ?', _h($clvr->level))->_and_()
-                    ->where("$rlde->rule")->_and_()
-                    ->where('stal.endDate IS NULL')->_or_()
-                    ->whereLte('stal.endDate', '0000-00-00')
-                    ->count('v_scrd.stuID');
-                if ($clas > 0) {
+                $clas = $app->db->query(
+                        "SELECT v_scrd.stuID FROM $rlde->file"
+                        . " INNER JOIN stal ON v_scrd.stuID = stal.stuID AND v_scrd.acadLevel = stal.acadLevelCode"
+                        . " WHERE v_scrd.stuID = ?"
+                        . " AND v_scrd.acadLevel = ?"
+                        . " AND $rlde->rule"
+                        . " AND (stal.endDate IS NULL"
+                        . " OR stal.endDate <= '0000-00-00')", [$stuID, _escape($clvr->level)]
+                    )
+                    ->findOne();
+                if (_escape($clas->stuID) == $stuID) {
                     return _escape($clvr->value);
                 }
             } catch (NotFoundException $e) {

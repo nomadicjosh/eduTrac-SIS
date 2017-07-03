@@ -288,7 +288,7 @@ function student_can_register()
                     OR endDate <= '0000-00-00'
                     OR endDate > ?", [
             get_persondata('personID'),
-            \Jenssegers\Date\Date::now()->format('Y-m-d')
+            Jenssegers\Date\Date::now()->format('Y-m-d')
         ]);
         $sql1 = $rest->find(function ($data) {
             $array = [];
@@ -356,17 +356,14 @@ function student_can_register()
  *            ID of course section.
  * @return bool
  */
-function prerequisite($stuID, $courseSecID)
+function crse_prereq($stuID, $courseSecID)
 {
     $app = \Liten\Liten::getInstance();
     try {
-        $crse = $app->db->query("SELECT
-    					a.preReq
-					FROM course a
-					LEFT JOIN course_sec b ON a.courseID = b.courseID
-					WHERE b.courseSecID = ?", [
-            $courseSecID
-        ]);
+        $crse = $app->db->course()
+            ->select('course.preReq')
+            ->_join('course_sec', 'course.courseID = course_sec.courseID')
+            ->where('course_sec.courseSecID = ?', $courseSecID);
         $q1 = $crse->find(function ($data) {
             $array = [];
             foreach ($data as $d) {
@@ -378,12 +375,12 @@ function prerequisite($stuID, $courseSecID)
         foreach ($q1 as $r1) {
             $array[] = $r1;
         }
-        $req = explode(",", _h($r1['preReq']));
-        if (count($q1[0]['preReq']) > 0) {
+        $req = explode(",", _escape($r1['preReq']));
+        if (count(_escape($q1[0]['preReq'])) > 0) {
             $stac = $app->db->query("SELECT
 	    					id
 						FROM stac
-						WHERE courseCode IN('" . str_replace(",", "', '", _h($r1['preReq'])) . "')
+						WHERE courseCode IN('" . str_replace(",", "', '", _escape($r1['preReq'])) . "')
 						AND stuID = ?
 						AND status IN('A','N')
 						AND grade <> ''
@@ -401,9 +398,10 @@ function prerequisite($stuID, $courseSecID)
                 return $array;
             });
         }
-        if (empty(_h($r1['preReq'])) || count($req) == count($q2)) {
+        if (empty(_escape($r1['preReq'])) || count($req) == count($q2)) {
             return true;
         }
+        return false;
     } catch (NotFoundException $e) {
         Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -414,6 +412,44 @@ function prerequisite($stuID, $courseSecID)
         Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));
     }
+}
+
+/**
+ * The prereq check runs when a student tries to register for a course.
+ * 
+ * @since 6.3.0
+ * @param int $stuID Unique student ID.
+ * @param int $sectID Unique course section ID.
+ * @return boolean
+ */
+function check_prereq($stuID, $sectID)
+{
+    $app = \Liten\Liten::getInstance();
+    /**
+     * If staff member has this permission, then he/she
+     * will be able to register a student into a course section
+     * in spite of the student's restriction.
+     */
+    if (hasPermission('override_rule')) {
+        return true;
+    }
+
+    $sect = get_course_sec($sectID);
+    $crse = get_course(_h($sect->courseID));
+    $dept = get_department(_h($crse->deptCode));
+
+    if (crse_prereq($stuID, $sectID) == false || etsis_prereq_rule($stuID, _h($crse->courseID)) == false) {
+        $message = _escape($crse->printText);
+        $message = str_replace('{name}', get_name($stuID), $message);
+        $message = str_replace('{stuID}', get_alt_id($stuID), $message);
+        $message = str_replace('{course}', _h($crse->courseCode), $message);
+        $message = str_replace('{deptName}', _h($dept->deptName), $message);
+        $message = str_replace('{deptEmail}', _h($dept->deptEmail), $message);
+        $message = str_replace('{deptPhone}', _h($dept->deptPhone), $message);
+        _etsis_flash()->error($message, $app->req->server['HTTP_REFERER']);
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -457,7 +493,7 @@ function removeFromCart($section)
     try {
         $cart = $app->db->stu_rgn_cart()
             ->where('stuID = ?', get_persondata('personID'))->_and_()
-            ->whereGte('deleteDate', \Jenssegers\Date\Date::now())->_and_()
+            ->whereGte('deleteDate', Jenssegers\Date\Date::now())->_and_()
             ->where('courseSecID = ?', $section);
         $q = $cart->find(function ($data) {
             $array = [];
@@ -651,7 +687,7 @@ function get_stu_shis($stu_id, $field)
         $shis = $app->db->hiatus()
             ->where('stuID = ?', $stu_id)->_and_()
             ->where('endDate IS NULL')->_or_()
-            ->whereLte('endDate','0000-00-00')
+            ->whereLte('endDate', '0000-00-00')
             ->findOne();
         return _h($shis->{$field});
     } catch (NotFoundException $e) {
@@ -719,7 +755,8 @@ function create_update_sttr_record($sacd)
                 'stuID' => _h($sacd->stuID),
                 'termCode' => _h($sacd->termCode),
                 'acadLevelCode' => _h($sacd->acadLevelCode),
-                'attCred' => _h($sacd->attCred)
+                'attCred' => _h($sacd->attCred),
+                'created' => Jenssegers\Date\Date::now()
             ]);
         } else {
             $upd = $app->db->sttr()
@@ -729,6 +766,8 @@ function create_update_sttr_record($sacd)
             $upd->set([
                     'attCred' => _h($upd->attCred) + _h($sacd->attCred)
                 ])
+                ->where('stuID = ?', _h($sacd->stuID))->_and_()
+                ->where('termCode = ?', _h($sacd->termCode))
                 ->update();
         }
     } catch (NotFoundException $e) {
@@ -743,8 +782,46 @@ function create_update_sttr_record($sacd)
     }
 }
 
+/**
+ * Retrieve student's academic level standing.
+ * 
+ * @since 6.3.0
+ * @param int $stuID Unique student ID.
+ * @return string
+ */
+function get_student_alst($stuID)
+{
+    $app = \Liten\Liten::getInstance();
+    $alst = $app->db->stal()
+        ->select('acadStanding')
+        ->where('stuID = ?', $stuID)->_and_()
+        ->where('endDate IS NULL')
+        ->findOne();
+    return _escape($alst->acadStanding);
+}
+
+/**
+ * Retrieve student's class level.
+ * 
+ * @since 6.3.0
+ * @param int $stuID Unique student ID.
+ * @return string
+ */
+function get_student_clas($stuID)
+{
+    $app = \Liten\Liten::getInstance();
+    $alst = $app->db->stal()
+        ->select('clas.name')
+        ->_join('clas','stal.currentClassLevel = clas.code')
+        ->where('stuID = ?', $stuID)->_and_()
+        ->where('endDate IS NULL')
+        ->findOne();
+    return _escape($alst->name);
+}
+
 function get_stu_header($stu_id)
 {
+    $app = \Liten\Liten::getInstance();
     $student = get_student($stu_id);
 
     ?>
@@ -753,10 +830,11 @@ function get_stu_header($stu_id)
     <div class="relativeWrap">
         <div class="widget">
             <div class="widget-head">
-                <h4 class="heading glyphicons user"><i></i><?= get_name(_h($student->stuID)); ?></h4>&nbsp;&nbsp;
-                <?php if (!isset($_COOKIE['SWITCH_USERBACK']) && _h($student->stuID) != get_persondata('personID')) : ?>
-                    <span<?= ae('login_as_user'); ?> class="label label-inverse"><a href="<?= get_base_url(); ?>switchUserTo/<?= _h($student->stuID); ?>/"><font color="#FFFFFF"><?= _t('Switch To'); ?></font></a></span>
+                <h4 class="heading glyphicons user"><i></i><?= get_name(_h($student->stuID)); ?></h4>&nbsp;
+                <?php if (!isset($app->req->cookie['SWITCH_USERBACK']) && _h($student->stuID) != get_persondata('personID')) : ?>
+                    &nbsp;<span<?= ae('login_as_user'); ?> class="label label-inverse"><a href="<?= get_base_url(); ?>switchUserTo/<?= _h($student->stuID); ?>/"><font color="#FFFFFF"><?= _t('Switch To'); ?></font></a></span>&nbsp;&nbsp;
                 <?php endif; ?>
+                <strong><?= _t('Address:'); ?></strong> <?= _h($student->address1); ?> <?= _h($student->address2); ?> <?= _h($student->city); ?> <?= _h($student->state); ?> <?= _h($student->zip); ?> <strong><?= _t('Phone:'); ?></strong> <?= _h($student->phone1); ?>
                 <?php if (get_persondata('personID') == $student->stuID && !hasPermission('access_dashboard')) : ?>
                     <a href="<?= get_base_url(); ?>profile/" class="heading pull-right"><?= _h($student->stuID); ?></a>
                 <?php else : ?>
@@ -775,21 +853,13 @@ function get_stu_header($stu_id)
 
                     <!-- Two Fifth's Column -->
                     <div class="col-md-2">
-                        <p><?= _h($student->address1); ?> <?= _h($student->address2); ?></p>
-                        <p><?= _h($student->city); ?> <?= _h($student->state); ?> <?= _h($student->zip); ?></p>
-                        <p><strong><?= _t('Phone:'); ?></strong> <?= _h($student->phone1); ?></p>
+                        <p><strong><?= _t('Email:'); ?></strong> <a href="mailto:<?= _h($student->email1); ?>"><?= _h($student->email1); ?></a></p>
+                        <p><strong><?= _t('Birth Date:'); ?></strong> <?= (_h($student->dob) > '0000-00-00' ? Jenssegers\Date\Date::parse(_h($student->dob))->format('D, M d, o') : ''); ?></p>
+                        <p><strong><?= _t('Status:'); ?></strong> <?= (_h($student->stuStatus) == 'A') ? _t('Active') : _t('Inactive'); ?></p>
                     </div>
                     <!-- // Two Fifth's Column END -->
 
                     <!-- Three Fifth's Column -->
-                    <div class="col-md-2">
-                        <p><strong><?= _t('Email:'); ?></strong> <a href="mailto:<?= _h($student->email1); ?>"><?= _h($student->email1); ?></a></p>
-                        <p><strong><?= _t('Birth Date:'); ?></strong> <?= (_h($student->dob) > '0000-00-00' ? \Jenssegers\Date\Date::parse(_h($student->dob))->format('D, M d, o') : ''); ?></p>
-                        <p><strong><?= _t('Status:'); ?></strong> <?= (_h($student->stuStatus) == 'A') ? _t('Active') : _t('Inactive'); ?></p>
-                    </div>
-                    <!-- // Three Fifth's Column END -->
-
-                    <!-- Four Fifth's Column -->
                     <div class="col-md-2">
                         <p><strong><?= _t('FERPA:'); ?></strong> <?= is_ferpa(_h($student->stuID)); ?> 
                             <?php if (is_ferpa(_h($student->stuID)) == 'Yes') : ?>
@@ -798,7 +868,7 @@ function get_stu_header($stu_id)
                                 <a href="#FERPA" data-toggle="modal"><img style="vertical-align:top !important;" src="<?= get_base_url(); ?>static/common/theme/images/information.png" /></a>
                             <?php endif; ?>
                         </p>
-                        <p><strong><?= _t('Restriction(s):'); ?></strong> 
+                        <p><strong><?= _t('PERC:'); ?></strong> 
                             <?php
                             $rest = '';
                             foreach (get_perc($student->stuID) as $v) :
@@ -811,11 +881,11 @@ function get_stu_header($stu_id)
 
                             ?>
                         </p>
-                        <p><strong><?= _t('Entry Date:'); ?></strong> <?= \Jenssegers\Date\Date::parse(_h($student->stuAddDate))->format('D, M d, o'); ?></p>
+                        <p><strong><?= _t('Entry Date:'); ?></strong> <?= Jenssegers\Date\Date::parse(_h($student->stuAddDate))->format('D, M d, o'); ?></p>
                     </div>
-                    <!-- // Four Fifth's Column END -->
+                    <!-- // Three Fifth's Column END -->
 
-                    <!-- Five Fifth's Column -->
+                    <!-- Four Fifth's Column -->
                     <div class="col-md-2">
                         <p><strong><?= _t('SACP:'); ?></strong> 
                             <?php
@@ -836,6 +906,13 @@ function get_stu_header($stu_id)
                         <p><strong><?= _t('Hiatus:'); ?></strong> 
                             <span data-toggle="popover" data-title="<?= get_shis_name(get_stu_shis(_h($student->stuID), 'code')); ?>" data-content="Start Date: <?= get_stu_shis(_h($student->stuID), 'startDate'); ?> | End Date: <?= (get_stu_shis(_h($student->stuID), 'endDate') <= '0000-00-00' ? '' : get_stu_shis(_h($student->stuID), 'endDate')); ?>" data-placement="bottom"><a href="#"><?= get_stu_shis(_h($student->stuID), 'code'); ?></a></span>
                         </p>
+                    </div>
+                    <!-- // Four Fifth's Column END -->
+
+                    <!-- Five Fifth's Column -->
+                    <div class="col-md-2">
+                        <p><strong><?= _t('Academic Standing:'); ?></strong> <?=(get_student_alst(_escape($student->stuID)) == 'PROB' ? '<font color="#d9534f">'.get_student_alst($student->stuID).'</font>' : '<font color="#3fad46">'.get_student_alst($student->stuID).'</font>');?></p>
+                        <p><strong><?= _t('Class Level:'); ?></strong> <?=get_student_clas(_escape($student->stuID));?></p>
                     </div>
                     <!-- // Five Fifth's Column END -->
 
