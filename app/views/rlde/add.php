@@ -102,7 +102,6 @@ function addMsg(text,element_id) {
                                 <select name="file" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
                                     <option value="perc"><?=_t('(perc) - Person Restrictions');?></option>
-                                    <option value="stac"><?=_t('(stac) - Student Academic Credit');?></option>
                                     <option value="stal"><?=_t('(stal) - Student Academic Level');?></option>
                                     <option value="sttr"><?=_t('(sttr) - Student Terms');?></option>
                                     <option value="v_scrd"><?=_t('(v_scrd) - Student Credits');?></option>
@@ -177,6 +176,14 @@ function addMsg(text,element_id) {
 <script>
 $('[data-toggle="tooltip"]').tooltip();
 
+// Fix for Selectize
+$('#builder').on('afterCreateRuleInput.queryBuilder', function(e, rule) {
+  if (rule.filter.plugin == 'selectize') {
+    rule.$el.find('.rule-value-container').css('min-width', '200px')
+      .find('.selectize-control').removeClass('form-control');
+  }
+});
+
 var options = {
   allow_empty: true,
 
@@ -187,8 +194,8 @@ var options = {
     perc: {
       en: 'Person Restrictions'
     },
-    stac: {
-      en: 'Student Academic Credit'
+    v_sacp: {
+      en: 'Student Academic Program'
     },
     stal: {
       en: 'Student Academic Level'
@@ -198,6 +205,9 @@ var options = {
     },
     v_scrd: {
       en: 'Student Credits'
+    },
+    term: {
+      en: 'Term'
     }
   },
 
@@ -245,12 +255,23 @@ var options = {
     label: 'Restriction Code',
     type: 'string',
     input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
     values: {
         <?php get_rlde_rest(); ?>
     },
-    optgroup: 'perc',
-    value_separator: ',',
-    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'perc'
   },
   {
     id: 'perc.severity',
@@ -260,8 +281,7 @@ var options = {
     validation: {
       min: 0,
       step: 1
-    },
-    operators: ['equal','not_equal','is_empty','is_not_empty','is_not','is_not_null']
+    }
   },
   {
     id: 'perc.startDate',
@@ -290,53 +310,6 @@ var options = {
     optgroup: 'perc'
   },
   /*
-   * Student Academic Credits
-   */
-  {
-    id: 'stac.courseCode',
-    label: 'Course',
-    type: 'string',
-    input: 'select',
-    values: {
-        <?php get_rlde_crse(); ?>
-    },
-    optgroup: 'stac',
-    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
-  },
-  {
-    id: 'stac.subjectCode',
-    label: 'Subject',
-    type: 'string',
-    input: 'select',
-    values: {
-        <?php get_rlde_subj(); ?>
-    },
-    optgroup: 'stac',
-    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
-  },
-  {
-    id: 'stac.deptCode',
-    label: 'Department',
-    type: 'string',
-    input: 'select',
-    values: {
-        <?php get_rlde_dept(); ?>
-    },
-    optgroup: 'stac',
-    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
-  },
-  {
-    id: 'stac.courseLevelCode',
-    label: 'Course Level',
-    type: 'string',
-    input: 'select',
-    values: {
-        <?php get_rlde_crlv(); ?>
-    },
-    optgroup: 'stac',
-    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
-  },
-  /*
    * Student Terms
    */
   {
@@ -344,22 +317,46 @@ var options = {
     label: 'Term Code',
     type: 'string',
     input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
     values: {
         <?php get_rlde_terms(); ?>
     },
-    optgroup: 'sttr',
-    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'sttr'
   },
   {
     id: 'sttr.acadLevelCode',
     label: 'Academic Level',
     type: 'string',
     input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
     values: {
         <?php get_rlde_acad_levels(); ?>
     },
-    optgroup: 'sttr',
-    operators: ['equal','begins_with','not_begins_with','contains','not_contains','ends_with','not_ends_with']
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'sttr'
   },
   {
     id: 'sttr.attCred',
@@ -369,8 +366,7 @@ var options = {
     validation: {
       min: 0,
       step: 0.01
-    },
-    operators: ['equal','less','less_or_equal','greater','greater_or_equal','between']
+    }
   },
   {
     id: 'sttr.compCred',
@@ -380,8 +376,7 @@ var options = {
     validation: {
       min: 0,
       step: 0.01
-    },
-    operators: ['equal','less','less_or_equal','greater','greater_or_equal','between']
+    }
   },
   {
     id: 'sttr.created',
@@ -394,8 +389,83 @@ var options = {
       todayHighlight: true,
       autoclose: true
     },
-    optgroup: 'sttr',
-    operators: ['equal','less','less_or_equal','greater','greater_or_equal','between']
+    optgroup: 'sttr'
+  },
+  /*
+   * Student Academic Program
+   */
+  {
+    id: 'v_sacp.prog',
+    label: 'Academic Program',
+    type: 'string',
+    input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
+    values: {
+        <?php get_rlde_prog(); ?>
+    },
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'v_sacp'
+  },
+  {
+    id: 'v_sacp.acadLevel',
+    label: 'Academic Level',
+    type: 'string',
+    input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
+    values: {
+        <?php get_rlde_acad_levels(); ?>
+    },
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'v_sacp'
+  },
+  {
+    id: 'v_sacp.status',
+    label: 'Program Status',
+    type: 'string',
+    input: 'select',
+    plugin: 'selectize',
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      maxItems: 1,
+      plugins: ['remove_button']
+    },
+    values: {
+        "A": "(A) Active",
+        "I": "(I) Inactive",
+        "C": "(C) Changed",
+        "P": "(P) Pending",
+        "G": "(G) Graduated"
+    },
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'v_sacp'
   },
   /*
    * Student Academic Level
@@ -405,45 +475,78 @@ var options = {
     label: 'Academic Program',
     type: 'string',
     input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
     values: {
         <?php get_rlde_prog(); ?>
     },
-    optgroup: 'stal',
-    value_separator: ',',
-    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'stal'
   },
   {
     id: 'stal.acadLevelCode',
     label: 'Academic Level',
     type: 'string',
     input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
     values: {
         <?php get_rlde_acad_levels(); ?>
     },
-    optgroup: 'stal',
-    value_separator: ',',
-    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'stal'
   },
   {
     id: 'stal.currentClassLevel',
     label: 'Class Level',
     type: 'string',
     input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
     values: {
         <?php get_rlde_clas_levels(); ?>
     },
-    optgroup: 'stal',
-    value_separator: ',',
-    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'stal'
   },
   {
     id: 'stal.gpa',
     label: 'GPA',
-    type: 'integer',
+    type: 'double',
     optgroup: 'stal',
     validation: {
       min: 0,
-      step: 1
+      step: 0.01
     }
   },
   {
@@ -451,12 +554,23 @@ var options = {
     label: 'Start Term',
     type: 'string',
     input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
     values: {
         <?php get_rlde_terms(); ?>
     },
-    optgroup: 'stal',
-    value_separator: ',',
-    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'stal'
   },
   /*
    * Student Creds
@@ -466,52 +580,128 @@ var options = {
     label: 'Academic Level',
     type: 'string',
     input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
     values: {
         <?php get_rlde_acad_levels(); ?>
     },
-    optgroup: 'v_scrd',
-    value_separator: ',',
-    operators: ['equal','not_equal','in','not_in','is_empty','is_not_empty','is_not','is_not_null']
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'v_scrd'
   },
   {
     id: 'v_scrd.attempted',
     label: 'Attempted Credits',
-    type: 'integer',
+    type: 'double',
     optgroup: 'v_scrd',
     validation: {
       min: 0,
-      step: 1
+      step: 0.01
     }
   },
   {
     id: 'v_scrd.completed',
     label: 'Completed Credits',
-    type: 'integer',
+    type: 'double',
     optgroup: 'v_scrd',
     validation: {
       min: 0,
-      step: 1
+      step: 0.01
     }
   },
   {
     id: 'v_scrd.points',
     label: 'Grade Points',
-    type: 'integer',
+    type: 'double',
     optgroup: 'v_scrd',
     validation: {
       min: 0,
-      step: 1
+      step: 0.01
     }
   },
   {
     id: 'v_scrd.gpa',
     label: 'GPA',
-    type: 'integer',
+    type: 'double',
     optgroup: 'v_scrd',
     validation: {
       min: 0,
-      step: 1
+      step: 0.01
     }
+  },
+  /*
+   * Term
+   */
+  {
+    id: 'term.termCode',
+    label: 'Term',
+    type: 'string',
+    input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
+    values: {
+        <?php get_rlde_terms(); ?>
+    },
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'term'
+  },
+  {
+    id: 'term.dropAddEndDate',
+    label: 'Drop/Add End Date',
+    type: 'date',
+    plugin: 'datepicker',
+    plugin_config: {
+      format: 'yyyy-mm-dd',
+      todayBtn: 'linked',
+      todayHighlight: true,
+      autoclose: true
+    },
+    optgroup: 'term'
+  },
+  {
+    id: 'term.termStartDate',
+    label: 'Term Start Date',
+    type: 'date',
+    plugin: 'datepicker',
+    plugin_config: {
+      format: 'yyyy-mm-dd',
+      todayBtn: 'linked',
+      todayHighlight: true,
+      autoclose: true
+    },
+    optgroup: 'term'
+  },
+  {
+    id: 'term.termEndDate',
+    label: 'Term End Date',
+    type: 'date',
+    plugin: 'datepicker',
+    plugin_config: {
+      format: 'yyyy-mm-dd',
+      todayBtn: 'linked',
+      todayHighlight: true,
+      autoclose: true
+    },
+    optgroup: 'term'
   }
   ]
 };
