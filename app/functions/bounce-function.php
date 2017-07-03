@@ -1480,7 +1480,7 @@ function callbackAction($msgnum, $bounceType, $email, $subject, $xheader, $remov
         $node_bounce->type = (string) $bounceType;
         $node_bounce->rule_no = (string) $ruleNo;
         $node_bounce->rule_cat = (string) $ruleCat;
-        $node_bounce->date_added = (string) \Jenssegers\Date\Date::now();
+        $node_bounce->date_added = Jenssegers\Date\Date::now();
         $node_bounce->save();
     } catch (NodeQException $e) {
         Cascade::getLogger('error')->error(sprintf('BOUNCESTATE[%s]: %s', $e->getCode(), $e->getMessage()));
