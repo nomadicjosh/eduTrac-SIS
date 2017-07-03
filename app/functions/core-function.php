@@ -10,7 +10,7 @@ if (!defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-define('CURRENT_RELEASE', '6.3.0-RC3');
+define('CURRENT_RELEASE', '6.3.0-RC4');
 define('RELEASE_TAG', trim(_file_get_contents(BASE_PATH . 'RELEASE')));
 
 $app = \Liten\Liten::getInstance();
@@ -1626,7 +1626,6 @@ function get_screen($screen)
         'BRGN' => 'sect/brgn',
         'STAF' => 'staff',
         'TRAN' => 'stu/tran',
-        'SLR' => 'form/student-load-rule',
         'RSTR' => 'form/rest',
         'GRSC' => 'form/grade-scale',
         'SROS' => 'sect/sros',
