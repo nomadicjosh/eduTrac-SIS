@@ -118,11 +118,25 @@ final class etsis_Course
     public $courseLongTitle;
 
     /**
-     * The course's prerequisite(s).
+     * The course's prerequisite.
      *
      * @var array
      */
     public $preReq;
+    
+    /**
+     * The course's prerequisite rule.
+     *
+     * @var array
+     */
+    public $rule;
+    
+    /**
+     * The course's prerequisite print text.
+     *
+     * @var array
+     */
+    public $printText;
 
     /**
      * Whether course can be audited.

@@ -429,7 +429,7 @@ class etsis_Email
         $message .= _t("<p>A new application has been submitted via <em>my</em>eduTrac SIS self service.</p>");
         $message .= _t('<p>Click on the link below and log into your account in order to view this new application.</p>');
         $message .= sprintf(_t('<p><strong>Applicant:</strong> %s</p>'), get_name($id));
-        $message .= sprintf(_t("<p><strong>Applicant's ID:</strong> %s</p>"), $id);
+        $message .= sprintf(_t("<p><strong>Applicant's ID:</strong> %s</p>"), get_alt_id($id));
         $message .= sprintf(_t('<p><a href="%s">%s</a></p>'), $redirect_to, $redirect_to);
         $message .= '______________________________________________________<br />';
         $message .= _t("THIS IS AN AUTOMATED RESPONSE.<br />");
@@ -467,7 +467,7 @@ class etsis_Email
         $message = _t('<p>Dear Registrar:</p>');
         $message .= _t("<p>This is a receipt for the following student's registration.</p>");
         $message .= sprintf(_t('<p><strong>Student Name:</strong> %s</p>'), concat_ws(', ', _h($nae->lname), _h($nae->fname)));
-        $message .= sprintf(_t('<p><strong>Student ID:</strong> %s</p>'), $id);
+        $message .= sprintf(_t('<p><strong>Student ID:</strong> %s</p>'), get_alt_id($id));
         $message .= sprintf(_t('<p><strong>Courses:</strong> %s</p>'), $courses);
         $message .= _t("<p>Click on the link below and log into your account in order to verify this student's registration.</p>");
         $message .= sprintf(_t('<p><a href="%s">%s</a></p>'), $redirect_to, $redirect_to);

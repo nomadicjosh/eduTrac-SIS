@@ -159,7 +159,7 @@ class Migrations
             $q->runned = (int) 0;
             $q->status = (int) 1;
             $q->save();
-            
+
             $q->name = 'Update Student Academic Levels';
             $q->url = (string) $url . 'cron/updateSTAL/';
             $q->time = (string) '';
@@ -247,7 +247,7 @@ class Migrations
             $q->runned = (int) 0;
             $q->status = (int) 1;
             $q->save();
-            
+
             $q->name = 'Backup Database';
             $q->url = (string) $url . 'cron/runDBBackup/';
             $q->time = (string) '';
@@ -258,7 +258,7 @@ class Migrations
             $q->runned = (int) 0;
             $q->status = (int) 1;
             $q->save();
-            
+
             $q->name = 'Backup System';
             $q->url = (string) $url . 'cron/runSiteBackup/';
             $q->time = (string) '';
@@ -288,6 +288,25 @@ class Migrations
                 'comment' => 'string',
                 'rule' => 'string'
             ]);
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        }
+    }
+
+    public static function alst()
+    {
+        try {
+            Node::create('alst', [
+                'id' => 'integer',
+                "rid" => "integer",
+                "aid" => "integer",
+                "rule" => "string",
+                "value" => "string",
+                "level" => "string"
+            ]);
+            \app\src\Core\NodeQ\Relation::table('alst')->belongsTo('rlde')->localKey('rule')->foreignKey('code')->setRelation();
         } catch (NodeQException $e) {
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         } catch (Exception $e) {
@@ -421,7 +440,7 @@ class Migrations
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
     }
-    
+
     public static function queued_campaign()
     {
         try {
@@ -437,7 +456,7 @@ class Migrations
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
     }
-    
+
     public static function campaign_queue()
     {
         try {
@@ -459,7 +478,7 @@ class Migrations
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
     }
-    
+
     public static function campaign_bounce()
     {
         try {
@@ -479,7 +498,7 @@ class Migrations
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
     }
-    
+
     public static function student_email()
     {
         try {
