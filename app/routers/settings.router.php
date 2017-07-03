@@ -17,7 +17,7 @@ $app->match('GET|POST', '/setting/', function () use($app) {
     if ($app->req->isPost()) {
         $options = [
             'institution_name', 'cookieexpire', 'cookiepath', 'myetsis_layout', 'myetsis_offline_message',
-            'enable_benchmark', 'edutrac_analytics_url', 'curl', 'api_key', 'help_desk',
+            'enable_benchmark', 'edutrac_analytics_url', 'curl', 'api_key', 'help_desk','enable_cron_jobs',
             'contact_phone', 'mailing_address', 'enable_myetsis_portal', 'enable_myetsis_appl_form', 'screen_caching', 'db_caching',
             'system_timezone', 'etsis_core_locale', 'send_acceptance_email', 'elfinder_driver', 'amz_s3_bucket', 'amz_s3_access_key',
             'amz_s3_secret_key'
@@ -33,6 +33,7 @@ $app->match('GET|POST', '/setting/', function () use($app) {
         $app->hook->do_action('update_options');
         /* Write to logs */
         etsis_logger_activity_log_write('Update', 'Settings', 'System Settings', get_persondata('uname'));
+        _etsis_flash()->success(_t('Settings saved successfully.'), $app->req->server['HTTP_REFERER']);
     }
 
     etsis_register_style('form');
@@ -73,6 +74,7 @@ $app->match('GET|POST', '/registration/', function () use($app) {
         $app->hook->do_action('update_options');
         /* Write to logs */
         etsis_logger_activity_log_write('Update', 'Settings', 'Registration Settings', get_persondata('uname'));
+        _etsis_flash()->success(_t('Settings saved successfully.'), $app->req->server['HTTP_REFERER']);
     }
 
     etsis_register_style('form');
@@ -110,6 +112,7 @@ $app->match('GET|POST', '/email/', function () use($app) {
         $app->hook->do_action('update_options');
         /* Write to logs */
         etsis_logger_activity_log_write('Update', 'Settings', 'Email Settings', get_persondata('uname'));
+        _etsis_flash()->success(_t('Settings saved successfully.'), $app->req->server['HTTP_REFERER']);
     }
 
     etsis_register_style('form');
@@ -150,6 +153,7 @@ $app->match('GET|POST', '/templates/', function () use($app) {
         $app->hook->do_action('update_options');
         /* Write to logs */
         etsis_logger_activity_log_write('Update', 'Settings', 'Email Templates', get_persondata('uname'));
+        _etsis_flash()->success(_t('Settings saved successfully.'), $app->req->server['HTTP_REFERER']);
     }
 
     etsis_register_style('form');
@@ -179,6 +183,7 @@ $app->match('GET|POST', '/sms/', function () use($app) {
         $app->hook->do_action('update_twilio_options');
         /* Write to logs */
         etsis_logger_activity_log_write('Update', 'Settings', 'Twilio Settings', get_persondata('uname'));
+        _etsis_flash()->success(_t('Settings saved successfully.'), $app->req->server['HTTP_REFERER']);
     }
 
     etsis_register_style('form');

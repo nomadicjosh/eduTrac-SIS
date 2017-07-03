@@ -85,8 +85,21 @@ $screen = 'setting';
                         <!-- // Group END -->
                         
                         <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Cronjobs' );?></label>
+                            <div class="col-md-8">
+                                <select name="enable_cron_jobs" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <option value="1"<?=selected( _h(get_option( 'enable_cron_jobs' )), '1', false ); ?>><?=_t( "On" );?></option>
+                                    <option value="0"<?=selected( _h(get_option( 'enable_cron_jobs' )), '0', false ); ?>><?=_t( "Off" );?></option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myeT Layout' );?> <a href="#myetsisLayout" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'myetSIS Layout' );?> <a href="#myetsisLayout" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
 						        <select name="myetsis_layout" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
@@ -211,27 +224,27 @@ $screen = 'setting';
 						<?php if(get_option('elfinder_driver') === 'elf_s3_driver') : ?>
                         <!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Amazon S3 Bucket' );?></label>
+							<label class="col-md-3 control-label"><?=_t( 'Amazon S3 Bucket' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="amz_s3_bucket" value="<?=_h(get_option('amz_s3_bucket'));?>" class="form-control" required/>
+								<input type="text" name="amz_s3_bucket" value="<?=_h(get_option('amz_s3_bucket'));?>" class="form-control" />
 							</div>
 						</div>
 						<!-- // Group END -->
                         
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'S3 Access Key' );?></label>
+							<label class="col-md-3 control-label"><?=_t( 'S3 Access Key' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="amz_s3_access_key" value="<?=_h(get_option('amz_s3_access_key'));?>" class="form-control" required/>
+								<input type="text" name="amz_s3_access_key" value="<?=_h(get_option('amz_s3_access_key'));?>" class="form-control" />
 							</div>
 						</div>
 						<!-- // Group END -->
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'S3 Secret Key' );?></label>
+							<label class="col-md-3 control-label"><?=_t( 'S3 Secret Key' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="amz_s3_secret_key" value="<?=_h(get_option('amz_s3_secret_key'));?>" class="form-control" required/>
+								<input type="text" name="amz_s3_secret_key" value="<?=_h(get_option('amz_s3_secret_key'));?>" class="form-control" />
 							</div>
 						</div>
 						<!-- // Group END -->
