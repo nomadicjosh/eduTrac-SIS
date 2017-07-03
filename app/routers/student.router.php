@@ -246,6 +246,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 $sacp = $app->db->sacp();
                 $sacp->stuID = $id;
                 $sacp->acadProgCode = _trim($app->req->post['acadProgCode']);
+                $sacp->acadLevelCode = _trim($app->req->post['acadLevelCode']);
                 $sacp->currStatus = 'A';
                 $sacp->statusDate = \Jenssegers\Date\Date::now();
                 $sacp->startDate = $app->req->post['startDate'];
@@ -270,7 +271,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 $app->hook->do_action('pre_save_stu', $id);
 
                 if (_h(get_option('send_acceptance_email')) == 1) {
-                    $host = strtolower($_SERVER['SERVER_NAME']);
+                    $host = get_domain_name();
                     $site = _t('myetSIS :: ') . _h(get_option('institution_name'));
                     $message = _escape(get_option('student_acceptance_letter'));
                     $message = str_replace('#uname#', _h($nae->uname), $message);
@@ -292,7 +293,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     $message = process_email_html($message, _t("Student Acceptance Letter"));
 
                     $headers = "From: $site <auto-reply@$host>\r\n";
-                    $headers .= "X-Mailer: PHP/" . phpversion();
+                    $headers .= "X-Mailer: eduTrac SIS " . RELEASE_TAG;
                     $headers .= "MIME-Version: 1.0" . "\r\n";
                     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
                     try {
@@ -1534,7 +1535,8 @@ $app->group('/stu', function() use ($app, $css, $js) {
         ];
         try {
             $terms = $app->db->stac()
-                ->select('stac.stuID,stac.termCode,COUNT(stac.termCode) AS Courses')
+                ->select('stac.stuID,stac.termCode,COUNT(stac.termCode) AS Courses,term.id')
+                ->_join('term', 'stac.termCode = term.termCode')
                 ->where('stac.stuID = ?', get_persondata('personID'))
                 ->groupBy('stac.termCode')
                 ->orderBy('stac.termCode', 'DESC');
@@ -1578,7 +1580,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
         }
     });
 
-    $app->get('/schedule/(.*)/', function ($term) use($app) {
+    $app->get('/schedule/(\d+)/', function ($id) use($app) {
 
         $css = [ 'css/admin/module.admin.page.alt.tables.min.css'];
         $js = [
@@ -1592,17 +1594,16 @@ $app->group('/stu', function() use ($app, $css, $js) {
             $terms = $app->db->course_sec()
                 ->setTableAlias('a')
                 ->select('a.courseSecID,a.courseSecCode,a.secShortTitle,a.startTime,a.termCode')
-                ->select('a.endTime,a.dotw,a.facID,b.buildingName,c.roomNumber,d.stuID,e.id')
+                ->select('a.endTime,a.dotw,a.facID,b.buildingName,c.roomNumber,stac.stuID')
                 ->_join('building', 'a.buildingCode = b.buildingCode', 'b')
                 ->_join('room', 'a.roomCode = c.roomCode', 'c')
-                ->_join('stcs', 'a.courseSecCode = d.courseSecCode', 'd')
-                ->_join('stac', 'd.id = e.courseSecID', 'e')
-                ->where('a.termCode = ?', $term)
-                ->where('d.stuID = ?', get_persondata('personID'))
-                ->where('d.termCode = ?', $term)
-                ->whereIn('d.status', ['A', 'N'])
-                ->groupBy('d.stuID,d.termCode,d.courseSecCode')
-                ->orderBy('d.termCode', 'DESC');
+                ->_join('stac', 'a.courseSection= stac.courseSection AND a.termCode = stac.termCode')
+                ->_join('term', 'a.termCode = term.termCode')
+                ->where('term.id = ?', $id)->_and_()
+                ->where('stac.stuID = ?', get_persondata('personID'))->_and_()
+                ->whereIn('stac.status', ['A', 'N'])
+                ->groupBy('stac.stuID,stac.courseSection')
+                ->orderBy('stac.id');
             $q = $terms->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1650,7 +1651,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
          */ else {
 
             $app->view->display('student/schedule', [
-                'title' => $term . ' Class Schedule',
+                'title' => ' Class Schedule',
                 'cssArray' => $css,
                 'jsArray' => $js,
                 'schedule' => $q
@@ -1740,10 +1741,10 @@ $app->group('/stu', function() use ($app, $css, $js) {
     $app->get('/deleteSTAC/(\d+)/', function ($id) use($app) {
         try {
             $app->db->query("DELETE 
-						a.*,b.*,c.* 
+						a.*,stac.*,stcs.* 
 						FROM transfer_credit a 
-						LEFT JOIN stac b ON a.stacID = b.id  
-						LEFT JOIN stcs c ON b.stuID = c.stuID AND b.courseSecID = c.id 
+						LEFT JOIN stac ON a.stacID = stac.id  
+						LEFT JOIN stcs ON stac.stuID = stcs.stuID AND stac.courseSecID = stcs.courseSecID 
 						WHERE a.stacID = ?", [$id]
             );
             _etsis_flash()->success(_etsis_flash()->notice(200));
@@ -2166,9 +2167,9 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 'title' => $q1[0]['termCode'] . ' Bill',
                 'bill' => $q1,
                 'tuition1' => $query,
-                'tuition2' => money_format('%n', (double)$q2[0]['sum']),
+                'tuition2' => money_format('%n', (double) $q2[0]['sum']),
                 'fee' => $q3,
-                'begin' => money_format('-%n', (double) $query[0]['total']+$q4[0]['sum']),
+                'begin' => money_format('-%n', (double) $query[0]['total'] + $q4[0]['sum']),
                 'sumFee' => $q4[0]['sum'],
                 'sumPayments' => $q5[0]['sum'],
                 'sumRefund' => $q6[0]['sum']

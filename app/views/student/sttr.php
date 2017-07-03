@@ -19,7 +19,7 @@ $stu = get_student(_h($stu));
 	<li><?=_t( 'You are here' );?></li>
 	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>student/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+	<li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
     <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
     <li class="divider"></li>

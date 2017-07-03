@@ -47,7 +47,7 @@ $stu = get_student(get_persondata('personID'));
                 <td class="text-center"><?=_h($v['termCode']);?></td>
                 <td class="text-center"><?=_h($v['Courses']);?></td>
                 <td class="text-center">
-                	<a href="<?=get_base_url();?>stu/schedule/<?=_h($v['termCode']);?>/" title="View" class="btn btn-primary"><i class="fa fa-calendar"></i></a>
+                	<a href="<?=get_base_url();?>stu/schedule/<?=_h($v['id']);?>/" title="View" class="btn btn-primary"><i class="fa fa-calendar"></i></a>
 				</td>
             </tr>
 			<?php } endif; ?>

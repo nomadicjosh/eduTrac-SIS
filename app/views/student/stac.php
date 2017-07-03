@@ -134,7 +134,7 @@ $stu = get_student(_h($stu));
 				<!-- // Modal body END -->
 				<!-- Modal footer -->
 				<div class="modal-footer">
-					<a href="<?=get_base_url();?>stu/deleteSTAC/<?=_h($v['id']);?>" class="btn btn-default"><?=_t( 'Delete' );?></a>
+					<a href="<?=get_base_url();?>stu/deleteSTAC/<?=_h($v['id']);?>/" class="btn btn-default"><?=_t( 'Delete' );?></a>
 					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a> 
 				</div>
 				<!-- // Modal footer END -->
