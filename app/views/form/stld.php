@@ -6,7 +6,7 @@ if (!defined('BASE_PATH'))
  *  
  * @license GPLv3
  * 
- * @since       6.2.12
+ * @since       6.3.0
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
@@ -51,6 +51,13 @@ $screen = 'aclv';
     <form class="form-horizontal margin-none register" action="<?= get_base_url(); ?>form/aclv/<?= _h($aclv->id); ?>/stld/" id="validateSubmitForm" method="post" autocomplete="off">
         <!-- Widget -->
         <div class="widget widget-heading-simple widget-body-gray <?= (has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10'; ?>">
+            
+            <?php if($stld->count() > 0) : ?>
+                <a href="#test" data-toggle="modal" class="btn btn-inverse pull-right"><i class="fa fa-caret-square-o-right"></i></a>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+            <?php endif; ?>
+                
             <div class="widget-body">
 
                 <div class="separator bottom"></div>
@@ -174,6 +181,84 @@ $screen = 'aclv';
         </div>
         <!-- // Widget END -->
     </form>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="test">
+        <form class="form-horizontal margin-none" action="<?=get_base_url();?>form/aclv/<?=_escape($aclv->id);?>/stld/test/" id="validateSubmitForm" method="post" autocomplete="off">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal heading -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title"><?=_t( 'Test Student Load Rule' );?></h3>
+                </div>
+                <!-- // Modal heading END -->
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <!-- Column -->
+					<div class="col-md-12">
+					
+						<!-- Group -->
+						<div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Student' );?></label>
+							<div class="col-md-8">
+								<select name="stuID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php foreach($stu as $s) : ?>
+                                    <option value="<?=_escape($s->stuID);?>"><?=get_name(_escape($s->stuID));?></option>
+                                    <?php endforeach; ?>
+                                </select>
+							</div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Rule' );?></label>
+							<div class="col-md-8">
+								<select name="rule" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php foreach($stld as $rule) : $desc = get_rule_by_code(_escape($rule->rule)); ?>
+                                    <option value="<?=_escape($rule->rule);?>">(<?=_escape($rule->rule);?>) <?=_escape($desc->description);?></option>
+                                    <?php endforeach; ?>
+                                </select>
+							</div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Term' );?></label>
+							<div class="col-md-8">
+								<select name="termCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('term', 'termCode <> "NULL"', 'termCode', 'termCode', 'termName'); ?>
+                                </select>
+							</div>
+						</div>
+						<!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+                </div>
+                <!-- // Modal body END -->
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"><i></i><?=_t( 'Submit' );?></button>
+                    <a href="#" class="btn btn-default" data-dismiss="modal"><?=_t( 'Close' );?></a>
+                </div>
+                <!-- // Modal footer END -->
+            </div>
+        </div>
+        </form>
+    </div>
+    <!-- // Modal END -->
 
 </div>	
 

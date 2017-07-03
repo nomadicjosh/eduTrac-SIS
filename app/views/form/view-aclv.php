@@ -4,7 +4,7 @@
  *  
  * @license GPLv3
  * 
- * @since       6.2.12
+ * @since       6.3.0
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
@@ -122,6 +122,21 @@ $screen = 'aclv';
                 
                 <!-- Row -->
 				<div class="row">
+                    
+                    <!-- Column -->
+					<div class="col-md-3">
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label"><?=_t( 'ALST' );?> <a href="<?=get_base_url();?>form/aclv/<?=_h($aclv[0]['id']);?>/alst/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <div class="col-md-3">
+                                <input type="text" disabled value="<?=is_node_count_zero('alst','level','=',_h($aclv[0]['code']));?>" class="form-control col-md-1 center" />
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                    </div>
+					<!-- // Column END -->
 					
 					<!-- Column -->
 					<div class="col-md-3">

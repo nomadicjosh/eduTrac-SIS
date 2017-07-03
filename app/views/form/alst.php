@@ -2,7 +2,7 @@
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 /**
- * CLVR View
+ * ALST View
  *  
  * @license GPLv3
  * 
@@ -25,7 +25,7 @@ $screen = 'aclv';
         });
         //add row add here.
         $("#addrow").click(function () {
-            $(".item-row:last").after('<tr class="item-row"><td class="center item-name"><select name="rule[]" class="rule selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required><option value="">&nbsp;</option><?php get_rules(); ?></select></td><td><select name="value[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required><option value="">&nbsp;</option><?php clas_dropdown("clas", "acadLevelCode = ?", "code", "code", "name", [_h($aclv->code)]); ?></select><input name="level" type="hidden" value="<?= _h($aclv->code); ?>" /></td><td><a href="javascript:;" title="Remove row" class="delme btn btn-danger"><i class="fa fa-minus"></i></a></td></tr>');
+            $(".item-row:last").after('<tr class="item-row"><td class="center item-name"><select name="rule[]" class="rule selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required><option value="">&nbsp;</option><?php get_rules(); ?></select></td><td><select name="value[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required><option value="">&nbsp;</option><option value="GOOD"><?=_t('Good');?></option><option value="PROB"><?=_t('Probation');?></option></select><input name="level" type="hidden" value="<?= _h($aclv->code); ?>" /></td><td><a href="javascript:;" title="Remove row" class="delme btn btn-danger"><i class="fa fa-minus"></i></a></td></tr>');
         });
     });
 </script>
@@ -38,10 +38,10 @@ $screen = 'aclv';
 	<li class="divider"></li>
     <li><a href="<?=get_base_url();?>form/aclv/<?= _h($aclv->id); ?>/" class="glyphicons show_lines"><i></i> <?= _h($aclv->code); ?> <?= _h($aclv->name); ?> <?=_t( 'Academic Level' );?></a></li>
 	<li class="divider"></li>
-    <li><?= _t('Class Level Rules (CLVR)'); ?></li>
+    <li><?= _t('Academic Level Standing Rules (ALST)'); ?></li>
 </ul>
 
-<h3><?= _t('Class Level Rules (CLVR)'); ?></h3>
+<h3><?= _t('Academic Level Standing Rules (ALST)'); ?></h3>
 <div class="innerLR">
 
 <?= _etsis_flash()->showMessage(); ?>
@@ -49,11 +49,11 @@ $screen = 'aclv';
 <?php jstree_sidebar_menu($screen); ?>
 
     <!-- Form -->
-    <form class="form-horizontal margin-none register" action="<?= get_base_url(); ?>form/aclv/<?= _h($aclv->id); ?>/clvr/" id="validateSubmitForm" method="post" autocomplete="off">
+    <form class="form-horizontal margin-none register" action="<?= get_base_url(); ?>form/aclv/<?= _h($aclv->id); ?>/alst/" id="validateSubmitForm" method="post" autocomplete="off">
         <!-- Widget -->
         <div class="widget widget-heading-simple widget-body-gray <?= (has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10'; ?>">
             
-            <?php if($clvr->count() > 0) : ?>
+            <?php if($alst->count() > 0) : ?>
                 <a href="#test" data-toggle="modal" class="btn btn-inverse pull-right"><i class="fa fa-caret-square-o-right"></i></a>
                 <div class="breakline">&nbsp;</div>
                 <div class="breakline">&nbsp;</div>
@@ -76,12 +76,12 @@ $screen = 'aclv';
                     </thead>
                     <!-- // Table heading END -->
                     <!-- Table body -->
-                    <?php if(count($clvr) > 0) : ?>
+                    <?php if(count($alst) > 0) : ?>
                     <tbody>
                     <?php
-                    $numItems = count($clvr);
+                    $numItems = count($alst);
                     $i = 0;
-                    foreach ($clvr as $k => $v) { 
+                    foreach ($alst as $k => $v) { 
                     $rlde = get_rule_by_code(_h($v->rule));
                     ?>
                     <tr class="gradeX item-row">
@@ -95,7 +95,8 @@ $screen = 'aclv';
                         <td class="text-center">
                             <select name="value[]" class="form-control" style="width: 90%;" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 <option value="">&nbsp;</option>
-                                <?php table_dropdown("clas", "acadLevelCode = ?", "code", "code", "name", _h($v->value), [_h($aclv->code)]); ?>
+                                <option value="GOOD"<?=selected('GOOD', _h($v->value), false);?>><?=_t('Good');?></option>
+                                <option value="PROB"<?=selected('PROB', _h($v->value), false);?>><?=_t('Probation');?></option>
                             </select>
                             <input name="level" type="hidden" value="<?= _h($aclv->code); ?>" />
                             <input name="id[]" type="hidden" value="<?= _h($v->id); ?>" />
@@ -121,7 +122,8 @@ $screen = 'aclv';
                         <td class="text-center">
                             <select name="value[]" class="form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 <option value="">&nbsp;</option>
-                                <?php table_dropdown("clas", "acadLevelCode = ?", "code", "code", "name", "", [_h($aclv->code)]); ?>
+                                <option value="GOOD"<?=selected('GOOD', _h($v->value), false);?>><?=_t('Good');?></option>
+                                <option value="PROB"<?=selected('PROB', _h($v->value), false);?>><?=_t('Probation');?></option>
                             </select>
                             <input name="level" type="hidden" value="<?= _h($aclv->code); ?>" />
                         </td>
@@ -152,13 +154,13 @@ $screen = 'aclv';
     
     <!-- Modal -->
     <div class="modal fade" id="test">
-        <form class="form-horizontal margin-none" action="<?=get_base_url();?>form/aclv/<?=_escape($aclv->id);?>/clvr/test/" id="validateSubmitForm" method="post" autocomplete="off">
+        <form class="form-horizontal margin-none" action="<?=get_base_url();?>form/aclv/<?=_escape($aclv->id);?>/alst/test/" id="validateSubmitForm" method="post" autocomplete="off">
         <div class="modal-dialog">
             <div class="modal-content">
                 <!-- Modal heading -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h3 class="modal-title"><?=_t( 'Test Class Rule' );?></h3>
+                    <h3 class="modal-title"><?=_t( 'Test Academic Level Standing Rule' );?></h3>
                 </div>
                 <!-- // Modal heading END -->
                 <!-- Modal body -->
@@ -186,7 +188,7 @@ $screen = 'aclv';
 							<div class="col-md-8">
 								<select name="rule" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php foreach($clvr as $rule) : $desc = get_rule_by_code(_escape($rule->rule)); ?>
+                                    <?php foreach($alst as $rule) : $desc = get_rule_by_code(_escape($rule->rule)); ?>
                                     <option value="<?=_escape($rule->rule);?>">(<?=_escape($rule->rule);?>) <?=_escape($desc->description);?></option>
                                     <?php endforeach; ?>
                                 </select>

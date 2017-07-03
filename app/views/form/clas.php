@@ -4,7 +4,7 @@
  *  
  * @license GPLv3
  * 
- * @since       6.2.12
+ * @since       6.3.0
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */

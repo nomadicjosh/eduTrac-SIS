@@ -3316,6 +3316,7 @@ $app->group('/form', function () use($app) {
 
                 update_aclv_code_on_update('stld', $id, _trim((string) $app->req->post['code']));
                 update_aclv_code_on_update('clvr', $id, _trim((string) $app->req->post['code']));
+                update_aclv_code_on_update('alst', $id, _trim((string) $app->req->post['code']));
                 etsis_cache_flush_namespace('aclv');
                 etsis_logger_activity_log_write('Update Record', 'Academic Level (ACLV)', _filter_input_string(INPUT_POST, 'code'), get_persondata('uname'));
                 _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
@@ -3404,7 +3405,7 @@ $app->group('/form', function () use($app) {
      * Before route check.
      */
     $app->before('GET|POST', '/aclv/(\d+)/stld/', function () {
-        if (!hasPermission('access_forms')) {
+        if (!hasPermission('access_forms') && !hasPermission('manage_business_rules')) {
             _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
@@ -3463,6 +3464,9 @@ $app->group('/form', function () use($app) {
 
         try {
             $aclv = $app->db->aclv()->findOne($id);
+            $stu = $app->db->student()
+                ->where('status = "A"')
+                ->find();
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -3475,7 +3479,7 @@ $app->group('/form', function () use($app) {
         }
 
         try {
-            $stld = Node::table('stld')->where('aid', '=', $id)->findAll();
+            $stld = Node::table('stld')->with('rlde')->where('aid', '=', $id)->findAll();
         } catch (NodeQException $e) {
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -3524,8 +3528,55 @@ $app->group('/form', function () use($app) {
             $app->view->display('form/stld', [
                 'title' => _t('Student Load Rules'),
                 'aclv' => $aclv,
-                'stld' => $stld
+                'stld' => $stld,
+                'stu' => $stu
             ]);
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('POST', '/aclv/(\d+)/stld/test/', function () {
+        if (!hasPermission('access_forms') && !hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->post('/aclv/(\d+)/stld/test/', function ($id) use($app) {
+        try {
+            $rlde = Node::table('rlde')->where('code', '=', $app->req->post['rule'])->find();
+
+            try {
+                $stld = $app->db->query(
+                        "SELECT sttr.stuID FROM $rlde->file"
+                        . " INNER JOIN term ON sttr.termCode = term.termCode"
+                        . " WHERE sttr.stuID = ?"
+                        . " AND sttr.termCode = ?"
+                        . " AND $rlde->rule", [$app->req->post['stuID'], $app->req->post['termCode']]
+                    )
+                    ->findOne();
+                if (_escape($stld->stuID) <> $app->req->post['stuID']) {
+                    _etsis_flash()->error(sprintf(_t('<strong>%s</strong> did not pass the <strong>%s</strong> rule for the <strong>%s</strong> term.'), get_name($app->req->post['stuID']), _escape($rlde->description), $app->req->post['termCode']), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'stld' . '/');
+                } else {
+                    _etsis_flash()->success(sprintf(_t('<strong>%s</strong> passed the <strong>%s</strong> rule for the <strong>%s</strong> term.'), get_name($app->req->post['stuID']), _escape($rlde->description), $app->req->post['termCode']), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'stld' . '/');
+                }
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'stld' . '/');
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'stld' . '/');
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'stld' . '/');
+            }
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error($e->getMessage(), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'stld' . '/');
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error($e->getMessage(), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'stld' . '/');
         }
     });
 
@@ -3661,7 +3712,7 @@ $app->group('/form', function () use($app) {
      * Before route check.
      */
     $app->before('GET|POST', '/aclv/(\d+)/clvr/', function () {
-        if (!hasPermission('access_forms')) {
+        if (!hasPermission('access_forms') && !hasPermission('manage_business_rules')) {
             _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
@@ -3721,6 +3772,9 @@ $app->group('/form', function () use($app) {
 
         try {
             $aclv = $app->db->aclv()->findOne($id);
+            $stu = $app->db->student()
+                ->where('status = "A"')
+                ->find();
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -3733,7 +3787,7 @@ $app->group('/form', function () use($app) {
         }
 
         try {
-            $clvr = Node::table('clvr')->where('aid', '=', $id)->findAll();
+            $clvr = Node::table('clvr')->with('rlde')->where('aid', '=', $id)->findAll();
         } catch (NodeQException $e) {
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -3782,7 +3836,8 @@ $app->group('/form', function () use($app) {
             $app->view->display('form/clvr', [
                 'title' => _t('Class Level Rules'),
                 'aclv' => $aclv,
-                'clvr' => $clvr
+                'clvr' => $clvr,
+                'stu' => $stu
             ]);
         }
     });
@@ -3790,14 +3845,240 @@ $app->group('/form', function () use($app) {
     /**
      * Before route check.
      */
+    $app->before('POST', '/aclv/(\d+)/clvr/test/', function () {
+        if (!hasPermission('access_forms') && !hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->post('/aclv/(\d+)/clvr/test/', function ($id) use($app) {
+        try {
+            $rlde = Node::table('rlde')->where('code', '=', $app->req->post['rule'])->find();
+            try {
+                $clas = $app->db->query(
+                        "SELECT v_scrd.stuID FROM $rlde->file"
+                        . " INNER JOIN stal ON v_scrd.stuID = stal.stuID AND v_scrd.acadLevel = stal.acadLevelCode"
+                        . " WHERE v_scrd.stuID = ?"
+                        . " AND v_scrd.acadLevel = ?"
+                        . " AND $rlde->rule"
+                        . " AND (stal.endDate IS NULL"
+                        . " OR stal.endDate <= '0000-00-00')", [$app->req->post['stuID'], $app->req->post['acadLevelCode']]
+                    )
+                    ->findOne();
+                if (_escape($clas->stuID) <> $app->req->post['stuID']) {
+                    _etsis_flash()->error(sprintf(_t('<strong>%s</strong> did not pass the <strong>%s</strong> rule.'), get_name($app->req->post['stuID']), _escape($rlde->description)), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'clvr' . '/');
+                } else {
+                    _etsis_flash()->success(sprintf(_t('<strong>%s</strong> passed the <strong>%s</strong> rule.'), get_name($app->req->post['stuID']), _escape($rlde->description)), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'clvr' . '/');
+                }
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'clvr' . '/');
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'clvr' . '/');
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'clvr' . '/');
+            }
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error($e->getMessage(), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'clvr' . '/');
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error($e->getMessage(), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'clvr' . '/');
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/aclv/(\d+)/alst/', function () {
+        if (!hasPermission('access_forms') && !hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->match('GET|POST', '/aclv/(\d+)/alst/', function ($id) use($app) {
+        if ($app->req->isPost()) {
+            $size = count($app->req->post['rule']);
+            $i = 0;
+            while ($i < $size) {
+                if ($app->req->post['id'][$i] == null) {
+                    try {
+                        $rlde = get_rule_by_code((string) $app->req->post['rule'][$i]);
+                        $clvr = Node::table('alst');
+                        $clvr->rid = (int) _h($rlde->id);
+                        $clvr->aid = (int) $id;
+                        $clvr->rule = (string) $app->req->post['rule'][$i];
+                        $clvr->value = (string) $app->req->post['value'][$i];
+                        $clvr->level = _trim((string) $app->req->post['level']);
+                        $clvr->save();
+                    } catch (NodeQException $e) {
+                        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                        _etsis_flash()->error(_etsis_flash()->notice(409));
+                    } catch (Exception $e) {
+                        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                        _etsis_flash()->error(_etsis_flash()->notice(409));
+                    }
+                }
+                ++$i;
+            }
+
+            $id_size = count($app->req->post['rule']);
+            $t = 0;
+            while ($t < $id_size) {
+                if ($app->req->post['id'][$t] > 0) {
+                    try {
+                        $rlde = get_rule_by_code((string) $app->req->post['rule'][$t]);
+                        $clvr = Node::table('alst')->find($app->req->post['id'][$t]);
+                        $clvr->rid = (int) _h($rlde->id);
+                        $clvr->aid = (int) $id;
+                        $clvr->rule = (string) $app->req->post['rule'][$t];
+                        $clvr->value = (string) $app->req->post['value'][$t];
+                        $clvr->level = _trim((string) $app->req->post['level']);
+                        $clvr->save();
+                    } catch (NodeQException $e) {
+                        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                        _etsis_flash()->error(_etsis_flash()->notice(409));
+                    } catch (Exception $e) {
+                        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                        _etsis_flash()->error(_etsis_flash()->notice(409));
+                    }
+                }
+                ++$t;
+            }
+
+            _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+        }
+
+        try {
+            $aclv = $app->db->aclv()->findOne($id);
+            $stu = $app->db->student()
+                ->where('status = "A"')
+                ->find();
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+
+        try {
+            $alst = Node::table('alst')->with('rlde')->where('aid', '=', $id)->findAll();
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+
+        /**
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
+         */
+        if ($aclv == false) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($aclv) == true) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If data is zero, 404 not found.
+         */ elseif (count(_h($aclv->id)) <= 0) {
+
+            $app->view->display('error/404', [
+                'title' => '404 Error'
+            ]);
+        } /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+
+            etsis_register_style('form');
+            etsis_register_style('table');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datatables');
+
+            $app->view->display('form/alst', [
+                'title' => _t('Academic Level Standing Rules'),
+                'aclv' => $aclv,
+                'alst' => $alst,
+                'stu' => $stu
+            ]);
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('POST', '/aclv/(\d+)/alst/test/', function () {
+        if (!hasPermission('access_forms') && !hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        }
+    });
+
+    $app->post('/aclv/(\d+)/alst/test/', function ($id) use($app) {
+        try {
+            $rlde = Node::table('rlde')->where('code', '=', $app->req->post['rule'])->find();
+            $aclv = $app->db->aclv()->findOne($id);
+            try {
+                $alst = $app->db->query(
+                        "SELECT v_scrd.stuID FROM $rlde->file"
+                        . " WHERE v_scrd.stuID = ?"
+                        . " AND v_scrd.acadLevel = ?"
+                        . " AND $rlde->rule", [$app->req->post['stuID'], _escape($aclv->code)]
+                    )
+                    ->findOne();
+                if (_escape($alst->stuID) <> $app->req->post['stuID']) {
+                    _etsis_flash()->error(sprintf(_t('<strong>%s</strong> did not pass the <strong>%s</strong> rule for the <strong>%s</strong> academic level.'), get_name($app->req->post['stuID']), _escape($rlde->description), _escape($aclv->code)), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'alst' . '/');
+                } else {
+                    _etsis_flash()->success(sprintf(_t('<strong>%s</strong> passed the <strong>%s</strong> rule for the <strong>%s</strong> academic level.'), get_name($app->req->post['stuID']), _escape($rlde->description), _escape($aclv->code)), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'alst' . '/');
+                }
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'alst' . '/');
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'alst' . '/');
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'alst' . '/');
+            }
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error($e->getMessage(), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'alst' . '/');
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error($e->getMessage(), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'alst' . '/');
+        }
+    });
+
+    /**
+     * Before route check.
+     */
     $app->before('GET', '/aclv/(\d+)/stld/(\d+)/(\d+)/d/', function () use($app) {
-        if (!hasPermission('access_forms')) {
+        if (!hasPermission('access_forms') && !hasPermission('manage_business_rules')) {
             _etsis_flash()->error(_t("You don't have the proper permission(s) to delete a student load rule."), $app->req->server['HTTP_REFERER']);
             exit();
         }
     });
 
-    $app->get('/aclv/(\d+)/stld/(\d+)/(\d+)/d/', function ($aid, $rid, $id) use($app) {
+    $app->get('/aclv/(\d+)/stld/(\d+)/(\d+)/d/', function ($aid, $rid, $id) {
         try {
             $stld = Node::table('stld');
 
@@ -3812,20 +4093,20 @@ $app->group('/form', function () use($app) {
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
-        etsis_redirect($app->req->server['HTTP_REFERER']);
+        etsis_redirect(get_base_url() . 'form/aclv/' . $aid . '/stld/');
     });
 
     /**
      * Before route check.
      */
     $app->before('GET', '/aclv/(\d+)/clvr/(\d+)/(\d+)/d/', function () use($app) {
-        if (!hasPermission('access_forms')) {
+        if (!hasPermission('access_forms') && !hasPermission('manage_business_rules')) {
             _etsis_flash()->error(_t("You don't have the proper permission(s) to delete a class level rule."), $app->req->server['HTTP_REFERER']);
             exit();
         }
     });
 
-    $app->get('/aclv/(\d+)/clvr/(\d+)/(\d+)/d/', function ($aid, $rid, $id) use($app) {
+    $app->get('/aclv/(\d+)/clvr/(\d+)/(\d+)/d/', function ($aid, $rid, $id) {
         try {
             $clvr = Node::table('clvr');
 
@@ -3840,7 +4121,35 @@ $app->group('/form', function () use($app) {
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
-        etsis_redirect($app->req->server['HTTP_REFERER']);
+        etsis_redirect(get_base_url() . 'form/aclv/' . $aid . '/clvr/');
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET', '/aclv/(\d+)/alst/(\d+)/(\d+)/d/', function () use($app) {
+        if (!hasPermission('access_forms') && !hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t("You don't have the proper permission(s) to delete an academic level standing rule."), $app->req->server['HTTP_REFERER']);
+            exit();
+        }
+    });
+
+    $app->get('/aclv/(\d+)/alst/(\d+)/(\d+)/d/', function ($aid, $rid, $id) {
+        try {
+            $alst = Node::table('alst');
+
+            if ($alst->where('aid', '=', $aid)->where('rid', '=', $rid)->findAll()->count() > 0) {
+                $alst->find($id)->delete();
+                _etsis_flash()->success(_etsis_flash()->notice(200));
+            }
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+        etsis_redirect(get_base_url() . 'form/aclv/' . $aid . '/alst/');
     });
 
     $app->setError(function () use($app) {
