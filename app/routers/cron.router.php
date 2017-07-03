@@ -684,20 +684,18 @@ $app->group('/cron', function () use($app, $emailer, $email) {
 
             foreach ($q as $r) {
                 $GPA = _h($r['stacPoints']) / _h($r['stacAttCreds']);
-                if (_h($r['stacAttCreds']) != _h($r['sttrAttCreds']) || _h($r['sttrPoints']) != _h($r['stacPoints']) || _h($r['gpa']) != $GPA) {
-                    $q2 = $app->db->sttr();
-                    $q2->set([
-                            'attCred' => _h($r['stacAttCreds']),
-                            'compCred' => _h($r['stacCompCreds']),
-                            'gradePoints' => _h($r['stacPoints']),
-                            'stuLoad' => etsis_stld_rule(_h($r['stuID']), _h($r['stacAttCreds']), _h($r['acadLevelCode'])),
-                            'gpa' => $GPA
-                        ])
-                        ->where('stuID = ?', _h($r['stuID']))->_and_()
-                        ->where('termCode = ?', _h($r['termCode']))->_and_()
-                        ->where('acadLevelCode = ?', _h($r['acadLevelCode']))
-                        ->update();
-                }
+                $q2 = $app->db->sttr();
+                $q2->set([
+                        'attCred' => _h($r['stacAttCreds']),
+                        'compCred' => _h($r['stacCompCreds']),
+                        'gradePoints' => _h($r['stacPoints']),
+                        'stuLoad' => etsis_stld_rule(_escape($r['stuID']), _escape($r['stacAttCreds']), _escape($r['acadLevelCode']), _escape($r['termCode'])),
+                        'gpa' => $GPA
+                    ])
+                    ->where('stuID = ?', _escape($r['stuID']))->_and_()
+                    ->where('termCode = ?', _escape($r['termCode']))->_and_()
+                    ->where('acadLevelCode = ?', _escape($r['acadLevelCode']))
+                    ->update();
             }
         } catch (NotFoundException $e) {
             Cascade::getLogger('system_email')->alert($e->getMessage());
@@ -729,7 +727,6 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             });
 
             foreach ($q as $r) {
-                $clas = etsis_clas_rule(_h($r['stuID']), _h($r['acadLevelCode']));
                 $scrd = $app->db->v_scrd()
                     ->select('gpa,enrollmentStatus,term')
                     ->where('stuID = ?', _h($r['stuID']))->_and_()
@@ -745,8 +742,9 @@ $app->group('/cron', function () use($app, $emailer, $email) {
 
                 $stal = $app->db->stal();
                 $stal->set([
-                        'currentClassLevel' => $clas,
+                        'currentClassLevel' => etsis_clvr_rule(_h($r['stuID']), _h($r['acadLevelCode'])),
                         'enrollmentStatus' => _h($scrd->enrollmentStatus),
+                        'acadStanding' => etsis_alst_rule(_h($r['stuID']), _h($r['acadLevelCode'])),
                         'gpa' => _h($scrd->gpa),
                         'startTerm' => _h($scrd->term),
                         'startDate' => _h($term->termStartDate)
