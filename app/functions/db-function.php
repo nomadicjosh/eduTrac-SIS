@@ -30,6 +30,8 @@ $app = \Liten\Liten::getInstance();
  *            Name of database table that is being queried.
  * @param string $where
  *            Partial where clause (id = '1').
+ * @param string $id
+ *            Unique id or code from table.
  * @param string $code
  *            Unique code from table.
  * @param string $name
@@ -136,12 +138,12 @@ function date_dropdown($limit = 0, $name = '', $table = '', $column = '', $id = 
  *
  * @since 4.5
  */
-function is_count_zero($table, $field, $id)
+function is_count_zero($table, $field, $value)
 {
     $app = \Liten\Liten::getInstance();
     try {
         $zero = $app->db->query("SELECT $field FROM $table WHERE $field = ?", [
-            $id
+            $value
         ]);
         $q = $zero->find(function ($data) {
             $array = [];
