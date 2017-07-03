@@ -784,3 +784,47 @@ input[type="button"].button-block {
 .button-group-vertical .button + .button:active {
     border-top-width: 2px;
 }
+.alert-success {
+  background-color: #3fad46 !important;
+  border-color: #3fad46 !important;
+  color: #ffffff !important;
+}
+.alert-success hr {
+  border-top-color: #389a3e !important;
+}
+.alert-success .alert-link {
+  color: #e6e6e6 !important;
+}
+.alert-info {
+  background-color: #5bc0de !important;
+  border-color: #5bc0de !important;
+  color: #ffffff !important;
+}
+.alert-info hr {
+  border-top-color: #46b8da !important;
+}
+.alert-info .alert-link {
+  color: #e6e6e6 !important;
+}
+.alert-warning {
+  background-color: #f0ad4e !important;
+  border-color: #f0ad4e !important;
+  color: #ffffff !important;
+}
+.alert-warning hr {
+  border-top-color: #eea236 !important;
+}
+.alert-warning .alert-link {
+  color: #e6e6e6 !important;
+}
+.alert-danger {
+  background-color: #d9534f !important;
+  border-color: #d9534f !important;
+  color: #ffffff !important;
+}
+.alert-danger hr {
+  border-top-color: #d43f3a !important;
+}
+.alert-danger .alert-link {
+  color: #e6e6e6 !important;
+}
