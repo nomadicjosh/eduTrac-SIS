@@ -64,7 +64,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                         <li<?= hl('ftp_server', 'access_ftp'); ?>><a href="<?= get_base_url(); ?>dashboard/ftp/"> <?= _t('FTP'); ?></a></li>
                                     </ul>
                                 </li>
-                                <?php if (hasPermission('access_forms') || hasPermission('access_report_screen') || hasPermission('access_save_query_screens')) : ?>
+                                <?php if (hasPermission('manage_business_rules')) : ?>
                                 <li class="dropdown submenu">
                                     <a href="" data-toggle="dropdown" class="dropdown-toggle glyphicons ruller"><i></i><?= _t('Rule Definition (RLDE)'); ?> <span class="caret"></span></a>
                                     <ul class="dropdown-menu submenu-show submenu-hide pull-right">

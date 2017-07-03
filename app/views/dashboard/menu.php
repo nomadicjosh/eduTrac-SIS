@@ -83,7 +83,7 @@
                             </ul>
                         </li>
                         <?php endif; ?>
-                        <?php if(_he('access_form') || _he('access_report_screen') || _he('access_save_query_screens')) : ?>
+                        <?php if(_he('manage_business_rules')) : ?>
                         <li><?=_t( 'Rule Definition (RLDE)' );?>
                             <ul>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_102"><a<?=($screen === 'rlde') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>rlde/"><?=_t( 'Rules' );?></a></li>
