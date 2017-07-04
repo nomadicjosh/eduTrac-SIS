@@ -76,6 +76,7 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
         'C' => 
         array (
             'Cron\\' => 5,
+            'Cocur\\Slugify\\' => 14,
             'Cascade\\' => 8,
             'Carbon\\' => 7,
         ),
@@ -205,6 +206,10 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
         'Cron\\' => 
         array (
             0 => __DIR__ . '/..' . '/mtdowling/cron-expression/src/Cron',
+        ),
+        'Cocur\\Slugify\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/cocur/slugify/src',
         ),
         'Cascade\\' => 
         array (

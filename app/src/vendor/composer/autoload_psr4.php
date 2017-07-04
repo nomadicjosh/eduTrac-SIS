@@ -37,6 +37,7 @@ return array(
     'Desarrolla2\\Cache\\' => array($vendorDir . '/desarrolla2/cache/src'),
     'Dcrypt\\' => array($vendorDir . '/mmeyer2k/dcrypt/src'),
     'Cron\\' => array($vendorDir . '/mtdowling/cron-expression/src/Cron'),
+    'Cocur\\Slugify\\' => array($vendorDir . '/cocur/slugify/src'),
     'Cascade\\' => array($vendorDir . '/theorchard/monolog-cascade/src'),
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
 );
