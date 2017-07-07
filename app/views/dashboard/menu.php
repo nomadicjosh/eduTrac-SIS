@@ -338,14 +338,14 @@
                             </ul>
                         </li>
                         <?php endif; ?>
-                        <?php if(_he('access_communication_mgmt') && _mf('comm_mgmt_module')) : ?>
-                        <li><?=_t( 'Communication Mgmt' );?>
+                        <?php if(_he('access_communication_mgmt') && _mf('mrkt_module')) : ?>
+                        <li><?=_t( 'Marketing' );?>
                             <ul>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_86"><a<?=($screen === 'etmp') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>cmgmt/"><?=_t( 'Email Templates' );?></a></li>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_87"><a<?=($screen === 'aetmp') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>cmgmt/add/"><?=_t( 'Add Email Template' );?></a></li>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_88"><a<?=($screen === 'semail') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>cmgmt/schedule/"><?=_t( 'Schedule Email' );?></a></li>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_89"><a<?=($screen === 'queue') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>cmgmt/queue/"><?=_t( 'Email Queue' );?></a></li>
-                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_90"><a<?=($screen === 'mrge') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>cmgmt/mailmerge/"><?=_t( 'Mail Merge' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_90"><a<?=($screen === 'bnce') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>mrkt/bounce/"><?=_t( 'Bounce Setting' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_88"><a<?=($screen === 'lists') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>mrkt/list/"><?=_t( 'Lists' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_87"><a<?=($screen === 'temps') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>mrkt/template/"><?=_t( 'Templates' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_86"><a<?=($screen === 'mrkt') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>mrkt/"><?=_t( 'Campaigns' );?></a></li>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_89"><a<?=($screen === 'mrge') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>mrkt/mailmerge/"><?=_t( 'Mail Merge' );?></a></li>
                             </ul>
                         </li>
                         <?php endif; ?>

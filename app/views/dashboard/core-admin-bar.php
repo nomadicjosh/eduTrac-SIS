@@ -201,14 +201,14 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                     </ul>
                                 </li>
                                 
-                                <li<?= ae('access_communication_mgmt'); ?><?= ml('comm_mgmt_module'); ?> class="dropdown submenu">
-                                    <a data-toggle="dropdown" class="dropdown-toggle glyphicons inbox"><i></i><?= _t('Communication Mgmt'); ?></a>
+                                <li<?= ae('access_communication_mgmt'); ?><?= ml('mrkt_module'); ?> class="dropdown submenu">
+                                    <a data-toggle="dropdown" class="dropdown-toggle glyphicons inbox"><i></i><?= _t('Marketing'); ?></a>
                                     <ul class="dropdown-menu submenu-show submenu-hide pull-right">
-                                        <li class=""><a href="<?= get_base_url(); ?>cmgmt/"><?= _t('Email Templates'); ?></a></li>
-                                        <li class=""><a href="<?= get_base_url(); ?>cmgmt/add/"><?= _t('Add Email Template'); ?></a></li>
-                                        <li class=""><a href="<?= get_base_url(); ?>cmgmt/schedule/"><?= _t('Schedule Email'); ?></a></li>
-                                        <li class=""><a href="<?= get_base_url(); ?>cmgmt/queue/"><?= _t('Email Queue'); ?></a></li>
-                                        <li class=""><a href="<?= get_base_url(); ?>cmgmt/mailmerge/"><?= _t('Mail Merge'); ?></a></li>
+                                        <li<?= hl('bounce_settings'); ?> class=""><a href="<?= get_base_url(); ?>mrkt/bounce/"><?= _t('Bounce Setting'); ?></a></li>
+                                        <li class=""><a href="<?= get_base_url(); ?>mrkt/list/"><?= _t('Lists'); ?></a></li>
+                                        <li class=""><a href="<?= get_base_url(); ?>mrkt/template/"><?= _t('Templates'); ?></a></li>
+                                        <li class=""><a href="<?= get_base_url(); ?>mrkt/"><?= _t('Campaigns'); ?></a></li>
+                                        <li class=""><a href="<?= get_base_url(); ?>mrkt/mailmerge/"><?= _t('Mail Merge'); ?></a></li>
                                     </ul>
                                 </li>
                                 <?php if(function_exists('nslc_module')) : ?>
