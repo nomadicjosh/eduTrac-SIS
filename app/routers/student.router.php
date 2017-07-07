@@ -292,14 +292,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
                     $message = process_email_html($message, _t("Student Acceptance Letter"));
 
-                    $headers = "From: $site <auto-reply@$host>\r\n";
-                    $headers .= "X-Mailer: eduTrac SIS " . RELEASE_TAG;
-                    $headers .= "MIME-Version: 1.0" . "\r\n";
-                    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+                    $headers[] = sprintf("From: %s <auto-reply@%s>", $site, $host);
                     try {
                         _etsis_email()->etsisMail(_h($nae->email), _t("Student Acceptance Letter"), $message, $headers);
                     } catch (phpmailerException $e) {
-                        Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                        Cascade::getLogger('error')->error($e->getMessage());
+                        _etsis_flash()->error($e->getMessage());
+                    } catch (Exception $e) {
+                        Cascade::getLogger('error')->error($e->getMessage());
                         _etsis_flash()->error($e->getMessage());
                     }
                 }
@@ -342,12 +342,13 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 ->setTableAlias('a')
                 ->select('a.id,a.acadProgCode,a.acadProgTitle')
                 ->select('a.acadLevelCode,b.majorName,c.locationName')
-                ->select('d.schoolName,e.personID,e.startTerm')
+                ->select('d.schoolName,e.personID,e.startTerm,aclv.comp_months')
                 ->_join('major', 'a.majorCode = b.majorCode', 'b')
                 ->_join('location', 'a.locationCode = c.locationCode', 'c')
                 ->_join('school', 'a.schoolCode = d.schoolCode', 'd')
                 ->_join('application', 'a.acadProgCode = e.acadProgCode', 'e')
                 ->_join('student', 'e.personID = f.stuID', 'f')
+                ->_join('aclv','a.acadLevelCode = aclv.code')
                 ->where('e.personID = ?', $id)->_and_()
                 ->whereNull('f.stuID');
 
@@ -393,6 +394,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             etsis_register_style('form');
             etsis_register_script('select');
             etsis_register_script('select2');
+            etsis_register_script('datepicker');
 
             $app->view->display('student/add', [
                 'title' => 'Create Student Record',
@@ -1260,13 +1262,25 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 if (!empty($app->req->post['studentID'])) {
                     $grad = $app->db->sacp()
                         ->where('stuID = ?', $app->req->post['studentID'])->_and_()
-                        ->where('eligible_to_graduate = "1"')
+                        ->where('eligible_to_graduate = "1"')->_and_()
+                        ->where('currStatus = "A"')
                         ->findOne();
                     $grad->set([
                             'statusDate' => \Jenssegers\Date\Date::now(),
                             'endDate' => \Jenssegers\Date\Date::now(),
                             'currStatus' => 'G',
                             'graduationDate' => $app->req->post['gradDate']
+                        ])
+                        ->update();
+                    $stal = $app->db->stal()
+                        ->where('stuID = ?', $app->req->post['studentID'])->_and_()
+                        ->where('acadProgCode = ?', _h($grad->acadProgCode))
+                        ->findOne();
+                    $stal->set([
+                            'currentClassLevel' => NULL,
+                            'enrollmentStatus' => 'G',
+                            'acadStanding' => NULL,
+                            'endDate' => $app->req->post['gradDate']
                         ])
                         ->update();
                 } else {
