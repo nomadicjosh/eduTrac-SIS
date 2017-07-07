@@ -339,17 +339,16 @@ $app->group('/staff', function () use($app) {
         if ($app->req->isPost()) {
             try {
                 $staff = $app->db->staff();
-                $staff->insert([
-                    'staffID' => $id,
-                    'schoolCode' => $app->req->post['schoolCode'],
-                    'buildingCode' => $app->req->post['buildingCode'],
-                    'officeCode' => $app->req->post['officeCode'],
-                    'office_phone' => $app->req->post['office_phone'],
-                    'deptCode' => $app->req->post['deptCode'],
-                    'status' => $app->req->post['status'],
-                    'addDate' => \Jenssegers\Date\Date::now(),
-                    'approvedBy' => get_persondata('personID')
-                ]);
+                $staff->staffID = $id;
+                $staff->schoolCode = $app->req->post['schoolCode'];
+                $staff->buildingCode = $app->req->post['buildingCode'];
+                $staff->officeCode = $app->req->post['officeCode'];
+                $staff->office_phone = $app->req->post['office_phone'];
+                $staff->deptCode = $app->req->post['deptCode'];
+                $staff->status = $app->req->post['status'];
+                $staff->tags = $app->req->post['tags'] != '' ? $app->req->post['tags'] : NULL;
+                $staff->addDate = Jenssegers\Date\Date::now();
+                $staff->approvedBy = get_persondata('personID');
                 /**
                  * Fires during the saving/creating of a staff record.
                  *
@@ -360,18 +359,16 @@ $app->group('/staff', function () use($app) {
                 $staff->save();
 
                 $meta = $app->db->staff_meta();
-                $meta->insert([
-                    'jobStatusCode' => $app->req->post['jobStatusCode'],
-                    'jobID' => $app->req->post['jobID'],
-                    'staffID' => $id,
-                    'supervisorID' => $app->req->post['supervisorID'],
-                    'staffType' => $app->req->post['staffType'],
-                    'hireDate' => $app->req->post['hireDate'],
-                    'startDate' => $app->req->post['startDate'],
-                    'endDate' => ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL),
-                    'addDate' => \Jenssegers\Date\Date::now(),
-                    'approvedBy' => get_persondata('personID')
-                ]);
+                $meta->jobStatusCode = $app->req->post['jobStatusCode'];
+                $meta->jobID = $app->req->post['jobID'];
+                $meta->staffID = $id;
+                $meta->supervisorID = $app->req->post['supervisorID'];
+                $meta->staffType = $app->req->post['staffType'];
+                $meta->hireDate = $app->req->post['hireDate'];
+                $meta->startDate = $app->req->post['startDate'];
+                $meta->endDate = ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL);
+                $meta->addDate = Jenssegers\Date\Date::now();
+                $meta->approvedBy = get_persondata('personID');
                 /**
                  * Fires during the saving/creating of staff
                  * meta data.

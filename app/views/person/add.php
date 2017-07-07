@@ -17,7 +17,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'anae';
-
+$list = '"'.implode('","', get_nae_tags()).'"';
 ?>
 
 <script type="text/javascript">
@@ -51,7 +51,14 @@ $screen = 'anae';
                 }
             });
         }
-    }
+    };
+$(function() {
+<?php if(strlen($list) >= 3) : ?>
+	$("#select2_5").select2({tags:[<?=$list;?>]});
+<?php else : ?>
+	$("#select2_5").select2({tags:[]});
+<?php endif; ?>
+});
 </script>
 
 <ul class="breadcrumb">
@@ -263,8 +270,12 @@ $screen = 'anae';
                 <br /><br />
                 
                 <fieldset>
-                    <legend><?= _t('Role and Login Details'); ?></legend>
-                    <div data-row-span="2">
+                    <legend><?= _t('Tags, Role and Login Details'); ?></legend>
+                    <div data-row-span="3">
+                        <div data-field-span="1">
+                            <label><?= _t("Tags"); ?></label>
+                            <input id="select2_5" style="width:100%;" type="hidden" name="tags" />
+                        </div>
                         <div data-field-span="1">
                             <label><?= _t("Person Role"); ?></label>
                             <select name="roleID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>

@@ -14,7 +14,18 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'staff';
 $staffInfo = get_staff(_h($staff->staffID));
+$list = '"'.implode('","', get_staff_tags()).'"';
 ?>
+
+<script type="text/javascript">
+$(function() {
+<?php if(strlen($list) >= 3) : ?>
+	$("#select2_5").select2({tags:[<?=$list;?>]});
+<?php else : ?>
+	$("#select2_5").select2({tags:[]});
+<?php endif; ?>
+});
+</script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
@@ -174,14 +185,8 @@ $staffInfo = get_staff(_h($staff->staffID));
                             </div>
                         </div>
                         <!-- // Group END -->
-						
-					</div>
-					<!-- // Column END -->
-					
-					<!-- Column -->
-					<div class="col-md-6">
-						
-						<!-- Group -->
+                        
+                        <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Department' );?></label>
                             <div class="col-md-8">
@@ -192,6 +197,12 @@ $staffInfo = get_staff(_h($staff->staffID));
                             </div>
                         </div>
                         <!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+					
+					<!-- Column -->
+					<div class="col-md-6">
                         
                         <!-- Group -->
                         <div class="form-group">
@@ -202,6 +213,15 @@ $staffInfo = get_staff(_h($staff->staffID));
                                     <option value="A"<?=selected('A',_h($staff->status),false);?>><?=_t( 'A Active' );?></option>
                                     <option value="I"<?=selected('I',_h($staff->status),false);?>><?=_t( 'I Inactive' );?></option>
                                 </select>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Tags' );?></label>
+                            <div class="col-md-8">
+                                <input id="select2_5" style="width:100%;" type="hidden" name="tags" />
                             </div>
                         </div>
                         <!-- // Group END -->

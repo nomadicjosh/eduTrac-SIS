@@ -167,7 +167,7 @@ $app->group('/nae', function () use($app) {
                 ->where('addressStatus = "C"')->_and_()
                 ->where('personID = ?', (int) $id)->_and_()
                 ->where('endDate IS NULL')->_or_()
-                ->whereLte('endDate','0000-00-00');
+                ->whereLte('endDate', '0000-00-00');
 
             $q = $addr->find(function ($data) {
                 $array = [];
@@ -176,6 +176,11 @@ $app->group('/nae', function () use($app) {
                 }
                 return $array;
             });
+            
+            $login = $app->db->last_login()
+                ->where('personID = ?', $id)
+                ->orderBy('loginTimeStamp', 'DESC')
+                ->findOne();
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -220,9 +225,9 @@ $app->group('/nae', function () use($app) {
 
             etsis_register_style('form');
             etsis_register_style('gridforms');
-            etsis_register_script('select2');
-            etsis_register_script('select');
             etsis_register_script('datepicker');
+            etsis_register_script('select');
+            etsis_register_script('select2');
             etsis_register_script('gridforms');
 
             $app->view->display('person/view', [
@@ -230,11 +235,12 @@ $app->group('/nae', function () use($app) {
                 'nae' => $sql,
                 'addr' => $q,
                 'staff' => $staff,
-                'appl' => $appl
+                'appl' => $appl,
+                'login' => $login
             ]);
         }
     });
-    
+
     /**
      * Before route check.
      */
@@ -312,11 +318,10 @@ $app->group('/nae', function () use($app) {
                 }
                 return $array;
             });
-            
+
             $staff = $app->db->staff()
                 ->where('staffID = ?', (int) $id)
                 ->findOne();
-            
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -387,15 +392,15 @@ $app->group('/nae', function () use($app) {
 
         if ($app->req->isPost()) {
             try {
-                $dob = str_replace('-', '', $app->req->post['dob']);
-                $ssn = str_replace('-', '', $app->req->post['ssn']);
+                $dob = str_replace(['-','_','/','.'], '', $app->req->post['dob']);
+                $ssn = str_replace(['-','_','.'], '', $app->req->post['ssn']);
 
                 if ($app->req->post['ssn'] > 0) {
-                    $password = etsis_hash_password((int) $ssn . $passSuffix);
+                    $password = $ssn . $passSuffix;
                 } elseif (!empty($app->req->post['dob'])) {
-                    $password = etsis_hash_password((int) $dob . $passSuffix);
+                    $password = $dob . $passSuffix;
                 } else {
-                    $password = etsis_hash_password('myaccount' . $passSuffix);
+                    $password = 'myaccount' . $passSuffix;
                 }
 
                 $nae = $app->db->person();
@@ -415,9 +420,10 @@ $app->group('/nae', function () use($app) {
                 $nae->emergency_contact = $app->req->post['emergency_contact'];
                 $nae->emergency_contact_phone = $app->req->post['emergency_contact_phone'];
                 $nae->status = "A";
+                $nae->tags = $app->req->post['tags'] != '' ? $app->req->post['tags'] : NULL;
                 $nae->approvedBy = get_persondata('personID');
                 $nae->approvedDate = \Jenssegers\Date\Date::now();
-                $nae->password = $password;
+                $nae->password = etsis_hash_password($password);
 
                 /**
                  * Fires before person record is created.
@@ -463,13 +469,6 @@ $app->group('/nae', function () use($app) {
                 $addr->email1 = $app->req->post['email'];
 
                 if (isset($app->req->post['sendemail']) && $app->req->post['sendemail'] == 'send') {
-                    if ($app->req->post['ssn'] > 0) {
-                        $pass = (int) $ssn . $passSuffix;
-                    } elseif (!empty($app->req->post['dob'])) {
-                        $pass = (int) $dob . $passSuffix;
-                    } else {
-                        $pass = 'myaccount' . $passSuffix;
-                    }
 
                     try {
                         Node::dispense('login_details');
@@ -479,7 +478,7 @@ $app->group('/nae', function () use($app) {
                         $node->personid = (int) $_id;
                         $node->fname = (string) $app->req->post['fname'];
                         $node->lname = (string) $app->req->post['lname'];
-                        $node->password = (string) $pass;
+                        $node->password = (string) $password;
                         $node->altid = (string) $app->req->post['altID'];
                         $node->sent = (int) 0;
                         $node->save();
@@ -502,7 +501,7 @@ $app->group('/nae', function () use($app) {
                  *            Person data object.
                  */
                 $app->hook->do_action_array('post_save_person', [
-                    $pass,
+                    $password,
                     $nae
                 ]);
 
@@ -522,9 +521,9 @@ $app->group('/nae', function () use($app) {
 
         etsis_register_style('form');
         etsis_register_style('gridforms');
+        etsis_register_script('datepicker');
         etsis_register_script('select2');
         etsis_register_script('select');
-        etsis_register_script('datepicker');
         etsis_register_script('gridforms');
 
         $app->view->display('person/add', [

@@ -446,27 +446,23 @@ function email_exists($email)
  */
 function get_alt_id($id)
 {
-    $app = \Liten\Liten::getInstance();
-    try {
-        $person = $app->db->person()
-            ->select('personID,altID')
-            ->where('personID = ?', $id)
-            ->findOne();
+    if ('' == _trim($id)) {
+        $message = _t('Invalid person ID: empty ID given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.3.0');
+        return;
+    }
 
-        if (_h($person->altID) != '') {
-            return _h($person->altID);
-        } else {
-            return _h($person->personID);
-        }
-    } catch (NotFoundException $e) {
-        Cascade::getLogger('error')->error($e->getMessage());
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (Exception $e) {
-        Cascade::getLogger('error')->error($e->getMessage());
-        _etsis_flash()->error(_etsis_flash()->notice(409));
-    } catch (ORMException $e) {
-        Cascade::getLogger('error')->error($e->getMessage());
-        _etsis_flash()->error(_etsis_flash()->notice(409));
+    if (!is_numeric($id)) {
+        $message = _t('Invalid person ID: person id must be numeric.');
+        _incorrectly_called(__FUNCTION__, $message, '6.3.0');
+        return;
+    }
+
+    $person = get_person_by('personID', $id);
+    if (_h($person->altID) != '') {
+        return _h($person->altID);
+    } else {
+        return _h($person->personID);
     }
 }
 
@@ -557,6 +553,49 @@ function is_ferpa($id)
         } else {
             return _t('No');
         }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+}
+
+/**
+ * Retrieves all the tags from every person
+ * and removes duplicates.
+ *
+ * @since 6.3.0
+ * @return mixed
+ */
+function get_nae_tags()
+{
+    $app = \Liten\Liten::getInstance();
+    try {
+        $tagging = $app->db->person()
+            ->select('tags');
+        $q = $tagging->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        $tags = [];
+        foreach ($q as $r) {
+            $tags = array_merge($tags, explode(",", $r['tags']));
+        }
+        $tags = array_unique_compact($tags);
+        foreach ($tags as $key => $value) {
+            if ($value == "" || strlen($value) <= 0) {
+                unset($tags[$key]);
+            }
+        }
+        return $tags;
     } catch (NotFoundException $e) {
         Cascade::getLogger('error')->error($e->getMessage());
         _etsis_flash()->error(_etsis_flash()->notice(409));

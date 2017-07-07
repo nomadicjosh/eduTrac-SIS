@@ -209,3 +209,46 @@ function get_staff($staff, $object = true)
 
     return $_staff;
 }
+
+/**
+ * Retrieves all the tags from every staff
+ * and removes duplicates.
+ *
+ * @since 6.3.0
+ * @return mixed
+ */
+function get_staff_tags()
+{
+    $app = \Liten\Liten::getInstance();
+    try {
+        $tagging = $app->db->staff()
+            ->select('tags');
+        $q = $tagging->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        $tags = [];
+        foreach ($q as $r) {
+            $tags = array_merge($tags, explode(",", $r['tags']));
+        }
+        $tags = array_unique_compact($tags);
+        foreach ($tags as $key => $value) {
+            if ($value == "" || strlen($value) <= 0) {
+                unset($tags[$key]);
+            }
+        }
+        return $tags;
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+}

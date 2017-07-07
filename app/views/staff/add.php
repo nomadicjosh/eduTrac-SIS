@@ -12,7 +12,18 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
+$list = '"'.implode('","', get_staff_tags()).'"';
 ?>
+
+<script type="text/javascript">
+$(function() {
+<?php if(strlen($list) >= 3) : ?>
+	$("#select2_5").select2({tags:[<?=$list;?>]});
+<?php else : ?>
+	$("#select2_5").select2({tags:[]});
+<?php endif; ?>
+});
+</script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
@@ -23,13 +34,13 @@ $app->view->block('dashboard');
 	<li><?=_t( 'Add Staff' );?></li>
 </ul>
 
-<h3><?=_t( 'Add Staff' );?></h3>
+<h3><?=_t( 'Add Staff' );?> - <?=get_name(_h($person['personID']));?></h3>
 <div class="innerLR">
     
     <?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>staff/add/<?=_h($person[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>staff/add/<?=_h($person['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -51,7 +62,7 @@ $app->view->block('dashboard');
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Staff' );?></label>
 							<div class="col-md-8">
-								<input type="text" readonly class="form-control" value="<?=get_name(_h($person[0]['personID']));?> - <?=_h($person[0]['personID']);?>" />
+								<input type="text" readonly class="form-control" value="<?=get_name(_h($person['personID']));?> - <?=_h($person['personID']);?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -62,7 +73,7 @@ $app->view->block('dashboard');
                             <div class="col-md-8">
                                 <select name="jobStatusCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('job_status',null,'typeCode','typeCode','type'); ?>
+                                    <?php table_dropdown('job_status',null,'typeCode','typeCode','type',$app->req->post['jobStatusCode'] != '' ? $app->req->post['jobStatusCode'] : ''); ?>
                                 </select>
                             </div>
                         </div>
@@ -74,8 +85,8 @@ $app->view->block('dashboard');
                             <div class="col-md-8">
                                 <select name="staffType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="FAC"<?=selected('FAC',_h($person[0]['personType']),false);?>><?=_t( 'Faculty' );?></option>
-                                    <option value="STA"<?=selected('STA',_h($person[0]['personType']),false);?>><?=_t( 'Staff' );?></option>
+                                    <option value="FAC"<?=selected('FAC',_h($person['personType']),false);?>><?=_t( 'Faculty' );?></option>
+                                    <option value="STA"<?=selected('STA',_h($person['personType']),false);?>><?=_t( 'Staff' );?></option>
                                 </select>
                             </div>
                         </div>
@@ -87,7 +98,7 @@ $app->view->block('dashboard');
                             <div class="col-md-8">
                                 <select name="supervisorID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php supervisor(_h($person[0]['personID'])); ?>
+                                    <?php supervisor(_h($person['personID']), $app->req->post['supervisorID'] != '' ? $app->req->post['supervisorID'] : ''); ?>
                                 </select>
                             </div>
                         </div>
@@ -99,7 +110,7 @@ $app->view->block('dashboard');
                             <div class="col-md-8">
                                 <select name="jobID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('job',null,'ID','ID','title'); ?>
+                                    <?php table_dropdown('job',null,'id','id','title',$app->req->post['jobID'] != '' ? $app->req->post['jobID'] : ''); ?>
                                 </select>
                             </div>
                         </div>
@@ -111,7 +122,7 @@ $app->view->block('dashboard');
                             <div class="col-md-8">
                                 <select name="buildingCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('building','buildingCode <> "NULL"','buildingCode','buildingCode','buildingName'); ?>
+                                    <?php table_dropdown('building','buildingCode <> "NULL"','buildingCode','buildingCode','buildingName',$app->req->post['buildingCode'] != '' ? $app->req->post['buildingCode'] : ''); ?>
                                 </select>
                             </div>
                         </div>
@@ -123,7 +134,7 @@ $app->view->block('dashboard');
                             <div class="col-md-8">
                                 <select name="officeCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('room','roomCode <> "NULL"','roomCode','roomCode','roomNumber'); ?>
+                                    <?php table_dropdown('room','roomCode <> "NULL"','roomCode','roomCode','roomNumber',$app->req->post['officeCode'] != '' ? $app->req->post['officeCode'] : ''); ?>
                                 </select>
                             </div>
                         </div>
@@ -133,7 +144,19 @@ $app->view->block('dashboard');
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Office Phone' );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="office_phone" class="form-control" />
+                                <input type="text" name="office_phone" value="<?=$app->req->post['office_phone'] != '' ? $app->req->post['office_phone'] : '';?>" class="form-control" />
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'School' );?></label>
+                            <div class="col-md-8">
+                                <select name="schoolCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                                    <option value="NULL">&nbsp;</option>
+                                    <?php table_dropdown('school','schoolCode <> "NULL"','schoolCode','schoolCode','schoolName',$app->req->post['schoolCode'] != '' ? $app->req->post['schoolCode'] : ''); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -143,18 +166,6 @@ $app->view->block('dashboard');
 					
 					<!-- Column -->
 					<div class="col-md-6">
-					
-					    <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'School' );?></label>
-                            <div class="col-md-8">
-                                <select name="schoolCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
-                                    <option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('school','schoolCode <> "NULL"','schoolCode','schoolCode','schoolName'); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
 					    
 					    <!-- Group -->
                         <div class="form-group">
@@ -162,7 +173,7 @@ $app->view->block('dashboard');
                             <div class="col-md-8">
                                 <select name="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('department','deptCode <> "NULL"','deptCode','deptCode','deptName'); ?>
+                                    <?php table_dropdown('department','deptCode <> "NULL"','deptCode','deptCode','deptName', $app->req->post['deptCode'] != '' ? $app->req->post['deptCode'] : ''); ?>
                                 </select>
                             </div>
                         </div>
@@ -173,7 +184,7 @@ $app->view->block('dashboard');
                             <label class="col-md-3 control-label"><?=_t( 'Hire Date' );?></label>
                             <div class="col-md-8">
                                 <div class="input-group date col-md-8" id="datepicker6">
-                                    <input class="form-control" name="hireDate" type="text" />
+                                    <input class="form-control" name="hireDate" value="<?=$app->req->post['hireDate'] != '' ? $app->req->post['hireDate'] : '';?>" type="text" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
@@ -185,7 +196,7 @@ $app->view->block('dashboard');
                             <label class="col-md-3 control-label"><?=_t( 'Start Date' );?></label>
                             <div class="col-md-8">
                                 <div class="input-group date col-md-8" id="datepicker7">
-                                    <input class="form-control" name="startDate" type="text" />
+                                    <input class="form-control" name="startDate" value="<?=$app->req->post['startDate'] != '' ? $app->req->post['startDate'] : '';?>" type="text" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
@@ -197,7 +208,7 @@ $app->view->block('dashboard');
                             <label class="col-md-3 control-label"><?=_t( 'End Date' );?></label>
                             <div class="col-md-8">
                                 <div class="input-group date col-md-8" id="datepicker8">
-                                    <input class="form-control" name="endDate" type="text" />
+                                    <input class="form-control" name="endDate" value="<?=$app->req->post['endDate'] != '' ? $app->req->post['endDate'] : '';?>" type="text" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
@@ -213,6 +224,15 @@ $app->view->block('dashboard');
                                     <option value="A" selected="selected"><?=_t( 'A Active' );?></option>
                                     <option value="I"><?=_t( 'I Inactive' );?></option>
                                 </select>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Tags' );?></label>
+                            <div class="col-md-8">
+                                <input id="select2_5" style="width:100%;" type="hidden" name="tags" value="<?=$app->req->post['tags'] != '' ? $app->req->post['tags'] : NULL;?>" />
                             </div>
                         </div>
                         <!-- // Group END -->

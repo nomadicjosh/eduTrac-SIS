@@ -15,7 +15,18 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'vnae';
+$list = '"'.implode('","', get_nae_tags()).'"';
 ?>
+
+<script type="text/javascript">
+$(function() {
+<?php if(strlen($list) >= 3) : ?>
+	$("#select2_5").select2({tags:[<?=$list;?>]});
+<?php else : ?>
+	$("#select2_5").select2({tags:[]});
+<?php endif; ?>
+});
+</script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
@@ -212,8 +223,8 @@ $screen = 'vnae';
                 <br /><br />
                 
                 <fieldset>
-                    <legend><?=_t( 'User Role, Permission, PERC & Status' );?></legend>
-                    <div data-row-span="4">
+                    <legend><?=_t( 'User Role, Permission & PERC' );?></legend>
+                    <div data-row-span="3">
                         <div<?=ae('access_user_role_screen');?> data-field-span="1" class="readonly">
                             <label><?=_t( 'Role' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/role/<?=_h($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                         </div>
@@ -223,6 +234,14 @@ $screen = 'vnae';
                         <div<?=ae('access_person_screen');?> data-field-span="1" class="readonly">
                             <label><?=_t( 'PERC' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/perc/<?=_h($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                         </div>
+                    </div>
+                </fieldset>
+                
+                <br /><br />
+                
+                <fieldset>
+                    <legend><?=_t( 'Status & Tags' );?></legend>
+                    <div data-row-span="2">
                          <div<?=ae('access_user_permission_screen');?> data-field-span="1">
                             <label><font color="red">*</font> <?=_t( 'Status' );?> <a class="hidden-print" href="#status" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=pio();?> required>
@@ -230,6 +249,10 @@ $screen = 'vnae';
                                 <option value="A"<?=selected('A',_h($nae[0]['status']),false);?>><?=_t( 'Active' );?></option>
                                 <option value="I"<?=selected('I',_h($nae[0]['status']),false);?>><?=_t( 'Inactive' );?></option>
                             </select>
+                        </div>
+                        <div data-field-span="1">
+                            <label><?= _t("Tags"); ?></label>
+                            <input id="select2_5" style="width:100%;" type="hidden" name="tags" value="<?=$nae[0]['tags'];?>" />
                         </div>
                     </div>
                 </fieldset>
@@ -261,7 +284,7 @@ $screen = 'vnae';
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Last Login' );?></label>
-                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($nae[0]['LastLogin']))->format('D, M d, o @ h:i A');?>" />
+                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($login->loginTimeStamp))->format('D, M d, o @ h:i A');?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Last Update' );?></label>
