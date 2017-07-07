@@ -19,8 +19,7 @@ use Cascade\Cascade;
  * Before route check.
  */
 $app->before('GET|POST', '/rlde(.*)', function () {
-    Node::dispense('rlde');
-    if (!hasPermission('access_forms') || !hasPermission('access_report_screen') || !hasPermission('access_save_query_screens')) {
+    if (!hasPermission('manage_business_rules')) {
         _etsis_flash()->error(_t("You don't have permission to view the business rules screen."), get_base_url() . 'dashboard' . '/');
         exit();
     }
@@ -150,9 +149,24 @@ $app->group('/rlde', function() use ($app) {
             'rule' => $rule
         ]);
     });
-
+    
+    $app->get('/(\d+)/c/', function ($id) {
+        try {
+            $rlde = Node::table('rlde')->find($id);
+            $rlde->rule = "";
+            $rlde->save();
+            _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'rlde' . '/' . $id . '/');
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'rlde' . '/' . $id . '/');
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'rlde' . '/' . $id . '/');
+        }
+    });
+    
     $app->before('GET', '/(\d+)/d/', function () use($app) {
-        if (!hasPermission('access_forms') || !hasPermission('access_report_screen') || !hasPermission('access_save_query_screens')) {
+        if (!hasPermission('manage_business_rules')) {
             _etsis_flash()->error(_t("You don't have the proper permission(s) to delete a business rule."), $app->req->server['HTTP_REFERER']);
             exit();
         }

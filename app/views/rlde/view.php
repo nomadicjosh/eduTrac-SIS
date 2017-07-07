@@ -151,6 +151,10 @@ function addMsg(text,element_id) {
                          </div>
                     <a class="btn btn-danger reset"><?=_t( 'Reset' );?></a>
                     <a class="btn btn-primary parse-sql" data-stmt="false"><?=_t( 'Load Rule' );?></a>
+                    <?php if(_escape($rule->rule) != null) : ?>
+                    <button type="button" class="btn btn-inverse" onclick="window.location='<?=get_base_url();?>rlde/<?=_escape($rule->id);?>/c/'"><i></i><?=_t( 'Clear' );?></button>
+                    <?php endif; ?>
+                    <button type="button" class="btn btn-primary" onclick="window.location='<?=get_base_url();?>rlde/'"><i></i><?=_t( 'Cancel' );?></button>
                     </div>
 				</div>
 				<!-- // Form actions END -->

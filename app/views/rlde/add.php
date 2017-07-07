@@ -170,7 +170,6 @@ function addMsg(text,element_id) {
 <script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/interact/interact.js"></script>
 <script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/querybuilder/js/query-builder.js"></script>
 <script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/momentjs/moment.js"></script>
-<script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/momentjs/moment.js"></script>
 <script type="text/javascript" src="<?=get_base_url();?>static/assets/components/modules/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 
 <script>
