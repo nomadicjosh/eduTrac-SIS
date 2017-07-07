@@ -880,13 +880,13 @@ class Hooks
 
         $_newvalue = $this->maybe_serialize($newvalue);
 
+        etsis_cache_delete($meta_key, 'option');
+        
         $this->do_action('update_option', $meta_key, $oldvalue, $newvalue);
-        try {
+        try {            
             $key = $this->app->db->options_meta();
             $key->meta_value = $_newvalue;
             $key->where('meta_key = ?', $meta_key)->update();
-
-            etsis_cache_delete($meta_key, 'option');
 
             if (count($key) > 0) {
                 $this->app->db->option[$meta_key] = $newvalue;
@@ -914,14 +914,15 @@ class Hooks
         }
 
         $_value = $this->maybe_serialize($value);
+        
+        etsis_cache_delete($name, 'option');
 
         $this->do_action('add_option', $name, $_value);
-        try {
+        try {            
             $this->app->db->options_meta()->insert([
                 'meta_key' => $name,
                 'meta_value' => $_value
             ]);
-            etsis_cache_delete($name, 'option');
             $this->app->db->option[$name] = $value;
             return;
         } catch (NotFoundException $e) {
@@ -955,12 +956,13 @@ class Hooks
                 return false;
             }
 
+            etsis_cache_delete($name, 'option');
+            
             $this->do_action('delete_option', $name);
 
             $this->app->db->options_meta()
                 ->where('meta_key', $name)
                 ->delete();
-            etsis_cache_delete($name, 'option');
             return true;
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
