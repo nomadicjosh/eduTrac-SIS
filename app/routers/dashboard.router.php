@@ -88,6 +88,7 @@ $app->group('/dashboard', function () use($app) {
 
         etsis_register_style('dash');
         etsis_register_script('highcharts');
+        etsis_register_script('dashboard');
 
         $app->view->display('dashboard/index', [
             'title' => 'Dashboard',
