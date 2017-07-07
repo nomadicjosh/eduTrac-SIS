@@ -465,9 +465,11 @@ function etsis_authenticate($login, $password, $rememberme)
             return;
         }
 
-        $ll = $app->db->person();
-        $ll->LastLogin = $ll->NOW();
-        $ll->where('personID = ?', _h($person->personID))->update();
+        $ll = $app->db->last_login();
+        $ll->insert([
+            'personID' => _h($person->personID),
+            'loginTimeStamp' => \Jenssegers\Date\Date::now()
+        ]);
         /**
          * Filters the authentication cookie.
          * 
