@@ -408,6 +408,7 @@ class Migrations
 
     public static function php_encryption()
     {
+        $key = \Defuse\Crypto\Key::createNewRandomKey();
         try {
             Node::create('php_encryption', [
                 'key' => 'string',
@@ -415,7 +416,7 @@ class Migrations
             ]);
 
             $q = Node::table('php_encryption');
-            $q->key = (string) _etsis_random_lib()->generateString(100);
+            $q->key = (string) $key->saveToAsciiSafeString();
             $q->created_at = (string) \Jenssegers\Date\Date::now();
             $q->save();
         } catch (NodeQException $e) {
@@ -461,8 +462,9 @@ class Migrations
     {
         try {
             Node::create('campaign_queue', [
+                'lid' => 'integer',
                 'cid' => 'integer',
-                'pid' => 'integer',
+                'sid' => 'integer',
                 'to_email' => 'string',
                 'to_name' => 'string',
                 'timestamp_created' => 'string',
@@ -483,8 +485,9 @@ class Migrations
     {
         try {
             Node::create('campaign_bounce', [
+                'lid' => 'integer',
                 'cid' => 'integer',
-                'pid' => 'integer',
+                'sid' => 'integer',
                 'email' => 'string',
                 'msgnum' => 'integer',
                 'type' => 'string',
