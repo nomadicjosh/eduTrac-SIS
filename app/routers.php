@@ -5,32 +5,34 @@
  * and modules when called.
  */
 
-if (strpos(getPathInfo('/api'), "/api") === 0)
+if (strpos(get_path_info('/api'), "/api") === 0)
 {
     require($app->config('routers_dir') . 'api.router.php');
 }
 
-elseif (strpos(getPathInfo('/dashboard'), "/dashboard") === 0)
+elseif (strpos(get_path_info('/dashboard'), "/dashboard") === 0)
 {
     _etsis_dashboard_router();
 }
 
-elseif (strpos(getPathInfo('/appl'), "/appl") === 0)
+elseif (strpos(get_path_info('/appl'), "/appl") === 0)
 {
     _etsis_appl_router();
 }
 
-elseif (strpos(getPathInfo('/calendar'), "/calendar") === 0)
+elseif (strpos(get_path_info('/calendar'), "/calendar") === 0)
 {
     require($app->config('routers_dir') . 'booking.router.php');
 }
 
-elseif (strpos(getPathInfo('/cmgmt'), "/cmgmt") === 0)
+elseif (strpos(get_path_info('/mrkt'), "/mrkt") === 0)
 {
-    require($app->config('routers_dir') . 'cmgmt.router.php');
+    if(file_exists($app->config('routers_dir') . 'mrkt.router.php')) {
+        require($app->config('routers_dir') . 'mrkt.router.php');
+    }
 }
 
-elseif (strpos(getPathInfo('/crse'), "/crse") === 0)
+elseif (strpos(get_path_info('/crse'), "/crse") === 0)
 {    
     _etsis_crse_router();
     
@@ -39,22 +41,22 @@ elseif (strpos(getPathInfo('/crse'), "/crse") === 0)
     }
 }
 
-elseif (strpos(getPathInfo('/courses'), "/courses") === 0)
+elseif (strpos(get_path_info('/courses'), "/courses") === 0)
 {
     require($app->config('routers_dir') . 'courses.router.php');
 }
 
-elseif (strpos(getPathInfo('/cron'), "/cron") === 0)
+elseif (strpos(get_path_info('/cron'), "/cron") === 0)
 {
     require($app->config('routers_dir') . 'cron.router.php');
 }
 
-elseif (strpos(getPathInfo('/financial'), "/financial") === 0)
+elseif (strpos(get_path_info('/financial'), "/financial") === 0)
 {
     require($app->config('routers_dir') . 'financial.router.php');
 }
 
-elseif (strpos(getPathInfo('/form'), "/form") === 0)
+elseif (strpos(get_path_info('/form'), "/form") === 0)
 {
     require($app->config('routers_dir') . 'form.router.php');
     
@@ -66,12 +68,12 @@ elseif (strpos(getPathInfo('/form'), "/form") === 0)
         require($app->config('routers_dir') . 'booking.router.php');
     }
     
-    if(file_exists($app->config('routers_dir') . 'myet.router.php')) {
+    if(file_exists($app->config('routers_dir') . 'myetsis.router.php')) {
         _etsis_myetsis_router();
     }
 }
 
-elseif (strpos(getPathInfo('/hr'), "/hr") === 0)
+elseif (strpos(get_path_info('/hr'), "/hr") === 0)
 {
     require($app->config('routers_dir') . 'hr.router.php');
     
@@ -80,27 +82,27 @@ elseif (strpos(getPathInfo('/hr'), "/hr") === 0)
     }
 }
 
-elseif (strpos(getPathInfo('/nae'), "/nae") === 0)
+elseif (strpos(get_path_info('/nae'), "/nae") === 0)
 {
     _etsis_nae_router();
 }
 
-elseif (strpos(getPathInfo('/plugins'), "/plugins") === 0)
+elseif (strpos(get_path_info('/plugins'), "/plugins") === 0)
 {
     require($app->config('routers_dir') . 'plugins.router.php');
 }
 
-elseif (strpos(getPathInfo('/program'), "/program") === 0)
+elseif (strpos(get_path_info('/program'), "/program") === 0)
 {
     _etsis_prog_router();
 }
 
-elseif (strpos(getPathInfo('/sect/brgn'), "/sect/brgn") === 0)
+elseif (strpos(get_path_info('/sect/brgn'), "/sect/brgn") === 0)
 {
     require($app->config('routers_dir') . 'savedquery.router.php');
 }
 
-elseif (strpos(getPathInfo('/sect'), "/sect") === 0)
+elseif (strpos(get_path_info('/sect'), "/sect") === 0)
 {
     _etsis_sect_router();
     
@@ -117,37 +119,37 @@ elseif (strpos(getPathInfo('/sect'), "/sect") === 0)
     }
 }
 
-elseif (strpos(getPathInfo('/admin'), "/admin") === 0)
+elseif (strpos(get_path_info('/admin'), "/admin") === 0)
 {
     _etsis_myetsis_router();
 }
 
-elseif (strpos(getPathInfo('/setting'), "/setting") === 0)
+elseif (strpos(get_path_info('/setting'), "/setting") === 0)
 {
     require($app->config('routers_dir') . 'settings.router.php');
 }
 
-elseif (strpos(getPathInfo('/email'), "/email") === 0)
+elseif (strpos(get_path_info('/email'), "/email") === 0)
 {
     require($app->config('routers_dir') . 'settings.router.php');
 }
 
-elseif (strpos(getPathInfo('/registration'), "/registration") === 0)
+elseif (strpos(get_path_info('/registration'), "/registration") === 0)
 {
     require($app->config('routers_dir') . 'settings.router.php');
 }
 
-elseif (strpos(getPathInfo('/templates'), "/templates") === 0)
+elseif (strpos(get_path_info('/templates'), "/templates") === 0)
 {
     require($app->config('routers_dir') . 'settings.router.php');
 }
 
-elseif (strpos(getPathInfo('/sms'), "/sms") === 0)
+elseif (strpos(get_path_info('/sms'), "/sms") === 0)
 {
     require($app->config('routers_dir') . 'settings.router.php');
 }
 
-elseif (strpos(getPathInfo('/sql'), "/sql") === 0)
+elseif (strpos(get_path_info('/sql'), "/sql") === 0)
 {
     require($app->config('routers_dir') . 'sql.router.php');
     
@@ -156,7 +158,7 @@ elseif (strpos(getPathInfo('/sql'), "/sql") === 0)
     }
 }
 
-elseif (strpos(getPathInfo('/staff'), "/staff") === 0)
+elseif (strpos(get_path_info('/staff'), "/staff") === 0)
 {
     require($app->config('routers_dir') . 'staff.router.php');
     
@@ -165,7 +167,7 @@ elseif (strpos(getPathInfo('/staff'), "/staff") === 0)
     }
 }
 
-elseif (strpos(getPathInfo('/stu'), "/stu") === 0)
+elseif (strpos(get_path_info('/stu'), "/stu") === 0)
 {
     _etsis_student_router();
     
@@ -178,7 +180,7 @@ elseif (strpos(getPathInfo('/stu'), "/stu") === 0)
     }
 }
 
-elseif (strpos(getPathInfo('/err'), "/err") === 0)
+elseif (strpos(get_path_info('/err'), "/err") === 0)
 {
     require($app->config('routers_dir') . 'error.router.php');
     
@@ -187,20 +189,22 @@ elseif (strpos(getPathInfo('/err'), "/err") === 0)
     }
 }
 
-elseif (strpos(getPathInfo('/audit-trail'), "/audit-trail") === 0)
+elseif (strpos(get_path_info('/audit-trail'), "/audit-trail") === 0)
 {
     require($app->config('routers_dir') . 'log.router.php');
 }
 
-elseif (strpos(getPathInfo('/rlde'), "/rlde") === 0)
+elseif (strpos(get_path_info('/rlde'), "/rlde") === 0)
 {
     require($app->config('routers_dir') . 'rlde.router.php');
 }
 
 else {
     _etsis_index_router();
-    
-    if(file_exists($app->config('routers_dir') . 'myet.router.php')) {
+    if(file_exists($app->config('routers_dir') . 'mrkt.router.php')) {
+        require($app->config('routers_dir') . 'mrkt.router.php');
+    }
+    if(file_exists($app->config('routers_dir') . 'myetsis.router.php')) {
         _etsis_myetsis_router();
     } // default routes
 }
