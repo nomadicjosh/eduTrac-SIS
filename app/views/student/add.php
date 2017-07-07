@@ -12,7 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$antGradDate = date("05/d/y",strtotime("+4 years"));
+$antGradDate = date("05/d/y",strtotime("+"._h($student[0]['comp_months'])." months"));
 ?>
 
 <script type="text/javascript">
@@ -140,7 +140,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <select name="acadLevelCode" class="form-control" required>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
                                     <?php table_dropdown('aclv',null,'code','code','name',_h($student[0]['acadLevelCode'])); ?>
                                 </select>
