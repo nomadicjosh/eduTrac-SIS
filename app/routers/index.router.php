@@ -145,7 +145,7 @@ $app->get('/profile/', function () use($app) {
             ->where('b.addressType = "P"')->_and_()
             ->where('b.addressStatus = "C"')
             ->where('b.endDate IS NULL')->_or_()
-            ->whereLte('b.endDate','0000-00-00');
+            ->whereLte('b.endDate', '0000-00-00');
         $q2 = $addr->find(function($data) {
             $array = [];
             foreach ($data as $d) {
@@ -273,10 +273,9 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app) {
             }
             $perm->where('id = ?', $id);
             $perm->update();
-            
-                etsis_logger_activity_log_write('Update Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
-                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
-            
+
+            etsis_logger_activity_log_write('Update Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
+            _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -351,10 +350,9 @@ $app->match('GET|POST', '/permission/add/', function () use($app) {
                 $perm->$k = $v;
             }
             $perm->save();
-            
-                etsis_logger_activity_log_write('New Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
-                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'permission' . '/');
-            
+
+            etsis_logger_activity_log_write('New Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
+            _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'permission' . '/');
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
