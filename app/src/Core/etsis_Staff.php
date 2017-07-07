@@ -339,7 +339,7 @@ final class etsis_Staff
                 ->select('person.ssn,person.dob,person.veteran,person.ethnicity')
                 ->select('person.gender,person.emergency_contact,person.emergency_contact_phone')
                 ->select('person.photo,person.status AS naeStatus,person.approvedDate')
-                ->select('person.approvedBy,person.LastLogin,person.LastUpdate')
+                ->select('person.approvedBy,person.LastUpdate')
                 ->select('address.*,job.title,staff.office_phone,staff.officeCode')
                 ->select('meta.id AS sMetaID,meta.jobStatusCode,meta.jobID,meta.supervisorID,meta.staffType')
                 ->select('meta.hireDate,meta.startDate as metaStartDate,meta.endDate as metaEndDate')
