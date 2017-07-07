@@ -649,8 +649,8 @@ $app->asset->registerStyleCollection('querybuilder', [
     'querybuilder/css/query-builder.default.css'
 ]);
 $app->asset->registerStyleCollection('elFinder', ['elfinder/css/elfinder.min.css', 'elfinder/css/theme.css']);
-$app->asset->registerStyleCollection('bootstrap-datepicker', ['bootstrap-datepicker/css/bootstrap-datepicker.css']);
 $app->asset->registerStyleCollection('jquery-ui', ['jquery-ui/jquery-ui.min.css']);
+$app->asset->registerStyleCollection('bootstrap-datepicker', ['datepicker/bootstrap-datetimepicker.min.css']);
 
 $app->asset->registerScriptCollection('gridforms', ['admin/gridforms/gridforms.js']);
 $app->asset->registerScriptCollection('select', ['admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js', 'admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js']);
@@ -669,10 +669,14 @@ $app->asset->registerScriptCollection('multiselect', ['admin/forms/elements/mult
 $app->asset->registerScriptCollection('jCombo', ['admin/forms/elements/jCombo/jquery.jCombo.min.js']);
 $app->asset->registerScriptCollection('maxlength', ['admin/forms/elements/bootstrap-maxlength/bootstrap-maxlength.min.js', 'admin/forms/elements/bootstrap-maxlength/custom/js/custom.js']);
 $app->asset->registerScriptCollection('upload', ['admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js']);
-$app->asset->registerScriptCollection('highcharts', ['admin/Highcharts/highcharts.js', 'admin/Highcharts/modules/exporting.js', 'admin/Highcharts/highcharts-conf.js']);
-$app->asset->registerScriptCollection('bootstrap-datepicker', ['bootstrap-datepicker/js/bootstrap-datepicker.js']);
+$app->asset->registerScriptCollection('highcharts', ['admin/Highcharts/highcharts.js', 'admin/Highcharts/highcharts-3d.js', 'admin/Highcharts/modules/exporting.js']);
+$app->asset->registerScriptCollection('dashboard', ['admin/Highcharts/highcharts-conf.js']);
+$app->asset->registerScriptCollection('opened', ['admin/Highcharts/campaign-opened.js']);
+$app->asset->registerScriptCollection('clicked', ['admin/Highcharts/campaign-clicked.js']);
+$app->asset->registerScriptCollection('bootstrap-datepicker', ['admin/datepicker/bootstrap-datetimepicker.min.js', 'admin/datepicker/custom.js']);
 $app->asset->registerScriptCollection('jquery-ui', ['jquery-ui/jquery-ui.min.js']);
 $app->asset->registerScriptCollection('momentjs', ['momentjs/moment.js']);
+$app->asset->registerScriptCollection('elFinder', ['elfinder/js/elfinder.full.js', 'elfinder/js/tinymce.plugin.js']);
 
 require( APP_PATH . 'functions' . DS . 'global-function.php' );
 require( APP_PATH . 'functions' . DS . 'notify-function.php' );
