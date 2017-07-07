@@ -10,7 +10,7 @@ if (!defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-define('CURRENT_RELEASE', '6.3.0-RC4');
+define('CURRENT_RELEASE', '6.3.0');
 define('RELEASE_TAG', trim(_file_get_contents(BASE_PATH . 'RELEASE')));
 
 $app = \Liten\Liten::getInstance();
@@ -337,35 +337,6 @@ function _bool($num)
             break;
         case 0:
             return 'No';
-            break;
-    }
-}
-
-function translate_class_year($year)
-{
-    switch ($year) {
-        case 'FR':
-            return 'Freshman';
-            break;
-
-        case 'SO':
-            return 'Sophomore';
-            break;
-
-        case 'JR':
-            return 'Junior';
-            break;
-
-        case 'SR':
-            return 'Senior';
-            break;
-
-        case 'GR':
-            return 'Grad Student';
-            break;
-
-        case 'PhD':
-            return 'PhD Student';
             break;
     }
 }
@@ -1634,7 +1605,8 @@ function get_screen($screen)
         'TCEQ' => 'crse/tceq',
         'TCRE' => 'crse/tcre',
         'RLDE' => 'rlde',
-        'ACLV' => 'form/aclv'
+        'ACLV' => 'form/aclv',
+        'MRKT' => 'mrkt'
     ];
     return $acronym[$screen];
 }
