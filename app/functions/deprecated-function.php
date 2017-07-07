@@ -19,6 +19,7 @@ use Cascade\Cascade;
 /**
  *
  * @deprecated since release 6.2.0
+ * @see etsis_dropdown_languages
  * @param string $active            
  */
 function et_dropdown_languages($active = '')
@@ -31,6 +32,7 @@ function et_dropdown_languages($active = '')
 /**
  * 
  * @deprecated since release 6.2.10
+ * @see is_user_logged_in
  * @return function
  */
 function isUserLoggedIn()
@@ -44,6 +46,7 @@ function isUserLoggedIn()
  * Custom error log function for better PHP logging.
  *
  * @deprecated since release 6.2.11
+ * @see etsis_monolog
  * @since 6.2.0
  * @param string $name
  *            Log channel and log file prefix.
@@ -61,6 +64,7 @@ function _error_log($name, $message)
  * Function wrapper for the setError log method.
  * 
  * @deprecated since release 6.2.11
+ * @see etsis_error_handler
  */
 function logError()
 {
@@ -71,6 +75,7 @@ function logError()
  * Resizes images.
  * 
  * @deprecated since release 6.3.0
+ * @see resize_image
  * @param type $width
  * @param type $height
  * @param type $target
@@ -86,6 +91,7 @@ function imgResize($width, $height, $target)
  * Makes links in text clickable.
  * 
  * @deprecated since release 6.3.0
+ * @see make_clickable
  * @param type $text
  */
 function clickableLink($text = 'deprecated')
@@ -99,6 +105,7 @@ function clickableLink($text = 'deprecated')
  * Get age by birthdate.
  *
  * @deprecated since release 6.3.0
+ * @see get_age
  * @param string $birthdate
  *            Person's birth date.
  * @return mixed
@@ -125,8 +132,9 @@ function bm()
  * Function for retrieving a person's
  * uploaded school photo.
  *
- * @since 4.5
  * @deprecated since release 6.3.0
+ * @see get_school_photo
+ * @since 4.5
  * @param int $id
  *            Person ID.
  * @param string $email
@@ -148,6 +156,7 @@ function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
  * Calculates grade points for stac.
  *
  * @deprecated since release 6.3.0
+ * @see calculate_grade_points
  * @param string $grade
  *            Letter grade.
  * @param float $credits
@@ -163,6 +172,7 @@ function acadCredGradePoints($grade, $credits)
 
 /**
  * @deprecated since release 6.3.0
+ * @see get_path_info
  * @param string $relative
  * @return string
  */
@@ -177,8 +187,9 @@ function getPathInfo($relative)
  * A function which returns true if the logged in user
  * is a student in the system.
  *
- * @since 4.3
  * @deprecated since release 6.3.0
+ * @see is_student
+ * @since 4.3
  * @param int $id
  *            Student's ID.
  * @return bool
@@ -232,6 +243,30 @@ function fee_acad_level_select($levelCode = 'deprecated')
  * @return string Returns the record key if selected is true.
  */
 function course_level_select($levelCode = 'deprecated', $readonly = 'deprecated')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0');
+}
+
+/**
+ * Class year select: shows general list of class years and
+ * if $year is not NULL, shows the class year
+ * for a particular student.
+ *
+ * @deprecated since release 6.3.0
+ * @since 1.0.0
+ * @param string $year            
+ * @return string Returns the record year if selected is true.
+ */
+function class_year($year = 'deprecated')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0');
+}
+
+/**
+ * @deprecated since release 6.3.0
+ * @param string $year
+ */
+function translate_class_year($year = 'deprecated')
 {
     _deprecated_function(__FUNCTION__, '6.3.0');
 }
