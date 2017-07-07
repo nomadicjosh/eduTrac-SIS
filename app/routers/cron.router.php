@@ -9,6 +9,8 @@ use app\src\Core\Exception\Exception;
 use PDOException as ORMException;
 use Cascade\Cascade;
 use app\src\Core\etsis_Mysqldump as Mysqldump;
+use Defuse\Crypto\Crypto;
+use Defuse\Crypto\Key;
 
 /**
  * Cron Router
@@ -526,7 +528,10 @@ $app->group('/cron', function () use($app, $emailer, $email) {
     });
 
     $app->get('/runEmailQueue/', function () use($app) {
-        return false;
+        if (!function_exists('mrkt_module')) {
+            return false;
+        }
+
         try {
             $cpgn = $app->db->campaign()
                 ->where('campaign.status = "processing"')
@@ -563,13 +568,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                     // iterate messages
                     foreach ($messages as $message) {
                         $sub = get_person_by('email', $message->getToEmail());
-                        $slist = $app->db->subscriber_list()
-                            ->where('subscriber_list.lid = ?', $message->getListId())->_and_()
-                            ->where('subscriber_list.sid = ?', $message->getSubscriberId())
-                            ->findOne();
+                        /* $slist = $app->db->subscriber_list()
+                          ->where('subscriber_list.lid = ?', $message->getListId())->_and_()
+                          ->where('subscriber_list.sid = ?', $message->getSubscriberId())
+                          ->findOne();
 
-                        $list = get_list_by('id', $message->getListId());
-                        $server = get_server_info(_h($list->server));
+                          $list = get_list_by('id', $message->getListId()); */
 
                         /**
                          * Generate slug from subject. Useful for Google Analytics.
@@ -583,8 +587,6 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                             'xlistid' => $message->getListId(),
                             'xsubscriberid' => $message->getSubscriberId(),
                             'xsubscriberemail' => $message->getToEmail(),
-                            'slist_code' => $slist->code,
-                            'uniqueid' => $message->getId()
                         ];
                         $footer = _escape($cpgn->footer);
                         $footer = str_replace('{email}', _h($sub->email), $footer);
@@ -608,7 +610,7 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                         //$msg = str_replace('{unsubscribe_url}', '<a href="' . get_base_url() . 'unsubscribe/' . _h($slist->code) . '/lid/' . _h($slist->lid) . '/sid/' . _h($slist->sid) . '/rid/' . _h($message->getId()) . '/">' . _t('unsubscribe') . '</a>', $msg);
                         //$msg = str_replace('{personal_preferences}', '<a href="' . get_base_url() . 'preferences/' . _h($sub->code) . '/subscriber/' . _h($sub->id) . '/">' . _t('preferences page') . '</a>', $msg);
                         $msg .= $footer;
-                        $msg .= etsis_footer_logo();
+                        //$msg .= etsis_footer_logo();
                         $msg .= campaign_tracking_code(_h($cpgn->id), _h($sub->id));
 
                         if (++$i === 1) {
@@ -619,18 +621,9 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                             $q->sendfinish = date("Y-m-d H:i:s", strtotime('+10 minutes', $finish));
                             $q->update();
                         }
-                        /**
-                         * Turn server object to array, join with another 
-                         * array, and then merge them back into an object.
-                         */
-                        $data = [];
-                        foreach ($server as $k => $v) {
-                            $data[$k] = $v;
-                        }
-                        $obj_merged = (object) array_merge($custom_headers, $data);
                         // send email
                         $app->hook->{'do_action_array'}('etsis_email_init', [
-                            $obj_merged,
+                            (object) $custom_headers,
                             $message->getToEmail(),
                             _h($cpgn->subject),
                             etsis_link_tracking($msg, _h($cpgn->id), _h($sub->id), $slug),
@@ -656,7 +649,77 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         }
     });
 
-    $app->before('POST|PUT|DELETE|OPTIONS', '/updateStuTerms/', function () use($app) {
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runBounceHandler/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
+
+    $app->get('/runBounceHandler/', function () {
+        if (!function_exists('mrkt_module')) {
+            return false;
+        }
+
+        try {
+            $node = Node::table('php_encryption')->find(1);
+            try {
+                if (_escape(get_option('etsis_bmh_password')) != '') {
+                    $password = Crypto::decrypt(_escape(get_option('etsis_bmh_password')), Key::loadFromAsciiSafeString($node->key));
+                } else {
+                    $password = _escape(get_option('etsis_bmh_password'));
+                }
+            } catch (Defuse\Crypto\Exception\BadFormatException $e) {
+                Cascade::getLogger('system_email')->alert(sprintf('BOUNCESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
+            } catch (Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException $e) {
+                Cascade::getLogger('system_email')->alert(sprintf('BOUNCESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
+            } catch (Exception $e) {
+                Cascade::getLogger('system_email')->alert(sprintf('BOUNCESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
+            }
+        } catch (NodeQException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        }
+
+        $time_start = microtime_float();
+
+        $bmh = new app\src\Core\etsis_BounceHandler();
+        $bmh->actionFunction = 'bounce_callback_action'; // default is 'bounce_callback_action'
+        $bmh->verbose = app\src\Core\etsis_BounceHandler::VERBOSE_SIMPLE; //app\src\Core\etsis_BounceHandler::VERBOSE_SIMPLE; //app\src\Core\etsis_BounceHandler::VERBOSE_REPORT; //app\src\Core\etsis_BounceHandler::VERBOSE_DEBUG; //app\src\Core\etsis_BounceHandler::VERBOSE_QUIET; // default is BounceMailHandler::VERBOSE_SIMPLE
+        //$bmh->useFetchStructure  = true; // true is default, no need to specify
+        //$bmh->testMode           = false; // false is default, no need to specify
+        //$bmh->debugBodyRule      = false; // false is default, no need to specify
+        //$bmh->debugDsnRule       = false; // false is default, no need to specify
+        //$bmh->purgeUnprocessed   = false; // false is default, no need to specify
+        $bmh->disableDelete = true; // false is default, no need to specify
+
+        /*
+         * for remote mailbox
+         */
+        $bmh->mailhost = _h(get_option('etsis_bmh_host')); // your mail server
+        $bmh->mailboxUserName = _h(get_option('etsis_bmh_username')); // your mailbox username
+        $bmh->mailboxPassword = $password; // your mailbox password
+        $bmh->port = _h(get_option('etsis_bmh_port')); // the port to access your mailbox, default is 143
+        $bmh->service = _h(get_option('etsis_bmh_service')); // the service to use (imap or pop3), default is 'imap'
+        $bmh->serviceOption = _h(get_option('etsis_bmh_service_option')); // the service options (none, tls, notls, ssl, etc.), default is 'notls'
+        $bmh->boxname = (_h(get_option('etsis_bmh_mailbox')) == '' ? 'INBOX' : _h(get_option('etsis_bmh_mailbox'))); // the mailbox to access, default is 'INBOX'
+        $bmh->moveHard = true; // default is false
+        $bmh->hardMailbox = (_h(get_option('etsis_bmh_mailbox')) == '' ? 'INBOX' : _h(get_option('etsis_bmh_mailbox'))) . '.hard'; // default is 'INBOX.hard' - NOTE: must start with 'INBOX.'
+        $bmh->moveSoft = true; // default is false
+        $bmh->softMailbox = ''; // default is 'INBOX.soft' - NOTE: must start with 'INBOX.'
+        $bmh->openMailbox();
+        $bmh->processMailbox();
+        $bmh->deleteMsgDate = Jenssegers\Date\Date::now()->format('yyyy-mm-dd H:i:s'); // format must be as 'yyyy-mm-dd'
+
+        $time_end = microtime_float();
+        $time = $time_end - $time_start;
+
+        Cascade::getLogger('info')->info('BOUNCES[401]: ' . sprintf(_t('Seconds to process: %s'), $time));
+    });
+
+    $app->before('POST|PUT|DELETE|OPTIONS', '/updateSTTR/', function () use($app) {
         header('Content-Type: application/json');
         $app->res->_format('json', 401);
         exit();
@@ -819,6 +882,9 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                         ->where('acadProgCode = ?', _h($r2['acadProgCode']))
                         ->findOne();
                     $stal->set([
+                            'currentClassLevel' => NULL,
+                            'enrollmentStatus' => 'G',
+                            'acadStanding' => NULL,
                             'endDate' => _h($r1['gradDate'])
                         ])
                         ->update();
