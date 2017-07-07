@@ -1306,32 +1306,6 @@ function credit_type($status = NULL)
 }
 
 /**
- * Class year select: shows general list of class years and
- * if $year is not NULL, shows the class year
- * for a particular student.
- *
- * @since 1.0.0
- * @param string $year            
- * @return string Returns the record year if selected is true.
- */
-function class_year($year = NULL)
-{
-    $app = \Liten\Liten::getInstance();
-
-    $select = '<select name="classYear" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
-                <option value="">&nbsp;</option>
-                <option value="FR"' . selected($year, 'FR', false) . '>' . _t('FR Freshman') . '</option>
-                <option value="SO"' . selected($year, 'SO', false) . '>' . _t('SO Sophomore') . '</option>
-                <option value="JR"' . selected($year, 'JR', false) . '>' . _t('JR Junior') . '</option>
-                <option value="SR"' . selected($year, 'SR', false) . '>' . _t('SR Senior') . '</option>
-                <option value="UG"' . selected($year, 'UG', false) . '>' . _t('UG Undergraduate Student') . '</option>
-                <option value="GR"' . selected($year, 'GR', false) . '>' . _t('GR Grad Student') . '</option>
-                <option value="PhD"' . selected($year, 'PhD', false) . '>' . _t('PhD PhD Student') . '</option>
-                </select>';
-    return $app->hook->apply_filter('class_year', $select, $year);
-}
-
-/**
  * Grading scale: shows general list of letter grades and
  * if $grade is not NULL, shows the grade
  * for a particular student course section record
