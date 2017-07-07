@@ -10,6 +10,7 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -71,6 +72,7 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
         array (
             'Desarrolla2\\Test\\Cache\\' => 23,
             'Desarrolla2\\Cache\\' => 18,
+            'Defuse\\Crypto\\' => 14,
             'Dcrypt\\' => 7,
         ),
         'C' => 
@@ -198,6 +200,10 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
         'Desarrolla2\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/desarrolla2/cache/src',
+        ),
+        'Defuse\\Crypto\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/defuse/php-encryption/src',
         ),
         'Dcrypt\\' => 
         array (

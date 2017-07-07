@@ -35,6 +35,7 @@ return array(
     'Gettext\\' => array($vendorDir . '/gettext/gettext/src'),
     'Desarrolla2\\Test\\Cache\\' => array($vendorDir . '/desarrolla2/cache/test'),
     'Desarrolla2\\Cache\\' => array($vendorDir . '/desarrolla2/cache/src'),
+    'Defuse\\Crypto\\' => array($vendorDir . '/defuse/php-encryption/src'),
     'Dcrypt\\' => array($vendorDir . '/mmeyer2k/dcrypt/src'),
     'Cron\\' => array($vendorDir . '/mtdowling/cron-expression/src/Cron'),
     'Cocur\\Slugify\\' => array($vendorDir . '/cocur/slugify/src'),
