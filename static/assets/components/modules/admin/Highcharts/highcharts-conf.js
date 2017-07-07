@@ -51,7 +51,7 @@ $(function () {
                 name: null,
                 data: []
             }]
-    }
+    };
 
     $.getJSON(rootPath + "dashboard/getSACP/", function (json) {
         options.series[0].data = json;
@@ -67,7 +67,13 @@ $(function () {
         },
         chart: {
             renderTo: 'getDEPT',
-            type: 'column'
+            type: 'column',
+            options3d: {
+                enabled: true,
+                alpha: 15,
+                beta: 15,
+                viewDistance: 25
+            }
         },
         title: {
             text: null,
@@ -102,7 +108,7 @@ $(function () {
             }
         },
         series: []
-    }
+    };
 
     $.getJSON(rootPath + "dashboard/getDEPT/", function (json) {
         options.xAxis.categories = json[0]['data'];
