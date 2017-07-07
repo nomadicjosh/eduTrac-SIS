@@ -36,6 +36,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
 	<link rel="stylesheet" href="<?=get_base_url();?>static/assets/css/front/module.front.page.index.min.css" />
 	<link rel="stylesheet" href="<?=get_base_url();?>static/assets/css/admin/custom.css" />
 	<link rel="stylesheet" href="<?=get_base_url();?>static/assets/css/admin/custom/myetsis.custom.css" />
+    <link rel="stylesheet" href="<?= get_base_url(); ?>static/assets/components/library/bootstrap/css/bootstrap-lumen.css" />
 	
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
