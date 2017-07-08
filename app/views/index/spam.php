@@ -15,9 +15,6 @@ $app->view->block('myetsis');
 ?>
 
 		<div class="col-md-12">
-			
-			<div class="separator bottom"></div>
-			<div class="separator bottom"></div>
 		
 			<div class="widget widget-heading-simple widget-body-white">
 				<div class="widget-body">

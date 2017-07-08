@@ -17,8 +17,6 @@ $app->view->block('myetsis');
 <script src="<?=get_base_url();?>static/assets/js/pwdwidget.js" type="text/javascript"></script>
 
 <div class="col-md-12">
-	<div class="separator bottom"></div>
-	<div class="separator bottom"></div>
 
 	<h3 class="glyphicons keys"><i></i><?=_t( 'Change Password' );?></h3>
 	<div class="separator bottom"></div>

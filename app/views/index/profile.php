@@ -15,8 +15,6 @@ $app->view->block('myetsis');
 ?>
 
 <div class="col-md-12">
-	<div class="separator bottom"></div>
-	<div class="separator bottom"></div>
 
 	<h3 class="glyphicons user"><i></i><?=_t( 'My Profile' );?></h3>
 	<div class="separator bottom"></div>

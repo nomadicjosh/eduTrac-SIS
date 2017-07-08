@@ -15,9 +15,6 @@ $app->view->block('myetsis');
 ?>
 
 <div id="login" class="col-md-12">
-	
-	<div class="separator bottom"></div>
-	<div class="separator bottom"></div>
 
 	<div class="container" style="width:400px !important;">
 	
