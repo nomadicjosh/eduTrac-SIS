@@ -27,11 +27,6 @@ tinymce.init({
 	autosave_ask_before_unload: false
 });
 </script>
-
-		<div class="col-md-12">
-			
-			<div class="separator bottom"></div>
-			<div class="separator bottom"></div>
 		
 			<div class="widget widget-heading-simple widget-body-white">
 				<div class="widget-body">
@@ -70,8 +65,6 @@ tinymce.init({
 			</div>
             <?php endif; ?>
 		</div>
-	</div>
-</div>
 
 	<!-- Modal -->
 	<div class="modal fade" id="welcome">
