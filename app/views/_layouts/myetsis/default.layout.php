@@ -16,12 +16,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
 <!--[if gt IE 8]> <html class="front ie gt-ie8 fluid top-full sticky-top"> <![endif]-->
 <!--[if !IE]><!--><html class="front fluid top-full sticky-top"><!-- <![endif]-->
 <head>
-	<title><?php if (isset($title)) {
-            echo $title . ' - ' . _h(get_option('institution_name'));
-        } else {
-            echo _h(get_option('institution_name'));
-        } ?>
-        </title>
+	<title><?=(isset($title) ? $title . ' - ' . _h(get_option('institution_name')) : _h(get_option('institution_name')));?></title>
 	
 	<!-- Meta -->
 	<meta charset="UTF-8" />
@@ -44,12 +39,12 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
 
-<script src="<?=get_javascript_directory_uri();?>library/jquery/jquery.min.js?v=v2.1.0"></script>
-<script src="<?=get_javascript_directory_uri();?>library/jquery/jquery-migrate.min.js?v=v2.1.0"></script>
-<script src="<?=get_javascript_directory_uri();?>library/modernizr/modernizr.js?v=v2.1.0"></script>
-<script src="<?=get_javascript_directory_uri();?>plugins/less-js/less.min.js?v=v2.1.0"></script>
-<script src="<?=get_javascript_directory_uri();?>modules/admin/charts/flot/assets/lib/excanvas.js?v=v2.1.0"></script>
-<script src="<?=get_javascript_directory_uri();?>plugins/browser/ie/ie.prototype.polyfill.js?v=v2.1.0"></script>
+<script src="<?=get_javascript_directory_uri();?>library/jquery/jquery.min.js"></script>
+<script src="<?=get_javascript_directory_uri();?>library/jquery/jquery-migrate.min.js"></script>
+<script src="<?=get_javascript_directory_uri();?>library/modernizr/modernizr.js"></script>
+<script src="<?=get_javascript_directory_uri();?>plugins/less-js/less.min.js"></script>
+<script src="<?=get_javascript_directory_uri();?>modules/admin/charts/flot/assets/lib/excanvas.js"></script>
+<script src="<?=get_javascript_directory_uri();?>plugins/browser/ie/ie.prototype.polyfill.js"></script>
 	<?php
 	if (isset($cssArray)) {
         foreach ($cssArray as $css){
@@ -249,9 +244,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
 			
 		</div>
 		<!-- Top navbar END -->
-<div class="container-960 innerT">
-
-	<div class="row">
+    <div class="container-960 innerT">
         
         <?php $app->hook->do_action('myetsis_admin_notices'); ?>
         
@@ -267,10 +260,6 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
 	
             </div>
             <!-- // Footer END -->
-		
-	</div>
-</div>
-	<!-- // Main Container Fluid END -->
 	
 	<!-- Global -->
 	<script>
@@ -289,10 +278,10 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
 	var themerPrimaryColor = primaryColor;
 	</script>
 	
-<script src="<?=get_javascript_directory_uri();?>library/bootstrap/js/bootstrap.min.js?v=v2.1.0"></script>
-<script src="<?=get_javascript_directory_uri();?>plugins/slimscroll/jquery.slimscroll.js?v=v2.1.0"></script>
-<script src="<?=get_javascript_directory_uri();?>plugins/breakpoints/breakpoints.js?v=v2.1.0"></script>
-<script src="<?=get_javascript_directory_uri();?>core/js/core.init.js?v=v2.1.0"></script>
+<script src="<?=get_javascript_directory_uri();?>library/bootstrap/js/bootstrap.min.js"></script>
+<script src="<?=get_javascript_directory_uri();?>plugins/slimscroll/jquery.slimscroll.js"></script>
+<script src="<?=get_javascript_directory_uri();?>plugins/breakpoints/breakpoints.js"></script>
+<script src="<?=get_javascript_directory_uri();?>core/js/core.init.js"></script>
 	<?php
 		if (isset($jsArray)) {
         foreach ($jsArray as $js){
