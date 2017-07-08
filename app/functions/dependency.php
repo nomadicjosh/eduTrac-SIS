@@ -641,7 +641,7 @@ $app->asset->registerStyleCollection('form-alt', ['admin/module.admin.page.alt.f
 $app->asset->registerStyleCollection('table', ['admin/module.admin.page.tables.min.css']);
 $app->asset->registerStyleCollection('invoice', ['admin/module.admin.page.invoice.min.css']);
 $app->asset->registerStyleCollection('table-alt', ['admin/module.admin.page.alt.tables.min.css']);
-$app->asset->registerStyleCollection('calendar', ['fullcalendar/fullcalendar.css', 'fullcalendar/calendar.css']);
+$app->asset->registerStyleCollection('calendar', ['fullcalendar/fullcalendar.css']);
 $app->asset->registerStyleCollection('querybuilder', [
     'querybuilder/bootstrap-select/css/bootstrap-select.min.css',
     'querybuilder/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css',
