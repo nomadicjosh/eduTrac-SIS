@@ -19,7 +19,7 @@ ini_set('log_errors', 'On');
 ini_set('error_log', 'app/tmp/logs/etsis-cli.' . date('m-d-Y') . '.txt');
 
 define( 'ETSIS_CLI_ROOT', __DIR__ );
-define( 'ETSIS_CLI_VERSION', '1.0.0' );
+define( 'ETSIS_CLI_VERSION', '1.1.0' );
 // Constant that can be used to check if we are running etsis-cli or not
 define( 'ETSIS_CLI', true );
 
