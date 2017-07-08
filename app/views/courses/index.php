@@ -79,7 +79,9 @@ $(window).load(function(){
                     <th class="text-center"><?=_t( 'Credits' );?></th>
                     <th class="text-center"><?=_t( 'Location' );?></th>
                     <th class="text-center"><?=_t( 'Info' );?></th>
+                    <?php if(is_user_logged_in()) : ?>
                     <th<?=isRegistrationOpen();?> class="text-center"><?=_t( 'Select' );?></th>
+                    <?php endif; ?>
 				</tr>
 			</thead>
 			<!-- // Table heading END -->
@@ -152,6 +154,7 @@ $(window).load(function(){
 					</div>
 					<!-- // Modal END -->
                 </td>
+                <?php if(is_user_logged_in()) : ?>
                 <td<?=isRegistrationOpen();?> class="text-center">
                     <?php if(_h($v['termCode']) == _h(get_option('registration_term'))) : ?>
                     <?php if(student_can_register()) : ?>
@@ -159,6 +162,7 @@ $(window).load(function(){
                     <input<?=getStuSec(_h($v['courseSecCode']),_h($v['termCode']));?> type="checkbox" name="courseSecID[]" value="<?=_h($v['courseSecID']);?>" />
                     <?php endif; endif; endif; ?>
                 </td>
+                <?php endif; ?>
             </tr>
 			<?php } endif; ?>
 			</tbody>
@@ -167,7 +171,7 @@ $(window).load(function(){
 		</table>
 		<!-- // Table END -->
 		<hr class="separator" />
-        		
+        <?php if(is_user_logged_in()) : ?>
 		<!-- Form actions -->
 		<div<?=isRegistrationOpen();?> class="form-actions">
 			<input type="hidden" name="regTerm" value="<?=_h(get_option('registration_term'));?>" />
@@ -176,6 +180,7 @@ $(window).load(function(){
             <?php endif; ?>
 		</div>
 		<!-- // Form actions END -->
+        <?php endif; ?>
 		</div>
 	</div>
 	</form>
