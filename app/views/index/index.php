@@ -27,6 +27,8 @@ tinymce.init({
 	autosave_ask_before_unload: false
 });
 </script>
+
+    <?=_etsis_flash()->showMessage();?>
 		
 			<div class="widget widget-heading-simple widget-body-white">
 				<div class="widget-body">
