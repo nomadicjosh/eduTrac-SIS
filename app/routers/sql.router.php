@@ -16,8 +16,11 @@ use Cascade\Cascade;
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
 $app->before('GET|POST', '/sql/', function() {
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+    }
     if (!hasPermission('access_sql_interface_screen')) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
     }
 });
 

@@ -6,8 +6,13 @@ if (!defined('BASE_PATH'))
  * Before route check.
  */
 $app->before('GET', '/setting/', function() {
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
+    }
     if (!hasPermission('edit_settings')) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
@@ -17,7 +22,7 @@ $app->match('GET|POST', '/setting/', function () use($app) {
     if ($app->req->isPost()) {
         $options = [
             'institution_name', 'cookieexpire', 'cookiepath', 'myetsis_layout', 'myetsis_offline_message',
-            'enable_benchmark', 'edutrac_analytics_url', 'curl', 'api_key', 'help_desk','enable_cron_jobs',
+            'enable_benchmark', 'edutrac_analytics_url', 'curl', 'api_key', 'help_desk', 'enable_cron_jobs',
             'contact_phone', 'mailing_address', 'enable_myetsis_portal', 'enable_myetsis_appl_form', 'screen_caching', 'db_caching',
             'system_timezone', 'etsis_core_locale', 'send_acceptance_email', 'elfinder_driver', 'amz_s3_bucket', 'amz_s3_access_key',
             'amz_s3_secret_key'
@@ -50,8 +55,13 @@ $app->match('GET|POST', '/setting/', function () use($app) {
  * Before route check.
  */
 $app->before('GET', '/registration/', function() {
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
+    }
     if (!hasPermission('edit_settings')) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
@@ -92,8 +102,13 @@ $app->match('GET|POST', '/registration/', function () use($app) {
  * us allowed to manage options/settings.
  */
 $app->before('GET', '/email/', function() {
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
+    }
     if (!hasPermission('edit_settings')) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
@@ -130,8 +145,13 @@ $app->match('GET|POST', '/email/', function () use($app) {
  * us allowed to manage options/settings.
  */
 $app->before('GET|POST', '/templates/', function() {
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
+    }
     if (!hasPermission('edit_settings')) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
@@ -166,6 +186,17 @@ $app->match('GET|POST', '/templates/', function () use($app) {
         'title' => 'Email Templates'
         ]
     );
+});
+
+$app->before('GET|POST', '/sms/', function() {
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
+    }
+    if (!hasPermission('edit_settings')) {
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
+    }
 });
 
 $app->match('GET|POST', '/sms/', function () use($app) {

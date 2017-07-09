@@ -186,6 +186,23 @@ $app->group('/courses', function() use ($app, $css, $js) {
         );
     });
 
+    /**
+     * Before router check.
+     */
+    $app->before('POST', '/reg', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        }
+
+        if (!checkStuAccess(get_persondata('personID'))) {
+            _etsis_flash()->error(_t('Only active students can register for courses.'), get_base_url());
+        }
+
+        if (get_option('enable_myetsis_portal') == 0 && !hasPermission('edit_myetsis_css')) {
+            etsis_redirect(get_base_url() . 'offline' . '/');
+        }
+    });
+
     $app->post('/reg/', function () use($app, $css, $js) {
         try {
             /**

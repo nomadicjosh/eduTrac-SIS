@@ -25,7 +25,7 @@ $app->before('GET', '/err/screen-error.*', function() use($app) {
     }
     
     if(empty($app->req->server['HTTP_REFERER']) === true) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
     }
 });
 

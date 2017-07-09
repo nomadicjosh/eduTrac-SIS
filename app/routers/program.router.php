@@ -21,7 +21,12 @@ use Cascade\Cascade;
  */
 $app->before('GET|POST', '/program(.*)', function() {
     if (!is_user_logged_in()) {
-        etsis_redirect(get_base_url());
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
+    }
+    
+    if (!hasPermission('access_acad_prog_screen')) {
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
         exit();
     }
 });
@@ -78,6 +83,13 @@ $app->group('/program', function() use ($app) {
             'prog' => $q
             ]
         );
+    });
+
+    $app->before('GET|POST', '/(\d+)/', function() {
+        if (!hasPermission('access_acad_prog_screen')) {
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
     });
 
     $app->match('GET|POST', '/(\d+)/', function ($id) use($app) {
@@ -180,7 +192,7 @@ $app->group('/program', function() use ($app) {
      */
     $app->before('GET|POST', '/add/', function() {
         if (!hasPermission('add_acad_prog')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
         }
     });
 

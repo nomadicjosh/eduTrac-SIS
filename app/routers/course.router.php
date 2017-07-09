@@ -21,20 +21,15 @@ use Cascade\Cascade;
  */
 $app->before('GET|POST', '/crse(.*)', function() {
     if (!is_user_logged_in()) {
-        etsis_redirect(get_base_url() . 'login' . '/');
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+    }
+    if (!hasPermission('access_course_screen')) {
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
 $app->group('/crse', function() use ($app) {
-
-    /**
-     * Before route check.
-     */
-    $app->before('GET|POST', '/', function() {
-        if (!hasPermission('access_course_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
-        }
-    });
 
     $app->match('GET|POST', '/', function () use($app) {
         if ($app->req->isPost()) {
@@ -88,7 +83,8 @@ $app->group('/crse', function() use ($app) {
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_course_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -198,7 +194,8 @@ $app->group('/crse', function() use ($app) {
      */
     $app->before('GET|POST', '/(\d+)/prrl/', function() {
         if (!hasPermission('manage_business_rules')) {
-            _etsis_flash()->error(_t('Permission denied to view the Prerequisite screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view the prerequisite screen.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -289,7 +286,8 @@ $app->group('/crse', function() use ($app) {
      */
     $app->before('POST', '/(\d+)/prrl/test/', function() {
         if (!hasPermission('manage_business_rules')) {
-            _etsis_flash()->error(_t('Permission denied to view the Prerequisite screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view the prerequisite screen.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -337,7 +335,8 @@ $app->group('/crse', function() use ($app) {
      */
     $app->before('GET', '/(\d+)/prrl/c/', function() {
         if (!hasPermission('manage_business_rules')) {
-            _etsis_flash()->error(_t('Permission denied to view the Prerequisite screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to clear prerequisite rule.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -360,15 +359,6 @@ $app->group('/crse', function() use ($app) {
         } catch (Exception $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'crse' . '/' . $id . '/prrl/');
-        }
-    });
-
-    /**
-     * Before route check.
-     */
-    $app->before('GET|POST', '/(\d+)/addnl/', function() {
-        if (!hasPermission('access_course_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -452,7 +442,8 @@ $app->group('/crse', function() use ($app) {
      */
     $app->before('GET|POST', '/add/', function() {
         if (!hasPermission('add_course')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -572,7 +563,8 @@ $app->group('/crse', function() use ($app) {
      */
     $app->before('GET|POST', '/(\d+)/clone/', function() {
         if (!hasPermission('add_course')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 

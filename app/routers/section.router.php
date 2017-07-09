@@ -22,20 +22,17 @@ use Cascade\Cascade;
  */
 $app->before('GET|POST', '/sect(.*)', function() {
     if (!is_user_logged_in()) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url());
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url());
+        exit();
+    }
+
+    if (!hasPermission('access_course_sec_screen')) {
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
 $app->group('/sect', function() use ($app) {
-
-    /**
-     * Before route check.
-     */
-    $app->before('GET|POST', '/', function() {
-        if (!hasPermission('access_course_sec_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
-        }
-    });
 
     $app->match('GET|POST', '/', function () use($app) {
         if ($app->req->isPost()) {
@@ -92,7 +89,8 @@ $app->group('/sect', function() use ($app) {
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -296,7 +294,8 @@ $app->group('/sect', function() use ($app) {
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('add_course_sec')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -446,7 +445,8 @@ $app->group('/sect', function() use ($app) {
      */
     $app->before('GET|POST', '/addnl/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -552,7 +552,8 @@ $app->group('/sect', function() use ($app) {
      */
     $app->before('GET|POST', '/soff/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -641,7 +642,8 @@ $app->group('/sect', function() use ($app) {
      */
     $app->before('GET|POST', '/fgrade/(\d+)/', function() {
         if (!hasPermission('submit_final_grades')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -755,17 +757,25 @@ $app->group('/sect', function() use ($app) {
      */
     $app->before('GET|POST', '/rgn/', function() use($app) {
         if (!hasPermission('register_students')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
 
         if ($app->req->isPost()) {
+            $student = get_student($app->req->post['stuID']);
+
             if (is_null($app->req->post['courseSecID'])) {
                 _etsis_flash()->error(_t("The course section cannot be a 'null' value"), $app->req->server['HTTP_REFERER']);
                 exit();
             }
 
-            if (!is_numeric($app->req->post['stuID']) || $app->req->post['stuID'] == '') {
-                _etsis_flash()->error(_t('Student ID was null or student does not exist.'), $app->req->server['HTTP_REFERER']);
+            if (!is_numeric($app->req->post['stuID'])) {
+                _etsis_flash()->error(_t('Student ID must be numeric.'), $app->req->server['HTTP_REFERER']);
+                exit();
+            }
+
+            if (_escape($student->stuID) <= 0) {
+                _etsis_flash()->error(_t('Student does not exist.'), $app->req->server['HTTP_REFERER']);
                 exit();
             }
 
@@ -778,7 +788,6 @@ $app->group('/sect', function() use ($app) {
     });
 
     $app->match('GET|POST', '/rgn/', function () use($app) {
-        $time = Jenssegers\Date\Date::now()->format("h:i A");
 
         if ($app->req->isPost()) {
 
@@ -804,7 +813,44 @@ $app->group('/sect', function() use ($app) {
                 $term = $app->db->term()->where('termCode = ?', _trim(_h($sect->termCode)))->findOne();
 
                 $stcs = $app->db->stcs();
+                $stcs->stuID = (int) $app->req->post['stuID'];
+                $stcs->courseSecID = (int) _h($sect->courseSecID);
+                $stcs->courseSecCode = _h($sect->courseSecCode);
+                $stcs->courseSection = _h($sect->courseSection);
+                $stcs->termCode = _h($sect->termCode);
+                $stcs->courseCredits = _h($sect->minCredit);
+                $stcs->ceu = _h($sect->ceu);
+                $stcs->status = 'A';
+                $stcs->regDate = Jenssegers\Date\Date::now();
+                $stcs->regTime = Jenssegers\Date\Date::now()->format("h:i A");
+                $stcs->statusDate = Jenssegers\Date\Date::now();
+                $stcs->statusTime = Jenssegers\Date\Date::now()->format("h:i A");
+                $stcs->addedBy = get_persondata('personID');
+
                 $stac = $app->db->stac();
+                $stac->stuID = (int) $app->req->post['stuID'];
+                $stac->courseID = (int) _h($sect->courseID);
+                $stac->courseSecID = (int) _h($sect->courseSecID);
+                $stac->courseCode = _h($sect->courseCode);
+                $stac->courseSecCode = _h($sect->courseSecCode);
+                $stac->sectionNumber = _h($sect->sectionNumber);
+                $stac->courseSection = _h($sect->courseSection);
+                $stac->termCode = _h($sect->termCode);
+                $stac->reportingTerm = _h($term->reportingTerm);
+                $stac->subjectCode = _h($crse->subjectCode);
+                $stac->deptCode = _h($sect->deptCode);
+                $stac->shortTitle = _h($crse->courseShortTitle);
+                $stac->longTitle = _h($crse->courseLongTitle);
+                $stac->attCred = _h($sect->minCredit);
+                $stac->status = 'A';
+                $stac->statusDate = Jenssegers\Date\Date::now();
+                $stac->statusTime = Jenssegers\Date\Date::now()->format("h:i A");
+                $stac->acadLevelCode = _h($sect->acadLevelCode);
+                $stac->courseLevelCode = _h($sect->courseLevelCode);
+                $stac->startDate = _h($sect->startDate);
+                $stac->endDate = _h($sect->endDate) != '' ? _h($sect->endDate) : NULL;
+                $stac->addedBy = get_persondata('personID');
+                $stac->addDate = Jenssegers\Date\Date::now();
 
                 /**
                  * Fires before a student is registered into
@@ -816,48 +862,8 @@ $app->group('/sect', function() use ($app) {
                  * @param object $stac Student academic credit object.
                  */
                 $app->hook->do_action_array('pre_rgn_stu_crse_reg', [ $stcs, $stac]);
-
-                $stcs->insert([
-                    'stuID' => (int) $app->req->post['stuID'],
-                    'courseSecID' => (int) _h($sect->courseSecID),
-                    'courseSecCode' => _h($sect->courseSecCode),
-                    'courseSection' => _h($sect->courseSection),
-                    'termCode' => _trim(_h($sect->termCode)),
-                    'courseCredits' => _h($sect->minCredit),
-                    'ceu' => _h($sect->ceu),
-                    'status' => 'A',
-                    'regDate' => Jenssegers\Date\Date::now(),
-                    'regTime' => Jenssegers\Date\Date::now()->format("h:i A"),
-                    'statusDate' => Jenssegers\Date\Date::now(),
-                    'statusTime' => $time,
-                    'addedBy' => get_persondata('personID')
-                ]);
-
-                $stac->insert([
-                    'stuID' => (int) $app->req->post['stuID'],
-                    'courseID' => (int) _h($sect->courseID),
-                    'courseSecID' => (int) _h($sect->courseSecID),
-                    'courseCode' => _h($sect->courseCode),
-                    'courseSecCode' => _h($sect->courseSecCode),
-                    'sectionNumber' => _h($sect->sectionNumber),
-                    'courseSection' => _h($sect->courseSection),
-                    'termCode' => _trim(_h($sect->termCode)),
-                    'reportingTerm' => _h($term->reportingTerm),
-                    'subjectCode' => _h($crse->subjectCode),
-                    'deptCode' => _h($sect->deptCode),
-                    'shortTitle' => _h($crse->courseShortTitle),
-                    'longTitle' => _h($crse->courseLongTitle),
-                    'attCred' => _h($sect->minCredit),
-                    'status' => 'A',
-                    'statusDate' => Jenssegers\Date\Date::now(),
-                    'statusTime' => $time,
-                    'acadLevelCode' => _h($sect->acadLevelCode),
-                    'courseLevelCode' => _h($sect->courseLevelCode),
-                    'startDate' => _h($sect->startDate),
-                    'endDate' => (_h($sect->endDate) != '' ? _h($sect->endDate) : NULL),
-                    'addedBy' => get_persondata('personID'),
-                    'addDate' => Jenssegers\Date\Date::now()
-                ]);
+                $stcs->save();
+                $stac->save();
 
                 /**
                  * @since 6.1.07
@@ -884,7 +890,7 @@ $app->group('/sect', function() use ($app) {
                      */
                     generate_stu_bill(_h($sect->termCode), $app->req->post['stuID'], _h($sect->courseSecID));
                 }
-                etsis_logger_activity_log_write('New Record', 'Course Registration Via Staff', get_name($app->req->post['stuID']) . ' - ' . _h($sect->secShortTitle), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Course Registration (RGN)', get_name($app->req->post['stuID']) . ' - ' . _h($sect->secShortTitle), get_persondata('uname'));
                 _etsis_flash()->success(sprintf(_t('<strong>%s</strong> was successfully registered into <strong>%s</strong>.'), get_name($app->req->post['stuID']), _h($sect->courseSection)), get_base_url() . 'sect/rgn' . '/');
             } catch (NotFoundException $e) {
                 Cascade::getLogger('error')->error($e->getMessage());
@@ -915,8 +921,9 @@ $app->group('/sect', function() use ($app) {
      * Before route check.
      */
     $app->before('GET|POST', '/rgn/rrsr/', function() {
-        if (!hasPermission('register_students')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        if (!hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -987,7 +994,8 @@ $app->group('/sect', function() use ($app) {
      */
     $app->before('GET|POST', '/sros.*', function() {
         if (!hasPermission('access_stu_roster_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -1093,15 +1101,6 @@ $app->group('/sect', function() use ($app) {
                 'count' => $count
                 ]
             );
-        }
-    });
-
-    /**
-     * Before route check.
-     */
-    $app->before('GET|POST', '/catalog.*', function() {
-        if (!hasPermission('access_course_sec_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
         }
     });
 

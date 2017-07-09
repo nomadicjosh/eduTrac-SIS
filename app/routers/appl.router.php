@@ -20,7 +20,7 @@ use Cascade\Cascade;
  */
 $app->before('GET|POST', '/appl/(.*)', function() {
     if (!is_user_logged_in()) {
-        etsis_redirect(get_base_url() . 'login' . '/');
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
     }
 });
 
@@ -31,7 +31,8 @@ $app->group('/appl', function () use($app) {
      */
     $app->before('GET|POST', '/', function() {
         if (!hasPermission('access_application_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -92,7 +93,7 @@ $app->group('/appl', function () use($app) {
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_application_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -181,7 +182,8 @@ $app->group('/appl', function () use($app) {
      */
     $app->before('GET|POST', '/editAppl/(\d+)/', function() {
         if (!hasPermission('create_application')) {
-            _etsis_flash()->error(_t('Record update not allowed.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Record update denied.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -250,7 +252,8 @@ $app->group('/appl', function () use($app) {
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('create_application')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -368,7 +371,8 @@ $app->group('/appl', function () use($app) {
      */
     $app->before('GET|POST', '/inst-attended/', function() {
         if (!hasPermission('access_application_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -377,17 +381,18 @@ $app->group('/appl', function () use($app) {
         if ($app->req->isPost()) {
             try {
                 $inst = $app->db->institution_attended();
-                $inst->fice_ceeb = _trim((int) $app->req->post['fice_ceeb']);
-                $inst->fromDate = $app->req->post['fromDate'];
-                $inst->toDate = $app->req->post['toDate'];
-                $inst->GPA = $app->req->post['GPA'];
-                $inst->personID = $app->req->post['personID'];
-                $inst->major = $app->req->post['major'];
-                $inst->degree_awarded = $app->req->post['degree_awarded'];
-                $inst->degree_conferred_date = $app->req->post['degree_conferred_date'];
-                $inst->addDate = \Jenssegers\Date\Date::now();
-                $inst->addedBy = get_persondata('personID');
-                $inst->save();
+                $inst->insert([
+                    'fice_ceeb' => _trim((int) $app->req->post['fice_ceeb']),
+                    'fromDate' => $app->req->post['fromDate'],
+                    'toDate' => $app->req->post['toDate'],
+                    'GPA' => $app->req->post['GPA'],
+                    'personID' => $app->req->post['personID'],
+                    'major' => $app->req->post['major'],
+                    'degree_awarded' => $app->req->post['degree_awarded'],
+                    'degree_conferred_date' => $app->req->post['degree_conferred_date'],
+                    'addDate' => \Jenssegers\Date\Date::now(),
+                    'addedBy' => get_persondata('personID')
+                ]);
 
                 etsis_logger_activity_log_write('New Record', 'Institution Attended', get_name($app->req->post['personID']), get_persondata('uname'));
                 _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'appl' . '/' . $app->req->post['personID'] . '/');
@@ -419,7 +424,8 @@ $app->group('/appl', function () use($app) {
      */
     $app->before('GET|POST', '/inst(.*)', function() {
         if (!hasPermission('access_application_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -468,13 +474,14 @@ $app->group('/appl', function () use($app) {
         if ($app->req->isPost()) {
             try {
                 $inst = $app->db->institution();
-                $inst->fice_ceeb = _trim((int) $app->req->post['fice_ceeb']);
-                $inst->instType = $app->req->post['instType'];
-                $inst->instName = $app->req->post['instName'];
-                $inst->city = $app->req->post['city'];
-                $inst->state = $app->req->post['state'];
-                $inst->country = $app->req->post['country'];
-                $inst->save();
+                $inst->insert([
+                    'fice_ceeb' => _trim((int) $app->req->post['fice_ceeb']),
+                    'instType' => $app->req->post['instType'],
+                    'instName' => $app->req->post['instName'],
+                    'city' => $app->req->post['city'],
+                    'state' => $app->req->post['state'],
+                    'country' => $app->req->post['country']
+                ]);
 
                 $_id = $inst->lastInsertId();
                 etsis_logger_activity_log_write('New Record', 'Institution', $app->req->post['instName'], get_persondata('uname'));
@@ -592,12 +599,32 @@ $app->group('/appl', function () use($app) {
         );
     });
 
+    /**
+     * Before router check.
+     */
+    $app->before('GET|POST', '/applicantLookup/', function() {
+        if (!hasPermission('access_application_screen')) {
+            _etsis_flash()->error(_t('Permission denied.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
+    });
+
     $app->post('/applicantLookup/', function() use($app) {
         $appl = get_person_by('personID', $app->req->post['personID']);
 
         $json = [ 'input#person' => _h($appl->lname) . ', ' . _h($appl->fname)];
 
         echo json_encode($json);
+    });
+
+    /**
+     * Before router check.
+     */
+    $app->before('GET|POST', '/deleteInstAttend/(\d+)/', function() {
+        if (!hasPermission('delete_student')) {
+            _etsis_flash()->error(_t('Permission denied to delete record.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
     });
 
     $app->get('/deleteInstAttend/(\d+)/', function($id) use($app) {

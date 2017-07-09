@@ -17,16 +17,19 @@ use Cascade\Cascade;
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-$app->group('/nae', function () use($app) {
+$app->before('GET|POST', '/nae(.*)', function () {
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
+    }
 
-    /**
-     * Before route check.
-     */
-    $app->before('GET|POST', '/', function () {
-        if (!hasPermission('access_person_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
-        }
-    });
+    if (!hasPermission('access_person_screen')) {
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
+    }
+});
+
+$app->group('/nae', function () use($app) {
 
     $app->match('GET|POST', '/', function () use($app) {
 
@@ -82,7 +85,8 @@ $app->group('/nae', function () use($app) {
      */
     $app->before('GET|POST', '/(\d+)/', function () {
         if (!hasPermission('access_person_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -176,7 +180,7 @@ $app->group('/nae', function () use($app) {
                 }
                 return $array;
             });
-            
+
             $login = $app->db->last_login()
                 ->where('personID = ?', $id)
                 ->orderBy('loginTimeStamp', 'DESC')
@@ -244,9 +248,10 @@ $app->group('/nae', function () use($app) {
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/perc/(\d+)/', function() {
+    $app->before('GET|POST', '/perc/(\d+)/', function () {
         if (!hasPermission('access_person_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -382,7 +387,8 @@ $app->group('/nae', function () use($app) {
      */
     $app->before('GET|POST', '/add/', function () {
         if (!hasPermission('add_person')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -392,8 +398,8 @@ $app->group('/nae', function () use($app) {
 
         if ($app->req->isPost()) {
             try {
-                $dob = str_replace(['-','_','/','.'], '', $app->req->post['dob']);
-                $ssn = str_replace(['-','_','.'], '', $app->req->post['ssn']);
+                $dob = str_replace(['-', '_', '/', '.'], '', $app->req->post['dob']);
+                $ssn = str_replace(['-', '_', '.'], '', $app->req->post['ssn']);
 
                 if ($app->req->post['ssn'] > 0) {
                     $password = $ssn . $passSuffix;
@@ -531,15 +537,6 @@ $app->group('/nae', function () use($app) {
         ]);
     });
 
-    /**
-     * Before route check.
-     */
-    $app->before('GET|POST', '/adsu/(\d+)/', function () {
-        if (!hasPermission('access_person_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
-        }
-    });
-
     $app->get('/adsu/(\d+)/', function ($id) use($app) {
 
         try {
@@ -622,7 +619,8 @@ $app->group('/nae', function () use($app) {
      */
     $app->before('GET|POST', '/addr-form/(\d+)/', function () {
         if (!hasPermission('add_address')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -747,7 +745,8 @@ $app->group('/nae', function () use($app) {
      */
     $app->before('GET|POST', '/addr/(\d+)/', function () {
         if (!hasPermission('access_person_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -865,7 +864,8 @@ $app->group('/nae', function () use($app) {
      */
     $app->before('GET|POST', '/role/(\d+)/', function () {
         if (!hasPermission('access_user_role_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -975,7 +975,8 @@ $app->group('/nae', function () use($app) {
      */
     $app->before('GET|POST', '/perms/(\d+)/', function () {
         if (!hasPermission('access_user_permission_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -1087,7 +1088,7 @@ $app->group('/nae', function () use($app) {
      */
     $app->before('GET|POST', '/resetPassword/(\d+)/', function () {
         if (!hasPermission('reset_person_password')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
             exit();
         }
     });

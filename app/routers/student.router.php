@@ -38,43 +38,51 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+
         if (!hasPermission('access_student_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
     $app->match('GET|POST', '/', function () use($app) {
 
-        try {
-            $post = $app->req->post['spro'];
+        if ($app->req->isPost()) {
+            try {
+                $post = $app->req->post['spro'];
 
-            $spro = $app->db->student()
-                ->setTableAlias('a')
-                ->select('a.stuID,b.lname,b.fname,b.email')
-                ->_join('person', 'a.stuID = b.personID', 'b')
-                ->whereLike('CONCAT(b.fname," ",b.lname)', "%$post%")->_or_()
-                ->whereLike('CONCAT(b.lname," ",b.fname)', "%$post%")->_or_()
-                ->whereLike('CONCAT(b.lname,", ",b.fname)', "%$post%")->_or_()
-                ->whereLike('b.altID', "%$post%")->_or_()
-                ->whereLike('b.uname', "%$post%")->_or_()
-                ->whereLike('a.stuID', "%$post%");
+                $spro = $app->db->student()
+                    ->setTableAlias('a')
+                    ->select('a.stuID,b.lname,b.fname,b.email')
+                    ->_join('person', 'a.stuID = b.personID', 'b')
+                    ->whereLike('CONCAT(b.fname," ",b.lname)', "%$post%")->_or_()
+                    ->whereLike('CONCAT(b.lname," ",b.fname)', "%$post%")->_or_()
+                    ->whereLike('CONCAT(b.lname,", ",b.fname)', "%$post%")->_or_()
+                    ->whereLike('b.altID', "%$post%")->_or_()
+                    ->whereLike('b.uname', "%$post%")->_or_()
+                    ->whereLike('a.stuID', "%$post%");
 
-            $q = $spro->find(function($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-        } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (ORMException $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
+                $q = $spro->find(function($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            }
         }
 
         etsis_register_style('form');
@@ -84,7 +92,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
         etsis_register_script('datatables');
 
         $app->view->display('student/index', [
-            'title' => 'Student Search',
+            'title' => 'Student Lookup',
             'search' => $q
             ]
         );
@@ -94,8 +102,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/(\d+)/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+
         if (!hasPermission('access_student_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -217,8 +231,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+
         if (!hasPermission('create_stu_record')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -348,7 +368,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 ->_join('school', 'a.schoolCode = d.schoolCode', 'd')
                 ->_join('application', 'a.acadProgCode = e.acadProgCode', 'e')
                 ->_join('student', 'e.personID = f.stuID', 'f')
-                ->_join('aclv','a.acadLevelCode = aclv.code')
+                ->_join('aclv', 'a.acadLevelCode = aclv.code')
                 ->where('e.personID = ?', $id)->_and_()
                 ->whereNull('f.stuID');
 
@@ -408,8 +428,12 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/stac/(\d+)/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        }
+
         if (!hasPermission('access_student_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -482,8 +506,12 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/sttr/(\d+)/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        }
+
         if (!hasPermission('access_student_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -559,8 +587,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/shis/(\d+)/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+
         if (!hasPermission('access_student_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -689,8 +723,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/sacd/(\d+)/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+
         if (!hasPermission('access_student_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -779,7 +819,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     }
 
                     etsis_redirect(get_base_url() . 'stu/stac' . '/' . _h((int) $stac->stuID) . '/');
-                    return;
+                    exit();
                 }
                 /**
                  * If posted status is 'W' or 'D' and today's date is greater than equal to the 
@@ -808,7 +848,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     }
 
                     etsis_redirect(get_base_url() . 'stu/stac' . '/' . _h((int) $stac->stuID) . '/');
-                    return;
+                    exit();
                 }
                 /**
                  * If posted status is 'W' or 'D' and today's date is greater than equal to the 
@@ -919,8 +959,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/sacp/(\d+)/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+
         if (!hasPermission('access_student_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -1039,8 +1085,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/sacp/(\d+)/stal/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+
         if (!hasPermission('access_student_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -1140,8 +1192,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/add-prog/(\d+)/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+
         if (!hasPermission('create_stu_record')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -1251,8 +1309,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/graduation/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+
         if (!hasPermission('graduate_students')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -1321,8 +1385,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/tran.*', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+
         if (!hasPermission('generate_transcripts')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -1503,6 +1573,10 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/timetable/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        }
+
         if (!checkStuAccess(get_persondata('personID'))) {
             etsis_redirect(get_base_url() . 'profile' . '/');
         }
@@ -1514,7 +1588,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
     $app->get('/timetable/', function () use($app) {
 
-        $css = [ 'css/fullcalendar/fullcalendar.css', 'css/fullcalendar/calendar.css'];
+        $css = [ 'css/fullcalendar/fullcalendar.css'];
         $js = [ 'components/modules/fullcalendar/fullcalendar.js'];
 
         $app->view->display('student/timetable', [
@@ -1529,6 +1603,10 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/terms/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        }
+
         if (!checkStuAccess(get_persondata('personID'))) {
             etsis_redirect(get_base_url() . 'profile' . '/');
         }
@@ -1585,6 +1663,10 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/schedule.*', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        }
+
         if (!checkStuAccess(get_persondata('personID'))) {
             etsis_redirect(get_base_url() . 'profile' . '/');
         }
@@ -1678,6 +1760,10 @@ $app->group('/stu', function() use ($app, $css, $js) {
      * Before route check.
      */
     $app->before('GET|POST', '/final-grades/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        }
+
         if (!checkStuAccess(get_persondata('personID'))) {
             etsis_redirect(get_base_url() . 'profile' . '/');
         }
@@ -1733,6 +1819,20 @@ $app->group('/stu', function() use ($app, $css, $js) {
         );
     });
 
+    /**
+     * Before route check.
+     */
+    $app->before('GET', '/deleteSHIS/(\d+)/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+        if (!hasPermission('delete_student')) {
+            _etsis_flash()->error(_t('Permission denied to delete record.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
+    });
+
     $app->get('/deleteSHIS/(\d+)/', function ($id) use($app) {
         try {
             $q = $app->db->hiatus()->where('id = ?', $id);
@@ -1750,6 +1850,20 @@ $app->group('/stu', function() use ($app, $css, $js) {
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
         etsis_redirect($app->req->server['HTTP_REFERER']);
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET', '/deleteSTAC/(\d+)/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+        if (!hasPermission('delete_student')) {
+            _etsis_flash()->error(_t('Permission denied to delete record.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
     });
 
     $app->get('/deleteSTAC/(\d+)/', function ($id) use($app) {
@@ -1773,6 +1887,15 @@ $app->group('/stu', function() use ($app, $css, $js) {
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
         etsis_redirect($app->req->server['HTTP_REFERER']);
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET', '/getEvents/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        }
     });
 
     $app->get('/getEvents/', function () use($app) {
@@ -1821,6 +1944,16 @@ $app->group('/stu', function() use ($app, $css, $js) {
         }
     });
 
+    /**
+     * Before route check.
+     */
+    $app->before('POST', '/progLookup/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+    });
+
     $app->post('/progLookup/', function () use($app) {
         try {
             $prog = $app->db->acad_program()
@@ -1861,6 +1994,16 @@ $app->group('/stu', function() use ($app, $css, $js) {
         }
     });
 
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/stuLookup/', function() {
+        if (!is_user_logged_in()) {
+            _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+            exit();
+        }
+    });
+
     $app->match('GET|POST', '/stuLookup/', function() use($app) {
         try {
             $term = $app->req->get['term'];
@@ -1893,425 +2036,6 @@ $app->group('/stu', function() use ($app, $css, $js) {
         } catch (Exception $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
-        }
-    });
-
-    $app->match('GET|POST', '/stu/paypal-ipn/', function () use($app) {
-
-        $app->view->display('student/paypal-ipn', [
-            'title' => 'Paypal IPN'
-        ]);
-    });
-
-    /**
-     * Before router check.
-     */
-    $app->before('GET|POST', '/stu/payment-cancel/', function () {
-        if (!is_user_logged_in()) {
-            etsis_redirect(get_base_url() . 'login' . '/');
-        }
-    });
-
-    $app->match('GET|POST', '/stu/payment-cancel/', function () use($app) {
-
-        $app->view->display('student/payment-cancel', [
-            'title' => 'Payment Cancelled'
-        ]);
-    });
-
-    /**
-     * Before router check.
-     */
-    $app->before('GET|POST', '/stu/payment-success/', function () {
-        if (!is_user_logged_in()) {
-            etsis_redirect(get_base_url() . 'login' . '/');
-        }
-    });
-
-    $app->match('GET|POST', '/stu/payment-success/', function () use($app) {
-
-        $app->view->display('student/payment-success', [
-            'title' => 'Payment Successful'
-        ]);
-    });
-
-    $app->post('/stu/redirectPaypal/', function () use($app) {
-
-        $vars = [];
-        $vars['amount'] = $app->req->post['amount'];
-        $vars['cmd'] = $app->req->post['cmd'];
-        $vars['business'] = $app->req->post['business'];
-        $vars['currency_code'] = $app->req->post['currency_code'];
-        $vars['item_name'] = $app->req->post['item_name'];
-        $vars['return'] = $app->req->post['return'];
-        $vars['notify_url'] = $app->req->post['notify_url'];
-        $vars['cancel_return'] = $app->req->post['cancel_return'];
-        $vars['custom'] = $app->req->post['custom'];
-        $vars['item_number'] = $app->req->post['item_number'];
-        $vars['shipping'] = $app->req->post['shipping'];
-        etsis_cache_flush_namespace('student_account');
-        etsis_redirect($app->req->post['ppurl'] . '?' . http_build_query($vars));
-    });
-
-    /**
-     * Before route check.
-     */
-    $app->before('GET|POST', '/stu/bill/', function () {
-        if (!checkStuAccess(get_persondata('personID'))) {
-            etsis_redirect(get_base_url() . 'profile' . '/');
-        }
-
-        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
-            etsis_redirect(get_base_url() . 'offline' . '/');
-        }
-    });
-
-    $app->get('/stu/bill/', function () use($app) {
-
-        $css = [
-            'css/admin/module.admin.page.alt.tables.min.css'
-        ];
-        $js = [
-            'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-            'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-            'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-            'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
-        ];
-
-        try {
-            $bill = $app->db->stu_acct_bill()
-                ->select('billID,stuID,termCode')
-                ->where('stuID = ?', get_persondata('personID'))
-                ->groupBy('stuID,termCode');
-            $q = etsis_cache_get('students_bill' . get_persondata('personID'), 'student_account');
-            if (empty($q)) {
-                $q = $bill->find(function ($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
-                    }
-                    return $array;
-                });
-                etsis_cache_add('students_bill' . get_persondata('personID'), $q, 'student_account');
-            }
-        } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (ORMException $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        }
-
-        $app->view->display('student/bill', [
-            'title' => 'My Bills',
-            'cssArray' => $css,
-            'jsArray' => $js,
-            'bill' => $q
-        ]);
-    });
-
-    $app->match('GET|POST', '/stu/bill/([^/]+)/', function ($id) use($app) {
-
-        try {
-            $bill = $app->db->stu_acct_bill()
-                ->setTableAlias('a')
-                ->select('a.*, b.termName')
-                ->_join('term', 'a.termCode = b.termCode', 'b')
-                ->where('billID = ?', $id)->_and_()
-                ->where('stuID = ?', get_persondata('personID'));
-            $q1 = etsis_cache_get('bill' . $id, 'student_account');
-            if (empty($q1)) {
-                $q1 = $bill->find(function ($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
-                    }
-                    return $array;
-                });
-                etsis_cache_add('bill' . $id, $q1, 'student_account');
-            }
-            $stuTuition = $app->db->stu_acct_tuition()
-                ->where('stuID = ?', $q1[0]['stuID'])
-                ->_and_()
-                ->where('termCode = ?', $q1[0]['termCode']);
-            $query = etsis_cache_get('stuTuition' . $id, 'student_account');
-            if (empty($query)) {
-                $query = $stuTuition->find(function ($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
-                    }
-                    return $array;
-                });
-                etsis_cache_add('stuTuition' . $id, $query, 'student_account');
-            }
-            $tuition = $app->db->query('SELECT ' . 'SUM(amount) as sum ' . 'FROM stu_acct_fee ' . 'WHERE billID = ? ' . 'AND type = "Tuition" ' . 'GROUP BY stuID, termCode', [
-                $id
-            ]);
-            $q2 = etsis_cache_get('tuition' . $id, 'student_account');
-            if (empty($q2)) {
-                $q2 = $tuition->find(function ($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
-                    }
-                    return $array;
-                });
-                etsis_cache_add('tuition' . $id, $q2, 'student_account');
-            }
-            $fee = $app->db->query('SELECT ' . 'id, description, amount as Fee ' . 'FROM stu_acct_fee ' . 'WHERE billID = ? ' . 'AND type = "Fee"', [
-                $id
-            ]);
-            $q3 = etsis_cache_get('fee' . $id, 'student_account');
-            if (empty($q3)) {
-                $q3 = $fee->find(function ($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
-                    }
-                    return $array;
-                });
-                etsis_cache_add('fee' . $id, $q3, 'student_account');
-            }
-            $sumFee = $app->db->query("SELECT 
-                        SUM(amount) as sum 
-                    FROM stu_acct_fee 
-                    WHERE billID = ? 
-                    AND type = 'Fee' 
-                    GROUP BY stuID,termCode", [
-                $id
-            ]);
-            $q4 = etsis_cache_get('sumFee' . $id, 'student_account');
-            if (empty($q4)) {
-                $q4 = $sumFee->find(function ($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
-                    }
-                    return $array;
-                });
-                etsis_cache_add('sumFee' . $id, $q4, 'student_account');
-            }
-            $sumPay = $app->db->query("SELECT 
-                        SUM(amount) as sum 
-                    FROM payment 
-                    WHERE stuID = ? 
-                    AND termCode = ? 
-                    GROUP BY stuID,termCode", [
-                $q1[0]['stuID'],
-                $q1[0]['termCode']
-            ]);
-            $q5 = etsis_cache_get('sumPay' . $id, 'student_account');
-            if (empty($q5)) {
-                $q5 = $sumPay->find(function ($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
-                    }
-                    return $array;
-                });
-                etsis_cache_add('sumPay' . $id, $q5, 'student_account');
-            }
-            $sumRefund = $app->db->query("SELECT 
-                        SUM(amount) as sum 
-                    FROM refund 
-                    WHERE stuID = ? 
-                    AND termCode = ? 
-                    GROUP BY stuID,termCode", [
-                $q1[0]['stuID'],
-                $q1[0]['termCode']
-            ]);
-            $q6 = etsis_cache_get('sumRefund' . $id, 'student_account');
-            if (empty($q6)) {
-                $q6 = $sumRefund->find(function ($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
-                    }
-                    return $array;
-                });
-                etsis_cache_add('sumRefund' . $id, $q6, 'student_account');
-            }
-        } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (ORMException $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        }
-
-        /**
-         * If the database table doesn't exist, then it
-         * is false and a 404 should be sent.
-         */
-        if ($q1 == false) {
-
-            $app->view->display('error/404', [
-                'title' => '404 Error'
-            ]);
-        } /**
-         * If the query is legit, but there
-         * is no data in the table, then 404
-         * will be shown.
-         */ elseif (empty($q1) == true) {
-
-            $app->view->display('error/404', [
-                'title' => '404 Error'
-            ]);
-        } /**
-         * If data is zero, 404 not found.
-         */ elseif (count($q1) <= 0) {
-
-            $app->view->display('error/404', [
-                'title' => '404 Error'
-            ]);
-        } /**
-         * If we get to this point, the all is well
-         * and it is ok to process the query and print
-         * the results in a html format.
-         */ else {
-
-            $app->view->display('student/vbill', [
-                'title' => $q1[0]['termCode'] . ' Bill',
-                'bill' => $q1,
-                'tuition1' => $query,
-                'tuition2' => money_format('%n', (double) $q2[0]['sum']),
-                'fee' => $q3,
-                'begin' => money_format('-%n', (double) $query[0]['total'] + $q4[0]['sum']),
-                'sumFee' => $q4[0]['sum'],
-                'sumPayments' => $q5[0]['sum'],
-                'sumRefund' => $q6[0]['sum']
-            ]);
-        }
-    });
-
-    /**
-     * Before route check.
-     */
-    $app->before('GET|POST', '/stu/account-history/', function () {
-        if (!checkStuAccess(get_persondata('personID'))) {
-            etsis_redirect(get_base_url() . 'profile' . '/');
-        }
-
-        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
-            etsis_redirect(get_base_url() . 'offline' . '/');
-        }
-    });
-
-    $app->get('/stu/account-history/', function () use($app) {
-        $css = [
-            'css/admin/module.admin.page.alt.tables.min.css'
-        ];
-        $js = [
-            'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-            'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-            'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-            'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
-        ];
-        try {
-            $plan = $app->db->query('SELECT *,' . ' CASE payFrequency' . ' WHEN "1" THEN "Daily"' . ' WHEN "7" THEN "Weekly"' . ' WHEN "14" THEN "Bi-Weekly"' . ' WHEN "30" THEN "Monthly"' . ' ELSE "Yearly"' . ' END AS Frequency' . ' FROM stu_acct_pp' . ' WHERE stuID = ?', [
-                get_persondata('personID')
-            ]);
-            $sql = etsis_cache_get('payment_plan' . get_persondata('personID'), 'student_account');
-            if (empty($sql)) {
-                $sql = $plan->find(function ($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
-                    }
-                    return $array;
-                });
-                etsis_cache_add('payment_plan' . get_persondata('personID'), $sql, 'student_account');
-            }
-            $history = $app->db->query('SELECT 
-            id AS FeeID, billID AS billID, stuID AS stuID,
-            termCode AS termCode, type as type, description AS description,
-            amount AS FeeAmount, NULL AS PayAmount, NULL AS method, feeDate AS dateStamp 
-            FROM stu_acct_fee 
-            WHERE stuID = ? 
-            AND type = "Fee"
-            UNION ALL 
-                SELECT NULL as FeeID, NULL AS billID, stuID AS stuID, termCode AS termCode,
-                NULL as type, "Tuition" as description, total AS FeeAmount, NULL AS PayAmount,
-                NULL as method, tuitionTimeStamp AS dateStamp 
-                FROM stu_acct_tuition 
-                WHERE stuID = ? 
-            UNION ALL 
-            SELECT NULL as FeeID, NULL AS billID, stuID AS stuID, termCode AS termCode,
-            NULL as type, "Payment" as description, NULL AS FeeAmount, amount AS PayAmount, 
-            paymentTypeID as method, paymentDate AS dateStamp 
-            FROM payment 
-            WHERE stuID = ? 
-            ORDER BY dateStamp ASC', [
-                get_persondata('personID'),
-                get_persondata('personID'),
-                get_persondata('personID')
-            ]);
-            $q = etsis_cache_get('history' . get_persondata('personID'), 'student_account');
-            if (empty($q)) {
-                $q = $history->find(function ($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
-                    }
-                    return $array;
-                });
-                etsis_cache_add('history' . get_persondata('personID'), $q, 'student_account');
-            }
-        } catch (NotFoundException $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (ORMException $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        } catch (Exception $e) {
-            Cascade::getLogger('error')->error($e->getMessage());
-            _etsis_flash()->error(_etsis_flash()->notice(409));
-        }
-
-        /**
-         * If the database table doesn't exist, then it
-         * is false and a 404 should be sent.
-         */
-        if ($q === false) {
-
-            $app->view->display('error/404', [
-                'title' => '404 Error'
-            ]);
-        } /**
-         * If the query is legit, but there
-         * is no data in the table, then 404
-         * will be shown.
-         */ elseif (empty($q) === true) {
-
-            $app->view->display('error/404', [
-                'title' => '404 Error'
-            ]);
-        } /**
-         * If data is zero, 404 not found.
-         */ elseif (_h($q[0]['stuID']) <= 0) {
-
-            $app->view->display('error/404', [
-                'title' => '404 Error'
-            ]);
-        } /**
-         * If we get to this point, the all is well
-         * and it is ok to process the query and print
-         * the results in a html format.
-         */ else {
-            $app->view->display('student/account-history', [
-                'title' => 'Student Account History',
-                'cssArray' => $css,
-                'jsArray' => $js,
-                'history' => $q,
-                'plan' => $sql
-            ]);
         }
     });
 

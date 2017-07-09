@@ -112,7 +112,8 @@ $app->post('/reset-password/', function () use($app) {
  */
 $app->before('GET|POST', '/profile/', function() {
     if (!is_user_logged_in()) {
-        etsis_redirect(get_base_url() . 'login' . '/');
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
     }
 });
 
@@ -177,7 +178,8 @@ $app->get('/profile/', function () use($app) {
  */
 $app->before('GET|POST', '/password/', function() {
     if (!is_user_logged_in()) {
-        etsis_redirect(get_base_url() . 'login' . '/');
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
     }
 });
 
@@ -246,7 +248,8 @@ $app->match('GET|POST', '/password/', function () use($app) {
  */
 $app->before('GET|POST', '/permission.*', function() {
     if (!hasPermission('access_permission_screen')) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
@@ -380,7 +383,8 @@ $app->match('GET|POST', '/permission/add/', function () use($app) {
  */
 $app->before('GET|POST', '/role.*', function() {
     if (!hasPermission('access_role_screen')) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
@@ -519,7 +523,7 @@ $app->post('/role/editRole/', function () use($app) {
  */
 $app->before('GET|POST', '/message/', function() {
     if (!is_user_logged_in()) {
-        etsis_redirect(get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
         exit();
     }
 });
@@ -550,7 +554,7 @@ $app->post('/message/', function () use($app) {
  */
 $app->before('GET|POST', '/switchUserTo/(\d+)/', function() {
     if (!hasPermission('login_as_user')) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
         exit();
     }
 });

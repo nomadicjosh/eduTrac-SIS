@@ -26,8 +26,12 @@ use Cascade\Cascade;
  * Before route check.
  */
 $app->before('GET|POST', '/dashboard(.*)', function () {
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+    }
+
     if (!hasPermission('access_dashboard')) {
-        etsis_redirect(get_base_url());
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url());
     }
 });
 
@@ -119,7 +123,7 @@ $app->group('/dashboard', function () use($app) {
      */
     $app->before('GET|POST', '/system-snapshot/', function () {
         if (!hasPermission('edit_settings')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -155,7 +159,7 @@ $app->group('/dashboard', function () use($app) {
      */
     $app->before('GET|POST', '/modules/', function () {
         if (!hasPermission('access_plugin_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -177,7 +181,7 @@ $app->group('/dashboard', function () use($app) {
      */
     $app->before('GET|POST', '/install-module/', function () {
         if (!hasPermission('access_plugin_admin_page')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -229,9 +233,9 @@ $app->group('/dashboard', function () use($app) {
         ]);
     });
 
-    $app->get('/flushCache/', function () use($app) {
+    $app->get('/flushCache/', function () {
         etsis_cache_flush();
-        _etsis_flash()->success(_t('Cache was flushed successfully.'), $app->req->server['HTTP_REFERER']);
+        _etsis_flash()->success(_t('Cache was flushed successfully.'), get_base_url() . 'dashboard' . '/');
     });
 
     $app->match('GET|POST|PATCH|PUT|OPTIONS|DELETE', '/connector/', function () use($app) {
@@ -442,7 +446,7 @@ $app->group('/dashboard', function () use($app) {
      */
     $app->before('GET|POST', '/sms/', function() {
         if (!hasPermission('send_sms')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
         }
     });
 
@@ -465,12 +469,14 @@ $app->group('/dashboard', function () use($app) {
                         ->where('address.addressStatus = "C"')->_and_()
                         ->where('(address.phoneType1 <> "" or address.phoneType2 <> "")')
                         ->find();
-                } elseif ($app->req->post['sms_group'] == 'staff') {
+                } elseif ($app->req->post['sms_group'] == 'fac') {
                     $sms = $app->db->staff()
                         ->select('CASE WHEN address.phoneType1 = "CEL" THEN address.phone1 ELSE address.phone2 END AS Phone')
                         ->_join('address', 'staff.staffID = address.personID')
+                        ->_join('person', 'staff.staffID = person.personID')
                         ->where('staff.status = "A"')->_and_()
                         ->where('address.addressStatus = "C"')->_and_()
+                        ->where('person.personType = "FAC"')
                         ->where('(address.phoneType1 <> "" or address.phoneType2 <> "")')
                         ->find();
                 } elseif ($app->req->post['sms_group'] == 'student') {
@@ -478,6 +484,26 @@ $app->group('/dashboard', function () use($app) {
                         ->select('CASE WHEN address.phoneType1 = "CEL" THEN address.phone1 ELSE address.phone2 END AS Phone')
                         ->_join('address', 'student.stuID = address.personID')
                         ->where('student.status = "A"')->_and_()
+                        ->where('address.addressStatus = "C"')->_and_()
+                        ->where('(address.phoneType1 <> "" or address.phoneType2 <> "")')
+                        ->find();
+                } elseif ($app->req->post['sms_group'] == 'sta') {
+                    $sms = $app->db->staff()
+                        ->select('CASE WHEN address.phoneType1 = "CEL" THEN address.phone1 ELSE address.phone2 END AS Phone')
+                        ->_join('person', 'staff.staffID = person.personID')
+                        ->_join('address', 'staff.staffID = address.personID')
+                        ->where('staff.status = "A"')->_and_()
+                        ->where('person.personType = "STA"')->_and_()
+                        ->where('address.addressStatus = "C"')->_and_()
+                        ->where('(address.phoneType1 <> "" or address.phoneType2 <> "")')
+                        ->find();
+                } elseif ($app->req->post['sms_group'] == 'facsta') {
+                    $sms = $app->db->staff()
+                        ->select('CASE WHEN address.phoneType1 = "CEL" THEN address.phone1 ELSE address.phone2 END AS Phone')
+                        ->_join('person', 'staff.staffID = person.personID')
+                        ->_join('address', 'staff.staffID = address.personID')
+                        ->where('staff.status = "A"')->_and_()
+                        ->where('person.personType IN("FAC","STA")')->_and_()
                         ->where('address.addressStatus = "C"')->_and_()
                         ->where('(address.phoneType1 <> "" or address.phoneType2 <> "")')
                         ->find();

@@ -39,24 +39,20 @@ function access($attr, $path, $data, $volume)
  * Before router middleware checks to see
  * if the user is logged in.
  */
-$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff(.*)', function() {
+$app->before('GET|POST', '/staff(.*)', function() {
     if (!is_user_logged_in()) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url());
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
+    }
+    if (!hasPermission('access_staff_screen')) {
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
 $app->group('/staff', function () use($app) {
 
     $app->match('GET|POST', '/', function () use($app) {
-
-        /**
-         * Before route middleware check.
-         */
-        $app->before('GET|POST', '/staff/', function() {
-            if (!hasPermission('access_staff_screen')) {
-                _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
-            }
-        });
 
         if ($app->req->isPost()) {
             try {
@@ -216,7 +212,8 @@ $app->group('/staff', function () use($app) {
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_staff_screen')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
@@ -327,7 +324,8 @@ $app->group('/staff', function () use($app) {
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('create_staff_record')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 

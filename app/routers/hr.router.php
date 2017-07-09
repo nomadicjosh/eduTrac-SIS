@@ -20,8 +20,13 @@ use Cascade\Cascade;
  * if the user is logged in.
  */
 $app->before('GET|POST', '/hr(.*)', function() {
+    if(!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
+    }
     if (!hasPermission('access_human_resources')) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 

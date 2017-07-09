@@ -15,7 +15,7 @@ if (!defined('BASE_PATH'))
  */
 $app->before('GET|POST', '/plugins.*', function () {
     if (!hasPermission('access_plugin_screen')) {
-        _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
         exit();
     }
 });
@@ -119,7 +119,8 @@ $app->group('/plugins', function () use($app) {
      */
     $app->before('GET|POST', '/install/', function () {
         if (!hasPermission('access_plugin_admin_page')) {
-            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
