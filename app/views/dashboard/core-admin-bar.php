@@ -64,6 +64,9 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                                         <li<?= hl('ftp_server', 'access_ftp'); ?>><a href="<?= get_base_url(); ?>dashboard/ftp/"> <?= _t('FTP'); ?></a></li>
                                     </ul>
                                 </li>
+                                
+                                <li<?= hl('sms', 'send_sms'); ?>><a href="<?= get_base_url(); ?>dashboard/sms/" class="glyphicons phone_alt"><i></i><?= _t('Send SMS'); ?></a></li>
+                                
                                 <?php if (hasPermission('manage_business_rules')) : ?>
                                 <li class="dropdown submenu">
                                     <a href="" data-toggle="dropdown" class="dropdown-toggle glyphicons ruller"><i></i><?= _t('Rule Definition (RLDE)'); ?> <span class="caret"></span></a>
