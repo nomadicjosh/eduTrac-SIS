@@ -54,7 +54,9 @@ $screen = 'sms';
 								<select name="sms_group" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
                                     <option value="all"><?=_t( "All Active Person's" );?></option>
-                                    <option value="staff"><?=_t( "Active Staff" );?></option>
+                                    <option value="fac"><?=_t( "Active Faculty" );?></option>
+                                    <option value="sta"><?=_t( "Active Staff" );?></option>
+                                    <option value="facsta"><?=_t( "Active Faculty & Staff" );?></option>
                                     <option value="student"><?=_t( "Active Students" );?></option>
                                 </select>
 							</div>
