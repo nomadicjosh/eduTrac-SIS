@@ -341,7 +341,9 @@
                         <?php if(_he('access_communication_mgmt') && _mf('mrkt_module')) : ?>
                         <li><?=_t( 'Marketing' );?>
                             <ul>
+                                <?php if(_he('edit_settings')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_90"><a<?=($screen === 'bnce') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>mrkt/bounce/"><?=_t( 'Bounce Setting' );?></a></li>
+                                <?php endif; ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_88"><a<?=($screen === 'lists') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>mrkt/list/"><?=_t( 'Lists' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_87"><a<?=($screen === 'temps') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>mrkt/template/"><?=_t( 'Templates' );?></a></li>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_86"><a<?=($screen === 'mrkt') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>mrkt/"><?=_t( 'Campaigns' );?></a></li>
