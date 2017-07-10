@@ -104,7 +104,32 @@ $screen = 'aclv';
                             <?php if (++$i === $numItems) { ?>
                             <a id="addrow" href="javascript:;" title="Add a row" class="btn btn-inverse"><i class="fa fa-plus"></i></a>
                             <?php } ?>
-                            <a id="addrow" href="javascript:;" title="Add a row" class="btn btn-danger"><i class="fa fa-trash-o"></i></a>
+                            <a href="#clvr_<?= _h($v->id); ?>" data-toggle="modal" class="btn btn-danger"><i class="fa fa-trash-o"></i></a>
+                            <!-- Modal -->
+                            <div class="modal fade" id="clvr_<?= _h($v->id); ?>">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <!-- Modal heading -->
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h3 class="modal-title"><?=_h($v->rule);?></h3>
+                                        </div>
+                                        <!-- // Modal heading END -->
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            <p><?=_t('Are you sure you want to delete this record from your rule set?');?></p>
+                                        </div>
+                                        <!-- // Modal body END -->
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <a href="<?=get_base_url();?>form/aclv/<?= _h($v->aid); ?>/clvr/<?= _h($v->rid); ?>/<?= _h($v->id); ?>/d/" class="btn btn-default"><?=_t( 'Delete' );?></a>
+                                            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a> 
+                                        </div>
+                                        <!-- // Modal footer END -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- // Modal END -->
                         </td>
                     </tr>
                     <?php } ?>
