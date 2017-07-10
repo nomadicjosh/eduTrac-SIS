@@ -79,7 +79,7 @@ $app->view->block('myetsis');
     
     <!-- Modal -->
 	<div class="modal fade" id="resetpass">
-		<form class="form-horizontal margin-none" action="<?=get_base_url();?>reset-password" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal margin-none" action="<?=get_base_url();?>reset-password/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->
@@ -98,7 +98,7 @@ $app->view->block('myetsis');
 		            <div class="form-group">
 		                <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Email' );?></label>
 		                <div class="col-md-8">
-		                    <input class="form-control" type="text" name="email" required/>
+		                    <input class="form-control" type="email" name="email" required/>
 		                </div>
 		            </div>
 		            <!-- // Group END -->
@@ -108,6 +108,24 @@ $app->view->block('myetsis');
 		                <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Full Name' );?></label>
 		                <div class="col-md-8">
                             <input class="form-control" type="text" name="name" required/>
+                        </div>
+		            </div>
+		            <!-- // Group END -->
+                    
+                    <!-- Group -->
+		            <div class="form-group">
+		                <label class="col-md-3 control-label"><?=_t( 'Username' );?></label>
+		                <div class="col-md-8">
+                            <input class="form-control" type="text" name="uname" />
+                        </div>
+		            </div>
+		            <!-- // Group END -->
+                    
+                    <!-- Group -->
+		            <div class="form-group">
+		                <label class="col-md-3 control-label"><?=_t( 'Student / Staff ID' );?></label>
+		                <div class="col-md-8">
+                            <input class="form-control" type="text" name="sid" />
                         </div>
 		            </div>
 		            <!-- // Group END -->

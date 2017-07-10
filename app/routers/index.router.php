@@ -90,13 +90,13 @@ $app->post('/reset-password/', function () use($app) {
         try {
             $addr = $app->req->post['email'];
             $name = $app->req->post['name'];
-            $body = $app->req->post['message'];
+            $body = sprintf(_t('<p><strong>Name:</strong> %s</p>'), $app->req->post['name']);
+            $body .= sprintf(_t('<p><strong>Username:</strong> %s</p>'), $app->req->post['uname']);
+            $body .= sprintf(_t('<p><strong>Student/Staff ID:</strong> %s</p>'), $app->req->post['sid']);
+            $body .= sprintf(_t('<p><strong>Email Address:</strong> %s</p>'), $app->req->post['email']);
+            $body .= $app->req->post['message'];
             $message = process_email_html($body, _t("Reset Password Request"));
-            $headers = "From: $name <$addr>\r\n";
-            if (_h(get_option('etsis_smtp_smtpauth')) != 'yes') {
-                $headers .= "X-Mailer: eduTrac SIS " . RELEASE_TAG . "\r\n";
-                $headers .= "MIME-Version: 1.0" . "\r\n";
-            }
+            $headers[] = sprintf("From: %s <%s>", $name, $addr);
             _etsis_email()->etsisMail(_h(get_option('system_email')), _t("Reset Password Request"), $message, $headers);
             _etsis_flash()->success(_t('Your request has been sent.'), $app->req->server['HTTP_REFERER']);
         } catch (phpmailerException $e) {
