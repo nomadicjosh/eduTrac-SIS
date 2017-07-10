@@ -20,10 +20,10 @@ $screen = 'setting';
 	<li><?=_t( 'You are here' );?></li>
 	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><?=_t( 'Registration Settings' );?></li>
+	<li><?=_t( 'Web Registration' );?></li>
 </ul>
 
-<h3><?=_t( 'Registration Settings' );?></h3>
+<h3><?=_t( 'Web Registration' );?></h3>
 <div class="innerLR">
     
     <?=_etsis_flash()->showMessage();?>
@@ -46,7 +46,7 @@ $screen = 'setting';
             <div class="tabsbar">
                 <ul>
                     <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left"><a href="<?=get_base_url();?>setting/"><i></i> <?=_t( 'General' );?></a></li>
-                    <li<?= hl('registration_settings'); ?> class="glyphicons lock active"><a href="<?=get_base_url();?>registration/" data-toggle="tab"><i></i> <?=_t( 'Registration' );?></a></li>
+                    <li<?= hl('registration_settings'); ?> class="glyphicons lock active"><a href="<?=get_base_url();?>registration/" data-toggle="tab"><i></i> <?=_t( 'Web Reg' );?></a></li>
                     <li<?= hl('email_settings'); ?> class="glyphicons inbox"><a href="<?=get_base_url();?>email/"><i></i> <?=_t( 'Email' );?></a></li>
                     <li<?= hl('email_settings'); ?> class="glyphicons show_lines"><a href="<?=get_base_url();?>templates/"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
                     <li<?= hl('general_settings'); ?> class="glyphicons iphone"><a href="<?=get_base_url();?>sms/"><i></i> <span><?=_t( 'SMS' );?></span></a></li>
@@ -97,9 +97,12 @@ $screen = 'setting';
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Account Balance' );?> <a href="#balance" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Open Reg Date' );?> <a href="#webreg" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="text" readonly name="account_balance" value="<?=_h(get_option('account_balance'));?>" class="form-control" /> 
+                                <div class="input-group date col-md-12" id="datepicker6">
+                                    <input class="form-control" name="open_webreg_date" type="text" value="<?=_h(get_option('open_webreg_date'));?>" required />
+                                    <span class="input-group-addon"><i class="fa fa-th"></i></span>
+                                </div> 
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -183,18 +186,18 @@ $screen = 'setting';
 	</div>
 	<!-- // Modal END -->
 	<!-- Modal -->
-	<div class="modal fade" id="balance">
+	<div class="modal fade" id="webreg">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Account Balance' );?></h3>
+					<h3 class="modal-title"><?=_t( 'Open Web Reg Date' );?></h3>
 				</div>
 				<!-- // Modal heading END -->
 				<!-- Modal body -->
 				<div class="modal-body">
-					<p><?=_t( "If a student's current balance minus the current term is greater than the `Account Balance`, then the student is not eligible to register for courses (i.e. -100). Set to 0 to disable." );?></p>
+					<p><?=_t( "Enter the date for when web registratration should be opened for the registration term." );?></p>
 				</div>
 				<!-- // Modal body END -->
 				<!-- Modal footer -->

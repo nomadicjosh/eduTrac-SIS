@@ -153,7 +153,7 @@ function elFinderBrowser (callback, value, meta) {
             <div class="tabsbar">
                 <ul>
                     <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left"><a href="<?=get_base_url();?>setting/"><i></i> <?=_t( 'General' );?></a></li>
-                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=get_base_url();?>registration/"><i></i> <?=_t( 'Registration' );?></a></li>
+                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=get_base_url();?>registration/"><i></i> <?=_t( 'Web Reg' );?></a></li>
                     <li<?= hl('email_settings'); ?> class="glyphicons inbox"><a href="<?=get_base_url();?>email/"><i></i> <?=_t( 'Email' );?></a></li>
                     <li<?= hl('email_settings'); ?> class="glyphicons show_lines tab-stacked active"><a href="<?=get_base_url();?>templates/" data-toggle="tab"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
                     <li<?= hl('general_settings'); ?> class="glyphicons iphone"><a href="<?=get_base_url();?>sms/"><i></i> <span><?=_t( 'SMS' );?></span></a></li>
@@ -220,13 +220,13 @@ function elFinderBrowser (callback, value, meta) {
                             <a href="#login" data-toggle="modal" class="btn btn-primary"><i class="fa fa-pencil"></i></a>
                         </td>
                     </tr>
-                    <tr class="gradeX">
+                    <!--<tr class="gradeX">
                         <td class="text-center"><?=_t( 'Update Username' );?></td>
                         <td class="text-center"><?=_t( 'This email template is used when the username on the application form has been updated.' );?></td>
                         <td class="text-center">
                             <a href="#uname" data-toggle="modal" class="btn btn-primary"><i class="fa fa-pencil"></i></a>
                         </td>
-                    </tr>
+                    </tr>-->
                     </tbody>
                     <!-- // Table body END -->
 
@@ -363,16 +363,14 @@ function elFinderBrowser (callback, value, meta) {
 	       	</div>
       	</div>
     </div>
-    <div class="modal fade" id="uname">
+    <!--<div class="modal fade" id="uname">
 		<div class="modal-dialog modal-fullscreen">
 			<div class="modal-content">
                 <form class="form-horizontal margin-none" action="<?=get_base_url();?>templates/" id="validateSubmitForm" method="post" autocomplete="off">
-				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h3 class="modal-title"><?=_t( 'Update Username' );?></h3>
 				</div>
-				<!-- // Modal heading END -->
 		        <div class="modal-body">
                     <textarea id="uname" class="col-md-8 form-control" name="update_username" rows="10"><?=_escape(get_option('update_username'));?></textarea>
 		        </div>
@@ -383,7 +381,7 @@ function elFinderBrowser (callback, value, meta) {
                 </form>
 	       	</div>
       	</div>
-    </div>
+    </div>-->
 	
 </div>	
 		

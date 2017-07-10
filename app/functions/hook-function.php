@@ -1865,6 +1865,7 @@ $app->hook->add_action('post_brgn_stu_crse_reg', 'create_update_sttr_record', 5,
 $app->hook->add_action('dashboard_admin_notices', 'etsis_dev_mode', 5);
 $app->hook->add_action('myetsis_admin_notices', 'etsis_dev_mode', 5);
 $app->hook->add_action('stu_acct_rule', 'etsis_reg_btrl_rule', 5, 3);
+$app->hook->add_action('execute_webreg_check', 'web_reg_check', 5);
 $app->hook->add_filter('the_myetsis_page_content', 'etsis_autop');
 $app->hook->add_filter('the_myetsis_page_content', 'parsecode_unautop');
 $app->hook->add_filter('the_myetsis_page_content', 'do_parsecode', 5);

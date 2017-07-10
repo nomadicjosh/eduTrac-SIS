@@ -20,11 +20,14 @@ use Cascade\Cascade;
 /**
  * Before router check.
  */
-$app->before('GET|POST', '/courses(.*)', function() {
+$app->before('GET|POST', '/courses(.*)', function() use($app) {
 
     if (get_option('enable_myetsis_portal') == 0 && !hasPermission('edit_myetsis_css')) {
         etsis_redirect(get_base_url() . 'offline' . '/');
+        exit();
     }
+
+    $app->hook->do_action('execute_webreg_check');
 });
 
 $css = [ 'css/admin/module.admin.page.alt.form_elements.min.css', 'css/admin/module.admin.page.alt.tables.min.css'];
@@ -361,18 +364,20 @@ $app->group('/courses', function() use ($app, $css, $js) {
                 foreach ($data as $d) {
                     $array[] = _escape($d['courseSection']);
                 }
-                try {
-                    Node::dispense('crse_rgn');
-                    $sect = Node::table('crse_rgn');
-                    $sect->stuid = (int) get_persondata('personID');
-                    $sect->sections = implode(',', $array);
-                    $sect->timestamp = Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');
-                    $sect->sent = 0;
-                    $sect->save();
-                } catch (NodeQException $e) {
-                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
-                } catch (Exception $e) {
-                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                if ($array != null) {
+                    try {
+                        Node::dispense('crse_rgn');
+                        $sect = Node::table('crse_rgn');
+                        $sect->stuid = (int) get_persondata('personID');
+                        $sect->sections = implode(',', $array);
+                        $sect->timestamp = Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');
+                        $sect->sent = 0;
+                        $sect->save();
+                    } catch (NodeQException $e) {
+                        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    } catch (Exception $e) {
+                        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    }
                 }
             });
             etsis_cache_flush_namespace('student_account');

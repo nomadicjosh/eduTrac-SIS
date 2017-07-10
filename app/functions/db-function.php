@@ -245,3 +245,47 @@ function get_admit_status($id)
         ->findOne();
     return _h($appl->admitStatus);
 }
+
+/**
+ * Web Registration Check.
+ * 
+ * @since 6.3.0
+ * @return int
+ */
+function web_reg_check()
+{
+    $app = \Liten\Liten::getInstance();
+
+    try {
+        $term = $app->db->term()
+            ->where('termCode = ?', _escape(get_option('registration_term')))
+            ->findOne();
+
+        if (_escape(get_option('open_webreg_date')) >= \Jenssegers\Date\Date::now()->format('Y-m-d') && _escape($term->dropAddEndDate) > \Jenssegers\Date\Date::now()->format('Y-m-d')) {
+            if (_escape(get_option('open_registration')) == 0) {
+                $options = $app->db->options_meta();
+                $options->meta_value = 1;
+                $options->where('meta_key = "open_registration"')
+                    ->update();
+            }
+        }
+
+        if (_escape(get_option('open_webreg_date')) < \Jenssegers\Date\Date::now()->format('Y-m-d') && _escape($term->dropAddEndDate) < \Jenssegers\Date\Date::now()->format('Y-m-d')) {
+            if (_escape(get_option('open_registration')) == 1) {
+                $options = $app->db->options_meta();
+                $options->meta_value = 0;
+                $options->where('meta_key = "open_registration"')
+                    ->update();
+            }
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+}

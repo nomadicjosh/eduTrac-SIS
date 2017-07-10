@@ -47,7 +47,7 @@ $screen = 'setting';
             <div class="tabsbar">
                 <ul>
                     <li<?= hl('general_settings'); ?> class="glyphicons user chevron-left active"><a href="<?=get_base_url();?>setting/" data-toggle="tab"><i></i> <?=_t( 'General' );?></a></li>
-                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=get_base_url();?>registration/"><i></i> <?=_t( 'Registration' );?></a></li>
+                    <li<?= hl('registration_settings'); ?> class="glyphicons lock"><a href="<?=get_base_url();?>registration/"><i></i> <?=_t( 'Web Reg' );?></a></li>
                     <li<?= hl('email_settings'); ?> class="glyphicons inbox"><a href="<?=get_base_url();?>email/"><i></i> <?=_t( 'Email' );?></a></li>
                     <li<?= hl('email_settings'); ?> class="glyphicons show_lines"><a href="<?=get_base_url();?>templates/"><i></i> <span><?=_t( 'Email Templates' );?></span></a></li>
                     <li<?= hl('general_settings'); ?> class="glyphicons iphone"><a href="<?=get_base_url();?>sms/"><i></i> <span><?=_t( 'SMS' );?></span></a></li>

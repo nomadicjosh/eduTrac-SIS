@@ -5,7 +5,7 @@ if (!defined('BASE_PATH'))
 /**
  * Before route check.
  */
-$app->before('GET', '/setting/', function() {
+$app->before('GET|POST', '/setting/', function() {
     if (!is_user_logged_in()) {
         _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
         exit();
@@ -54,7 +54,7 @@ $app->match('GET|POST', '/setting/', function () use($app) {
 /**
  * Before route check.
  */
-$app->before('GET', '/registration/', function() {
+$app->before('GET|POST', '/registration/', function() {
     if (!is_user_logged_in()) {
         _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
         exit();
@@ -71,7 +71,7 @@ $app->match('GET|POST', '/registration/', function () use($app) {
         $options = [
             'open_registration', 'current_term_code', 'number_of_courses',
             'account_balance', 'open_terms', 'registration_term',
-            'reg_instructions'
+            'reg_instructions','open_webreg_date'
         ];
 
         foreach ($options as $option_name) {
@@ -90,6 +90,7 @@ $app->match('GET|POST', '/registration/', function () use($app) {
     etsis_register_style('form');
     etsis_register_script('select');
     etsis_register_script('select2');
+    etsis_register_script('datepicker');
 
     $app->view->display('setting/registration', [
         'title' => 'Registration Settings'
@@ -101,7 +102,7 @@ $app->match('GET|POST', '/registration/', function () use($app) {
  * Before route checks to make sure the logged in user
  * us allowed to manage options/settings.
  */
-$app->before('GET', '/email/', function() {
+$app->before('GET|POST', '/email/', function() {
     if (!is_user_logged_in()) {
         _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
         exit();
@@ -160,7 +161,7 @@ $app->match('GET|POST', '/templates/', function () use($app) {
     if ($app->req->isPost()) {
         $options = [
             'coa_form_text', 'reset_password_text', 'room_request_text', 'room_booking_confirmation_text',
-            'student_acceptance_letter', 'person_login_details', 'update_username'
+            'student_acceptance_letter', 'person_login_details'
         ];
 
         foreach ($options as $option_name) {
