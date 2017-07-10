@@ -1442,6 +1442,31 @@ $app->group('/sect', function() use ($app) {
             _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET', '/rgn/rrsr/(\d+)/d/', function () {
+        if (!hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t("You don't have the proper permission(s) to delete a registration restriction rule."), get_base_url() . 'sect/rgn/rrsr' . '/');
+            exit();
+        }
+    });
+
+    $app->get('/rgn/rrsr/(\d+)/d/', function ($id) {
+        try {
+            $rrsr = Node::table('rrsr');
+
+            $rrsr->find($id)->delete();
+            _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'sect/rgn/rrsr' . '/');
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'sect/rgn/rrsr' . '/');
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'sect/rgn/rrsr' . '/');
+        }
+    });
 });
 
 $app->setError(function() use($app) {

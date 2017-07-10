@@ -102,15 +102,15 @@ $screen = 'rgn';
                             <?php if (++$i === $numItems) { ?>
                             <a id="addrow"<?=gids();?> href="javascript:;" title="Add a row" class="btn btn-inverse"><i class="fa fa-plus"></i></a>
                             <?php } ?>
-                            <a href="#stld_<?= _h($v->id); ?>" data-toggle="modal"<?=gids();?> class="btn btn-danger"><i class="fa fa-trash-o"></i></a>
+                            <a href="#rrsr_<?= _h($v->id); ?>" data-toggle="modal" class="btn btn-danger"><i class="fa fa-trash-o"></i></a>
                             <!-- Modal -->
-                            <div class="modal fade" id="stld_<?= _h($v->id); ?>">
+                            <div class="modal fade" id="rrsr_<?= _h($v->id); ?>">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <!-- Modal heading -->
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                            <h3 class="modal-title"><?=_h($v->rule);?> (<?=$v->value;?>)</h3>
+                                            <h3 class="modal-title"><?=_h($v->rule);?></h3>
                                         </div>
                                         <!-- // Modal heading END -->
                                         <!-- Modal body -->
@@ -120,7 +120,7 @@ $screen = 'rgn';
                                         <!-- // Modal body END -->
                                         <!-- Modal footer -->
                                         <div class="modal-footer">
-                                            <a<?=gids();?> href="<?=get_base_url();?>rgn/rrsr/<?= _h($v->id); ?>/d/" class="btn btn-default"><?=_t( 'Delete' );?></a>
+                                            <a href="<?=get_base_url();?>sect/rgn/rrsr/<?= _h($v->id); ?>/d/" class="btn btn-default"><?=_t( 'Delete' );?></a>
                                             <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a> 
                                         </div>
                                         <!-- // Modal footer END -->
