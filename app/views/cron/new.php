@@ -110,7 +110,7 @@ $options = [
                                     <option value="">&nbsp;</option>
                                     <?php 
                                     foreach ($options as $each => $key) {
-                                        $s = (isset($_POST['each']) && $_POST['each'] == $each) ? ' selected="selected"' : '';
+                                        $s = (isset($app->req->post['each']) && $app->req->post['each'] == $each) ? ' selected="selected"' : '';
                                     ?>
                                     <option value="<?=$each;?>"<?=$s;?>><?=$key; ?></option>
                                     <?php } ?>
@@ -125,7 +125,7 @@ $options = [
                                         for ($y = 0; $y < 4; $y++) {
                                             $time = ((strlen($x) == 1) ? '0' . $x : $x) . ':' . (($y == 0) ? '00' : ($y * 15));
 
-                                            $s = (isset($_POST['eachtime']) && $_POST['eachtime'] == $time) ? ' selected="selected"' : '';
+                                            $s = (isset($app->req->post['eachtime']) && $app->req->post['eachtime'] == $time) ? ' selected="selected"' : '';
                                     ?>
                                     <option value="<?=$time;?>"<?=$s;?>><?=$time;?></option>
                                     <?php } } ?>
