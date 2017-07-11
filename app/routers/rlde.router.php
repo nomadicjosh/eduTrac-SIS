@@ -100,6 +100,7 @@ $app->group('/rlde', function() use ($app) {
         etsis_register_style('form');
         etsis_register_style('bootstrap-datepicker');
         etsis_register_style('querybuilder');
+        etsis_register_script('maxlength');
 
         $app->view->display('rlde/add', [
             'title' => 'Add Rule Definition',
@@ -123,6 +124,7 @@ $app->group('/rlde', function() use ($app) {
                 update_rlde_code_on_update('stld', $id, _trim((string) $app->req->post['code']));
                 update_rlde_code_on_update('clvr', $id, _trim((string) $app->req->post['code']));
                 update_rlde_code_on_update('rrsr', $id, _trim((string) $app->req->post['code']));
+                update_rlde_code_on_update('alst', $id, _trim((string) $app->req->post['code']));
                 _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             } catch (NodeQException $e) {
                 Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
@@ -146,6 +148,7 @@ $app->group('/rlde', function() use ($app) {
         etsis_register_style('form');
         etsis_register_style('bootstrap-datepicker');
         etsis_register_style('querybuilder');
+        etsis_register_script('maxlength');
 
         $app->view->display('rlde/view', [
             'title' => _h($rule->code) . ' Rule',
