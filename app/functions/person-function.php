@@ -297,9 +297,9 @@ function get_school_photo($id, $email, $s = 80, $class = 'thumb')
         if ($nae !== false) {
             $photosize = getimagesize(get_base_url() . 'static/photos/' . _h($nae->photo));
             if (get_path_info('/form/photo/') === '/form/photo/') {
-                $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . _h($nae->photo) . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
+                $avatar = '<a href="' . get_base_url() . 'form/deleteSchoolPhoto/"><img src="' . get_base_url() . 'static/photos/' . _h($nae->photo) . '" ' . resize_image($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" /></a>';
             } else {
-                $avatar = '<img src="' . get_base_url() . 'static/photos/' . _h($nae->photo) . '" ' . imgResize($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
+                $avatar = '<img src="' . get_base_url() . 'static/photos/' . _h($nae->photo) . '" ' . resize_image($photosize[1], $photosize[1], $s) . ' alt="' . get_name($id) . '" class="' . $class . '" />';
             }
         } else {
             $avatar = get_user_avatar($email, $s, $class);
