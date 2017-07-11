@@ -1,5 +1,6 @@
 <?php namespace app\src\Core;
 
+use app\src\Core\Exception\Exception;
 use Cascade\Cascade;
 
 if (!defined('BASE_PATH'))
@@ -386,8 +387,6 @@ class etsis_Email
      */
     public function myetsisRegConfirm($id, $password)
     {
-        $site = _t('myetSIS::') . _h(get_option('institution_name'));
-        $domain = get_domain_name();
         $nae = get_person_by('personID', $id);
 
         $message = sprintf(_t('<p>Hello %s:</p>'), _h($nae->fname));
@@ -400,13 +399,15 @@ class etsis_Email
         $message .= _t("****DO NOT RESPOND TO THIS EMAIL****");
 
         $msg = process_email_html($message, _t(" Account Login Details"));
-        $headers = "From: $site <auto-reply@$domain>\r\n";
-        if (_h(get_option('etsis_smtp_smtpauth')) != 'yes') {
-            $headers .= "X-Mailer: tinyCampaign " . CURRENT_RELEASE . "\r\n";
-            $headers .= "MIME-Version: 1.0" . "\r\n";
-        }
+        $headers[] = sprintf("From: %s <auto-reply@%s>", _t('myetSIS::') . _h(get_option('institution_name')), get_domain_name());
 
-        $this->etsisMail(_h($nae->email), _h(get_option('institution_name')) . _t(":: Account Login Details"), $msg, $headers);
+        try {
+            $this->etsisMail(_h($nae->email), _h(get_option('institution_name')) . _t(":: Account Login Details"), $msg, $headers);
+        } catch (\phpmailerException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+        }
         return $this->app->hook->apply_filter('myetsis_appl_confirm', $msg, $headers);
     }
 
@@ -421,12 +422,10 @@ class etsis_Email
      */
     public function myetsisApplication($id, $applID)
     {
-        $site = _t('myetSIS::') . _h(get_option('institution_name'));
-        $domain = get_domain_name();
-        $redirect_to = etsis_login_url(get_base_url() . 'appl/' . $applID . '/');
+        $redirect_to = etsis_login_url(get_base_url() . 'appl' . '/' . $applID . '/');
 
         $message = _t('<p>Dear Admissions:</p>');
-        $message .= _t("<p>A new application has been submitted via <em>my</em>eduTrac SIS self service.</p>");
+        $message .= _t("<p>A new application has been submitted via <em>my</em>etSIS self service portal.</p>");
         $message .= _t('<p>Click on the link below and log into your account in order to view this new application.</p>');
         $message .= sprintf(_t('<p><strong>Applicant:</strong> %s</p>'), get_name($id));
         $message .= sprintf(_t("<p><strong>Applicant's ID:</strong> %s</p>"), get_alt_id($id));
@@ -436,13 +435,15 @@ class etsis_Email
         $message .= _t("****DO NOT RESPOND TO THIS EMAIL****");
 
         $msg = process_email_html($message, _t("Application for Admissions"));
-        $headers = "From: $site <auto-reply@$domain>\r\n";
-        if (_h(get_option('etsis_smtp_smtpauth')) != 'yes') {
-            $headers .= "X-Mailer: eduTrac SIS " . RELEASE_TAG . "\r\n";
-            $headers .= "MIME-Version: 1.0" . "\r\n";
-        }
+        $headers[] = sprintf("From: %s <auto-reply@%s>", _t('myetSIS::') . _h(get_option('institution_name')), get_domain_name());
 
-        $this->etsisMail(_h(get_option('admissions_email')), _t("Application for Admissions"), $msg, $headers);
+        try {
+            $this->etsisMail(_h(get_option('admissions_email')), _t("Application for Admissions"), $msg, $headers);
+        } catch (\phpmailerException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+        }
         return $this->app->hook->apply_filter('myetsis_application', $msg, $headers);
     }
 
@@ -460,15 +461,13 @@ class etsis_Email
     public function crseRGNEmail($id, $courses)
     {
         $nae = get_person_by('personID', $id);
-        $domain = get_domain_name();
-        $site = _h(get_option('institution_name'));
         $redirect_to = etsis_login_url(get_base_url() . 'stu/stac/' . $id . '/');
 
         $message = _t('<p>Dear Registrar:</p>');
         $message .= _t("<p>This is a receipt for the following student's registration.</p>");
         $message .= sprintf(_t('<p><strong>Student Name:</strong> %s</p>'), concat_ws(', ', _h($nae->lname), _h($nae->fname)));
         $message .= sprintf(_t('<p><strong>Student ID:</strong> %s</p>'), get_alt_id($id));
-        $message .= sprintf(_t('<p><strong>Courses:</strong> %s</p>'), $courses);
+        $message .= sprintf(_t('<p><strong>Courses:</strong> %s</p>'), str_replace(',', ', ', $courses));
         $message .= _t("<p>Click on the link below and log into your account in order to verify this student's registration.</p>");
         $message .= sprintf(_t('<p><a href="%s">%s</a></p>'), $redirect_to, $redirect_to);
         $message .= '______________________________________________________<br />';
@@ -476,15 +475,14 @@ class etsis_Email
         $message .= _t("****DO NOT RESPOND TO THIS EMAIL****");
 
         $msg = process_email_html($message, _t("Course Registration"));
-        $headers = "From: $site <auto-reply@$domain>\r\n";
-        if (_h(get_option('etsis_smtp_smtpauth')) != 'yes') {
-            $headers .= "X-Mailer: eduTrac SIS " . RELEASE_TAG . "\r\n";
-            $headers .= "MIME-Version: 1.0" . "\r\n";
-        }
+        $headers[] = sprintf("From: %s <auto-reply@%s>", _h(get_option('institution_name')), get_domain_name());
+
         try {
             $this->etsisMail(_h($nae->email), _t('Course Registration'), $msg, $headers);
         } catch (\phpmailerException $e) {
-            _etsis_flash()->error($e->getMessage());
+            Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
         }
 
         return $this->app->hook->apply_filter('crse_rgn_email', $msg, $headers);
@@ -498,6 +496,7 @@ class etsis_Email
      * email successfully. It just only means that the method used was able to
      * process the request without any errors.
      *
+     * @deprecated since release 6.3.0
      * @since 1.0.0
      * @param string $to
      *            Recipient's email address.
