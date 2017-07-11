@@ -581,8 +581,31 @@ var options = {
     optgroup: 'stal'
   },
   /*
-   * Student Creds
+   * Student Credits
    */
+  {
+    id: 'v_scrd.acadProgCode',
+    label: 'Academic Program',
+    type: 'string',
+    input: 'select',
+    plugin: 'selectize',
+    multiple: true,
+    plugin_config: {
+      valueField: 'id',
+      labelField: 'name',
+      searchField: 'name',
+      sortField: 'name',
+      create: true,
+      plugins: ['remove_button']
+    },
+    values: {
+        <?php get_rlde_prog(); ?>
+    },
+    valueSetter: function (rule, value) {
+        rule.$el.find('.rule-value-container select')[0].selectize.setValue(value);
+    },
+    optgroup: 'v_scrd'
+  },
   {
     id: 'v_scrd.acadLevel',
     label: 'Academic Level',
