@@ -171,7 +171,7 @@ $footer .= '</tr></thead>';
 
 $footer .= '<tbody>';
 $footer .= '<tr>';
-if(_h($stuInfo[0]['graduationDate']) != '0000-00-00') {
+if(_h($stuInfo[0]['graduationDate']) > '0000-00-00') {
 $footer .= '<td>'._h($stuInfo[0]['degreeCode']).' - ' . _h($stuInfo[0]['degreeName']) . ' Awarded on ' . _h($stuInfo[0]['graduationDate']) . '</td>';
 } else {
     $footer .= '<td>&nbsp;</td>';
