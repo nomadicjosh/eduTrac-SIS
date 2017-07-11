@@ -234,7 +234,9 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                     $app->hook->do_action('myetsis_main_menu'); 
                 ?>
 				<?php endif; ?>
+                <?php if(_escape(get_option('open_terms')) != null) : ?>
 				<li><a href="<?=get_base_url();?>courses/" class="glyphicons search"><i></i><?=_t( 'Search Courses' );?></a></li>
+                <?php endif; ?>
 				<?php if(shoppingCart()) : ?>
 				<li><a href="<?=get_base_url();?>courses/cart/" class="glyphicons shopping_cart"><i></i><?=_t( 'Cart' );?></a></li>
 				<?php endif; ?>
