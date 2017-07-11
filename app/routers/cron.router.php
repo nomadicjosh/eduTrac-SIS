@@ -476,6 +476,53 @@ $app->group('/cron', function () use($app, $emailer, $email) {
         }
     });
 
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runALST/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 404);
+        exit();
+    });
+
+    $app->get('/runALST/', function () use($app) {
+        $count = $app->db->stal()
+            ->where('acadStanding = "PROB"')
+            ->count('id');
+        if ($count > 0) {
+            $q = "SELECT CONCAT(person.lname,', ',person.fname) AS 'Student Name',"
+                . " CASE WHEN (person.altID IS NOT NULL) THEN person.altID ELSE person.personID END 'Student ID',"
+                . " stal.acadProgCode AS 'Student Program',clas.name AS 'Class Level',"
+                . " stal.enrollmentStatus AS 'Enrollment Status',stal.gpa AS GPA,stal.startTerm as 'Start Term'"
+                . " FROM stal"
+                . " LEFT JOIN person ON stal.stuID  = person.personID"
+                . " LEFT JOIN clas ON stal.currentClassLevel = clas.code"
+                . " WHERE stal.acadStanding = 'PROB'"
+                . " AND stal.endDate IS NULL";
+
+            $filename = \app\src\ID::string(10) . ".csv";
+            $csv = new \app\src\CSVEmail(DB_HOST, DB_NAME, DB_USER, DB_PASS);
+            $csv->setCSVname($filename);
+            $csv->setQuery($q);
+            $csv->setCSVinfo('"', ",", "\n");
+
+            try {
+                Node::dispense('csv_email');
+                $node = Node::table('csv_email');
+                $node->recipient = (string) _escape(get_option('registrar_email_address'));
+                $node->message = (string) "<h3>" . _t('Students on Academic Probation') . "</h3><p>" . _t('The attached report can be opened with OpenOffice.org Calc, Google Docs, Microsoft Excel, or Apple Numbers.') . "</p>";
+                $node->subject = (string) _t('Students on Academic Probation');
+                $node->filename = (string) $filename;
+                $node->sent = (int) 0;
+                $node->save();
+
+                $csv->saveCSV();
+            } catch (NodeQException $e) {
+                Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            }
+        }
+        return false;
+    });
+
     $app->before('POST|PUT|DELETE|OPTIONS', '/master/', function () use($app) {
         header('Content-Type: application/json');
         $app->res->_format('json', 404);
