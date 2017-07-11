@@ -70,16 +70,17 @@ $screen = 'perm';
             </table>
             <!-- // Table END -->
             
+            <div class="separator bottom"></div>
+            
+            <!-- Form actions -->
+            <div class="form-actions">
+                <button type="submit" name="NewPerm" class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=get_base_url();?>permission/add/'"><i></i><?=_t( 'New Permision' );?></button>
+            </div>
+            <!-- // Form actions END -->
+            
         </div>
     </div>
-    <div class="separator bottom"></div>
     <!-- // Widget END -->
-    
-    <!-- Form actions -->
-    <div class="form-actions">
-        <button type="submit" name="NewPerm" class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=get_base_url();?>permission/add/'"><i></i><?=_t( 'New Permision' );?></button>
-    </div>
-    <!-- // Form actions END -->
     
 </div>  
     
