@@ -233,9 +233,9 @@ $app->group('/dashboard', function () use($app) {
         ]);
     });
 
-    $app->get('/flushCache/', function () {
+    $app->get('/flushCache/', function () use($app) {
         etsis_cache_flush();
-        _etsis_flash()->success(_t('Cache was flushed successfully.'), get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->success(_t('Cache was flushed successfully.'), $app->req->server['HTTP_REFERER']);
     });
 
     $app->match('GET|POST|PATCH|PUT|OPTIONS|DELETE', '/connector/', function () use($app) {
