@@ -68,7 +68,7 @@ $(document).ready(function(){
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Student ID' );?></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Student ID/Name' );?></label>
 							<div class="col-md-8">
 								<input type="text" id="stuID" class="form-control" required />
                                 <input type="hidden" id="StudentID" name="stuID"/>
