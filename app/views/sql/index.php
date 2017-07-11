@@ -16,8 +16,8 @@ $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'sql';
 
-$type = $_POST['type'];
-$qtext = $_POST['qtext'];
+$type = $app->req->post['type'];
+$qtext = $app->req->post['qtext'];
 $qtext = str_replace("\\", "", $qtext);
 
 ?>
