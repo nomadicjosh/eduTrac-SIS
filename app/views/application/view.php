@@ -115,7 +115,7 @@ function addMsg(text,element_id) {
                             <label class="col-md-3 control-label"><?=_t( 'Age' );?></label>
                             <div class="col-md-8">
                             	<?php if(_h($appl->dob) > '0000-00-00') : ?>
-                            	<input class="form-control" readonly type="text" value="<?=getAge(_h($appl->dob));?>" />
+                            	<input class="form-control" readonly type="text" value="<?=get_age(_h($appl->dob));?>" />
                             	<?php else : ?>
                             	<input class="form-control" readonly type="text" />
                         		<?php endif; ?>
