@@ -1880,7 +1880,7 @@ class InitialSchema extends AbstractMigration
                 ->addForeignKey('approvedBy', 'staff', 'staffID', ['constraint' => 'staff_approvedBy', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
 
-            $this->execute("INSERT INTO `staff` VALUES(1, 1, 'NULL', 'NULL', 'NULL', '', 'NULL', 'A', '$NOW', 1, '$NOW');");
+            $this->execute("INSERT INTO `staff` VALUES(1, 1, 'NULL', 'NULL', 'NULL', '', 'NULL', 'A', '', '$NOW', 1, '$NOW');");
         endif;
 
         // Migration for table staff_meta
