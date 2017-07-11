@@ -89,7 +89,7 @@ $screen = 'sms';
 				
 				<!-- Form actions -->
 				<div class="form-actions">
-					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
+					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Send' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				
