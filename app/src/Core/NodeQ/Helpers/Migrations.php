@@ -269,6 +269,17 @@ class Migrations
             $q->runned = (int) 0;
             $q->status = (int) 1;
             $q->save();
+
+            $q->name = 'Academic Level Standing';
+            $q->url = (string) $url . 'cron/runALST/';
+            $q->time = (string) '';
+            $q->each = (int) 604800;
+            $q->eachtime = (string) '';
+            $q->lastrun = (string) '';
+            $q->running = (boolean) false;
+            $q->runned = (int) 0;
+            $q->status = (int) 1;
+            $q->save();
         } catch (NodeQException $e) {
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         } catch (Exception $e) {
