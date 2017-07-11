@@ -79,8 +79,9 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i> <?=_t( 'My Menu' );?> <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li<?=checkStuMenuAccess(get_persondata('personID'));?>  class="dropdown-submenu">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=_t( 'Student' );?></a>
+                  
+                <li<?=checkStuMenuAccess(get_persondata('personID'));?> class="dropdown-submenu">
+                    <a tabindex="-1" href="#"><?=_t( 'Student' );?></a>
                     <ul class="dropdown-menu">
                         <li<?=ml('booking_module');?>><a href="<?=get_base_url();?>stu/timetable/"><?=_t( 'Timetable' );?></a></li>
                         <li<?=ml('financial_module');?>><a href="<?=get_base_url();?>stu/bill/"><?=_t( 'My Bills' );?></a></li>
@@ -101,9 +102,9 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                     </ul>
                 </li>
                 
-                <li<?=ml('myetsis_module');?> class="dropdown submenu">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=_t( 'Forms' );?></a>
-                    <ul class="dropdown-menu submenu-show submenu-hide pull-right">
+                <li class="dropdown-submenu">
+                    <a tabindex="-1" href="#"><?=_t( 'Forms' );?></a>
+                    <ul class="dropdown-menu">
                         <li><a href="<?=get_base_url();?>form/address/"><?=_t( 'Change of Address Form' );?></a></li>
                         <li><a href="<?=get_base_url();?>form/request-form/"><?=_t( 'Booking Request Form' );?></a></li>
                         <li><a href="<?=get_base_url();?>form/photo/"><?=_t( 'School Photo' );?></a></li>
@@ -121,6 +122,7 @@ $cookie = get_secure_cookie_data('SWITCH_USERBACK');
                         ?>
                     </ul>
                 </li>
+                
                 <?php 
                     /**
                      * My Menu Action Hook
