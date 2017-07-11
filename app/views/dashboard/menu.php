@@ -40,6 +40,9 @@
                         <li><?=_t( 'Dashboard' );?>
                             <ul>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_1"><a<?=($screen === 'dash') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>dashboard/"><?=_t( 'Dashboard' );?></a></li>
+                                <?php if(_he('access_error_log_screen')) : ?>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_91"><a href="<?= get_base_url(); ?>dashboard/system-snapshot/"><?=_t( 'Snapshot Report' );?></a></li>
+                                <?php endif; ?>
                                 <?php if(_he('access_plugin_screen')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_2"><a<?=($screen === 'mods') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>dashboard/modules/"><?=_t( 'System Modules' );?></a></li>
                                 <?php endif; ?>
@@ -226,6 +229,7 @@
                         <?php if(_he('access_student_screen')) : ?>
                         <li><?=_t( 'Student' );?>
                             <ul>
+                                <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_92"><a<?=($screen === 'spro') ? ' class="jstree-clicked"' : '';?> href="<?= get_base_url(); ?>stu/"><?=_t( 'Student Lookup' );?></a></li>
                                 <?php if(_he('graduate_students')) : ?>
                                 <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_82"><a<?=($screen === 'grad') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>stu/graduation/"><?=_t( 'Graduate Students' );?></a></li>
                                 <?php endif; ?>
