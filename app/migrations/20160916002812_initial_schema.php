@@ -158,7 +158,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('action', 'string', ['limit' => 60])
                 ->addColumn('process', 'string', ['limit' => 191])
                 ->addColumn('record', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
-                ->addColumn('uname', 'string', ['limit' => 191])
+                ->addColumn('uname', 'string', ['null' =>true, 'limit' => 191])
                 ->addColumn('created_at', 'datetime', [])
                 ->addColumn('expires_at', 'datetime', [])
                 ->create();
@@ -173,21 +173,21 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('address1', 'string', ['limit' => 80])
                 ->addColumn('address2', 'string', ['limit' => 80])
                 ->addColumn('city', 'string', ['limit' => 60])
-                ->addColumn('state', 'char', ['limit' => 4])
-                ->addColumn('zip', 'char', ['limit' => 10])
-                ->addColumn('country', 'char', ['limit' => 4])
+                ->addColumn('state', 'char', ['null' => true, 'limit' => 4])
+                ->addColumn('zip', 'char', ['null' => true, 'limit' => 10])
+                ->addColumn('country', 'char', ['null' => true, 'limit' => 4])
                 ->addColumn('addressType', 'char', ['limit' => 4])
                 ->addColumn('startDate', 'date', [])
                 ->addColumn('endDate', 'date', ['null' => true])
                 ->addColumn('addressStatus', 'char', ['limit' => 4])
-                ->addColumn('phone1', 'char', ['limit' => 22])
-                ->addColumn('phone2', 'char', ['limit' => 22])
-                ->addColumn('ext1', 'char', ['limit' => 8])
-                ->addColumn('ext2', 'char', ['limit' => 8])
-                ->addColumn('phoneType1', 'char', ['limit' => 8])
-                ->addColumn('phoneType2', 'char', ['limit' => 8])
-                ->addColumn('email1', 'string', ['limit' => 191])
-                ->addColumn('email2', 'string', ['limit' => 191])
+                ->addColumn('phone1', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('phone2', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('ext1', 'char', ['null' => true, 'limit' => 8])
+                ->addColumn('ext2', 'char', ['null' => true, 'limit' => 8])
+                ->addColumn('phoneType1', 'char', ['null' => true, 'limit' => 8])
+                ->addColumn('phoneType2', 'char', ['null' => true, 'limit' => 8])
+                ->addColumn('email1', 'string', ['null' => true, 'limit' => 191])
+                ->addColumn('email2', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -208,17 +208,17 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('acadProgCode', 'string', ['limit' => 80])
                 ->addColumn('startTerm', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('admitStatus', 'char', ['null' => true, 'limit' => 4])
-                ->addColumn('exam', 'char', ['limit' => 8])
-                ->addColumn('PSAT_Verbal', 'char', ['limit' => 8])
-                ->addColumn('PSAT_Math', 'char', ['limit' => 8])
-                ->addColumn('SAT_Verbal', 'char', ['limit' => 8])
-                ->addColumn('SAT_Math', 'char', ['limit' => 8])
-                ->addColumn('ACT_English', 'char', ['limit' => 8])
-                ->addColumn('ACT_Math', 'char', ['limit' => 8])
+                ->addColumn('exam', 'char', ['null' => true, 'limit' => 8])
+                ->addColumn('PSAT_Verbal', 'char', ['null' => true, 'limit' => 8])
+                ->addColumn('PSAT_Math', 'char', ['null' => true, 'limit' => 8])
+                ->addColumn('SAT_Verbal', 'char', ['null' => true, 'limit' => 8])
+                ->addColumn('SAT_Math', 'char', ['null' => true, 'limit' => 8])
+                ->addColumn('ACT_English', 'char', ['null' => true, 'limit' => 8])
+                ->addColumn('ACT_Math', 'char', ['null' => true, 'limit' => 8])
                 ->addColumn('applStatus', 'enum', ['values' => ['Pending', 'Under Review', 'Accepted', 'Not Accepted']])
                 ->addColumn('applDate', 'date', [])
-                ->addColumn('appl_comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
-                ->addColumn('staff_comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('appl_comments', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('staff_comments', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -237,8 +237,8 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('courseSecID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('facID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('shortName', 'char', ['limit' => 12])
-                ->addColumn('title', 'string', ['limit' => 191])
+                ->addColumn('shortName', 'char', ['null' => true, 'limit' => 12])
+                ->addColumn('title', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('dueDate', 'date', ['null' => true])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
@@ -257,8 +257,12 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
                 ->addColumn('name', 'string', ['limit' => 191])
                 ->addColumn('amount', 'decimal', ['precision' => 10, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('type', 'enum', ['default' => 'F', 'values' => ['F', 'T']])
+                ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('rule', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'I']])
                 ->addColumn('addDate', 'date', [])
+                ->addForeignKey('termCode', 'term', 'termCode', ['constraint' => 'billing_table_termCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
@@ -286,20 +290,34 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('from_name', 'string', ['limit' => 191])
                 ->addColumn('from_email', 'string', ['limit' => 191])
                 ->addColumn('html', 'string', ['limit' => MysqlAdapter::TEXT_LONG])
-                ->addColumn('text', 'string', ['limit' => MysqlAdapter::TEXT_LONG])
-                ->addColumn('footer', 'string', ['limit' => MysqlAdapter::TEXT_REGULAR])
-                ->addColumn('attachment', 'string', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('text', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('footer', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('attachment', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('status', 'enum', ['default' => 'ready', 'values' => ['ready', 'processing', 'paused', 'sent']])
-                ->addColumn('sendstart', 'date', ['null' => true])
-                ->addColumn('sendfinish', 'date', ['null' => true])
+                ->addColumn('sendstart', 'datetime', ['null' => true])
+                ->addColumn('sendfinish', 'datetime', ['null' => true])
                 ->addColumn('recipients', 'integer', ['default' => '0', 'limit' => MysqlAdapter::INT_REGULAR])
                 ->addColumn('viewed', 'integer', ['default' => '0', 'limit' => MysqlAdapter::INT_REGULAR])
                 ->addColumn('bounces', 'integer', ['default' => '0', 'limit' => MysqlAdapter::INT_REGULAR])
                 ->addColumn('archive', 'enum', ['default' => '0', 'values' => ['1', '0']])
-                ->addColumn('addedBy', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('addDate', 'date', [])
+                ->addColumn('owner', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('addDate', 'datetime', [])
+                ->addColumn('last_queued', 'datetime', ['null' => true])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
-                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'campaign_addedBy', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('owner', 'staff', 'staffID', ['constraint' => 'campaign_owner', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('deptCode', 'department', 'deptCode', ['constraint' => 'campaign_deptCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->create();
+        endif;
+        
+        if (!$this->hasTable('campaign_list')) :
+            $table = $this->table('campaign_list', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('cid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('lid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addForeignKey('cid', 'campaign', 'id', ['constraint' => 'campaign_list_cid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('lid', 'list', 'id', ['constraint' => 'campaign_list_lid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
@@ -340,7 +358,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('name', 'string', ['limit' => 80])
                 ->addColumn('acadLevelCode', 'char', ['limit' => 22])
                 ->addIndex(['code'])
-                ->addForeignKey('acadLevelCode', 'aclv', 'code', ['delete' => 'RESTRICT', 'update' => 'CASCADE'])
+                ->addForeignKey('acadLevelCode', 'aclv', 'code', ['constraint' => 'clas_acadLevelCode', 'delete' => 'RESTRICT', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
@@ -617,7 +635,7 @@ class InitialSchema extends AbstractMigration
             $table
                 ->addColumn('courseID', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('courseNumber', 'integer', ['limit' => 8])
-                ->addColumn('courseCode', 'string', ['limit' => 50])
+                ->addColumn('courseCode', 'string', ['limit' => 80])
                 ->addColumn('subjectCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('courseDesc', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
@@ -629,11 +647,13 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('acadLevelCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('courseShortTitle', 'string', ['limit' => 60])
                 ->addColumn('courseLongTitle', 'string', ['limit' => 80])
-                ->addColumn('preReq', 'text', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('preReq', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('printText', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('rule', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('allowAudit', 'enum', ['default' => '0', 'values' => ['1', '0']])
                 ->addColumn('allowWaitlist', 'enum', ['default' => '0', 'values' => ['1', '0']])
-                ->addColumn('minEnroll', 'integer', ['limit' => 3])
-                ->addColumn('seatCap', 'integer', ['limit' => 3])
+                ->addColumn('minEnroll', 'integer', ['null' => true, 'limit' => 3])
+                ->addColumn('seatCap', 'integer', ['null' => true, 'limit' => 3])
                 ->addColumn('startDate', 'date', [])
                 ->addColumn('endDate', 'date', ['null' => true])
                 ->addColumn('currStatus', 'string', ['limit' => 1])
@@ -656,25 +676,25 @@ class InitialSchema extends AbstractMigration
             $table
                 ->addColumn('courseSecID', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('sectionNumber', 'char', ['limit' => 8])
-                ->addColumn('courseSecCode', 'string', ['limit' => 50])
-                ->addColumn('courseSection', 'string', ['limit' => 60])
+                ->addColumn('courseSecCode', 'string', ['limit' => 80])
+                ->addColumn('courseSection', 'string', ['limit' => 80])
                 ->addColumn('buildingCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('roomCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('locationCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('courseLevelCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('acadLevelCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
-                ->addColumn('facID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('facID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('courseID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('courseCode', 'string', ['limit' => 25])
-                ->addColumn('preReqs', 'text', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('courseCode', 'string', ['limit' => 80])
+                ->addColumn('preReqs', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('secShortTitle', 'string', ['limit' => 60])
                 ->addColumn('startDate', 'date', [])
                 ->addColumn('endDate', 'date', ['null' => true])
-                ->addColumn('startTime', 'string', ['limit' => 8])
-                ->addColumn('endTime', 'string', ['limit' => 8])
-                ->addColumn('dotw', 'string', ['limit' => 7])
+                ->addColumn('startTime', 'string', ['null' => true, 'limit' => 8])
+                ->addColumn('endTime', 'string', ['null' => true, 'limit' => 8])
+                ->addColumn('dotw', 'string', ['null' => true, 'limit' => 7])
                 ->addColumn('minCredit', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
                 ->addColumn('maxCredit', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
                 ->addColumn('increCredit', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
@@ -689,7 +709,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('secType', 'enum', ['default' => 'ONC', 'values' => ['ONL', 'HB', 'ONC']])
                 ->addColumn('currStatus', 'string', ['limit' => 1])
                 ->addColumn('statusDate', 'date', [])
-                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('comment', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('approvedDate', 'date', [])
                 ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -790,9 +810,9 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('deptTypeCode', 'char', ['limit' => 22])
                 ->addColumn('deptCode', 'char', ['limit' => 22])
                 ->addColumn('deptName', 'string', ['limit' => 191])
-                ->addColumn('deptEmail', 'string', ['limit' => 191])
-                ->addColumn('deptPhone', 'string', ['limit' => 80])
-                ->addColumn('deptDesc', 'string', ['limit' => 191])
+                ->addColumn('deptEmail', 'string', ['null' => true, 'limit' => 191])
+                ->addColumn('deptPhone', 'string', ['null' => true, 'limit' => 80])
+                ->addColumn('deptDesc', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
                 ->addIndex(['deptCode'], ['unique' => true])
                 ->create();
@@ -889,7 +909,7 @@ class InitialSchema extends AbstractMigration
             $table
                 ->addColumn('requestID', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('eventType', 'string', ['limit' => 191])
-                ->addColumn('catID', 'integer', ['limit' => 11])
+                ->addColumn('catID', 'integer', ['null' => true, 'limit' => 11])
                 ->addColumn('requestor', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('roomCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
@@ -924,7 +944,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('currStatus', 'enum', ['default' => 'A', 'values' => ['A', 'I', 'P', 'O']])
                 ->addColumn('statusDate', 'date', [])
                 ->addColumn('minGrade', 'char', ['limit' => 6])
-                ->addColumn('comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('comments', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('startDate', 'date', [])
                 ->addColumn('endDate', 'date', ['null' => true])
                 ->addColumn('addDate', 'date', [])
@@ -985,7 +1005,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('courseSecID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('facID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('grade', 'char', ['limit' => 6])
+                ->addColumn('grade', 'char', ['null' => true, 'limit' => 6])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -1008,7 +1028,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('points', 'decimal', ['precision' => 6, 'scale' => 2])
                 ->addColumn('count_in_gpa', 'enum', ['default' => '0', 'values' => ['1', '0']])
                 ->addColumn('status', 'enum', ['default' => '1', 'values' => ['1', '0']])
-                ->addColumn('description', 'text', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('description', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->create();
 
             $this->execute("INSERT INTO `grade_scale` VALUES(1, 'A+', '97-100', '4.00', '1', '1', '');");
@@ -1051,7 +1071,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('code', 'char', ['limit' => 22])
                 ->addColumn('startDate', 'date', [])
                 ->addColumn('endDate', 'date', ['null' => true])
-                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('comment', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -1068,9 +1088,9 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('fice_ceeb', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('instType', 'char', ['limit' => 10])
                 ->addColumn('instName', 'string', ['limit' => 191])
-                ->addColumn('city', 'string', ['limit' => 60])
-                ->addColumn('state', 'char', ['limit' => 4])
-                ->addColumn('country', 'char', ['limit' => 4])
+                ->addColumn('city', 'string', ['null' => true, 'limit' => 60])
+                ->addColumn('state', 'char', ['null' => true, 'limit' => 4])
+                ->addColumn('country', 'char', ['null' => true, 'limit' => 4])
                 ->addIndex(['fice_ceeb'])
                 ->create();
         endif;
@@ -1080,7 +1100,7 @@ class InitialSchema extends AbstractMigration
             $table = $this->table('institution_attended', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
                 ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('fice_ceeb', 'char', ['limit' => 22])
+                ->addColumn('fice_ceeb', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('personID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('fromDate', 'date', [])
                 ->addColumn('toDate', 'date', [])
@@ -1136,7 +1156,34 @@ class InitialSchema extends AbstractMigration
             $this->execute("INSERT INTO `job_status` VALUES(7, 'TTQ', 'Temp Three Quarter Time');");
             $this->execute("INSERT INTO `job_status` VALUES(8, 'THT', 'Temp Half Time');");
         endif;
+        
+        if (!$this->hasTable('last_login')) :
+            $table = $this->table('last_login', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('personID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('loginTimeStamp', 'datetime', [])
+                ->addForeignKey('personID', 'person', 'personID', ['constraint' => 'last_login_personID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->create();
+        endif;
 
+        if (!$this->hasTable('list')) :
+            $table = $this->table('list', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
+            $table
+                ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('code', 'string', ['limit' => 191])
+                ->addColumn('name', 'string', ['limit' => 191])
+                ->addColumn('description', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('rule', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('created', 'datetime', [])
+                ->addColumn('owner', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('status', 'enum', ['default' => 'open', 'values' => ['open', 'closed']])
+                ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
+                ->addForeignKey('owner', 'staff', 'staffID', ['constraint' => 'list_owner', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('deptCode', 'department', 'deptCode', ['constraint' => 'list_deptCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->create();
+        endif;
 
         // Migration for table location
         if (!$this->hasTable('location')) :
@@ -1190,7 +1237,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
-                ->addForeignKey('addedBy', 'person', 'personID', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'met_news_addedBy', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
@@ -1207,7 +1254,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
-                ->addForeignKey('addedBy', 'person', 'personID', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'person', 'personID', ['constraint' => 'met_page_addedBy', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
@@ -1285,7 +1332,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
-                ->addForeignKey('addedBy', 'staff', 'staffID', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'pay_grade_addedBy','delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
 
             $this->execute("INSERT INTO `pay_grade` VALUES(1, '24', '40000.00', '44999.00', '$NOW', 1, '$NOW');");
@@ -1304,7 +1351,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('paypal_payment_status', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('paypal_txn_fee', 'decimal', ['precision' => 6, 'scale' => 2, 'default' => '0.00'])
                 ->addColumn('paymentTypeID', 'integer', ['limit' => MysqlAdapter::INT_REGULAR])
-                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('comment', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('paymentDate', 'date', [])
                 ->addColumn('postedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -1439,13 +1486,15 @@ class InitialSchema extends AbstractMigration
             $this->execute("INSERT INTO `permission` VALUES(240, 'access_myetsis_appl_form', 'Access myetSIS Application Form');");
             $this->execute("INSERT INTO `permission` VALUES(241, 'edit_myetsis_css', 'Edit myetSIS CSS');");
             $this->execute("INSERT INTO `permission` VALUES(242, 'edit_myetsis_welcome_message', 'Edit myetSIS Welcome Message');");
-            $this->execute("INSERT INTO `permission` VALUES(243, 'access_communication_mgmt', 'Access Communication Management');");
+            $this->execute("INSERT INTO `permission` VALUES(243, 'access_communication_mgmt', 'Access Marketing');");
             $this->execute("INSERT INTO `permission` VALUES(244, 'delete_student', 'Delete Student');");
             $this->execute("INSERT INTO `permission` VALUES(245, 'access_payment_gateway', 'Access Payment Gateway');");
-            $this->execute("INSERT INTO `permission` VALUES(246, 'access_ea', 'Access eduTrac Analytics');");
+            $this->execute("INSERT INTO `permission` VALUES(246, 'access_ea', 'Access etSIS Analytics');");
             $this->execute("INSERT INTO `permission` VALUES(247, 'access_gradebook', 'Access Gradebook');");
             $this->execute("INSERT INTO `permission` VALUES(248, 'execute_saved_query', 'Execute Saved Query');");
             $this->execute("INSERT INTO `permission` VALUES(249, 'submit_final_grades', 'Submit Final Grades');");
+            $this->execute("INSERT INTO `permission` VALUES(250, 'manage_business_rules', 'Manage Business Rules');");
+            $this->execute("INSERT INTO `permission` VALUES(251, 'override_rule', 'Override Rule');");
         endif;
         
         // Migration for table restriction => perc
@@ -1455,10 +1504,10 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('personID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('code', 'char', ['limit' => 22])
-                ->addColumn('severity', 'integer', ['limit' => MysqlAdapter::INT_TINY])
+                ->addColumn('severity', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_TINY])
                 ->addColumn('startDate', 'date', [])
                 ->addColumn('endDate', 'date', ['null' => true])
-                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('comment', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -1479,26 +1528,25 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('personType', 'char', ['limit' => 8])
                 ->addColumn('fname', 'string', ['limit' => 191])
                 ->addColumn('lname', 'string', ['limit' => 191])
-                ->addColumn('mname', 'char', ['limit' => 4])
+                ->addColumn('mname', 'char', ['null' => true, 'limit' => 4])
                 ->addColumn('email', 'string', ['limit' => 191])
-                ->addColumn('ssn', 'integer', ['limit' => 9])
+                ->addColumn('ssn', 'integer', ['null' => true, 'limit' => 9])
                 ->addColumn('dob', 'date', ['null' => true])
                 ->addColumn('veteran', 'enum', ['values' => ['1', '0']])
-                ->addColumn('ethnicity', 'string', ['limit' => 191])
-                ->addColumn('nationality', 'char', ['limit' => 22])
+                ->addColumn('ethnicity', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('gender', 'enum', ['values' => ['M', 'F']])
-                ->addColumn('emergency_contact', 'string', ['limit' => 191])
-                ->addColumn('emergency_contact_phone', 'string', ['limit' => 60])
+                ->addColumn('emergency_contact', 'string', ['null' => true, 'limit' => 191])
+                ->addColumn('emergency_contact_phone', 'string', ['null' => true, 'limit' => 60])
                 ->addColumn('photo', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('password', 'string', ['limit' => 191])
                 ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'I']])
+                ->addColumn('tags', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('auth_token', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('approvedDate', 'datetime', [])
                 ->addColumn('approvedBy', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('LastLogin', 'datetime', [])
+                ->addColumn('LastLogin', 'datetime', ['null' => true, ])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
                 ->addIndex(['uname'], ['unique' => true])
-                ->addIndex(['altID'], ['unique' => true])
                 ->addIndex(['personType'])
                 ->addForeignKey('approvedBy', 'person', 'personID', ['constraint' => 'person_approvedBy', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
@@ -1551,7 +1599,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('amount', 'decimal', ['precision' => 10, 'scale' => 2, 'default' => '0.00'])
-                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('comment', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('refundDate', 'date', [])
                 ->addColumn('postedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -1584,7 +1632,7 @@ class InitialSchema extends AbstractMigration
                 ->addIndex(['roleName'], ['unique' => true])
                 ->create();
 
-            $this->execute("INSERT INTO `role` VALUES(8, 'Super Administrator', 'a:82:{i:0;s:13:\"edit_settings\";i:1;s:25:\"access_audit_trail_screen\";i:2;s:27:\"access_sql_interface_screen\";i:3;s:20:\"access_course_screen\";i:4;s:20:\"access_parent_screen\";i:5;s:21:\"access_student_screen\";i:6;s:20:\"access_plugin_screen\";i:7;s:18:\"access_role_screen\";i:8;s:24:\"access_permission_screen\";i:9;s:23:\"access_user_role_screen\";i:10;s:29:\"access_user_permission_screen\";i:11;s:28:\"access_email_template_screen\";i:12;s:24:\"access_course_sec_screen\";i:13;s:14:\"add_course_sec\";i:14;s:20:\"access_person_screen\";i:15;s:10:\"add_person\";i:16;s:23:\"access_acad_prog_screen\";i:17;s:13:\"add_acad_prog\";i:18;s:11:\"access_nslc\";i:19;s:23:\"access_error_log_screen\";i:20;s:21:\"access_student_portal\";i:21;s:21:\"access_cronjob_screen\";i:22;s:20:\"access_report_screen\";i:23;s:11:\"add_address\";i:24;s:24:\"access_plugin_admin_page\";i:25;s:25:\"access_save_query_screens\";i:26;s:12:\"access_forms\";i:27;s:17:\"create_stu_record\";i:28;s:17:\"create_fac_record\";i:29;s:17:\"create_par_record\";i:30;s:21:\"reset_person_password\";i:31;s:17:\"register_students\";i:32;s:10:\"access_ftp\";i:33;s:24:\"access_stu_roster_screen\";i:34;s:21:\"access_grading_screen\";i:35;s:22:\"access_bill_tbl_screen\";i:36;s:17:\"add_crse_sec_bill\";i:37;s:20:\"access_parent_portal\";i:38;s:11:\"import_data\";i:39;s:10:\"add_course\";i:40;s:12:\"room_request\";i:41;s:19:\"activate_course_sec\";i:42;s:17:\"cancel_course_sec\";i:43;s:26:\"access_institutions_screen\";i:44;s:15:\"add_institution\";i:45;s:25:\"access_application_screen\";i:46;s:18:\"create_application\";i:47;s:19:\"access_staff_screen\";i:48;s:19:\"create_staff_record\";i:49;s:16:\"access_dashboard\";i:50;s:17:\"graduate_students\";i:51;s:20:\"generate_transcripts\";i:52;s:23:\"access_student_accounts\";i:53;s:21:\"access_general_ledger\";i:54;s:13:\"login_as_user\";i:55;s:16:\"access_academics\";i:56;s:17:\"access_financials\";i:57;s:22:\"access_human_resources\";i:58;s:17:\"submit_timesheets\";i:59;s:10:\"access_sql\";i:60;s:18:\"access_person_mgmt\";i:61;s:22:\"access_payment_gateway\";i:62;s:18:\"create_campus_site\";i:63;s:17:\"access_myetsis_admin\";i:64;s:17:\"manage_myetsis_pages\";i:65;s:17:\"manage_myetsis_links\";i:66;s:16:\"manage_myetsis_news\";i:67;s:13:\"add_myetsis_page\";i:68;s:14:\"edit_myetsis_page\";i:69;s:16:\"delete_myetsis_page\";i:70;s:13:\"add_myetsis_link\";i:71;s:14:\"edit_myetsis_link\";i:72;s:16:\"delete_myetsis_link\";i:73;s:13:\"add_myetsis_news\";i:74;s:14:\"edit_myetsis_news\";i:75;s:16:\"delete_myetsis_news\";i:76;s:18:\"clear_screen_cache\";i:77;s:20:\"clear_database_cache\";i:78;s:21:\"access_myetsis_appl_form\";i:79;s:13:\"edit_myetsis_css\";i:80;s:25:\"edit_myetsis_welcome_message\";i:81;s:25:\"access_communication_mgmt\";}');");
+            $this->execute("INSERT INTO `role` VALUES(8, 'Super Administrator', 'a:85:{i:0;s:13:\"edit_settings\";i:1;s:25:\"access_audit_trail_screen\";i:2;s:27:\"access_sql_interface_screen\";i:3;s:20:\"access_course_screen\";i:4;s:21:\"access_faculty_screen\";i:5;s:20:\"access_parent_screen\";i:6;s:21:\"access_student_screen\";i:7;s:20:\"access_plugin_screen\";i:8;s:18:\"access_role_screen\";i:9;s:24:\"access_permission_screen\";i:10;s:23:\"access_user_role_screen\";i:11;s:29:\"access_user_permission_screen\";i:12;s:28:\"access_email_template_screen\";i:13;s:24:\"access_course_sec_screen\";i:14;s:14:\"add_course_sec\";i:15;s:20:\"access_person_screen\";i:16;s:10:\"add_person\";i:17;s:23:\"access_acad_prog_screen\";i:18;s:13:\"add_acad_prog\";i:19;s:11:\"access_nslc\";i:20;s:23:\"access_error_log_screen\";i:21;s:21:\"access_cronjob_screen\";i:22;s:20:\"access_report_screen\";i:23;s:11:\"add_address\";i:24;s:24:\"access_plugin_admin_page\";i:25;s:25:\"access_save_query_screens\";i:26;s:12:\"access_forms\";i:27;s:17:\"create_stu_record\";i:28;s:17:\"create_fac_record\";i:29;s:17:\"create_par_record\";i:30;s:21:\"reset_person_password\";i:31;s:17:\"register_students\";i:32;s:10:\"access_ftp\";i:33;s:24:\"access_stu_roster_screen\";i:34;s:21:\"access_grading_screen\";i:35;s:22:\"access_bill_tbl_screen\";i:36;s:17:\"add_crse_sec_bill\";i:37;s:11:\"import_data\";i:38;s:10:\"add_course\";i:39;s:12:\"room_request\";i:40;s:19:\"activate_course_sec\";i:41;s:17:\"cancel_course_sec\";i:42;s:26:\"access_institutions_screen\";i:43;s:15:\"add_institution\";i:44;s:25:\"access_application_screen\";i:45;s:18:\"create_application\";i:46;s:19:\"access_staff_screen\";i:47;s:19:\"create_staff_record\";i:48;s:17:\"graduate_students\";i:49;s:20:\"generate_transcripts\";i:50;s:23:\"access_student_accounts\";i:51;s:21:\"access_general_ledger\";i:52;s:13:\"login_as_user\";i:53;s:16:\"access_academics\";i:54;s:17:\"access_financials\";i:55;s:22:\"access_human_resources\";i:56;s:17:\"submit_timesheets\";i:57;s:10:\"access_sql\";i:58;s:18:\"access_person_mgmt\";i:59;s:16:\"access_dashboard\";i:60;s:20:\"access_myetsis_admin\";i:61;s:20:\"manage_myetsis_pages\";i:62;s:20:\"manage_myetsis_links\";i:63;s:19:\"manage_myetsis_news\";i:64;s:16:\"add_myetsis_page\";i:65;s:17:\"edit_myetsis_page\";i:66;s:19:\"delete_myetsis_page\";i:67;s:16:\"add_myetsis_link\";i:68;s:17:\"edit_myetsis_link\";i:69;s:19:\"delete_myetsis_link\";i:70;s:16:\"add_myetsis_news\";i:71;s:17:\"edit_myetsis_news\";i:72;s:19:\"delete_myetsis_news\";i:73;s:18:\"clear_screen_cache\";i:74;s:20:\"clear_database_cache\";i:75;s:24:\"access_myetsis_appl_form\";i:76;s:16:\"edit_myetsis_css\";i:77;s:28:\"edit_myetsis_welcome_message\";i:78;s:25:\"access_communication_mgmt\";i:79;s:14:\"delete_student\";i:80;s:22:\"access_payment_gateway\";i:81;s:9:\"access_ea\";i:82;s:19:\"execute_saved_query\";i:83;s:19:\"submit_final_grades\";i:84;s:13:\"override_rule\";}');");
             $this->execute("INSERT INTO `role` VALUES(9, 'Faculty', 'a:18:{i:0;s:21:\"access_student_screen\";i:1;s:24:\"access_course_sec_screen\";i:2;s:23:\"course_sec_inquiry_only\";i:3;s:19:\"course_inquiry_only\";i:4;s:23:\"access_acad_prog_screen\";i:5;s:22:\"acad_prog_inquiry_only\";i:6;s:20:\"address_inquiry_only\";i:7;s:20:\"general_inquiry_only\";i:8;s:20:\"student_inquiry_only\";i:9;s:24:\"access_stu_roster_screen\";i:10;s:21:\"access_grading_screen\";i:11;s:19:\"person_inquiry_only\";i:12;s:19:\"access_staff_screen\";i:13;s:18:\"staff_inquiry_only\";i:14;s:16:\"access_dashboard\";i:15;s:21:\"restrict_edit_profile\";i:16;s:16:\"access_academics\";i:17;s:18:\"access_person_mgmt\";}');");
             $this->execute("INSERT INTO `role` VALUES(10, 'Parent', '');");
             $this->execute("INSERT INTO `role` VALUES(11, 'Student', 'a:1:{i:0;s:21:\"access_student_portal\";}');");
@@ -1736,7 +1784,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('roomCode', 'char', ['limit' => 22])
                 ->addColumn('buildingCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('roomNumber', 'char', ['limit' => 22])
-                ->addColumn('roomCap', 'integer', ['limit' => MysqlAdapter::INT_TINY])
+                ->addColumn('roomCap', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_TINY])
                 ->addIndex(['roomCode'], ['unique' => true])
                 ->addForeignKey('buildingCode', 'building', 'buildingCode', ['constraint' => 'room_buildingCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
@@ -1816,9 +1864,10 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('schoolCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('buildingCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('officeCode', 'char', ['null' => true, 'limit' => 22])
-                ->addColumn('office_phone', 'char', ['limit' => 22])
+                ->addColumn('office_phone', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'I']])
+                ->addColumn('tags', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -1944,19 +1993,19 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('courseID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('courseSecID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('courseCode', 'string', ['limit' => 50])
+                ->addColumn('courseCode', 'string', ['limit' => 80])
                 ->addColumn('courseSecCode', 'string', ['null' => true, 'limit' => 80])
                 ->addColumn('sectionNumber', 'char', ['null' => true, 'limit' => 8])
                 ->addColumn('courseSection', 'string', ['null' => true, 'limit' => 80])
                 ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
-                ->addColumn('reportingTerm', 'char', ['limit' => 22])
+                ->addColumn('reportingTerm', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('subjectCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('shortTitle', 'char', ['limit' => 60])
                 ->addColumn('longTitle', 'char', ['limit' => 80])
-                ->addColumn('compCred', 'decimal', ['precision' => 4, 'scale' => 1])
+                ->addColumn('compCred', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.00'])
                 ->addColumn('gradePoints', 'decimal', ['precision' => 4, 'scale' => 2, 'default' => '0.00'])
-                ->addColumn('attCred', 'decimal', ['precision' => 4, 'scale' => 1])
+                ->addColumn('attCred', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.00'])
                 ->addColumn('ceu', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
                 ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'N', 'D', 'W', 'C']])
                 ->addColumn('statusDate', 'date', [])
@@ -1996,7 +2045,8 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('acadLevelCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('currentClassLevel', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('enrollmentStatus', 'char', ['null' => true, 'limit' => 22])
-                ->addColumn('gpa', 'decimal', ['precision' => 4, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('acadStanding', 'char', ['null' => true, 'limit' => 22])
+                ->addColumn('gpa', 'decimal', ['null' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'])
                 ->addColumn('startTerm', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('startDate', 'date', [])
                 ->addColumn('endDate', 'date', ['null' => true])
@@ -2018,9 +2068,9 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('billID', 'char', ['limit' => 22])
                 ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
-                ->addColumn('authCode', 'string', ['limit' => 30])
-                ->addColumn('stu_comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
-                ->addColumn('staff_comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('authCode', 'string', ['null' => true, 'limit' => 30])
+                ->addColumn('stu_comments', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('staff_comments', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('balanceDue', 'enum', ['default' => '1', 'values' => ['1', '0']])
                 ->addColumn('postedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('billingDate', 'date', [])
@@ -2066,7 +2116,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('amount', 'decimal', ['precision' => 10, 'scale' => 2])
                 ->addColumn('startDate', 'date', [])
                 ->addColumn('endDate', 'date', ['null' => true])
-                ->addColumn('comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('comments', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -2139,7 +2189,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('statusDate', 'date', [])
                 ->addColumn('startDate', 'date', [])
                 ->addColumn('endDate', 'date', ['null' => true])
-                ->addColumn('comments', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('comments', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
                 ->addIndex(['stuID', 'acadProgCode'], ['unique' => true])
@@ -2172,11 +2222,11 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('termCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('acadLevelCode', 'char', ['null' => true, 'limit' => 22])
-                ->addColumn('attCred', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
-                ->addColumn('compCred', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
-                ->addColumn('gradePoints', 'decimal', ['precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('attCred', 'decimal', ['null' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('compCred', 'decimal', ['null' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
+                ->addColumn('gradePoints', 'decimal', ['null' => true, 'precision' => 4, 'scale' => 1, 'default' => '0.0'])
                 ->addColumn('stuLoad', 'char', ['limit' => 4])
-                ->addColumn('gpa', 'decimal', ['precision' => 4, 'scale' => 2, 'default' => '0.00'])
+                ->addColumn('gpa', 'decimal', ['null' => true, 'precision' => 4, 'scale' => 2, 'default' => '0.00'])
                 ->addColumn('created', 'datetime', [])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
                 ->addIndex(['stuID', 'termCode', 'acadLevelCode'], ['unique' => true])
@@ -2193,7 +2243,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('stuID', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'I']])
-                ->addColumn('tags', 'string', ['limit' => 191])
+                ->addColumn('tags', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('addDate', 'datetime', [])
                 ->addColumn('approvedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -2223,12 +2273,14 @@ class InitialSchema extends AbstractMigration
             $table
                 ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
                 ->addColumn('name', 'string', ['limit' => 191])
-                ->addColumn('description', 'string', ['limit' => 191])
+                ->addColumn('description', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('content', 'string', ['limit' => MysqlAdapter::TEXT_LONG])
-                ->addColumn('addedBy', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('owner', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
-                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'template_addedBy', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('owner', 'staff', 'staffID', ['constraint' => 'template_owner', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
+                ->addForeignKey('deptCode', 'department', 'deptCode', ['constraint' => 'template_deptCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
@@ -2246,7 +2298,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('termEndDate', 'date', ['null' => true])
                 ->addColumn('active', 'enum', ['default' => '1', 'values' => ['1', '0']])
                 ->addIndex(['termCode'], ['unique' => true])
-                ->addForeignKey('semCode', 'semester', 'semCode', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('semCode', 'semester', 'semCode', ['constraint' => 'term_semCode', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
 
             $this->execute("INSERT INTO `term` VALUES(1, 'NULL', 'NULL', '', '', '$NOW', '$NOW', '$NOW', '1');");
@@ -2262,7 +2314,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('workWeek', 'date', ['null' => true])
                 ->addColumn('startDateTime', 'datetime', [])
                 ->addColumn('endDateTime', 'datetime', ['null' => true])
-                ->addColumn('note', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('note', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('status', 'enum', ['default' => 'P', 'values' => ['P', 'R', 'A']])
                 ->addColumn('addDate', 'string', ['limit' => 80])
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
@@ -2278,12 +2330,12 @@ class InitialSchema extends AbstractMigration
             $table
                 ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('cid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('pid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('first_open', 'date', ['null' => true])
+                ->addColumn('sid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('first_open', 'datetime', ['null' => true])
                 ->addColumn('viewed', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
                 ->addForeignKey('cid', 'campaign', 'id', ['constraint' => 'tracking_cid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
-                ->addForeignKey('pid', 'person', 'personID', ['constraint' => 'tracking_pid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('sid', 'person', 'personID', ['constraint' => 'tracking_sid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
@@ -2292,15 +2344,15 @@ class InitialSchema extends AbstractMigration
             $table
                 ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('cid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('pid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
+                ->addColumn('sid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('source', 'string', ['limit' => 191])
                 ->addColumn('medium', 'string', ['limit' => 191])
                 ->addColumn('url', 'string', ['limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('clicked', 'integer', ['limit' => MysqlAdapter::INT_REGULAR])
-                ->addColumn('addDate', 'date', [])
+                ->addColumn('addDate', 'datetime', [])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
                 ->addForeignKey('cid', 'campaign', 'id', ['constraint' => 'tracking_link_cid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
-                ->addForeignKey('pid', 'person', 'personID', ['constraint' => 'tracking_link_pid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('sid', 'person', 'personID', ['constraint' => 'tracking_link_sid', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
         endif;
 
@@ -2314,7 +2366,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('startDate', 'date', [])
                 ->addColumn('endDate', 'date', ['null' => true])
                 ->addColumn('grade', 'char', ['limit' => 6])
-                ->addColumn('comment', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('comment', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -2397,6 +2449,8 @@ class InitialSchema extends AbstractMigration
                         sttr.acadLevelCode = acad_program.acadLevelCode
                     AND
                         sacp.currStatus = 'A'
+                    AND
+                        (sttr.compCred > '0.00' AND sttr.gradePoints > '0.00')
                     GROUP BY sttr.stuID,sttr.acadLevelCode
                     ORDER BY sttr.stuID;"
             );
@@ -2413,6 +2467,57 @@ class InitialSchema extends AbstractMigration
                         status IN('A','N')
                     GROUP BY
                         courseSecID"
+            );
+        endif;
+        
+        if (!$this->hasTable('v_sacp')) :
+            $this->execute(
+                "CREATE VIEW v_sacp AS
+                    SELECT 
+                        sacp.stuID,sacp.advisorID AS advisor,sacp.catYearCode AS catalog,sacp.acadProgCode as prog,aclv.code AS acadLevel,
+                        major.majorCode AS major,minor.minorCode AS minor,ccd.ccdCode AS ccd, specialization.specCode as specialization,
+                        degree.degreeCode AS degree,department.deptCode as department,v_scrd.term,sacp.currStatus AS status,
+                        sacp.antGradDate,sacp.graduationDate,sacp.startDate,sacp.endDate
+                    FROM
+                        sacp
+                    JOIN
+                        acad_program
+                    ON
+                        sacp.acadProgCode = acad_program.acadProgCode
+                    JOIN
+                        aclv
+                    ON
+                        acad_program.acadLevelCode = aclv.code
+                    JOIN
+                        major
+                    ON
+                        acad_program.majorCode = major.majorCode
+                    JOIN
+                        minor
+                    ON
+                        acad_program.minorCode = minor.minorCode
+                    JOIN
+                        ccd
+                    ON
+                        acad_program.ccdCode = ccd.ccdCode
+                    JOIN
+                        specialization
+                    ON
+                        acad_program.specCode = specialization.specCode
+                    JOIN
+                        degree
+                    ON
+                        acad_program.degreeCode = degree.degreeCode
+                    JOIN
+                        department
+                    ON
+                        acad_program.deptCode = department.deptCode
+                    LEFT JOIN
+                        v_scrd
+                    ON
+                        sacp.stuID = v_scrd.stuID
+                    GROUP BY sacp.stuID,sacp.acadProgCode
+                    ORDER BY sacp.stuID;"
             );
         endif;
 
