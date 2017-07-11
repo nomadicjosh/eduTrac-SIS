@@ -162,6 +162,6 @@ class PerformanceInfo implements PerformanceInfoInterface, \ArrayAccess
     private function warnAboutUseAsArray()
     {
         // Allow us as array for backwards compatibility reasons
-        //trigger_error(E_USER_DEPRECATED, 'Using '.self::class.' as array is deprecated');
+        trigger_error(E_USER_DEPRECATED, 'Using '.self::class.' as array is deprecated');
     }
 }

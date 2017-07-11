@@ -12,13 +12,12 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'term';
 ?>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Term' );?></li>
 </ul>
@@ -26,7 +25,7 @@ $screen = 'term';
 <h3><?=_t( 'Term' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 
@@ -185,8 +184,8 @@ $screen = 'term';
                 <tr class="gradeX">
                     <td class="text-center"><?=_h($value['termName']);?></td>
                     <td class="text-center"><?=_h($value['semName']);?></td>
-                    <td class="text-center"><?=date('D, M d, o',strtotime(_h($value['termStartDate'])));?></td>
-                    <td class="text-center"><?=date("D, M d, o",strtotime(_h($value['termEndDate'])));?></td>
+                    <td class="text-center"><?=\Jenssegers\Date\Date::parse(_h($value['termStartDate']))->format('D, M d, o');?></td>
+                    <td class="text-center"><?=\Jenssegers\Date\Date::parse(_h($value['termEndDate']))->format("D, M d, o");?></td>
                     <td class="text-center"><?php if($value['active'] == 1) {echo 'Active';}else{'Inactive';} ?></td>
                     <td class="text-center">
                         <div class="btn-group dropup">
@@ -196,7 +195,7 @@ $screen = 'term';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>form/term/<?=_h($value['termID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>form/term/<?=_h($value['id']);?>/"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

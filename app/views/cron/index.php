@@ -12,18 +12,12 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'cron';
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Cronjob Handler' );?></li>
 </ul>
@@ -31,7 +25,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Cronjob Handler' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
     
@@ -43,11 +37,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
         <!-- Tabs Heading -->
         <div class="tabsbar">
             <ul>
-                <li class="glyphicons dashboard active"><a href="<?=get_base_url();?>cron/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
-                <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/<?=bm();?>"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
-                <li class="glyphicons list tab-stacked"><a href="<?=get_base_url();?>cron/log/<?=bm();?>"><i></i> <?=_t( 'Log' );?></a></li>
-                <li class="glyphicons wrench tab-stacked"><a href="<?=get_base_url();?>cron/setting/<?=bm();?>"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
-                <!-- <li class="glyphicons circle_question_mark tab-stacked"><a href="<?=get_base_url();?>cron/about/<?=bm();?>"><i></i> <span><?=_t( 'About' );?></span></a></li> -->
+                <li class="glyphicons dashboard active"><a href="<?=get_base_url();?>cron/" data-toggle="tab"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
+                <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
+                <li class="glyphicons wrench tab-stacked"><a href="<?=get_base_url();?>cron/setting/"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
             </ul>
         </div>
         <!-- // Tabs Heading END -->
@@ -61,28 +53,43 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<thead>
 					<tr>
                         <th class="text-center"></th>
-						<th class="text-center"><?=_t( 'Cronjob' );?></th>
-						<th class="text-center"><?=_t( 'Time/Each' );?></th>
-						<th class="text-center"><?=_t( 'Last Run' );?></th>
-						<th class="text-center"><?=_t( '# Runs' );?></th>
-                        <th class="text-center"><?=_t( 'Logs/Run' );?></th>
+						<th class="text-center"><?= _t('Cronjob'); ?></th>
+                        <th class="text-center"><?= _t('Time/Each'); ?></th>
+                        <th class="text-center"><?= _t('Last Run'); ?></th>
+                        <th class="text-center"><?= _t('# Runs'); ?></th>
+                        <th class="text-center"><?= _t('Status'); ?></th>
+                        <th class="text-center"><?= _t('Action'); ?></th>
 					</tr>
 				</thead>
 				<!-- // Table heading END -->
 				
 				<!-- Table body -->
 				<tbody>
-				<?php if (isset($_SESSION['cronjobs'], $_SESSION['cronjobs']['jobs']) && count($_SESSION['cronjobs']['jobs']) > 0) { ?>
-                <?php foreach ($_SESSION['cronjobs']['jobs'] as $k => $cronjob) {?>
+                <?php foreach ($cron as $job) {?>
                 <tr class="gradeX">
-                    <td class="text-center"><input type="checkbox" value="xx" name="cronjobs[<?=$k;?>]" /></td>
-                    <td class="text-center"><a href="<?=get_base_url() . 'cron/view' . '/' . $k . '/';?>" title="Edit"><?=(strlen($cronjob['url']) > 52) ? substr($cronjob['url'], 0, 50) . '..' : $cronjob['url'];?></a></td>
-                    <td class="text-center">Each <?=($cronjob['time'] != '') ? "day on " . $cronjob['time']  . ' hours' : $options[$cronjob['each']] . ((isset($cronjob['eachtime']) && strlen($cronjob['eachtime']) > 0) ? ' at ' . $cronjob['eachtime'] : '');?></td>
-                    <td class="text-center"><?=($cronjob['lastrun'] !== '') ? date('M d, Y @ h:i A', strtotime($cronjob['lastrun'])) : '';?></td>
-                    <td class="text-center"><?=$cronjob['runned'];?></td>
-                    <td class="text-center"><?=($cronjob['savelog'] == true) ? 'Yes' : 'No'; ?><?php echo isset($_SESSION['cronjobs']['settings']) ? ' / <a target="_blank" href="'.get_base_url(). 'cron/cronjob' . '/' . '?password=' . $_SESSION['cronjobs']['settings']['cronjobpassword'] . '&id=' . $k . '">'._t('Run').'</a>' : '';?></td>
+                    <td class="text-center"><input type="checkbox" value="<?=_h((int)$job->id);?>" name="cronjobs[<?=_h((int)$job->id);?>]" /></td>
+                    <td class="text-center"><?= _h($job->name); ?></td>
+                    <td class="text-center"><?= _t('Each'); ?> <?= (_h($job->time) != 0) ? "day on " . _h($job->time) . ' hours' : etsis_seconds_to_time(_h($job->each)) . (strlen(_h($job->eachtime) > 0) ? ' at ' . _h($job->eachtime) : ''); ?></td>
+                    <td class="text-center"><?= (_h($job->lastrun) !== '' ? Jenssegers\Date\Date::parse(_h($job->lastrun))->format('M. d, Y @ h:i A') : ''); ?></td>
+                    <td class="text-center">
+                        <span class="label label-inverse" style="font-size:1em;font-weight: bold;">
+                            <?= _h((int)$job->runned); ?>
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="label <?=etsis_cron_status_label(_h($job->status));?>" style="font-size:1em;font-weight: bold;">
+                            <?= (_h((int)$job->status) == 1 ? _t('Active') : _t('Inactive')); ?>
+                        </span>
+                    </td>
+                    <?php foreach ($set as $s) : ?>
+                        <td class="text-center">
+                            <?= isset($s) ? '<a href="' . get_base_url() . 'cron' . '/' . _h((int)$job->id) . '/" data-toggle="tooltip" data-placement="top" title="View/Edit"><button type="button" class="button bg-yellow"><i class="fa fa-edit"></i></button></a>' : ''; ?>
+                            <?= isset($s) ? '<a target="_blank" href="' . get_base_url() . 'cron/cronjob' . '/' . '?password=' . _h($s->cronjobpassword) . '&id=' . _h((int)$job->id) . '" data-toggle="tooltip" data-placement="top" title="Run"><button type="button" class="button bg-purple"><i class="fa fa-chevron-right"></i></button></a>' : ''; ?>
+                            <?= isset($s) ? '<a href="' . get_base_url() . 'cron' . '/' . _h((int)$job->id) . '/' . 'reset' . '/" data-toggle="tooltip" data-placement="top" title="Reset Runs"><button type="button" class="button bg-blue"><i class="fa fa-refresh"></i></button></a>' : ''; ?>
+                        </td>
+                    <?php endforeach; ?>
                 </tr>
-                <?php } } ?>
+                <?php } ?>
 					
 				</tbody>
 				<!-- // Table body END -->
@@ -90,7 +97,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 			</table>
 			<!-- // Table END -->
             
-            <?php if (isset($k, $cronjob)) { ?> 
+            <?php if (isset($job->id)) { ?> 
             <hr class="separator" />
 				
             <div class="separator line bottom"></div>

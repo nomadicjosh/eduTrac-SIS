@@ -18,17 +18,26 @@ namespace Desarrolla2\Cache\Adapter;
  */
 interface AdapterInterface
 {
+
+    /**
+     * Check if adapter is working
+     *
+     * @return boolean
+     */
+    public function check();
+
     /**
      * Delete a value from the cache
      *
      * @param string $key
      */
-    public function delete($key);
+    public function del($key);
 
     /**
      * Retrieve the value corresponding to a provided key
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return mixed
      */
     public function get($key);
@@ -36,7 +45,8 @@ interface AdapterInterface
     /**
      * Retrieve the if value corresponding to a provided key exist
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return bool
      */
     public function has($key);

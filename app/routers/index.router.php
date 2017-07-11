@@ -1,6 +1,11 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+use Cascade\Cascade;
+
 /**
  * Index Router
  *  
@@ -10,16 +15,14 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-$json_url = get_base_url() . 'api' . '/';
 $hasher = new \app\src\PasswordHash(8, FALSE);
-$flashNow = new \app\src\Core\etsis_Messages();
 
 /**
  * Before route check.
  */
 $app->before('GET|POST', '/', function() {
-    if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-        redirect(get_base_url() . 'offline' . '/');
+    if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+        etsis_redirect(get_base_url() . 'offline' . '/');
     }
 });
 
@@ -29,12 +32,12 @@ $app->get('/', function () use($app) {
 });
 
 $app->before('GET|POST', '/spam/', function() use($app) {
-    if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-        redirect(get_base_url() . 'offline' . '/');
+    if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+        etsis_redirect(get_base_url() . 'offline' . '/');
     }
 
     if (empty($app->req->server['HTTP_REFERER'])) {
-        redirect(get_base_url());
+        etsis_redirect(get_base_url());
     }
 });
 
@@ -48,27 +51,19 @@ $app->get('/offline/', function () use($app) {
     $app->view->display('index/offline');
 });
 
-$app->match('GET|POST', '/component/', function() use($app, $css, $js) {
-    $app->view->display('index/component', [
-        'title' => COMPONENT_TITLE,
-        'cssArray' => $css,
-        'jsArray' => $js
-        ]
-    );
-});
-
 $app->before('GET|POST', '/online-app/', function() {
-    if (_h(get_option('enable_myet_portal')) == 0 && !hasPermission('edit_myet_css')) {
-        redirect(get_base_url() . 'offline' . '/');
+    if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+        etsis_redirect(get_base_url() . 'offline' . '/');
     }
 });
 
 /**
  * Before route check.
  */
-$app->before('GET|POST', '/login/', function() {
+$app->before('GET|POST', '/login/', function() use($app) {
     if (is_user_logged_in()) {
-        redirect(get_base_url() . 'profile' . '/');
+        $redirect_to = ($app->req->get['redirect_to'] != null ? $app->req->get['redirect_to'] : get_base_url());
+        etsis_redirect($redirect_to);
     }
 });
 
@@ -80,7 +75,7 @@ $app->match('GET|POST', '/login/', function () use($app) {
          * 
          * @since 6.2.0
          */
-        etsis_authenticate_person($app->req->_post('uname'), $app->req->_post('password'), $app->req->_post('rememberme'));
+        etsis_authenticate_person($app->req->post['uname'], $app->req->post['password'], $app->req->post['rememberme']);
     }
 
     $app->view->display('index/login', [
@@ -89,18 +84,43 @@ $app->match('GET|POST', '/login/', function () use($app) {
     );
 });
 
+$app->post('/reset-password/', function () use($app) {
+
+    if ($app->req->isPost()) {
+        try {
+            $addr = $app->req->post['email'];
+            $name = $app->req->post['name'];
+            $body = sprintf(_t('<p><strong>Name:</strong> %s</p>'), $app->req->post['name']);
+            $body .= sprintf(_t('<p><strong>Username:</strong> %s</p>'), $app->req->post['uname']);
+            $body .= sprintf(_t('<p><strong>Student/Staff ID:</strong> %s</p>'), $app->req->post['sid']);
+            $body .= sprintf(_t('<p><strong>Email Address:</strong> %s</p>'), $app->req->post['email']);
+            $body .= $app->req->post['message'];
+            $message = process_email_html($body, _t("Reset Password Request"));
+            $headers[] = sprintf("From: %s <%s>", $name, $addr);
+            _etsis_email()->etsisMail(_h(get_option('system_email')), _t("Reset Password Request"), $message, $headers);
+            _etsis_flash()->success(_t('Your request has been sent.'), $app->req->server['HTTP_REFERER']);
+        } catch (phpmailerException $e) {
+            _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+        } catch (Exception $e) {
+            _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+        }
+    }
+});
+
 /**
  * Before route check.
  */
 $app->before('GET|POST', '/profile/', function() {
     if (!is_user_logged_in()) {
-        redirect(get_base_url() . 'login' . '/');
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
     }
 });
 
 $app->get('/profile/', function () use($app) {
 
-    $profile = $app->db->query("SELECT 
+    try {
+        $profile = $app->db->query("SELECT 
 								personID,prefix,uname,fname,lname,mname,email,ssn,ethnicity,
 								dob,emergency_contact,emergency_contact_phone,
 							CASE veteran 
@@ -111,28 +131,39 @@ $app->get('/profile/', function () use($app) {
 							ELSE 'Female' END AS 'Gender'
 							FROM person 
 							WHERE personID = ?", [get_persondata('personID')]
-    );
-    $q1 = $profile->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-    $addr = $app->db->address()
-        ->setTableAlias('a')
-        ->_join('address', 'a.personID = b.personID', 'b')
-        ->where('a.personID = ?', get_persondata('personID'))->_and_()
-        ->where('b.addressType = "P"')->_and_()
-        ->where('b.endDate = "0000-00-00"')->_and_()
-        ->where('b.addressStatus = "C"');
-    $q2 = $addr->find(function($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
+        );
+        $q1 = $profile->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        $addr = $app->db->address()
+            ->setTableAlias('a')
+            ->_join('address', 'a.personID = b.personID', 'b')
+            ->where('a.personID = ?', get_persondata('personID'))->_and_()
+            ->where('b.addressType = "P"')->_and_()
+            ->where('b.addressStatus = "C"')
+            ->where('b.endDate IS NULL')->_or_()
+            ->whereLte('b.endDate', '0000-00-00');
+        $q2 = $addr->find(function($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
 
     $app->view->display('index/profile', [
         'title' => 'My Profile',
@@ -147,35 +178,38 @@ $app->get('/profile/', function () use($app) {
  */
 $app->before('GET|POST', '/password/', function() {
     if (!is_user_logged_in()) {
-        redirect(get_base_url() . 'login' . '/');
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
     }
 });
 
-$app->match('GET|POST', '/password/', function () use($app, $flashNow) {
+$app->match('GET|POST', '/password/', function () use($app) {
     if ($app->req->isPost()) {
-        $pass = $app->db->person()->select('personID,password')
-            ->where('personID = ?', get_persondata('personID'));
-        $q = $pass->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+        try {
+            $pass = $app->db->person()->select('personID,password')
+                ->where('personID = ?', get_persondata('personID'));
+            $q = $pass->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            $a = [];
+            foreach ($q as $r) {
+                $a[] = $r;
             }
-            return $array;
-        });
-        $a = [];
-        foreach ($q as $r) {
-            $a[] = $r;
-        }
-        if (etsis_check_password($_POST['currPass'], $r['password'], $r['personID'])) {
-            $sql = $app->db->person();
-            $sql->password = etsis_hash_password($_POST['newPass']);
-            $sql->where('personID = ?', get_persondata('personID'));
-            if ($sql->update()) {
+            if (etsis_check_password($app->req->post['currPass'], $r['password'], $r['personID'])) {
+                $sql = $app->db->person();
+                $sql->password = etsis_hash_password($app->req->post['newPass']);
+                $sql->where('personID = ?', get_persondata('personID'));
+                $sql->update();
+
                 /**
                  * @since 6.1.07
                  */
                 $pass = [];
-                $pass['pass'] = $_POST['newPass'];
+                $pass['pass'] = $app->req->post['newPass'];
                 $pass['personID'] = get_persondata('personID');
                 $pass['uname'] = get_persondata('uname');
                 $pass['fname'] = get_persondata('fname');
@@ -189,12 +223,18 @@ $app->match('GET|POST', '/password/', function () use($app, $flashNow) {
                  */
                 $app->hook->do_action('post_change_password', $pass);
 
-                $app->flash('success_message', $flashNow->notice(200));
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
             }
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
-        redirect($app->req->server['HTTP_REFERER']);
     }
 
     $app->view->display('index/password', [
@@ -208,67 +248,61 @@ $app->match('GET|POST', '/password/', function () use($app, $flashNow) {
  */
 $app->before('GET|POST', '/permission.*', function() {
     if (!hasPermission('access_permission_screen')) {
-        redirect(get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
 $app->match('GET|POST', '/permission/', function () use($app) {
-    $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
-    $js = [
-        'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
-    ];
 
+    etsis_register_style('form');
+    etsis_register_style('table');
+    etsis_register_script('select');
+    etsis_register_script('select2');
+    etsis_register_script('datatables');
 
     $app->view->display('permission/index', [
         'title' => 'Manage Permissions',
-        'cssArray' => $css,
-        'jsArray' => $js
         ]
     );
 });
 
-$app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url, $flashNow) {
+$app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app) {
     if ($app->req->isPost()) {
-        $perm = $app->db->permission();
-        foreach (_filter_input_array(INPUT_POST) as $k => $v) {
-            $perm->$k = $v;
-        }
-        $perm->where('ID = ?', $id);
-        if ($perm->update()) {
-            $app->flash('success_message', $flashNow->notice(200));
+        try {
+            $perm = $app->db->permission();
+            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                $perm->$k = $v;
+            }
+            $perm->where('id = ?', $id);
+            $perm->update();
+
             etsis_logger_activity_log_write('Update Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
-        } else {
-            $app->flash('error_message', $flashNow->notice(409));
+            _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
-        redirect($app->req->server['HTTP_REFERER']);
     }
 
-    $perm = $app->db->permission()->where('ID = ?', $id)->findOne();
-
-    $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
-    $js = [
-        'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
-    ];
+    try {
+        $perm = $app->db->permission()->where('id = ?', $id)->findOne();
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
 
     /**
      * If the database table doesn't exist, then it
@@ -288,7 +322,7 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
     }
     /**
      * If data is zero, 404 not found.
-     */ elseif (count($perm->ID) <= 0) {
+     */ elseif (_h($perm->id) <= 0) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
@@ -298,53 +332,48 @@ $app->match('GET|POST', '/permission/(\d+)/', function ($id) use($app, $json_url
      * the results in a html format.
      */ else {
 
+        etsis_register_style('form');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+
         $app->view->display('permission/view', [
             'title' => 'Edit Permission',
-            'cssArray' => $css,
-            'jsArray' => $js,
             'perm' => $perm
             ]
         );
     }
 });
 
-$app->match('GET|POST', '/permission/add/', function () use($app, $flashNow) {
-
-    $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
-    $js = [
-        'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
-    ];
+$app->match('GET|POST', '/permission/add/', function () use($app) {
 
     if ($app->req->isPost()) {
-        $perm = $app->db->permission();
-        foreach (_filter_input_array(INPUT_POST) as $k => $v) {
-            $perm->$k = $v;
-        }
-        if ($perm->save()) {
-            $app->flash('success_message', $flashNow->notice(200));
+        try {
+            $perm = $app->db->permission();
+            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                $perm->$k = $v;
+            }
+            $perm->save();
+
             etsis_logger_activity_log_write('New Record', 'Permission', _filter_input_string(INPUT_POST, 'permName'), get_persondata('uname'));
-            redirect(get_base_url() . 'permission' . '/');
-        } else {
-            $app->flash('error_message', $flashNow->notice(409));
-            redirect($app->req->server['HTTP_REFERER']);
+            _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'permission' . '/');
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
+    etsis_register_style('form');
+    etsis_register_script('select');
+    etsis_register_script('select2');
 
     $app->view->display('permission/add', [
-        'title' => 'Add New Permission',
-        'cssArray' => $css,
-        'jsArray' => $js
+        'title' => 'Add New Permission'
         ]
     );
 });
@@ -354,52 +383,38 @@ $app->match('GET|POST', '/permission/add/', function () use($app, $flashNow) {
  */
 $app->before('GET|POST', '/role.*', function() {
     if (!hasPermission('access_role_screen')) {
-        redirect(get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
 $app->match('GET|POST', '/role/', function () use($app) {
-    $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
-    $js = [
-        'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
-    ];
 
+    etsis_register_style('form');
+    etsis_register_style('table');
+    etsis_register_script('select');
+    etsis_register_script('select2');
+    etsis_register_script('datatables');
 
     $app->view->display('role/index', [
-        'title' => 'Manage Roles',
-        'cssArray' => $css,
-        'jsArray' => $js
+        'title' => 'Manage Roles'
         ]
     );
 });
 
-$app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
-    $role = $app->db->role()->where('ID = ?', $id)->findOne();
-
-    $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
-    $js = [
-        'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-        'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/jasny-fileupload/assets/js/bootstrap-fileupload.js?v=v2.1.0'
-    ];
+$app->match('GET|POST', '/role/(\d+)/', function ($id) use($app) {
+    try {
+        $role = $app->db->role()->where('id = ?', $id)->findOne();
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
 
     /**
      * If the database table doesn't exist, then it
@@ -419,7 +434,7 @@ $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
     }
     /**
      * If data is zero, 404 not found.
-     */ elseif (count($role->ID) <= 0) {
+     */ elseif (count($role->id) <= 0) {
 
         $app->view->display('error/404', ['title' => '404 Error']);
     }
@@ -429,73 +444,97 @@ $app->match('GET|POST', '/role/(\d+)/', function ($id) use($app, $json_url) {
      * the results in a html format.
      */ else {
 
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+
         $app->view->display('role/view', [
             'title' => 'Edit Role',
-            'cssArray' => $css,
-            'jsArray' => $js,
             'role' => $role
             ]
         );
     }
 });
 
-$app->match('GET|POST', '/role/add/', function () use($app, $flashNow) {
-    $css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
-    $js = [
-        'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-        'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0'
-    ];
+$app->match('GET|POST', '/role/add/', function () use($app) {
 
     if ($app->req->isPost()) {
-        $roleID = $_POST['roleID'];
-        $roleName = $_POST['roleName'];
-        $rolePerm = maybe_serialize($_POST['permission']);
+        try {
+            $roleID = $app->req->post['roleID'];
+            $roleName = $app->req->post['roleName'];
+            $rolePerm = maybe_serialize($app->req->post['permission']);
 
-        $strSQL = $app->db->query(sprintf("REPLACE INTO `role` SET `ID` = %u, `roleName` = '%s', `permission` = '%s'", $roleID, $roleName, $rolePerm));
-        if ($strSQL) {
-            $ID = $strSQL->lastInsertId();
-            $app->flash('success_message', $flashNow->notice(200));
-            redirect(get_base_url() . 'role' . '/' . $ID . '/');
-        } else {
-            $app->flash('error_message', $flashNow->notice(409));
-            redirect($app->req->server['HTTP_REFERER']);
+            $strSQL = $app->db->query(sprintf("REPLACE INTO `role` SET `id` = %u, `roleName` = '%s', `permission` = '%s'", $roleID, $roleName, $rolePerm));
+            if ($strSQL) {
+                $_id = $strSQL->lastInsertId();
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'role' . '/' . $_id . '/');
+            } else {
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            }
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
+    etsis_register_style('form');
+    etsis_register_script('select');
+    etsis_register_script('select2');
+
     $app->view->display('role/add', [
-        'title' => 'Add Role',
-        'cssArray' => $css,
-        'jsArray' => $js
+        'title' => 'Add Role'
         ]
     );
 });
 
-$app->post('/role/editRole/', function () use($app, $flashNow) {
-    $roleID = $_POST['roleID'];
-    $roleName = $_POST['roleName'];
-    $rolePerm = maybe_serialize($_POST['permission']);
+$app->post('/role/editRole/', function () use($app) {
+    try {
+        $roleID = $app->req->post['id'];
+        $roleName = $app->req->post['roleName'];
+        $rolePerm = maybe_serialize($app->req->post['permission']);
 
-    $strSQL = $app->db->query(sprintf("REPLACE INTO `role` SET `ID` = %u, `roleName` = '%s', `permission` = '%s'", $roleID, $roleName, $rolePerm));
-    if ($strSQL) {
-        $app->flash('success_message', $flashNow->notice(200));
-    } else {
-        $app->flash('error_message', $flashNow->notice(409));
+        $strSQL = $app->db->query(sprintf("REPLACE INTO `role` SET `id` = %u, `roleName` = '%s', `permission` = '%s'", $roleID, $roleName, $rolePerm));
+        if ($strSQL) {
+            _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+        } else {
+            _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
     }
+});
 
-    redirect($app->req->server['HTTP_REFERER']);
+/**
+ * Before route check.
+ */
+$app->before('GET|POST', '/message/', function() {
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
+    }
 });
 
 $app->post('/message/', function () use($app) {
-    $options = ['myet_welcome_message'];
+    $options = ['myetsis_welcome_message'];
 
     foreach ($options as $option_name) {
-        if (!isset($_POST[$option_name]))
+        if (!isset($app->req->post[$option_name]))
             continue;
-        $value = $_POST[$option_name];
+        $value = $app->req->post[$option_name];
         update_option($option_name, $value);
     }
     /**
@@ -503,11 +542,11 @@ $app->post('/message/', function () use($app) {
      * 
      * @return mixed
      */
-    $app->hook->do_action('update_options');
+    $app->hook->do_action('myetsis_welcome_message_option');
     /* Write to logs */
-    etsis_logger_activity_log_write('Update', 'myeduTrac', 'Welcome Message', get_persondata('uname'));
+    etsis_logger_activity_log_write('Update', 'myetSIS', 'Welcome Message', get_persondata('uname'));
 
-    redirect($app->req->server['HTTP_REFERER']);
+    etsis_redirect($app->req->server['HTTP_REFERER']);
 });
 
 /**
@@ -515,57 +554,74 @@ $app->post('/message/', function () use($app) {
  */
 $app->before('GET|POST', '/switchUserTo/(\d+)/', function() {
     if (!hasPermission('login_as_user')) {
-        redirect(get_base_url() . 'dashboard' . '/');
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
 $app->get('/switchUserTo/(\d+)/', function ($id) use($app) {
 
-    if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('SWITCH_USERBACK', get_persondata('personID'), (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-        $app->cookies->setSecureCookie('SWITCH_USERNAME', get_persondata('uname'), (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-    } else {
-        $app->cookies->setSecureCookie('SWITCH_USERBACK', get_persondata('personID'), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
-        $app->cookies->setSecureCookie('SWITCH_USERNAME', get_persondata('uname'), ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
+    if (isset($app->req->cookie['ETSIS_COOKIENAME'])) {
+        $switch_cookie = [
+            'key' => 'SWITCH_USERBACK',
+            'personID' => get_persondata('personID'),
+            'uname' => get_persondata('uname'),
+            'remember' => (_h(get_option('cookieexpire')) - time() > 86400 ? _t('yes') : _t('no')),
+            'exp' => _h(get_option('cookieexpire')) + time()
+        ];
+        $app->cookies->setSecureCookie($switch_cookie);
     }
 
     $vars = [];
-    parse_str($app->cookies->get('ET_COOKNAME'), $vars);
+    parse_str($app->cookies->get('ETSIS_COOKIENAME'), $vars);
     /**
      * Checks to see if the cookie is exists on the server.
      * It it exists, we need to delete it.
      */
     $file = $app->config('cookies.savepath') . 'cookies.' . $vars['data'];
-    if (file_exists($file)) {
-        unlink($file);
+    try {
+        if (etsis_file_exists($file)) {
+            unlink($file);
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: File not found: %s', $e->getCode(), $e->getMessage()));
     }
 
     /**
      * Delete the old cookie.
      */
-    $app->cookies->remove("ET_COOKNAME");
+    $app->cookies->remove("ETSIS_COOKIENAME");
 
-    if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-    } else {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
-    }
+    $auth_cookie = [
+        'key' => 'ETSIS_COOKIENAME',
+        'personID' => $id,
+        'uname' => get_user_value($id, 'uname'),
+        'remember' => (_h(get_option('cookieexpire')) - time() > 86400 ? _t('yes') : _t('no')),
+        'exp' => _h(get_option('cookieexpire')) + time()
+    ];
 
-    redirect(get_base_url() . 'dashboard' . '/');
+    $app->cookies->setSecureCookie($auth_cookie);
+
+    _etsis_flash()->success(_t('Switching user was successful.'), get_base_url() . 'dashboard' . '/');
 });
 
 $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
     $vars1 = [];
-    parse_str($app->cookies->get('ET_COOKNAME'), $vars1);
+    parse_str($app->cookies->get('ETSIS_COOKIENAME'), $vars1);
     /**
      * Checks to see if the cookie is exists on the server.
      * It it exists, we need to delete it.
      */
     $file1 = $app->config('cookies.savepath') . 'cookies.' . $vars1['data'];
-    if (file_exists($file1)) {
-        unlink($file1);
+    try {
+        if (etsis_file_exists($file1)) {
+            unlink($file1);
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: File not found: %s', $e->getCode(), $e->getMessage()));
     }
-    $app->cookies->remove("ET_COOKNAME");
+
+    $app->cookies->remove("ETSIS_COOKIENAME");
 
     $vars2 = [];
     parse_str($app->cookies->get('SWITCH_USERBACK'), $vars2);
@@ -574,22 +630,15 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
      * It it exists, we need to delete it.
      */
     $file2 = $app->config('cookies.savepath') . 'cookies.' . $vars2['data'];
-    if (file_exists($file2)) {
-        unlink($file2);
+    try {
+        if (etsis_file_exists($file2)) {
+            unlink($file2);
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: File not found: %s', $e->getCode(), $e->getMessage()));
     }
-    $app->cookies->remove("SWITCH_USERBACK");
 
-    $vars3 = [];
-    parse_str($app->cookies->get('SWITCH_USERNAME'), $vars3);
-    /**
-     * Checks to see if the cookie is exists on the server.
-     * It it exists, we need to delete it.
-     */
-    $file3 = $app->config('cookies.savepath') . 'cookies.' . $vars3['data'];
-    if (file_exists($file3)) {
-        unlink($file3);
-    }
-    $app->cookies->remove("SWITCH_USERNAME");
+    $app->cookies->remove("SWITCH_USERBACK");
 
     /**
      * After the login as user cookies have been
@@ -597,12 +646,15 @@ $app->get('/switchUserBack/(\d+)/', function ($id) use($app) {
      * we need to set fresh cookies for the
      * original logged in user.
      */
-    if (isset($_COOKIE['ET_REMEMBER']) && $app->cookies->getSecureCookie('ET_REMEMBER') === 'rememberme') {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, (_h(get_option('cookieexpire')) !== '') ? _h(get_option('cookieexpire')) : $app->config('cookie.lifetime'));
-    } else {
-        $app->cookies->setSecureCookie('ET_COOKNAME', $id, ($app->config('cookie.lifetime') !== '') ? $app->config('cookie.lifetime') : 86400);
-    }
-    redirect(get_base_url() . 'dashboard' . '/');
+    $switch_cookie = [
+        'key' => 'ETSIS_COOKIENAME',
+        'personID' => $id,
+        'uname' => get_user_value($id, 'uname'),
+        'remember' => (_h(get_option('cookieexpire')) - time() > 86400 ? _t('yes') : _t('no')),
+        'exp' => _h(get_option('cookieexpire')) + time()
+    ];
+    $app->cookies->setSecureCookie($switch_cookie);
+    _etsis_flash()->success(_t('Switching back to original user was successful.'), get_base_url() . 'dashboard' . '/');
 });
 
 $app->get('/logout/', function () {
@@ -615,7 +667,7 @@ $app->get('/logout/', function () {
      */
     etsis_clear_auth_cookie();
 
-    redirect(get_base_url() . 'login' . '/');
+    etsis_redirect(get_base_url() . 'login' . '/');
 });
 
 $app->setError(function() use($app) {

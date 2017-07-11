@@ -4,7 +4,7 @@ if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
- * eduTrac SIS Base Exception Class
+ * eduTrac SIS Exception Class
  * 
  * This extends the default `LitenException` class to allow converting
  * exceptions to and from `etsis_Error` objects.
@@ -19,15 +19,5 @@ if (!defined('BASE_PATH'))
  */
 class Exception extends \app\src\Core\Exception\BaseException
 {
-
-    public function __construct($message = '', $code = '', $previous = null)
-    {
-        $exception = new \app\src\Core\Exception\BaseException(
-            $message, $code
-        );
-        
-        parent::__construct( $message, $code, $previous);
-        
-        return $exception;
-    }
+    
 }

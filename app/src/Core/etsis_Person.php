@@ -1,6 +1,11 @@
 <?php namespace app\src\Core;
 
-if (! defined('BASE_PATH'))
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception;
+use PDOException as ORMException;
+use Cascade\Cascade;
+
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
@@ -177,38 +182,46 @@ final class etsis_Person
     public static function get_instance($person_id)
     {
         global $app;
-        
-        //$person_id = (int) $person_id;
-        
-        if (! $person_id) {
+
+        if (!$person_id) {
             return false;
         }
-        
-        $q = $app->db->person()->where('personID = ?', $person_id);
-        
-        $person = etsis_cache_get($person_id, 'person');
-        if (empty($person)) {
-            $person = $q->find(function ($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
-            etsis_cache_add($person_id, $person, 'person');
+        try {
+            $q = $app->db->person()->where('personID = ?', $person_id);
+
+            $person = etsis_cache_get($person_id, 'person');
+            if (empty($person)) {
+                $person = $q->find(function ($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+                etsis_cache_add($person_id, $person, 'person');
+            }
+
+            $a = [];
+
+            foreach ($person as $_person) {
+                $a[] = $_person;
+            }
+
+            if (!$_person) {
+                return false;
+            }
+
+            return $_person;
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
-        
-        $a = [];
-        
-        foreach ($person as $_person) {
-            $a[] = $_person;
-        }
-        
-        if (! $_person) {
-            return false;
-        }
-        
-        return $_person;
     }
 
     /**

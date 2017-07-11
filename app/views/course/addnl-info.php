@@ -11,8 +11,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
-$list = '"'.implode('","', courseList(_h($crse->preReq))).'"';
+$list = '"'.implode('","', courseList(_h($crse->courseID))).'"';
 $screen = 'vcrse';
 ?>
 
@@ -20,17 +19,15 @@ $screen = 'vcrse';
 $(function() {
     $("#select2_5").select2({tags:[<?=$list;?>]});
 });
-$(".success-panel").show();
-setTimeout(function() { $(".success-panel").hide(); }, 5000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url()?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url()?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>crse/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
+	<li><a href="<?=get_base_url();?>crse/" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($crse->courseCode);?></a></li>
+	<li><a href="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/" class="glyphicons adjust_alt"><i></i> <?=_h($crse->courseCode);?></a></li>
     <li class="divider"></li>
 	<li><?=_h($crse->courseCode);?></li>
 </ul>
@@ -38,12 +35,12 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 <h3><?=_t( 'Additional Course Info:' );?> <?=_h($crse->courseCode);?></h3>
 <div class="innerLR">
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen,$crse); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>crse/addnl/<?=_h($crse->courseID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/addnl/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -60,13 +57,6 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 				<div class="row">
 					<!-- Column -->
 					<div class="col-md-6">
-					
-						<!-- Group -->
-						<div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Prerequisites' );?></label>
-							<div class="col-md-8"><input id="select2_5" style="width:100%;" type="hidden"<?=cio();?> name="preReq" value="<?=_h($crse->preReq);?>" /></div>
-						</div>
-						<!-- // Group END -->
 						
 						<!-- Group -->
 						<div class="form-group">
@@ -124,7 +114,7 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=cids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				
@@ -152,7 +142,7 @@ setTimeout(function() { $(".success-panel").hide(); }, 5000);
                 <!-- // Modal body END -->
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse->courseID);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
+                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse->courseID);?>/" class="btn btn-default"><?=_t( 'Yes' );?></a>
                     <a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'No' );?></a> 
                 </div>
                 <!-- // Modal footer END -->

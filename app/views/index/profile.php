@@ -10,13 +10,11 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
-$app->view->block('myet');
+$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->block('myetsis');
 ?>
 
 <div class="col-md-12">
-	<div class="separator bottom"></div>
-	<div class="separator bottom"></div>
 
 	<h3 class="glyphicons user"><i></i><?=_t( 'My Profile' );?></h3>
 	<div class="separator bottom"></div>

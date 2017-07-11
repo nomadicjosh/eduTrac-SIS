@@ -231,7 +231,7 @@ class ETSIS_CLI
         $update = new \VisualAppeal\AutoUpdate('app/tmp', 'app/tmp', 1800);
         $update->setCurrentVersion(trim(file_get_contents('RELEASE')));
         $update->setUpdateUrl('http://etsis.s3.amazonaws.com/core/1.1/update-check');
-        $update->addLogHandler(new Monolog\Handler\StreamHandler('app/tmp/logs/core-update.' . date('m-d-Y') . '.txt'));
+        $update->addLogHandler(new Monolog\Handler\StreamHandler('app/tmp/logs/core-update.' . \Jenssegers\Date\Date::now()->format('m-d-Y') . '.txt'));
         $update->setCache(new Desarrolla2\Cache\Adapter\File('app/tmp/cache'), 3600);
         if ($update->checkUpdate() !== false) {
             if ($update->newVersionAvailable()) {

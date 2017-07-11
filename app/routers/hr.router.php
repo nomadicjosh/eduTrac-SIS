@@ -1,6 +1,11 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+use Cascade\Cascade;
+
 /**
  * Human Resources Router
  *  
@@ -14,109 +19,130 @@ if (!defined('BASE_PATH'))
  * Before router middleware checks to see
  * if the user is logged in.
  */
-$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/hr(.*)', function() {
-    if (!hasPermission('access_human_resources')) {
-        redirect(get_base_url() . 'dashboard/');
+$app->before('GET|POST', '/hr(.*)', function() {
+    if(!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
     }
-    /**
-     * If user is logged in and the lockscreen cookie is set, 
-     * redirect user to the lock screen until he/she enters 
-     * his/her password to gain access.
-     */
-    if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock/');
+    if (!hasPermission('access_human_resources')) {
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
-$css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
-$js = [
-    'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
-];
+$app->group('/hr', function () use($app) {
 
-$flashNow = new \app\src\Core\etsis_Messages();
-
-$app->group('/hr', function () use($app, $css, $js, $flashNow) {
-
-    $app->match('GET|POST', '/', function () use($app, $css, $js) {
+    $app->match('GET|POST', '/', function () use($app) {
         if ($app->req->isPost()) {
-            $staff = $_POST['employee'];
-            $hr = $app->db->staff()
-                ->select('staff.staffID,staff.office_phone,b.email,c.deptName')
-                ->_join('person', 'staff.staffID = b.personID', 'b')
-                ->_join('department', 'staff.deptCode = c.deptCode', 'c')
-                ->whereLike('CONCAT(b.fname," ",b.lname)', "%$staff%")->_or_()
-                ->whereLike('CONCAT(b.lname," ",b.fname)', "%$staff%")->_or_()
-                ->whereLike('CONCAT(b.lname,", ",b.fname)', "%$staff%")->_or_()
-                ->whereLike('staff.staffID', "%$staff%");
+            try {
+                $staff = $app->req->post['employee'];
+                $hr = $app->db->staff()
+                    ->select('staff.staffID,staff.office_phone,b.email,b.altID,c.deptName')
+                    ->_join('person', 'staff.staffID = b.personID', 'b')
+                    ->_join('department', 'staff.deptCode = c.deptCode', 'c')
+                    ->whereLike('CONCAT(b.fname," ",b.lname)', "%$staff%")->_or_()
+                    ->whereLike('CONCAT(b.lname," ",b.fname)', "%$staff%")->_or_()
+                    ->whereLike('CONCAT(b.lname,", ",b.fname)', "%$staff%")->_or_()
+                    ->whereLike('staff.staffID', "%$staff%")->_or_()
+                    ->whereLike('b.altID', "%$staff%");
 
-            $q = $hr->find(function($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
+                $q = $hr->find(function($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            }
         }
+
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datatables');
+
         $app->view->display('hr/index', [
-            'title' => 'Human Resources',
-            'cssArray' => $css,
-            'jsArray' => $js,
+            'title' => _t('Human Resources'),
             'search' => $q
             ]
         );
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app) {
         if ($app->req->isPost()) {
-            $staff = $app->db->staff();
-            $staff->schoolCode = $_POST['schoolCode'];
-            $staff->buildingCode = $_POST['buildingCode'];
-            $staff->officeCode = $_POST['officeCode'];
-            $staff->office_phone = $_POST['office_phone'];
-            $staff->deptCode = $_POST['deptCode'];
-            $staff->status = $_POST['status'];
-            $staff->where('staffID = ?', $id);
+            try {
+                $staff = $app->db->staff();
+                $staff->set([
+                        'schoolCode' => $app->req->post['schoolCode'],
+                        'buildingCode' => $app->req->post['buildingCode'],
+                        'officeCode' => $app->req->post['officeCode'],
+                        'office_phone' => $app->req->post['office_phone'],
+                        'deptCode' => $app->req->post['deptCode'],
+                        'status' => $app->req->post['status']
+                    ])
+                    ->where('staffID = ?', $id)
+                    ->update();
 
-            $smeta = $app->db->staff_meta();
-            $smeta->jobStatusCode = $_POST['jobStatusCode'];
-            $smeta->jobID = $_POST['jobID'];
-            $smeta->supervisorID = $_POST['supervisorID'];
-            $smeta->staffType = $_POST['staffType'];
-            $smeta->hireDate = $_POST['hireDate'];
-            $smeta->startDate = $_POST['startDate'];
-            $smeta->endDate = $_POST['endDate'];
-            $smeta->where('sMetaID = ?', $_POST['sMetaID'])->_and_()->where('staffID = ?', $id);
+                $smeta = $app->db->staff_meta();
+                $smeta->set([
+                        'jobStatusCode' => $app->req->post['jobStatusCode'],
+                        'jobID' => $app->req->post['jobID'],
+                        'supervisorID' => $app->req->post['supervisorID'],
+                        'staffType' => $app->req->post['staffType'],
+                        'hireDate' => $app->req->post['hireDate'],
+                        'startDate' => $app->req->post['startDate'],
+                        'endDate' => ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL)
+                    ])
+                    ->where('id = ?', $app->req->post['id'])->_and_()
+                    ->where('staffID = ?', $id)
+                    ->update();
 
-            if ($staff->update() || $smeta->update()) {
-                $app->flash('success_message', $flashNow->notice(200));
-            } else {
-                $app->flash('error_message', $flashNow->notice(204));
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'hr' . '/' . (int) $id . '/');
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-
-            redirect(get_base_url() . 'hr' . '/' . $id . '/');
         }
 
-        $empl = $app->db->staff()
-            ->select('staff.*,b.sMetaID,b.jobStatusCode,b.jobID')
-            ->select('b.supervisorID,b.staffType,b.hireDate')
-            ->select('b.startDate,b.endDate,c.title')
-            ->select('c.hourly_wage,c.weekly_hours')
-            ->select('SUM(c.hourly_wage*c.weekly_hours*4) AS Monthly,d.prefix')
-            ->_join('staff_meta', 'staff.staffID = b.staffID', 'b')
-            ->_join('job', 'b.jobID = c.ID', 'c')
-            ->_join('person', 'staff.staffID = d.personID', 'd')
-            ->where('staff.staffID = ?', $id)->_and_()
-            ->where('b.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id)
-            ->findOne();
+        try {
+            $empl = $app->db->staff()
+                ->select('staff.*,b.id AS sMetaID,b.jobStatusCode,b.jobID')
+                ->select('b.supervisorID,b.staffType,b.hireDate')
+                ->select('b.startDate,b.endDate,c.title')
+                ->select('c.hourly_wage,c.weekly_hours')
+                ->select('SUM(c.hourly_wage*c.weekly_hours*4) AS Monthly,d.prefix')
+                ->_join('staff_meta', 'staff.staffID = b.staffID', 'b')
+                ->_join('job', 'b.jobID = c.id', 'c')
+                ->_join('person', 'staff.staffID = d.personID', 'd')
+                ->where('staff.staffID = ?', $id)->_and_()
+                ->where('b.hireDate = (SELECT MAX(hireDate) FROM staff_meta WHERE staffID = ?)', $id)
+                ->findOne();
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
 
         /**
          * If the database table doesn't exist, then it
@@ -136,7 +162,7 @@ $app->group('/hr', function () use($app, $css, $js, $flashNow) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($empl->staffID) <= 0) {
+         */ elseif (count(_h($empl->staffID)) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -145,135 +171,200 @@ $app->group('/hr', function () use($app, $css, $js, $flashNow) {
          * and it is ok to process the query and print
          * the results in a html format.
          */ else {
+
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datepicker');
+
             $app->view->display('hr/view', [
                 'title' => 'View Staff Member',
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'staff' => $empl
                 ]
             );
         }
     });
 
-    $app->match('GET|POST', '/grades/', function () use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/grades/', function () use($app) {
 
         if ($app->req->isPost()) {
-            if (isset($_POST['addDate'])) {
-                $pg = $app->db->pay_grade();
-                foreach ($_POST as $k => $v) {
-                    $pg->$k = $v;
-                }
-                if ($pg->save()) {
-                    $app->flash('success_message', $flashNow->notice(200));
+            try {
+                if (isset($app->req->post['addDate'])) {
+                    $pg = $app->db->pay_grade();
+                    foreach ($app->req->post as $k => $v) {
+                        $pg->$k = $v;
+                    }
+                    $pg->save();
+
                     etsis_logger_activity_log_write('New Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
                 } else {
-                    $app->flash('error_message', $flashNow->notice(409));
-                }
-            } else {
-                $pg = $app->db->pay_grade();
-                foreach ($_POST as $k => $v) {
-                    $pg->$k = $v;
-                }
-                $pg->where('ID = ?', _filter_input_int(INPUT_POST, 'ID'));
-                if ($pg->update()) {
-                    $app->flash('success_message', $flashNow->notice(200));
+                    $pg = $app->db->pay_grade();
+                    foreach ($app->req->post as $k => $v) {
+                        $pg->$k = $v;
+                    }
+                    $pg->where('id = ?', _filter_input_int(INPUT_POST, 'id'));
+                    $pg->update();
+
                     etsis_logger_activity_log_write('Update Record', 'Pay Grade', _filter_input_string(INPUT_POST, 'grade'), get_persondata('uname'));
-                } else {
-                    $app->flash('error_message', $flashNow->notice(409));
                 }
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-            redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $pg = $app->db->pay_grade();
-        $q = $pg->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+        try {
+            $pg = $app->db->pay_grade();
+            $q = $pg->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datatables');
 
         $app->view->display('hr/grades', [
             'title' => 'Pay Grades',
-            'cssArray' => $css,
-            'jsArray' => $js,
             'grades' => $q
             ]
         );
     });
 
-    $app->match('GET|POST', '/jobs/', function () use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/jobs/', function () use($app) {
 
         if ($app->req->isPost()) {
-            if (isset($_POST['addDate'])) {
-                $job = $app->db->job();
-                foreach ($_POST as $k => $v) {
-                    $job->$k = $v;
-                }
-                if ($job->save()) {
-                    $app->flash('success_message', $flashNow->notice(200));
+            try {
+                if (isset($app->req->post['addDate'])) {
+                    $job = $app->db->job();
+                    foreach ($app->req->post as $k => $v) {
+                        $job->$k = $v;
+                    }
+                    $job->save();
+
                     etsis_logger_activity_log_write('New Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
                 } else {
-                    $app->flash('error_message', $flashNow->notice(409));
-                }
-            } else {
-                $job = $app->db->job();
-                foreach ($_POST as $k => $v) {
-                    $job->$k = $v;
-                }
-                $job->where('ID = ?', _filter_input_int(INPUT_POST, 'ID'));
-                if ($job->update()) {
-                    $app->flash('success_message', $flashNow->notice(200));
+                    $job = $app->db->job();
+                    foreach ($app->req->post as $k => $v) {
+                        $job->$k = $v;
+                    }
+                    $job->where('id = ?', _filter_input_int(INPUT_POST, 'id'));
+                    $job->update();
+
                     etsis_logger_activity_log_write('Update Record', 'Job', _filter_input_string(INPUT_POST, 'title'), get_persondata('uname'));
-                } else {
-                    $app->flash('error_message', $flashNow->notice(409));
                 }
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-            redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $jobs = $app->db->job()->select('job.*,b.grade')->_join('pay_grade', 'job.pay_grade = b.ID', 'b');
-        $q = $jobs->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+        try {
+            $jobs = $app->db->job()->select('job.*,b.grade')
+                ->_join('pay_grade', 'job.pay_grade = b.id', 'b');
+            $q = $jobs->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datatables');
 
         $app->view->display('hr/jobs', [
             'title' => 'Jobs',
-            'cssArray' => $css,
-            'jsArray' => $js,
             'jobs' => $q
             ]
         );
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app) {
         if ($app->req->isPost()) {
-            $position = $app->db->staff_meta();
-            foreach ($_POST as $k => $v) {
-                $position->$k = $v;
-            }
-            if ($position->save()) {
-                $app->flash('success_message', $flashNow->notice(200));
+            try {
+                $position = $app->db->staff_meta();
+                foreach ($app->req->post as $k => $v) {
+                    $position->$k = $v;
+                }
+                $position->save();
+
                 etsis_logger_activity_log_write('New Record', 'Job Position', get_name($id), get_persondata('uname'));
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-            redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $staff = $app->db->staff()->where('staffID = ?', $id);
-        $q = $staff->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+        try {
+            $staff = $app->db->staff()->where('staffID = ?', $id);
+            $q = $staff->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+
         /**
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
@@ -292,7 +383,7 @@ $app->group('/hr', function () use($app, $css, $js, $flashNow) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($q[0]['staffID']) <= 0) {
+         */ elseif (count(_h($q[0]['staffID'])) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -301,46 +392,69 @@ $app->group('/hr', function () use($app, $css, $js, $flashNow) {
          * and it is ok to process the query and print
          * the results in a html format.
          */ else {
+
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datepicker');
+
             $app->view->display('hr/add', [
                 'title' => 'Add Position',
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'job' => $q
                 ]
             );
         }
     });
 
-    $app->match('GET|POST', '/positions/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/positions/(\d+)/', function ($id) use($app) {
 
         if ($app->req->isPost()) {
-            $position = $app->db->staff_meta();
-            foreach ($_POST as $k => $v) {
-                $position->$k = $v;
-            }
-            $position->where('sMetaID = ?', _filter_input_int(INPUT_POST, 'sMetaID'));
-            if ($position->update()) {
-                $app->flash('success_message', $flashNow->notice(200));
+            try {
+                $position = $app->db->staff_meta();
+                foreach ($app->req->post as $k => $v) {
+                    $position->$k = $v;
+                }
+                $position->where('id = ?', _filter_input_int(INPUT_POST, 'id'));
+                $position->update();
+
                 etsis_logger_activity_log_write('Update Record', 'Job Position', get_name($id), get_persondata('uname'));
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-            redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $jobs = $app->db->staff_meta()
-            ->select('staff_meta.*,b.title,b.hourly_wage')
-            ->select('b.weekly_hours,c.grade')
-            ->_join('job', 'staff_meta.jobID = b.ID', 'b')
-            ->_join('pay_grade', 'b.pay_grade = c.ID ', 'c')
-            ->where('staff_meta.staffID = ?', $id);
-        $q = $jobs->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+        try {
+            $jobs = $app->db->staff_meta()
+                ->select('staff_meta.*,b.title,b.hourly_wage')
+                ->select('b.weekly_hours,c.grade')
+                ->_join('job', 'staff_meta.jobID = b.id', 'b')
+                ->_join('pay_grade', 'b.pay_grade = c.id ', 'c')
+                ->where('staff_meta.staffID = ?', $id);
+            $q = $jobs->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
 
         /**
          * If the database table doesn't exist, then it
@@ -360,7 +474,7 @@ $app->group('/hr', function () use($app, $css, $js, $flashNow) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($q[0]['staffID']) <= 0) {
+         */ elseif (count(_h($q[0]['staffID'])) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -369,10 +483,16 @@ $app->group('/hr', function () use($app, $css, $js, $flashNow) {
          * and it is ok to process the query and print
          * the results in a html format.
          */ else {
+
+            etsis_register_style('form');
+            etsis_register_style('table');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datepicker');
+            etsis_register_script('datatables');
+
             $app->view->display('hr/positions', [
                 'title' => 'Current/Former Positions',
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'positions' => $q
                 ]
             );

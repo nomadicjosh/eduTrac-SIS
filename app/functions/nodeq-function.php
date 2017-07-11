@@ -1,8 +1,10 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
-
-use \app\src\Core\NodeQ\etsis_NodeQ as Node;
+use app\src\Core\NodeQ\etsis_NodeQ as Node;
+use app\src\Core\NodeQ\NodeQException;
+use app\src\Core\Exception\Exception;
+use Cascade\Cascade;
 
 /**
  * eduTrac SIS NodeQ Functions
@@ -24,17 +26,12 @@ use \app\src\Core\NodeQ\etsis_NodeQ as Node;
  */
 function etsis_nodeq_login_details()
 {
-    $app = \Liten\Liten::getInstance();
-
-    $email = _etsis_email();
-    $site = _t('myeduTrac :: ') . _h(get_option('institution_name'));
-    $host = $app->req->server['HTTP_HOST'];
-    // Creates node's schema if does not exist.
-    Node::dispense('login_details');
-    
     try {
-        $sql = Node::table('login_details')->where('sent','=',0)->findAll();
-        
+        // Creates node's schema if does not exist.
+        Node::dispense('login_details');
+
+        $sql = Node::table('login_details')->where('sent', '=', 0)->findAll();
+
         if ($sql->count() == 0) {
             Node::table('login_details')->delete();
         }
@@ -55,13 +52,17 @@ function etsis_nodeq_login_details()
                 $message = str_replace('#helpdesk#', _h(get_option('help_desk')), $message);
                 $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
                 $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
-                $headers = "From: $site <auto-reply@$host>\r\n";
-                $headers .= "X-Mailer: PHP/" . phpversion();
-                $headers .= "MIME-Version: 1.0\r\n";
-                $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+                $message = process_email_html($message, _t("myetSIS Login Details"));
+                $headers[] = sprintf("From: %s <auto-reply@%s>", _t('myetSIS :: ') . _h(get_option('institution_name')), get_domain_name());
 
-                $email->etsis_mail(_h($r->email), _t("myeduTrac Login Details"), $message, $headers);
-                
+                try {
+                    _etsis_email()->etsisMail(_h($r->email), _t("myetSIS Login Details"), $message, $headers);
+                } catch (phpmailerException $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                } catch (Exception $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                }
+
                 $upd = Node::table('login_details')->find(_h($r->id));
                 $upd->sent = 1;
                 $upd->save();
@@ -72,8 +73,10 @@ function etsis_nodeq_login_details()
                 }
             }
         }
-    } catch (\Exception $e) {
-        return new \app\src\Core\Exception\Exception($e->getMessage(), 'NodeQ');
+    } catch (NodeQException $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
@@ -86,17 +89,14 @@ function etsis_nodeq_login_details()
  */
 function etsis_nodeq_reset_password()
 {
-    $app = \Liten\Liten::getInstance();
-
-    $email = _etsis_email();
     $from = _h(get_option('institution_name'));
-    $host = $app->req->server['HTTP_HOST'];
-    // Creates node's schema if does not exist.
-    Node::dispense('reset_password');
 
     try {
-        $sql = Node::table('reset_password')->where('sent','=',0)->findAll();
-        
+        // Creates node's schema if does not exist.
+        Node::dispense('reset_password');
+
+        $sql = Node::table('reset_password')->where('sent', '=', 0)->findAll();
+
         if ($sql->count() == 0) {
             Node::table('reset_password')->delete();
         }
@@ -117,13 +117,17 @@ function etsis_nodeq_reset_password()
                 $message = str_replace('#fname#', _h($r->fname), $message);
                 $message = str_replace('#lname#', _h($r->lname), $message);
                 $message = str_replace('#password#', _h($r->password), $message);
-                $headers = "From: $from <auto-reply@$host>\r\n";
-                $headers .= "X-Mailer: PHP/" . phpversion();
-                $headers .= "MIME-Version: 1.0\r\n";
-                $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+                $message = process_email_html($message, _t('Reset Password'));
+                $headers[] = sprintf("From: %s <auto-reply@%s>", $from, get_domain_name());
 
-                $email->etsis_mail(_h($r->email), _t('Reset Password'), $message, $headers);
-                
+                try {
+                    _etsis_email()->etsisMail(_h($r->email), _t('Reset Password'), $message, $headers);
+                } catch (phpmailerException $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                } catch (Exception $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                }
+
                 $upd = Node::table('reset_password')->find(_h($r->id));
                 $upd->sent = 1;
                 $upd->save();
@@ -134,8 +138,10 @@ function etsis_nodeq_reset_password()
                 }
             }
         }
-    } catch (\Exception $e) {
-        return new \app\src\Core\Exception\Exception($e->getMessage(), 'NodeQ');
+    } catch (NodeQException $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
@@ -150,18 +156,11 @@ function etsis_nodeq_csv_email()
 {
     $app = \Liten\Liten::getInstance();
 
-    $email = _etsis_email();
-    $site = _h(get_option('institution_name'));
-
-    $sitename = strtolower($app->req->server['SERVER_NAME']);
-    if (substr($sitename, 0, 4) == 'www.') {
-        $sitename = substr($sitename, 4);
-    }
-    // Creates node's schema if does not exist.
-    Node::dispense('csv_email');
-
     try {
-        $sql = Node::table('csv_email')->where('sent','=',0)->findAll();
+        // Creates node's schema if does not exist.
+        Node::dispense('csv_email');
+
+        $sql = Node::table('csv_email')->where('sent', '=', 0)->findAll();
 
         if ($sql->count() == 0) {
             Node::table('csv_email')->delete();
@@ -171,19 +170,23 @@ function etsis_nodeq_csv_email()
         $i = 0;
         if ($sql->count() > 0) {
             foreach ($sql as $r) {
-                $headers = "From: $site <auto-reply@$sitename>\r\n";
-                $headers .= "X-Mailer: PHP/" . phpversion();
-                $headers .= "MIME-Version: 1.0" . "\r\n";
-                $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+                $message = process_email_html(_escape($r->message), _h($r->subject));
+                $headers[] = sprintf("From: %s <auto-reply@%s>", _h(get_option('institution_name')), get_domain_name());
 
                 $attachment = $app->config('file.savepath') . _h($r->filename);
 
-                $email->etsis_mail(_h($r->recipient), _h($r->subject), _escape($r->message), $headers, [$attachment]);
+                try {
+                    _etsis_email()->etsisMail(_h($r->recipient), _h($r->subject), $message, $headers, [$attachment]);
+                } catch (phpmailerException $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                } catch (Exception $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                }
 
                 $upd = Node::table('csv_email')->find(_h($r->id));
                 $upd->sent = 1;
                 $upd->save();
-                
+
                 unlink($attachment);
 
                 if (++$i === $numItems) {
@@ -192,8 +195,10 @@ function etsis_nodeq_csv_email()
                 }
             }
         }
-    } catch (\Exception $e) {
-        return new \app\src\Core\Exception\Exception($e->getMessage(), 'NodeQ');
+    } catch (NodeQException $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }
 
@@ -207,16 +212,11 @@ function etsis_nodeq_csv_email()
  */
 function etsis_nodeq_change_address()
 {
-    $app = \Liten\Liten::getInstance();
-
-    $email = _etsis_email();
-    $host = $app->req->server['HTTP_HOST'];
-    $site = _t('myeduTrac :: ') . _h(get_option('institution_name'));
-    // Creates node's schema if does not exist.
-    Node::dispense('change_address');
-    
     try {
-        $sql = Node::table('change_address')->where('sent','=',0)->findAll();
+        // Creates node's schema if does not exist.
+        Node::dispense('change_address');
+
+        $sql = Node::table('change_address')->where('sent', '=', 0)->findAll();
 
         if ($sql->count() == 0) {
             Node::table('change_address')->delete();
@@ -231,7 +231,7 @@ function etsis_nodeq_change_address()
                 $message = str_replace('#fname#', _h($r->fname), $message);
                 $message = str_replace('#lname#', _h($r->lname), $message);
                 $message = str_replace('#name#', get_name(_h($r->personid)), $message);
-                $message = str_replace('#id#', _h($r->personid), $message);
+                $message = str_replace('#id#', get_alt_id(_h($r->personid)), $message);
                 $message = str_replace('#address1#', _h($r->address1), $message);
                 $message = str_replace('#address2#', _h($r->address2), $message);
                 $message = str_replace('#city#', _h($r->city), $message);
@@ -246,14 +246,17 @@ function etsis_nodeq_change_address()
                 $message = str_replace('#currentterm#', _h(get_option('current_term_code')), $message);
                 $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
                 $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
+                $message = process_email_html($message, _t('Change of Address Request'));
+                $headers[] = sprintf("From: %s <auto-reply@%s>", _t('myetSIS :: ') . _h(get_option('institution_name')), get_domain_name());
 
-                $headers = "From: $site <auto-reply@$host>\r\n";
-                $headers .= "X-Mailer: PHP/" . phpversion();
-                $headers .= "MIME-Version: 1.0" . "\r\n";
-                $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+                try {
+                    _etsis_email()->etsisMail(_h(get_option('contact_email')), _t('Change of Address Request'), $message, $headers);
+                } catch (phpmailerException $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                } catch (Exception $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                }
 
-                $email->etsis_mail(_h(get_option('contact_email')), _t('Change of Address Request'), $message, $headers);
-                
                 $upd = Node::table('change_address')->find(_h($r->id));
                 $upd->sent = 1;
                 $upd->save();
@@ -264,7 +267,223 @@ function etsis_nodeq_change_address()
                 }
             }
         }
-    } catch (\Exception $e) {
-        return new \app\src\Core\Exception\Exception($e->getMessage(), 'NodeQ');
+    } catch (NodeQException $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    }
+}
+
+/**
+ * Acceptance Letter
+ * 
+ * Function used to send acceptance letter when applicant
+ * has been accepted and moved to student.
+ * 
+ * @since 6.3.0
+ */
+function etsis_nodeq_acceptance_letter()
+{
+    try {
+        // Creates node's schema if does not exist.
+        Node::dispense('acceptance_letter');
+
+        $sql = Node::table('acceptance_letter')->where('sent', '=', 0)->findAll();
+
+        if ($sql->count() == 0) {
+            Node::table('acceptance_letter')->delete();
+        }
+
+        $numItems = $sql->count();
+        $i = 0;
+        if ($sql->count() > 0) {
+            foreach ($sql as $r) {
+                $message = _escape(get_option('student_acceptance_letter'));
+                $message = str_replace('#uname#', $r->uname, $message);
+                $message = str_replace('#fname#', $r->fname, $message);
+                $message = str_replace('#lname#', $r->lname, $message);
+                $message = str_replace('#name#', $r->name, $message);
+                $message = str_replace('#id#', get_alt_id($r->personid), $message);
+                $message = str_replace('#email#', $r->email, $message);
+                $message = str_replace('#sacp#', $r->sacp, $message);
+                $message = str_replace('#acadlevel#', $r->acadlevel, $message);
+                $message = str_replace('#degree#', $r->degree, $message);
+                $message = str_replace('#startterm#', $r->startterm, $message);
+                $message = str_replace('#adminemail#', _h(get_option('system_email')), $message);
+                $message = str_replace('#url#', get_base_url(), $message);
+                $message = str_replace('#helpdesk#', _h(get_option('help_desk')), $message);
+                $message = str_replace('#currentterm#', _h(get_option('current_term_code')), $message);
+                $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
+                $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
+                $message = process_email_html($message, _h(get_option('institution_name')) . ' ' . _t('Decision Notification'));
+                $headers[] = sprintf("From: %s <auto-reply@%s>", _h(get_option('institution_name')), get_domain_name());
+
+                try {
+                    _etsis_email()->etsisMail(_h(get_option('contact_email')), _h(get_option('institution_name')) . ' ' . _t('Decision Notification'), $message, $headers);
+                } catch (phpmailerException $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                } catch (Exception $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                }
+
+                $upd = Node::table('acceptance_letter')->find(_h($r->id));
+                $upd->sent = 1;
+                $upd->save();
+
+                if (++$i === $numItems) {
+                    //If we reach the last item, send user a desktop notification.
+                    etsis_push_notify('Acceptance Letter', 'An acceptance letter has been emailed to the new student.');
+                }
+            }
+        }
+    } catch (NodeQException $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    }
+}
+
+/**
+ * Send SMS
+ * 
+ * Function used to send sms messages.
+ * 
+ * @since 6.3.0
+ */
+function etsis_nodeq_send_sms()
+{
+    try {
+        // Creates node's schema if does not exist.
+        Node::dispense('sms');
+
+        $sql = Node::table('sms')->where('sent', '=', 0)->findAll();
+
+        if ($sql->count() == 0) {
+            Node::table('sms')->delete();
+        }
+
+        $numItems = $sql->count();
+        $i = 0;
+        if ($sql->count() > 0) {
+            foreach ($sql as $r) {
+                try {
+                    $client = new Twilio\Rest\Client(get_option('twilio_account_sid'), get_option('twilio_auth_token'));
+                    $client->messages->create(
+                        $r->number, // Text this number
+                        [
+                        'from' => get_option('twilio_phone_number'), // From a valid Twilio number
+                        'body' => $r->text
+                        ]
+                    );
+                } catch (Twilio\Exceptions\RestException $ex) {
+                    \Cascade\Cascade::getLogger('error')->error($ex->getMessage());
+                }
+
+                $upd = Node::table('sms')->find(_h($r->id));
+                $upd->sent = 1;
+                $upd->save();
+
+                if (++$i === $numItems) {
+                    //If we reach the last item, send user a desktop notification.
+                    etsis_push_notify('SMS', 'SMS messages sent.');
+                }
+            }
+        }
+    } catch (NodeQException $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    }
+}
+
+/**
+ * Sends course registration emails.
+ * 
+ * Function used to send acceptance letter when applicant
+ * has been accepted and moved to student.
+ * 
+ * @since 6.3.0
+ */
+function etsis_nodeq_course_registration()
+{
+    try {
+        // Creates node's schema if does not exist.
+        Node::dispense('crse_rgn');
+
+        $sql = Node::table('crse_rgn')->where('sent', '=', 0)->findAll();
+
+        if ($sql->count() == 0) {
+            Node::table('crse_rgn')->delete();
+        }
+
+        if ($sql->count() > 0) {
+            foreach ($sql as $r) {
+                _etsis_email()->crseRGNEmail(_h($r->stuid), _h($r->sections));
+
+                $upd = Node::table('crse_rgn')->find(_h($r->id));
+                $upd->sent = 1;
+                $upd->save();
+            }
+        }
+    } catch (NodeQException $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    }
+}
+
+/**
+ * Student email.
+ * 
+ * Function used to send emails from professors to their students.
+ * 
+ * @since 6.3.0
+ */
+function etsis_nodeq_student_email()
+{
+    try {
+        // Creates node's schema if does not exist.
+        Node::dispense('student_email');
+
+        $sql = Node::table('student_email')->where('sent', '=', 0)->findAll();
+
+        if ($sql->count() == 0) {
+            Node::table('student_email')->delete();
+        }
+
+        $numItems = $sql->count();
+        $i = 0;
+        if ($sql->count() > 0) {
+            foreach ($sql as $r) {
+                $from = get_person_by('email', _h($r->from));
+                $to = get_person_by('personID', _h($r->to));
+                $message = process_email_html(_escape($r->message), _h($r->subject));
+                $headers[] = sprintf("From: %s <auto-reply@%s>", _h(get_option('institution_name')), get_domain_name());
+                $headers[] = sprintf("Reply-to: %s", get_name(_h($from->personID)) . ' <' . _h($from->email) . '>');
+
+                try {
+                    _etsis_email()->etsisMail(_h($to->email), _h($r->subject), $message, $headers, [_h($r->attachment)]);
+                } catch (phpmailerException $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                } catch (Exception $e) {
+                    Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
+                }
+
+                $upd = Node::table('student_email')->find(_h($r->id));
+                $upd->sent = 1;
+                $upd->save();
+
+                if (++$i === $numItems) {
+                    //Delete attachment from server.
+                    unlink(_h($r->attachment));
+                    //If we reach the last item, send user a desktop notification.
+                    etsis_push_notify('Student email.', 'Email sent.');
+                }
+            }
+        }
+    } catch (NodeQException $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+    } catch (Exception $e) {
+        Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
     }
 }

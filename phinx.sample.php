@@ -35,8 +35,9 @@ return [
             "name" => DB_NAME,
             "user" => DB_USER,
             "pass" => DB_PASS,
-            "charset" => 'utf8',
-            //"port" => DB_PORT
+            "charset" => 'utf8mb4',
+            "collation" => 'utf8mb4_unicode_ci',
+            "port" => DB_PORT
         ]
     ]
 ];

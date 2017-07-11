@@ -11,7 +11,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'vsect';
 ?>
 
@@ -37,15 +36,13 @@ $(function(){
         $('#section').text($(this).val());
     });
 });
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>sect/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
+	<li><a href="<?=get_base_url();?>sect/" class="glyphicons search"><i></i> <?=_t( 'Section Lookup' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_h($sect->courseSection);?></li>
 </ul>
@@ -53,7 +50,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_h($sect->courseSection);?></h3>
 <div class="innerLR">
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen, '', $sect); ?>
 
@@ -72,12 +69,12 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons adjust_alt active"><a href="<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_h($sect->courseSection);?></a></li>
-                    <li class="glyphicons circle_info"><a href="<?=get_base_url();?>sect/addnl/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <?=_t( 'Additional Info' );?></a></li>
-                    <li class="glyphicons more_items tab-stacked"><a href="<?=get_base_url();?>sect/soff/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <?=_t( 'Offering Info' );?></a></li>
-                    <li<?=ml('financial_module');?> class="glyphicons money tab-stacked"><a href="<?=get_base_url();?>sect/sbill/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <?=_t( 'Billing Info' );?></a></li>
+                    <li class="glyphicons adjust_alt active"><a href="<?=get_base_url();?>sect/<?=_h($sect->courseSecID);?>/" data-toggle="tab"><i></i> <?=_h($sect->courseSection);?></a></li>
+                    <li class="glyphicons circle_info"><a href="<?=get_base_url();?>sect/addnl/<?=_h($sect->courseSecID);?>/"><i></i> <?=_t( 'Additional Info' );?></a></li>
+                    <li class="glyphicons more_items tab-stacked"><a href="<?=get_base_url();?>sect/soff/<?=_h($sect->courseSecID);?>/"><i></i> <?=_t( 'Offering Info' );?></a></li>
+                    <li<?=ml('financial_module');?> class="glyphicons money tab-stacked"><a href="<?=get_base_url();?>sect/sbill/<?=_h($sect->courseSecID);?>/"><i></i> <?=_t( 'Billing Info' );?></a></li>
                     <?php if($sect->roomCode != '') : ?>
-                    <li<?=ml('booking_module');?> class="glyphicons calendar tab-stacked"><a href="<?=get_base_url();?>sect/sbook/<?=_h($sect->courseSecID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Booking Info' );?></span></a></li>
+                    <li<?=ml('booking_module');?> class="glyphicons calendar tab-stacked"><a href="<?=get_base_url();?>sect/sbook/<?=_h($sect->courseSecID);?>/"><i></i> <span><?=_t( 'Booking Info' );?></span></a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -159,7 +156,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Level' );?></label>
                             <div class="col-md-8">
-                                <?=course_level_select(_h($sect->courseLevelCode), csid());?>
+                                <select name="courseLevelCode" id="courseLevelCode"<?=csid();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+									<option value="">&nbsp;</option>
+	                        		<?php table_dropdown('crlv', null, 'code', 'code', 'name', _h($sect->courseLevelCode)); ?>
+	                        	</select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -168,7 +168,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($sect->acadLevelCode), csid().' ','required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=csid();?> required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name',_h($sect->acadLevelCode)); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -230,7 +233,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             </div>
                             
                             <div class="col-md-4">
-                                <input class="form-control" type="text" readonly value="<?=date('D, M d, o',strtotime(_h($sect->statusDate)));?>" />
+                                <input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($sect->statusDate))->format('D, M d, o');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -258,7 +261,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Approval Date' );?></label>
 							<div class="col-md-8">
-								<input type="text" readonly value="<?=date('D, M d, o',strtotime(_h($sect->approvedDate)));?>" class="form-control" />
+								<input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($sect->approvedDate))->format('D, M d, o');?>" class="form-control" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -274,7 +277,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <?php if(hasPermission('submit_final_grades')) : ?>
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Final Grades' );?> <a href="<?=get_base_url();?>sect/fgrade/<?=_h($sect->courseSecID);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Final Grades' );?> <a href="<?=get_base_url();?>sect/fgrade/<?=_h($sect->courseSecID);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-2">
                                 <input type="text" disabled value="X" class="form-control col-md-1 center" />
                             </div>
@@ -293,7 +296,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<div class="form-actions">
 				    <input type="hidden" name="courseSecCode" value="<?=_h($sect->courseSecCode);?>" />
 					<button type="submit"<?=csids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>sect/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>sect/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

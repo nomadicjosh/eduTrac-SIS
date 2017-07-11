@@ -13,117 +13,74 @@
 
 namespace Desarrolla2\Cache\Adapter;
 
-use \Memcached as BaseMemcached;
+use Memcached as BaseMemcached;
 
 /**
  * Memcached
- *
- * @author : RJ Garcia <rj@bighead.net>
  */
 class Memcached extends AbstractAdapter
 {
     /**
-     *
-     * @var \Memcached
+     * @var BaseMemcached
      */
-    public $adapter;
+    protected $server;
 
     /**
-     * Accept three types of inputs: a \Memcached instance already to use
-     * as the internal adapter, an array of servers which will be added to
-     * a memcached instance, or null, and we'll just build a default memcached
-     * instance
-     *
-     * @param mixed $data
-     *
+     * @param BaseMemcached|null $server
      */
-    public function __construct($data = null, $options = array())
+    public function __construct(BaseMemcached $server = null)
     {
-        if ($data instanceof BaseMemcached) {
-            $this->adapter = $data;
-        } else {
-            $this->adapter = new BaseMemcached();
+        if ($server) {
+            $this->server = $server;
+
+            return;
         }
-
-        if (is_array($data)) {
-            /* if array, then the user supplied an array of servers */
-            foreach ($data as $s) {
-                $this->adapter->addServer($s['host'], $s['port'], $s['weight']);
-            }
-        }
-
-        $this->setOption($options);
+        $this->server = new BaseMemcached();
+        $this->server->addServer('localhost', 11211);
     }
 
     /**
-     *
-     * @param string $host
-     * @param int    $port
-     * @param int    $weight
-     *
+     * {@inheritdoc}
      */
-    public function addServer($host, $port, $weight = 0)
+    public function del($key)
     {
-        $this->adapter->addServer($host, $port, $weight);
+        $this->server->delete($this->getKey($key));
     }
 
     /**
-     * Delete a value from the cache
-     *
-     * @param string $key
-     */
-    public function delete($key)
-    {
-        $this->adapter->delete($this->buildKey($key));
-    }
-
-    /**
-     * {@inheritdoc }
+     * {@inheritdoc}
      */
     public function get($key)
     {
-        return $this->unpackData(
-            $this->adapter->get(
-                $this->buildKey($key)
-            )
-        );
+        $data = $this->server->get($this->getKey($key));
+        if (!$data) {
+            return;
+        }
+
+        return $this->unPack($data);
     }
 
     /**
-     * {@inheritdoc }
+     * {@inheritdoc}
      */
     public function has($key)
     {
-        /* It seems that the most efficient way to check has in memcached is
-           by using an append with an empty string. However, we need to make
-           sure that OPT_COMPRESSION is turned off because you can't append
-           if you compressing data */
+        $data = $this->server->get($this->getKey($key));
+        if (!$data) {
+            return false;
+        }
 
-        /* store for later use */
-        $cur_compression = $this->adapter->getOption(BaseMemcached::OPT_COMPRESSION);
-
-        /* set compression off */
-        $this->adapter->setOption(BaseMemcached::OPT_COMPRESSION, false);
-
-        $res = $this->adapter->append(
-            $this->buildKey($key),
-            ''
-        );
-
-        $this->adapter->setOption(BaseMemcached::OPT_COMPRESSION, $cur_compression);
-
-        return $res;
+        return true;
     }
 
     /**
-     * {@inheritdoc }
+     * {@inheritdoc}
      */
     public function set($key, $value, $ttl = null)
     {
-        $this->adapter->set(
-            $this->buildKey($key),
-            $this->packData($value),
-            $ttl ?: $this->ttl
-        );
+        if (!$ttl) {
+            $ttl = $this->ttl;
+        }
+        $this->server->set($this->getKey($key), $this->pack($value), time() + $ttl);
     }
 }

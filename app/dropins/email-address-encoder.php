@@ -10,8 +10,8 @@ if (! defined('EAE_FILTER_PRIORITY'))
 
 foreach (array(
     'the_custom_page_content',
-    'the_myet_page_content',
-    'the_myet_welcome_message'
+    'the_myetsis_page_content',
+    'the_myetsis_welcome_message'
 ) as $filter) {
     $app->hook->add_filter($filter, 'eae_encode_emails', EAE_FILTER_PRIORITY);
 }

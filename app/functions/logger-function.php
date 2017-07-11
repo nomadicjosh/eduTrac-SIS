@@ -11,6 +11,95 @@ if (!defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
+$app = \Liten\Liten::getInstance();
+use Cascade\Cascade;
+
+$config = [
+    'version' => 1,
+    'disable_existing_loggers' => false,
+    'formatters' => [
+        'spaced' => [
+            'format' => "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n",
+            'include_stacktraces' => true
+        ],
+        'dashed' => [
+            'format' => "%datetime%-%channel%.%level_name% - %message% - %context% - %extra%\n"
+        ],
+        'exception' => [
+            'format' => "[%datetime%] %message% %context% %extra%\n",
+            'include_stacktraces' => true
+        ]
+    ],
+    'handlers' => [
+        'console' => [
+            'class' => 'Monolog\Handler\StreamHandler',
+            'level' => 'DEBUG',
+            'formatter' => 'exception',
+            'stream' => 'php://stdout'
+        ],
+        'info_file_handler' => [
+            'class' => 'Monolog\Handler\RotatingFileHandler',
+            'level' => 'INFO',
+            'formatter' => 'exception',
+            'maxFiles' => 10,
+            'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-info.txt'
+        ],
+        'error_file_handler' => [
+            'class' => 'Monolog\Handler\RotatingFileHandler',
+            'level' => 'ERROR',
+            'formatter' => 'exception',
+            'maxFiles' => 10,
+            'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-error.txt'
+        ],
+        'notice_file_handler' => [
+            'class' => 'Monolog\Handler\RotatingFileHandler',
+            'level' => 'NOTICE',
+            'formatter' => 'exception',
+            'maxFiles' => 10,
+            'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-notice.txt'
+        ],
+        'critical_file_handler' => [
+            'class' => 'Monolog\Handler\RotatingFileHandler',
+            'level' => 'CRITICAL',
+            'formatter' => 'exception',
+            'maxFiles' => 10,
+            'filename' => APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-critical.txt'
+        ],
+        'alert_file_handler' => [
+            'class' => 'app\src\Core\etsis_MailHandler',
+            'level' => 'ALERT',
+            'formatter' => 'exception',
+            'mailer' => new app\src\Core\etsis_Email(),
+            'message' => 'This message will be replaced with the real one.',
+            'email_to' => $app->hook->apply_filter('system_alert_email', _h($app->hook->get_option('system_email'))),
+            'subject' => _t('eduTrac SIS System Alert!')
+        ]
+    ],
+    'processors' => [
+        'tag_processor' => [
+            'class' => 'Monolog\Processor\TagProcessor'
+        ]
+    ],
+    'loggers' => [
+        'info' => [
+            'handlers' => ['console', 'info_file_handler']
+        ],
+        'error' => [
+            'handlers' => ['console', 'error_file_handler']
+        ],
+        'notice' => [
+            'handlers' => ['console', 'notice_file_handler']
+        ],
+        'critical' => [
+            'handlers' => ['console', 'critical_file_handler']
+        ],
+        'system_email' => [
+            'handlers' => ['console', 'alert_file_handler']
+        ]
+    ]
+];
+
+Cascade::fileConfig($app->hook->apply_filter('monolog_cascade_config', $config));
 
 /**
  * Default Error Handler
@@ -82,13 +171,12 @@ function etsis_logger_activity_log_purge()
  *            Log channel and log file prefix.
  * @param string $message
  *            Message printed to log.
- * @param string $level The logging level.
  */
-function etsis_monolog($name, $message, $level = 'addInfo')
+function etsis_monolog($name, $message)
 {
     $log = new \Monolog\Logger(_trim($name));
-    $log->pushHandler(new \Monolog\Handler\StreamHandler(APP_PATH .'tmp'.DS.'logs'.DS._trim($name).'.'.date('m-d-Y').'.txt'));
-    $log->$level($message);
+    $log->pushHandler(new \Monolog\Handler\StreamHandler(APP_PATH . 'tmp' . DS . 'logs' . DS . _trim($name) . '.' . \Jenssegers\Date\Date::now()->format('m-d-Y') . '.txt'));
+    $log->addError($message);
 }
 
 /**
@@ -114,7 +202,7 @@ function etsis_set_environment()
         error_reporting(E_ALL & ~E_NOTICE);
         ini_set('display_errors', 'Off');
         ini_set('log_errors', 'On');
-        ini_set('error_log', BASE_PATH . 'app' . DS . 'tmp' . DS . 'logs' . DS . 'error.' . date('m-d-Y') . '.txt');
+        ini_set('error_log', APP_PATH . 'tmp' . DS . 'logs' . DS . 'etsis-error-' . \Jenssegers\Date\Date::now()->format('Y-m-d') . '.txt');
         set_error_handler('etsis_error_handler', E_ALL & ~E_NOTICE);
     }
 }

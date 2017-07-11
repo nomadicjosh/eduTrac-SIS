@@ -32,6 +32,7 @@ use Phinx\Db\Adapter\AdapterFactory;
 use Phinx\Db\Adapter\AdapterInterface;
 use Phinx\Migration\MigrationInterface;
 use Phinx\Seed\SeedInterface;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Environment
@@ -45,6 +46,11 @@ class Environment
      * @var array
      */
     protected $options;
+
+    /**
+     * @var InputInterface
+     */
+    protected $input;
 
     /**
      * @var OutputInterface
@@ -102,6 +108,8 @@ class Environment
             if ($direction === MigrationInterface::DOWN) {
                 // Create an instance of the ProxyAdapter so we can record all
                 // of the migration commands for reverse playback
+
+                /** @var \Phinx\Db\Adapter\ProxyAdapter $proxyAdapter */
                 $proxyAdapter = AdapterFactory::instance()
                     ->getWrapper('proxy', $this->getAdapter());
                 $migration->setAdapter($proxyAdapter);
@@ -197,6 +205,28 @@ class Environment
     }
 
     /**
+     * Sets the console input.
+     *
+     * @param InputInterface $input
+     * @return Environment
+     */
+    public function setInput(InputInterface $input)
+    {
+        $this->input = $input;
+        return $this;
+    }
+
+    /**
+     * Gets the console input.
+     *
+     * @return InputInterface
+     */
+    public function getInput()
+    {
+        return $this->input;
+    }
+
+    /**
      * Sets the console output.
      *
      * @param OutputInterface $output Output
@@ -229,7 +259,8 @@ class Environment
     }
 
     /**
-     * Get all migration log entries, indexed by version number.
+     * Get all migration log entries, indexed by version creation time and sorted ascendingly by the configuration's 
+     * version_order option
      *
      * @return array
      */
@@ -310,6 +341,10 @@ class Environment
         if (isset($this->options['wrapper'])) {
             $adapter = AdapterFactory::instance()
                 ->getWrapper($this->options['wrapper'], $adapter);
+        }
+
+        if ($this->getInput()) {
+            $adapter->setInput($this->getInput());
         }
 
         if ($this->getOutput()) {

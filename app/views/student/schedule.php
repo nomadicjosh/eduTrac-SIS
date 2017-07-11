@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * myeduTrac Student Schedule View
+ * myetSIS Student Schedule View
  *  
  * @license GPLv3
  * 
@@ -10,8 +10,8 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
-$app->view->block('myet');
+$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->block('myetsis');
 $stu = get_student(get_persondata('personID'));
 ?>
 
@@ -59,10 +59,14 @@ $stu = get_student(get_persondata('personID'));
                     <td class="text-center"><?=_h($v['dotw']);?></td>
                     <td class="text-center"><?=_h($v['startTime'].' To '.$v['endTime']);?></td>
                     <td class="text-center"><?=get_name(_h($v['facID']));?></td>
-                    <?php if(function_exists('gradebook_module') && gradebookExist(_h($v['courseSecID']))) : ?>
+                    <?php if(function_exists('gradebook_module')) : ?>
+                    <?php if(gb_assignment(_h($v['courseSecID'])) > 0) : ?>
                     <td class="text-center">
                     	<a href="<?=get_base_url();?>stu/grades/<?=_h($v['courseSecID']);?>/" title="Grades" class="btn btn-primary"><i class="fa fa-book"></i></a>
 					</td>
+                    <?php else : ?>
+                    <td class="text-center"></td>
+                    <?php endif; ?>
                     <?php endif; ?>
                 </tr>
 				<?php } endif; ?>

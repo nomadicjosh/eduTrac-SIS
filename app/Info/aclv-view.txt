@@ -1,0 +1,11 @@
+<p><strong>ACLV Code:</strong> Enter a unique academic level code.</p>
+<p><strong>ACLV Name:</strong> Enter the name of this academic level</p>
+<p><strong>HT Credits:</strong> This is the number of credit hours required for a student to be considered half time.</p>
+<p><strong>FT Credits:</strong> This is the minimum number of credit hours required for a student to be considered full time.</p>
+<p><strong>OVR Credits:</strong> This is the maximum number of credit hours that a student at this academic level can take before the number of credits are considered an overload.</p>
+<p><strong>Grad Level:</strong> This yes/no parameter indicates whether this academic level is a graduate level.</p>
+<p><strong>Completion Months:</strong> This is the number of months an average student completes an academic program within this academic level. This number of months is added to a student's academic program start date to calculate his/her anticipated completion date.</p>
+<p><strong>Academic Level Standing (ALST):</strong> <img src="../../../static/common/theme/images/cascade.png" /> Drill to detail into this screen to set/update the academic level standing rules for the current academic level.</p>
+<p><strong>Student Load Rules (STLD):</strong> <img src="../../../static/common/theme/images/cascade.png" /> Drill to detail into this screen to set/update the student load rules for the current academic level. If no student load rules exist for this academic level, the system will use the default HT, FT and OVR values you've entered instead.</p>
+<p><strong>Class Levels (CLAS):</strong> <img src="../../../static/common/theme/images/cascade.png" /> Drill to detail into this screen to create/update the class levels for the current academic level.</p>
+<p><strong>Class Level Rules (CLVR):</strong> <img src="../../../static/common/theme/images/cascade.png" /> Drill to detail into this screen to set/update the class level rules for the current academic level.</p>

@@ -12,18 +12,12 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'cron';
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Cronjob Handler Settings' );?></li>
 </ul>
@@ -31,7 +25,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Cronjob Handler Settings' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 
@@ -44,11 +38,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons dashboard"><a href="<?=get_base_url();?>cron/<?=bm();?>"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
-                    <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/<?=bm();?>"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
-                    <li class="glyphicons list tab-stacked"><a href="<?=get_base_url();?>cron/log/<?=bm();?>"><i></i> <?=_t( 'Log' );?></a></li>
-                    <li class="glyphicons wrench tab-stacked active"><a href="<?=get_base_url();?>cron/setting/<?=bm();?>" data-toggle="tab"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
-                    <!-- <li class="glyphicons circle_question_mark tab-stacked"><a href="<?=get_base_url();?>cron/about/<?=bm();?>"><i></i> <span><?=_t( 'About' );?></span></a></li> -->
+                    <li class="glyphicons dashboard"><a href="<?=get_base_url();?>cron/"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
+                    <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
+                    <li class="glyphicons wrench tab-stacked active"><a href="<?=get_base_url();?>cron/setting/" data-toggle="tab"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -70,7 +62,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Cronjob Password' );?>  <a href="#cronpass" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 							<div class="col-md-8">
-								<input type="text" id="cronjobpassword" name="cronjobpassword" value="<?=_h($data['settings']['cronjobpassword']);?>" class="form-control" required/>
+								<input type="text" id="cronjobpassword" name="cronjobpassword" value="<?=_h($data->cronjobpassword);?>" class="form-control" required/>
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -85,7 +77,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Cronjob Timeout" );?> <a href="#crontimeout" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-8">
-                                <input type="text" id="timeout" name="timeout" value="<?=($data['settings']['timeout'] !== null) ? $data['settings']['timeout'] : 30;?>" class="form-control" required/>
+                                <input type="text" id="timeout" name="timeout" value="<?=($data->timeout !== null) ? $data->timeout : 30;?>" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -123,7 +115,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">
-		            <p><?=_t( "This password is required in order to run your master cronjob (i.e. http://localhost/etsis/cron/cronjob?password=CRONPASSWORD)." );?></p>
+		            <p><?=_t( "This password is required in order to run your master cronjob (i.e. http://replace_url/cron/cronjob?password=CRONPASSWORD)." );?></p>
 		        </div>
 		        <div class="modal-footer">
 		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>

@@ -12,18 +12,12 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'sem';
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 5000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Semester' );?></li>
 </ul>
@@ -31,7 +25,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 <h3><?=_t( 'Semester' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 
@@ -172,8 +166,8 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                 <?php if($semester != '') : foreach($semester as $key => $value) { ?>
                 <tr class="gradeX">
                     <td class="text-center"><?=_h($value['semName']);?></td>
-                    <td class="text-center"><?=date('D, M d, o',strtotime(_h($value['semStartDate'])));?></td>
-                    <td class="text-center"><?=date('D, M d, o',strtotime(_h($value['semEndDate'])));?></td>
+                    <td class="text-center"><?=\Jenssegers\Date\Date::parse(_h($value['semStartDate']))->format('D, M d, o');?></td>
+                    <td class="text-center"><?=\Jenssegers\Date\Date::parse(_h($value['semEndDate']))->format('D, M d, o');?></td>
                     <td class="text-center"><?php if($value['active'] == 1) {echo 'Active';}else{'Inactive';} ?></td>
                     <td class="text-center">
                     	<div class="btn-group dropup">
@@ -183,7 +177,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>form/semester/<?=_h($value['semesterID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>form/semester/<?=_h($value['id']);?>/"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

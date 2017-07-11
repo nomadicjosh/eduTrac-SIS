@@ -28,6 +28,8 @@
  */
 namespace Phinx\Db\Table;
 
+use Phinx\Db\Adapter\AdapterInterface;
+
 /**
  *
  * This object is based loosely on: http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/Table.html.
@@ -93,11 +95,6 @@ class Column
      * @var boolean
      */
     protected $signed = true;
-    
-    /**
-     * @var boolean
-     */
-    protected $zerofill = false;
 
     /**
      * @var boolean
@@ -107,7 +104,17 @@ class Column
     /**
      * @var array
      */
-    protected $properties = [];
+    protected $properties = array();
+
+    /**
+     * @var string
+     */
+    protected $collation;
+
+    /**
+     * @var string
+     */
+    protected $encoding;
 
     /**
      * @var array
@@ -391,7 +398,7 @@ class Column
     /**
      * Gets whether field should be signed.
      *
-     * @return string
+     * @return boolean
      */
     public function getSigned()
     {
@@ -406,37 +413,6 @@ class Column
     public function isSigned()
     {
         return $this->getSigned();
-    }
-    
-    /**
-     * Sets whether field should be filled with zero.
-     *
-     * @param  boolean $zerofill
-     *
-     * @return Column
-     */
-    public function setZerofill($zerofill)
-    {
-        $this->zerofill = (boolean) $zerofill;
-        return $this;
-    }
-    /**
-     * Gets whether field should be filled with zero.
-     *
-     * @return boolean
-     */
-    public function getZerofill()
-    {
-        return $this->zerofill;
-    }
-    /**
-     * Should the column be zerofill?
-     * 
-     * @return boolean
-     */
-    public function isZerofill()
-    {
-        return $this->getZerofill();
     }
 
     /**
@@ -514,11 +490,77 @@ class Column
     /**
      * Gets field values
      *
-     * @return string
+     * @return array
      */
     public function getValues()
     {
         return $this->values;
+    }
+
+    /**
+     * Sets the column collation.
+     *
+     * @param string $collation
+     *
+     * @throws \UnexpectedValueException If collation not allowed for type
+     * @return $this
+     */
+    public function setCollation($collation)
+    {
+        $allowedTypes = array(
+            AdapterInterface::PHINX_TYPE_CHAR,
+            AdapterInterface::PHINX_TYPE_STRING,
+            AdapterInterface::PHINX_TYPE_TEXT,
+        );
+        if (!in_array($this->getType(), $allowedTypes))
+            throw new \UnexpectedValueException('Collation may be set only for types: ' . implode(', ', $allowedTypes));
+
+        $this->collation = $collation;
+
+        return $this;
+    }
+
+    /**
+     * Gets the column collation.
+     *
+     * @return string
+     */
+    public function getCollation()
+    {
+        return $this->collation;
+    }
+
+    /**
+     * Sets the column character set.
+     *
+     * @param string $encoding
+     *
+     * @throws \UnexpectedValueException If character set not allowed for type
+     * @return $this
+     */
+    public function setEncoding($encoding)
+    {
+        $allowedTypes = array(
+            AdapterInterface::PHINX_TYPE_CHAR,
+            AdapterInterface::PHINX_TYPE_STRING,
+            AdapterInterface::PHINX_TYPE_TEXT,
+        );
+        if (!in_array($this->getType(), $allowedTypes))
+            throw new \UnexpectedValueException('Character set may be set only for types: ' . implode(', ', $allowedTypes));
+
+        $this->encoding = $encoding;
+
+        return $this;
+    }
+
+    /**
+     * Gets the column character set.
+     *
+     * @return string
+     */
+    public function getEncoding()
+    {
+        return $this->encoding;
     }
 
     /**
@@ -539,10 +581,11 @@ class Column
             'update',
             'comment',
             'signed',
-            'zerofill',
             'timezone',
             'properties',
             'values',
+            'collation',
+            'encoding',
         );
     }
 

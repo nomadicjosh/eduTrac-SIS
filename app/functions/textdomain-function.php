@@ -24,7 +24,7 @@ function load_core_locale()
     $app = \Liten\Liten::getInstance();
 
     if (is_readable(BASE_PATH . 'config.php')) {
-        $locale = get_option('et_core_locale');
+        $locale = get_option('etsis_core_locale');
     } else {
         $locale = 'en_US';
     }

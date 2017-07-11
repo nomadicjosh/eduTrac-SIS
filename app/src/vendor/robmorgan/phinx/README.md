@@ -5,10 +5,18 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/robmorgan/phinx/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/robmorgan/phinx/)
 [![Latest Stable Version](https://poser.pugx.org/robmorgan/phinx/version.png)](https://packagist.org/packages/robmorgan/phinx)
 [![Total Downloads](https://poser.pugx.org/robmorgan/phinx/d/total.png)](https://packagist.org/packages/robmorgan/phinx)
+[![Join the chat at https://gitter.im/phinx-php/Lobby](https://badges.gitter.im/phinx-php/Lobby.svg)](https://gitter.im/phinx-php/Lobby)
 
-Phinx makes it ridiculously easy to manage the database migrations for your PHP app. In less than 5 minutes you can install Phinx and create your first database migration. Phinx is just about migrations without all the bloat of a database ORM system or framework.
+## Supporting Phinx
 
-**Check out http://docs.phinx.org for the comprehensive documentation.**
+Phinx is a MIT-licensed open source project. Its ongoing development wouldn't be possible without the support of these very generous
+[backers](https://github.com/robmorgan/phinx/blob/master/BACKERS.md). If you'd like to join them, check out the [Phinx Patreon campaign](https://www.patreon.com/robmorgan).
+
+## Intro
+
+Phinx makes it ridiculously easy to manage the database migrations for your PHP app. In less than 5 minutes, you can install Phinx and create your first database migration. Phinx is just about migrations without all the bloat of a database ORM system or framework.
+
+**Check out http://docs.phinx.org ([EN](http://docs.phinx.org), [ZH](https://tsy12321.gitbooks.io/phinx-doc/)) for the comprehensive documentation.**
 
 ![phinxterm](https://cloud.githubusercontent.com/assets/178939/3887559/e6b5e524-21f2-11e4-8256-0ba6040725fc.gif)
 
@@ -101,6 +109,10 @@ You can also use the Box application to build Phinx as a Phar archive (https://b
 
 Check out http://docs.phinx.org for the comprehensive documentation.
 
+Other translations include:
+
+ * [Chinese](https://tsy12321.gitbooks.io/phinx-doc/) (Maintained by [@tsy12321](https://github.com/tsy12321/phinx-doc))
+
 ## Contributing
 
 Please read the [CONTRIBUTING](CONTRIBUTING.md) document.
@@ -119,7 +131,7 @@ Please read the [CHANGELOG](CHANGELOG.md) document.
 
 (The MIT license)
 
-Copyright (c) 2016 Rob Morgan
+Copyright (c) 2017 Rob Morgan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

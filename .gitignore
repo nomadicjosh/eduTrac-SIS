@@ -1,4 +1,4 @@
-.DS_Store 
+.DS_Store
 .buildpath
 .idea/
 .project
@@ -28,4 +28,8 @@ composer.json
 composer.lock
 app/plugins/etsis-smtp/
 app/plugins/amazonS3Backup/
+app/plugins/degree-audit/
+app/plugins/hidden-fields/
+app/plugins/any-sms/
 etmigrate.php
+phinx.php

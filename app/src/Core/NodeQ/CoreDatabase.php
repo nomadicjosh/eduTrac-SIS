@@ -2,7 +2,7 @@
 
 namespace app\src\Core\NodeQ;
 
-use \app\src\Core\NodeQ\LazerException;
+use \app\src\Core\NodeQ\NodeQException;
 use \app\src\Core\NodeQ\Database;
 use \app\src\Core\NodeQ\Relation;
 use \app\src\Core\NodeQ\Helpers;
@@ -69,7 +69,7 @@ abstract class CoreDatabase implements \IteratorAggregate, \Countable {
      * Factory pattern
      * @param string $name Name of table
      * @return \Lazer\Classes\Database
-     * @throws LazerException If there's problems with load file
+     * @throws NodeQException If there's problems with load file
      */
     public static function table($name)
     {
@@ -106,7 +106,7 @@ abstract class CoreDatabase implements \IteratorAggregate, \Countable {
      * Returns array key of row with specified ID
      * @param integer $id Row ID
      * @return integer Row key
-     * @throws LazerException If there's no data with that ID
+     * @throws NodeQException If there's no data with that ID
      */
     protected function getRowKey($id)
     {
@@ -118,7 +118,7 @@ abstract class CoreDatabase implements \IteratorAggregate, \Countable {
                 break;
             }
         }
-        throw new LazerException('No data found with ID: ' . $id);
+        throw new NodeQException('No data found with ID: ' . $id);
     }
 
     /**
@@ -193,14 +193,14 @@ abstract class CoreDatabase implements \IteratorAggregate, \Countable {
      * Returning variable from Object
      * @param string $name Field name
      * @return mixed Field value
-     * @throws LazerException
+     * @throws NodeQException
      */
     public function __get($name)
     {
         if (isset($this->set->{$name}))
             return $this->set->{$name};
 
-        throw new LazerException('There is no data');
+        throw new NodeQException('There is no data');
     }
 
     /**
@@ -259,7 +259,7 @@ abstract class CoreDatabase implements \IteratorAggregate, \Countable {
      * @uses Lazer\Classes\Helpers\Config::put() to save config file
      * @param string $name Table name
      * @param array $fields Field configuration
-     * @throws LazerException If table exist
+     * @throws NodeQException If table exist
      */
     public static function create($name, array $fields)
     {
@@ -267,7 +267,7 @@ abstract class CoreDatabase implements \IteratorAggregate, \Countable {
 
         if (Helpers\Data::table($name)->exists() && Helpers\Config::table($name)->exists())
         {
-            throw new LazerException('helper\Table "' . $name . '" already exists');
+            throw new NodeQException('helper\Table "' . $name . '" already exists');
         }
 
         $types = array_values($fields);
@@ -293,7 +293,7 @@ abstract class CoreDatabase implements \IteratorAggregate, \Countable {
      * @uses Lazer\Classes\Helpers\Data::remove() to remove data file
      * @uses Lazer\Classes\Helpers\Config::remove() to remove config file
      * @param string $name Table name
-     * @return boolean|LazerException
+     * @return boolean|NodeQException
      */
     public static function remove($name)
     {

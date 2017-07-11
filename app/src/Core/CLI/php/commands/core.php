@@ -39,9 +39,9 @@ class Core_Command extends ETSIS_CLI_Command
     public function info()
     {
         ETSIS_CLI::line('eduTrac SIS ' . file_get_contents('RELEASE'));
-        ETSIS_CLI::line('Copyright (c) 2013-2016 Joshua Parker <joshmac3@icloud.com>');
+        ETSIS_CLI::line('Copyright (c) 2013-2017 Joshua Parker <joshmac3@icloud.com>');
     }
-    
+
     /**
      * Populate database and create config file.
      * 
@@ -54,7 +54,7 @@ class Core_Command extends ETSIS_CLI_Command
      */
     public function install()
     {
-        ETSIS_CLI::line('This command is deprecated, please use the new command: %G./etsis core migrate%n');
+        ETSIS_CLI::line('This command has been removed and replaced with: %G./etsis core migrate%n');
     }
 
     /**
@@ -96,7 +96,7 @@ class Core_Command extends ETSIS_CLI_Command
     {
         ETSIS_CLI::line(shell_exec('./phinx status -e production'));
     }
-    
+
     /**
      * Use this command to check for a new update.
      * 
@@ -107,6 +107,11 @@ class Core_Command extends ETSIS_CLI_Command
      */
     public function check_update()
     {
+        if (version_compare(PHP_VERSION, '5.6', '<')) {
+            ETSIS_CLI::line('To upgrade to release 6.3+, your server must be using a minimum of %GPHP 5.6%n.');
+            return false;
+        }
+
         $update = new \VisualAppeal\AutoUpdate('app/tmp', 'app/tmp', 1800);
         $update->setCurrentVersion(trim(file_get_contents('RELEASE')));
         $update->setUpdateUrl('http://etsis.s3.amazonaws.com/core/1.1/update-check');
@@ -123,7 +128,7 @@ class Core_Command extends ETSIS_CLI_Command
             }
         }
     }
-    
+
     /**
      * Use this command to update installation.
      * 
@@ -132,25 +137,35 @@ class Core_Command extends ETSIS_CLI_Command
      *      #Updates a current installation.
      *      $ ./etsis core update
      */
-    public function update()
+    public function update($args, $assoc_args)
     {
+        if (version_compare(PHP_VERSION, '5.6', '<')) {
+            ETSIS_CLI::line('To upgrade to release 6.3+, your server must be using a minimum of %GPHP 5.6%n.');
+            return false;
+        }
+
+        if (!isset($assoc_args['release'])) {
+            $release = ETSIS_CLI::getCurrentRelease();
+        } else {
+            $release = $assoc_args['release'];
+        }
+
         $zip = new ZipArchive;
-        $current_release = ETSIS_CLI::getCurrentRelease();
-        $file = 'http://etsis.s3.amazonaws.com/core/1.1/release/' . $current_release . '.zip';
-        if (version_compare(trim(file_get_contents('RELEASE')), $current_release, '<')) {
+        $file = 'http://etsis.s3.amazonaws.com/core/1.1/release/' . $release . '.zip';
+        if (version_compare(trim(file_get_contents('RELEASE')), $release, '<')) {
             if (ETSIS_CLI::checkExternalFile($file) == 200) {
                 //Download file to the server
                 opt_notify(new \cli\progress\Bar('Downloading ', 1000000));
-                ETSIS_CLI::getDownload($current_release . '.zip', $file);
+                ETSIS_CLI::getDownload($release . '.zip', $file);
                 //Unzip the file to update
                 opt_notify(new \cli\progress\Bar('Unzipping ', 1000000));
-                $x = $zip->open($current_release . '.zip');
+                $x = $zip->open($release . '.zip');
                 if ($x === true) {
                     //Extract file in root.
                     $zip->extractTo(realpath(__DIR__ . '/../../../../../../'));
                     $zip->close();
                     //Remove download after completion.
-                    unlink($current_release . '.zip');
+                    unlink($release . '.zip');
                 }
                 ETSIS_CLI::line('Core upgrade complete.');
                 ETSIS_CLI::line('Run the command %G./etsis db migrate%n to check for database updates.');

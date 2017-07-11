@@ -1,6 +1,13 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use \app\src\Core\NodeQ\etsis_NodeQ as Node;
+use app\src\Core\NodeQ\NodeQException;
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+use Cascade\Cascade;
+
 /**
  * Course Section Router
  *  
@@ -14,53 +21,24 @@ if (!defined('BASE_PATH'))
  * Before route check.
  */
 $app->before('GET|POST', '/sect(.*)', function() {
-    /**
-     * If user is logged in and the lockscreen cookie is set, 
-     * redirect user to the lock screen until he/she enters 
-     * his/her password to gain access.
-     */
-    if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock' . '/');
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url());
+        exit();
+    }
+
+    if (!hasPermission('access_course_sec_screen')) {
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
-$css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
-$js = [
-    'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-timepicker/assets/lib/js/bootstrap-timepicker.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-timepicker/assets/custom/js/bootstrap-timepicker.init.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/jCombo/jquery.jCombo.min.js',
-    'components/modules/admin/forms/elements/bootstrap-maxlength/bootstrap-maxlength.min.js',
-    'components/modules/admin/forms/elements/bootstrap-maxlength/custom/js/custom.js'
-];
+$app->group('/sect', function() use ($app) {
 
-$json_url = get_base_url() . 'api' . '/';
-$flashNow = new \app\src\Core\etsis_Messages;
-
-$app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
-
-    /**
-     * Before route check.
-     */
-    $app->before('GET|POST', '/', function() {
-        if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
-        }
-    });
-
-    $app->match('GET|POST', '/', function () use($app, $css, $js) {
+    $app->match('GET|POST', '/', function () use($app) {
         if ($app->req->isPost()) {
-            $post = $_POST['sect'];
-            $sect = $app->db->query("SELECT 
+            try {
+                $post = $app->req->post['sect'];
+                $sect = $app->db->query("SELECT 
                     CASE a.currStatus 
                     WHEN 'A' THEN 'Active' 
                     WHEN 'I' THEN 'Inactive' 
@@ -72,20 +50,35 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
                     FROM course_sec a 
                     WHERE courseSection LIKE ? 
                     ORDER BY a.termCode DESC", [ "%$post%"]
-            );
+                );
 
-            $q = $sect->find(function($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
+                $q = $sect->find(function($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            }
         }
+
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datatables');
+
         $app->view->display('section/index', [
             'title' => 'Search Course Section',
-            'cssArray' => $css,
-            'jsArray' => $js,
             'sect' => $q
             ]
         );
@@ -96,140 +89,162 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app) {
         $section = get_course_sec($id);
 
-        $date = date("Y-m-d");
-        $time = date("h:i A");
+        $date = Jenssegers\Date\Date::now()->format("Y-m-d");
+        $time = Jenssegers\Date\Date::now()->format("h:i A");
 
         if ($app->req->isPost()) {
-            /**
-             * Fires before the course section has been updated.
-             *
-             * @since 6.1.07
-             * @param int $id Primary key of the course section.
-             */
-            $app->hook->do_action('pre_update_course_sec', $id);
-
-            $term = str_replace("/", "", $_POST['termCode']);
-
-            $sect = $app->db->course_sec();
-            $sect->locationCode = $_POST['locationCode'];
-            $sect->termCode = $_POST['termCode'];
-            $sect->secShortTitle = $_POST['secShortTitle'];
-            $sect->startDate = $_POST['startDate'];
-            $sect->endDate = $_POST['endDate'];
-            $sect->deptCode = $_POST['deptCode'];
-            $sect->minCredit = $_POST['minCredit'];
-            $sect->comment = $_POST['comment'];
-            $sect->courseSection = $_POST['termCode'] . '-' . $_POST['courseSecCode'];
-            $sect->ceu = $_POST['ceu'];
-            $sect->courseLevelCode = $_POST['courseLevelCode'];
-            $sect->where('courseSecID = ?', (int) $id);
-
-            /**
-             * Fires during the update of a course section.
-             *
-             * @since 6.1.10
-             * @param array $sect Course section object.
-             */
-            $app->hook->do_action('update_course_sec_db_table', $sect);
-
-            $da = $app->db->term()->where('termCode = ?', $section->termCode)->findOne();
-
-            if ($section->currStatus != $_POST['currStatus']) {
+            try {
                 /**
-                 * If the posted status is 'C' and today's date is less than the 
-                 * primary term start date, then delete all student course sec as well as 
-                 * student acad cred records.
+                 * Fires before the course section has been updated.
+                 *
+                 * @since 6.1.07
+                 * @param int $id Primary key of the course section.
                  */
-                if ($_POST['currStatus'] == 'C' && $date < $da->termStartDate) {
-                    $q = $app->db->course_sec();
-                    $q->currStatus = $_POST['currStatus'];
-                    $q->statusDate = $date;
-                    $q->where('courseSecID = ?', $id);
+                $app->hook->do_action('pre_update_course_sec', $id);
 
-                    $app->db->stu_course_sec()->where('courseSecID = ?', $id)->delete();
-                    $app->db->stu_acad_cred()->where('courseSecID = ?', $id)->delete();
-                }
+                $term = str_replace("/", "", $app->req->post['termCode']);
+
+                $sect = $app->db->course_sec();
+                $sect->locationCode = $app->req->post['locationCode'];
+                $sect->termCode = $app->req->post['termCode'];
+                $sect->secShortTitle = $app->req->post['secShortTitle'];
+                $sect->startDate = $app->req->post['startDate'];
+                $sect->endDate = ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL);
+                $sect->deptCode = $app->req->post['deptCode'];
+                $sect->minCredit = $app->req->post['minCredit'];
+                $sect->comment = $app->req->post['comment'];
+                $sect->courseSection = $app->req->post['termCode'] . '-' . $app->req->post['courseSecCode'];
+                $sect->ceu = $app->req->post['ceu'];
+                $sect->courseLevelCode = $app->req->post['courseLevelCode'];
+                $sect->where('courseSecID = ?', (int) $id);
+                $sect->update();
+
                 /**
-                 * If posted status is 'C' and today's date is greater than equal to the 
-                 * primary term start date, then update student course sec records as 
-                 * well as the student academic credit records with a 'C' status and 
-                 * update the status date and time.
-                 */ elseif ($_POST['currStatus'] == 'C' && $date >= $da->termStartDate) {
-                    $q = $app->db->course_sec();
-                    $q->currStatus = $_POST['currStatus'];
-                    $q->statusDate = $date;
-                    $q->where('courseSecID = ?', $id);
+                 * Fires during the update of a course section.
+                 *
+                 * @since 6.1.10
+                 * @param array $sect Course section object.
+                 */
+                $app->hook->do_action('update_course_sec_db_table', $sect);
 
-                    $sql1 = $app->db->stu_course_sec();
-                    $sql1->status = $_POST['currStatus'];
-                    $sql1->statusDate = $date;
-                    $sql1->statusTime = $time;
-                    $sql1->where('courseSecID = ?', $id)->update();
+                $da = $app->db->term()->where('termCode = ?', _h($section->termCode))->findOne();
 
-                    $sql2 = $app->db->stu_acad_cred();
-                    $sql2->status = $_POST['currStatus'];
-                    $sql2->statusDate = $date;
-                    $sql2->statusTime = $time;
-                    $sql2->where('courseSecID = ?', $id)->update();
+                if ($section->currStatus != $app->req->post['currStatus']) {
+                    /**
+                     * If the posted status is 'C' and today's date is less than the 
+                     * primary term start date, then delete all student course sec as well as 
+                     * student acad cred records.
+                     */
+                    if ($app->req->post['currStatus'] == 'C' && $date < _h($da->termStartDate)) {
+                        $q = $app->db->course_sec();
+                        $q->currStatus = $app->req->post['currStatus'];
+                        $q->statusDate = $date;
+                        $q->where('courseSecID = ?', $id);
+                        $q->update();
+
+                        $app->db->stcs()->where('courseSecID = ?', $id)->delete();
+                        $app->db->stac()->where('courseSecID = ?', $id)->delete();
+                    }
+                    /**
+                     * If posted status is 'C' and today's date is greater than equal to the 
+                     * primary term start date, then update student course sec records as 
+                     * well as the student academic credit records with a 'C' status and 
+                     * update the status date and time.
+                     */ elseif ($app->req->post['currStatus'] == 'C' && $date >= _h($da->termStartDate)) {
+                        $q = $app->db->course_sec();
+                        $q->currStatus = $app->req->post['currStatus'];
+                        $q->statusDate = $date;
+                        $q->where('courseSecID = ?', $id);
+                        $q->update();
+
+                        $sql1 = $app->db->stcs();
+                        $sql1->status = $app->req->post['currStatus'];
+                        $sql1->statusDate = $date;
+                        $sql1->statusTime = $time;
+                        $sql1->where('courseSecID = ?', $id)->update();
+
+                        $sql2 = $app->db->stac();
+                        $sql2->status = $app->req->post['currStatus'];
+                        $sql2->statusDate = $date;
+                        $sql2->statusTime = $time;
+                        $sql2->where('courseSecID = ?', $id)->update();
+                    }
+                    /**
+                     * If the status is different from 'C', update the status and status date
+                     * as long as there are
+                     */ else {
+                        $q = $app->db->course_sec();
+                        $q->currStatus = $app->req->post['currStatus'];
+                        $q->statusDate = $date;
+                        $q->where('courseSecID = ?', $id);
+                        $q->update();
+                    }
                 }
-                /**
-                 * If the status is different from 'C', update the status and status date
-                 * as long as there are
-                 */ else {
-                    $q = $app->db->course_sec();
-                    $q->currStatus = $_POST['currStatus'];
-                    $q->statusDate = $date;
-                    $q->where('courseSecID = ?', $id);
-                }
-            }
 
-            if ($sect->update() || $q->update()) {
                 etsis_cache_delete($id, 'sect');
-                etsis_logger_activity_log_write('Update Record', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $section->courseSecCode . ')', get_persondata('uname'));
-                $app->flash('success_message', $flashNow->notice(200));
-            } else {
-                etsis_logger_activity_log_write('Update Error', 'Course Section', $_POST['secShortTitle'] . ' (' . $_POST['termCode'] . '-' . $section->courseSecCode . ')', get_persondata('uname'));
-                $app->flash('error_message', $flashNow->notice(409));
+                etsis_logger_activity_log_write('Update Record', 'Course Section', $app->req->post['secShortTitle'] . ' (' . $app->req->post['termCode'] . '-' . _h($section->courseSecCode) . ')', get_persondata('uname'));
+
+                /**
+                 * Query course section after it has been updated.
+                 * 
+                 * @since 6.1.07
+                 */
+                $section = $app->db->course_sec()
+                    ->setTableAlias('sect')
+                    ->select('sect.*,crse.subjectCode,crse.deptCode,crse.creditType')
+                    ->select('crse.courseShortTitle,crse.courseLongTitle')
+                    ->_join('course', 'sect.courseID = crse.courseID', 'crse')
+                    ->where('sect.courseSecID = ?', $id)
+                    ->findOne();
+
+                /**
+                 * Fires after the course section has been updated.
+                 * 
+                 * @since 6.1.07
+                 * @param array $sect Course section data object.
+                 */
+                $app->hook->do_action('post_update_course_sec', $section);
+
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'sect' . '/' . $id . '/');
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-            /**
-             * Query course section after it has been updated.
-             * 
-             * @since 6.1.07
-             */
-            $section = $app->db->course_sec()
-                ->setTableAlias('sect')
-                ->select('sect.*,crse.subjectCode,crse.deptCode,crse.creditType')
-                ->select('crse.courseShortTitle,crse.courseLongTitle')
-                ->_join('course', 'sect.courseID = crse.courseID', 'crse')
-                ->where('courseSecID = ?', $id)
-                ->findOne();
-
-            /**
-             * Fires after the course section has been updated.
-             * 
-             * @since 6.1.07
-             * @param array $sect Course section data object.
-             */
-            $app->hook->do_action('post_update_course_sec', $section);
-
-            redirect(get_base_url() . 'sect' . '/' . $id . '/');
         }
 
-        $preReq = $app->db->course()->select('preReq')->where('courseID = ?', $section->courseID);
-        $req = $preReq->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+        try {
+            $preReq = $app->db->course()->select('preReq')->where('courseID = ?', _h($section->courseID));
+            $req = $preReq->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
 
         /**
          * If the database table doesn't exist, then it
@@ -249,7 +264,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($section->courseSecID) <= 0) {
+         */ elseif (_h($section->courseSecID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -259,10 +274,14 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datepicker');
+            etsis_register_script('maxlength');
+
             $app->view->display('section/view', [
-                'title' => $section->secShortTitle . ' :: Course Section',
-                'cssArray' => $css,
-                'jsArray' => $js,
+                'title' => _h($section->secShortTitle) . ' :: Course Section',
                 'sect' => $section,
                 'req' => $req
                 ]
@@ -275,82 +294,85 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('add_course_sec')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app) {
         $crse = get_course($id);
 
         if ($app->req->isPost()) {
-            /**
-             * Fires before a course section has been created.
-             *
-             * @since 6.1.07
-             * @param int $id Primary key of the course from which the course section is created.
-             */
-            $app->hook->do_action('pre_save_course_sec', $id);
+            try {
+                /**
+                 * Fires before a course section has been created.
+                 *
+                 * @since 6.1.07
+                 * @param int $id Primary key of the course from which the course section is created.
+                 */
+                $app->hook->do_action('pre_save_course_sec', $id);
 
-            $sc = $crse->courseCode . '-' . $_POST['sectionNumber'];
-            $courseSection = $_POST['termCode'] . '-' . $crse->courseCode . '-' . $_POST['sectionNumber'];
+                $sc = _h($crse->courseCode) . '-' . $app->req->post['sectionNumber'];
+                $courseSection = $app->req->post['termCode'] . '-' . _h($crse->courseCode) . '-' . $app->req->post['sectionNumber'];
 
-            $dotw = '';
-            /** Combine the days of the week to be entered into the database */
-            $days = $_POST['dotw'];
-            for ($i = 0; $i < sizeof($days); $i++) {
-                $dotw .= $days[$i];
-            }
+                $dotw = '';
+                /** Combine the days of the week to be entered into the database */
+                $days = $app->req->post['dotw'];
+                for ($i = 0; $i < sizeof($days); $i++) {
+                    $dotw .= $days[$i];
+                }
 
-            $sect = $app->db->course_sec();
-            $sect->sectionNumber = $_POST['sectionNumber'];
-            $sect->courseSecCode = _trim($sc);
-            $sect->courseSection = _trim($courseSection);
-            $sect->buildingCode = 'NULL';
-            $sect->roomCode = 'NULL';
-            $sect->locationCode = $_POST['locationCode'];
-            $sect->courseLevelCode = $_POST['courseLevelCode'];
-            $sect->acadLevelCode = $_POST['acadLevelCode'];
-            $sect->deptCode = $_POST['deptCode'];
-            $sect->termCode = $_POST['termCode'];
-            $sect->courseID = $id;
-            $sect->courseCode = $crse->courseCode;
-            $sect->secShortTitle = $_POST['secShortTitle'];
-            $sect->startDate = $_POST['startDate'];
-            $sect->endDate = $_POST['endDate'];
-            $sect->minCredit = $_POST['minCredit'];
-            $sect->ceu = $_POST['ceu'];
-            $sect->secType = $_POST['secType'];
-            $sect->instructorMethod = $_POST['instructorMethod'];
-            $sect->dotw = $dotw;
-            $sect->startTime = $_POST['startTime'];
-            $sect->endTime = $_POST['endTime'];
-            $sect->webReg = $_POST['webReg'];
-            $sect->currStatus = $_POST['currStatus'];
-            $sect->statusDate = $app->db->NOW();
-            $sect->comment = $_POST['comment'];
-            $sect->approvedDate = $app->db->NOW();
-            $sect->approvedBy = get_persondata('personID');
+                $sect = $app->db->course_sec();
+                $sect->insert([
+                    'sectionNumber' => $app->req->post['sectionNumber'],
+                    'courseSecCode' => _trim($sc),
+                    'courseSection' => _trim($courseSection),
+                    'buildingCode' => NULL,
+                    'roomCode' => NULL,
+                    'locationCode' => $app->req->post['locationCode'],
+                    'courseLevelCode' => $app->req->post['courseLevelCode'],
+                    'acadLevelCode' => $app->req->post['acadLevelCode'],
+                    'deptCode' => $app->req->post['deptCode'],
+                    'termCode' => $app->req->post['termCode'],
+                    'courseID' => $id,
+                    'courseCode' => _h($crse->courseCode),
+                    'secShortTitle' => $app->req->post['secShortTitle'],
+                    'startDate' => $app->req->post['startDate'],
+                    'endDate' => ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL),
+                    'minCredit' => $app->req->post['minCredit'],
+                    'ceu' => $app->req->post['ceu'],
+                    'secType' => $app->req->post['secType'],
+                    'instructorMethod' => $app->req->post['instructorMethod'],
+                    'dotw' => $dotw,
+                    'startTime' => $app->req->post['startTime'],
+                    'endTime' => $app->req->post['endTime'],
+                    'webReg' => $app->req->post['webReg'],
+                    'currStatus' => $app->req->post['currStatus'],
+                    'statusDate' => Jenssegers\Date\Date::now(),
+                    'comment' => $app->req->post['comment'],
+                    'approvedDate' => Jenssegers\Date\Date::now(),
+                    'approvedBy' => get_persondata('personID')
+                ]);
 
-            /**
-             * Fires during the saving/creating of a course section.
-             *
-             * @since 6.1.10
-             * @param array $sect Course section object.
-             */
-            $app->hook->do_action('save_course_sec_db_table', $sect);
+                /**
+                 * Fires during the saving/creating of a course section.
+                 *
+                 * @since 6.1.10
+                 * @param array $sect Course section object.
+                 */
+                $app->hook->do_action('save_course_sec_db_table', $sect);
 
-            if ($sect->save()) {
-                $ID = $sect->lastInsertId();
+                $_id = $sect->lastInsertId();
                 $section = [
-                    "sectionNumber" => _trim($_POST['sectionNumber']), "courseSecCode" => _trim($sc),
-                    "courseID" => $_POST['courseID'], "locationCode" => _trim($_POST['locationCode']),
-                    "termCode" => _trim($_POST['termCode']), "courseCode" => _trim($_POST['courseCode']), "secShortTitle" => $_POST['secShortTitle'],
-                    "startDate" => $_POST['startDate'], "endDate" => $_POST['endDate'], "deptCode" => _trim($_POST['deptCode']),
-                    "minCredit" => $_POST['minCredit'], "ceu" => $_POST['ceu'], "courseSection" => _trim($courseSection),
-                    "courseLevelCode" => _trim($_POST['courseLevelCode']), "acadLevelCode" => _trim($_POST['acadLevelCode']),
-                    "currStatus" => $_POST['currStatus'], "statusDate" => $_POST['statusDate'], "comment" => $_POST['comment'],
-                    "approvedDate" => $_POST['approvedDate'], "approvedBy" => $_POST['approvedBy'], "secLongTitle" => $crse->courseLongTitle,
-                    "section" => _trim($courseSection), "description" => $crse->courseDesc
+                    "sectionNumber" => _trim($app->req->post['sectionNumber']), "courseSecCode" => _trim($sc),
+                    "courseID" => $app->req->post['courseID'], "locationCode" => _trim($app->req->post['locationCode']),
+                    "termCode" => _trim($app->req->post['termCode']), "courseCode" => _trim($app->req->post['courseCode']), "secShortTitle" => $app->req->post['secShortTitle'],
+                    "startDate" => $app->req->post['startDate'], "endDate" => $app->req->post['endDate'], "deptCode" => _trim($app->req->post['deptCode']),
+                    "minCredit" => $app->req->post['minCredit'], "ceu" => $app->req->post['ceu'], "courseSection" => _trim($courseSection),
+                    "courseLevelCode" => _trim($app->req->post['courseLevelCode']), "acadLevelCode" => _trim($app->req->post['acadLevelCode']),
+                    "currStatus" => $app->req->post['currStatus'], "statusDate" => $app->req->post['statusDate'], "comment" => $app->req->post['comment'],
+                    "approvedDate" => $app->req->post['approvedDate'], "approvedBy" => $app->req->post['approvedBy'], "secLongTitle" => _h($crse->courseLongTitle),
+                    "section" => _trim($courseSection), "description" => _h($crse->courseDesc)
                 ];
                 /**
                  * Fires after a course section has been created.
@@ -361,13 +383,17 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
                 $app->hook->do_action('post_save_course_sec', $section);
 
                 etsis_cache_flush_namespace('sect');
-
-                $app->flash('success_message', $flashNow->notice(200));
                 etsis_logger_activity_log_write('New Record', 'Course Section', _trim($courseSection), get_persondata('uname'));
-                redirect(get_base_url() . 'sect' . '/' . $ID . '/');
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
-                redirect($app->req->server['HTTP_REFERER']);
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'sect' . '/' . $_id . '/');
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
 
@@ -398,10 +424,16 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
          * and it is ok to process the query and print
          * the results in a html format.
          */ else {
+
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datepicker');
+            etsis_register_script('timepicker');
+            etsis_register_script('maxlength');
+
             $app->view->display('section/add', [
                 'title' => 'Create Section',
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'sect' => $crse
                 ]
             );
@@ -413,60 +445,66 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/addnl/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
-    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/addnl/(\d+)/', function ($id) use($app) {
         $section = get_course_sec($id);
 
         if ($app->req->isPost()) {
+            try {
+                $sect = $app->db->course_sec();
+                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                    $sect->$k = $v;
+                }
+                /**
+                 * Fires before course section additional
+                 * information has been updated.
+                 *
+                 * @since 6.1.07
+                 * @param object $sect Course section additional info object.
+                 */
+                $app->hook->do_action('pre_course_sec_addnl', $sect);
+                $sect->where('courseSecID = ?', $id);
+                $sect->update();
 
-            $sect = $app->db->course_sec();
-            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
-                $sect->$k = $v;
-            }
-            $sect->where('courseSecID = ?', $id);
-
-            /**
-             * Fires before course section additional
-             * information has been updated.
-             *
-             * @since 6.1.07
-             * @param object $sect Course section additional info object.
-             */
-            $app->hook->do_action('pre_course_sec_addnl', $sect);
-
-            if ($sect->update()) {
                 etsis_cache_delete($id, 'sect');
-                $app->flash('success_message', $flashNow->notice(200));
-                etsis_logger_activity_log_write('Update Record', 'Course Section', $section->courseSection, get_persondata('uname'));
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
+                etsis_logger_activity_log_write('Update Record', 'Course Section', _h($section->courseSection), get_persondata('uname'));
+                /**
+                 * Query course section after it has been updated.
+                 * 
+                 * @since 6.1.07
+                 */
+                $section = $app->db->course_sec()
+                    ->setTableAlias('sect')
+                    ->select('sect.*,crse.subjectCode,crse.deptCode,crse.creditType')
+                    ->select('crse.courseShortTitle,crse.courseLongTitle')
+                    ->_join('course', 'sect.courseID = crse.courseID', 'crse')
+                    ->where('sect.courseSecID = ?', $id)
+                    ->findOne();
+
+                /**
+                 * Fires after course section additional
+                 * information has been updated.
+                 * 
+                 * @since 6.1.07
+                 * @param array $section Course section data object.
+                 */
+                $app->hook->do_action('post_course_sec_addnl', $section);
+
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-            /**
-             * Query course section after it has been updated.
-             * 
-             * @since 6.1.07
-             */
-            $section = $app->db->course_sec()
-                ->setTableAlias('sect')
-                ->select('sect.*,crse.subjectCode,crse.deptCode,crse.creditType')
-                ->select('crse.courseShortTitle,crse.courseLongTitle')
-                ->_join('course', 'sect.courseID = crse.courseID', 'crse')
-                ->where('courseSecID = ?', $id)
-                ->findOne();
-
-            /**
-             * Fires after course section additional
-             * information has been updated.
-             * 
-             * @since 6.1.07
-             * @param array $section Course section data object.
-             */
-            $app->hook->do_action('post_course_sec_addnl', $section);
-
-            redirect($app->req->server['HTTP_REFERER']);
         }
 
         /**
@@ -487,7 +525,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($section->courseSecID) <= 0) {
+         */ elseif (_h($section->courseSecID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -497,10 +535,12 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+
             $app->view->display('section/addnl-info', [
-                'title' => $section->secShortTitle . ' :: Course Section',
-                'cssArray' => $css,
-                'jsArray' => $js,
+                'title' => _h($section->secShortTitle) . ' :: Course Section',
                 'sect' => $section
                 ]
             );
@@ -512,38 +552,48 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/soff/(\d+)/', function() {
         if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
-    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/soff/(\d+)/', function ($id) use($app) {
         $sect = get_course_sec($id);
 
         if ($app->req->isPost()) {
-            $dotw = '';
-            /** Combine the days of the week to be entered into the database */
-            $days = $_POST['dotw'];
-            for ($i = 0; $i < sizeof($days); $i++) {
-                $dotw .= $days[$i];
-            }
+            try {
+                $dotw = '';
+                /** Combine the days of the week to be entered into the database */
+                $days = $app->req->post['dotw'];
+                for ($i = 0; $i < sizeof($days); $i++) {
+                    $dotw .= $days[$i];
+                }
 
-            $soff = $app->db->course_sec();
-            $soff->buildingCode = $_POST['buildingCode'];
-            $soff->roomCode = $_POST['roomCode'];
-            $soff->dotw = $dotw;
-            $soff->startTime = $_POST['startTime'];
-            $soff->endTime = $_POST['endTime'];
-            $soff->webReg = $_POST['webReg'];
-            $soff->where('courseSecID = ?', $id);
+                $soff = $app->db->course_sec();
+                $soff->set([
+                        'buildingCode' => $app->req->post['buildingCode'],
+                        'roomCode' => $app->req->post['roomCode'],
+                        'dotw' => $dotw,
+                        'startTime' => $app->req->post['startTime'],
+                        'endTime' => $app->req->post['endTime'],
+                        'webReg' => $app->req->post['webReg']
+                    ])
+                    ->where('courseSecID = ?', $id)
+                    ->update();
 
-            if ($soff->update()) {
                 etsis_cache_delete($id, 'sect');
-                $app->flash('success_message', $flashNow->notice(200));
-                etsis_logger_activity_log_write('Update Record', 'Course Section Offering', $sect->courseSection, get_persondata('uname'));
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
+                etsis_logger_activity_log_write('Update Record', 'Course Section Offering', _h($sect->courseSection), get_persondata('uname'));
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'sect/soff' . '/' . (int) $id . '/');
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-            redirect(get_base_url() . 'sect/soff' . '/' . (int) $id . '/');
         }
 
         /**
@@ -564,7 +614,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($sect->courseSecID) <= 0) {
+         */ elseif (_h($sect->courseSecID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -574,10 +624,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('timepicker');
+
             $app->view->display('section/offering-info', [
-                'title' => $sect->secShortTitle . ' :: Course Section',
-                'cssArray' => $css,
-                'jsArray' => $js,
+                'title' => _h($sect->secShortTitle) . ' :: Course Section',
                 'sect' => $sect
                 ]
             );
@@ -589,51 +642,73 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/fgrade/(\d+)/', function() {
         if (!hasPermission('submit_final_grades')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
-    $app->match('GET|POST', '/fgrade/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/fgrade/(\d+)/', function ($id) use($app) {
 
         if ($app->req->isPost()) {
-            $size = count($_POST['stuID']);
-            $i = 0;
-            while ($i < $size) {
-                $grade = $app->db->stu_acad_cred();
-                $grade->grade = $_POST['grade'][$i];
-                $grade->gradePoints = acadCredGradePoints($_POST['grade'][$i], $_POST['attCredit']);
-                $grade->where('stuID = ?', $_POST['stuID'][$i])->_and_()->where('courseSecID = ?', $id)->update();
+            try {
+                $size = count($app->req->post['stuID']);
+                $i = 0;
+                while ($i < $size) {
+                    if (acadCredGradePoints($app->req->post['grade'][$i], $app->req->post['attCredit']) > 0) {
+                        $compCred = $app->req->post['attCredit'];
+                    } else {
+                        $compCred = '0';
+                    }
 
-                if (acadCredGradePoints($_POST['grade'][$i], $_POST['attCredit']) > 0) {
-                    $compCred = $_POST['attCredit'];
-                } else {
-                    $compCred = '0';
+                    $grade = $app->db->stac();
+                    $grade->grade = $app->req->post['grade'][$i];
+                    $grade->gradePoints = acadCredGradePoints($app->req->post['grade'][$i], $app->req->post['attCredit']);
+                    $grade->compCred = $compCred;
+                    $grade->where('stuID = ?', $app->req->post['stuID'][$i])->_and_()
+                        ->where('courseSecID = ?', $id)
+                        ->update();
+
+                    etsis_logger_activity_log_write('Update Record', 'Final Grade', get_name($app->req->post['stuID'][$i]) . ' (' . $app->req->post['termCode'] . '-' . $app->req->post['courseSecCode'] . ')', get_persondata('uname'));
+                    ++$i;
                 }
-
-                $grade = $app->db->stu_acad_cred();
-                $grade->compCred = $compCred;
-                $grade->where('stuID = ?', $_POST['stuID'][$i])->_and_()->where('courseSecID = ?', $id)->update();
-
-                etsis_logger_activity_log_write('Update Record', 'Final Grade', get_name($_POST['stuID'][$i]) . ' (' . $_POST['termCode'] . '-' . $_POST['courseSecCode'] . ')', get_persondata('uname'));
-                ++$i;
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-            redirect($app->req->server['HTTP_REFERER']);
         }
 
         $sect = get_course_sec($id);
 
-        $fgrade = $app->db->course_sec()
-            ->select('course_sec.courseSecID,course_sec.secShortTitle,course_sec.minCredit,course_sec.courseSection,course_sec.facID')
-            ->select('b.stuID,b.courseSecCode,b.courseSection,b.termCode,b.grade')
-            ->_join('stu_acad_cred', 'course_sec.courseSecID = b.courseSecID', 'b')
-            ->where('course_sec.courseSecID = ?', $id);
-        $q = $fgrade->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+        try {
+            $fgrade = $app->db->course_sec()
+                ->select('course_sec.courseSecID,course_sec.secShortTitle,course_sec.minCredit,course_sec.courseSection,course_sec.facID')
+                ->select('stac.stuID,stac.courseSecCode,stac.courseSection,stac.termCode,stac.grade')
+                ->_join('stac', 'course_sec.courseSecID = stac.courseSecID')
+                ->where('course_sec.courseSecID = ?', $id);
+            $q = $fgrade->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
 
         /**
          * If the database table doesn't exist, then it
@@ -653,7 +728,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($q[0]['courseSecID']) <= 0) {
+         */ elseif (_h($q[0]['courseSecID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -663,10 +738,13 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_style('table');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+
             $app->view->display('section/section-fgrade', [
-                'title' => $q[0]['courseSection'] . ' :: Section Final Grades',
-                'cssArray' => $css,
-                'jsArray' => $js,
+                'title' => _h($q[0]['courseSection']) . ' :: Section Final Grades',
                 'grade' => $q,
                 'sect' => $sect
                 ]
@@ -677,82 +755,124 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
     /**
      * Before route check.
      */
-    $app->before('GET|POST', '/rgn/', function() {
+    $app->before('GET|POST', '/rgn/', function() use($app) {
         if (!hasPermission('register_students')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
+
+        if ($app->req->isPost()) {
+            $student = get_student($app->req->post['stuID']);
+
+            if (is_null($app->req->post['courseSecID'])) {
+                _etsis_flash()->error(_t("The course section cannot be a 'null' value"), $app->req->server['HTTP_REFERER']);
+                exit();
+            }
+
+            if (!is_numeric($app->req->post['stuID'])) {
+                _etsis_flash()->error(_t('Student ID must be numeric.'), $app->req->server['HTTP_REFERER']);
+                exit();
+            }
+
+            if (_escape($student->stuID) <= 0) {
+                _etsis_flash()->error(_t('Student does not exist.'), $app->req->server['HTTP_REFERER']);
+                exit();
+            }
+
+            $stcs = get_stcs($app->req->post['stuID'], $app->req->post['courseSecID']);
+            if ($stcs->stuID > 0) {
+                _etsis_flash()->error(sprintf(_t('<strong>%s</strong> is already registered for <strong>%s</strong>.'), get_name($app->req->post['stuID']), _h($stcs->courseSection)), $app->req->server['HTTP_REFERER']);
+                exit();
+            }
         }
     });
 
-    $app->match('GET|POST', '/rgn/', function () use($app, $css, $js, $json_url, $flashNow) {
-        $time = date("h:i A");
+    $app->match('GET|POST', '/rgn/', function () use($app) {
 
         if ($app->req->isPost()) {
 
-            $sect = get_course_sec($_POST['courseSecID']);
-            $crse = $app->db->course()->where('courseID = ?', (int) $sect->courseID)->findOne();
-            $term = $app->db->term()->where('termCode = ?', $sect->termCode)->findOne();
-
-            $stcs = $app->db->stu_course_sec();
-            $stcs->stuID = $_POST['stuID'];
-            $stcs->courseSecID = $sect->courseSecID;
-            $stcs->courseSecCode = $sect->courseSecCode;
-            $stcs->courseSection = $sect->courseSection;
-            $stcs->termCode = $sect->termCode;
-            $stcs->courseCredits = $sect->minCredit;
-            $stcs->ceu = $sect->ceu;
-            $stcs->status = 'A';
-            $stcs->regDate = $app->db->NOW();
-            $stcs->regTime = date("h:i A");
-            $stcs->statusDate = $app->db->NOW();
-            $stcs->statusTime = $time;
-            $stcs->addedBy = get_persondata('personID');
-
-            $stac = $app->db->stu_acad_cred();
-            $stac->stuID = $_POST['stuID'];
-            $stac->courseID = $sect->courseID;
-            $stac->courseSecID = $sect->courseSecID;
-            $stac->courseCode = $sect->courseCode;
-            $stac->courseSecCode = $sect->courseSecCode;
-            $stac->sectionNumber = $sect->sectionNumber;
-            $stac->courseSection = $sect->courseSection;
-            $stac->termCode = $sect->termCode;
-            $stac->reportingTerm = $term->reportingTerm;
-            $stac->subjectCode = $crse->subjectCode;
-            $stac->deptCode = $sect->deptCode;
-            $stac->shortTitle = $crse->courseShortTitle;
-            $stac->longTitle = $crse->courseLongTitle;
-            $stac->attCred = $sect->minCredit;
-            $stac->status = 'A';
-            $stac->statusDate = $app->db->NOW();
-            $stac->statusTime = $time;
-            $stac->acadLevelCode = $sect->acadLevelCode;
-            $stac->courseLevelCode = $sect->courseLevelCode;
-            $stac->startDate = $sect->startDate;
-            $stac->endDate = $sect->endDate;
-            $stac->addedBy = get_persondata('personID');
-            $stac->addDate = $app->db->NOW();
+            /**
+             * Execute registration restriction rule to make sure the student
+             * can be registered into the selected course section.
+             * 
+             * @since 6.3.0
+             */
+            $app->hook->do_action('execute_reg_rest_rule', $app->req->post['stuID']);
 
             /**
-             * Fires before a student is registered into
-             * a course by a staff member.
-             *
-             * @since 6.1.07
-             * @since 6.2.0 Changed to use $app->hook->do_action_array and added $stcs and $stac objects.
-             * @param object $stcs Student course section object.
-             * @param object $stac Student academic credit object.
+             * Execute prereq check to make sure the student has met specific
+             * requirements before being registered into a course section.
+             * 
+             * @since 6.3.0
              */
-            $app->hook->do_action_array('pre_rgn_stu_crse_reg', [ $stcs, $stac]);
+            $app->hook->do_action_array('execute_reg_prereq_rule', [$app->req->post['stuID'], $app->req->post['courseSecID']]);
 
-            if ($stcs->save() && $stac->save()) {
+            try {
+                $sect = get_course_sec($app->req->post['courseSecID']);
+                $crse = $app->db->course()->where('courseID = ?', (int) _h($sect->courseID))->findOne();
+                $term = $app->db->term()->where('termCode = ?', _trim(_h($sect->termCode)))->findOne();
+
+                $stcs = $app->db->stcs();
+                $stcs->stuID = (int) $app->req->post['stuID'];
+                $stcs->courseSecID = (int) _h($sect->courseSecID);
+                $stcs->courseSecCode = _h($sect->courseSecCode);
+                $stcs->courseSection = _h($sect->courseSection);
+                $stcs->termCode = _h($sect->termCode);
+                $stcs->courseCredits = _h($sect->minCredit);
+                $stcs->ceu = _h($sect->ceu);
+                $stcs->status = 'A';
+                $stcs->regDate = Jenssegers\Date\Date::now();
+                $stcs->regTime = Jenssegers\Date\Date::now()->format("h:i A");
+                $stcs->statusDate = Jenssegers\Date\Date::now();
+                $stcs->statusTime = Jenssegers\Date\Date::now()->format("h:i A");
+                $stcs->addedBy = get_persondata('personID');
+
+                $stac = $app->db->stac();
+                $stac->stuID = (int) $app->req->post['stuID'];
+                $stac->courseID = (int) _h($sect->courseID);
+                $stac->courseSecID = (int) _h($sect->courseSecID);
+                $stac->courseCode = _h($sect->courseCode);
+                $stac->courseSecCode = _h($sect->courseSecCode);
+                $stac->sectionNumber = _h($sect->sectionNumber);
+                $stac->courseSection = _h($sect->courseSection);
+                $stac->termCode = _h($sect->termCode);
+                $stac->reportingTerm = _h($term->reportingTerm);
+                $stac->subjectCode = _h($crse->subjectCode);
+                $stac->deptCode = _h($sect->deptCode);
+                $stac->shortTitle = _h($crse->courseShortTitle);
+                $stac->longTitle = _h($crse->courseLongTitle);
+                $stac->attCred = _h($sect->minCredit);
+                $stac->status = 'A';
+                $stac->statusDate = Jenssegers\Date\Date::now();
+                $stac->statusTime = Jenssegers\Date\Date::now()->format("h:i A");
+                $stac->acadLevelCode = _h($sect->acadLevelCode);
+                $stac->courseLevelCode = _h($sect->courseLevelCode);
+                $stac->startDate = _h($sect->startDate);
+                $stac->endDate = _h($sect->endDate) != '' ? _h($sect->endDate) : NULL;
+                $stac->addedBy = get_persondata('personID');
+                $stac->addDate = Jenssegers\Date\Date::now();
+
+                /**
+                 * Fires before a student is registered into
+                 * a course by a staff member.
+                 *
+                 * @since 6.1.07
+                 * @since 6.2.0 Changed to use $app->hook->do_action_array and added $stcs and $stac objects.
+                 * @param object $stcs Student course section object.
+                 * @param object $stac Student academic credit object.
+                 */
+                $app->hook->do_action_array('pre_rgn_stu_crse_reg', [ $stcs, $stac]);
+                $stcs->save();
+                $stac->save();
+
                 /**
                  * @since 6.1.07
                  */
-                $ID = $stac->lastInsertId();
-                $sacd = $app->db->stu_acad_cred()
-                    ->setTableAlias('stac')
+                $_id = $stac->lastInsertId();
+                $sacd = $app->db->stac()
                     ->select('stac.*,nae.uname,nae.fname,nae.lname,nae.email')
                     ->_join('person', 'stac.stuID = nae.personID', 'nae')
-                    ->where('stac.stuAcadCredID = ?', $ID)
+                    ->where('stac.id = ?', $_id)
                     ->findOne();
 
                 /**
@@ -768,20 +888,103 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
                     /**
                      * Generate bill and/or add fees.
                      */
-                    generate_stu_bill($sect->termCode, $_POST['stuID'], $sect->courseSecID);
+                    generate_stu_bill(_h($sect->termCode), $app->req->post['stuID'], _h($sect->courseSecID));
                 }
-                $app->flash('success_message', $flashNow->notice(200));
-                etsis_logger_activity_log_write('New Record', 'Course Registration Via Staff', get_name($_POST['stuID']) . ' - ' . $sect->secShortTitle, get_persondata('uname'));
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
+                etsis_logger_activity_log_write('New Record', 'Course Registration (RGN)', get_name($app->req->post['stuID']) . ' - ' . _h($sect->secShortTitle), get_persondata('uname'));
+                _etsis_flash()->success(sprintf(_t('<strong>%s</strong> was successfully registered into <strong>%s</strong>.'), get_name($app->req->post['stuID']), _h($sect->courseSection)), get_base_url() . 'sect/rgn' . '/');
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-            redirect(get_base_url() . 'sect/rgn' . '/');
         }
 
+        etsis_register_style('form');
+        etsis_register_style('jquery-ui');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('jquery-ui');
+        etsis_register_script('jCombo');
+
         $app->view->display('section/register', [
-            'title' => 'Course Registration',
-            'cssArray' => $css,
-            'jsArray' => $js
+            'title' => 'Course Registration'
+            ]
+        );
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET|POST', '/rgn/rrsr/', function() {
+        if (!hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
+    });
+
+    $app->match('GET|POST', '/rgn/rrsr/', function () use($app) {
+        if ($app->req->isPost()) {
+            try {
+                $size = count($app->req->post['rule']);
+                $i = 0;
+                while ($i < $size) {
+                    if ($app->req->post['id'][$i] == null) {
+                        $rlde = get_rule_by_code($app->req->post['rule'][$i]);
+                        $rrsr = Node::table('rrsr');
+                        $rrsr->rid = (int) _h($rlde->id);
+                        $rrsr->rule = (string) $app->req->post['rule'][$i];
+                        $rrsr->value = (string) $app->req->post['value'][$i];
+                        $rrsr->save();
+                    }
+                    ++$i;
+                }
+
+                $id_size = count($app->req->post['rule']);
+                $t = 0;
+                while ($t < $id_size) {
+                    if ($app->req->post['id'][$t] > 0) {
+                        $rlde = get_rule_by_code($app->req->post['rule'][$t]);
+                        $rrsr = Node::table('rrsr')->find($app->req->post['id'][$t]);
+                        $rrsr->rid = (int) _h($rlde->id);
+                        $rrsr->rule = (string) $app->req->post['rule'][$t];
+                        $rrsr->value = (string) $app->req->post['value'][$t];
+                        $rrsr->save();
+                    }
+                    ++$t;
+                }
+
+                etsis_logger_activity_log_write('New Record', 'Registration Restriction Rule (RRSR)', _h($rlde->code) . ' - ' . _h($rlde->description), get_persondata('uname'));
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            } catch (NodeQException $e) {
+                Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error($e->getMessage(), $app->req->server['HTTP_REFERER']);
+            }
+        }
+
+        try {
+            $rrsr = Node::table('rrsr')->findAll();
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        }
+
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+
+        $app->view->display('section/rrsr', [
+            'title' => 'Registration Restriction Rule (RRSR)',
+            'rrsr' => $rrsr
             ]
         );
     });
@@ -791,64 +994,79 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/sros.*', function() {
         if (!hasPermission('access_stu_roster_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
-    $app->match('GET|POST', '/sros/', function () use($app, $css, $js, $flashNow) {
+    $app->match('GET|POST', '/sros/', function () use($app) {
 
         if ($app->req->isPost()) {
-            redirect(get_base_url() . 'sect/sros' . '/' . $_POST['sectionID'] . '/' . $_POST['template'] . '/');
+            etsis_redirect(get_base_url() . 'sect/sros' . '/' . $app->req->post['sectionID'] . '/' . $app->req->post['template'] . '/');
         }
 
+        etsis_register_style('form');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('jCombo');
+
         $app->view->display('section/sros', [
-            'title' => 'Course Section Roster',
-            'cssArray' => $css,
-            'jsArray' => $js
+            'title' => 'Course Section Roster'
             ]
         );
     });
 
-    $app->get('/sros/(\d+)/(\w+)/', function ($id, $template) use($app, $css, $js, $flashNow) {
+    $app->get('/sros/(\d+)/(\w+)/', function ($id, $template) use($app) {
 
-        $sros = $app->db->query("SELECT 
-						a.stuID,a.courseSecCode,a.termCode,a.courseCredits,
-					CASE a.status 
+        try {
+            $sros = $app->db->query("SELECT 
+						stcs.stuID,stcs.courseSecCode,stcs.termCode,stcs.courseCredits,
+					CASE stcs.status 
 					WHEN 'A' THEN 'Add' 
 					WHEN 'N' THEN 'New'
 					ELSE 'Drop' 
 					END AS 'Status',
-						b.acadProgCode,b.acadLevelCode,c.courseSection,
+						stal.acadProgCode,stal.acadLevelCode,c.courseSection,
 						c.facID,c.roomCode,c.secShortTitle,c.startDate,
 						c.endDate,c.startTime,c.endTime,c.dotw,
-						c.instructorMethod 
-					FROM stu_course_sec a 
-					LEFT JOIN stu_acad_level b ON a.stuID = b.stuID 
-					LEFT JOIN course_sec c ON a.courseSecID = c.courseSecID 
+						c.instructorMethod,d.altID 
+					FROM stcs  
+					LEFT JOIN stal ON stcs.stuID = stal.stuID 
+                    LEFT JOIN sacp ON stal.acadProgCode = sacp.acadProgCode 
+					LEFT JOIN course_sec c ON stcs.courseSecID = c.courseSecID AND stcs.termCode = c.termCode
+                    LEFT JOIN person d ON stcs.stuID = d.personID 
 					WHERE c.courseSecID = ? 
-					AND c.termCode = a.termCode 
-					AND a.status IN('A','N','D') 
-					AND b.addDate = (SELECT MAX(addDate) FROM stu_acad_level WHERE stuID = a.stuID) 
-					GROUP BY a.stuID,a.courseSecCode,a.termCode", [ $id]);
-        $q = $sros->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+					AND stcs.status IN('A','N','D') 
+					GROUP BY stcs.stuID,stcs.courseSecCode,stcs.termCode", [ $id]);
+            $q = $sros->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
 
-        $stu = $app->db->stu_course_sec()->select('COUNT(stu_course_sec.stuID) AS count')
-            ->where('courseSecID = ?', $id)->_and_()
-            ->whereIn('status', ['A', 'N', 'D']);
+            $stu = $app->db->stcs()->select('COUNT(stcs.stuID) AS count')
+                ->where('stcs.courseSecID = ?', $id)->_and_()
+                ->whereIn('stcs.status', ['A', 'N', 'D']);
 
-        $count = $stu->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+            $count = $stu->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
 
         /**
          * If the database table doesn't exist, then it
@@ -868,7 +1086,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($q[0]['stuID']) <= 0) {
+         */ elseif (_h($q[0]['stuID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -879,8 +1097,6 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
          */ else {
 
             $app->view->display('section/templates/roster/' . $template . '.template', [
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'sros' => $q,
                 'count' => $count
                 ]
@@ -888,57 +1104,75 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
         }
     });
 
-    /**
-     * Before route check.
-     */
-    $app->before('GET|POST', '/catalog.*', function() {
-        if (!hasPermission('access_course_sec_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+    $app->get('/catalog/', function () use($app) {
+
+        try {
+            $cat = $app->db->course_sec()
+                ->select('course_sec.termCode,COUNT(course_sec.courseSecCode) as Courses,term.termName,term.id')
+                ->_join('term', 'course_sec.termCode = term.termCode')
+                ->where('course_sec.currStatus = "A"')
+                ->groupBy('course_sec.termCode')
+                ->orderBy('course_sec.termCode', 'DESC');
+
+            $q = $cat->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
-    });
 
-    $app->get('/catalog/', function () use($app, $css, $js) {
-
-        $cat = $app->db->course_sec()
-            ->select('course_sec.termCode,COUNT(course_sec.courseSecCode) as Courses,b.termName')
-            ->_join('term', 'course_sec.termCode = b.termCode', 'b')
-            ->where('course_sec.currStatus = "A"')
-            ->groupBy('course_sec.termCode')
-            ->orderBy('course_sec.termCode', 'DESC');
-
-        $q = $cat->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datatables');
 
         $app->view->display('section/catalog', [
             'title' => 'Course Catalogs',
-            'cssArray' => $css,
-            'jsArray' => $js,
             'catalog' => $q
             ]
         );
     });
 
-    $app->get('/catalog/(.*)/', function ($term) use($app, $css, $js) {
+    $app->get('/catalog/(\d+)/', function ($id) use($app) {
 
-        $cat = $app->db->course_sec()
-            ->select('courseSecCode,termCode,secShortTitle,facID')
-            ->select('dotw,startTime,endTime,buildingCode,roomCode')
-            ->select('locationCode,minCredit')
-            ->where('termCode = ?', $term)
-            ->orderBy('courseSecCode');
+        try {
+            $cat = $app->db->course_sec()
+                ->select('course_sec.courseSecCode,course_sec.termCode,course_sec.secShortTitle,course_sec.facID')
+                ->select('course_sec.dotw,course_sec.startTime,course_sec.endTime,course_sec.buildingCode,course_sec.roomCode')
+                ->select('course_sec.locationCode,course_sec.minCredit,term.id')
+                ->_join('term', 'course_sec.termCode = term.termCode')
+                ->where('term.id = ?', $id)
+                ->orderBy('course_sec.courseSecCode');
 
-        $q = $cat->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+            $q = $cat->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
 
         /**
          * If the database table doesn't exist, then it
@@ -958,7 +1192,7 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($q[0]['courseSecCode']) <= 0) {
+         */ elseif (_h($q[0]['id']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -969,8 +1203,6 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
          */ else {
 
             $app->view->display('section/catalog-pdf', [
-                'cssArray' => $css,
-                'jsArray' => $js,
                 'catalog' => $q
                 ]
             );
@@ -978,126 +1210,262 @@ $app->group('/sect', function() use ($app, $css, $js, $json_url, $flashNow) {
     });
 
     $app->post('/secTermLookup/', function() use($app) {
-        $term = $app->db->term()
-            ->select('termCode,termStartDate,termEndDate')
-            ->where('termCode = ?', $_POST['termCode'])->_and_()
-            ->where('active = "1"');
-        $q = $term->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+        try {
+            $term = $app->db->term()
+                ->select('termCode,termStartDate,termEndDate')
+                ->where('termCode = ?', $app->req->post['termCode'])->_and_()
+                ->where('active = "1"');
+            $q = $term->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
 
-        foreach ($q as $k => $v) {
-            $json = array('input#startDate' => $v['termStartDate'], 'input#endDate' => $v['termEndDate']);
+            foreach ($q as $v) {
+                $json = array('input#startDate' => _h($v['termStartDate']), 'input#endDate' => _h($v['termEndDate']));
+            }
+            echo json_encode($json);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
-        echo json_encode($json);
     });
 
-    $app->post('/stuLookup/', function() use($app) {
-        $stu = $app->db->student()->where('stuID = ?', (int) $_POST['stuID'])->findOne();
-        $nae = get_person_by('personID', $stu->stuID);
-
-        $json = [ 'input#stuName' => $nae->lname . ', ' . $nae->fname];
-
-        echo json_encode($json);
+    $app->match('GET|POST', '/stuLookup/', function() use($app) {
+        try {
+            $term = $app->req->get['term'];
+            $stu = $app->db->student()
+                ->select('student.stuID,person.altID,person.fname,person.lname')
+                ->_join('person', 'student.stuID = person.personID')
+                ->whereLike('student.stuID', "%" . $term . "%")->_or_()
+                ->whereLike('person.altID', "%" . $term . "%")->_or_()
+                ->whereLike('person.fname', "%" . $term . "%")->_or_()
+                ->whereLike('person.lname', "%" . $term . "%")->_or_()
+                ->whereLike('CONCAT(person.lname,", ",person.fname)', "%" . $term . "%")->_or_()
+                ->whereLike('CONCAT(person.fname," ",person.lname)', "%" . $term . "%")
+                ->find();
+            $items = [];
+            foreach ($stu as $x) {
+                $option = array(
+                    'id' => _h($x->stuID),
+                    'label' => get_name(_h($x->stuID)),
+                    'value' => get_name(_h($x->stuID))
+                );
+                $items[] = $option;
+            }
+            echo json_encode($items);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
     });
 
     $app->get('/regTermLookup/', function() use($app) {
+        try {
+            $q = $app->db->term()
+                ->select('term.termCode,term.termName')
+                ->where('term.termCode <> "NULL"')->_and_()
+                ->where('term.active = "1"')
+                ->find();
 
-        $term = $app->db->query("SELECT termCode,termName FROM term WHERE termCode <> 'NULL' AND active ='1'");
-        $q = $term->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+            $items = [];
+            foreach ($q as $r) {
+                $option = [ 'id' => _h($r->termCode), 'value' => _h($r->termName)];
+                $items[] = $option;
             }
-            return $array;
-        });
-        $items = [];
-        foreach ($q as $r) {
-            $option = [ 'id' => $r['termCode'], 'value' => $r['termName']];
-            $items[] = $option;
-        }
 
-        $data = json_encode($items);
-        $response = isset($_GET['callback']) ? $_GET['callback'] . "(" . $data . ")" : $data;
-        echo($response);
+            $data = json_encode($items);
+            $response = isset($app->req->get['callback']) ? $app->req->get['callback'] . "(" . $data . ")" : $data;
+            echo($response);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
     });
 
     $app->get('/regSecLookup/', function() use($app) {
+        try {
+            // Get parameters from Array
+            $id = !empty($app->req->get['id']) ? $app->req->get['id'] : '';
 
-        // Get parameters from Array
-        $id = !empty($_GET['id']) ? $_GET['id'] : '';
-        $sect = $app->db->query("SELECT courseSecID,courseSection FROM course_sec WHERE termCode = ? AND currStatus = 'A'", [$id]);
+            $q = $app->db->course_sec()
+                ->setTableAlias('sect')
+                ->select('sect.courseSecID,sect.courseSection')
+                ->where('sect.termCode = ?', $id)->_and_()
+                ->where('sect.currStatus = "A"')
+                ->find();
 
-        $q = $sect->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+            $items = [];
+            foreach ($q as $r) {
+                $option = [ 'id' => _h($r->courseSecID), 'value' => _h($r->courseSection)];
+                $items[] = $option;
             }
-            return $array;
-        });
-        $items = [];
-        foreach ($q as $r) {
-            $option = [ 'id' => $r['courseSecID'], 'value' => $r['courseSection']];
-            $items[] = $option;
-        }
 
-        $data = json_encode($items);
-        $response = isset($_GET['callback']) ? $_GET['callback'] . "(" . $data . ")" : $data;
-        echo($response);
+            $data = json_encode($items);
+            $response = isset($app->req->get['callback']) ? $app->req->get['callback'] . "(" . $data . ")" : $data;
+            echo($response);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
     });
 
     $app->get('/defSecLookup/', function() use($app) {
+        try {
+            // Get parameters from Array
+            $term = !empty($app->req->get['term']) ? $app->req->get['term'] : '';
+            $sect = $app->db->course_sec()
+                ->select('DISTINCT course_sec.courseSecID,course_sec.courseSecCode,course_sec.termCode,course_sec.courseSection')
+                ->_join('stcs', 'course_sec.courseSecID = stcs.courseSecID')
+                ->where('course_sec.termCode = ?', $term)->_and_()
+                ->where('course_sec.currStatus = "A"')->_and_()
+                ->whereNotNull('stcs.stuID');
 
-        // Get parameters from Array
-        $term = !empty($_GET['term']) ? $_GET['term'] : '';
-        $sect = $app->db->course_sec()
-            ->select('DISTINCT course_sec.courseSecID,course_sec.courseSecCode,course_sec.termCode,course_sec.courseSection')
-            ->_join('stu_course_sec', 'course_sec.courseSecID = b.courseSecID', 'b')
-            ->where('course_sec.termCode = ?', $term)->_and_()
-            ->where('course_sec.currStatus = "A"')->_and_()
-            ->whereNotNull('b.stuID');
-
-        $q = $sect->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+            $q = $sect->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            $items = [];
+            foreach ($q as $r) {
+                $option = [ 'id' => _h($r['courseSecID']), 'value' => _h($r['courseSection'])];
+                $items[] = $option;
             }
-            return $array;
-        });
-        $items = [];
-        foreach ($q as $r) {
-            $option = [ 'id' => $r['courseSecID'], 'value' => $r['courseSection']];
-            $items[] = $option;
-        }
 
-        $data = json_encode($items);
-        $response = isset($_GET['callback']) ? $_GET['callback'] . "(" . $data . ")" : $data;
-        echo($response);
+            $data = json_encode($items);
+            $response = isset($app->req->get['callback']) ? $app->req->get['callback'] . "(" . $data . ")" : $data;
+            echo($response);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
     });
 
     $app->post('/loc/', function() use($app) {
-        etsis_cache_flush_namespace('loc');
-        $loc = $app->db->location();
-        foreach ($_POST as $k => $v) {
-            $loc->$k = $v;
-        }
-        $loc->save();
-        $ID = $loc->lastInsertId();
-
-        $location = $app->db->location()
-            ->where('locationID = ?', $ID);
-        $q = $location->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+        try {
+            etsis_cache_flush_namespace('loc');
+            $loc = $app->db->location();
+            foreach ($app->req->post as $k => $v) {
+                $loc->$k = $v;
             }
-            return $array;
-        });
-        echo json_encode($q);
+            $loc->save();
+            $_id = $loc->lastInsertId();
+
+            $location = $app->db->location()
+                ->where('id = ?', $_id);
+            $q = $location->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            echo json_encode($q);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+    });
+
+    $app->post('/sectLookup/', function() use($app) {
+        try {
+            $equiv = $app->db->course_sec()
+                ->setTableAlias('sect')
+                ->select('sect.buildingCode,sect.roomCode,course.courseLongTitle')
+                ->select('sect.startTime,sect.endTime,sect.dotw,sect.minCredit')
+                ->select('sect.facID')
+                ->_join('course', 'sect.courseID = course.courseID')
+                ->where('sect.courseSecID = ?', $app->req->post['courseSecID']);
+            $q = $equiv->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            foreach ($q as $v) {
+                $json = [
+                    'input#meeting' => _h($v['buildingCode']) . ' ' . _h($v['roomCode']), 'input#title' => _h($v['courseLongTitle']),
+                    'input#time' => _h($v['startTime']) . ' - ' . _h($v['endTime']), 'input#dotw' => _h($v['dotw']),
+                    'input#credit' => number_format(_h($v['minCredit']), 6), 'input#fac' => get_name(_h($v['facID']))
+                ];
+            }
+            echo json_encode($json);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('GET', '/rgn/rrsr/(\d+)/d/', function () {
+        if (!hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t("You don't have the proper permission(s) to delete a registration restriction rule."), get_base_url() . 'sect/rgn/rrsr' . '/');
+            exit();
+        }
+    });
+
+    $app->get('/rgn/rrsr/(\d+)/d/', function ($id) {
+        try {
+            $rrsr = Node::table('rrsr');
+
+            $rrsr->find($id)->delete();
+            _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'sect/rgn/rrsr' . '/');
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'sect/rgn/rrsr' . '/');
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409), get_base_url() . 'sect/rgn/rrsr' . '/');
+        }
     });
 });
 

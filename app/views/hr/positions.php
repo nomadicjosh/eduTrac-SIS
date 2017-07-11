@@ -14,21 +14,14 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'hr';
-$flash = new \app\src\Core\etsis_Messages();
-$staffInfo = new \app\src\Staff;
-$staffInfo->Load_from_key(_h($positions[0]['staffID']));
+$staffInfo = get_staff(_h($positions[0]['staffID']));
 ?>
-
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 5000);
-</script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>hr/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Employee' );?></a></li>
+	<li><a href="<?=get_base_url();?>hr/" class="glyphicons search"><i></i> <?=_t( 'Search Employee' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Positions' );?></li>
 </ul>
@@ -39,8 +32,8 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     <div class="relativeWrap">
         <div class="widget">
             <div class="widget-head">
-                <h4 class="heading glyphicons user"><i></i><?=get_name(_h($staffInfo->getStaffID()));?></h4>
-                <a href="<?=get_base_url();?>staff/<?=_h($staffInfo->getStaffID());?>/" class="heading pull-right"><?=_h($staffInfo->getStaffID());?></a>
+                <h4 class="heading glyphicons user"><i></i><?=get_name(_h($staffInfo->staffID));?></h4>
+                <a href="<?=get_base_url();?>staff/<?=_h($staffInfo->staffID);?>/" class="heading pull-right"><?=(_h($staffInfo->altID) != '' ? _h($staffInfo->altID) : _h($staffInfo->staffID));?></a>
             </div>
             <div class="widget-body">
                 <!-- 3 Column Grid / One Third -->
@@ -48,31 +41,31 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                     
                     <!-- One Third Column -->
                     <div class="col-md-1">
-                        <?=getSchoolPhoto($staffInfo->getStaffID(), $staffInfo->getEmail(), '90');?>
+                        <?=get_school_photo(_h($staffInfo->staffID), _h($staffInfo->email), '90');?>
                     </div>
                     <!-- // One Third Column END -->
     
                     <!-- One Third Column -->
                     <div class="col-md-3">
-                        <p><?=_h($staffInfo->getAddress1());?> <?=_h($staffInfo->getAddress2());?></p>
-                        <p><?=_h($staffInfo->getCity());?> <?=_h($staffInfo->getState());?> <?=_h($staffInfo->getZip());?></p>
-                        <p><strong><?=_t( 'Phone:' );?></strong> <?=_h($staffInfo->getPhone1());?></p>
+                        <p><?=_h($staffInfo->address1);?> <?=_h($staffInfo->address2);?></p>
+                        <p><?=_h($staffInfo->city);?> <?=_h($staffInfo->state);?> <?=_h($staffInfo->zip);?></p>
+                        <p><strong><?=_t( 'Phone:' );?></strong> <?=_h($staffInfo->phone1);?></p>
                     </div>
                     <!-- // One Third Column END -->
                     
                     <!-- One Third Column -->
                     <div class="col-md-4">
-                    	<p><strong><?=_t( 'Title:' );?></strong> <?=_h($staffInfo->getTitle());?></p>
-                    	<p><strong><?=_t( 'Dept:' );?></strong> <?=_h($staffInfo->getDeptName());?></p>
-                    	<p><strong><?=_t( 'Office:' );?></strong> <?=_h($staffInfo->getOfficeCode());?></p>
+                    	<p><strong><?=_t( 'Title:' );?></strong> <?=_h($staffInfo->title);?></p>
+                    	<p><strong><?=_t( 'Dept:' );?></strong> <?=_h($staffInfo->deptName);?></p>
+                    	<p><strong><?=_t( 'Office:' );?></strong> <?=_h($staffInfo->officeCode);?></p>
                     </div>
                     <!-- // One Third Column END -->
                     
                     <!-- One Third Column -->
                     <div class="col-md-3">
-                        <p><strong><?=_t( 'Office Phone:' );?></strong> <?=_h($staffInfo->getOfficePhone());?></p>
-                        <p><strong><?=_t( 'Email:' );?></strong> <a href="mailto:<?=_h($staffInfo->getEmail());?>"><?=_h($staffInfo->getEmail());?></a></p>
-                        <p><strong><?=_t( 'Status:' );?></strong> <?=_h($staffInfo->getStaffStatus());?></p>
+                        <p><strong><?=_t( 'Office Phone:' );?></strong> <?=_h($staffInfo->office_phone);?></p>
+                        <p><strong><?=_t( 'Email:' );?></strong> <a href="mailto:<?=_h($staffInfo->email);?>"><?=_h($staffInfo->email);?></a></p>
+                        <p><strong><?=_t( 'Status:' );?></strong> <?=_h($staffInfo->staffStatus);?></p>
                     </div>
                     <!-- // One Third Column END -->
                     
@@ -85,7 +78,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
     
     <div class="separator line bottom"></div>
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
 	
 	<?php jstree_sidebar_menu($screen); ?>
 
@@ -130,20 +123,20 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                 <tr class="gradeX">
                     <td class="text-center"><?=_h($v['grade']);?></td>
                     <td class="text-center"><?=_h($v['title']);?></td>
-                    <td class="text-center">$<?=money_format("%i",_h($v['hourly_wage']));?></td>
+                    <td class="text-center">$<?=money_format("%i",(double)_h($v['hourly_wage']));?></td>
                     <td class="text-center"><?=_h($v['weekly_hours']);?></td>
-                    <td class="text-center">$<?=money_format("%i",_h($v['hourly_wage'])*_h($v['weekly_hours'])*4);?></td>
-                    <td class="text-center"><?=date('D, M d, o',strtotime(_h($v['hireDate'])));?></td>
-                    <td class="text-center"><?=date('D, M d, o',strtotime(_h($v['startDate'])));?></td>
+                    <td class="text-center">$<?=money_format("%i",(double)_h($v['hourly_wage'])*_h($v['weekly_hours'])*4);?></td>
+                    <td class="text-center"><?=\Jenssegers\Date\Date::parse(_h($v['hireDate']))->format('D, M d, o');?></td>
+                    <td class="text-center"><?=\Jenssegers\Date\Date::parse(_h($v['startDate']))->format('D, M d, o');?></td>
                     <td class="text-center">
                     	<?php if(_h($v['endDate']) == NULL || _h($v['endDate']) == '0000-00-00') : ?>
                     	<?=_t('Not Set');?>
                     	<?php else : ?>
-                		<?=date('D, M d, o',strtotime(_h($v['endDate'])));?>
+                		<?=\Jenssegers\Date\Date::parse(_h($v['endDate']))->format('D, M d, o');?>
                 		<?php endif; ?>
                     </td>
                     <td class="text-center">
-                        <a href="#position<?=_h($v['sMetaID']);?>" data-toggle="modal" title="Edit Position" class="btn btn-default"><i class="fa fa-edit"></i></a>
+                        <a href="#position<?=_h($v['id']);?>" data-toggle="modal" title="Edit Position" class="btn btn-default"><i class="fa fa-edit"></i></a>
                     </td>
                 </tr>
 				<?php } endif; ?>
@@ -158,7 +151,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 	<div class="separator bottom"></div>
 	
 	<?php if($positions != '') : foreach($positions as $k => $v) { ?>
-    <div class="modal fade" id="position<?=_h($v['sMetaID']);?>">
+    <div class="modal fade" id="position<?=_h($v['id']);?>">
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>hr/positions/<?=_h($v['staffID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -219,7 +212,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 				                <div class="col-md-8">
 				                    <select name="jobID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 				                        <option value="">&nbsp;</option>
-				                        <?php table_dropdown('job',NULL,'ID','ID','title',_h($v['jobID'])); ?>
+				                        <?php table_dropdown('job',NULL,'id','id','title',_h($v['jobID'])); ?>
 				                    </select>
 				                </div>
 				            </div>
@@ -268,7 +261,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 		            </div>
 	            </div>
 		        <div class="modal-footer">
-                    <input name="sMetaID" type="hidden" value="<?=$v['sMetaID'];?>" />
+                    <input name="id" type="hidden" value="<?=$v['id'];?>" />
 		            <button type="submit" class="btn btn-default"><?=_t( 'Update' );?></button>
 		            <button data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></button>
 		        </div>

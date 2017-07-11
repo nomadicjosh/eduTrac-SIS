@@ -10,14 +10,21 @@ if (!defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-define('CURRENT_RELEASE', '6.2.0');
+define('CURRENT_RELEASE', '6.3.0');
 define('RELEASE_TAG', trim(_file_get_contents(BASE_PATH . 'RELEASE')));
 
 $app = \Liten\Liten::getInstance();
-use \League\Event\Event;
-use \PHPBenchmark\HtmlView;
-use \PHPBenchmark\Monitor;
-use \PHPBenchmark\MonitorInterface;
+use League\Event\Event;
+use PHPBenchmark\HtmlView;
+use PHPBenchmark\Monitor;
+use PHPBenchmark\MonitorInterface;
+use app\src\Core\Exception\Exception;
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\IOException;
+use Cascade\Cascade;
+use Jenssegers\Date\Date;
+use PDOException as ORMException;
+use Respect\Validation\Validator as v;
 
 /**
  * Retrieves eduTrac site root url.
@@ -45,6 +52,8 @@ function get_base_url()
  * @param string $path
  *            Path to be created.
  * @return string
+ * @throws IOException If session.savepath is not set, path is not writable, or
+ * lacks permission to mkdir.
  */
 function _mkdir($path)
 {
@@ -54,11 +63,17 @@ function _mkdir($path)
         return;
     }
 
-    if (!is_dir($path)) {
-        if (!mkdir($path, 0755, true)) {
-            etsis_monolog('core_function', sprintf(_t('The following directory could not be created: %s'), $path), 'addError');
+    if (session_save_path() == "") {
+        throw new IOException(sprintf(_t('Session savepath is not set correctly. It is currently set to: %s'), session_save_path()));
+    }
 
-            return;
+    if (!is_writable(session_save_path())) {
+        throw new IOException(sprintf(_t('"%s" is not writable or etSIS does not have permission to create and write directories and files in this location.'), session_save_path()));
+    }
+
+    if (!is_dir($path)) {
+        if (!@mkdir($path, 0755, true)) {
+            throw new IOException(sprintf(_t('The following directory could not be created: %s'), $path));
         }
     }
 }
@@ -82,7 +97,7 @@ function _t($msgid, $domain = '')
     }
 }
 
-function getPathInfo($relative)
+function get_path_info($relative)
 {
     $app = \Liten\Liten::getInstance();
     $base = basename(BASE_PATH);
@@ -184,7 +199,7 @@ function _file_get_contents($filename, $use_include_path = false, $context = tru
  */
 function benchmark_init()
 {
-    if (!file_exists(BASE_PATH . 'config.php')) {
+    if (!etsis_file_exists(BASE_PATH . 'config.php', false)) {
         return false;
     }
     if (_h(get_option('enable_benchmark')) == 1) {
@@ -196,47 +211,93 @@ function benchmark_init()
             });
     }
 }
-if (!function_exists('imgResize')) {
 
-    function imgResize($width, $height, $target)
-    {
-        // takes the larger size of the width and height and applies the formula. Your function is designed to work with any image in any size.
-        if ($width > $height) {
-            $percentage = ($target / $width);
-        } else {
-            $percentage = ($target / $height);
-        }
-
-        // gets the new value and applies the percentage, then rounds the value
-        $width = round($width * $percentage);
-        $height = round($height * $percentage);
-        // returns the new sizes in html image tag format...this is so you can plug this function inside an image tag so that it will set the image to the correct size, without putting a whole script into the tag.
-        return "width=\"$width\" height=\"$height\"";
+/**
+ * Resize image function.
+ *
+ * @since 6.3.0
+ * @param int $width Width of the image.
+ * @param int $height Height of the image.
+ * @param string $target Path to the image.
+ */
+function resize_image($width, $height, $target)
+{
+    // takes the larger size of the width and height and applies the formula. Your function is designed to work with any image in any size.
+    if ($width > $height) {
+        $percentage = ($target / $width);
+    } else {
+        $percentage = ($target / $height);
     }
+
+    // gets the new value and applies the percentage, then rounds the value
+    $new_width = round($width * $percentage);
+    $new_height = round($height * $percentage);
+    // returns the new sizes in html image tag format...this is so you can plug this function inside an image tag so that it will set the image to the correct size, without putting a whole script into the tag.
+    return 'width="' . $new_width . '" height="' . $new_height . '"';
 }
 
 // An alternative function of using the echo command.
-if (!function_exists('_e')) {
 
-    function _e($string)
-    {
-        echo $string;
-    }
+function _e($string)
+{
+    echo $string;
 }
 
-if (!function_exists('clickableLink')) {
-
-    function clickableLink($text = '')
-    {
-        $text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1:", $text);
-        $ret = ' ' . $text;
-        $ret = preg_replace("#(^|[\n ])([\w]+?://[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $ret);
-
-        $ret = preg_replace("#(^|[\n ])((www|ftp)\.[\w\#$%&~/.\-;:=,?@\[\]+]*)#is", "\\1<a href=\"http://\\2\" target=\"_blank\">\\2</a>", $ret);
-        $ret = preg_replace("#(^|[\n ])([a-z0-9&\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $ret);
-        $ret = substr($ret, 1);
-        return $ret;
+/**
+ * Turn all URLs into clickable links.
+ * 
+ * @since 6.3.0
+ * @param string $value
+ * @param array  $protocols  http/https, ftp, mail, twitter
+ * @param array  $attributes
+ * @param string $mode       normal or all
+ * @return string
+ */
+function make_clickable($value, $protocols = ['http', 'mail'], array $attributes = [])
+{
+    // Link attributes
+    $attr = '';
+    foreach ($attributes as $key => $val) {
+        $attr = ' ' . $key . '="' . htmlentities($val) . '"';
     }
+
+    $links = [];
+
+    // Extract existing links and tags
+    $value = preg_replace_callback('~(<a .*?>.*?</a>|<.*?>)~i', function ($match) use (&$links) {
+        return '<' . array_push($links, $match[1]) . '>';
+    }, $value);
+
+    // Extract text links for each protocol
+    foreach ((array) $protocols as $protocol) {
+        switch ($protocol) {
+            case 'http':
+            case 'https': $value = preg_replace_callback('~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
+                    if ($match[1])
+                        $protocol = $match[1];
+                    $link = $match[2] ? : $match[3];
+                    return '<' . array_push($links, "<a $attr href=\"$protocol://$link\">$link</a>") . '>';
+                }, $value);
+                break;
+            case 'mail': $value = preg_replace_callback('~([^\s<]+?@[^\s<]+?\.[^\s<]+)(?<![\.,:])~', function ($match) use (&$links, $attr) {
+                    return '<' . array_push($links, "<a $attr href=\"mailto:{$match[1]}\">{$match[1]}</a>") . '>';
+                }, $value);
+                break;
+            case 'twitter': $value = preg_replace_callback('~(?<!\w)[@#](\w++)~', function ($match) use (&$links, $attr) {
+                    return '<' . array_push($links, "<a $attr href=\"https://twitter.com/" . ($match[0][0] == '@' ? '' : 'search/%23') . $match[1] . "\">{$match[0]}</a>") . '>';
+                }, $value);
+                break;
+            default: $value = preg_replace_callback('~' . preg_quote($protocol, '~') . '://([^\s<]+?)(?<![\.,:])~i', function ($match) use ($protocol, &$links, $attr) {
+                    return '<' . array_push($links, "<a $attr href=\"$protocol://{$match[1]}\">{$match[1]}</a>") . '>';
+                }, $value);
+                break;
+        }
+    }
+
+    // Insert all link
+    return preg_replace_callback('/<(\d+)>/', function ($match) use (&$links) {
+        return $links[$match[1] - 1];
+    }, $value);
 }
 
 /**
@@ -268,19 +329,6 @@ function ml($func)
     }
 }
 
-/**
- * When enabled, appends url string in order to give
- * benchmark statistics.
- *
- * @since 1.0.0
- */
-function bm()
-{
-    if (get_option('enable_benchmark') == 1) {
-        return '?php-benchmark-test=1&display-data=1';
-    }
-}
-
 function _bool($num)
 {
     switch ($num) {
@@ -289,35 +337,6 @@ function _bool($num)
             break;
         case 0:
             return 'No';
-            break;
-    }
-}
-
-function translate_class_year($year)
-{
-    switch ($year) {
-        case 'FR':
-            return 'Freshman';
-            break;
-
-        case 'SO':
-            return 'Sophomore';
-            break;
-
-        case 'JR':
-            return 'Junior';
-            break;
-
-        case 'SR':
-            return 'Senior';
-            break;
-
-        case 'GR':
-            return 'Grad Student';
-            break;
-
-        case 'PhD':
-            return 'PhD Student';
             break;
     }
 }
@@ -522,10 +541,21 @@ function etsis_check_password($password, $hash, $person_id = '')
 function etsis_set_password($password, $person_id)
 {
     $app = \Liten\Liten::getInstance();
-    $hash = etsis_hash_password($password);
-    $q = $app->db->person();
-    $q->password = $hash;
-    $q->where('personID = ?', $person_id)->update();
+    try {
+        $hash = etsis_hash_password($password);
+        $q = $app->db->person();
+        $q->password = $hash;
+        $q->where('personID = ?', $person_id)->update();
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
 }
 
 /**
@@ -582,29 +612,18 @@ function generate_timezone_list()
 /**
  * Get age by birthdate.
  *
+ * @since 6.3.0
  * @param string $birthdate
  *            Person's birth date.
  * @return mixed
  */
-function getAge($birthdate = '0000-00-00')
+function get_age($birthdate = '0000-00-00')
 {
-    if ($birthdate == '0000-00-00')
-        return 'Unknown';
+    $date = new Date($birthdate);
+    $age = $date->age;
 
-    $bits = explode('-', $birthdate);
-    $age = date('Y') - $bits[0] - 1;
-
-    $arr[1] = 'm';
-    $arr[2] = 'd';
-
-    for ($i = 1; $arr[$i]; $i ++) {
-        $n = date($arr[$i]);
-        if ($n < $bits[$i])
-            break;
-        if ($n > $bits[$i]) {
-            ++$age;
-            break;
-        }
+    if ($birthdate <= '0000-00-00' || $age == \Jenssegers\Date\Date::now()->format('Y')) {
+        return _t('Unknown');
     }
     return $age;
 }
@@ -750,15 +769,15 @@ function forbidden_keyword()
 }
 
 /**
- * The myeduTrac welcome message filter.
+ * The myetSIS welcome message filter.
  *
  * @since 4.3
  */
-function the_myet_welcome_message()
+function the_myetsis_welcome_message()
 {
     $app = \Liten\Liten::getInstance();
-    $welcome_message = get_option('myet_welcome_message');
-    $welcome_message = $app->hook->apply_filter('the_myet_welcome_message', $welcome_message);
+    $welcome_message = _escape(get_option('myetsis_welcome_message'));
+    $welcome_message = $app->hook->apply_filter('the_myetsis_welcome_message', $welcome_message);
     $welcome_message = str_replace(']]>', ']]&gt;', $welcome_message);
     return $welcome_message;
 }
@@ -876,24 +895,16 @@ function get_layouts_header($layout_dir = '')
  */
 function subdomain_as_directory()
 {
+    $app = \Liten\Liten::getInstance();
+    
     $subdomain = '';
-    $domain_parts = explode('.', $_SERVER['SERVER_NAME']);
+    $domain_parts = explode('.', $app->req->server['SERVER_NAME']);
     if (count($domain_parts) == 3) {
         $subdomain = $domain_parts[0];
     } else {
         $subdomain = 'www';
     }
     return $subdomain;
-}
-
-/**
- * Returns the directory based on subdomain.
- *
- * @return mixed
- */
-function cronDir()
-{
-    return APP_PATH . 'views/cron/' . subdomain_as_directory() . '/';
 }
 
 /**
@@ -1020,14 +1031,14 @@ function file_mod_time($file)
  * Returns an array of function names in a file.
  *
  * @since 6.2.0
- * @param string $file
+ * @param string $filename
  *            The path to the file.
  * @param bool $sort
  *            If TRUE, sort results by function name.
  */
-function get_functions_in_file($file, $sort = FALSE)
+function get_functions_in_file($filename, $sort = FALSE)
 {
-    $file = file($file);
+    $file = file($filename);
     $functions = [];
     foreach ($file as $line) {
         $line = trim($line);
@@ -1046,22 +1057,22 @@ function get_functions_in_file($file, $sort = FALSE)
  * Checks a given file for any duplicated named user functions.
  *
  * @since 6.2.0
- * @param string $file_name            
+ * @param string $filename            
  */
-function is_duplicate_function($file_name)
+function is_duplicate_function($filename)
 {
-    if ('' == _trim($file_name)) {
+    if ('' == _trim($filename)) {
         $message = _t('Invalid file name: empty file name given.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
 
-    $plugin = get_functions_in_file($file_name);
+    $plugin = get_functions_in_file($filename);
     $functions = get_defined_functions();
     $merge = array_merge($plugin, $functions['user']);
     if (count($merge) !== count(array_unique($merge))) {
         $dupe = array_unique(array_diff_assoc($merge, array_unique($merge)));
-        foreach ($dupe as $key => $value) {
+        foreach ($dupe as $value) {
             return new \app\src\Core\etsis_Error('duplicate_function_error', sprintf(_t('The following function is already defined elsewhere: <strong>%s</strong>'), $value));
         }
     }
@@ -1073,12 +1084,12 @@ function is_duplicate_function($file_name)
  * that might have been required or included.
  *
  * @since 6.2.0
- * @param string $file_name
+ * @param string $filename
  *            PHP script to check.
  */
-function etsis_php_check_includes($file_name)
+function etsis_php_check_includes($filename)
 {
-    if ('' == _trim($file_name)) {
+    if ('' == _trim($filename)) {
         $message = _t('Invalid file name: empty file name given.');
         _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
@@ -1088,11 +1099,11 @@ function etsis_php_check_includes($file_name)
     // we can assume things like proper line terminations
     $includes = [];
     // Get the directory name of the file so we can prepend it to relative paths
-    $dir = dirname($file_name);
+    $dir = dirname($filename);
 
     // Split the contents of $fileName about requires and includes
     // We need to slice off the first element since that is the text up to the first include/require
-    $requireSplit = array_slice(preg_split('/require|include/i', _file_get_contents($file_name)), 1);
+    $requireSplit = array_slice(preg_split('/require|include/i', _file_get_contents($filename)), 1);
 
     // For each match
     foreach ($requireSplit as $string) {
@@ -1129,27 +1140,29 @@ function etsis_php_check_includes($file_name)
  * Performs a syntax and error check of a given PHP script.
  *
  * @since 6.2.0
- * @param string $file_name
- *            PHP script to check.
+ * @param string $filename
+ *            PHP script/file to check.
  * @param bool $check_includes
  *            If set to TRUE, will check if other files have been included.
  * @return void|\app\src\Core\Exception\Exception
+ * @throws NotFoundException If file does not exist or is not readable.
+ * @throws Exception If file contains duplicate function names.
  */
-function etsis_php_check_syntax($file_name, $check_includes = true)
+function etsis_php_check_syntax($filename, $check_includes = true)
 {
-    // If it is not a file or we can't read it throw an exception
-    if (!is_file($file_name) || !is_readable($file_name)) {
-        return new \app\src\Core\Exception\Exception(_t('Cannot read file ') . $file_name, 'php_check_syntax');
+    // If file does not exist or it is not readable, throw an exception
+    if (!is_file($filename) || !is_readable($filename)) {
+        throw new NotFoundException(sprintf(_t('"%s" is not found or is not a regular file.'), $filename));
     }
 
-    $dupe_function = is_duplicate_function($file_name);
+    $dupe_function = is_duplicate_function($filename);
 
     if (is_etsis_error($dupe_function)) {
         return new \app\src\Core\Exception\Exception($dupe_function->get_error_message(), 'php_check_syntax');
     }
 
     // Sort out the formatting of the filename
-    $file_name = realpath($file_name);
+    $file_name = realpath($filename);
 
     // Get the shell output from the syntax check command
     $output = shell_exec('php -l "' . $file_name . '"');
@@ -1166,7 +1179,9 @@ function etsis_php_check_syntax($file_name, $check_includes = true)
     if ($check_includes) {
         foreach (etsis_php_check_includes($file_name) as $include) {
             // Check the syntax for each include
-            etsis_php_check_syntax($include);
+            if (is_file($include)) {
+                etsis_php_check_syntax($include);
+            }
         }
     }
 }
@@ -1185,20 +1200,24 @@ function etsis_validate_plugin($plugin_name)
 
     $plugin = str_replace('.plugin.php', '', $plugin_name);
 
-    if (!file_exists(ETSIS_PLUGIN_DIR . $plugin . '/' . $plugin_name)) {
+    if (!etsis_file_exists(ETSIS_PLUGIN_DIR . $plugin . DS . $plugin_name, false)) {
         $file = ETSIS_PLUGIN_DIR . $plugin_name;
     } else {
-        $file = ETSIS_PLUGIN_DIR . $plugin . '/' . $plugin_name;
+        $file = ETSIS_PLUGIN_DIR . $plugin . DS . $plugin_name;
     }
 
     $error = etsis_php_check_syntax($file);
     if (is_etsis_exception($error)) {
-        $app->flash('error_message', _t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br />') . $error->getMessage());
+        _etsis_flash()->error(_t('Plugin could not be activated because it triggered a <strong>fatal error</strong>. <br /><br />') . $error->getMessage());
         return false;
     }
 
-    if (file_exists($file)) {
-        include_once ($file);
+    try {
+        if (etsis_file_exists($file)) {
+            include_once ($file);
+        }
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error(sprintf('FILESTATE[%s]: File not found: %s', $e->getCode(), $e->getMessage()));
     }
 
     /**
@@ -1264,10 +1283,10 @@ function win_is_writable($path)
     if ($path{strlen($path) - 1} == '/') { // recursively return a temporary file path
         return win_is_writable($path . uniqid(mt_rand()) . '.tmp');
     } elseif (is_dir($path)) {
-        return win_is_writable($path . '/' . uniqid(mt_rand()) . '.tmp');
+        return win_is_writable($path . DS . uniqid(mt_rand()) . '.tmp');
     }
     // check tmp file for read/write capabilities
-    $rm = file_exists($path);
+    $rm = etsis_file_exists($path, false);
     $f = fopen($path, 'a');
     if ($f === false) {
         return false;
@@ -1516,4 +1535,389 @@ function etsis_seconds_to_time($seconds)
     }
 
     return $ret;
+}
+
+/**
+ * Checks whether a file or directory exists.
+ * 
+ * @since 6.3.0
+ * @param string $filename Path to the file or directory.
+ * @param bool $throw Determines whether to do a simple check or throw an exception.
+ * @return boolean <b>TRUE</b> if the file or directory specified by
+ * <i>$filename</i> exists; <b>FALSE</b> otherwise.
+ * @throws NotFoundException If file does not exist.
+ */
+function etsis_file_exists($filename, $throw = true)
+{
+    if (!file_exists($filename)) {
+        if ($throw == true) {
+            throw new NotFoundException(sprintf(_t('"%s" does not exist.'), $filename));
+        }
+        return false;
+    }
+    return true;
+}
+
+function get_screen($screen)
+{
+    $acronym = [
+        'SYSS' => 'setting',
+        'MPRM' => 'permission',
+        'APRM' => 'permission/add',
+        'MRLE' => 'role',
+        'AUDT' => 'audit-trail',
+        'SQL' => 'sql',
+        'SCH' => 'form/school',
+        'SEM' => 'form/semester',
+        'TERM' => 'form/term',
+        'AYR' => 'form/acad-year',
+        'CRSE' => 'crse',
+        'DEPT' => 'form/department',
+        'DEG' => 'form/degree',
+        'MAJR' => 'form/major',
+        'MINR' => 'form/minor',
+        'PROG' => 'program',
+        'CCD' => 'form/ccd',
+        'CIP' => 'form/cip',
+        'LOC' => 'form/location',
+        'BLDG' => 'form/building',
+        'ROOM' => 'form/room',
+        'SPEC' => 'form/specialization',
+        'SUBJ' => 'form/subject',
+        'APRG' => 'program/add',
+        'ACRS' => 'crse/add',
+        'SECT' => 'sect',
+        'RGN' => 'sect/rgn',
+        'NAE' => 'nae',
+        'APER' => 'nae/add',
+        'SPRO' => 'stu',
+        'INST' => 'app/inst',
+        'AINST' => 'app/inst/add',
+        'APPL' => 'appl',
+        'BRGN' => 'sect/brgn',
+        'STAF' => 'staff',
+        'TRAN' => 'stu/tran',
+        'RSTR' => 'form/rest',
+        'GRSC' => 'form/grade-scale',
+        'SROS' => 'sect/sros',
+        'EXTR' => 'crse/extr',
+        'ATCEQ' => 'crse/atceq',
+        'TCEQ' => 'crse/tceq',
+        'TCRE' => 'crse/tcre',
+        'RLDE' => 'rlde',
+        'ACLV' => 'form/aclv',
+        'MRKT' => 'mrkt'
+    ];
+    return $acronym[$screen];
+}
+
+/**
+ * Add the template to the message body.
+ *
+ * Looks for {content} into the template and replaces it with the message.
+ *
+ * @since 6.3.0
+ * @param string $body The message to templatize.
+ * @return string $email The email surrounded by template.
+ */
+function set_email_template($body)
+{
+    $app = \Liten\Liten::getInstance();
+
+    $tpl = _file_get_contents(APP_PATH . 'views/setting/tpl/email_alert.tpl');
+
+    $template = $app->hook->apply_filter('email_template', $tpl);
+
+    return str_replace('{content}', $body, $template);
+}
+
+/**
+ * Replace variables in the template.
+ *
+ * @since 6.3.0
+ * @param string $template Template with variables.
+ * @return string Template with variables replaced.
+ */
+function template_vars_replacement($template)
+{
+    $app = \Liten\Liten::getInstance();
+
+    $var_array = [
+        'institution_name' => _h(get_option('institution_name')),
+        'address' => _h(get_option('mailing_address'))
+    ];
+
+    $to_replace = $app->hook->apply_filter('email_template_tags', $var_array);
+
+    foreach ($to_replace as $tag => $var) {
+        $template = str_replace('{' . $tag . '}', $var, $template);
+    }
+
+    return $template;
+}
+
+/**
+ * Process the HTML version of the text.
+ *
+ * @since 6.3.0
+ * @param string $text
+ * @param string $title
+ * @return string
+ */
+function process_email_html($text, $title)
+{
+    $app = \Liten\Liten::getInstance();
+
+    // Convert URLs to links
+    $links = make_clickable($text);
+
+    // Add template to message
+    $template = set_email_template($links);
+
+    // Replace title tag with $title.
+    $body = str_replace('{title}', $title, $template);
+
+    // Replace variables in email
+    $message = $app->hook->apply_filter('email_template_body', template_vars_replacement($body));
+
+    return $message;
+}
+
+/**
+ * Retrieve the domain name.
+ * 
+ * @since 6.3.0
+ * @return string
+ */
+function get_domain_name()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $server_name = strtolower($app->req->server['SERVER_NAME']);
+    if (substr($server_name, 0, 4) == 'www.') {
+        $server_name = substr($server_name, 4);
+    }
+    return $server_name;
+}
+
+/**
+ * SQL Like operator in PHP.
+ * 
+ * Returns true if match else false.
+ * 
+ * @since 6.3.0
+ * @param string $pattern
+ * @param string $subject
+ * @return bool
+ */
+function php_like($pattern, $subject)
+{
+    $match = str_replace('%', '.*', preg_quote($pattern, '/'));
+    return (bool) preg_match("/^{$match}$/i", $subject);
+}
+
+/**
+ * Url shortening function.
+ * 
+ * @since 6.3.0
+ * @param string $url URL
+ * @param int $length Characters to check against.
+ * @return string
+ */
+function etsis_url_shorten($url, $length = 80)
+{
+    if (strlen($url) > $length) {
+        $strlen = $length - 30;
+        $first = substr($url, 0, $strlen);
+        $last = substr($url, -15);
+        $short_url = $first . "[ ... ]" . $last;
+        return $short_url;
+    } else {
+        return $url;
+    }
+}
+
+/**
+ * Adds label to the cron's status.
+ * 
+ * @since 6.3.0
+ * @param string $status
+ * @return string
+ */
+function etsis_cron_status_label($status)
+{
+    $label = [
+        1 => 'label-success',
+        0 => 'label-danger'
+    ];
+
+    return $label[$status];
+}
+
+/**
+ * Redirects to another page.
+ * 
+ * @since 6.3.0
+ * @param string $location The path to redirect to
+ * @param int $status Status code to use
+ * @return bool False if $location is not set
+ */
+function etsis_redirect($location, $status = 302)
+{
+    $app = \Liten\Liten::getInstance();
+    /**
+     * Filters the redirect location.
+     *
+     * @since 6.3.0
+     *
+     * @param string $location The path to redirect to.
+     * @param int    $status   Status code to use.
+     */
+    $_location = $app->hook->apply_filter('etsis_redirect', $location, $status);
+    /**
+     * Filters the redirect status code.
+     *
+     * @since 6.3.0
+     *
+     * @param int    $status   Status code to use.
+     * @param string $_location The path to redirect to.
+     */
+    $_status = $app->hook->apply_filter('etsis_redirect_status', $status, $_location);
+
+    if (!$_location)
+        return false;
+
+    header("Location: $_location", true, $_status);
+    return true;
+}
+
+/**
+ * Retrieves a modified URL query string.
+ * 
+ * @since 6.3.0
+ * @param string $key A query variable key.
+ * @param string $value A query variable value, or a URL to act upon.
+ * @param string $url A URL to act upon.
+ * @return string
+ */
+function add_query_arg($key, $value, $url)
+{
+    $app = \Liten\Liten::getInstance();
+    $uri = parse_url($url);
+    $query = isset($uri['query']) ? $uri['query'] : '';
+    parse_str($query, $params);
+    $params[$key] = $value;
+    $query = http_build_query($params);
+    $result = '';
+    if ($uri['scheme']) {
+        $result .= $uri['scheme'] . ':';
+    }
+    if ($uri['host']) {
+        $result .= '//' . $uri['host'];
+    }
+    if ($uri['port']) {
+        $result .= $app->hook->apply_filter('query_arg_port', ':' . $uri['port']);
+    }
+    if ($uri['path']) {
+        $result .= $uri['path'];
+    }
+    if ($query) {
+        $result .= '?' . $query;
+    }
+    return $result;
+}
+
+/**
+ * Retrieves the login url.
+ * 
+ * @since 6.3.0
+ * @param string $redirect Path to redirect to on log in.
+ * @return string
+ */
+function etsis_login_url($redirect = '')
+{
+    $app = \Liten\Liten::getInstance();
+    $login_url = get_base_url() . 'login' . '/';
+
+    if (!empty($redirect)) {
+        $login_url = add_query_arg('redirect_to', $redirect, $login_url);
+    }
+
+    /**
+     * Validates & protects redirect url against XSS attacks.
+     * 
+     * @since 6.3.0
+     */
+    if (!empty($redirect) && !v::filterVar(FILTER_VALIDATE_URL)->validate($redirect)) {
+        $login_url = get_base_url() . 'login' . '/';
+    }
+    /**
+     * Filters the login URL.
+     *
+     * @since 6.3.0
+     *
+     * @param string $login_url    The login URL. Not HTML-encoded.
+     * @param string $redirect     The path to redirect to on login, if supplied.
+     */
+    return $app->hook->apply_filter('login_url', $login_url, $redirect);
+}
+
+/**
+ * Create a backup of etSIS install.
+ * 
+ * @since 6.3.0
+ * @param type $source Path/directory to zip.
+ * @param type $destination Target for zipped file.
+ * @return mixed
+ */
+function etsis_system_backup($source, $destination)
+{
+    if (!extension_loaded('zip') || !file_exists($source)) {
+        return false;
+    }
+
+    $zip = new \ZipArchive();
+    if (!$zip->open($destination, ZIPARCHIVE::CREATE)) {
+        return false;
+    }
+
+    $source = str_replace('\\', '/', realpath($source));
+
+    if (is_dir($source) === true) {
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($source), \RecursiveIteratorIterator::SELF_FIRST);
+
+        foreach ($files as $file) {
+            $file = str_replace('\\', '/', $file);
+
+            // Ignore "." and ".." folders
+            if (in_array(substr($file, strrpos($file, '/') + 1), array('.', '..')))
+                continue;
+
+            $file = realpath($file);
+
+            if (is_dir($file) === true) {
+                $zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
+            } else if (is_file($file) === true) {
+                $zip->addFromString(str_replace($source . '/', '', $file), _file_get_contents($file));
+            }
+        }
+    } else if (is_file($source) === true) {
+        $zip->addFromString(basename($source), _file_get_contents($source));
+    }
+
+    return $zip->close();
+}
+
+/**
+ * Used to retrieve values within a range.
+ * 
+ * @since 6.3.0
+ * @param mixed $val
+ * @param mixed $min
+ * @param mixed $max
+ * @return boolean
+ */
+function etsis_between($val, $min, $max)
+{
+    return ($val - $min) * ($val - $max) <= 0;
 }

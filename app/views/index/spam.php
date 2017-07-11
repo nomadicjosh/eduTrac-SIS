@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * myeduTrac Register Spam View
+ * myetSIS Register Spam View
  *  
  * @license GPLv3
  * 
@@ -10,14 +10,11 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
-$app->view->block('myet');
+$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->block('myetsis');
 ?>
 
 		<div class="col-md-12">
-			
-			<div class="separator bottom"></div>
-			<div class="separator bottom"></div>
 		
 			<div class="widget widget-heading-simple widget-body-white">
 				<div class="widget-body">

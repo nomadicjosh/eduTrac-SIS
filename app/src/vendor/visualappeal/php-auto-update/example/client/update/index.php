@@ -10,7 +10,7 @@ $update->setUpdateUrl('http://php-auto-update.app/server'); //Replace with your 
 
 // Optional:
 $update->addLogHandler(new Monolog\Handler\StreamHandler(__DIR__ . '/update.log'));
-$update->setCache(new Desarrolla2\Cache\Adapter\File(__DIR__ . '/cache'), 3600);
+// $update->setCache(new Desarrolla2\Cache\Adapter\File(__DIR__ . '/cache'), 3600);
 
 //Check for a new update
 if ($update->checkUpdate() === false)
@@ -26,11 +26,14 @@ if ($update->newVersionAvailable()) {
 	}, $update->getVersionsToUpdate()));
 	echo '</pre>';
 
+	// This call will only simulate an update.
+	// Set the first argument (simulate) to "false" to install the update
+	// i.e. $update->update(false);
 	$result = $update->update();
 	if ($result === true) {
-		echo 'Update successful<br>';
+		echo 'Update simulation successful<br>';
 	} else {
-		echo 'Update failed: ' . $result . '!<br>';
+		echo 'Update simulation failed: ' . $result . '!<br>';
 
 		if ($result = AutoUpdate::ERROR_SIMULATE) {
 			echo '<pre>';

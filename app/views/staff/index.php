@@ -17,13 +17,15 @@ $screen = 'staff';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Staff' );?></li>
 </ul>
 
 <h3><?=_t( 'Staff Lookup' );?></h3>
 <div class="innerLR">
+    
+    <?=_etsis_flash()->showMessage();?>
 
 	<?php jstree_sidebar_menu($screen); ?>
 
@@ -36,7 +38,7 @@ $screen = 'staff';
 					<div class="widget-body">
 						
 						<div class="widget widget-heading-simple widget-body-simple text-right form-group">
-							<form class="form-search text-center" action="<?=get_base_url();?>staff/<?=bm();?>" method="post" autocomplete="off">
+							<form class="form-search text-center" action="<?=get_base_url();?>staff/" method="post" autocomplete="off">
 							  	<input type="text" name="staff" class="form-control" placeholder="Search by person ID or name . . . " /> 
 							  	<a href="#myModal" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a>
 							</form>
@@ -68,8 +70,8 @@ $screen = 'staff';
 				<tbody>
 				<?php if($search != '') : foreach($search as $k => $v) { ?>
                 <tr class="gradeX">
-                	<td class="text-center"><?=getSchoolPhoto(_h($v['staffID']), _h($v['email']), 48, 'avatar-frame');?></td>
-                    <td class="text-center"><?=_h($v['staffID']);?></td>
+                	<td class="text-center"><?=get_school_photo(_h($v['staffID']), _h($v['email']), 48, 'avatar-frame');?></td>
+                    <td class="text-center"><?=(_h($v['altID']) != '' ? _h($v['altID']) : _h($v['staffID']));?></td>
                     <td class="text-center"><?=_h($v['lname']);?></td>
                     <td class="text-center"><?=_h($v['fname']);?></td>
                     <td class="text-center">
@@ -80,7 +82,7 @@ $screen = 'staff';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>staff/<?=_h($v['staffID']);?>/<?=bm();?>"><?=_t( 'View' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>staff/<?=_h($v['staffID']);?>/"><?=_t( 'View' ); ?></a></li>
                             </ul>
                         </div>
                     </td>

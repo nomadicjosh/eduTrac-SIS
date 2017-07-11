@@ -1,6 +1,11 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+use Cascade\Cascade;
+
 /**
  * eduTrac SIS Hooks Helper & Wrapper
  *
@@ -474,6 +479,56 @@ function _deprecated_argument($function_name, $release, $message = null)
 }
 
 /**
+ * Marks a deprecated action or filter hook as deprecated and throws a notice.
+ *
+ * Default behavior is to trigger a user error if `APP_ENV` is set to DEV.
+ *
+ * This function is called by the hook::do_action_deprecated() and Hook::apply_filter_deprecated()
+ * functions, and so generally does not need to be called directly.
+ *
+ * @since 6.3.0
+ * 
+ * @param string $hook        The hook that was used.
+ * @param string $release     The release of eduTrac SIS that deprecated the hook.
+ * @param string $replacement Optional. The hook that should have been used.
+ * @param string $message     Optional. A message regarding the change.
+ */
+function _deprecated_hook($hook, $release, $replacement = null, $message = null)
+{
+
+    $app = \Liten\Liten::getInstance();
+
+    /**
+     * Fires when a deprecated hook is called.
+     *
+     * @since 6.3.0
+     * 
+     * @param string $hook        The hook that was called.
+     * @param string $replacement The hook that should be used as a replacement.
+     * @param string $release     The release of eduTrac SIS that deprecated the argument used.
+     * @param string $message     A message regarding the change.
+     */
+    $app->hook->do_action('deprecated_hook_run', $hook, $replacement, $release, $message);
+
+    /**
+     * Filters whether to trigger deprecated hook errors.
+     *
+     * @since 6.3.0
+     * 
+     * @param bool $trigger Whether to trigger deprecated hook errors. Requires
+     *                      `APP_DEV` to be defined DEV.
+     */
+    if (APP_ENV == 'DEV' && $app->hook->apply_filter('deprecated_hook_trigger_error', true)) {
+        $message = empty($message) ? '' : ' ' . $message;
+        if (!is_null($replacement)) {
+            _trigger_error(sprintf(__('%1$s is <strong>deprecated</strong> since release %2$s! Use %3$s instead.'), $hook, $release, $replacement) . $message, E_USER_DEPRECATED);
+        } else {
+            _trigger_error(sprintf(__('%1$s is <strong>deprecated</strong> since release %2$s with no alternative available.'), $hook, $release) . $message, E_USER_DEPRECATED);
+        }
+    }
+}
+
+/**
  * Mark something as being incorrectly called.
  *
  * There is a hook incorrectly_called_run that will be called that can be used
@@ -551,14 +606,14 @@ function etsis_dashboard_copyright_footer()
  *
  * @since 1.0.0
  */
-load_activated_plugins(APP_PATH . 'plugins/');
+load_activated_plugins(APP_PATH . 'plugins' . DS);
 
 /**
  * Includes and loads all available modules.
  *
  * @since 5.0.0
  */
-$app->module->load_installed_modules(APP_PATH . 'modules/');
+$app->module->load_installed_modules(APP_PATH . 'modules' . DS);
 
 /**
  * An action called to add the plugin's link
@@ -609,20 +664,20 @@ function admin_head()
 }
 
 /**
- * Fires the myet_head action.
+ * Fires the myetsis_head action.
  *
  * @since 1.0.0
  */
-function myet_head()
+function myetsis_head()
 {
     $app = \Liten\Liten::getInstance();
     /**
-     * Prints scripts and/or data in the head tag of the myeduTrac self service
+     * Prints scripts and/or data in the head tag of the myetSIS self service
      * portal.
      *
      * @since 1.0.0
      */
-    $app->hook->do_action('myet_head');
+    $app->hook->do_action('myetsis_head');
 }
 
 /**
@@ -644,20 +699,53 @@ function footer()
 
 /**
  * Fires the footer action via
- * myeduTrac self service portal.
+ * myetSIS self service portal.
  *
  * @since 6.1.12
  */
-function myet_footer()
+function myetsis_footer()
 {
     $app = \Liten\Liten::getInstance();
     /**
-     * Prints scripts and/or data before the ending body tag of the myeduTrac
+     * Prints scripts and/or data before the ending body tag of the myetSIS
      * self service portal.
      *
      * @since 6.1.12
      */
-    $app->hook->do_action('myet_footer');
+    $app->hook->do_action('myetsis_footer');
+}
+
+/**
+ * Fires the etsis_dashboard_head action.
+ *
+ * @since 6.3.0
+ */
+function etsis_dashboard_head()
+{
+    $app = \Liten\Liten::getInstance();
+    /**
+     * Prints scripts and/or data in the head tag of the dashboard.
+     *
+     * @since 6.3.0
+     */
+    $app->hook->do_action('etsis_dashboard_head');
+}
+
+/**
+ * Fires the etsis_dashboard_footer action via the dashboard.
+ *
+ * @since 6.3.0
+ */
+function etsis_dashboard_footer()
+{
+    $app = \Liten\Liten::getInstance();
+    /**
+     * Prints scripts and/or data before the ending body tag
+     * of the dashboard.
+     *
+     * @since 6.3.0
+     */
+    $app->hook->do_action('etsis_dashboard_footer');
 }
 
 /**
@@ -700,31 +788,41 @@ function dashboard_top_widgets()
 function dashboard_student_count()
 {
     $app = \Liten\Liten::getInstance();
-    $stu = $app->db->student()
-        ->select('COUNT(student.stuID) as count')
-        ->_join('stu_program', 'student.stuID = stu_program.stuID')
-        ->where('student.status = "A"')
-        ->_and_()
-        ->where('stu_program.currStatus = "A"');
-    $q = $stu->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+    try {
+        $stu = $app->db->student()
+            ->select('COUNT(student.stuID) as count')
+            ->_join('sacp', 'student.stuID = sacp.stuID')
+            ->where('student.status = "A"')->_and_()
+            ->where('sacp.currStatus = "A"');
+        $q = $stu->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        $a = [];
+        foreach ($q as $r) {
+            $a[] = $r;
         }
-        return $array;
-    });
-    $a = [];
-    foreach ($q as $r) {
-        $a[] = $r;
+        $stuCount = '<div class="col-md-4">';
+        $stuCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
+        $stuCount .= '<span class="glyphicons group"><i></i><span class="txt">' . _t('Active Students') . '</span></span>';
+        $stuCount .= '<div class="clearfix"></div>';
+        $stuCount .= '<span class="count">' . $r['count'] . '</span>';
+        $stuCount .= '</a>';
+        $stuCount .= '</div>';
+        echo $app->hook->apply_filter('dashboard_student_count', $stuCount);
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
-    $stuCount = '<div class="col-md-4">';
-    $stuCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
-    $stuCount .= '<span class="glyphicons group"><i></i><span class="txt">' . _t('Active Students') . '</span></span>';
-    $stuCount .= '<div class="clearfix"></div>';
-    $stuCount .= '<span class="count">' . $r['count'] . '</span>';
-    $stuCount .= '</a>';
-    $stuCount .= '</div>';
-    echo $app->hook->apply_filter('dashboard_student_count', $stuCount);
 }
 
 /**
@@ -735,19 +833,31 @@ function dashboard_student_count()
 function dashboard_course_count()
 {
     $app = \Liten\Liten::getInstance();
+    try {
+        $count = $app->db->course()
+            ->where('course.currStatus = "A"')->_and_()
+            ->where('course.endDate IS NULL')->_or_()
+            ->whereLte('course.endDate','0000-00-00')
+            ->count('course.courseID');
 
-    $count = $app->db->course()
-        ->where('course.currStatus = "A" AND course.endDate = "0000-00-00"')
-        ->count('course.courseID');
-
-    $crseCount = '<div class="col-md-4">';
-    $crseCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
-    $crseCount .= '<span class="glyphicons book"><i></i><span class="txt">' . _t('Active Courses') . '</span></span>';
-    $crseCount .= '<div class="clearfix"></div>';
-    $crseCount .= '<span class="count">' . $count . '</span>';
-    $crseCount .= '</a>';
-    $crseCount .= '</div>';
-    echo $app->hook->apply_filter('dashboard_course_count', $crseCount);
+        $crseCount = '<div class="col-md-4">';
+        $crseCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
+        $crseCount .= '<span class="glyphicons book"><i></i><span class="txt">' . _t('Active Courses') . '</span></span>';
+        $crseCount .= '<div class="clearfix"></div>';
+        $crseCount .= '<span class="count">' . $count . '</span>';
+        $crseCount .= '</a>';
+        $crseCount .= '</div>';
+        echo $app->hook->apply_filter('dashboard_course_count', $crseCount);
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
 }
 
 /**
@@ -758,19 +868,31 @@ function dashboard_course_count()
 function dashboard_acadProg_count()
 {
     $app = \Liten\Liten::getInstance();
+    try {
+        $count = $app->db->acad_program()
+            ->where('acad_program.currStatus = "A"')->_and_()
+            ->where('acad_program.endDate IS NULL')->_or_()
+            ->whereLte('acad_program.endDate','0000-00-00')
+            ->count('acad_program.id');
 
-    $count = $app->db->acad_program()
-        ->where('acad_program.currStatus = "A" AND acad_program.endDate = "0000-00-00"')
-        ->count('acad_program.acadProgID');
-
-    $progCount = '<div class="col-md-4">';
-    $progCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
-    $progCount .= '<span class="glyphicons keynote"><i></i><span class="txt">' . _t('Active Programs') . '</span></span>';
-    $progCount .= '<div class="clearfix"></div>';
-    $progCount .= '<span class="count">' . $count . '</span>';
-    $progCount .= '</a>';
-    $progCount .= '</div>';
-    echo $app->hook->apply_filter('dashboard_acadProg_count', $progCount);
+        $progCount = '<div class="col-md-4">';
+        $progCount .= '<a href="#" class="widget-stats widget-stats-1 widget-stats-inverse">';
+        $progCount .= '<span class="glyphicons keynote"><i></i><span class="txt">' . _t('Active Programs') . '</span></span>';
+        $progCount .= '<div class="clearfix"></div>';
+        $progCount .= '<span class="count">' . $count . '</span>';
+        $progCount .= '</a>';
+        $progCount .= '</div>';
+        echo $app->hook->apply_filter('dashboard_acadProg_count', $progCount);
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
 }
 
 /**
@@ -781,25 +903,25 @@ function dashboard_acadProg_count()
  */
 function show_update_message()
 {
-    $app = \Liten\Liten::getInstance();
-    $acl = new \app\src\ACL(get_persondata('personID'));
-    if ($acl->userHasRole(8)) {
-        $update = new \VisualAppeal\AutoUpdate(rtrim($app->config('file.savepath'), '/'), BASE_PATH, 1800);
-        $update->setCurrentVersion(RELEASE_TAG);
-        $update->setUpdateUrl('https://etsis.s3.amazonaws.com/core/1.1/update-check');
+    /* $app = \Liten\Liten::getInstance();
+      $acl = new \app\src\ACL(get_persondata('personID'));
+      if ($acl->userHasRole(8)) {
+      $update = new \VisualAppeal\AutoUpdate(rtrim($app->config('file.savepath'), '/'), BASE_PATH, 1800);
+      $update->setCurrentVersion(RELEASE_TAG);
+      $update->setUpdateUrl('https://etsis.s3.amazonaws.com/core/1.1/update-check');
 
-        // Optional:
-        $update->addLogHandler(new Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/core-update.' . date('m-d-Y') . '.txt'));
-        $update->setCache(new Desarrolla2\Cache\Adapter\File(APP_PATH . 'tmp/cache'), 3600);
-        if ($update->checkUpdate() !== false) {
-            if ($update->newVersionAvailable()) {
-                $alert = '<div class="alerts alerts-warn center">';
-                $alert .= sprintf(_t('eduTrac SIS release %s is available for download/upgrade. Before upgrading, make sure to <a href="%s">backup your system</a>.'), $update->getLatestVersion(), 'https://www.edutracsis.com/manual/edutrac-sis-backups/');
-                $alert .= '</div>';
-            }
-        }
-    }
-    return $app->hook->apply_filter('update_message', $alert);
+      // Optional:
+      $update->addLogHandler(new Monolog\Handler\StreamHandler(APP_PATH . 'tmp/logs/core-update.' . \Jenssegers\Date\Date::now()->format('m-d-Y') . '.txt'));
+      $update->setCache(new Desarrolla2\Cache\Adapter\File(APP_PATH . 'tmp/cache'), 3600);
+      if ($update->checkUpdate() !== false) {
+      if ($update->newVersionAvailable()) {
+      $alert = '<div class="alerts alerts-warn center">';
+      $alert .= sprintf(_t('eduTrac SIS release %s is available for download/upgrade. Before upgrading, make sure to <a href="%s">backup your system</a>.'), $update->getLatestVersion(), 'https://www.edutracsis.com/manual/edutrac-sis-backups/');
+      $alert .= '</div>';
+      }
+      }
+      }
+      return $app->hook->apply_filter('update_message', $alert); */
 }
 
 /**
@@ -894,12 +1016,12 @@ function get_met_title()
 {
     $app = \Liten\Liten::getInstance();
 
-    $title = '<em>' . _t('my') . '</em>' . ('eduTrac');
+    $title = '<em>' . _t('my') . '</em>' . ('etSIS');
     return $app->hook->apply_filter('met_title', $title);
 }
 
 /**
- * myeduTrac welcome message title.
+ * myetSIS welcome message title.
  *
  * @since 6.2.2
  * @uses $app->hook->apply_filter() Calls 'met_welcome_message_title' filter.
@@ -910,7 +1032,7 @@ function get_met_welcome_message_title()
 {
     $app = \Liten\Liten::getInstance();
 
-    $title = _t('Welcome to myeduTrac');
+    $title = _t('Welcome to myetSIS');
     return $app->hook->apply_filter('met_welcome_message_title', $title);
 }
 
@@ -1015,60 +1137,6 @@ function address_status_select($status = NULL)
 }
 
 /**
- * Acad Level select: shows general list of academic levels and
- * if $levelCode is not NULL, shows the academic level attached
- * to a particular record.
- *
- * @since 1.0.0
- * @param string $levelCode            
- * @return string Returns the record key if selected is true.
- */
-function acad_level_select($levelCode = null, $readonly = null, $required = '')
-{
-    $app = \Liten\Liten::getInstance();
-
-    $select = '<select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"' . $readonly . $required . '>
-            <option value="">&nbsp;</option>
-            <option value="NA"' . selected($levelCode, 'NA', false) . '>N/A Not Applicable</option>
-            <option value="CE"' . selected($levelCode, 'CE', false) . '>CE Continuing Education</option>
-            <option value="CTF"' . selected($levelCode, 'CTF', false) . '>CTF Certificate</option>
-            <option value="UG"' . selected($levelCode, 'UG', false) . '>UG Undergraduate</option>
-            <option value="GR"' . selected($levelCode, 'GR', false) . '>GR Graduate</option>
-            <option value="DIP"' . selected($levelCode, 'DIP', false) . '>DIP Diploma</option>
-            <option value="PR"' . selected($levelCode, 'PR', false) . '>PR Professional</option>
-            <option value="PhD"' . selected($levelCode, 'PhD', false) . '>PhD Doctorate</option>
-            </select>';
-    return $app->hook->apply_filter('acad_level', $select, $levelCode);
-}
-
-/**
- * Fee acad Level select: shows general list of academic levels and
- * if $levelCode is not NULL, shows the academic level attached
- * to a particular record.
- *
- * @since 4.1.7
- * @param string $levelCode            
- * @return string Returns the record key if selected is true.
- */
-function fee_acad_level_select($levelCode = null)
-{
-    $app = \Liten\Liten::getInstance();
-
-    $select = '<select name="acadLevelCode" class="form-control">
-            <option value="">&nbsp;</option>
-            <option value="NA"' . selected($levelCode, 'NA', false) . '>N/A Not Applicable</option>
-            <option value="CE"' . selected($levelCode, 'CE', false) . '>CE Continuing Education</option>
-            <option value="CTF"' . selected($levelCode, 'CTF', false) . '>CTF Certificate</option>
-            <option value="UG"' . selected($levelCode, 'UG', false) . '>UG Undergraduate</option>
-            <option value="GR"' . selected($levelCode, 'GR', false) . '>GR Graduate</option>
-            <option value="DIP"' . selected($levelCode, 'DIP', false) . '>DIP Diploma</option>
-            <option value="PR"' . selected($levelCode, 'PR', false) . '>PR Professional</option>
-            <option value="PhD"' . selected($levelCode, 'PhD', false) . '>PhD Doctorate</option>
-            </select>';
-    return $app->hook->apply_filter('fee_acad_level', $select, $levelCode);
-}
-
-/**
  * Status dropdown: shows general list of statuses and
  * if $status is not NULL, shows the current status
  * for a particular record.
@@ -1140,34 +1208,6 @@ function person_type_select($type = NULL)
 }
 
 /**
- * Course Level dropdown: shows general list of course levels and
- * if $levelCode is not NULL, shows the course level attached
- * to a particular record.
- *
- * @since 1.0.0
- * @param string $levelCode            
- * @return string Returns the record key if selected is true.
- */
-function course_level_select($levelCode = NULL, $readonly = null)
-{
-    $app = \Liten\Liten::getInstance();
-
-    $select = '<select name="courseLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required' . $readonly . '>
-			<option value="">&nbsp;</option>
-	    	<option value="100"' . selected($levelCode, '100', false) . '>100 Course Level</option>
-			<option value="200"' . selected($levelCode, '200', false) . '>200 Course Level</option>
-			<option value="300"' . selected($levelCode, '300', false) . '>300 Course Level</option>
-			<option value="400"' . selected($levelCode, '400', false) . '>400 Course Level</option>
-			<option value="500"' . selected($levelCode, '500', false) . '>500 Course Level</option>
-			<option value="600"' . selected($levelCode, '600', false) . '>600 Course Level</option>
-			<option value="700"' . selected($levelCode, '700', false) . '>700 Course Level</option>
-			<option value="800"' . selected($levelCode, '800', false) . '>800 Course Level</option>
-			<option value="900"' . selected($levelCode, '900', false) . '>900 Course Level</option>
-		    </select>';
-    return $app->hook->apply_filter('course_level', $select, $levelCode);
-}
-
-/**
  * Instructor method select: shows general list of instructor methods and
  * if $method is not NULL, shows the instructor method
  * for a particular course section.
@@ -1198,11 +1238,11 @@ function instructor_method($method = NULL)
  * if $status is not NULL, shows the status
  * for a particular student course section record.
  *
- * @since 1.0.0
+ * @since 6.3.0
  * @param string $status            
  * @return string Returns the record status if selected is true.
  */
-function stu_course_sec_status_select($status = NULL, $readonly = '')
+function stcs_status_select($status = NULL, $readonly = '')
 {
     $app = \Liten\Liten::getInstance();
 
@@ -1214,7 +1254,7 @@ function stu_course_sec_status_select($status = NULL, $readonly = '')
                 <option value="W"' . selected($status, 'W', false) . '>' . _t('W Withdrawn') . '</option>
                 <option value="C"' . selected($status, 'C', false) . '>' . _t('C Cancelled') . '</option>
                 </select>';
-    return $app->hook->apply_filter('stu_course_sec_status', $select, $status);
+    return $app->hook->apply_filter('stcs_status', $select, $status);
 }
 
 /**
@@ -1222,11 +1262,11 @@ function stu_course_sec_status_select($status = NULL, $readonly = '')
  * statuses and if $status is not NULL, shows the status
  * for a particular student program record.
  *
- * @since 1.0.0
+ * @since 6.3.0
  * @param string $status            
  * @return string Returns the record status if selected is true.
  */
-function stu_prog_status_select($status = NULL)
+function sacp_status_select($status = NULL)
 {
     $app = \Liten\Liten::getInstance();
 
@@ -1238,7 +1278,7 @@ function stu_prog_status_select($status = NULL)
                 <option value="C"' . selected($status, 'C', false) . '>' . _t('C Changed Mind') . '</option>
                 <option value="G"' . selected($status, 'G', false) . '>' . _t('G Graduated') . '</option>
                 </select>';
-    return $app->hook->apply_filter('stu_prog_status', $select, $status);
+    return $app->hook->apply_filter('sacp_status', $select, $status);
 }
 
 /**
@@ -1266,80 +1306,76 @@ function credit_type($status = NULL)
 }
 
 /**
- * Class year select: shows general list of class years and
- * if $year is not NULL, shows the class year
- * for a particular student.
- *
- * @since 1.0.0
- * @param string $year            
- * @return string Returns the record year if selected is true.
- */
-function class_year($year = NULL)
-{
-    $app = \Liten\Liten::getInstance();
-
-    $select = '<select name="classYear" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
-                <option value="">&nbsp;</option>
-                <option value="FR"' . selected($year, 'FR', false) . '>' . _t('FR Freshman') . '</option>
-                <option value="SO"' . selected($year, 'SO', false) . '>' . _t('SO Sophomore') . '</option>
-                <option value="JR"' . selected($year, 'JR', false) . '>' . _t('JR Junior') . '</option>
-                <option value="SR"' . selected($year, 'SR', false) . '>' . _t('SR Senior') . '</option>
-                <option value="UG"' . selected($year, 'UG', false) . '>' . _t('UG Undergraduate Student') . '</option>
-                <option value="GR"' . selected($year, 'GR', false) . '>' . _t('GR Grad Student') . '</option>
-                <option value="PhD"' . selected($year, 'PhD', false) . '>' . _t('PhD PhD Student') . '</option>
-                </select>';
-    return $app->hook->apply_filter('class_year', $select, $year);
-}
-
-/**
  * Grading scale: shows general list of letter grades and
  * if $grade is not NULL, shows the grade
  * for a particular student course section record
  *
  * @since 1.0.0
  * @param string $grade            
- * @return string Returns the stu_course_sec grade if selected is true.
+ * @return string Returns the stcs grade if selected is true.
  */
 function grading_scale($grade = NULL)
 {
     $app = \Liten\Liten::getInstance();
-    $select = '<select name="grade[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>' . "\n";
-    $select .= '<option value="">&nbsp;</option>' . "\n";
-    $scale = $app->db->query('SELECT * FROM grade_scale WHERE status = "1"');
-    $q = $scale->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+    try {
+        $select = '<select name="grade[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>' . "\n";
+        $select .= '<option value="">&nbsp;</option>' . "\n";
+        $scale = $app->db->query('SELECT * FROM grade_scale WHERE status = "1"');
+        $q = $scale->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
+        foreach ($q as $r) {
+            $select .= '<option value="' . _h($r['grade']) . '"' . selected($grade, _h($r['grade']), false) . '>' . _h($r['grade']) . '</option>' . "\n";
         }
-        return $array;
-    });
-    foreach ($q as $r) {
-        $select .= '<option value="' . _h($r['grade']) . '"' . selected($grade, _h($r['grade']), false) . '>' . _h($r['grade']) . '</option>' . "\n";
+        $select .= '</select>';
+        return $app->hook->apply_filter('grading_scale', $select, $grade);
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
-    $select .= '</select>';
-    return $app->hook->apply_filter('grading_scale', $select, $grade);
 }
 
 function grades($id, $aID)
 {
     $app = \Liten\Liten::getInstance();
-    $grade = $app->db->query('SELECT * FROM gradebook WHERE stuID = ? AND assignID = ?', [
-        $id,
-        $aID
-    ]);
-    $q = $grade->find(function ($data) {
+    try {
+        $grade = $app->db->query('SELECT * FROM gradebook WHERE stuID = ? AND assignID = ?', [
+            $id,
+            $aID
+        ]);
+        $q = $grade->find(function ($data) {
+            $array = [];
+            foreach ($data as $d) {
+                $array[] = $d;
+            }
+            return $array;
+        });
         $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+        foreach ($q as $r) {
+            $array[] = $r;
         }
-        return $array;
-    });
-    $array = [];
-    foreach ($q as $r) {
-        $array[] = $r;
+        $select = grading_scale(_h($r['grade']));
+        return $app->hook->apply_filter('grades', $select);
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
-    $select = grading_scale(_h($r['grade']));
-    return $app->hook->apply_filter('grades', $select);
 }
 
 /**
@@ -1393,11 +1429,23 @@ function get_user_avatar($email, $s = 80, $class = '', $d = 'mm', $r = 'g', $img
 {
     $app = \Liten\Liten::getInstance();
 
-    $url = 'http://www.gravatar.com/avatar/';
-    $url .= md5(strtolower(trim($email)));
-    $url .= "?s=200&d=$d&r=$r";
-    $avatarsize = getimagesize($url);
-    $avatar = '<img src="' . $url . '" ' . imgResize($avatarsize[1], $avatarsize[1], $s) . ' class="' . $class . '" />';
+    if ($app->hook->has_filter('base_url')) {
+        $protocol = 'https://';
+    } else {
+        $protocol = 'http://';
+    }
+
+    $url = $protocol . "www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=200&d=$d&r=$r";
+
+    if (get_http_response_code($protocol . 'www.gravatar.com/') != 302) {
+        $static_image_url = get_base_url() . "static/assets/img/avatar.png?s=200";
+        $avatarsize = getimagesize($static_image_url);
+        $avatar = '<img src="' . get_base_url() . 'static/assets/img/avatar.png" ' . resize_image($avatarsize[1], $avatarsize[1], $s) . ' class="' . $class . '" />';
+    } else {
+        $avatarsize = getimagesize($url);
+        $avatar = '<img src="' . $url . '" ' . resize_image($avatarsize[1], $avatarsize[1], $s) . ' class="' . $class . '" />';
+    }
+
     return $app->hook->apply_filter('user_avatar', $avatar, $email, $s, $class, $d, $r, $img);
 }
 
@@ -1417,12 +1465,12 @@ function nocache_headers()
 }
 
 /**
- * WYSIWYG editor function for myeduTrac
+ * WYSIWYG editor function for myetSIS
  * self service portal.
  *
  * @since 6.1.12
  */
-function myet_wysiwyg_editor()
+function myetsis_wysiwyg_editor()
 {
     $app = \Liten\Liten::getInstance();
 
@@ -1435,11 +1483,11 @@ function myet_wysiwyg_editor()
             "searchreplace visualblocks code fullscreen",
             "insertdatetime media table contextmenu paste"
         ],
-        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image' . $app->hook->do_action('myet_wysiwyg_editor_toolbar') . '",
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image' . $app->hook->do_action('myetsis_wysiwyg_editor_toolbar') . '",
         autosave_ask_before_unload: false
     });
     </script>' . "\n";
-    return $app->hook->apply_filter('myet_wysiwyg_editor', $editor);
+    return $app->hook->apply_filter('myetsis_wysiwyg_editor', $editor);
 }
 
 /**
@@ -1510,7 +1558,7 @@ function get_http_response_code($url)
 function etsis_plugin_activate_message($plugin_name)
 {
     $app = \Liten\Liten::getInstance();
-    $success = $app->flash('plugin_success_message', _t('Plugin <strong>activated</strong>.'));
+    $success = _etsis_flash()->success(_t('Plugin <strong>activated</strong>.'));
     /**
      * Filter the default plugin success activation message.
      *
@@ -1533,7 +1581,7 @@ function etsis_plugin_activate_message($plugin_name)
 function etsis_plugin_deactivate_message($plugin_name)
 {
     $app = \Liten\Liten::getInstance();
-    $success = $app->flash('plugin_success_message', _t('Plugin <strong>deactivated</strong>.'));
+    $success = _etsis_flash()->success(_t('Plugin <strong>deactivated</strong>.'));
     /**
      * Filter the default plugin success deactivation message.
      *
@@ -1556,22 +1604,27 @@ function etsis_plugin_deactivate_message($plugin_name)
 function acad_program_select($progCode = null)
 {
     $app = \Liten\Liten::getInstance();
-    $prog = $app->db->acad_program()
-        ->where('currStatus = "A"')
-        ->orderBy('deptCode');
-    $query = $prog->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+    try {
+        $prog = $app->db->acad_program()
+            ->where('currStatus = "A"')
+            ->orderBy('deptCode');
+        $query = $prog->find();
+
+        foreach ($query as $r) {
+            echo '<option value="' . _h($r->acadProgCode) . '"' . selected($progCode, _h($r->acadProgCode), false) . '>' . _h($r->acadProgCode) . ' ' . _h($r->acadProgTitle) . '</option>' . "\n";
         }
-        return $array;
-    });
 
-    foreach ($query as $r) {
-        echo '<option value="' . _h($r['acadProgCode']) . '"' . selected($progCode, _h($r['acadProgCode']), false) . '>' . _h($r['acadProgCode']) . ' ' . _h($r['acadProgTitle']) . '</option>' . "\n";
+        return $app->hook->apply_filter('academic_program', $query, $progCode);
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
-
-    return $app->hook->apply_filter('academic_program', $query, $progCode);
 }
 
 /**
@@ -1699,10 +1752,102 @@ function _etsis_student_router()
     }
     return $app->hook->apply_filter('student_router', $router);
 }
-$app->hook->add_action('admin_head', 'head_release_meta', 5);
-$app->hook->add_action('admin_head', 'etsis_notify_style', 2);
-$app->hook->add_action('myet_head', 'head_release_meta', 5);
-$app->hook->add_action('footer', 'etsis_notify_script', 5);
+
+/**
+ * myetSIS router function.
+ *
+ * @since 6.3.0
+ */
+function _etsis_myetsis_router()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $router = $app->config('routers_dir') . 'myetsis.router.php';
+    if (!$app->hook->has_filter('myetsis_router')) {
+        require($router);
+    }
+    return $app->hook->apply_filter('myetsis_router', $router);
+}
+
+/**
+ * Index router function.
+ *
+ * @since 6.3.0
+ */
+function _etsis_index_router()
+{
+    $app = \Liten\Liten::getInstance();
+
+    $router = $app->config('routers_dir') . 'index.router.php';
+    if (!$app->hook->has_filter('index_router')) {
+        require($router);
+    }
+    return $app->hook->apply_filter('index_router', $router);
+}
+
+/**
+ * Register stylesheet.
+ * 
+ * @since 6.3.0
+ * @param string $handle
+ */
+function etsis_register_style($handle)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->asset->register_style($handle);
+}
+
+/**
+ * Register javascript.
+ * 
+ * @since 6.3.0
+ * @param string $handle
+ */
+function etsis_register_script($handle)
+{
+    $app = \Liten\Liten::getInstance();
+    return $app->asset->register_script($handle);
+}
+
+/**
+ * Enqueue stylesheet.
+ * 
+ * @since 6.3.0
+ */
+function etsis_enqueue_style()
+{
+    $app = \Liten\Liten::getInstance();
+    echo $app->asset->enqueue_style();
+}
+
+/**
+ * Enqueue javascript.
+ * 
+ * @since 6.3.0
+ */
+function etsis_enqueue_script()
+{
+    $app = \Liten\Liten::getInstance();
+    echo $app->asset->enqueue_script();
+}
+
+/**
+ * Shows an error message when system is in DEV mode.
+ * 
+ * @since 6.3.0
+ */
+function etsis_dev_mode()
+{
+    if (APP_ENV === 'DEV') {
+        echo '<div class="alert dismissable alert-danger center sticky">'._t('Your system is currently in DEV mode. Please remember to set your system back to PROD mode after testing. When PROD mode is set, this warning message will disappear.').'</div>';
+    }
+}
+$app->hook->add_action('etsis_dashboard_head', 'head_release_meta', 5);
+$app->hook->add_action('etsis_dashboard_head', 'etsis_enqueue_style', 1);
+$app->hook->add_action('etsis_dashboard_head', 'etsis_notify_style', 2);
+$app->hook->add_action('myetsis_head', 'head_release_meta', 5);
+$app->hook->add_action('etsis_dashboard_footer', 'etsis_notify_script', 20);
+$app->hook->add_action('etsis_dashboard_footer', 'etsis_enqueue_script', 5);
 $app->hook->add_action('release', 'foot_release', 5);
 $app->hook->add_action('dashboard_top_widgets', 'dashboard_student_count', 5);
 $app->hook->add_action('dashboard_top_widgets', 'dashboard_course_count', 5);
@@ -1712,11 +1857,20 @@ $app->hook->add_action('dashboard_right_widgets', 'dashboard_weather', 5);
 $app->hook->add_action('activated_plugin', 'etsis_plugin_activate_message', 5, 1);
 $app->hook->add_action('deactivated_plugin', 'etsis_plugin_deactivate_message', 5, 1);
 $app->hook->add_action('login_form_top', 'etsis_login_form_show_message', 5);
-$app->hook->add_filter('the_myet_page_content', 'etsis_autop');
-$app->hook->add_filter('the_myet_page_content', 'parsecode_unautop');
-$app->hook->add_filter('the_myet_page_content', 'do_parsecode', 5);
-$app->hook->add_filter('the_myet_welcome_message', 'etsis_autop');
-$app->hook->add_filter('the_myet_welcome_message', 'parsecode_unautop');
-$app->hook->add_filter('the_myet_welcome_message', 'do_parsecode', 5);
+$app->hook->add_action('execute_reg_rest_rule', 'etsis_reg_rest_rule', 5, 1);
+$app->hook->add_action('execute_reg_prereq_rule', 'check_prereq', 5, 2);
+$app->hook->add_action('post_save_myetsis_reg', 'create_update_sttr_record', 5, 1);
+$app->hook->add_action('post_rgn_stu_crse_reg', 'create_update_sttr_record', 5, 1);
+$app->hook->add_action('post_brgn_stu_crse_reg', 'create_update_sttr_record', 5, 1);
+$app->hook->add_action('dashboard_admin_notices', 'etsis_dev_mode', 5);
+$app->hook->add_action('myetsis_admin_notices', 'etsis_dev_mode', 5);
+$app->hook->add_action('stu_acct_rule', 'etsis_reg_btrl_rule', 5, 3);
+$app->hook->add_action('execute_webreg_check', 'web_reg_check', 5);
+$app->hook->add_filter('the_myetsis_page_content', 'etsis_autop');
+$app->hook->add_filter('the_myetsis_page_content', 'parsecode_unautop');
+$app->hook->add_filter('the_myetsis_page_content', 'do_parsecode', 5);
+$app->hook->add_filter('the_myetsis_welcome_message', 'etsis_autop');
+$app->hook->add_filter('the_myetsis_welcome_message', 'parsecode_unautop');
+$app->hook->add_filter('the_myetsis_welcome_message', 'do_parsecode', 5);
 $app->hook->add_filter('etsis_authenticate_person', 'etsis_authenticate', 5, 3);
 $app->hook->add_filter('etsis_auth_cookie', 'etsis_set_auth_cookie', 5, 2);

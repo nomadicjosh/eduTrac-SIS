@@ -11,6 +11,8 @@ use Gettext\Utils\JsFunctionsScanner;
 class JsCode extends Extractor implements ExtractorInterface
 {
     public static $options = [
+        'constants' => [],
+
         'functions' => [
             'gettext' => 'gettext',
             '__' => 'gettext',
@@ -26,6 +28,8 @@ class JsCode extends Extractor implements ExtractorInterface
             'np__' => 'npgettext',
             'dnpgettext' => 'dnpgettext',
             'dnp__' => 'dnpgettext',
+            'noop' => 'noop',
+            'noop__' => 'noop',
         ],
     ];
 

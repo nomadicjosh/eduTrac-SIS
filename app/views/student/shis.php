@@ -12,8 +12,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
-$stu = get_student(_h($stu[0]['stuID']));
 ?>
 
 <script type="text/javascript">
@@ -23,17 +21,15 @@ function addMsg(text,element_id) {
 document.getElementById(element_id).value += text;
 
 }
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here' );?></li>
-    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'Student Hiatus (SHIS)' );?></li>
 </ul>
@@ -44,16 +40,15 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     
     <div class="separator line bottom"></div>
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <!-- Tabs Heading -->
     <div class="tabsbar">
         <ul>
-            <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-            <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-            <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-            <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
-            <li class="glyphicons history tab-stacked active"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/<?=bm();?>" data-toggle="tab"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+            <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+            <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+            <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+            <li class="glyphicons history tab-stacked active"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/" data-toggle="tab"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
         </ul>
     </div>
     <!-- // Tabs Heading END -->
@@ -82,23 +77,23 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Table row -->
 				<tr class="gradeA">
 					<td style="width:300px;">
-						<select name="shisCode[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+						<select name="code[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                             <option value="">&nbsp;</option>
-                            <option value="W"<?=selected('W',_h($v['shisCode']),false);?>><?=_t( 'Withdrawal' );?></option>
-                            <option value="LOA"<?=selected('LOA',_h($v['shisCode']),false);?>><?=_t( 'Leave of Absence' );?></option>
-                            <option value="SA"<?=selected('SA',_h($v['shisCode']),false);?>><?=_t( 'Study Abroad' );?></option>
-                            <option value="ILLN"<?=selected('ILLN',_h($v['shisCode']),false);?>><?=_t( 'Illness' );?></option>
-                            <option value="DISM"<?=selected('DISM',_h($v['shisCode']),false);?>><?=_t( 'Dismissal' );?></option>
+                            <option value="W"<?=selected('W',_h($v['code']),false);?>><?=_t( 'Withdrawal' );?></option>
+                            <option value="LOA"<?=selected('LOA',_h($v['code']),false);?>><?=_t( 'Leave of Absence' );?></option>
+                            <option value="SA"<?=selected('SA',_h($v['code']),false);?>><?=_t( 'Study Abroad' );?></option>
+                            <option value="ILLN"<?=selected('ILLN',_h($v['code']),false);?>><?=_t( 'Illness' );?></option>
+                            <option value="DISM"<?=selected('DISM',_h($v['code']),false);?>><?=_t( 'Dismissal' );?></option>
                         </select>
 					</td>
 					<td style="width:160px;">
-						<div class="input-group date" id="datepicker6<?=_h($v['shisID']);?>">
+						<div class="input-group date" id="datepicker6<?=_h($v['id']);?>">
                             <input type="text" name="startDate[]" class="form-control" value="<?=_h($v['startDate']);?>" required/>
                             <span class="input-group-addon"><i class="fa fa-th"></i></span>
                         </div>
 					</td>
 					<td style="width:160px;">
-						<div class="input-group date" id="datepicker7<?=_h($v['shisID']);?>">
+						<div class="input-group date" id="datepicker7<?=_h($v['id']);?>">
                             <?php if(_h($v['endDate']) != '0000-00-00') : ?>
                             <input type="text" name="endDate[]" class="form-control" value="<?=_h($v['endDate']);?>" />
                             <?php else : ?>
@@ -108,9 +103,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         </div>
 					</td>
 					<td class="text-center">
-						<button type="button" title="Comment" class="btn bt-sm" data-toggle="modal" data-target="#comments-<?=_h($v['shisID']);?>"><i class="fa fa-comment"></i></button>
+						<button type="button" title="Comment" class="btn <?=(_h($v['Comment']) == 'empty' ? 'btn-primary' : 'btn-danger');?>" data-toggle="modal" data-target="#comments-<?=_h($v['id']);?>"><i class="fa fa-comment"></i></button>
 						<!-- Modal -->
-						<div class="modal fade" id="comments-<?=_h($v['shisID']);?>">
+						<div class="modal fade" id="comments-<?=_h($v['id']);?>">
 							
 							<div class="modal-dialog">
 								<div class="modal-content">
@@ -124,8 +119,8 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 									
 									<!-- Modal body -->
 									<div class="modal-body">
-										<textarea id="<?=_h($v['shisID']);?>" class="form-control" name="comment[]" rows="5" data-height="auto"><?=_h($v['comment']);?></textarea>
-                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=date('D, M d, o @ h:i A',strtotime(date('Y-m-d h:i A')));?> <?=get_name(get_persondata('personID'));?>','<?=_h($v['shisID']);?>'); return false;" />
+										<textarea id="<?=_h($v['id']);?>" class="form-control" name="comment[]" rows="5" data-height="auto"><?=_h($v['comment']);?></textarea>
+                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=\Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','<?=_h($v['id']);?>'); return false;" />
 									</div>
 									<!-- // Modal body END -->
 									
@@ -137,14 +132,14 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						
 								</div>
 							</div>
-							<input type="hidden" name="shisID[]" value="<?=_h($v['shisID']);?>" />
+							<input type="hidden" name="id[]" value="<?=_h($v['id']);?>" />
 						</div>
 						<!-- // Modal END -->
 					</td>
 					<td class="text-center">
-						<button type="button" title="Delete" class="btn bt-sm" data-toggle="modal" data-target="#delete-<?=_h($v['shisID']);?>"><i class="fa fa-trash-o"></i></button>
+						<button type="button" title="Delete" class="btn bt-sm" data-toggle="modal" data-target="#delete-<?=_h($v['id']);?>"><i class="fa fa-trash-o"></i></button>
 						<!-- Modal -->
-						<div class="modal fade" id="delete-<?=_h($v['shisID']);?>">
+						<div class="modal fade" id="delete-<?=_h($v['id']);?>">
 							
 							<div class="modal-dialog">
 								<div class="modal-content">
@@ -164,7 +159,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 									
 									<!-- Modal footer -->
 									<div class="modal-footer">
-										<a href="<?=get_base_url();?>stu/deleteSHIS/<?=_h($v['shisID']);?>" class="btn btn-default"><?=_t( 'Delete' );?></a>
+										<a href="<?=get_base_url();?>stu/deleteSHIS/<?=_h($v['id']);?>" class="btn btn-default"><?=_t( 'Delete' );?></a>
 										<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Close' );?></a> 
 									</div>
 									<!-- // Modal footer END -->
@@ -190,7 +185,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 			<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
 			<?php endif; ?>
 			<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" data-toggle="modal" data-target="#md-ajax"><i></i><?=_t( 'Add' );?></button>
-			<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+			<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/'"><i></i><?=_t( 'Cancel' );?></button>
 		</div>
 		<!-- // Form actions END -->
 		
@@ -215,7 +210,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 					<div class="form-group">
                         <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Hiatus' );?></label>
                         <div class="col-md-8">
-	                        <select name="shisCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+	                        <select name="code" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 	                            <option value="">&nbsp;</option>
 	                            <option value="W"><?=_t( 'Withdrawal' );?></option>
 	                            <option value="LOA"><?=_t( 'Leave of Absence' );?></option>
@@ -250,7 +245,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                     	<label class="col-md-3 control-label"><?=_t( 'Comment' );?></label>
                     	<div class="col-md-8">
 	                        <textarea id="comment" class="form-control" name="comment" rows="5" data-height="auto"></textarea>
-	                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=date('D, M d, o @ h:i A',strtotime(date('Y-m-d h:i A')));?> <?=get_name(get_persondata('personID'));?>','comment'); return false;" />
+	                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=\Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','comment'); return false;" />
                        </div>
                     </div>
 				</div>
@@ -259,7 +254,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Modal footer -->
 				<div class="modal-footer">
                     <input type="hidden" name="stuID" value="<?=_h($stu->stuID);?>" />
-                    <input type="hidden" name="addDate" value="<?=date('Y-m-d');?>" />
+                    <input type="hidden" name="addDate" value="<?=\Jenssegers\Date\Date::now()->format('Y-m-d');?>" />
                     <input type="hidden" name="addedBy" value="<?=get_persondata('personID');?>" />
 					<button type="submit" class="btn btn-default"><?=_t( 'Submit' );?></button>
 					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a>

@@ -12,7 +12,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $stu = get_student(_h($sacp[0]['stuID']));
 ?>
 
@@ -20,17 +19,15 @@ $stu = get_student(_h($sacp[0]['stuID']));
 function addMsg(text,element_id) {
 	document.getElementById(element_id).value += text;
 }
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+	<li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=$stu->stuID;?>/<?=bm();?>" class="glyphicons user"><i></i> <?=get_name($stu->stuID);?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/" class="glyphicons user"><i></i> <?=get_name(_h($stu->stuID));?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Edit Student Program (SACP)' );?></li>
 </ul>
@@ -41,10 +38,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     
     <div class="separator line bottom"></div>
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacp/<?=_h($sacp[0]['stuProgID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacp/<?=_h($sacp[0]['id']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -145,7 +142,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Status' );?></label>
                             <div class="col-md-8">
-                                <?=stu_prog_status_select(_h($sacp[0]['currStatus']));?>
+                                <?=sacp_status_select(_h($sacp[0]['currStatus']));?>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -190,7 +187,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Comments' );?></label>
-                            &nbsp;&nbsp;&nbsp;<a href="#comment-<?=_h($stu->stuID);?>" data-toggle="modal" title="Edit Comment" class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                            &nbsp;&nbsp;&nbsp;<a href="#comment-<?=_h($stu->stuID);?>" data-toggle="modal" title="Edit Comment" class="btn <?=(_h($sacp[0]['Comment']) == 'empty' ? 'btn-primary' : 'btn-danger');?>"><i class="fa fa-edit"></i></a>
                         </div>
                         <div class="modal fade" id="comment-<?=_h($stu->stuID);?>">
                         	<div class="modal-dialog">
@@ -203,13 +200,22 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 									<!-- // Modal heading END -->
                                     <div class="modal-body">
                                         <textarea id="<?=_h($stu->stuID);?>" name="comments" class="form-control" rows="5"><?=_h($sacp[0]['comments']);?></textarea>
-                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=date('D, M d, o @ h:i A',strtotime(date('Y-m-d h:i A')));?> <?=get_name(get_persondata('personID'));?>','<?=_h($stu->stuID);?>'); return false;" />
+                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=\Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','<?=_h($stu->stuID);?>'); return false;" />
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></button>
                                     </div>
                             	</div>
                         	</div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'STAL' );?> <a href="<?=get_base_url();?>stu/sacp/<?=_h($sacp[0]['id']);?>/stal/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <div class="col-md-3">
+                                <input type="text" disabled value="X" class="form-control col-md-1 center" />
+                            </div>
                         </div>
                         <!-- // Group END -->
                         
@@ -226,7 +232,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Last Update' );?></label>
                             <div class="col-md-6">
-                                <input type="text" readonly class="form-control" value="<?=date('D, M d, o @ h:i A',strtotime(_h($sacp[0]['LastUpdate'])));?>" />
+                                <input type="text" readonly class="form-control" value="<?=\Jenssegers\Date\Date::parse(_h($sacp[0]['LastUpdate']))->format('D, M d, o @ h:i A');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -242,8 +248,8 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<div class="form-actions">
 				    <input type="hidden" name="stuID" value="<?=_h($stu->stuID);?>" />
 					<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" onclick="window.location='<?=get_base_url();?>stu/add-prog/<?=_h($stu->stuID);?>/<?=bm();?>'"><i></i><?=_t( 'Add' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" onclick="window.location='<?=get_base_url();?>stu/add-prog/<?=_h($stu->stuID);?>/'"><i></i><?=_t( 'Add' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

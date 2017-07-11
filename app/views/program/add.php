@@ -11,21 +11,15 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 include('ajax.php');
 $screen = 'aprog';
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 5000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>program/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Program' );?></a></li>
+	<li><a href="<?=get_base_url();?>program/" class="glyphicons search"><i></i> <?=_t( 'Search Program' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Create Program' );?></li>
 </ul>
@@ -33,7 +27,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
 <h3><?=_t( 'Add Academic Program' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 
@@ -91,7 +85,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                             </div>
                             
                             <div class="col-md-4">
-                                <input class="form-control" type="text" readonly value="<?=date('D, M d, o',strtotime(date("Y-m-d")));?>" />
+                                <input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::now()->format('D, M d, o');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -109,7 +103,7 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Approval Date' );?></label>
                             <div class="col-md-8">
-                                <input class="form-control" type="text" readonly value="<?=date('D, M d, o',strtotime(date('Y-m-d')));?>" />
+                                <input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::now()->format('D, M d, o');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -256,7 +250,10 @@ setTimeout(function() { $(".panel").hide(); }, 5000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(null,null,'required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name'); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->

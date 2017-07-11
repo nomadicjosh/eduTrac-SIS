@@ -1,6 +1,10 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+use Cascade\Cascade;
 
 /**
  * eduTrac SIS Deprecated Functions.
@@ -13,150 +17,9 @@ if (!defined('BASE_PATH'))
  */
 
 /**
- * Subject dropdown: shows general list of subjects and
- * if $subjectCode is not NULL, shows the subject attached
- * to a particular record.
- *
- * @deprecated since release 6.1.12
- * @see table_dropdown
- * @since 1.0.0
- * @param string $subjectCode
- *            - optional
- * @return string Returns the record key if selected is true.
- */
-function subject_code_dropdown($subjectCode = NULL)
-{
-    _deprecated_function(__FUNCTION__, '6.1.12', 'table_dropdown');
-
-    $app = \Liten\Liten::getInstance();
-    $subj = $app->db->subject()
-        ->select('subjectCode,subjectName')
-        ->where('subjectCode <> "NULL"');
-
-    $q = $subj->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
-        }
-        return $array;
-    });
-
-    foreach ($q as $v) {
-        echo '<option value="' . _h($v['subjectCode']) . '"' . selected($subjectCode, _h($v['subjectCode']), false) . '>' . _h($v['subjectCode']) . ' ' . _h($v['subjectName']) . '</option>' . "\n";
-    }
-}
-
-/**
- * Merge user defined arguments into defaults array.
- *
- * This function is used throughout eduTrac to allow for both string or array
- * to be merged into another array.
  *
  * @deprecated since release 6.2.0
- * @since 4.2.0
- * @param string|array $args
- *            Value to merge with $defaults
- * @param array $defaults
- *            Optional. Array that serves as the defaults. Default empty.
- * @return array Merged user defined values with defaults.
- */
-function et_parse_args($args, $defaults = '')
-{
-    _deprecated_function(__FUNCTION__, '6.2.0', 'etsis_parse_args');
-
-    return etsis_parse_args($args, $defaults);
-}
-
-/**
- * Hashes a plain text password.
- *
- * @deprecated since release 6.2.0
- * @since 1.0.0
- * @param string $password
- *            Plain text password
- * @return mixed
- */
-function et_hash_password($password)
-{
-    _deprecated_function(__FUNCTION__, '6.2.0', 'etsis_hash_password');
-
-    return etsis_hash_password($password);
-}
-
-/**
- * Checks a plain text password against a hashed password.
- *
- * @deprecated since release 6.2.0
- * @since 1.0.0
- * @param string $password
- *            Plain test password.
- * @param string $hash
- *            Hashed password in the database to check against.
- * @param int $person_id
- *            Person ID.
- * @return mixed
- */
-function et_check_password($password, $hash, $person_id = '')
-{
-    _deprecated_function(__FUNCTION__, '6.2.0', 'etsis_check_password');
-
-    return etsis_check_password($password, $hash, $person_id);
-}
-
-/**
- * Used by et_check_password in order to rehash
- * an old password that was hashed using MD5 function.
- *
- * @deprecated since release 6.2.0
- * @since 1.0.0
- * @param string $password
- *            Person password.
- * @param int $person_id
- *            Person ID.
- * @return mixed
- */
-function et_set_password($password, $person_id)
-{
-    _deprecated_function(__FUNCTION__, '6.2.0', 'etsis_set_password');
-
-    return etsis_set_password($password, $person_id);
-}
-
-/**
- * Parses a string into variables to be stored in an array.
- *
- * Uses {@link http://www.php.net/parse_str parse_str()}
- *
- * @deprecated since release 6.2.0
- * @since 4.2.0
- * @param string $string
- *            The string to be parsed.
- * @param array $array
- *            Variables will be stored in this array.
- */
-function et_parse_str($string, $array)
-{
-    _deprecated_function(__FUNCTION__, '6.2.0', 'etsis_parse_str');
-
-    return etsis_parse_str($string, $array);
-}
-
-/**
- *
- * @deprecated since 6.2.0
- * @param unknown $pee            
- * @param number $br            
- */
-function et_autop($pee, $br = 1)
-{
-    _deprecated_function(__FUNCTION__, '6.2.0', 'etsis_autop');
-
-    return etsis_autop($pee, $br);
-}
-
-/**
- *
- * @deprecated since release 6.2.0
+ * @see etsis_dropdown_languages
  * @param string $active            
  */
 function et_dropdown_languages($active = '')
@@ -169,6 +32,7 @@ function et_dropdown_languages($active = '')
 /**
  * 
  * @deprecated since release 6.2.10
+ * @see is_user_logged_in
  * @return function
  */
 function isUserLoggedIn()
@@ -182,6 +46,7 @@ function isUserLoggedIn()
  * Custom error log function for better PHP logging.
  *
  * @deprecated since release 6.2.11
+ * @see etsis_monolog
  * @since 6.2.0
  * @param string $name
  *            Log channel and log file prefix.
@@ -192,15 +57,216 @@ function _error_log($name, $message)
 {
     _deprecated_function(__FUNCTION__, '6.2.11', 'etsis_monolog');
 
-    return etsis_monolog($name, $message, $level = 'addInfo');
+    return etsis_monolog($name, $message);
 }
 
 /**
  * Function wrapper for the setError log method.
  * 
  * @deprecated since release 6.2.11
+ * @see etsis_error_handler
  */
 function logError()
 {
     _deprecated_function(__FUNCTION__, '6.2.11', 'etsis_error_handler');
+}
+
+/**
+ * Resizes images.
+ * 
+ * @deprecated since release 6.3.0
+ * @see resize_image
+ * @param type $width
+ * @param type $height
+ * @param type $target
+ */
+function imgResize($width, $height, $target)
+{
+    _deprecated_function(__FUNCTION__, '6.3.0', 'resize_image');
+
+    return resize_image($width, $height, $target);
+}
+
+/**
+ * Makes links in text clickable.
+ * 
+ * @deprecated since release 6.3.0
+ * @see make_clickable
+ * @param type $text
+ */
+function clickableLink($text = 'deprecated')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0', 'make_clickable');
+
+    return make_clickable($text);
+}
+
+/**
+ * Get age by birthdate.
+ *
+ * @deprecated since release 6.3.0
+ * @see get_age
+ * @param string $birthdate
+ *            Person's birth date.
+ * @return mixed
+ */
+function getAge($birthdate = '0000-00-00')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0', 'get_age');
+
+    return get_age($birthdate);
+}
+
+/**
+ * When enabled, appends url string in order to give
+ * benchmark statistics.
+ * 
+ * @deprecated since release 6.3.0
+ */
+function bm()
+{
+    _deprecated_function(__FUNCTION__, '6.3.0');
+}
+
+/**
+ * Function for retrieving a person's
+ * uploaded school photo.
+ *
+ * @deprecated since release 6.3.0
+ * @see get_school_photo
+ * @since 4.5
+ * @param int $id
+ *            Person ID.
+ * @param string $email
+ *            Email of the requested person.
+ * @param int $s
+ *            Size of the photo.
+ * @param string $class
+ *            HTML element for CSS.
+ * @return mixed
+ */
+function getSchoolPhoto($id, $email, $s = 80, $class = 'thumb')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0', 'get_school_photo');
+
+    return get_school_photo($id, $email, $s, $class);
+}
+
+/**
+ * Calculates grade points for stac.
+ *
+ * @deprecated since release 6.3.0
+ * @see calculate_grade_points
+ * @param string $grade
+ *            Letter grade.
+ * @param float $credits
+ *            Number of course credits.
+ * @return mixed
+ */
+function acadCredGradePoints($grade, $credits)
+{
+    _deprecated_function(__FUNCTION__, '6.3.0', 'calculate_grade_points');
+
+    return calculate_grade_points($grade, $credits);
+}
+
+/**
+ * @deprecated since release 6.3.0
+ * @see get_path_info
+ * @param string $relative
+ * @return string
+ */
+function getPathInfo($relative)
+{
+    _deprecated_function(__FUNCTION__, '6.3.0', 'get_path_info');
+
+    return get_path_info($relative);
+}
+
+/**
+ * A function which returns true if the logged in user
+ * is a student in the system.
+ *
+ * @deprecated since release 6.3.0
+ * @see is_student
+ * @since 4.3
+ * @param int $id
+ *            Student's ID.
+ * @return bool
+ */
+function isStudent($id)
+{
+    _deprecated_function(__FUNCTION__, '6.3.0', 'is_student');
+
+    return is_student($id);
+}
+
+/**
+ * Acad Level select: shows general list of academic levels and
+ * if $levelCode is not NULL, shows the academic level attached
+ * to a particular record.
+ *
+ * @since 1.0.0
+ * @deprecated since release 6.3.0
+ * @param string $levelCode            
+ * @return string Returns the record key if selected is true.
+ */
+function acad_level_select($levelCode = 'deprecated', $readonly = 'deprecated', $required = 'deprecated')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0');
+}
+
+/**
+ * Fee acad Level select: shows general list of academic levels and
+ * if $levelCode is not NULL, shows the academic level attached
+ * to a particular record.
+ *
+ * @since 4.1.7
+ * @deprecated since release 6.3.0
+ * @param string $levelCode            
+ * @return string Returns the record key if selected is true.
+ */
+function fee_acad_level_select($levelCode = 'deprecated')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0');
+}
+
+/**
+ * Course Level dropdown: shows general list of course levels and
+ * if $levelCode is not NULL, shows the course level attached
+ * to a particular record.
+ *
+ * @since 1.0.0
+ * @deprecated since release 6.3.0
+ * @param string $levelCode
+ * @param string $readonly  
+ * @return string Returns the record key if selected is true.
+ */
+function course_level_select($levelCode = 'deprecated', $readonly = 'deprecated')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0');
+}
+
+/**
+ * Class year select: shows general list of class years and
+ * if $year is not NULL, shows the class year
+ * for a particular student.
+ *
+ * @deprecated since release 6.3.0
+ * @since 1.0.0
+ * @param string $year            
+ * @return string Returns the record year if selected is true.
+ */
+function class_year($year = 'deprecated')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0');
+}
+
+/**
+ * @deprecated since release 6.3.0
+ * @param string $year
+ */
+function translate_class_year($year = 'deprecated')
+{
+    _deprecated_function(__FUNCTION__, '6.3.0');
 }

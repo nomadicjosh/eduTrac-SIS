@@ -12,22 +12,16 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
-$stu = get_student(_h($sacd[0]['stuID']));
+$stu = get_student(_h($sacd->stuID));
 ?>
-
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here' );?></li>
-    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>" class="glyphicons coins"><i></i> <?=_t( 'Academic Credits' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/" class="glyphicons coins"><i></i> <?=_t( 'Academic Credits' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'View Academic Credits (SACD)' );?></li>
 </ul>
@@ -38,10 +32,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
     
     <div class="separator line bottom"></div>
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacd/<?=_h($sacd[0]['stuAcadCredID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacd/<?=_h($sacd->id);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -55,17 +49,17 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><?=_t( 'CRSE ID/Name/Sec' );?> <a href="<?=get_base_url();?>crse/<?=_h($sacd[0]['courseID']);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+							<label class="col-md-3 control-label"><?=_t( 'CRSE ID/Name/Sec' );?> <a href="<?=get_base_url();?>crse/<?=_h($sacd->courseID);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
 							<div class="col-md-3">
-								<input type="text" name="courseID" value="<?=_h($sacd[0]['courseID']);?>" class="form-control" required/>
+								<input type="text" name="courseID" value="<?=_h($sacd->courseID);?>" class="form-control" required/>
 							</div>
 							
 							<div class="col-md-3">
-								<input type="text" name="courseCode" value="<?=_h($sacd[0]['courseCode']);?>" class="form-control" required/>
+								<input type="text" name="courseCode" value="<?=_h($sacd->courseCode);?>" class="form-control" required/>
 							</div>
 							
 							<div class="col-md-2">
-                                <input type="text" name="sectionNumber" value="<?=_h($sacd[0]['sectionNumber']);?>" class="form-control" required/>
+                                <input type="text" name="sectionNumber" value="<?=_h($sacd->sectionNumber);?>" class="form-control" required/>
                             </div>
 						</div>
 						<!-- // Group END -->
@@ -74,7 +68,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Short Title' );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="shortTitle" value="<?=_h($sacd[0]['shortTitle']);?>" class="form-control" required/>
+                                <input type="text" name="shortTitle" value="<?=_h($sacd->shortTitle);?>" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -83,7 +77,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Long Title' );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="longTitle" value="<?=_h($sacd[0]['longTitle']);?>" class="form-control" required/>
+                                <input type="text" name="longTitle" value="<?=_h($sacd->longTitle);?>" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -94,7 +88,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <div class="col-md-8">
                             	<select name="subjectCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
-	                        		<?php subject_code_dropdown(_h($sacd[0]['subjectCode'])); ?>
+                                    <?php table_dropdown('subject', 'subjectCode <> "NULL"', 'subjectCode', 'subjectCode', 'subjectName', _h($sacd->subjectCode)); ?>
 	                        	</select>
                             </div>
                         </div>
@@ -104,10 +98,16 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Acad Lvl/Crse Lvl' );?></label>
                             <div class="col-md-4">
-                            	<?=acad_level_select(_h($sacd[0]['acadLevelCode']),null,' required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name',_h($sacd->acadLevelCode)); ?>
+                                </select>
                             </div>
                             <div class="col-md-4">
-                            	<?=course_level_select(_h($sacd[0]['courseLevelCode']));?>
+                                <select name="courseLevelCode" id="courseLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+									<option value="">&nbsp;</option>
+	                        		<?php table_dropdown('crlv', null, 'code', 'code', 'name', _h($sacd->courseLevelCode)); ?>
+	                        	</select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -118,7 +118,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <div class="col-md-8">
                             	<select name="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
-                            		<?php table_dropdown('department', 'deptTypeCode = "acad" AND deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName',_h($sacd[0]['deptCode'])); ?>
+                            		<?php table_dropdown('department', 'deptTypeCode = "acad" AND deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName',_h($sacd->deptCode)); ?>
                             	</select>
                             </div>
                         </div>
@@ -130,8 +130,8 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <div class="col-md-8">
                             	<select name="creditType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
-	                        		<option value="I"<?=selected("I",_h($sacd[0]['creditType']),false);?>><?=_t( 'I Institutional' );?></option>
-	                        		<option value="TR"<?=selected("TR",_h($sacd[0]['creditType']),false);?>><?=_t( 'TR Transfer' );?></option>
+	                        		<option value="I"<?=selected("I",_h($sacd->creditType),false);?>><?=_t( 'I Institutional' );?></option>
+	                        		<option value="TR"<?=selected("TR",_h($sacd->creditType),false);?>><?=_t( 'TR Transfer' );?></option>
 	                        	</select>
                             </div>
                         </div>
@@ -148,14 +148,14 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <label class="col-md-3 control-label"><?=_t( 'Start/End Date' );?></label>
                             <div class="col-md-4">
                             	<div class="input-group date" id="datepicker6">
-                                    <input class="form-control" name="startDate"<?=sio();?> value="<?=_h($sacd[0]['startDate']);?>" type="text" required/>
+                                    <input class="form-control" name="startDate"<?=sio();?> value="<?=_h($sacd->startDate);?>" type="text" required/>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
                             
                             <div class="col-md-4">
                                 <div class="input-group date" id="datepicker7">
-                                    <input class="form-control" name="endDate"<?=sio();?> value="<?=_h($sacd[0]['endDate']);?>" type="text" required/>
+                                    <input class="form-control" name="endDate"<?=sio();?> value="<?=_h($sacd->endDate);?>" type="text" required/>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
@@ -168,12 +168,12 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <div class="col-md-4">
                             	<select name="termCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
-                            		<?php table_dropdown('term', 'termCode <> "NULL"', 'termCode', 'termCode', 'termName',_h($sacd[0]['termCode'])); ?>
+                            		<?php table_dropdown('term', 'termCode <> "NULL"', 'termCode', 'termCode', 'termName',_h($sacd->termCode)); ?>
                             	</select>
                             </div>
                             
                             <div class="col-md-4">
-                                <input type="text" readonly name="reportingTerm" value="<?=_h($sacd[0]['reportingTerm']);?>" class="form-control" required />
+                                <input type="text" readonly name="reportingTerm" value="<?=_h($sacd->reportingTerm);?>" class="form-control" required />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -182,10 +182,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Att/Comp Cred' );?></label>
                             <div class="col-md-4">
-                                <input type="text" name="attCred"<?=sio();?> value="<?=_h(number_format($sacd[0]['attCred'],6));?>" class="form-control" required/>
+                                <input type="text" name="attCred"<?=sio();?> value="<?=_h(number_format($sacd->attCred,6));?>" class="form-control" required/>
                             </div>
                             <div class="col-md-4">
-                                <input type="text" name="compCred"<?=sio();?> value="<?=_h(number_format($sacd[0]['compCred'],6));?>" class="form-control" required/>
+                                <input type="text" name="compCred"<?=sio();?> value="<?=_h(number_format($sacd->compCred,6));?>" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -194,11 +194,11 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Grade/Grd Pts' );?></label>
                             <div class="col-md-4">
-                                <input type="text" name="grade"<?=sio();?> value="<?=_h($sacd[0]['grade']);?>" class="form-control" />
+                                <input type="text" name="grade"<?=sio();?> value="<?=_h($sacd->grade);?>" class="form-control" />
                             </div>
                             
                             <div class="col-md-4">
-                                <input type="text" name="gradePoints"<?=sio();?> value="<?=_h(number_format($sacd[0]['gradePoints'],6));?>" class="form-control" required/>
+                                <input type="text" name="gradePoints"<?=sio();?> value="<?=_h(number_format($sacd->gradePoints,6));?>" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -207,7 +207,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Status' );?></label>
                             <div class="col-md-8">
-                                <?=stu_course_sec_status_select(_h($sacd[0]['status']));?>
+                                <?=stcs_status_select(_h($sacd->status));?>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -217,14 +217,14 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <label class="col-md-3 control-label"><?=_t( 'Status Date/Time' );?></label>
                             <div class="col-md-4">
                                 <div class="input-group date" id="datepicker8">
-                                    <input class="form-control" name="statusDate"<?=sio();?> value="<?=_h($sacd[0]['statusDate']);?>" type="text" required/>
+                                    <input class="form-control" name="statusDate"<?=sio();?> value="<?=_h($sacd->statusDate);?>" type="text" required/>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
                             
                             <div class="col-md-4">
                                 <div class="input-group bootstrap-timepicker">
-                                    <input id="timepicker10" type="text" <?=sio();?> class="form-control" value="<?=_h($sacd[0]['statusTime']);?>" required />
+                                    <input id="timepicker10" type="text" <?=sio();?> class="form-control" value="<?=_h($sacd->statusTime);?>" required />
                                     <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
                                 </div>
                             </div>
@@ -241,7 +241,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

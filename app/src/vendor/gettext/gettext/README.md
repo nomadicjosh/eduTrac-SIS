@@ -81,8 +81,6 @@ echo $t->gettext('apple'); // "Mazá"
 $t->register();
 
 echo __('apple'); // "Mazá"
-
-__e('apple'); // "Mazá"
 ```
 
 To use this translations with the gettext extension:
@@ -107,12 +105,17 @@ echo gettext('apple'); // "Mazá"
 $t->register();
 
 echo __('apple'); // "Mazá"
+
+//And use sprintf/strtr placeholders
+echo __('Hello %s', 'world'); //Hello world
+echo __('Hello {name}', ['{name}' => 'world']); //Hello world
 ```
 
 The benefits of using the functions provided by this library (`__()` instead `_()` or `gettext()`) are:
 
-* You are using the same functions, no matter whether the translations are provided by gettext extension or any other method
-* You can use variables easier because sprintf functionality is included. For example: `__('Hello %s', 'world')` instead `sprintf(_('Hello %s'), 'world')`.
+* You are using the same functions, no matter whether the translations are provided by gettext extension or any other method.
+* You can use variables easier because `sprintf` functionality is included. For example: `__('Hello %s', 'world')` instead `sprintf(_('Hello %s'), 'world')`.
+* You can also use named placeholders if the second argument is an array. For example: `__('Hello %name%', ['%name' => 'world'])` instead of `strtr(_('Hello %name%'), ['%name%' => 'world'])`.
 
 ## Translation
 
@@ -301,8 +304,6 @@ To ease the use of translations in your php templates, you can use the provided 
 $t->register();
 
 echo __('apple'); // it's the same than $t->gettext('apple');
-
-__e('apple'); // it's the same than echo $t->gettext('apple');
 ```
 
 You can scan the php files containing these functions and extract the values with the PhpCode extractor:
@@ -311,7 +312,7 @@ You can scan the php files containing these functions and extract the values wit
 <!-- index.php -->
 <html>
 	<body>
-		<?php echo __('Hello world'); ?>
+		<?= __('Hello world'); ?>
 	</body>
 </html>
 ```
@@ -395,6 +396,21 @@ There's a Robo task to use this library from the command line interface: https:/
 ## Use in the browser
 
 If you want to use your translations in the browser, there's a javascript translator: https://github.com/oscarotero/gettext-translator
+
+## Third party packages
+
+Twig integration:
+
+* [jaimeperez/twig-configurable-i18n](https://packagist.org/packages/jaimeperez/twig-configurable-i18n)
+* [cemerson/translator-twig-extension](https://packagist.org/packages/cemerson/translator-twig-extension)
+
+Framework integration:
+
+* [Laravel 5](https://packagist.org/packages/eusonlito/laravel-gettext)
+* [CakePHP 3](https://packagist.org/packages/k1low/po)
+* [Symfony 2](https://packagist.org/packages/mablae/gettext-bundle)
+
+[add your package](https://github.com/oscarotero/Gettext/issues/new)
 
 ## Contributors
 

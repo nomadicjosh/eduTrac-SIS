@@ -11,23 +11,17 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $acl = new \app\src\ACL(get_persondata('personID'));
 $screen = 'vsect';
 ?>
 
-<script type="text/javascript">
-	$(".panel").show();
-	setTimeout(function() { $(".panel").hide(); }, 5000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>sect/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
+	<li><a href="<?=get_base_url();?>sect/" class="glyphicons search"><i></i> <?=_t( 'Search Section' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>sect/<?=_h($grade[0]['courseSecID']);?>/<?=bm();?>" class="glyphicons adjust_alt"><i></i> <?=_h($grade[0]['courseSection']);?></a></li>
+	<li><a href="<?=get_base_url();?>sect/<?=_h($grade[0]['courseSecID']);?>/" class="glyphicons adjust_alt"><i></i> <?=_h($grade[0]['courseSection']);?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Course Section Final Grades' );?></li>
 </ul>
@@ -35,7 +29,7 @@ $screen = 'vsect';
 <h3><?=_t( 'Final Grades for ' );?><?=_h($grade[0]['secShortTitle']);?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen,'',$sect); ?>
 
@@ -95,7 +89,7 @@ $screen = 'vsect';
 			    <input type="hidden" name="courseSecID" value="<?=_h($grade[0]['courseSecID']);?>" />
 				<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Submit' );?></button>
                 <?php endif; endif; ?>
-				<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>sect/<?=_h($grade[0]['courseSecID']);?>/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+				<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>sect/<?=_h($grade[0]['courseSecID']);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 			</div>
 			<!-- // Form actions END -->
 			

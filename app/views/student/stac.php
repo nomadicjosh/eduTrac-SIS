@@ -12,22 +12,16 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $stu = get_student(_h($stu));
 ?>
 
-<script type="text/javascript">
-	$(".panel").show();
-	setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+	<li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Student Academic Credits (STAC)' );?></li>
 </ul>
@@ -38,7 +32,7 @@ $stu = get_student(_h($stu));
     
     <div class="separator line bottom"></div>
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
 
 	<!-- Widget -->
 	<div class="widget widget-heading-simple widget-body-gray">
@@ -46,11 +40,10 @@ $stu = get_student(_h($stu));
         <!-- Tabs Heading -->
         <div class="tabsbar">
             <ul>
-                <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-                <li class="glyphicons package active"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/<?=bm();?>" data-toggle="tab"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-                <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-                <li class="glyphicons disk_remove tab-stacked"><a href="<?=get_base_url();?>stu/strc/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Restriction (STRC)' );?></span></a></li>
-                <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/<?=bm();?>"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+                <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+                <li class="glyphicons package active"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/" data-toggle="tab"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+                <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+                <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
             </ul>
         </div>
         <!-- // Tabs Heading END -->
@@ -94,8 +87,8 @@ $stu = get_student(_h($stu));
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>stu/sacd/<?=_h($v['stuAcadCredID']);?>/<?=bm();?>"><?=_t( 'View (SACD)' ); ?></a></li>
-                                <li<?=ae('delete_student');?>><a href="#modal<?=_h($v['stuAcadCredID']);?>" data-toggle="modal"><?=_t( 'Delete' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>stu/sacd/<?=_h($v['id']);?>/"><?=_t( 'View (SACD)' ); ?></a></li>
+                                <li<?=ae('delete_student');?>><a href="#modal<?=_h($v['id']);?>" data-toggle="modal"><?=_t( 'Delete' ); ?></a></li>
                             </ul>
                         </div>
                     </td>
@@ -111,7 +104,7 @@ $stu = get_student(_h($stu));
 			
 			<!-- Form actions -->
 			<div class="form-actions">
-				<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+				<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/'"><i></i><?=_t( 'Cancel' );?></button>
 			</div>
 			<!-- // Form actions END -->
 			
@@ -121,7 +114,7 @@ $stu = get_student(_h($stu));
 	<!-- // Widget END -->
 	<?php if($stac != '') : foreach($stac as $k => $v) { ?>
 	<!-- Modal -->
-	<div class="modal fade" id="modal<?=_h($v['stuAcadCredID']);?>">
+	<div class="modal fade" id="modal<?=_h($v['id']);?>">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->
@@ -141,7 +134,7 @@ $stu = get_student(_h($stu));
 				<!-- // Modal body END -->
 				<!-- Modal footer -->
 				<div class="modal-footer">
-					<a href="<?=get_base_url();?>stu/deleteSTAC/<?=_h($v['stuAcadCredID']);?>" class="btn btn-default"><?=_t( 'Delete' );?></a>
+					<a href="<?=get_base_url();?>stu/deleteSTAC/<?=_h($v['id']);?>/" class="btn btn-default"><?=_t( 'Delete' );?></a>
 					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a> 
 				</div>
 				<!-- // Modal footer END -->

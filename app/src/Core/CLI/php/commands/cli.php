@@ -49,4 +49,17 @@ class CLI_Command extends ETSIS_CLI_Command
         ETSIS_CLI::line("ETSIS-CLI root dir:\t" . ETSIS_CLI_ROOT);
         ETSIS_CLI::line("ETSIS-CLI version:\t" . ETSIS_CLI_VERSION);
     }
+    
+    /**
+     * Displays etSIS release.
+     * 
+     * ## EXAMPLES
+     *
+     *     # Display etSIS release value.
+     *     $ ./etsis cli release 
+     */
+    function release()
+    {
+        ETSIS_CLI::line('eduTrac SIS ' . file_get_contents(RELEASE));
+    }
 }

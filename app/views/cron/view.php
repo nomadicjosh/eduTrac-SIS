@@ -12,9 +12,9 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'cron';
-$options = [30        => '30 seconds',
+$options = [
+                 30        => '30 seconds',
                  60        => 'Minute',
                  120       => '2 minutes',
                  300       => '5 minutes',
@@ -31,17 +31,13 @@ $options = [30        => '30 seconds',
                  259200    => '3 days', 
                  604800    => 'Week', 
                  209600    => '2 weeks', 
-                 2629743   => 'Month'];
+                 2629743   => 'Month'
+];
 ?>
-
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'View Cronjob Handler' );?></li>
 </ul>
@@ -49,12 +45,12 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'View Cronjob Handler' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>cron/view/<?=$id;?>" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>cron/<?=$cron->id;?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -62,11 +58,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons dashboard active"><a href="<?=get_base_url();?>cron/<?=bm();?>"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
-                    <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/<?=bm();?>"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
-                    <li class="glyphicons list tab-stacked"><a href="<?=get_base_url();?>cron/log/<?=bm();?>"><i></i> <?=_t( 'Log' );?></a></li>
-                    <li class="glyphicons wrench tab-stacked"><a href="<?=get_base_url();?>cron/setting/<?=bm();?>"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
-                    <!-- <li class="glyphicons circle_question_mark tab-stacked"><a href="<?=get_base_url();?>cron/about/<?=bm();?>"><i></i> <span><?=_t( 'About' );?></span></a></li> -->
+                    <li class="glyphicons dashboard active"><a href="<?=get_base_url();?>cron/"><i></i> <?=_t( 'Handler Dashboard' );?></a></li>
+                    <li class="glyphicons star"><a href="<?=get_base_url();?>cron/new/"><i></i> <?=_t( 'New Cronjob Handler' );?></a></li>
+                    <li class="glyphicons wrench tab-stacked"><a href="<?=get_base_url();?>cron/setting/"><i></i> <span><?=_t( 'Settings' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -83,33 +77,24 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<div class="row">
 					<!-- Column -->
 					<div class="col-md-6">
+                        
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Handler Name' );?></label>
+							<div class="col-md-8">
+								<input type="text" name="name" class="form-control" value="<?=$cron->name;?>" required/>
+							</div>
+						</div>
+						<!-- // Group END -->
 						
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Cronjob URL' );?></label>
 							<div class="col-md-8">
-								<input type="text" id="cronjobpassword" name="url" class="form-control" value="<?=$data['url'];?>" required/>
+								<input type="text" name="url" class="form-control" value="<?=$cron->url;?>" required/>
 							</div>
 						</div>
 						<!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( "Save Log" );?> <a href="#slog" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
-                            <div class="col-md-8">
-                                <input type="checkbox" id="timeout" name="savelog" <?=($data['savelog'] == 1) ? " checked='checked'" : '';?> />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( "MailLog" );?> <a href="#mlog" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
-                            <div class="col-md-8">
-                                <input type="checkbox" id="timeout" name="maillog" <?=($data['maillog'] == 1) ? " checked='checked'" : '';?> />
-                            </div>
-                        </div>
-                        <!-- // Group END -->
 						
 					</div>
 					<!-- // Column END -->
@@ -119,22 +104,13 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( "MailLog Email" );?> <a href="#mlogEmail" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
-                            <div class="col-md-8">
-                                <input type="text" id="timeout" name="maillogaddress" value="<?=$data['maillogaddress'];?>" class="form-control"/>
-                            </div>
-                        </div>
-                        <!-- // Group END -->
-                        
-                        <!-- Group -->
-                        <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( "Each / Time" );?> <a href="#each" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <div class="col-md-4">
                                 <select name="each" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
                                     <?php 
                                     foreach ($options as $each => $key) {
-                                        $s = ($data['each'] == $each) ? ' selected="selected"' : '';
+                                        $s = ($cron->each == $each) ? ' selected="selected"' : '';
                                     ?>
                                     <option value="<?=$each;?>"<?=$s;?>><?=$key; ?></option>
                                     <?php } ?>
@@ -149,7 +125,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                                         for ($y = 0; $y < 4; $y++) {
                                             $time = ((strlen($x) == 1) ? '0' . $x : $x) . ':' . (($y == 0) ? '00' : ($y * 15));
 
-                                            $s = ($data['eachtime'] == $time) ? ' selected="selected"' : '';
+                                            $s = ($cron->eachtime == $time) ? ' selected="selected"' : '';
                                     ?>
                                     <option value="<?=$time;?>"<?=$s;?>><?=$time;?></option>
                                     <?php } } ?>
@@ -157,7 +133,20 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             </div>
                         </div>
                         <!-- // Group END -->
-						
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( "Status" );?></label>
+                            <div class="col-md-8">
+                                <select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option>&nbsp;</option>
+                                    <option value="1"<?=selected('1', _h($cron->status), false);?>><?=_t( "Active" );?></option>
+                                    <option value="0"<?=selected('0', _h($cron->status), false);?>><?=_t( "Inactive" );?></option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
 					</div>
 					<!-- // Column END -->
 				</div>
@@ -179,66 +168,6 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 		
 	</form>
 	<!-- // Form END -->
-	
-	<div class="modal fade" id="slog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-	
-				<!-- Modal heading -->
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Save Log' );?></h3>
-				</div>
-				<!-- // Modal heading END -->
-		        <div class="modal-body">
-		            <p><?=_t( 'Click the checkbox if the system should save a log of when the cronjob runs.' );?></p>
-		        </div>
-		        <div class="modal-footer">
-		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
-		        </div>
-	       	</div>
-      	</div>
-    </div>
-    
-    <div class="modal fade" id="mlog">
-    	<div class="modal-dialog">
-			<div class="modal-content">
-	
-				<!-- Modal heading -->
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Mail Log' );?></h3>
-				</div>
-				<!-- // Modal heading END -->
-		        <div class="modal-body">
-		            <p><?=_t( "Click checkbox if you want the system to send you an email of the cronjob log." );?></p>
-		        </div>
-		        <div class="modal-footer">
-		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
-		        </div>
-	        </div>
-      	</div>
-    </div>
-    
-    <div class="modal fade" id="mlogEmail">
-    	<div class="modal-dialog">
-			<div class="modal-content">
-	
-				<!-- Modal heading -->
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Mail Log Email' );?></h3>
-				</div>
-				<!-- // Modal heading END -->
-		        <div class="modal-body">
-		            <p><?=_t("If you checked 'Mail Log', enter the email address where the log should be sent.");?></p>
-		        </div>
-		        <div class="modal-footer">
-		            <a href="#" data-dismiss="modal" class="btn btn-primary"><?=_t( 'Cancel' );?></a>
-		        </div>
-	        </div>
-      	</div>
-    </div>
     
     <div class="modal fade" id="each">
     	<div class="modal-dialog">
@@ -247,7 +176,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title"><?=_t( 'Each Time' );?></h3>
+					<h3 class="modal-title"><?=_t( 'Each / Time' );?></h3>
 				</div>
 				<!-- // Modal heading END -->
 		        <div class="modal-body">

@@ -2,11 +2,11 @@
 
 namespace app\src\Core\NodeQ\Helpers;
 
-use \app\src\Core\NodeQ\LazerException;
+use \app\src\Core\NodeQ\NodeQException;
 use \app\src\Core\NodeQ\Relation;
 
 /**
- * Validation for tables
+ * Validation for nodes
  *
  * @category Helpers
  * @author Grzegorz Kuźnik
@@ -17,13 +17,13 @@ use \app\src\Core\NodeQ\Relation;
 class Validate {
 
     /**
-     * Name of table
+     * Name of node
      * @var string
      */
     private $name;
 
     /**
-     * Table name
+     * Node name
      * @param string $name
      * @return Validate
      */
@@ -55,7 +55,7 @@ class Validate {
      * Checking that types from array matching with [boolean, integer, string, double]
      * @param array $types Indexed array
      * @return bool
-     * @throws LazerException
+     * @throws NodeQException
      */
     public static function types(array $types)
     {
@@ -66,7 +66,7 @@ class Validate {
         {
             return true;
         }
-        throw new LazerException('Wrong types: "' . implode(', ', $diff) . '". Available "boolean, integer, string, double"');
+        throw new NodeQException('Wrong types: "' . implode(', ', $diff) . '". Available "boolean, integer, string, double"');
     }
 
     /**
@@ -104,10 +104,10 @@ class Validate {
     }
 
     /**
-     * Checking that typed fields really exist in table
+     * Checking that typed fields really exist in node
      * @param array $fields Indexed array
      * @return boolean
-     * @throws LazerException If field(s) does not exist
+     * @throws NodeQException If field(s) does not exist
      */
     public function fields(array $fields)
     {
@@ -118,14 +118,14 @@ class Validate {
         {
             return true;
         }
-        throw new LazerException('Field(s) "' . implode(', ', $diff) . '" does not exists in table "' . $this->name . '"');
+        throw new NodeQException('Field(s) "' . implode(', ', $diff) . '" does not exists in node "' . $this->name . '"');
     }
 
     /**
-     * Checking that typed field really exist in table
+     * Checking that typed field really exist in node
      * @param string $name
      * @return boolean
-     * @throws LazerException If field does not exist
+     * @throws NodeQException If field does not exist
      */
     public function field($name)
     {
@@ -133,21 +133,23 @@ class Validate {
         {
             return true;
         }
-        throw new LazerException('Field ' . $name . ' does not exists in table "' . $this->name . '"');
+        throw new NodeQException('Field ' . $name . ' does not exists in node "' . $this->name . '"');
     }
 
     /**
-     * Checking that Table and Config exists and throw exceptions if not
+     * Checking that Node and Config exists and throw exceptions if not
      * @return boolean
-     * @throws LazerException
+     * @throws NodeQException
      */
     public function exists()
     {
-        if (!Data::table($this->name)->exists())
+        if (!Data::table($this->name)->exists()) {
             return false;
+        }
 
-        if (!Config::table($this->name)->exists())
-            throw new LazerException('Config "' . $this->name . '" does not exists');
+        if (!Config::table($this->name)->exists()) {
+            return false;
+        }
 
         return true;
     }
@@ -157,7 +159,7 @@ class Validate {
      * @param string $name
      * @param mixed $value
      * @return boolean
-     * @throws LazerException If type is wrong
+     * @throws NodeQException If type is wrong
      */
     public function type($name, $value)
     {
@@ -167,15 +169,15 @@ class Validate {
             return true;
         }
 
-        throw new LazerException('Wrong data type');
+        throw new NodeQException('Wrong data type');
     }
 
     /**
-     * Checking that relation between tables exists
-     * @param string $local local table
-     * @param string $foreign related table
+     * Checking that relation between nodes exists
+     * @param string $local local node
+     * @param string $foreign related node
      * @return bool relation exists
-     * @throws LazerException
+     * @throws NodeQException
      */
     public static function relation($local, $foreign)
     {
@@ -185,14 +187,14 @@ class Validate {
             return true;
         }
 
-        throw new LazerException('Relation "' . $local . '" to "' . $foreign . '" doesn\'t exist');
+        throw new NodeQException('Relation "' . $local . '" to "' . $foreign . '" doesn\'t exist');
     }
 
     /**
      * Checking that relation type is correct
      * @param string $type 
      * @return bool relation type
-     * @throws LazerException Wrong relation type
+     * @throws NodeQException Wrong relation type
      */
     public static function relationType($type)
     {
@@ -201,7 +203,7 @@ class Validate {
             return true;
         }
 
-        throw new LazerException('Wrong relation type');
+        throw new NodeQException('Wrong relation type');
     }
 
 }

@@ -11,28 +11,24 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'rgn';
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
-    jQuery('#stuID').live('change', function(event) {
-        $.ajax({
-            type    : 'POST',
-            url     : '<?=get_base_url();?>sect/stuLookup/',
-            dataType: 'json',
-            data    : $('#validateSubmitForm').serialize(),
-            cache: false,
-            success: function( data ) {
-                   for(var id in data) {        
-                          $(id).val( data[id] );
-                   }
-            }
-        });
-    });
+$(document).ready(function(){
+  $("#stuID").autocomplete({
+        source: '<?=get_base_url();?>sect/stuLookup/', // The source of the AJAX results
+        minLength: 2, // The minimum amount of characters that must be typed before the autocomplete is triggered
+        focus: function( event, ui ) { // What happens when an autocomplete result is focused on
+            $("#stuID").val( ui.item.value );
+            return false;
+      },
+      select: function ( event, ui ) { // What happens when an autocomplete result is selected
+          $("#stuID").val( ui.item.value );
+          $('#StudentID').val( ui.item.id );
+      }
+  });
 });
-
 $(window).load(function() {
 	$("#terms").jCombo({url: "<?=get_base_url();?>sect/regTermLookup/" });
 	$("#section").jCombo({
@@ -47,22 +43,35 @@ $(window).load(function() {
 		}
 	});
 });
-
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
+jQuery(document).ready(function() {
+    jQuery('#section').live('change', function(event) {
+        $.ajax({
+            type    : 'POST',
+            url     : '<?=get_base_url();?>sect/sectLookup/',
+            dataType: 'json',
+            data    : $('#validateSubmitForm').serialize(),
+            cache: false,
+            success: function( data ) {
+                   for(var id in data) {        
+                          $(id).val( data[id] );
+                   }
+            }
+        });
+    });
+});
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><?=_t( 'Course Registration' );?></li>
+	<li><?=_t( 'Course Registration (RGN)' );?></li>
 </ul>
 
-<h3><?=_t( 'Course Registration' );?></h3>
+<h3><?=_t( 'Course Registration (RGN)' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 
@@ -87,10 +96,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Student ID' );?></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Student ID/Name' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="stuID" id="stuID" class="form-control" required />
-                                <input type="text" id="stuName" readonly="readonly" class="form-control text-center" />
+								<input type="text" id="stuID" class="form-control" required />
+                                <input type="hidden" id="StudentID" name="stuID" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -109,19 +118,13 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             </div>
                         </div>
                         <!-- // Group END -->
-						
-					</div>
-					<!-- // Column END -->
-					
-					<!-- Column -->
-					<div class="col-md-6">
                         
                         <!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Section' );?></label>
                             <div class="col-md-8">
 	                        	<select id="section" name="courseSecID" class="form-control" required></select>
-                                <span id="message" style="color:red; display:hidden;"></span>
+                                <span id="message" style="color:green; display:hidden;"></span>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -132,6 +135,101 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- // Row END -->
 				
 				<hr class="separator" />
+                <h3><?=_t('Course Section Info');?></h3>
+                <!-- Row -->
+				<div class="row">
+					<!-- Column -->
+					<div class="col-md-6">
+						
+						<!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><?=_t( 'Title' );?></label>
+							<div class="col-md-8">
+								<input type="text" id="title" class="form-control" readonly/>
+							</div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><?=_t( 'Credits' );?></label>
+							<div class="col-md-8">
+								<input type="text" id="credit" class="form-control" readonly/>
+							</div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+							<label class="col-md-3 control-label"><?=_t( 'Professor' );?></label>
+							<div class="col-md-8">
+                                <input type="text" id="fac" class="form-control" readonly/>
+							</div>
+						</div>
+						<!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+					
+					<!-- Column -->
+					<div class="col-md-6">
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Meeting Place' );?></label>
+                            <div class="col-md-8">
+	                        	<input type="text" id="meeting" class="form-control" readonly/>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Meeting Time' );?></label>
+                            <div class="col-md-8">
+	                        	<input type="text" id="time" class="form-control" readonly/>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Meeting Days' );?></label>
+                            <div class="col-md-8">
+	                        	<input type="text" id="dotw" class="form-control" readonly/>
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+				</div>
+				<!-- // Row END -->
+                
+                <hr class="separator" />
+                
+                <!-- Row -->
+				<div class="row">
+                    
+                    <!-- Column -->
+                    <div class="col-md-3">
+                        
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label"><?=_t( 'RRSR' );?> <a href="<?=get_base_url();?>sect/rgn/rrsr/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <div class="col-md-3">
+                                <input type="text" disabled value="<?=is_node_count_zero('rrsr');?>" class="form-control col-md-1 center" />
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                    </div>
+					<!-- // Column END -->
+					
+				</div>
+				<!-- // Row END -->
+                
+                <hr class="separator" />
 				
 				<!-- Form actions -->
 				<div class="form-actions">

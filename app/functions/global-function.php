@@ -1,5 +1,5 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 /**
@@ -21,7 +21,7 @@ if (! defined('BASE_PATH'))
 function _etsis_cache_init()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $driver = $app->hook->apply_filter('etsis_cache_driver', 'file');
     $cache = new \app\src\Core\Cache\etsis_Object_Cache($driver);
     return $cache;
@@ -73,4 +73,28 @@ function _etsis_logger()
 {
     $logger = new \app\src\Core\etsis_Logger();
     return $logger;
+}
+
+/**
+ * Sets up eduTrac SIS Flash Messages global scope.
+ *
+ * @since 6.3.0
+ */
+function _etsis_flash()
+{
+    $flash = new \app\src\Core\etsis_FlashMessages();
+    return $flash;
+}
+
+/**
+ * Sets up random number and string generator global scope.
+ * 
+ * @since 6.3.0
+ * @return type
+ */
+function _etsis_random_lib()
+{
+    $factory = new RandomLib\Factory;
+    $generator = $factory->getGenerator(new SecurityLib\Strength(SecurityLib\Strength::MEDIUM));
+    return $generator;
 }

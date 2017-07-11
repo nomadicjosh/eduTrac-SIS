@@ -5,7 +5,7 @@ namespace app\src\Core\NodeQ;
 use \app\src\Core\NodeQ\Helpers\Validate;
 use \app\src\Core\NodeQ\Helpers\Config;
 use \app\src\Core\NodeQ\Database;
-use \app\src\Core\NodeQ\LazerException;
+use \app\src\Core\NodeQ\NodeQException;
 
 /**
  * Relation class of LAZER project.
@@ -104,7 +104,7 @@ abstract class CoreRelation {
      * @param string $type local or foreign
      * @param string $key key name
      * @return \Lazer\Classes\Core_Relation
-     * @throws LazerException First you must define tables name
+     * @throws NodeQException First you must define tables name
      */
     protected function setKey($type, $key)
     {
@@ -116,14 +116,14 @@ abstract class CoreRelation {
             return $this;
         }
 
-        throw new LazerException('First you must define tables name');
+        throw new NodeQException('First you must define tables name');
     }
 
     /**
      * Set local key name
      * @param string $key key name
      * @return \Lazer\Classes\Core_Relation
-     * @throws LazerException First you must define tables name
+     * @throws NodeQException First you must define tables name
      */
     public function localKey($key)
     {
@@ -134,7 +134,7 @@ abstract class CoreRelation {
      * Set foreign key name
      * @param string $key key name
      * @return \Lazer\Classes\Core_Relation
-     * @throws LazerException First you must define tables name
+     * @throws NodeQException First you must define tables name
      */
     public function foreignKey($key)
     {
@@ -198,7 +198,7 @@ abstract class CoreRelation {
 
     /**
      * Set specified relation
-     * @throws LazerException Tables names or keys missing
+     * @throws NodeQException Tables names or keys missing
      */
     public function setRelation()
     {
@@ -209,7 +209,7 @@ abstract class CoreRelation {
         }
         else
         {
-            throw new LazerException('Tables names or keys missing');
+            throw new NodeQException('Tables names or keys missing');
         }
     }
 
@@ -254,7 +254,7 @@ abstract class CoreRelation {
             {
                 Validate::table($junction)->exists();
             }
-            catch (LazerException $e)
+            catch (NodeQException $e)
             {
                 Database::create($junction, array(
                     $this->tables['local'] . '_id'   => 'integer',

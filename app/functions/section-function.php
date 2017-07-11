@@ -1,6 +1,11 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+use Cascade\Cascade;
+
 /**
  * eduTrac SIS Course Section Functions
  *
@@ -10,7 +15,6 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-
 $app = \Liten\Liten::getInstance();
 
 /**
@@ -20,20 +24,26 @@ $app = \Liten\Liten::getInstance();
 function convertCourseSec($sect)
 {
     $app = \Liten\Liten::getInstance();
-    $section = $app->db->course_sec()
-        ->select('courseSecCode')
-        ->where('courseSecID = ?', $sect);
-    $q = $section->find(function ($data) {
-        $array = [];
-        foreach ($data as $d) {
-            $array[] = $d;
+
+    try {
+        $section = $app->db->course_sec()
+            ->select('courseSecCode')
+            ->where('courseSecID = ?', $sect);
+        $q = $section->find();
+        foreach ($q as $r) {
+            $section = $r->courseSecCode;
         }
-        return $array;
-    });
-    foreach ($q as $r) {
-        $section = $r['courseSecCode'];
+        return $section;
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
     }
-    return $section;
 }
 
 /**
@@ -58,14 +68,44 @@ function get_course_sec($section, $object = true)
     } else {
         $_section = \app\src\Core\etsis_Course_Sec::get_instance($section);
     }
-    
-    if (! $_section) {
+
+    if (!$_section) {
         return null;
     }
-    
+
     if ($object == true) {
         $_section = array_to_object($_section);
     }
-    
+
     return $_section;
+}
+
+/**
+ * Retrieve stcs info based on stuID and courseSecID.
+ * 
+ * @since 6.3.0
+ * @param type $stuID Student's id.
+ * @param type $sectID
+ * @return type
+ */
+function get_stcs($stuID, $sectID)
+{
+    $app = \Liten\Liten::getInstance();
+
+    try {
+        $stcs = $app->db->stcs()
+            ->where('stcs.stuID = ?', $stuID)->_and_()
+            ->where('stcs.courseSecID = ?', $sectID)
+            ->findOne();
+        return $stcs;
+    } catch (NotFoundException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (ORMException $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error($e->getMessage());
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
 }

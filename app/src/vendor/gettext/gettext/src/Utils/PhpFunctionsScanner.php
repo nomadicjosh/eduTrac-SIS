@@ -16,18 +16,18 @@ class PhpFunctionsScanner extends FunctionsScanner
     /**
      * If not false, comments will be extracted.
      *
-     * @var string|false
+     * @var string|false|array
      */
     protected $extractComments = false;
 
     /**
      * Enable extracting comments that start with a tag (if $tag is empty all the comments will be extracted).
      *
-     * @param string $tag
+     * @param mixed $tag
      */
     public function enableCommentsExtraction($tag = '')
     {
-        $this->extractComments = (string) $tag;
+        $this->extractComments = $tag;
     }
 
     /**
@@ -58,7 +58,7 @@ class PhpFunctionsScanner extends FunctionsScanner
     /**
      * {@inheritdoc}
      */
-    public function getFunctions()
+    public function getFunctions(array $constants = [])
     {
         $count = count($this->tokens);
         $bufferFunctions = [];
@@ -95,8 +95,13 @@ class PhpFunctionsScanner extends FunctionsScanner
                         $bufferFunctions[0]->addArgumentChunk(PhpCode::convertString($value[1]));
                     }
                     break;
+
                 case T_STRING:
                     if (isset($bufferFunctions[0])) {
+                        if (isset($constants[$value[1]])) {
+                            $bufferFunctions[0]->addArgumentChunk($constants[$value[1]]);
+                            break;
+                        }
                         $bufferFunctions[0]->stopArgument();
                     }
                     //new function found
@@ -119,6 +124,7 @@ class PhpFunctionsScanner extends FunctionsScanner
                         break;
                     }
                     break;
+
                 case T_COMMENT:
                     if (isset($bufferFunctions[0])) {
                         $comment = $this->parsePhpComment($value[1]);
@@ -127,6 +133,7 @@ class PhpFunctionsScanner extends FunctionsScanner
                         }
                     }
                     break;
+
                 default:
                     if (isset($bufferFunctions[0])) {
                         $bufferFunctions[0]->stopArgument();
@@ -141,6 +148,7 @@ class PhpFunctionsScanner extends FunctionsScanner
     protected function parsePhpComment($value)
     {
         $result = null;
+
         if ($this->extractComments !== false) {
             if ($value[0] === '#') {
                 $value = substr($value, 1);
@@ -149,9 +157,20 @@ class PhpFunctionsScanner extends FunctionsScanner
             } else {
                 $value = substr($value, 2, -2);
             }
+
             $value = trim($value);
-            if ($value !== '' && ($this->extractComments === '' || strpos($value, $this->extractComments) === 0)) {
-                $result = $value;
+
+            if ($value !== '') {
+                if (is_array($this->extractComments)) {
+                    foreach ($this->extractComments as $string) {
+                        if (strpos($value, $string) === 0) {
+                            $result = $value;
+                            break;
+                        }
+                    }
+                } elseif ($this->extractComments === '' || strpos($value, $this->extractComments) === 0) {
+                    $result = $value;
+                }
             }
         }
 

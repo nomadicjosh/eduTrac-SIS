@@ -13,63 +13,58 @@
 
 namespace Desarrolla2\Cache\Adapter;
 
-use Desarrolla2\Cache\Exception\MongoCacheException;
-use Mongo as MongoBase;
+use Desarrolla2\Cache\Exception\CacheException;
 
 /**
  * Mongo
  */
-class Mongo extends AbstractAdapter
+class Mongo extends AbstractAdapter implements AdapterInterface
 {
     /**
-     * @var \MongoDB
+     * @var MongoCollection|MongoDB\Collection
      */
-    protected $database;
+    protected $collection;
 
     /**
-     * @var \Mongo
+     * @param MongoDB|MongoDB\Database|MongoCollection|MongoDB\Collection  $backend
      */
-    protected $mongo;
-
-    /**
-     *
-     * @param  string                                           $server
-     * @param  array                                            $options
-     * @param  string                                           $database
-     * @throws \Desarrolla2\Cache\Exception\MongoCacheException
-     */
-    public function __construct(
-        $server = 'mongodb://localhost:27017',
-        $options = array('connect' => true),
-        $database = '__cache'
-    ) {
-        $this->mongo = new MongoBase($server, $options);
-        if (!$this->mongo) {
-            throw new MongoCacheException(' Mongo connection fails ');
+    public function __construct($backend = null)
+    {
+        if (!isset($backend)) {
+            $client = class_exist('MongoCollection') ? new \MongoClient() : new \MongoDB\Client();
+            $backend = $client->selectDatabase('cache');
         }
-        $this->database = $this->mongo->selectDB($database);
+            
+        if ($backend instanceof \MongoCollection || $backend instanceof \MongoDB\Collection) {
+            $this->collection = $backend;
+        } elseif ($backend instanceof \MongoDB || $backend instanceof \MongoDB\Database) {
+            $this->collection = $backend->selectCollection('items');
+        } else {
+            $type = (is_object($database) ? get_class($database) . ' ' : '') . gettype($database);
+            throw new CacheException("Database should be a database (MongoDB or MongoDB\Database) or " .          
+                " collection (MongoCollection or MongoDB\Collection) object, not a $type");
+        }
     }
 
     /**
-     * Delete a value from the cache
-     *
-     * @param string $key
+     * {@inheritdoc}
      */
-    public function delete($key)
+    public function del($key)
     {
         $tKey = $this->getKey($key);
-        $this->database->items->remove(array('key' => $tKey));
+        $this->collection->remove(array('_id' => $tKey));
     }
 
     /**
      * {@inheritdoc }
-     *
-     * @param string $key
      */
     public function get($key)
     {
-        if ($data = $this->getData($key)) {
-            return $data;
+        $tKey = $this->getKey($key);
+        $tNow = $this->getTtl();
+        $data = $this->collection->findOne(array('_id' => $tKey, 'ttl' => array('$gte' => $tNow)));
+        if (isset($data)) {
+            return $this->unPack($data['value']);
         }
 
         return false;
@@ -77,91 +72,42 @@ class Mongo extends AbstractAdapter
 
     /**
      * {@inheritdoc }
-     *
-     * @param  string $key
-     * @return bool
      */
     public function has($key)
     {
-        if ($this->getData($key)) {
-            return true;
-        }
-
-        return false;
+        $tKey = $this->getKey($key);
+        $tNow = $this->getTtl();        
+        return $this->collection->count(array('_id' => $tKey, 'ttl' => array('$gte' => $tNow))) > 0;
     }
 
     /**
      * {@inheritdoc }
-     *
-     * @param string $key
-     * @param mixed  $value
-     * @param null   $ttl
      */
     public function set($key, $value, $ttl = null)
     {
         $tKey = $this->getKey($key);
-        $tValue = $this->serialize($value);
+        $tValue = $this->pack($value);
         if (!$ttl) {
             $ttl = $this->ttl;
         }
         $item = array(
-            'key' => $tKey,
+            '_id' => $tKey,
             'value' => $tValue,
-            'ttl' => (int) $ttl + time(),
+            'ttl' => $this->getTtl($ttl),
         );
-        $this->delete($key);
-        $this->database->items->insert($item);
+        $this->collection->update(array('_id' => $tKey), $item, array('upsert' => true));
     }
-
+    
     /**
-     * {@inheritdoc }
+     * Get TTL as Date type BSON object
      *
-     * @param  string                                           $key
-     * @param  string                                           $value
-     * @return bool
-     * @throws \Desarrolla2\Cache\Exception\MongoCacheException
+     * @param  int  $ttl
+     * @return MongoDate|MongoDB\BSON\UTCDatetime
      */
-    public function setOption($key, $value)
+    protected function getTtl($ttl = 0)
     {
-        switch ($key) {
-            case 'ttl':
-                $value = (int) $value;
-                if ($value < 1) {
-                    throw new MongoCacheException('ttl cant be lower than 1');
-                }
-                $this->ttl = $value;
-                break;
-            default:
-                throw new MongoCacheException('option not valid '.$key);
-        }
-
-        return true;
-    }
-
-    /**
-     * Get data value from file cache
-     *
-     * @param  string $key
-     * @param  bool   $delete
-     * @return mixed
-     */
-    protected function getData($key, $delete = true)
-    {
-        $tKey = $this->getKey($key);
-        $data = $this->database->items->findOne(array('key' => $tKey));
-        if (count($data)) {
-            $data = array_values($data);
-            if (time() > $data[3]) {
-                if ($delete) {
-                    $this->delete($key);
-                }
-
-                return false;
-            }
-
-            return $this->unserialize($data[2]);
-        }
-
-        return false;
+        return $this->collection instanceof \MongoCollection ?
+            new \MongoDate((int) $ttl + time()) :
+            new \MongoDB\BSON\UTCDatetime(((int) $ttl + time() * 1000));
     }
 }

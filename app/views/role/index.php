@@ -18,13 +18,15 @@ $screen = 'role';
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Manage Roles' );?></li>
 </ul>
 
 <h3><?=_t( 'Manage Roles' );?></h3>
 <div class="innerLR">
+    
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 
@@ -72,7 +74,7 @@ $screen = 'role';
             <hr class="separator" />
 		<!-- Form actions -->
         <div class="form-actions">
-            <button type="submit" name="NewRole" class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=get_base_url();?>role/add/<?=bm();?>'"><i></i><?=_t( 'New Role' );?></button>
+            <button type="submit" name="NewRole" class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=get_base_url();?>role/add/'"><i></i><?=_t( 'New Role' );?></button>
         </div>
         <!-- // Form actions END -->
 		</div>

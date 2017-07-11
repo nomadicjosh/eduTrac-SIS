@@ -17,7 +17,7 @@ if (!defined('BASE_PATH'))
  * api key.
  */
 $app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/api(.*)', function() use ($app) {
-    if ($app->req->_get('key') !== _h(get_option('api_key')) || _h(get_option('api_key')) === null) {
+    if ($app->req->get['key'] !== _h(get_option('api_key')) || _h(get_option('api_key')) === null) {
         $app->res->_format('json', 401);
         exit();
     }
@@ -41,17 +41,17 @@ $app->group('/api', function() use ($app) {
         
         $t = $app->db->$table();
         
-        if(isset($_GET['by']) === true) {
-            if(isset($_GET['order']) !== true) {
-                $_GET['order'] = 'ASC';
+        if(isset($app->req->get['by']) === true) {
+            if(isset($app->req->get['order']) !== true) {
+                $app->req->get['order'] = 'ASC';
             }
-            $t->orderBy($_GET['by'], $_GET['order']);
+            $t->orderBy($app->req->get['by'], $app->req->get['order']);
         }
         
-        if(isset($_GET['limit']) === true) {
-            $t->limit($_GET['limit']);
-            if(isset($_GET['offset']) === true) {
-                $t->offset($_GET['offset']);
+        if(isset($app->req->get['limit']) === true) {
+            $t->limit($app->req->get['limit']);
+            if(isset($app->req->get['offset']) === true) {
+                $t->offset($app->req->get['offset']);
             }
         }
         
@@ -149,35 +149,35 @@ $app->group('/api', function() use ($app) {
         }
     });
 
-    if (in_array($http = strtoupper($_SERVER['REQUEST_METHOD']), ['POST', 'PUT']) === true) {
+    if (in_array($http = strtoupper($app->req->server['REQUEST_METHOD']), ['POST', 'PUT']) === true) {
         if (preg_match('~^\x78[\x01\x5E\x9C\xDA]~', $data = _file_get_contents('php://input')) > 0) {
             $data = gzuncompress($data);
         }
-        if ((array_key_exists('CONTENT_TYPE', $_SERVER) === true) && (empty($data) !== true)) {
-            if (strncasecmp($_SERVER['CONTENT_TYPE'], 'application/json', 16) === 0) {
-                $GLOBALS['_' . $http] = json_decode($data, true);
-            } else if ((strncasecmp($_SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded', 33) === 0) && (strncasecmp($_SERVER['REQUEST_METHOD'], 'PUT', 3) === 0)) {
-                parse_str($data, $GLOBALS['_' . $http]);
+        if ((array_key_exists('CONTENT_TYPE', $app->req->server) === true) && (empty($data) !== true)) {
+            if (strncasecmp($app->req->server['CONTENT_TYPE'], 'application/json', 16) === 0) {
+                $app->req->globals['_' . $http] = json_decode($data, true);
+            } else if ((strncasecmp($app->req->server['CONTENT_TYPE'], 'application/x-www-form-urlencoded', 33) === 0) && (strncasecmp($app->req->server['REQUEST_METHOD'], 'PUT', 3) === 0)) {
+                parse_str($data, $app->req->globals['_' . $http]);
             }
         }
-        if ((isset($GLOBALS['_' . $http]) !== true) || (is_array($GLOBALS['_' . $http]) !== true)) {
-            $GLOBALS['_' . $http] = [];
+        if ((isset($app->req->globals['_' . $http]) !== true) || (is_array($app->req->globals['_' . $http]) !== true)) {
+            $app->req->globals['_' . $http] = [];
         }
         unset($data);
     }
 
     $app->post('/(\w+)/', function($table) use($app) {
 
-        if (empty($_POST) === true) {
+        if (empty($app->req->post) === true) {
             $app->res->_format('json', 204);
-        } elseif (is_array($_POST) === true) {
+        } elseif (is_array($app->req->post) === true) {
             $queries = [];
 
-            if (count($_POST) == count($_POST, COUNT_RECURSIVE)) {
-                $_POST = [$_POST];
+            if (count($app->req->post) == count($app->req->post, COUNT_RECURSIVE)) {
+                $app->req->post = [$app->req->post];
             }
 
-            foreach ($_POST as $row) {
+            foreach ($app->req->post as $row) {
                 $data = [];
 
                 foreach ($row as $key => $value) {
@@ -221,12 +221,12 @@ $app->group('/api', function() use ($app) {
 
     $app->put('/(\w+)/(\w+)/(\d+)', function($table, $field, $id) use($app) {
 
-        if (empty($GLOBALS['_PUT']) === true) {
+        if (empty($app->req->globals['_PUT']) === true) {
             $app->res->_format('json', 204);
-        } else if (is_array($GLOBALS['_PUT']) === true) {
+        } else if (is_array($app->req->globals['_PUT']) === true) {
             $data = [];
 
-            foreach ($GLOBALS['_PUT'] as $key => $value) {
+            foreach ($app->req->globals['_PUT'] as $key => $value) {
                 $data[$key] = sprintf('%s = ?', $key);
             }
 
@@ -235,7 +235,7 @@ $app->group('/api', function() use ($app) {
             ];
 
             $query = sprintf('%s;', implode(' ', $query));
-            $values = array_values($GLOBALS['_PUT']);
+            $values = array_values($app->req->globals['_PUT']);
             $result = $app->db->query($query, array_merge($values, [$id]));
 
             if ($result === false) {

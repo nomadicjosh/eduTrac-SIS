@@ -1,6 +1,11 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+use Cascade\Cascade;
+
 /**
  * SQL Router
  *  
@@ -10,38 +15,57 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 $app->before('GET|POST', '/sql/', function() {
-    if (!hasPermission('access_sql_interface_screen')) {
-        redirect(get_base_url() . 'dashboard/');
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
     }
-
-    if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock/');
+    if (!hasPermission('access_sql_interface_screen')) {
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
     }
 });
 
-$css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
-$js = [
-    'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
-];
+$app->group('/sql', function() use ($app) {
 
-$app->group('/sql', function() use ($app, $css, $js) {
+    $app->match('GET|POST', '/', function() use($app) {
+        if ($app->req->isPost()) {
 
-    $app->match('GET|POST', '/', function() use($app, $css, $js) {
+            if (strstra(strtolower($app->req->post['qtext']), forbidden_keyword())) {
+                _etsis_flash()->error(_t('Your query contains a forbidden keywork, please try again.'), $app->req->server['HTTP_REFERER']);
+                exit();
+            }
+
+            try {
+                $pdo = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS, [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'"]);
+
+                if ($app->req->post['type'] == "query") {
+
+                    $qtext2 = str_replace("\\", " ", str_replace("\\", "", $app->req->post['qtext']));
+                    /* Write to activity log table. */
+                    etsis_logger_activity_log_write("Query", "SQL Interface", $qtext2, get_persondata('uname'));
+
+                    $result = $pdo->query("$qtext2");
+                }
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            }
+        }
+
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datatables');
+
         $app->view->display('sql/index', [
             'title' => 'SQL Interface',
-            'cssArray' => $css,
-            'jsArray' => $js
+            'result' => $result
             ]
         );
     });

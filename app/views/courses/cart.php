@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * myeduTrac Shopping Cart View
+ * myetSIS Shopping Cart View
  *  
  * @license GPLv3
  * 
@@ -10,22 +10,16 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
-$app->view->block('myet');
-$flash = new \app\src\Core\etsis_Messages();
+$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->block('myetsis');
 ?>
-
-<script type='text/javascript'> 
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 50000);
-</script>
 
 <div class="col-md-12">
 
 	<h3 class="glyphicons search"><i></i><?=_t( 'Shopping Cart' );?></h3>
 	<div class="separator bottom"></div>
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
 	
 	<!-- Form -->
     <form class="margin-none" action="<?=get_base_url();?>courses/reg/" id="validateSubmitForm" method="post" autocomplete="off">

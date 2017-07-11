@@ -1,5 +1,5 @@
 <?php
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 /**
  * eduTrac SIS Academic Program Functions
@@ -10,7 +10,6 @@ if (! defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-
 $app = \Liten\Liten::getInstance();
 
 /**
@@ -27,22 +26,22 @@ function get_acad_program($program, $object = true)
     if ($program instanceof \app\src\Core\etsis_Acad_Program) {
         $_program = $program;
     } elseif (is_array($program)) {
-        if (empty($program['acadProgID'])) {
+        if (empty($program['id'])) {
             $_program = new \app\src\Core\etsis_Acad_Program($program);
         } else {
-            $_program = \app\src\Core\etsis_Acad_Program::get_instance($program['acadProgID']);
+            $_program = \app\src\Core\etsis_Acad_Program::get_instance($program['id']);
         }
     } else {
         $_program = \app\src\Core\etsis_Acad_Program::get_instance($program);
     }
-    
-    if (! $_program) {
+
+    if (!$_program) {
         return null;
     }
-    
+
     if ($object == true) {
         $_program = array_to_object($_program);
     }
-    
+
     return $_program;
 }

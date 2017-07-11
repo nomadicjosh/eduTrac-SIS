@@ -13,7 +13,6 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'insta';
-$flash = new \app\src\Core\etsis_Messages();
 ?>
 
 <script type="text/javascript">
@@ -33,15 +32,13 @@ jQuery(document).ready(function() {
         });
     });
 });
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here' );?></li>
-    <li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>appl/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Application' );?></a></li>
+    <li><a href="<?=get_base_url();?>appl/" class="glyphicons search"><i></i> <?=_t( 'Search Application' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'Institution Attended' );?></li>
 </ul>
@@ -49,7 +46,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Institution Attended' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 
@@ -89,7 +86,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <div class="col-md-8">
                             	<select name="fice_ceeb" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('institution',null,'fice_ceeb','fice_ceeb','instName'); ?>
+                                    <?php table_dropdown('institution',null,'fice_ceeb','fice_ceeb','instName',($app->req->post['fice_ceeb'] != '' ? $app->req->post['fice_ceeb'] : '')); ?>
                                 </select>
                         	</div>
                         </div>
@@ -100,7 +97,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <label class="col-md-3 control-label"><?=_t( 'Attend From Date' );?></label>
                             <div class="col-md-8">
                             	<div class="input-group date" id="datepicker6">
-                                    <input class="form-control" name="fromDate" type="text" />
+                                    <input class="form-control" name="fromDate" type="text" value="<?=($app->req->post['fromDate'] != '' ? $app->req->post['fromDate'] : '');?>" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                         	</div>
@@ -112,7 +109,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <label class="col-md-3 control-label"><?=_t( 'Attend To Date' );?></label>
                             <div class="col-md-8">
                             	<div class="input-group date" id="datepicker7">
-                                    <input class="form-control" name="toDate" type="text" />
+                                    <input class="form-control" name="toDate" type="text" value="<?=($app->req->post['toDate'] != '' ? $app->req->post['toDate'] : '');?>" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                         	</div>
@@ -129,7 +126,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Major' );?></label>
                             <div class="col-md-8">
-                            	<input class="form-control" type="text" name="major" />
+                            	<input class="form-control" type="text" name="major" value="<?=($app->req->post['major'] != '' ? $app->req->post['major'] : '');?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -138,7 +135,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'GPA' );?></label>
                             <div class="col-md-8">
-                            	<input class="form-control" type="text" name="GPA" />
+                            	<input class="form-control" type="text" name="GPA" value="<?=($app->req->post['GPA'] != '' ? $app->req->post['GPA'] : '');?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -147,7 +144,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Degree' );?></label>
                             <div class="col-md-8">
-                            	<input class="form-control" type="text" name="degree_awarded" />
+                            	<input class="form-control" type="text" name="degree_awarded" value="<?=($app->req->post['degree_awarded'] != '' ? $app->req->post['degree_awarded'] : '');?>" />
                         	</div>
                         </div>
                         <!-- // Group END -->
@@ -157,7 +154,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                             <label class="col-md-3 control-label"><?=_t( 'Conferral Date' );?></label>
                             <div class="col-md-8">
                             	<div class="input-group date" id="datepicker8">
-                                    <input class="form-control" name="degree_conferred_date" type="text" />
+                                    <input class="form-control" name="degree_conferred_date" type="text" value="<?=($app->req->post['degree_conferred_date'] != '' ? $app->req->post['degree_conferred_date'] : '');?>" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                         	</div>
@@ -173,7 +170,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Submit' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>appl/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>appl/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

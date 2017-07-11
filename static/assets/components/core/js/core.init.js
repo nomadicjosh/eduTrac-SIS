@@ -118,20 +118,23 @@ if (window.location != window.parent.location)
 	// typeahead
 	if ($('[data-toggle="screen"]').length)
 		$('[data-toggle="screen"]').typeahead({
-			source: ["SYSS - System Settings","MPRM - Manage Perms","APRM - Add Permission","MRLE - Manage Roles",
+                    source: [
+                        "SYSS - System Settings","MPRM - Manage Perms","APRM - Add Permission","MRLE - Manage Roles",
 			"AUDT - Audit Trail","SQL - SQL Terminal","ARLE - Add Role","SCH - School Form",
-			"SEM - Semester Form","TERM - Term Form","AYR - Acad Year Form","CRSE - Course",
-			"DEPT - Department Form","CRL - Credit Load Form","DEG - Degree Form","MAJR - Major Form",
+			"SEM - Semester Form","TERM - Term Form","AYR - Academic Year Form","CRSE - Course",
+			"DEPT - Department Form","DEG - Degree Form","MAJR - Major Form",
 			"MINR - Minor Form","PROG - Program","CCD - CCD Form","CIP - CIP Form","LOC - Location Form",
 			"BLDG - Building Form","ROOM - Room Form","SPEC - Specialization Form","SUBJ - Subject Form",
-			"CLYR - Class Year Form","APRG - Add Acad Program","ACRS - Add Course","SECT - Course Section",
+			"APRG - Add Academic Program","ACRS - Add Course","SECT - Course Section",
 			"RGN - Course Registration","NSCP - NSLC Purge","NSCS - NSLC Setup","NSCX - NSLC Extraction",
 			"NSCE - NSLC Verification","NSCC - NSLC Correction","NSCT - NSLC File","NAE - Name & Address",
-			"APER - Add Person","SPRO - Student Profile","FAC - Faculty Profile",
-			"TRAN - Generate Transcript","SLR - Student Load Rules","RSTR - Restriction Codes",
+			"APER - Add Person","SPRO - Student Profile",
+			"TRAN - Generate Transcript","REST - Restriction", "MRKT - Marketing",
 			"GRSC - Grade Scale","BRGN - Batch Registration","SROS - Student Roster","STAF - Staff",
 			"EXTR - External Course","ATCEQ - New Transfer Course Equivalency",
-			"TCEQ - Transfer Course Equivalency","TCRE - Transfer Credit"],
+			"TCEQ - Transfer Course Equivalency","TCRE - Transfer Credit", "RLDE - Rule Definition",
+                        "ACLV - Academic Level", "APPL - Application"
+                    ],
 			items: 6,
 			minLength: 2		
 		});

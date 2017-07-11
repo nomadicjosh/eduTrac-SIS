@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\Exception\IOException;
+use Cascade\Cascade;
 
 /**
  * Bootstrap for the application
@@ -11,32 +13,59 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
+try {
+    /**
+     * Creates a cookies directory with proper permissions.
+     */
+    _mkdir($app->config('cookies.savepath'));
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
 
-/**
- * Creates a cookies directory with proper permissions.
- */
-_mkdir($app->config('cookies.savepath'));
+try {
+    /**
+     * Creates a node directory with proper permissions.
+     */
+    _mkdir($app->config('cookies.savepath') . 'nodes' . DS . 'etsis' . DS);
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
 
-/**
- * Creates a node directory with proper permissions.
- */
-_mkdir($app->config('cookies.savepath') . 'nodes' . DS . 'etsis' . DS);
+try {
+    /**
+     * Creates a file directory with proper permissions.
+     */
+    _mkdir($app->config('file.savepath'));
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
 
-/**
- * Creates a file directory with proper permissions.
- */
-_mkdir($app->config('file.savepath'));
+try {
+    /**
+     * Creates the parent backup directory with proper permissions.
+     */
+    _mkdir($app->config('file.savepath') . 'backups' . DS);
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
 
-/**
- * Creates a cron directory with proper permissions.
- */
-_mkdir(cronDir());
+try {
+    /**
+     * Creates the database backup directory with proper permissions.
+     */
+    _mkdir($app->config('file.savepath') . 'backups' . DS . 'database' . DS);
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
 
-/**
- * Creates the cron directory with proper permissions to store
- * cronjob information.
- */
-_mkdir(cronDir() . 'cron/logs/');
+try {
+    /**
+     * Creates the system backup directory with proper permissions.
+     */
+    _mkdir($app->config('file.savepath') . 'backups' . DS . 'system' . DS);
+} catch (IOException $e) {
+    Cascade::getLogger('error')->error(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+}
 
 /**
  * Error log setting

@@ -10,25 +10,18 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
-$app->view->block('myet');
-$flash = new \app\src\Core\etsis_Messages();
+$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->block('myetsis');
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
 <script src="<?=get_base_url();?>static/assets/js/pwdwidget.js" type="text/javascript"></script>
 
 <div class="col-md-12">
-	<div class="separator bottom"></div>
-	<div class="separator bottom"></div>
 
 	<h3 class="glyphicons keys"><i></i><?=_t( 'Change Password' );?></h3>
 	<div class="separator bottom"></div>
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
 
 <!-- Form -->
 <form class="form-horizontal margin-none" action="<?=get_base_url();?>password/" id="validateSubmitForm" method="post" autocomplete="off">	

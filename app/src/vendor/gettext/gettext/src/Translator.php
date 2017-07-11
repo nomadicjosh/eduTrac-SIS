@@ -24,7 +24,9 @@ class Translator extends BaseTranslator implements TranslatorInterface
         } elseif (is_string($translations) && is_file($translations)) {
             $translations = include $translations;
         } elseif (!is_array($translations)) {
-            throw new \InvalidArgumentException('Invalid Translator: only arrays, files or instance of Translations are allowed');
+            throw new \InvalidArgumentException(
+                'Invalid Translator: only arrays, files or instance of Translations are allowed'
+            );
         }
 
         $this->addTranslations($translations);
@@ -34,9 +36,9 @@ class Translator extends BaseTranslator implements TranslatorInterface
 
     /**
      * Set the default domain.
-     * 
+     *
      * @param string $domain
-     * 
+     *
      * @return self
      */
     public function defaultDomain($domain)
@@ -129,8 +131,8 @@ class Translator extends BaseTranslator implements TranslatorInterface
      */
     public function dnpgettext($domain, $context, $original, $plural, $value)
     {
-        $key = $this->getPluralIndex($domain, $value);
         $translation = $this->getTranslation($domain, $context, $original);
+        $key = $this->getPluralIndex($domain, $value, $translation === false);
 
         if (isset($translation[$key]) && $translation[$key] !== '') {
             return $translation[$key];
@@ -184,7 +186,9 @@ class Translator extends BaseTranslator implements TranslatorInterface
      */
     protected function getTranslation($domain, $context, $original)
     {
-        return isset($this->dictionary[$domain][$context][$original]) ? $this->dictionary[$domain][$context][$original] : false;
+        return isset($this->dictionary[$domain][$context][$original])
+             ? $this->dictionary[$domain][$context][$original]
+             : false;
     }
 
     /**
@@ -193,18 +197,20 @@ class Translator extends BaseTranslator implements TranslatorInterface
      *
      * @param string $domain
      * @param string $n
+     * @param bool   $fallback set to true to get fallback plural index
      *
      * @return int
      */
-    protected function getPluralIndex($domain, $n)
+    protected function getPluralIndex($domain, $n, $fallback)
     {
-        //Not loaded domain, use a fallback
-        if (!isset($this->plurals[$domain])) {
+        //Not loaded domain or translation, use a fallback
+        if (!isset($this->plurals[$domain]) || $fallback === true) {
             return $n == 1 ? 0 : 1;
         }
 
         if (!isset($this->plurals[$domain]['function'])) {
-            $this->plurals[$domain]['function'] = create_function('$n', self::fixTerseIfs($this->plurals[$domain]['code']));
+            $code = self::fixTerseIfs($this->plurals[$domain]['code']);
+            $this->plurals[$domain]['function'] = eval("return function (\$n) { $code };");
         }
 
         if ($this->plurals[$domain]['count'] <= 2) {

@@ -11,20 +11,14 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $screen = 'imod';
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-    <li><a href="<?=get_base_url();?>dashboard/modules/<?=bm();?>" class="glyphicons package"><i></i> <?=_t( 'System Modules' );?></a></li>
+    <li><a href="<?=get_base_url();?>dashboard/modules/" class="glyphicons package"><i></i> <?=_t( 'System Modules' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Install Modules' );?></li>
 </ul>
@@ -32,7 +26,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Install Modules' );?></h3>
 <div class="innerLR">
 
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
     

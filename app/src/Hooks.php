@@ -1,5 +1,9 @@
-<?php
-namespace app\src;
+<?php namespace app\src;
+
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+use Cascade\Cascade;
 
 /**
  * Liten - PHP 5 micro framework
@@ -29,7 +33,7 @@ namespace app\src;
  *          OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *          THE SOFTWARE.
  */
-if (! defined('BASE_PATH'))
+if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 
 class Hooks
@@ -37,11 +41,11 @@ class Hooks
 
     /**
      *
-     * @access protected
+     * @access public
      * @var object
      *
      */
-    protected $_app;
+    public $app;
 
     /**
      *
@@ -107,7 +111,7 @@ class Hooks
      */
     public function __construct(\Liten\Liten $liten = null)
     {
-        $this->_app = ! empty($liten) ? $liten : \Liten\Liten::getInstance();
+        $this->app = !empty($liten) ? $liten : \Liten\Liten::getInstance();
     }
 
     /**
@@ -123,7 +127,7 @@ class Hooks
     public function get_plugins_header($plugins_dir = '')
     {
         if ($handle = opendir($plugins_dir)) {
-            
+
             while ($file = readdir($handle)) {
                 if (is_file($plugins_dir . $file)) {
                     if (strpos($plugins_dir . $file, '.plugin.php')) {
@@ -131,7 +135,7 @@ class Hooks
                         // Pull only the first 8kiB of the file in.
                         $plugin_data = fread($fp, 8192);
                         fclose($fp);
-                        
+
                         preg_match('|Plugin Name:(.*)$|mi', $plugin_data, $name);
                         preg_match('|Plugin URI:(.*)$|mi', $plugin_data, $uri);
                         preg_match('|Version:(.*)|i', $plugin_data, $version);
@@ -139,17 +143,17 @@ class Hooks
                         preg_match('|Author:(.*)$|mi', $plugin_data, $author_name);
                         preg_match('|Author URI:(.*)$|mi', $plugin_data, $author_uri);
                         preg_match('|Plugin Slug:(.*)$|mi', $plugin_data, $plugin_slug);
-                        
+
                         foreach (array(
-                            'name',
-                            'uri',
-                            'version',
-                            'description',
-                            'author_name',
-                            'author_uri',
-                            'plugin_slug'
+                        'name',
+                        'uri',
+                        'version',
+                        'description',
+                        'author_name',
+                        'author_uri',
+                        'plugin_slug'
                         ) as $field) {
-                            if (! empty(${$field}))
+                            if (!empty(${$field}))
                                 ${$field} = trim(${$field}[1]);
                             else
                                 ${$field} = '';
@@ -166,12 +170,12 @@ class Hooks
                         );
                         $this->_plugins_header[] = $plugin_data;
                     }
-                } else 
-                    if ((is_dir($plugins_dir . $file)) && ($file != '.') && ($file != '..')) {
-                        $this->get_plugins_header($plugins_dir . $file . '/');
-                    }
+                } else
+                if ((is_dir($plugins_dir . $file)) && ($file != '.') && ($file != '..')) {
+                    $this->get_plugins_header($plugins_dir . $file . '/');
+                }
             }
-            
+
             closedir($handle);
         }
         return $this->_plugins_header;
@@ -189,9 +193,20 @@ class Hooks
      */
     public function activate_plugin($plugin)
     {
-        $this->_app->db->plugin()->insert([
-            'location' => $plugin
-        ]);
+        try {
+            $this->app->db->plugin()->insert([
+                'location' => $plugin
+            ]);
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
     }
 
     /**
@@ -205,9 +220,20 @@ class Hooks
      */
     public function deactivate_plugin($plugin)
     {
-        $this->_app->db->plugin()
-            ->where('location = ?', $plugin)
-            ->delete();
+        try {
+            $this->app->db->plugin()
+                ->where('location = ?', $plugin)
+                ->delete();
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
     }
 
     /**
@@ -219,39 +245,44 @@ class Hooks
      *            string (optional) $plugins_dir Loads plugins from specified folder
      * @return mixed
      */
-    public function load_activated_plugins($plugins_dir = '')
+    public function load_activated_plugins($plugins_dir)
     {
-        $plugin = $this->_app->db->plugin();
-        $q = $plugin->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+        try {
+            $plugin = $this->app->db->plugin();
+            $q = $plugin->find();
+
+            foreach ($q as $v) {
+                $pluginFile = _h($v->location);
+                $plugin = str_replace('.plugin.php', '', $pluginFile);
+
+                if (!etsis_file_exists($plugins_dir . $plugin . DS . $pluginFile, false)) {
+                    $file = $plugins_dir . $pluginFile;
+                } else {
+                    $file = $plugins_dir . $plugin . DS . $pluginFile;
+                }
+
+                $error = etsis_php_check_syntax($file);
+                if (is_etsis_exception($error)) {
+                    $this->deactivate_plugin(_h($v->location));
+                    _etsis_flash()->error(sprintf(_t('The plugin <strong>%s</strong> has been deactivated because your changes resulted in a <strong>fatal error</strong>. <br /><br />') . $error->getMessage(), _h($v->location)));
+                    return false;
+                }
+
+                if (etsis_file_exists($file, false)) {
+                    require_once ($file);
+                } else {
+                    $this->deactivate_plugin(_h($v->location));
+                }
             }
-            return $array;
-        });
-        
-        foreach ($q as $k => $v) {
-            $pluginFile = _h($v['location']);
-            $plugin = str_replace('.plugin.php', '', $pluginFile);
-            
-            if (! file_exists($plugins_dir . $plugin . '/' . $pluginFile)) {
-                $file = $plugins_dir . $pluginFile;
-            } else {
-                $file = $plugins_dir . $plugin . '/' . $pluginFile;
-            }
-            
-            $error = etsis_php_check_syntax($file);
-            if (is_etsis_exception($error)) {
-                $this->deactivate_plugin(_h($v['location']));
-                $this->_app->flash('error_message', sprintf(_t('The plugin <strong>%s</strong> has been deactivated because your changes resulted in a <strong>fatal error</strong>. <br /><br />') . $error->getMessage(), _h($v['location'])));
-                return false;
-            }
-            
-            if (file_exists($file)) {
-                require_once ($file);
-            } else {
-                $this->deactivate_plugin(_h($v['location']));
-            }
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
     }
 
@@ -264,18 +295,29 @@ class Hooks
      */
     public function is_plugin_activated($plugin)
     {
-        $plugin = $this->_app->db->plugin()->where('location = ?', $plugin);
-        $q = $plugin->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-        
-        if (count($q) > 0)
-            return true;
-        return false;
+        try {
+            $active = $this->app->db->plugin()->where('location = ?', $plugin);
+            $q = $active->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+
+            if (count($q) > 0)
+                return true;
+            return false;
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
     }
 
     /**
@@ -297,10 +339,10 @@ class Hooks
      */
     public function add_filter($hook, $function_to_add, $priority = 10, $accepted_args = 1)
     {
-        
+
         // At this point, we cannot check if the function exists, as it may well be defined later (which is OK)
         $id = $this->filter_unique_id($hook, $function_to_add, $priority);
-        
+
         $this->_filters[$hook][$priority][$id] = [
             'function' => $function_to_add,
             'accepted_args' => $accepted_args
@@ -379,7 +421,7 @@ class Hooks
     public function filter_unique_id($hook, $function, $priority)
     {
         static $filter_id_count = 0;
-        
+
         // If function then just skip all of the tests and not overwrite the following.
         if (is_string($function))
             return $function;
@@ -392,30 +434,30 @@ class Hooks
         } else {
             $function = (array) $function;
         }
-        
+
         if (is_object($function[0])) {
             // Object Class Calling
             if (function_exists('spl_object_hash')) {
                 return spl_object_hash($function[0]) . $function[1];
             } else {
                 $obj_idx = get_class($function[0]) . $function[1];
-                if (! isset($function[0]->_filters_id)) {
+                if (!isset($function[0]->_filters_id)) {
                     if (false === $priority)
                         return false;
                     $obj_idx .= isset($this->_filters[$hook][$priority]) ? count((array) $this->_filters[$hook][$priority]) : $filter_id_count;
                     $function[0]->_filters_id = $filter_id_count;
-                    ++ $filter_id_count;
+                    ++$filter_id_count;
                 } else {
                     $obj_idx .= $function[0]->_filters_id;
                 }
-                
+
                 return $obj_idx;
             }
-        } else 
-            if (is_string($function[0])) {
-                // Static Calling
-                return $function[0] . '::' . $function[1];
-            }
+        } else
+        if (is_string($function[0])) {
+            // Static Calling
+            return $function[0] . '::' . $function[1];
+        }
     }
 
     /**
@@ -445,74 +487,74 @@ class Hooks
     public function apply_filter($hook, $value)
     {
         $args = [];
-        
+
         if (isset($this->_filters['all'])) {
             $this->_current_filter[] = $hook;
             $args = func_get_args();
             $this->_call_all_hook($args);
         }
-        
-        if (! isset($this->_filters[$hook])) {
+
+        if (!isset($this->_filters[$hook])) {
             if (isset($this->_filters['all']))
                 array_pop($this->_current_filter);
             return $value;
         }
-        
-        if (! isset($this->_filters['all'])) {
+
+        if (!isset($this->_filters['all'])) {
             $this->_current_filter[] = $hook;
         }
-        
-        if (! isset($this->_merged_filters[$hook])) {
+
+        if (!isset($this->_merged_filters[$hook])) {
             ksort($this->_filters[$hook]);
             $this->_merged_filters[$hook] = true;
         }
-        
+
         // Loops through each filter
         reset($this->_filters[$hook]);
-        
+
         if (empty($args)) {
             $args = func_get_args();
         }
-        
+
         do {
             foreach ((array) current($this->_filters[$hook]) as $the_)
-                if (! is_null($the_['function'])) {
+                if (!is_null($the_['function'])) {
                     $args[1] = $value;
                     $value = call_user_func_array($the_['function'], array_slice($args, 1, (int) $the_['accepted_args']));
                 }
         } while (next($this->_filters[$hook]) !== false);
-        
+
         array_pop($this->_current_filter);
-        
+
         return $value;
     }
 
     public function do_action($hook, $arg = '')
     {
-        if (! isset($this->_actions))
+        if (!isset($this->_actions))
             $this->_actions = [];
-        
-        if (! isset($this->_actions[$hook]))
+
+        if (!isset($this->_actions[$hook]))
             $this->_actions[$hook] = 1;
         else
-            ++ $this->_actions[$hook];
-            
-            // Do 'all' actions first
+            ++$this->_actions[$hook];
+
+        // Do 'all' actions first
         if (isset($this->_filters['all'])) {
             $this->_current_filter[] = $hook;
             $all_args = func_get_args();
             $this->_call_all_hook($all_args);
         }
-        
-        if (! isset($this->_filters[$hook])) {
+
+        if (!isset($this->_filters[$hook])) {
             if (isset($this->_filters['all']))
                 array_pop($this->_current_filter);
             return;
         }
-        
-        if (! isset($this->_filters['all']))
+
+        if (!isset($this->_filters['all']))
             $this->_current_filter[] = $hook;
-        
+
         $args = [];
         if (is_array($arg) && 1 == count($arg) && isset($arg[0]) && is_object($arg[0])) // array(&$this)
             $args[] = & $arg[0];
@@ -520,21 +562,21 @@ class Hooks
             $args[] = $arg;
         for ($a = 2; $a < func_num_args(); $a ++)
             $args[] = func_get_arg($a);
-            
-            // Sort
-        if (! isset($this->_merged_filters[$hook])) {
+
+        // Sort
+        if (!isset($this->_merged_filters[$hook])) {
             ksort($this->_filters[$hook]);
             $this->_merged_filters[$hook] = true;
         }
-        
+
         reset($this->_filters[$hook]);
-        
+
         do {
             foreach ((array) current($this->_filters[$hook]) as $the_)
-                if (! is_null($the_['function']))
+                if (!is_null($the_['function']))
                     call_user_func_array($the_['function'], array_slice($args, 0, (int) $the_['accepted_args']));
         } while (next($this->_filters[$hook]) !== false);
-        
+
         array_pop($this->_current_filter);
     }
 
@@ -543,51 +585,51 @@ class Hooks
         reset($this->_filters['all']);
         do {
             foreach ((array) current($this->_filters['all']) as $the_)
-                if (! is_null($the_['function']))
+                if (!is_null($the_['function']))
                     call_user_func_array($the_['function'], $args);
         } while (next($this->_filters['all']) !== false);
     }
 
     public function do_action_array($hook, $args)
     {
-        if (! isset($this->_actions))
+        if (!isset($this->_actions))
             $this->_actions = [];
-        
-        if (! isset($this->_actions[$hook]))
+
+        if (!isset($this->_actions[$hook]))
             $this->_actions[$hook] = 1;
         else
-            ++ $this->_actions[$hook];
-            
-            // Do 'all' actions first
+            ++$this->_actions[$hook];
+
+        // Do 'all' actions first
         if (isset($this->_filters['all'])) {
             $this->_current_filter[] = $hook;
             $all_args = func_get_args();
             $this->_call_all_hook($all_args);
         }
-        
-        if (! isset($this->_filters[$hook])) {
+
+        if (!isset($this->_filters[$hook])) {
             if (isset($this->_filters['all']))
                 array_pop($this->_current_filter);
             return;
         }
-        
-        if (! isset($this->_filters['all']))
+
+        if (!isset($this->_filters['all']))
             $this->_current_filter[] = $hook;
-            
-            // Sort
-        if (! isset($this->_merged_filters[$hook])) {
+
+        // Sort
+        if (!isset($this->_merged_filters[$hook])) {
             ksort($this->_filters[$hook]);
             $this->_merged_filters[$hook] = true;
         }
-        
+
         reset($this->_filters[$hook]);
-        
+
         do {
             foreach ((array) current($this->_filters[$hook]) as $the_)
-                if (! is_null($the_['function']))
+                if (!is_null($the_['function']))
                     call_user_func_array($the_['function'], array_slice($args, 0, (int) $the_['accepted_args']));
         } while (next($this->_filters[$hook]) !== false);
-        
+
         array_pop($this->_current_filter);
     }
 
@@ -615,9 +657,9 @@ class Hooks
     public function remove_filter($hook, $function_to_remove, $priority = 10)
     {
         $function_to_remove = $this->filter_unique_id($hook, $function_to_remove, $priority);
-        
+
         $remove = isset($this->_filters[$hook][$priority][$function_to_remove]);
-        
+
         if (true === $remove) {
             unset($this->_filters[$hook][$priority][$function_to_remove]);
             if (empty($this->_filters[$hook][$priority]))
@@ -646,10 +688,10 @@ class Hooks
             else
                 unset($this->_filters[$hook]);
         }
-        
+
         if (isset($this->_merged_filters[$hook]))
             unset($this->_merged_filters[$hook]);
-        
+
         return true;
     }
 
@@ -665,14 +707,14 @@ class Hooks
      */
     public function has_filter($hook, $function_to_check = false)
     {
-        $has = ! empty($this->_filters[$hook]);
+        $has = !empty($this->_filters[$hook]);
         if (false === $function_to_check || false == $has) {
             return $has;
         }
-        if (! $idx = $this->filter_unique_id($hook, $function_to_check, false)) {
+        if (!$idx = $this->filter_unique_id($hook, $function_to_check, false)) {
             return false;
         }
-        
+
         foreach ((array) array_keys($this->_filters[$hook]) as $priority) {
             if (isset($this->_filters[$hook][$priority][$idx]))
                 return $priority;
@@ -690,10 +732,10 @@ class Hooks
      */
     public function list_plugin_admin_pages($url)
     {
-        if (! property_exists($this->_app->hook, 'plugin_pages') || ! $this->_app->hook->plugin_pages)
+        if (!property_exists($this->app->hook, 'plugin_pages') || !$this->app->hook->plugin_pages)
             return;
-        
-        foreach ((array) $this->_app->hook->plugin_pages as $page) {
+
+        foreach ((array) $this->app->hook->plugin_pages as $page) {
             echo '<li><a href="' . $url . '?page=' . $page['slug'] . '">' . $page['title'] . '</a></li>' . "\n";
         }
     }
@@ -707,10 +749,10 @@ class Hooks
      */
     public function register_admin_page($slug, $title, $function)
     {
-        if (! property_exists($this->_app->hook, 'plugin_pages') || ! $this->_app->hook->plugin_pages)
-            $this->_app->hook->plugin_pages = [];
-        
-        $this->_app->hook->plugin_pages[$slug] = [
+        if (!property_exists($this->app->hook, 'plugin_pages') || !$this->app->hook->plugin_pages)
+            $this->app->hook->plugin_pages = [];
+
+        $this->app->hook->plugin_pages[$slug] = [
             'slug' => $slug,
             'title' => $title,
             'function' => $function
@@ -724,16 +766,16 @@ class Hooks
      */
     public function plugin_admin_page($plugin_page)
     {
-        
+
         // Check the plugin page is actually registered
-        if (! isset($this->_app->hook->plugin_pages[$plugin_page])) {
+        if (!isset($this->app->hook->plugin_pages[$plugin_page])) {
             die('This page does not exist. Maybe a plugin you thought was activated is inactive?');
         }
-        
+
         // Draw the page itself
         $this->do_action('load-' . $plugin_page);
-        
-        call_user_func($this->_app->hook->plugin_pages[$plugin_page]['function']);
+
+        call_user_func($this->app->hook->plugin_pages[$plugin_page]['function']);
     }
 
     /**
@@ -746,7 +788,7 @@ class Hooks
         if (empty($meta_key)) {
             return false;
         }
-        
+
         /**
          * Filter the value of an existing option before it is retrieved.
          *
@@ -763,35 +805,45 @@ class Hooks
          * @param string $meta_key
          *            Meta key name.
          */
-        
         $pre = $this->apply_filter('pre_option_' . $meta_key, false);
-        
+
         if (false !== $pre) {
             return $pre;
         }
-        
-        if (! isset($this->_app->db->option[$meta_key])) {
-            $meta = $this->_app->db->options_meta();
-            $q = $meta->select('meta_value')->where('meta_key = ?', $meta_key);
-            
-            $results = etsis_cache_get($meta_key, 'option');
-            if (empty($results)) {
-                $results = $q->find(function ($data) {
-                    foreach ($data as $d) {
-                        return $d['meta_value'];
-                    }
-                });
-                etsis_cache_add($meta_key, $results, 'option');
+
+        if (!isset($this->app->db->option[$meta_key])) {
+            try {
+                $meta = $this->app->db->options_meta();
+                $q = $meta->select('meta_value')->where('meta_key = ?', $meta_key);
+
+                $results = etsis_cache_get($meta_key, 'option');
+                if (empty($results)) {
+                    $results = $q->find(function ($data) {
+                        foreach ($data as $d) {
+                            return $d['meta_value'];
+                        }
+                    });
+                    etsis_cache_add($meta_key, $results, 'option');
+                }
+
+                if (is_object($q)) {
+                    $value = $results;
+                    return $value;
+                } else { // option does not exist, so we must cache its non-existence
+                    $value = $default;
+                    return $value;
+                }
+                $this->app->db->option[$meta_key] = $this->maybe_unserialize($value);
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-            
-            if (is_object($q)) {
-                $value = $results;
-                return $value;
-            } else { // option does not exist, so we must cache its non-existence
-                $value = $default;
-                return $value;
-            }
-            $this->_app->db->option[$meta_key] = $this->maybe_unserialize($value);
         }
         /**
          * Filter the value of an existing option.
@@ -803,10 +855,10 @@ class Hooks
          * @param mixed $value
          *            Value of the option. If stored serialized, it will be
          *            unserialized prior to being returned.
-         * @param string $this->_app->db->option[$meta_key]
+         * @param string $this->app->db->option[$meta_key]
          *            Option name.
          */
-        return $this->apply_filter('get_option_' . $meta_key, $this->_app->db->option[$meta_key]);
+        return $this->apply_filter('get_option_' . $meta_key, $this->app->db->option[$meta_key]);
     }
 
     /**
@@ -815,32 +867,40 @@ class Hooks
     public function update_option($meta_key, $newvalue)
     {
         $oldvalue = $this->get_option($meta_key);
-        
+
         // If the new and old values are the same, no need to update.
         if ($newvalue === $oldvalue) {
             return false;
         }
-        
+
         if (null === $oldvalue) {
             $this->add_option($meta_key, $newvalue);
             return true;
         }
-        
+
         $_newvalue = $this->maybe_serialize($newvalue);
-        
-        $this->do_action('update_option', $meta_key, $oldvalue, $newvalue);
-        
-        $key = $this->_app->db->options_meta();
-        $key->meta_value = $_newvalue;
-        $key->where('meta_key = ?', $meta_key)->update();
-        
+
         etsis_cache_delete($meta_key, 'option');
         
-        if (count($key) > 0) {
-            $this->_app->db->option[$meta_key] = $newvalue;
-            return true;
+        $this->do_action('update_option', $meta_key, $oldvalue, $newvalue);
+        try {            
+            $key = $this->app->db->options_meta();
+            $key->meta_value = $_newvalue;
+            $key->where('meta_key = ?', $meta_key)->update();
+
+            if (count($key) > 0) {
+                $this->app->db->option[$meta_key] = $newvalue;
+            }
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
-        return false;
     }
 
     /**
@@ -852,18 +912,29 @@ class Hooks
         if (null !== $this->get_option($name)) {
             return;
         }
-        
+
         $_value = $this->maybe_serialize($value);
         
-        $this->do_action('add_option', $name, $_value);
-        
-        $this->_app->db->options_meta()->insert([
-            'meta_key' => $name,
-            'meta_value' => $_value
-        ]);
         etsis_cache_delete($name, 'option');
-        $this->_app->db->option[$name] = $value;
-        return;
+
+        $this->do_action('add_option', $name, $_value);
+        try {            
+            $this->app->db->options_meta()->insert([
+                'meta_key' => $name,
+                'meta_value' => $_value
+            ]);
+            $this->app->db->option[$name] = $value;
+            return;
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
     }
 
     /**
@@ -871,50 +942,62 @@ class Hooks
      */
     public function delete_option($name)
     {
-        $key = $this->_app->db->options_meta()->where('meta_key = ?', $name);
-        $results = $key->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+        try {
+            $key = $this->app->db->options_meta()->where('meta_key = ?', $name);
+            $results = $key->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+
+            if (is_null($results) || !$results) {
+                return false;
             }
-            return $array;
-        });
-        
-        if (is_null($results) || ! $results) {
-            return false;
+
+            etsis_cache_delete($name, 'option');
+            
+            $this->do_action('delete_option', $name);
+
+            $this->app->db->options_meta()
+                ->where('meta_key', $name)
+                ->delete();
+            return true;
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('SQLSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
-        
-        $this->do_action('delete_option', $name);
-        
-        $this->_app->db->options_meta()
-            ->where('meta_key', $name)
-            ->delete();
-        etsis_cache_delete($name,'option');
-        return true;
     }
-    
+
     // Serialize data if needed. Stolen from WordPress
     public function maybe_serialize($data)
     {
         if (is_array($data) || is_object($data))
             return serialize($data);
-        
+
         if ($this->is_serialized($data))
             return serialize($data);
-        
+
         return $data;
     }
-    
+
     // Check value to find if it was serialized. Stolen from WordPress
     public function is_serialized($data)
     {
         // if it isn't a string, it isn't serialized
-        if (! is_string($data))
+        if (!is_string($data))
             return false;
         $data = trim($data);
         if ('N;' == $data)
             return true;
-        if (! preg_match('/^([adObis]):/', $data, $badions))
+        if (!preg_match('/^([adObis]):/', $data, $badions))
             return false;
         switch ($badions[1]) {
             case 'a':
@@ -932,7 +1015,7 @@ class Hooks
         }
         return false;
     }
-    
+
     // Unserialize value only if it was serialized. Stolen from WP
     public function maybe_unserialize($original)
     {

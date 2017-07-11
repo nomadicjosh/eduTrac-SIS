@@ -1,7 +1,6 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
-
 use Joli\JoliNotif\Notification;
 use Joli\JoliNotif\NotifierFactory;
 
@@ -80,7 +79,7 @@ function etsis_desktop_notify($title, $message, $hide = 'true')
                         desktop: {
                             desktop: true,
                             fallback: true,
-                            icon: '" . getSchoolPhoto(get_persondata('personID'), get_persondata('email')) . "'
+                            icon: '" . get_school_photo(get_persondata('personID'), get_persondata('email')) . "'
                         },
                         mobile: {
                             swipe_dismiss: true,

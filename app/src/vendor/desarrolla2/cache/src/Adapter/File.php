@@ -13,7 +13,7 @@
 
 namespace Desarrolla2\Cache\Adapter;
 
-use Desarrolla2\Cache\Exception\FileCacheException;
+use Desarrolla2\Cache\Exception\CacheException;
 
 /**
  * File
@@ -21,6 +21,7 @@ use Desarrolla2\Cache\Exception\FileCacheException;
 class File extends AbstractAdapter
 {
     const CACHE_FILE_PREFIX = '__';
+
     const CACHE_FILE_SUBFIX = '.php.cache';
 
     /**
@@ -29,48 +30,37 @@ class File extends AbstractAdapter
     protected $cacheDir;
 
     /**
-     * @param  null $cacheDir
+     * @param string $cacheDir
      *
-     * @throws FileCacheException
+     * @throws CacheException
      */
     public function __construct($cacheDir = null)
     {
         if (!$cacheDir) {
             $cacheDir = realpath(sys_get_temp_dir()).'/cache';
         }
-        $this->cacheDir = (string)$cacheDir;
-        if (!is_dir($this->cacheDir)) {
-            if (!mkdir($this->cacheDir, 0777, true)) {
-                throw new FileCacheException($this->cacheDir.' is not writable');
-            }
-        }
-        if (!is_writable($this->cacheDir)) {
-            throw new FileCacheException($this->cacheDir.' is not writable');
-        }
+
+        $this->cacheDir = (string) $cacheDir;
+
+        $this->createCacheDirectory($cacheDir);
     }
 
     /**
-     * Delete a value from the cache
-     *
-     * @param string $key
+     * {@inheritdoc}
      */
-    public function delete($key)
+    public function del($key)
     {
         $tKey = $this->getKey($key);
-        $cacheFile = $this->getCacheFile($tKey);
+        $cacheFile = $this->getFileName($tKey);
         $this->deleteFile($cacheFile);
     }
 
     /**
-     * {@inheritdoc }
+     * {@inheritdoc}
      */
     public function get($key)
     {
-        if ($data = $this->getData($key)) {
-            return $data;
-        }
-
-        return false;
+        return $this->getValueFromCache($key);
     }
 
     /**
@@ -78,83 +68,62 @@ class File extends AbstractAdapter
      */
     public function has($key)
     {
-        if (!$this->getData($key)) {
-            return false;
-        }
-
-        return true;
+        return !is_null($this->getValueFromCache($key));
     }
 
     /**
-     * {@inheritdoc }
+     * {@inheritdoc}
      */
     public function set($key, $value, $ttl = null)
     {
-        $tKey = $this->getKey($key);
-        $cacheFile = $this->getCacheFile($tKey);
-        $tValue = $this->serialize($value);
-        if (!($ttl)) {
+        $cacheFile = $this->getFileName($key);
+        if (!$ttl) {
             $ttl = $this->ttl;
         }
-        $item = $this->serialize(
+        $item = $this->pack(
             [
-                'value' => $tValue,
-                'ttl' => (int)$ttl + time(),
+                'value' => $value,
+                'ttl' => (int) $ttl + time(),
             ]
         );
         if (!file_put_contents($cacheFile, $item)) {
-            throw new FileCacheException('Error saving data with the key "'.$key.'" to the cache file.');
+            throw new CacheException(sprintf('Error saving data with the key "%s" to the cache file.', $key));
         }
     }
 
     /**
-     * {@inheritdoc }
+     * {@inheritdoc}
      */
     public function setOption($key, $value)
     {
         switch ($key) {
             case 'ttl':
-                $value = (int)$value;
+                $value = (int) $value;
                 if ($value < 1) {
-                    throw new FileCacheException('ttl cant be lower than 1');
+                    throw new CacheException('ttl cant be lower than 1');
                 }
                 $this->ttl = $value;
                 break;
             default:
-                throw new FileCacheException('option not valid '.$key);
+                throw new CacheException('option not valid '.$key);
         }
 
         return true;
     }
 
-    /**
-     * {@inheritdoc }
-     */
-    public function clearCache()
+    protected function createCacheDirectory($path)
     {
-        throw new Exception('not ready yet');
-    }
+        if (!is_dir($path)) {
+            if (!mkdir($path, 0777, true)) {
+                throw new CacheException($path.' is not writable');
+            }
+        }
 
-    /**
-     * {@inheritdoc }
-     */
-    public function dropCache()
-    {
-        foreach (scandir($this->cacheDir) as $fileName) {
-            $cacheFile = $this->cacheDir.
-                DIRECTORY_SEPARATOR.
-                $fileName;
-            $this->deleteFile($cacheFile);
+        if (!is_writable($path)) {
+            throw new CacheException($path.' is not writable');
         }
     }
 
-    /**
-     * Delete file
-     *
-     * @param  string $cacheFile
-     *
-     * @return bool
-     */
     protected function deleteFile($cacheFile)
     {
         if (is_file($cacheFile)) {
@@ -164,54 +133,47 @@ class File extends AbstractAdapter
         return false;
     }
 
-    /**
-     * Get the specified cache file
-     */
-    protected function getCacheFile($fileName)
+    protected function getFileName($key)
     {
         return $this->cacheDir.
         DIRECTORY_SEPARATOR.
         self::CACHE_FILE_PREFIX.
-        $fileName.
+        $this->getKey($key).
         self::CACHE_FILE_SUBFIX;
     }
 
-    /**
-     * Get data value from file cache
-     *
-     * @param  string $key
-     *
-     * @return mixed
-     * @throws FileCacheException
-     */
-    protected function getData($key)
+    protected function getValueFromCache($key)
     {
-        $tKey = $this->getKey($key);
-        $cacheFile = $this->getCacheFile($tKey);
-        if (!file_exists($cacheFile)) {
-            return;
-        }
-        if (!$data = unserialize(file_get_contents($cacheFile))) {
-            throw new FileCacheException(
-                'Error with the key "'.$key.'" in cache file '.$cacheFile
-            );
-        }
-        if (!array_key_exists('value', $data)) {
-            throw new FileCacheException(
-                'Error with the key "'.$key.'" in cache file '.$cacheFile.', value not exist'
-            );
-        }
-        if (!array_key_exists('ttl', $data)) {
-            throw new FileCacheException(
-                'Error with the key "'.$key.'" in cache file '.$cacheFile.', ttl not exist'
-            );
-        }
-        if (time() > $data['ttl']) {
-            $this->delete($key);
+        $path = $this->getFileName($this->getKey($key));
 
+        if (!file_exists($path)) {
             return;
         }
 
-        return $this->unserialize($data['value']);
+        $data = $this->unPack(file_get_contents($path));
+        if (!$data || !$this->validateDataFromCache($data) || $this->ttlHasExpired($data['ttl'])) {
+            return;
+        }
+
+        return $data['value'];
+    }
+
+    protected function validateDataFromCache($data)
+    {
+        if (!is_array($data)) {
+            return false;
+        }
+        foreach (['value', 'ttl'] as $missing) {
+            if (!array_key_exists($missing, $data)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    protected function ttlHasExpired($ttl)
+    {
+        return (time() > $ttl);
     }
 }

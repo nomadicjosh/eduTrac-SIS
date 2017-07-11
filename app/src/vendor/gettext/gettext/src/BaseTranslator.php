@@ -10,14 +10,30 @@ abstract class BaseTranslator implements TranslatorInterface
     /**
      * @see TranslatorInterface
      */
+    public function noop($original)
+    {
+        return $original;
+    }
+
+    /**
+     * @see TranslatorInterface
+     */
     public function register()
     {
         $previous = self::$current;
 
         self::$current = $this;
 
-        include_once __DIR__.'/translator_functions.php';
+        static::includeFunctions();
 
         return $previous;
+    }
+
+    /**
+     * Include the gettext functions
+     */
+    public static function includeFunctions()
+    {
+        include_once __DIR__.'/translator_functions.php';
     }
 }

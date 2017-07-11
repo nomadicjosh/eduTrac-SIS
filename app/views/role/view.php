@@ -12,21 +12,15 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 $eRole = new \app\src\ACL();
 $screen = 'role';
 ?>
 
-<script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
-</script>
-
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here');?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>role/<?=bm();?>" class="glyphicons rotation_lock"><i></i> <?=_t( 'Manage Roles' );?></a></li>
+	<li><a href="<?=get_base_url();?>role/" class="glyphicons rotation_lock"><i></i> <?=_t( 'Manage Roles' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Edit Role' );?></li>
 </ul>
@@ -34,7 +28,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Edit Role' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 
@@ -55,7 +49,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<!-- Group -->
 						<div class="form-group">
 							<label class="col-md-4 control-label" for="roleName"><font color="red">*</font> <?=_t( 'Role Name' );?></label>
-							<div class="col-md-6"><input class="form-control" name="roleName" type="text" value="<?=$eRole->getRoleNameFromID(_h($role->ID));?>" required/></div>
+							<div class="col-md-6"><input class="form-control" name="roleName" type="text" value="<?=$eRole->getRoleNameFromID(_h($role->id));?>" required/></div>
 						</div>
 						<!-- // Group END -->
 						
@@ -72,7 +66,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 							<!-- // Table heading END -->
 							
 							<tbody>
-								<?php rolePerm(_h($role->ID)); ?>
+								<?php rolePerm(_h($role->id)); ?>
 							</tbody>
 				
 					</table>
@@ -83,9 +77,9 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 				<!-- Form actions -->
 				<div class="form-actions">
 					<input type="hidden" name="action" value="saveRole" />
-					<input type="hidden" name="roleID" value="<?=_h($role->ID);?>" />
+					<input type="hidden" name="id" value="<?=_h($role->id);?>" />
 					<button type="submit" name="Submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>role/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>role/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

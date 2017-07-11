@@ -18,6 +18,8 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/blank');
 $app->view->block('blank');
 
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+
 // create new PDF document
 $pdf = new \app\src\tcpdf\Tcpdf('landscape', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -64,7 +66,7 @@ $txt1 .= _h($stuInfo[0]['address1']) . ' ' . _h($stuInfo[0]['address2']) . "<br 
 $txt1 .= _h($stuInfo[0]['city']) . ' ' . _h($stuInfo[0]['state']) . ' ' . _h($stuInfo[0]['zip']) . "<br />";
 
 // set some text for student info
-$txt2 = _t( 'Student ID: ' ) . _h($stuInfo[0]['stuID']) . "<br />";
+$txt2 = _t( 'Student ID: ' ) . (_h($stuInfo[0]['altID']) != '' ? _h($stuInfo[0]['altID']) : _h($stuInfo[0]['stuID'])) . "<br />";
 if(_h($stuInfo[0]['ssn']) > 0) {
 	$txt2 .= _t( 'Social Security #: ' ) . _h($stuInfo[0]['ssn']) . "<br />";
 } else {
@@ -157,7 +159,7 @@ $table .= '</table>';
 
 $pdf->writeHTML($table, true, 0);
 
-$footer = "<p>*********************************************************************************************************************************************************************************************</p>";
+$footer = "<p>***************************************************************************************************************************************************************************************************************************************************</p>";
 $footer .= '<table cellpadding="0" cellspacing="0" border="0" class="table table-striped" id="table-example">';
 $footer .= '<thead><tr>';
 $footer .= '<th><b>'._t( 'Degree' ).'</b></th>';
@@ -169,7 +171,7 @@ $footer .= '</tr></thead>';
 
 $footer .= '<tbody>';
 $footer .= '<tr>';
-if(_h($stuInfo[0]['graduationDate']) != '0000-00-00') {
+if(_h($stuInfo[0]['graduationDate']) > '0000-00-00') {
 $footer .= '<td>'._h($stuInfo[0]['degreeCode']).' - ' . _h($stuInfo[0]['degreeName']) . ' Awarded on ' . _h($stuInfo[0]['graduationDate']) . '</td>';
 } else {
     $footer .= '<td>&nbsp;</td>';
@@ -202,12 +204,12 @@ $footer .= '<td>'._h($stuInfo[0]['ccdCode']).' - '._h($stuInfo[0]['ccdName']).'<
 $footer .= '</tr>';
 $footer .= '</tbody>';
 $footer .= '</table>';
-$footer .= "<p>*********************************************************************************************************************************************************************************************</p>";
+$footer .= "<p>***************************************************************************************************************************************************************************************************************************************************</p>";
 $footer .= "<p>*"._t( 'Transfer Credits' )."</p>";
 
 $pdf->writeHTML($footer, true, 0);
 
-$txt3 = 'Printed on ' . date("m/d/Y @ h:i A");    
+$txt3 = 'Printed on ' . \Jenssegers\Date\Date::now()->format("m/d/Y @ h:i A");    
 
  // print a block of text using Write()
 $pdf->Write($h=0, $txt3, $link='', $fill=0, $align='C', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);

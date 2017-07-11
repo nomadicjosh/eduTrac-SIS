@@ -12,8 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
-$antGradDate = date("05/d/y",strtotime("+4 years"));
+$antGradDate = date("05/d/y",strtotime("+"._h($student[0]['comp_months'])." months"));
 ?>
 
 <script type="text/javascript">
@@ -33,15 +32,13 @@ jQuery(document).ready(function() {
         });
     });
 });
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>stu/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
+	<li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Add Student' );?></li>
 </ul>
@@ -49,7 +46,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Add Student' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
 	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/add/<?=_h($student[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
@@ -143,7 +140,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($student[0]['acadLevelCode']),null,'required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name',_h($student[0]['acadLevelCode'])); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -224,7 +224,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Add Date' );?></label>
                             <div class="col-md-8">
-                                <input class="form-control" type="text" readonly value="<?=date("Y-m-d");?>" />
+                                <input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::now()->format("Y-m-d");?>" />
                             </div>
                         </div>
                         <!-- // Group END -->

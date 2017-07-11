@@ -18,6 +18,8 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/blank');
 $app->view->block('blank');
 
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+
 // create new PDF document
 $pdf = new \app\src\tcpdf\Tcpdf('portrait', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -83,15 +85,17 @@ $table .= '<th><b>'._t( 'Name' ).'</b></th>';
 $table .= '<th><b>'._t( 'Acad Level' ).'</b></th>';
 $table .= '<th><b>'._t( 'Acad Program' ).'</b></th>';
 $table .= '<th><b>'._t( 'Acad Credit Status' ).'</b></th>';
+$table .= '<th><b>'._t( 'Advisor' ).'</b></th>';
 $table .= '</tr></thead>';
 $table .= '<tbody>';
 foreach($sros as $k => $v) {
      $table .= '<tr>';
-     $table .= '<td>'._h($v['stuID']).'</td>';
+     $table .= '<td>'.(_h($v['altID']) != '' ? _h($v['altID']) : _h($v['stuID'])).'</td>';
      $table .= '<td>'.get_name(_h($v['stuID'])).'</td>';
      $table .= '<td>'._h($v['acadLevelCode']).'</td>';
      $table .= '<td>'._h($v['acadProgCode']).'</td>';
      $table .= '<td>'._h($v['Status']).'</td>';
+     $table .= '<td>'.get_name(_h($v['facID'])).'</td>';
      $table .= '</tr>';
 }
  
@@ -105,7 +109,7 @@ $students .= '<p>&nbsp;</p>';
 
 $pdf->writeHTML($students, true, 0);
 
-$txt3 = 'Printed on ' . date("m/d/Y @ h:i A");    
+$txt3 = 'Printed on ' . \Jenssegers\Date\Date::now()->format("m/d/Y @ h:i A");    
 
  // print a block of text using Write()
 $pdf->Write($h=0, $txt3, $link='', $fill=0, $align='C', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);

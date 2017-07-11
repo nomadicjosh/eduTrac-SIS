@@ -11,7 +11,6 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$flash = new \app\src\Core\etsis_Messages();
 include('ajax.php');
 $screen = 'vcrse';
 ?>
@@ -20,15 +19,13 @@ $screen = 'vcrse';
 <script src="<?=get_base_url();?>static/assets/plugins/tinymce/plugin.js"></script>
 <script type="text/javascript">
 	tinymce.init({selector: "textarea",plugins: [ "placeholder" ]});
-	$(".panel").show();
-	setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url()?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url()?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
-	<li><a href="<?=get_base_url();?>crse/<?=bm();?>" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
+	<li><a href="<?=get_base_url();?>crse/" class="glyphicons search"><i></i> <?=_t( 'Search Course' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_h($crse->courseCode);?></li>
 </ul>
@@ -41,7 +38,7 @@ $screen = 'vcrse';
 </h3>
 <div class="innerLR">
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen, $crse); ?>
 
@@ -103,7 +100,10 @@ $screen = 'vcrse';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Course Level' );?></label>
                             <div class="col-md-8">
-                                <?=course_level_select(_h($crse->courseLevelCode));?>
+                                <select name="courseLevelCode" id="courseLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+									<option value="">&nbsp;</option>
+	                        		<?php table_dropdown('crlv', null, 'code', 'code', 'name', _h($crse->courseLevelCode)); ?>
+	                        	</select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -189,7 +189,10 @@ $screen = 'vcrse';
                         <div class="form-group">
                             <label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
-                                <?=acad_level_select(_h($crse->acadLevelCode),null,'required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name',_h($crse->acadLevelCode)); ?>
+                                </select>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -202,7 +205,7 @@ $screen = 'vcrse';
 							</div>
 							
 							<div class="col-md-4">
-						    	<input class="form-control"<?=cio();?> name="statusDate" type="text" readonly value="<?=date('D, M d, o',strtotime(_h($crse->statusDate)));?>" />
+						    	<input class="form-control"<?=cio();?> name="statusDate" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($crse->statusDate))->format('D, M d, o');?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -233,7 +236,7 @@ $screen = 'vcrse';
 						<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Approval Date' );?></label>
 							<div class="col-md-6">
-								<input class="form-control" type="text" readonly value="<?=date('D, M d, o',strtotime(_h($crse->approvedDate)));?>" />
+								<input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($crse->approvedDate))->format('D, M d, o');?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -242,14 +245,23 @@ $screen = 'vcrse';
 						<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Last Update' );?></label>
 							<div class="col-md-6">
-								<input class="form-control" type="text" readonly value="<?=date('D, M d, o h:i A',strtotime(_h($crse->LastUpdate)));?>" />
+								<input class="form-control" type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($crse->LastUpdate))->format('D, M d, o h:i A');?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
-						
+                        <?php if(hasPermission('manage_business_rules')) : ?>
+                        <!-- Group -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Prerequisite' );?> <a href="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/prrl/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <div class="col-md-1">
+                                <input class="form-control" type="text" disabled value="<?=is_count_zero('course', 'rule', _escape($crse->rule));?>" class="center" />
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+						<?php endif; ?>
 						<!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label"><?=_t( 'Additional Info' );?> <a href="<?=get_base_url();?>crse/addnl/<?=_h($crse->courseID);?>/<?=bm();?>"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <label class="col-md-3 control-label"><?=_t( 'Additional Info' );?> <a href="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/addnl/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-1">
                                 <?php
                                      if($crse->preReq != '' || $crse->allowAudit != 0  || $crse->allowWaitlist != 0 || 
@@ -283,7 +295,7 @@ $screen = 'vcrse';
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=cids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/<?=bm();?>'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>crse/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				
@@ -311,7 +323,7 @@ $screen = 'vcrse';
                 <!-- // Modal body END -->
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <a href="<?=get_base_url();?>crse/clone/<?=_h($crse->courseID);?>/<?=bm();?>" class="btn btn-default"><?=_t( 'Yes' );?></a>
+                    <a href="<?=get_base_url();?>crse/<?=_h($crse->courseID);?>/clone/" class="btn btn-default"><?=_t( 'Yes' );?></a>
                     <a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'No' );?></a> 
                 </div>
                 <!-- // Modal footer END -->

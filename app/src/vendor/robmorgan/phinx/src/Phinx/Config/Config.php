@@ -39,6 +39,16 @@ use Symfony\Component\Yaml\Yaml;
 class Config implements ConfigInterface
 {
     /**
+     * The value that identifies a version order by creation time.
+     */
+    const VERSION_ORDER_CREATION_TIME = 'creation';
+
+    /**
+     * The value that identifies a version order by execution time.
+     */
+    const VERSION_ORDER_EXECUTION_TIME = 'execution';
+
+    /**
      * @var array
      */
     private $values = array();
@@ -210,11 +220,7 @@ class Config implements ConfigInterface
     }
 
     /**
-     * Get the aliased value from a supplied alias.
-     *
-     * @param string $alias
-     *
-     * @return string|null
+     * {@inheritdoc}
      */
     public function getAlias($alias){
         return !empty($this->values['aliases'][$alias]) ? $this->values['aliases'][$alias] : null;
@@ -231,10 +237,14 @@ class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getMigrationPath()
+    public function getMigrationPaths()
     {
         if (!isset($this->values['paths']['migrations'])) {
             throw new \UnexpectedValueException('Migrations path missing from config file');
+        }
+
+        if (is_string($this->values['paths']['migrations'])) {
+            $this->values['paths']['migrations'] = array($this->values['paths']['migrations']);
         }
 
         return $this->values['paths']['migrations'];
@@ -250,16 +260,20 @@ class Config implements ConfigInterface
     {
         $className = !isset($this->values['migration_base_class']) ? 'Phinx\Migration\AbstractMigration' : $this->values['migration_base_class'];
 
-        return $dropNamespace ? substr(strrchr($className, '\\'), 1) : $className;
+        return $dropNamespace ? substr(strrchr($className, '\\'), 1) ?: $className : $className;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getSeedPath()
+    public function getSeedPaths()
     {
         if (!isset($this->values['paths']['seeds'])) {
             throw new \UnexpectedValueException('Seeds path missing from config file');
+        }
+
+        if (is_string($this->values['paths']['seeds'])) {
+            $this->values['paths']['seeds'] = array($this->values['paths']['seeds']);
         }
 
         return $this->values['paths']['seeds'];
@@ -292,6 +306,34 @@ class Config implements ConfigInterface
 
         return $this->values['templates']['class'];
      }
+
+    /**
+     * Get the version order.
+     *
+     * @return string
+     */
+    public function getVersionOrder()
+    {
+        if (!isset($this->values['version_order'])) {
+            return self::VERSION_ORDER_CREATION_TIME;
+        }
+
+        return $this->values['version_order'];
+    }
+
+    /**
+     * Is version order creation time?
+     *
+     * @return boolean
+     */
+    public function isVersionOrderCreationTime()
+    {
+        $versionOrder = $this->getVersionOrder();
+
+        return $versionOrder == self::VERSION_ORDER_CREATION_TIME;
+    }
+
+    
 
     /**
      * Replace tokens in the specified array.

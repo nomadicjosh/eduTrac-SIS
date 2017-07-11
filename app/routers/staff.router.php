@@ -1,6 +1,16 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use \app\src\elFinder\elFinderConnector;
+use \app\src\elFinder\elFinder;
+use \app\src\elFinder\elFinderVolumeDriver;
+use \app\src\elFinder\elFinderVolumeLocalFileSystem;
+use \app\src\elFinder\elFinderVolumeS3;
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+use Cascade\Cascade;
+
 /**
  * Staff Router
  *  
@@ -29,85 +39,60 @@ function access($attr, $path, $data, $volume)
  * Before router middleware checks to see
  * if the user is logged in.
  */
-$app->before('GET|POST|PUT|DELETE|PATCH|HEAD', '/staff(.*)', function() {
+$app->before('GET|POST', '/staff(.*)', function() {
     if (!is_user_logged_in()) {
-        redirect(get_base_url() . 'login' . '/');
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
     }
-    /**
-     * If user is logged in and the lockscreen cookie is set, 
-     * redirect user to the lock screen until he/she enters 
-     * his/her password to gain access.
-     */
-    if (isset($_COOKIE['SCREENLOCK'])) {
-        redirect(get_base_url() . 'lock/');
+    if (!hasPermission('access_staff_screen')) {
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
     }
 });
 
-$css = [
-    'css/admin/module.admin.page.form_elements.min.css',
-    'css/admin/module.admin.page.tables.min.css',
-    'plugins/elfinder/css/elfinder.min.css',
-    'plugins/elfinder/css/theme.css'
-];
-$js = [
-    'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-timepicker/assets/lib/js/bootstrap-timepicker.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-timepicker/assets/custom/js/bootstrap-timepicker.init.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
-];
+$app->group('/staff', function () use($app) {
 
-$json_url = get_base_url() . 'api' . '/';
-$flashNow = new \app\src\Core\etsis_Messages();
-use \app\src\elFinder\elFinderConnector;
-use \app\src\elFinder\elFinder;
-use \app\src\elFinder\elFinderVolumeDriver;
-use \app\src\elFinder\elFinderVolumeLocalFileSystem;
-use \app\src\elFinder\elFinderVolumeS3;
-
-$app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
-
-    $app->match('GET|POST', '/', function () use($app, $css, $js) {
-
-        /**
-         * Before route middleware check.
-         */
-        $app->before('GET|POST', '/staff/', function() {
-            if (!hasPermission('access_staff_screen')) {
-                redirect(get_base_url() . 'dashboard' . '/');
-            }
-        });
+    $app->match('GET|POST', '/', function () use($app) {
 
         if ($app->req->isPost()) {
-            $post = $_POST['staff'];
-            $search = $app->db->staff()
-                ->setTableAlias('a')
-                ->select('a.staffID,b.lname,b.fname,b.email')
-                ->_join('person', 'a.staffID = b.personID', 'b')
-                ->whereLike('CONCAT(b.fname," ",b.lname)', "%$post%")->_or_()
-                ->whereLike('CONCAT(b.lname," ",b.fname)', "%$post%")->_or_()
-                ->whereLike('CONCAT(b.lname,", ",b.fname)', "%$post%")->_or_()
-                ->whereLike('a.staffID', "%$post%");
-            $q = $search->find(function($data) {
-                $array = [];
-                foreach ($data as $d) {
-                    $array[] = $d;
-                }
-                return $array;
-            });
+            try {
+                $post = $app->req->post['staff'];
+                $search = $app->db->staff()
+                    ->setTableAlias('a')
+                    ->select('a.staffID,b.lname,b.fname,b.email,b.altID')
+                    ->_join('person', 'a.staffID = b.personID', 'b')
+                    ->whereLike('CONCAT(b.fname," ",b.lname)', "%$post%")->_or_()
+                    ->whereLike('CONCAT(b.lname," ",b.fname)', "%$post%")->_or_()
+                    ->whereLike('CONCAT(b.lname,", ",b.fname)', "%$post%")->_or_()
+                    ->whereLike('b.altID', "%$post%")->_or_()
+                    ->whereLike('a.staffID', "%$post%");
+                $q = $search->find(function($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            }
         }
 
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datatables');
+
         $app->view->display('staff/index', [
-            'title' => 'Staff Search',
-            'cssArray' => $css,
-            'jsArray' => $js,
+            'title' => 'Staff Lookup',
             'search' => $q
             ]
         );
@@ -192,14 +177,15 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/file-manager/', function() {
         if (!hasPermission('access_dashboard')) {
-            redirect(get_base_url());
+            etsis_redirect(get_base_url());
         }
     });
-    $app->get('/file-manager/', function () use($app, $css, $js) {
+    $app->get('/file-manager/', function () use($app) {
+
+        etsis_register_style('elFinder');
+
         $app->view->display('staff/file-manager', [
-            'title' => 'File Manager',
-            'cssArray' => $css,
-            'jsArray' => $js
+            'title' => 'File Manager'
             ]
         );
     });
@@ -209,7 +195,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/elfinder/', function() {
         if (!hasPermission('access_dashboard')) {
-            redirect(get_base_url());
+            etsis_redirect(get_base_url());
         }
     });
     $app->match('GET|POST', '/elfinder/', function () use($app) {
@@ -226,18 +212,20 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
      */
     $app->before('GET|POST', '/(\d+)/', function() {
         if (!hasPermission('access_staff_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
-    $app->match('GET|POST', '/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app) {
         if ($app->req->isPost()) {
-            $staff = $app->db->staff();
-            foreach (_filter_input_array(INPUT_POST) as $k => $v) {
-                $staff->$k = $v;
-            }
-            $staff->where('staffID = ?', $id);
-            if ($staff->update()) {
+            try {
+                $staff = $app->db->staff();
+                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
+                    $staff->$k = $v;
+                }
+                $staff->where('staffID = ?', $id);
+                $staff->update();
                 /**
                  * Is triggered after staff record is updated.
                  * 
@@ -245,33 +233,50 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
                  * @param mixed $staff Staff data object.
                  */
                 $app->hook->do_action('post_update_staff', $staff);
-                $app->flash('success_message', $flashNow->notice(200));
                 etsis_logger_activity_log_write('Update Record', 'Staff', get_name($id), get_persondata('uname'));
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
+                _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
-            redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $staf = $app->db->staff()
-            ->where('staffID = ?', $id)
-            ->findOne();
+        try {
+            $staf = $app->db->staff()
+                ->where('staffID = ?', $id)
+                ->findOne();
 
-        $addr = $app->db->address()
-            ->setTableAlias('a')
-            ->select("*,person.email")
-            ->_join('staff', 'a.personID = b.staffID', 'b')
-            ->_join('person', 'a.personID = person.personID')
-            ->where('a.addressType = "P"')->_and_()
-            ->where('a.addressStatus = "C"')->_and_()
-            ->where('a.personID = ?', $id);
-        $q = $addr->find(function($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+            $addr = $app->db->address()
+                ->setTableAlias('a')
+                ->select("a.*,person.email")
+                ->_join('staff', 'a.personID = b.staffID', 'b')
+                ->_join('person', 'a.personID = person.personID')
+                ->where('a.addressType = "P"')->_and_()
+                ->where('a.addressStatus = "C"')->_and_()
+                ->where('a.personID = ?', $id);
+            $q = $addr->find(function($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
 
         /**
          * If the database table doesn't exist, then it
@@ -291,7 +296,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($staf->staffID) <= 0) {
+         */ elseif (_h($staf->staffID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -301,10 +306,12 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+
             $app->view->display('staff/view', [
-                'title' => get_name($staf->staffID),
-                'cssArray' => $css,
-                'jsArray' => $js,
+                'title' => get_name(_h($staf->staffID)),
                 'staff' => $staf,
                 'addr' => $q
                 ]
@@ -315,62 +322,60 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
     /**
      * Before route middleware check.
      */
-    $app->before('GET|POST', '/add/(\d+)/', function($id) {
+    $app->before('GET|POST', '/add/(\d+)/', function() {
         if (!hasPermission('create_staff_record')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
-    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app, $css, $js, $json_url, $flashNow) {
+    $app->match('GET|POST', '/add/(\d+)/', function ($id) use($app) {
 
-        $json_p = _file_get_contents($json_url . 'person/personID/' . $id . '/?key=' . get_option('api_key'));
-        $p_decode = json_decode($json_p, true);
-
-        $json_s = _file_get_contents($json_url . 'staff/staffID/' . $id . '/?key=' . get_option('api_key'));
-        $s_decode = json_decode($json_s, true);
+        $get_person = get_person($id);
+        $get_staff = get_staff($id);
 
         if ($app->req->isPost()) {
-            $staff = $app->db->staff();
-            $staff->staffID = $id;
-            $staff->schoolCode = $_POST['schoolCode'];
-            $staff->buildingCode = $_POST['buildingCode'];
-            $staff->officeCode = $_POST['officeCode'];
-            $staff->office_phone = $_POST['office_phone'];
-            $staff->deptCode = $_POST['deptCode'];
-            $staff->status = $_POST['status'];
-            $staff->addDate = $staff->NOW();
-            $staff->approvedBy = get_persondata('personID');
+            try {
+                $staff = $app->db->staff();
+                $staff->staffID = $id;
+                $staff->schoolCode = $app->req->post['schoolCode'];
+                $staff->buildingCode = $app->req->post['buildingCode'];
+                $staff->officeCode = $app->req->post['officeCode'];
+                $staff->office_phone = $app->req->post['office_phone'];
+                $staff->deptCode = $app->req->post['deptCode'];
+                $staff->status = $app->req->post['status'];
+                $staff->tags = $app->req->post['tags'] != '' ? $app->req->post['tags'] : NULL;
+                $staff->addDate = Jenssegers\Date\Date::now();
+                $staff->approvedBy = get_persondata('personID');
+                /**
+                 * Fires during the saving/creating of a staff record.
+                 *
+                 * @since 6.1.12
+                 * @param array $staff Staff object.
+                 */
+                $app->hook->do_action('save_staff_db_table', $staff);
+                $staff->save();
 
-            /**
-             * Fires during the saving/creating of a staff record.
-             *
-             * @since 6.1.12
-             * @param array $staff Staff object.
-             */
-            $app->hook->do_action('save_staff_db_table', $staff);
-
-            $meta = $app->db->staff_meta();
-            $meta->jobStatusCode = $_POST['jobStatusCode'];
-            $meta->jobID = $_POST['jobID'];
-            $meta->staffID = $id;
-            $meta->supervisorID = $_POST['supervisorID'];
-            $meta->staffType = $_POST['staffType'];
-            $meta->hireDate = $_POST['hireDate'];
-            $meta->startDate = $_POST['startDate'];
-            $meta->endDate = $_POST['endDate'];
-            $meta->addDate = $meta->NOW();
-            $meta->approvedBy = get_persondata('personID');
-
-            /**
-             * Fires during the saving/creating of staff
-             * meta data.
-             *
-             * @since 6.1.12
-             * @param array $meta Staff meta object.
-             */
-            $app->hook->do_action('save_staff_meta_db_table', $meta);
-
-            if ($staff->save() && $meta->save()) {
+                $meta = $app->db->staff_meta();
+                $meta->jobStatusCode = $app->req->post['jobStatusCode'];
+                $meta->jobID = $app->req->post['jobID'];
+                $meta->staffID = $id;
+                $meta->supervisorID = $app->req->post['supervisorID'];
+                $meta->staffType = $app->req->post['staffType'];
+                $meta->hireDate = $app->req->post['hireDate'];
+                $meta->startDate = $app->req->post['startDate'];
+                $meta->endDate = ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL);
+                $meta->addDate = Jenssegers\Date\Date::now();
+                $meta->approvedBy = get_persondata('personID');
+                /**
+                 * Fires during the saving/creating of staff
+                 * meta data.
+                 *
+                 * @since 6.1.12
+                 * @param array $meta Staff meta object.
+                 */
+                $app->hook->do_action('save_staff_meta_db_table', $meta);
+                $meta->save();
                 /**
                  * Is triggered after staff record has been created.
                  * 
@@ -386,12 +391,17 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
                  * @param mixed $staff Staff meta data object.
                  */
                 $app->hook->do_action('post_save_staff_meta', $meta);
-                $app->flash('success_message', $flashNow->notice(200));
                 etsis_logger_activity_log_write('New Record', 'Staff Member', get_name($id), get_persondata('uname'));
-                redirect(get_base_url() . 'staff' . '/' . $id);
-            } else {
-                $app->flash('error_message', $flashNow->notice(409));
-                redirect($app->req->server['HTTP_REFERER']);
+                _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'staff' . '/' . $id . '/');
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409));
             }
         }
 
@@ -399,7 +409,7 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
          * If the database table doesn't exist, then it
          * is false and a 404 should be sent.
          */
-        if ($p_decode == false) {
+        if ($get_person == false) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -407,22 +417,22 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
          * If the query is legit, but there
          * is no data in the table, then 404
          * will be shown.
-         */ elseif (empty($p_decode) == true) {
+         */ elseif (empty($get_person) == true) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (count($p_decode[0]['personID']) <= 0) {
+         */ elseif (_h($get_person->personID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If staffID already exists, then redirect
          * the user to the staff record.
-         */ elseif (count($s_decode[0]['staffID']) > 0) {
+         */ elseif (_h($get_staff->staffID) > 0) {
 
-            redirect(get_base_url() . 'staff' . '/' . $s_decode[0]['staffID'] . '/');
+            etsis_redirect(get_base_url() . 'staff' . '/' . _h($get_staff->staffID) . '/');
         }
         /**
          * If we get to this point, the all is well
@@ -430,11 +440,14 @@ $app->group('/staff', function () use($app, $css, $js, $json_url, $flashNow) {
          * the results in a html format.
          */ else {
 
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+            etsis_register_script('datepicker');
+
             $app->view->display('staff/add', [
-                'title' => get_name($p_decode[0]['personID']),
-                'cssArray' => $css,
-                'jsArray' => $js,
-                'person' => $p_decode
+                'title' => get_name(_h($get_person->personID)),
+                'person' => (array) $get_person
                 ]
             );
         }

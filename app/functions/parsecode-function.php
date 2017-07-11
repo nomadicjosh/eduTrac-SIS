@@ -10,7 +10,6 @@ if (!defined('BASE_PATH'))
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-
 $parsecode_tags = [];
 
 function clean_pre($matches)
@@ -30,17 +29,17 @@ function clean_pre($matches)
 function add_parsecode($tag, $func)
 {
     global $parsecode_tags;
-    
-    if ( '' == _trim( $tag ) ) {
-        $message = _t( 'Invalid parsecode name: empty name given.' );
-        _incorrectly_called( __FUNCTION__, $message, '6.2.0' );
+
+    if ('' == _trim($tag)) {
+        $message = _t('Invalid parsecode name: empty name given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
-    
-    if ( 0 !== preg_match( '@[<>&/\[\]\x00-\x20]@', $tag ) ) {
+
+    if (0 !== preg_match('@[<>&/\[\]\x00-\x20]@', $tag)) {
         /* translators: %s: parsecode name */
-        $message = sprintf( _t( 'Invalid parsecode name: %s. Do not use spaces or reserved characters: & / < > [ ]' ), $tag );
-        _incorrectly_called( __FUNCTION__, $message, '6.2.0' );
+        $message = sprintf(_t('Invalid parsecode name: %s. Do not use spaces or reserved characters: & / < > [ ]'), $tag);
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
 
@@ -59,10 +58,10 @@ function add_parsecode($tag, $func)
 function remove_parsecode($tag)
 {
     global $parsecode_tags;
-    
-    if ( '' == _trim( $tag ) ) {
-        $message = _t( 'Invalid parsecode name: empty name given.' );
-        _incorrectly_called( __FUNCTION__, $message, '6.2.0' );
+
+    if ('' == _trim($tag)) {
+        $message = _t('Invalid parsecode name: empty name given.');
+        _incorrectly_called(__FUNCTION__, $message, '6.2.0');
         return;
     }
 

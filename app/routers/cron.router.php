@@ -1,6 +1,16 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+use app\src\Core\NodeQ\etsis_NodeQ as Node;
+use app\src\Core\NodeQ\Helpers\Validate as Validate;
+use app\src\Core\NodeQ\NodeQException;
+use app\src\Core\Exception\NotFoundException;
+use app\src\Core\Exception\Exception;
+use PDOException as ORMException;
+use Cascade\Cascade;
+use app\src\Core\etsis_Mysqldump as Mysqldump;
+use Defuse\Crypto\Crypto;
+use Defuse\Crypto\Key;
 
 /**
  * Cron Router
@@ -11,9 +21,6 @@ if (!defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-session_start();
-session_regenerate_id();
-
 $options = [
     30 => '30 seconds',
     60 => 'Minute',
@@ -62,161 +69,218 @@ foreach ($regions as $name => $mask) {
     }
 }
 
-/**
- * Retrieves a serialized array of cronjob handlers.
- *
- * @since 6.0.00
- * @return mixed
- */
-function getCronjobs()
-{
-    $cronDir = cronDir() . 'cron/';
-    return unserialize(base64_decode(substr(_file_get_contents($cronDir . 'cronjobs.dat.php'), 7, - 2)));
-}
-
-/**
- * Saves new cronjob handlers to serialized array.
- *
- * @since 6.0.00
- */
-function saveCronjobs($data)
-{
-    $cronDir = cronDir() . 'cron/';
-    if (!file_put_contents($cronDir . 'cronjobs.dat.php', '<' . '?php /*' . base64_encode(serialize($data)) . '*/')) {
-        etsis_monolog('cron', _t('cannot write to cronjobs database file, please check file rights'), 'addError');
-    }
-}
-
-/**
- * Saves cronjob handler activity to a log file.
- *
- * @since 6.0.00
- */
-function saveLogs($text)
-{
-    $cronDir = cronDir() . 'cron/';
-    if (!file_put_contents($cronDir . 'logs/cronjobs.log', date('Y-m-d H:i:s') . ' - ' . $text . PHP_EOL . _file_get_contents($cronDir . 'logs/cronjobs.log'))) {
-        etsis_monolog('cron', _t('cannot write to cronjobs database file, please check file rights'), 'addError');
-    }
-}
-
-/**
- * Updates a cronjob handler.
- *
- * @since 6.0.00
- */
-function updateCronjobs($id = '')
-{
-    $app = \Liten\Liten::getInstance();
-    $cronDir = cronDir() . 'cron/';
-    if (file_put_contents($cronDir . 'cronjobs.dat.php', '<' . '?php /*' . base64_encode(serialize($_SESSION['cronjobs'])) . '*/')) {
-        $app->flash('success_message', _t('Database saved.'));
-
-        // create 'backup'
-        file_put_contents($cronDir . 'cronjobs.backup-' . date('Y-m-d') . '.php', '<' . '?php /*' . base64_encode(serialize($_SESSION['cronjobs'])) . '*/');
-    } else {
-        $app->flash('error_message', _t('Database not saved, could not create database file on server, please check write rights of this script.'));
-    }
-
-    // remove old cronjob backup files
-    $files = glob($cronDir . 'cronjobs.backup*.php');
-    if (is_array($files)) {
-        foreach ($files as $file) {
-            if (is_file($file) && time() - filemtime($file) >= 2 * 24 * 60 * 60) { // 2 days
-                unlink($file);
-            }
-        }
-    }
-
-    if ($id != '' && is_numeric($id)) {
-        redirect(get_base_url() . 'cron/view' . '/' . $id);
-    } else {
-        redirect($app->req->server['HTTP_REFERER']);
-    }
-    exit();
-}
-if (file_exists(cronDir() . 'cron/' . 'cronjobs.dat.php')) {
-    $data = unserialize(base64_decode(substr(_file_get_contents(cronDir() . 'cron/' . 'cronjobs.dat.php'), 7, - 2)));
-    if (is_array($data)) {
-        $_SESSION['cronjobs'] = $data;
-    }
-} elseif (isset($_SESSION['cronjobs'])) {
-    $_SESSION = null;
-}
-
 $email = _etsis_email();
-$flashNow = new \app\src\Core\etsis_Messages();
 $emailer = _etsis_phpmailer();
 
-$css = [
-    'css/admin/module.admin.page.form_elements.min.css',
-    'css/admin/module.admin.page.tables.min.css'
-];
-$js = [
-    'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/lib/js/select2.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/select2/assets/custom/js/select2.init.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/lib/js/bootstrap-datepicker.js?v=v2.1.0',
-    'components/modules/admin/forms/elements/bootstrap-datepicker/assets/custom/js/bootstrap-datepicker.init.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/DT_bootstrap.js?v=v2.1.0',
-    'components/modules/admin/tables/datatables/assets/custom/js/datatables.init.js?v=v2.1.0'
-];
+$app->group('/cron', function () use($app, $emailer, $email) {
 
-$app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
+    $app->before('GET', '/', function () {
+        if (!hasPermission('access_cronjob_screen')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
+    });
+
+    try {
+        if (!Validate::table('cronjob_setting')->exists()) {
+            Node::dispense('cronjob_setting');
+        }
+
+        if (!Validate::table('cronjob_handler')->exists()) {
+            Node::dispense('cronjob_handler');
+        }
+    } catch (NodeQException $e) {
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    } catch (Exception $e) {
+        Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        _etsis_flash()->error(_etsis_flash()->notice(409));
+    }
+
+    $app->match('GET|POST', '/', function () use($app) {
+
+        if ($app->req->isPost()) {
+            foreach ($app->req->post['cronjobs'] as $job) {
+                try {
+                    Node::table('cronjob_handler')->find($job)->delete();
+                } catch (NodeQException $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
+                } catch (Exception $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
+                }
+            }
+            etsis_redirect($app->req->server['HTTP_REFERER']);
+        }
+
+        try {
+
+            $set = Node::table('cronjob_setting')->findAll();
+            $job = Node::table('cronjob_handler')->findAll();
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+
+        etsis_register_style('form');
+        etsis_register_style('table');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+        etsis_register_script('datatables');
+
+        $app->view->display('cron/index', [
+            'title' => 'Cronjob Handlers',
+            'cron' => $job,
+            'set' => $set
+        ]);
+    });
+
+    $app->before('GET|POST', '/new/', function () {
+        if (!hasPermission('access_cronjob_screen')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
+    });
+
+    $app->match('GET|POST', '/new/', function () use($app) {
+        if ($app->req->isPost()) {
+            if (filter_var($app->req->post['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
+                try {
+                    $url = Node::table('cronjob_handler')
+                        ->where('url', '=', $app->req->post['url'])
+                        ->find();
+                } catch (NodeQException $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
+                } catch (Exception $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
+                }
+
+                $found = false;
+                if ($url->count() > 0) {
+                    $found = true;
+                }
+
+                if ($found == false) {
+                    if ($app->req->post['each'] == '') {
+                        _etsis_flash()->error(_t('Time setting missing, please add time settings.'));
+                    } else {
+                        try {
+                            $cron = Node::table('cronjob_handler');
+                            $cron->name = (string) $app->req->post['name'];
+                            $cron->url = (string) $app->req->post['url'];
+                            $cron->each = (int) $app->req->post['each'];
+                            $cron->eachtime = ((isset($app->req->post['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $app->req->post['eachtime'])) ? $app->req->post['eachtime'] : '');
+                            $cron->status = (int) $app->req->post['status'];
+                            $cron->save();
+
+                            _etsis_flash()->success(_etsis_flash()->notice(200));
+                        } catch (NodeQException $e) {
+                            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                            _etsis_flash()->error(_etsis_flash()->notice(409));
+                        } catch (Exception $e) {
+                            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                            _etsis_flash()->error(_etsis_flash()->notice(409));
+                        }
+                    }
+                } else {
+                    _etsis_flash()->error(_t('Cronjob handler already exists in the system.'));
+                }
+            } else {
+                _etsis_flash()->error(_t('Cronjob URL is wrong.'));
+            }
+            etsis_redirect(get_base_url() . 'cron/');
+        }
+
+        etsis_register_style('form');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+
+        $app->view->display('cron/new', [
+            'title' => 'New Cronjob Handler',
+        ]);
+    });
 
     /**
      * Before route checks to make sure the logged in user
      * us allowed to manage options/settings.
      */
-    $app->before('GET', '/', function () {
+    $app->before('GET', '/(\d+)/reset/', function () {
         if (!hasPermission('access_cronjob_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
-        }
-
-        /**
-         * If user is logged in and the lockscreen cookie is set,
-         * redirect user to the lock screen until he/she enters
-         * his/her password to gain access.
-         */
-        if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(get_base_url() . 'lock' . '/');
+            _etsis_flash()->error(_t("You don't have permission to view the Cronjob Handler screen."), get_base_url() . 'dashboard' . '/');
+            exit();
         }
     });
 
-    $app->match('GET|POST', '/', function () use($app, $css, $js) {
+    $app->get('/(\d+)/reset/', function ($id) {
+        try {
+            $reset = Node::table('cronjob_handler')->find($id);
+            $reset->runned = (int) 0;
+            $reset->save();
+            _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'cron' . '/');
+        } catch (NodeQException $e) {
+            _etsis_flash()->error($e->getMessage(), get_base_url() . 'cron' . '/');
+        }
+    });
+
+    $app->before('GET|POST', '/setting/', function () {
+        if (!hasPermission('access_cronjob_screen')) {
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
+    });
+
+    $app->match('GET|POST', '/setting/', function () use($app) {
+
         if ($app->req->isPost()) {
-            $cronDir = cronDir() . 'cron/';
-            // remove from session
-            foreach ($_POST['cronjobs'] as $k => $v) {
-                // get log files, if exists;
-                if (is_dir($cronDir . 'logs/')) {
-                    $files = glob($cronDir . 'logs/*' . preg_replace('/[^A-Za-z0-9 ]/', '', $_SESSION['cronjobs']['jobs'][$k]['url']) . '.log');
-                    // files found?
-                    if (is_array($files) && count($files) > 0) {
-                        // remove all!!
-                        foreach ($files as $k => $file) {
-                            if (!unlink($file)) {
-                                $_SESSION['errors'][] = sprintf('Could not remove file %s from server, please do this manually', $file);
-                                $app->flash('error_message', sprintf(_t('Could not remove file %s from server, please do this manually'), $file));
-                            }
-                        }
-                    }
-                }
-                unset($_SESSION['cronjobs']['jobs'][$k]);
+            $good = true;
+
+            if (strlen(trim($app->req->post['cronjobpassword'])) < 2) {
+                _etsis_flash()->error(_t('Cronjobs cannot run without a password. Your cronjob password contains wrong characters, minimum of 4 letters and numbers.'));
+                $good = false;
             }
 
-            $app->flash('success_message', count($_POST['cronjobs']) . ' cronjobs removed');
+            if ($good == true) {
+                try {
+                    $cron = Node::table('cronjob_setting')->find(1);
+                    $cron->cronjobpassword = (string) $app->req->post['cronjobpassword'];
+                    $cron->timeout = (isset($app->req->post['timeout']) && is_numeric($app->req->post['timeout']) ? (int) $app->req->post['timeout'] : 30);
+                    $cron->save();
 
-            updateCronjobs();
+                    _etsis_flash()->success(_etsis_flash()->notice(200));
+                } catch (NodeQException $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
+                } catch (Exception $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
+                }
+            }
+            etsis_redirect($app->req->server['HTTP_REFERER']);
         }
 
-        $app->view->display('cron/index', [
-            'title' => 'Cronjob Handlers',
-            'cssArray' => $css,
-            'jsArray' => $js
+        try {
+            $set = Node::table('cronjob_setting')->find(1);
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+
+        etsis_register_style('form');
+        etsis_register_script('select');
+        etsis_register_script('select2');
+
+        $app->view->display('cron/setting', [
+            'title' => 'Cronjob Handler Settings',
+            'data' => $set
         ]);
     });
 
@@ -226,769 +290,718 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
      */
     $app->before('GET|POST', '/(\d+)/', function () {
         if (!hasPermission('access_cronjob_screen')) {
-            redirect(get_base_url() . 'dashboard' . '/');
+            _etsis_flash()->error(_t('Permission denied to view requested screen.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
+    });
+
+    $app->match('GET|POST', '/(\d+)/', function ($id) use($app) {
+        if ($app->req->isPost()) {
+            if (filter_var($app->req->post['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
+
+                try {
+                    $cron = Node::table('cronjob_handler')->find($id);
+                    $cron->name = (string) $app->req->post['name'];
+                    $cron->url = (string) $app->req->post['url'];
+                    $cron->each = (int) $app->req->post['each'];
+                    $cron->eachtime = ((isset($app->req->post['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $app->req->post['eachtime'])) ? $app->req->post['eachtime'] : '');
+                    $cron->status = (int) $app->req->post['status'];
+                    $cron->save();
+
+                    _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
+                } catch (NodeQException $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
+                } catch (Exception $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                    _etsis_flash()->error(_etsis_flash()->notice(409));
+                }
+            } else {
+                _etsis_flash()->error(_t('Current URL is not correct; must begin with http(s):// and followed with a path.'));
+            }
+        }
+
+        try {
+            $sql = Node::table('cronjob_handler')->find($id);
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            _etsis_flash()->error(_etsis_flash()->notice(409));
         }
 
         /**
-         * If user is logged in and the lockscreen cookie is set,
-         * redirect user to the lock screen until he/she enters
-         * his/her password to gain access.
+         * If the database table doesn't exist, then it
+         * is false and a 404 should be sent.
          */
-        if (isset($_COOKIE['SCREENLOCK'])) {
-            redirect(get_base_url() . 'lock' . '/');
+        if ($sql == false) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If the query is legit, but there
+         * is no data in the table, then 404
+         * will be shown.
+         */ elseif (empty($sql) == true) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If data is zero, 404 not found.
+         */ elseif (_h($sql->id) <= 0) {
+
+            $app->view->display('error/404', ['title' => '404 Error']);
+        }
+        /**
+         * If we get to this point, the all is well
+         * and it is ok to process the query and print
+         * the results in a html format.
+         */ else {
+
+            etsis_register_style('form');
+            etsis_register_script('select');
+            etsis_register_script('select2');
+
+            $app->view->display('cron/view', [
+                'title' => 'View Cronjob Handler',
+                'cron' => $sql
+                ]
+            );
         }
     });
 
-    $app->match('GET|POST', '/new/', function () use($app, $css, $js, $flashNow) {
-        if ($app->req->isPost()) {
-            if (filter_var($_POST['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
-                $found = false;
-                if (isset($_SESSION['cronjobs'], $_SESSION['cronjobs']['jobs']) && count($_SESSION['cronjobs']['jobs']) > 0) {
-                    foreach ($_SESSION['cronjobs']['jobs'] as $null => $cronjob) {
-                        if ($cronjob['url'] == $_POST['url']) {
-                            $found = true;
-                        }
-                    }
-                }
-
-                if ($found == false) {
-                    if ($_POST['time'] == '' && $_POST['each'] == '') {
-                        $app->flash('error_message', _t('Time settings missing, please add time settings'));
-                    } else {
-                        if (isset($_POST['maillog'], $_POST['maillogaddress']) && !filter_var($_POST['maillogaddress'], FILTER_VALIDATE_EMAIL)) {
-                            $app->flash('error_message', _t('Email address is invalid!'));
-                        }
-
-                        $_SESSION['cronjobs']['jobs'][] = array(
-                            'url' => $_POST['url'],
-                            'time' => ((isset($_POST['time']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['time'])) ? $_POST['time'] : ''),
-                            'each' => ((isset($_POST['each']) && is_numeric($_POST['each'])) ? $_POST['each'] : ''),
-                            'eachtime' => ((isset($_POST['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['eachtime'])) ? $_POST['eachtime'] : ''),
-                            'lastrun' => '',
-                            'runned' => 0,
-                            'savelog' => (isset($_POST['savelog']) ? true : false),
-                            'maillog' => (isset($_POST['maillog']) ? true : false),
-                            'maillogaddress' => ((isset($_POST['maillogaddress']) && filter_var($_POST['maillogaddress'], FILTER_VALIDATE_EMAIL)) ? $_POST['maillogaddress'] : '')
-                        );
-
-                        updateCronjobs(count($_SESSION['cronjobs']['jobs']));
-                    }
-                } else {
-                    $app->flash('error_message', _t('Cronjob already known in this system.'));
-                    redirect($app->req->server['HTTP_REFERER']);
-                }
-            } else {
-                $app->flash('error_message', _t('Cronjob URL is wrong.'));
-                redirect($app->req->server['HTTP_REFERER']);
-            }
-        }
-
-        $app->view->display('cron/new', [
-            'title' => 'New Cronjob Handler',
-            'cssArray' => $css,
-            'jsArray' => $js
-        ]);
+    $app->before('POST|PUT|DELETE|OPTIONS', '/cronjob/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 404);
+        exit();
     });
 
-    $app->match('GET|POST', '/setting/', function () use($app, $css, $js, $flashNow) {
-        if ($app->req->isPost()) {
-            $good = true;
+    $app->get('/cronjob/', function () use($app) {
 
-            if (strlen(trim($_POST['cronjobpassword'])) < 2) {
-                $app->flash('error_message', _t('Your cronjob script cannot run without a password, Your cronjob password contains wrong characters, minimum of 4 letters and numbers.'));
-                $good = false;
+        try {
+            $setting = Node::table('cronjob_setting')->find(1);
+            $cron = Node::table('cronjob_handler')->where('status', '=', (int) 1)->findAll();
+
+            if (!isset($app->req->get['password']) && !isset($argv[1])) {
+                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('No cronjob password found, use cronjob?password=<yourpassword>.')));
+                exit(_t('No cronjob handler password found, use cronjob?password=<yourpassword>.'));
+            } elseif (isset($app->req->get['password']) && $app->req->get['password'] != _h($setting->cronjobpassword)) {
+                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid $app->req->get password')));
+                exit(_t('Invalid $app->req->get password'));
+            } elseif (_h($setting->cronjobpassword) == 'changeme') {
+                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Cronjob handler password needs to be changed.')));
+                exit(_t('Cronjob handler password needs to be changed.'));
+            } elseif (isset($argv[0]) && (substr($argv[1], 0, 8) != 'password' or substr($argv[1], 9) != _h($setting->cronjobpassword))) {
+                Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[401]: Unauthorized: %s', _t('Invalid argument password (password=yourpassword)')));
+                exit(_t('Invalid argument password (password=yourpassword)'));
             }
 
-            if ($good == true) {
-                $_SESSION['cronjobs']['settings'] = [
-                    'cronjobpassword' => $_POST['cronjobpassword'],
-                    'timeout' => (isset($_POST['timeout']) && is_numeric($_POST['timeout']) ? $_POST['timeout'] : 30)
-                ];
-                updateCronjobs();
-            }
-        }
-
-        $app->view->display('cron/setting', [
-            'title' => 'Cronjob Handler Settings',
-            'cssArray' => $css,
-            'jsArray' => $js,
-            'data' => $_SESSION['cronjobs']
-        ]);
-    });
-
-    $app->match('GET|POST', '/view/(\d+)/', function ($id) use($app, $css, $js, $flashNow) {
-        if ($app->req->isPost()) {
-
-            if (filter_var($_POST['url'], FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
-                if (isset($_POST['maillog'], $_POST['maillogaddress']) && !filter_var($_POST['maillogaddress'], FILTER_VALIDATE_EMAIL)) {
-                    $_SESSION['errors'][] = 'Email address is invalid and not saved to database!';
-                }
-
-                $_SESSION['cronjobs']['jobs'][$id] = array(
-                    'url' => $_POST['url'],
-                    'time' => ((isset($_POST['time']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['time'])) ? $_POST['time'] : ''),
-                    'each' => ((isset($_POST['each']) && is_numeric($_POST['each'])) ? $_POST['each'] : ''),
-                    'eachtime' => ((isset($_POST['eachtime']) && preg_match('/(2[0-3]|[01][0-9]):[0-5][0-9]/', $_POST['eachtime'])) ? $_POST['eachtime'] : ''),
-                    'lastrun' => $_SESSION['cronjobs']['jobs'][$id]['lastrun'],
-                    'runned' => $_SESSION['cronjobs']['jobs'][$id]['runned'],
-                    'savelog' => (isset($_POST['savelog']) ? true : false),
-                    'maillog' => (isset($_POST['maillog']) ? true : false),
-                    'maillogaddress' => ((isset($_POST['maillogaddress']) && filter_var($_POST['maillogaddress'], FILTER_VALIDATE_EMAIL)) ? $_POST['maillogaddress'] : '')
-                );
-
-                updateCronjobs($id);
-            } else {
-                $_SESSION['errors'][] = 'Current URL is not correct, must contact http(s):// and a path';
-                $app->flash('error_message', _t('Current URL is not correct; must begin with http(s):// and followed with a path.'));
+            if (isset($run) && $run == true) {
+                exit(_t('Cronjob already running . . .'));
             }
 
-            redirect($app->req->server['HTTP_REFERER']);
-        }
+            $run = true;
 
-        $data = $_SESSION['cronjobs']['jobs'][$id];
-
-        $app->view->display('cron/view', [
-            'title' => 'View Cronjob Handler',
-            'cssArray' => $css,
-            'jsArray' => $js,
-            'data' => $data,
-            'id' => $id
-        ]);
-    });
-
-    $app->match('GET|POST', '/log/', function () use($app) {
-        if ($app->req->isPost()) {
-            $app->flash('success_message', _t('Cronjob log cleaned.'));
-            file_put_contents(cronDir() . 'cron/logs/cronjobs.log', '');
-
-            redirect($app->req->server['HTTP_REFERER']);
-        }
-
-        $app->view->display('cron/log');
-    });
-
-    $app->get('/cronjob/', function () use($app, $email) {
-        $cronDir = cronDir() . 'cron' . DS;
-        if (file_exists($cronDir . 'cronjobs.dat.php')) {
-            $cronjobs = getCronjobs();
-
-            if (!isset($_GET['password']) && !isset($argv[1])) {
-                saveLogs('No cronjob password found');
-                die(htmlspecialchars('No cronjob password found, use cronjob.php?password=<yourpassword> or full path to cronjob.php <yourpassword>'));
-            } elseif (isset($_GET['password']) && $_GET['password'] != $cronjobs['settings']['cronjobpassword']) {
-                saveLogs('Invalid $_GET password');
-                die('Invalid $_GET password');
-            } elseif (isset($argv[0]) && (substr($argv[1], 0, 8) != 'password' or substr($argv[1], 9) != $cronjobs['settings']['cronjobpassword'])) {
-                saveLogs('Invalid argument password (password=yourpassword)');
-                die('Invalid argument password (password=password)');
-            }
-
-            if (isset($cronjobs['run']) && $cronjobs['run'] == true) {
-                die('Cronjob already running');
-            }
-
-            $cronjobs['run'] = true;
-            saveCronjobs($cronjobs);
-
-            if (isset($cronjobs['jobs']) && is_array($cronjobs['jobs']) && count($cronjobs['jobs']) > 0) {
+            if (is_object($cron) && count($cron) > 0) {
+                $d = Jenssegers\Date\Date::now();
                 // execute only one job and then exit
-                foreach ($cronjobs['jobs'] as $k => $cronjob) {
+                foreach ($cron as $job) {
 
-                    if (isset($_GET['id']) && $k == $_GET['id']) {
+                    if (isset($app->req->get['id']) && _h($job->id) == $app->req->get['id']) {
                         $run = true;
                     } else {
                         $run = false;
-                        if (isset($cronjob['time']) && $cronjob['time'] != '') {
-                            // voer alleen uit als tijd ouder is dan vandaag 16.00 uur, maar pas na 16.00 uur
-                            if (substr($cronjob['lastrun'], 0, 10) != date('Y-m-d')) {
-                                if (strtotime(date('Y-m-d H:i')) > strtotime(date('Y-m-d ') . $cronjob['time'])) {
+                        if ($job->time != '') {
+                            if (substr(_h($job->lastrun), 0, 10) != $d) {
+                                if (strtotime($d->format('Y-m-d H:i')) > strtotime($d->format('Y-m-d ') . _h($job->time))) {
                                     $run = true;
                                 }
                             }
-                        } elseif (isset($cronjob['each']) && $cronjob['each'] > 0) {
-                            if (strtotime($cronjob['lastrun']) + $cronjob['each'] < strtotime("now")) {
+                        } elseif ($job->each > 0) {
+                            if (strtotime(_h($job->lastrun)) + _h($job->each) < strtotime($d)) {
                                 $run = true;
                                 // if time set, daily after time...
-                                if ($cronjob['each'] > (60 * 60 * 24) && isset($cronjob['eachtime']) && strlen($cronjob['eachtime']) == 5 && strtotime(date('Y-m-d H:i')) < strtotime(date('Y-m-d') . $cronjob['eachtime'])) {
+                                if (_h($job->each) > (60 * 60 * 24) && strlen(_h($job->eachtime)) == 5 && strtotime($d->format('Y-m-d H:i')) < strtotime($d->format('Y-m-d') . _h($job->eachtime))) {
                                     // only run 'today' at or after give time.
                                     $run = false;
                                 }
                             }
-                        } elseif (substr($cronjob['lastrun'], 0, 10) != date('Y-m-d')) {
+                        } elseif (substr(_h($job->lastrun), 0, 10) != $d->format('Y-m-d')) {
                             $run = true;
                         }
                     }
 
                     if ($run == true) {
                         // save as executed
-                        echo 'Running: ' . $cronjobs['jobs'][$k]['url'] . PHP_EOL;
+                        echo _t('Running: ') . _h($job->url) . PHP_EOL . PHP_EOL;
 
-                        $cronjobs['jobs'][$k]['lastrun'] = date('Y-m-d H:i:s');
-                        $cronjobs['jobs'][$k]['runned'] ++;
+                        try {
+                            $upd = Node::table('cronjob_handler')->find(_h($job->id));
+                            $upd->lastrun = $d->format('Y-m-d H:i:s');
+                            $upd->runned ++;
+                            $upd->save();
+                        } catch (NodeQException $e) {
+                            Cascade::getLogger('error')->error(sprintf('CRONSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                        } catch (Exception $e) {
+                            Cascade::getLogger('error')->error(sprintf('CRONSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+                        }
 
-                        saveCronjobs($cronjobs);
-
-                        saveLogs($cronjob['url']);
-
-                        echo 'Connecting to cronjob' . PHP_EOL;
+                        echo _t('Connecting to cronjob') . PHP_EOL . PHP_EOL;
 
                         // execute cronjob
                         $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, $cronjob['url']);
-                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+                        curl_setopt($ch, CURLOPT_URL, _h($job->url));
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch, CURLOPT_TIMEOUT, (isset($cronjobs['settings'], $cronjobs['settings']['timeout']) ? $cronjob['settings']['timeout'] : 5));
+                        curl_setopt($ch, CURLOPT_TIMEOUT, (!empty($setting->timeout) ? $setting->timeout : 5));
 
-                        $data = curl_exec($ch);
+                        curl_exec($ch);
 
-                        $cronjobs = getCronjobs();
                         if (curl_errno($ch)) {
-                            echo 'Cronjob error: ' . curl_error($ch) . PHP_EOL;
-
-                            saveLogs($cronjob['url'] . ' - Error: ' . curl_error($ch));
+                            Cascade::getLogger('system_email')->alert(sprintf('CRONSTATE[400]: Bad request: %s', curl_error($ch)));
+                            echo _t('Cronjob error: ') . curl_error($ch) . PHP_EOL;
                         } else {
-                            echo 'Cronjob data loaded' . PHP_EOL;
-
-                            if (isset($cronjob['savelog']) && $cronjob['savelog'] == true) {
-                                if (!is_dir($cronDir . 'logs')) {
-                                    mkdir($cronDir . 'logs');
-                                }
-
-                                if (is_dir($cronDir . 'logs')) {
-                                    echo 'Cronjob save log' . PHP_EOL;
-                                    file_put_contents($cronDir . 'logs/' . date('Y-m-d-H-i-s') . '-' . preg_replace('/[^A-Za-z0-9 ]/', '', $cronjob['url']) . '.log', $data);
-                                }
-                            }
-
-                            if (isset($cronjob['maillog'], $cronjob['maillogaddress']) && $cronjob['maillog'] == true && filter_var($cronjob['maillogaddress'], FILTER_VALIDATE_EMAIL)) {
-                                echo 'Cronjob mail to client: ' . $cronjob['maillogaddress'] . PHP_EOL;
-
-                                $random_hash = md5(date('r', time()));
-                                $headers = 'From: ' . $cronjob['maillogaddress'] . "\r\nReply-To: " . $cronjob['maillogaddress'];
-                                $headers .= "\r\nContent-Type: multipart/mixed; boundary=\"PHP-mixed-" . $random_hash . "\"";
-                                $attachment = chunk_split(base64_encode($data));
-
-                                ob_start();
-
-                                ?> 
-                                --PHP-mixed-<?php echo $random_hash; ?>  
-                                Content-Type: multipart/alternative; boundary="PHP-alt-<?php echo $random_hash; ?>" 
-
-                                --PHP-alt-<?php echo $random_hash; ?>  
-                                Content-Type: text/plain; charset="iso-8859-1" 
-                                Content-Transfer-Encoding: 7bit
-
-                                Attatched is your log file from running the cronjob "<?php echo htmlspecialchars($cronjob['url']); ?>" on <?php echo $cronjob['lastrun']; ?> 
-
-                                --PHP-alt-<?php echo $random_hash; ?>  
-                                Content-Type: text/html; charset="UTF-8" 
-                                Content-Transfer-Encoding: 7bit
-
-                                <p>
-                                    Attatched is your log file from running the cronjob "<strong><?php echo htmlspecialchars($cronjob['url']); ?></strong>"
-                                    on <strong><?php echo $cronjob['lastrun']; ?></strong>
-
-                                </p>
-
-                                --PHP-alt-<?php echo $random_hash; ?>-- 
-
-                                --PHP-mixed-<?php echo $random_hash; ?>  
-                                Content-Type: application/zip; name="<?php echo date("Y-m-d-H-i-s") . '-' . preg_replace("/[^A-Za-z0-9 ]/", '', $cronjob['url']) . '.log'; ?>"  
-                                Content-Transfer-Encoding: base64  
-                                Content-Disposition: attachment  
-
-                                <?php echo $attachment; ?> 
-                                --PHP-mixed-<?php echo $random_hash; ?>-- 
-
-                                <?php
-                                $message = ob_get_clean();
-                                $mail_sent = $email->etsis_mail($cronjob['maillogaddress'], 'Cronjob log ' . date('Y-m-d H:i:s') . ' for ' . htmlspecialchars($cronjob['url']), $message, $headers);
-
-                                saveLogs($mail_sent ? 'Mail sent' : 'Mail failed');
-                            }
+                            echo _t('Cronjob data loaded') . PHP_EOL;
                         }
 
                         curl_close($ch);
                     }
-
-                    // update cronjob list as the user can change stuff...
-                    $cronjobs = getCronjobs();
                 }
             }
-
-            $cronjobs['run'] = false;
-            saveCronjobs($cronjobs);
-        } else {
-            die('cronjob database file not found...');
+        } catch (NodeQException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
     });
 
-    $app->get('/activityLog/', function () {
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runALST/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 404);
+        exit();
+    });
+
+    $app->get('/runALST/', function () use($app) {
+        $count = $app->db->stal()
+            ->where('acadStanding = "PROB"')
+            ->count('id');
+        if ($count > 0) {
+            $q = "SELECT CONCAT(person.lname,', ',person.fname) AS 'Student Name',"
+                . " CASE WHEN (person.altID IS NOT NULL) THEN person.altID ELSE person.personID END 'Student ID',"
+                . " stal.acadProgCode AS 'Student Program',clas.name AS 'Class Level',"
+                . " stal.enrollmentStatus AS 'Enrollment Status',stal.gpa AS GPA,stal.startTerm as 'Start Term'"
+                . " FROM stal"
+                . " LEFT JOIN person ON stal.stuID  = person.personID"
+                . " LEFT JOIN clas ON stal.currentClassLevel = clas.code"
+                . " WHERE stal.acadStanding = 'PROB'"
+                . " AND stal.endDate IS NULL";
+
+            $filename = \app\src\ID::string(10) . ".csv";
+            $csv = new \app\src\CSVEmail(DB_HOST, DB_NAME, DB_USER, DB_PASS);
+            $csv->setCSVname($filename);
+            $csv->setQuery($q);
+            $csv->setCSVinfo('"', ",", "\n");
+
+            try {
+                Node::dispense('csv_email');
+                $node = Node::table('csv_email');
+                $node->recipient = (string) _escape(get_option('registrar_email_address'));
+                $node->message = (string) "<h3>" . _t('Students on Academic Probation') . "</h3><p>" . _t('The attached report can be opened with OpenOffice.org Calc, Google Docs, Microsoft Excel, or Apple Numbers.') . "</p>";
+                $node->subject = (string) _t('Students on Academic Probation');
+                $node->filename = (string) $filename;
+                $node->sent = (int) 0;
+                $node->save();
+
+                $csv->saveCSV();
+            } catch (NodeQException $e) {
+                Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+            }
+        }
+        return false;
+    });
+
+    $app->before('POST|PUT|DELETE|OPTIONS', '/master/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 404);
+        exit();
+    });
+
+    $app->get('/master/', function () {
+        $jobby = new \Jobby\Jobby();
+
+        try {
+            $setting = Node::table('cronjob_setting')->find(1);
+
+
+            // Every job has a name
+            $jobby->add('MasterCronJob', [
+                // Run a shell command
+                'command' => '/usr/bin/curl -s ' . get_base_url() . 'cron/cronjob/?password=' . _h($setting->cronjobpassword),
+                // Ordinary crontab schedule format is supported.
+                // This schedule runs every 5 minutes.
+                // You could also insert DateTime string in the format of Y-m-d H:i:s.
+                'schedule' => '*/5 * * * *',
+                // Stdout and stderr is sent to the specified file
+                'output' => APP_PATH . 'tmp/logs/etsis-error-' . \Jenssegers\Date\Date::now()->format('Y-m-d') . '.txt',
+                // You can turn off a job by setting 'enabled' to false
+                'enabled' => (_h(get_option('enable_cron_jobs') == 1 ? (bool) true : (bool) false)),
+            ]);
+
+            $jobby->run();
+        } catch (NodeQException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
+        }
+    });
+
+    $app->before('POST|PUT|DELETE|OPTIONS', '/purgeActivityLog/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
+
+    $app->get('/purgeActivityLog/', function () {
         etsis_logger_activity_log_purge();
     });
 
-    $app->get('/runStuTerms/', function () use($app) {
-        /**
-         * Select all records from the stu_acad_cred table.
-         */
-        $terms = $app->db->stu_acad_cred()
-            ->setTableAlias('stac')
-            ->select('stac.stuID,stac.courseSecCode,stac.termCode,stac.acadLevelCode,SUM(stac.attCred)')
-            ->groupBy('stac.stuID,stac.termCode,stac.acadLevelCode');
-        $q = $terms->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        if (count($q) > 0) {
-            /**
-             * If a student ID exists in the stu_acad_cred table,
-             * but does not exist in the stu_term table, then insert
-             * that new record into the stu_term table.
-             */
-            $app->db->query("INSERT IGNORE INTO stu_term (stuID,termCode,termCredits,addDateTime,acadLevelCode) 
-				SELECT stuID,termCode,SUM(attCred),NOW(),acadLevelCode FROM stu_acad_cred 
-				GROUP BY stuID,termCode,acadLevelCode");
-        }
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runEmailQueue/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
-    $app->get('/runStuLoad/', function () use($app) {
-        $terms = $app->db->stu_term()
-            ->setTableAlias('sttr')
-            ->select('stuID,termCode,acadLevelCode,termCredits')
-            ->_join('stu_term_load', 'sttr.stuID = stld.stuID AND sttr.termCode = stld.termCode AND sttr.acadLevelCode = stld.acadLevelCode', 'stld')
-            ->whereNull('stld.stuID')
-            ->_and_()
-            ->whereNull('stld.termCode')
-            ->_and_()
-            ->whereNull('stld.acadLevelCode');
-        $q = $terms->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        if (count($q) > 0) {
-            foreach ($q as $r) {
-                $ins = $app->db->stu_term_load();
-                $ins->stuID = _h($r['stuID']);
-                $ins->termCode = _h($r['termCode']);
-                $ins->stuLoad = getstudentload(_h($r['termCode']), _h($r['termCredits']), _h($r['acadLevelCode']));
-                $ins->acadLevelCode = _h($r['acadLevelCode']);
-                $ins->save();
-            }
-        }
-    });
-
-    $app->get('/runEmailHold/', function () use($app) {
-        session_start();
-        /**
-         * SELECT all records from the email_hold table
-         * and join with the saved_query table to retrieve
-         * the savedQuery for $q2.
-         */
-        $email = $app->db->email_hold()
-            ->select('email_hold.*, b.savedQuery')
-            ->_join('saved_query', ' email_hold.queryID = b.savedQueryID', 'b')
-            ->where('email_hold.processed = "0"');
-        $q = $email->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-        $array = [];
-        foreach ($q as $r) {
-            $array[] = $r;
+    $app->get('/runEmailQueue/', function () use($app) {
+        if (!function_exists('mrkt_module')) {
+            return false;
         }
 
-        $query = $r['savedQuery'];
-        $hold1 = $app->db->query($query);
-        $hold2 = $app->db->email_queue()
-            ->where('holdID = ?', _h($r['id']))
-            ->_and_()
-            ->where('sent = "0"');
-        $q2 = $hold2->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+        try {
+            $cpgn = $app->db->campaign()
+                ->where('campaign.status = "processing"')
+                ->findOne();
 
-        $sess = _h($r['id']);
-
-        /**
-         * Use the savedQuery from $q1 to retrieve results
-         * to input into the email_queue table for processing.
-         */
-        if (count($r['fromEmail']) > 0) {
-            if (count($q2) <= 0) {
-                $q = $hold1->find(function ($data) {
-                    $array = [];
-                    foreach ($data as $d) {
-                        $array[] = $d;
+            if ($cpgn != false) {
+                try {
+                    /**
+                     * Checks if any unsent emails are left in the queue.
+                     * If not, mark campaign as `sent`.
+                     */
+                    $sent = Node::table('campaign_queue')
+                        ->where('is_sent', '=', 'false')
+                        ->andWhere('cid', '=', _h($cpgn->id))
+                        ->findAll()
+                        ->count();
+                    if ($sent <= 0 && _h($cpgn->status) != 'sent') {
+                        $complete = $app->db->campaign()
+                            ->where('id = ?', _h($cpgn->id))->_and_()
+                            ->where('status <> "sent"')
+                            ->findOne();
+                        $complete->status = 'sent';
+                        $complete->update();
+                        return true;
                     }
-                    return $array;
-                });
-                foreach ($q as $v) {
-                    $body = _escape($r['body']);
-                    $body = str_replace('#uname#', _h($v['uname']), $body);
-                    $body = str_replace('#email#', _h($v['email']), $body);
-                    $body = str_replace('#fname#', _h($v['fname']), $body);
-                    $body = str_replace('#lname#', _h($v['lname']), $body);
-                    $body = str_replace('#personID#', _h($v['personID']), $body);
 
-                    $queue = $app->db->email_queue();
-                    $queue->personID = _h($r['personID']);
-                    $queue->uname = _h($v['uname']);
-                    $queue->lname = _h($v['lname']);
-                    $queue->email = _h($v['email']);
-                    $queue->fname = _h($v['fname']);
-                    $queue->fromName = _h($r['fromName']);
-                    $queue->fromEmail = _h($r['fromEmail']);
-                    $queue->subject = _h($r['subject']);
-                    $queue->holdID = _h($r['id']);
-                    $queue->body = $body;
-                    if ($queue->save()) {
-                        $_SESSION["email_hold$sess"] = $sess;
+                    // instantiate the message queue
+                    $queue = new \app\src\Core\etsis_Queue();
+
+                    // get messages from the queue
+                    $messages = $queue->getEmails();
+                    $i = 0;
+                    $last = Node::table('campaign_queue')->where('cid', '=', _h($cpgn->id))->orderBy('id', 'DESC')->limit(1)->find();
+                    // iterate messages
+                    foreach ($messages as $message) {
+                        $sub = get_person_by('email', $message->getToEmail());
+                        /* $slist = $app->db->subscriber_list()
+                          ->where('subscriber_list.lid = ?', $message->getListId())->_and_()
+                          ->where('subscriber_list.sid = ?', $message->getSubscriberId())
+                          ->findOne();
+
+                          $list = get_list_by('id', $message->getListId()); */
+
+                        /**
+                         * Generate slug from subject. Useful for Google Analytics.
+                         */
+                        $slug = _etsis_unique_campaign_slug(_h($cpgn->subject));
+                        /**
+                         * Create an array to merge later.
+                         */
+                        $custom_headers = [
+                            'xcampaignid' => $message->getMessageId(),
+                            'xlistid' => $message->getListId(),
+                            'xsubscriberid' => $message->getSubscriberId(),
+                            'xsubscriberemail' => $message->getToEmail(),
+                        ];
+                        $footer = _escape($cpgn->footer);
+                        $footer = str_replace('{email}', _h($sub->email), $footer);
+                        $footer = str_replace('{from_email}', _h($cpgn->from_email), $footer);
+                        //$footer = str_replace('{personal_preferences}', get_base_url() . 'preferences/' . _h($sub->code) . '/subscriber/' . _h($sub->id) . '/', $footer);
+                        //$footer = str_replace('{unsubscribe_url}', get_base_url() . 'unsubscribe/' . _h($slist->code) . '/lid/' . _h($slist->lid) . '/sid/' . _h($slist->sid) . '/rid/' . _h($message->getId()) . '/', $footer);
+
+                        $msg = _escape($cpgn->html);
+                        $msg = str_replace('{todays_date}', \Jenssegers\Date\Date::now()->format('M d, Y'), $msg);
+                        $msg = str_replace('{subject}', _h($cpgn->subject), $msg);
+                        $msg = str_replace('{view_online}', '<a href="' . get_base_url() . 'archive/' . _h($cpgn->id) . '/">' . _t('View this email in your browser') . '</a>', $msg);
+                        $msg = str_replace('{first_name}', _h($sub->fname), $msg);
+                        $msg = str_replace('{last_name}', _h($sub->lname), $msg);
+                        $msg = str_replace('{email}', _h($sub->email), $msg);
+                        $msg = str_replace('{address1}', _h($sub->address1), $msg);
+                        $msg = str_replace('{address2}', _h($sub->address2), $msg);
+                        $msg = str_replace('{city}', _h($sub->city), $msg);
+                        $msg = str_replace('{state}', _h($sub->state), $msg);
+                        $msg = str_replace('{postal_code}', _h($sub->postal_code), $msg);
+                        $msg = str_replace('{country}', _h($sub->country), $msg);
+                        //$msg = str_replace('{unsubscribe_url}', '<a href="' . get_base_url() . 'unsubscribe/' . _h($slist->code) . '/lid/' . _h($slist->lid) . '/sid/' . _h($slist->sid) . '/rid/' . _h($message->getId()) . '/">' . _t('unsubscribe') . '</a>', $msg);
+                        //$msg = str_replace('{personal_preferences}', '<a href="' . get_base_url() . 'preferences/' . _h($sub->code) . '/subscriber/' . _h($sub->id) . '/">' . _t('preferences page') . '</a>', $msg);
+                        $msg .= $footer;
+                        //$msg .= etsis_footer_logo();
+                        $msg .= campaign_tracking_code(_h($cpgn->id), _h($sub->id));
+
+                        if (++$i === 1) {
+                            $q = $app->db->campaign()
+                                ->where('id = ?', _h($cpgn->id))
+                                ->findOne();
+                            $finish = strtotime($last->timestamp_to_send);
+                            $q->sendfinish = date("Y-m-d H:i:s", strtotime('+10 minutes', $finish));
+                            $q->update();
+                        }
+                        // send email
+                        $app->hook->{'do_action_array'}('etsis_email_init', [
+                            (object) $custom_headers,
+                            $message->getToEmail(),
+                            _h($cpgn->subject),
+                            etsis_link_tracking($msg, _h($cpgn->id), _h($sub->id), $slug),
+                            etsis_link_tracking(_h($cpgn->text), _h($cpgn->id), _h($sub->id), $slug),
+                            $message
+                            ]
+                        );
                     }
-                }
-                if (isset($_SESSION["email_hold$sess"])) {
-                    $update = $app->db->email_hold();
-                    $update->processed = "1";
-                    $update->dateTime = $app->db->NOW();
-                    $update->where('id = ?', _h($r['id']))
-                        ->update();
-                    $app->cookies->remove('email_hold' . _h($r['id']));
-                    session_destroy();
+                } catch (NodeQException $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                } catch (InvalidArgumentException $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+                } catch (Exception $e) {
+                    Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
                 }
             }
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('QUEUESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
+        } catch (ORMException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('QUEUESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('QUEUESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
         }
     });
 
-    $app->get('/runEmailQueue/', function () use($app, $emailer) {
-        $queue = $app->db->email_queue()
-            ->where('sent = "0"')->_and_()
-            ->where('email <> ""');
-        $queue->find(function ($data) use($app, $emailer) {
-            foreach ($data as $d) {
-                if ($app->hook->has_action('etsisMailer_init', 'etsis_smtp')) {
-                    $emailer->IsSMTP();
-                    $emailer->CharSet = 'UTF-8';
-                    $emailer->Mailer = "smtp";
-                    $emailer->Host = _h(get_option('etsis_smtp_host'));
-                    $emailer->SMTPSecure = _h(get_option('etsis_smtp_smtpsecure'));
-                    $emailer->Port = _h(get_option('etsis_smtp_port'));
-                    $emailer->SMTPAuth = (_h(get_option("etsis_smtp_smtpauth")) == "yes") ? TRUE : FALSE;
-                    if ($emailer->SMTPAuth) {
-                        $emailer->Username = _h(get_option('etsis_smtp_username'));
-                        $emailer->Password = _h(get_option('etsis_smtp_password'));
-                    }
-                    $emailer->AddAddress($d['email'], $d['lname'] . ', ' . $d['fname']);
-                    $emailer->From = $d['fromEmail'];
-                    $emailer->FromName = $d['fromName'];
-                    $emailer->Sender = $emailer->From; // Return-Path
-                    $emailer->AddReplyTo($emailer->From, $emailer->FromName); // Reply-To
-                    $emailer->IsHTML(true);
-                    $emailer->Subject = $d['subject'];
-                    $emailer->Body = $d['body'];
-                    $emailer->Send();
-                    $emailer->ClearAddresses();
-                    $emailer->ClearAttachments();
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runBounceHandler/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
+
+    $app->get('/runBounceHandler/', function () {
+        if (!function_exists('mrkt_module')) {
+            return false;
+        }
+
+        try {
+            $node = Node::table('php_encryption')->find(1);
+            try {
+                if (_escape(get_option('etsis_bmh_password')) != '') {
+                    $password = Crypto::decrypt(_escape(get_option('etsis_bmh_password')), Key::loadFromAsciiSafeString($node->key));
                 } else {
-                    $emailer->CharSet = 'UTF-8';
-                    $emailer->AddAddress($d['email'], $d['lname'] . ', ' . $d['fname']);
-                    $emailer->From = $d['fromEmail'];
-                    $emailer->FromName = $d['fromName'];
-                    $emailer->Sender = $emailer->From; // Return-Path
-                    $emailer->AddReplyTo($emailer->From, $emailer->FromName); // Reply-To
-                    $emailer->IsHTML(true);
-                    $emailer->Subject = $d['subject'];
-                    $emailer->Body = $d['body'];
-                    $emailer->Send();
-                    $emailer->ClearAddresses();
-                    $emailer->ClearAttachments();
+                    $password = _escape(get_option('etsis_bmh_password'));
                 }
-                $u = $app->db->email_queue();
-                $u->sent = 1;
-                $u->sentDate = $app->db->NOW();
-                $u->where('id = ?', $d['id']);
-                $u->update();
+            } catch (Defuse\Crypto\Exception\BadFormatException $e) {
+                Cascade::getLogger('system_email')->alert(sprintf('BOUNCESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
+            } catch (Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException $e) {
+                Cascade::getLogger('system_email')->alert(sprintf('BOUNCESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
+            } catch (Exception $e) {
+                Cascade::getLogger('system_email')->alert(sprintf('BOUNCESTATE[%s]: Conflict: %s', $e->getCode(), $e->getMessage()));
             }
-        });
-    });
-
-    $app->get('/purgeEmailHold/', function () use($app) {
-        $now = date('Y-m-d');
-        $app->db->email_hold()
-            ->where('email_hold.processed = "1"')
-            ->_and_()
-            ->where('DATE_ADD(email_hold.dateTime, INTERVAL 15 DAY) <= ?', $now)
-            ->delete();
-    });
-
-    $app->get('/purgeEmailQueue/', function () use($app) {
-        $app->db->email_queue()
-            ->where('sent = "1"')->_or_()
-            ->where('email = ""')
-            ->delete();
-    });
-
-    $app->get('/updateStuTerms/', function () use($app) {
-        $terms = $app->db->query("SELECT 
-                    SUM(a.attCred) as Credits,
-                    a.stuID as stuAcadCredID,
-                    a.termCode as termAcadCredCode,
-                    a.acadLevelCode as acadCredLevel,
-                    b.stuID AS stuTermID,
-                    b.termCode AS TermCode,
-                    b.acadLevelCode as termAcadLevel,
-                    b.termCredits AS TermCredits 
-                FROM 
-                    stu_acad_cred a 
-                LEFT JOIN 
-                    stu_term b 
-                ON 
-                    a.stuID = b.stuID 
-                WHERE 
-                    a.termCode = b.termCode 
-                AND 
-                    a.acadLevelCode = b.acadLevelCode 
-                GROUP BY 
-                    a.stuID,a.termCode");
-        $q = $terms->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        foreach ($q as $r) {
-            if ($r['Credits'] != $r['TermCredits']) {
-                $q2 = $app->db->stu_term();
-                $q2->termCredits = $r['Credits'];
-                $q2->where('stuID = ?', $r['stuTermID'])
-                    ->_and_()
-                    ->where('termCode = ?', $r['TermCode'])
-                    ->_and_()
-                    ->where('acadLevelCode = ?', $r['termAcadLevel']);
-                $q2->update();
-            }
-        }
-    });
-
-    $app->get('/updateStuLoad/', function () use($app) {
-        $load = $app->db->query("SELECT 
-                    a.termCredits,
-                    a.stuID AS StudentID,
-                    a.termCode AS TermCode,
-                    a.acadLevelCode AS AcademicLevel,
-                    a.LastUpdate AS termLatest,
-                    b.LastUpdate AS stuTermLatest 
-                FROM 
-                    stu_term a 
-                LEFT JOIN 
-                    stu_term_load b 
-                ON 
-                    a.stuID = b.stuID 
-                WHERE 
-                    a.termCode = b.termCode 
-                AND 
-                    a.acadLevelCode = b.acadLevelCode");
-        $q = $load->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        foreach ($q as $r) {
-            if ($r['termLatest'] > $r['stuTermLatest']) {
-                $q2 = $app->db->stu_term_load();
-                $q2->stuLoad = getstudentload(_h($r['TermCode']), _h($r['termCredits']), _h($r['AcademicLevel']));
-                $q2->where('stuID = ?', $r['StudentID'])
-                    ->_and_()
-                    ->where('termCode = ?', $r['TermCode'])
-                    ->_and_()
-                    ->where('acadLevelCode = ?', $r['AcademicLevel']);
-                $q2->update();
-            }
-        }
-    });
-
-    $app->get('/runGraduation/', function () use($app) {
-        $hold = $app->db->graduation_hold()
-            ->select('graduation_hold.id,graduation_hold.queryID,graduation_hold.gradDate,b.savedQuery')
-            ->_join('saved_query', 'graduation_hold.queryID = b.savedQueryID', 'b');
-        $q1 = $hold->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
-
-        $q1Array = [];
-        foreach ($q1 as $r1) {
-            $q1Array[] = $r1;
+        } catch (NodeQException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('NODEQSTATE[%s]: Error: %s', $e->getCode(), $e->getMessage()));
         }
 
-        /**
-         * If the above query has at least one row,
-         * then process the savedQuery.
+        $time_start = microtime_float();
+
+        $bmh = new app\src\Core\etsis_BounceHandler();
+        $bmh->actionFunction = 'bounce_callback_action'; // default is 'bounce_callback_action'
+        $bmh->verbose = app\src\Core\etsis_BounceHandler::VERBOSE_SIMPLE; //app\src\Core\etsis_BounceHandler::VERBOSE_SIMPLE; //app\src\Core\etsis_BounceHandler::VERBOSE_REPORT; //app\src\Core\etsis_BounceHandler::VERBOSE_DEBUG; //app\src\Core\etsis_BounceHandler::VERBOSE_QUIET; // default is BounceMailHandler::VERBOSE_SIMPLE
+        //$bmh->useFetchStructure  = true; // true is default, no need to specify
+        //$bmh->testMode           = false; // false is default, no need to specify
+        //$bmh->debugBodyRule      = false; // false is default, no need to specify
+        //$bmh->debugDsnRule       = false; // false is default, no need to specify
+        //$bmh->purgeUnprocessed   = false; // false is default, no need to specify
+        $bmh->disableDelete = true; // false is default, no need to specify
+
+        /*
+         * for remote mailbox
          */
-        if (count($q1Array) > 0) {
-            $sq = $app->db->query($r1['savedQuery']);
-            $q2 = $sq->find(function ($data) {
+        $bmh->mailhost = _h(get_option('etsis_bmh_host')); // your mail server
+        $bmh->mailboxUserName = _h(get_option('etsis_bmh_username')); // your mailbox username
+        $bmh->mailboxPassword = $password; // your mailbox password
+        $bmh->port = _h(get_option('etsis_bmh_port')); // the port to access your mailbox, default is 143
+        $bmh->service = _h(get_option('etsis_bmh_service')); // the service to use (imap or pop3), default is 'imap'
+        $bmh->serviceOption = _h(get_option('etsis_bmh_service_option')); // the service options (none, tls, notls, ssl, etc.), default is 'notls'
+        $bmh->boxname = (_h(get_option('etsis_bmh_mailbox')) == '' ? 'INBOX' : _h(get_option('etsis_bmh_mailbox'))); // the mailbox to access, default is 'INBOX'
+        $bmh->moveHard = true; // default is false
+        $bmh->hardMailbox = (_h(get_option('etsis_bmh_mailbox')) == '' ? 'INBOX' : _h(get_option('etsis_bmh_mailbox'))) . '.hard'; // default is 'INBOX.hard' - NOTE: must start with 'INBOX.'
+        $bmh->moveSoft = true; // default is false
+        $bmh->softMailbox = ''; // default is 'INBOX.soft' - NOTE: must start with 'INBOX.'
+        $bmh->openMailbox();
+        $bmh->processMailbox();
+        $bmh->deleteMsgDate = Jenssegers\Date\Date::now()->format('yyyy-mm-dd H:i:s'); // format must be as 'yyyy-mm-dd'
+
+        $time_end = microtime_float();
+        $time = $time_end - $time_start;
+
+        Cascade::getLogger('info')->info('BOUNCES[401]: ' . sprintf(_t('Seconds to process: %s'), $time));
+    });
+
+    $app->before('POST|PUT|DELETE|OPTIONS', '/updateSTTR/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
+
+    $app->get('/updateSTTR/', function () use($app) {
+        try {
+            $terms = $app->db->query("SELECT 
+                    SUM(stac.attCred) AS stacAttCreds,SUM(stac.compCred) AS stacCompCreds,
+                    stac.stuID,stac.termCode,stac.acadLevelCode,SUM(stac.gradePoints) AS stacPoints,
+                    sttr.attCred AS sttrAttCreds,sttr.gradePoints AS sttrPoints,
+                    sttr.gpa 
+                FROM stac 
+                LEFT JOIN sttr ON stac.stuID = sttr.stuID 
+                WHERE stac.termCode = sttr.termCode 
+                AND stac.acadLevelCode = sttr.acadLevelCode 
+                GROUP BY stac.stuID,stac.termCode,stac.acadLevelCode");
+            $q = $terms->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
                     $array[] = $d;
                 }
                 return $array;
             });
-        }
-        /**
-         * If the savedQuery above is successful,
-         * then graduate the students from the query.
-         */
-        if ($q2) {
-            foreach ($q2 as $r2) {
-                $prog = $app->db->stu_program();
-                $prog->graduationDate = _h($r1['gradDate']);
-                $prog->currStatus = 'G';
-                $prog->statusDate = $app->db->NOW();
-                $prog->endDate = $app->db->NOW();
-                $prog->where('stuID = ?', $r2['stuID'])
+
+            foreach ($q as $r) {
+                $GPA = _h($r['stacPoints']) / _h($r['stacAttCreds']);
+                $q2 = $app->db->sttr();
+                $q2->set([
+                        'attCred' => _h($r['stacAttCreds']),
+                        'compCred' => _h($r['stacCompCreds']),
+                        'gradePoints' => _h($r['stacPoints']),
+                        'stuLoad' => etsis_stld_rule(_escape($r['stuID']), _escape($r['stacAttCreds']), _escape($r['acadLevelCode']), _escape($r['termCode'])),
+                        'gpa' => $GPA
+                    ])
+                    ->where('stuID = ?', _escape($r['stuID']))->_and_()
+                    ->where('termCode = ?', _escape($r['termCode']))->_and_()
+                    ->where('acadLevelCode = ?', _escape($r['acadLevelCode']))
                     ->update();
             }
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (ORMException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         }
-        /* Delete records from graduation_hold after above queries have been processed. */
-        $app->db->query("TRUNCATE graduation_hold");
     });
 
-    $app->get('/runTermGPA/', function () use($app) {
-        $gs = $app->db->grade_scale()
-            ->select('b.stuID,b.termCode,b.acadLevelCode,SUM(b.attCred) AS Attempted')
-            ->select('SUM(b.compCred) AS Completed,SUM(b.gradePoints) AS Points')
-            ->select('SUM(b.gradePoints)/SUM(b.attCred) AS GPA')
-            ->_join('stu_acad_cred', 'grade_scale.grade = b.grade', 'b')
-            ->where('grade_scale.count_in_gpa = "1"')
-            ->_and_()
-            ->where('grade_scale.status = "1"')
-            ->_and_()
-            ->where('b.grade <> "NULL"')
-            ->groupBy('b.stuID,b.termCode,b.acadLevelCode');
-        $q = $gs->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+    $app->before('POST|PUT|DELETE|OPTIONS', '/updateSTAL/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
 
-        if (count($q) > 0) {
+    $app->get('/updateSTAL/', function () use($app) {
+        try {
+            $spro = $app->db->sacp()
+                ->select('sacp.stuID,acad_program.acadLevelCode')
+                ->_join('acad_program', 'sacp.acadProgCode = acad_program.acadProgCode')
+                ->where('sacp.currStatus = "A"');
+            $q = $spro->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+
             foreach ($q as $r) {
+                $scrd = $app->db->v_scrd()
+                    ->select('gpa,enrollmentStatus,term')
+                    ->where('stuID = ?', _h($r['stuID']))->_and_()
+                    ->where('acadLevel = ?', _h($r['acadLevelCode']))
+                    ->findOne();
 
-                $ins = $app->db->stu_term_gpa();
-                $ins->stuID = _h($r['stuID']);
-                $ins->termCode = _h($r['termCode']);
-                $ins->acadLevelCode = _h($r['acadLevelCode']);
-                $ins->attCred = _h($r['Attempted']);
-                $ins->compCred = _h($r['Completed']);
-                $ins->gradePoints = _h($r['Points']);
-                $ins->termGPA = _h($r['GPA']);
-                $ins->save();
+                $term = $app->db->stac()
+                    ->select('term.termStartDate')
+                    ->_join('term', 'stac.termCode = term.termCode')
+                    ->where('stuID = ?', _h($r['stuID']))
+                    ->orderBy('stac.addDate', 'DESC')
+                    ->findOne();
+
+                $stal = $app->db->stal();
+                $stal->set([
+                        'currentClassLevel' => etsis_clvr_rule(_h($r['stuID']), _h($r['acadLevelCode'])),
+                        'enrollmentStatus' => _h($scrd->enrollmentStatus),
+                        'acadStanding' => etsis_alst_rule(_h($r['stuID']), _h($r['acadLevelCode'])),
+                        'gpa' => _h($scrd->gpa),
+                        'startTerm' => _h($scrd->term),
+                        'startDate' => _h($term->termStartDate)
+                    ])
+                    ->where('stuID = ?', _h($r['stuID']))->_and_()
+                    ->where('acadLevelCode = ?', _h($r['acadLevelCode']))
+                    ->update();
             }
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (ORMException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         }
     });
 
-    $app->get('/updateTermGPA/', function () use($app) {
-        $gpa = $app->db->query("SELECT 
-                    a.stuID,
-                    a.termCode,
-                    a.acadLevelCode,
-                    a.termGPA,
-                    a.gradePoints AS termGradePoints,
-                    SUM(b.attCred) AS Attempted,
-                    SUM(b.compCred) AS Completed,
-                    SUM(b.gradePoints) AS stacGradePoints 
-                FROM 
-                    stu_term_gpa a 
-                LEFT JOIN 
-                    stu_acad_cred b 
-                ON 
-                    a.stuID = b.stuID 
-                LEFT JOIN 
-                	grade_scale c 
-            	ON 
-            		b.grade = c.grade 
-                WHERE 
-                    a.termCode = b.termCode 
-                AND 
-                	b.grade <> 'NULL' 
-        		AND 
-        			c.count_in_gpa = '1' 
-    			AND 
-    				c.status = '1' 
-                AND 
-                    a.acadLevelCode = b.acadLevelCode 
-                GROUP BY 
-                	a.stuID,a.termCode,a.acadLevelCode");
-        $q = $gpa->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
-            }
-            return $array;
-        });
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runGraduation/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
 
-        foreach ($q as $r) {
-            $GPA = $r['stacGradePoints'] / $r['Attempted'];
-            if ($r['termGradePoints'] != $r['stacGradePoints'] || $r['termGPA'] != $GPA) {
-                $q2 = $app->db->stu_term_gpa();
-                $q2->attCred = $r['Attempted'];
-                $q2->compCred = $r['Completed'];
-                $q2->gradePoints = $r['termGradePoints'];
-                $q2->termGPA = $GPA;
-                $q2->where('stuID = ?', $r['stuID'])
-                    ->_and_()
-                    ->where('termCode = ?', $r['termCode'])
-                    ->_and_()
-                    ->where('acadLevelCode = ?', $r['acadLevelCode']);
-                $q2->update();
+    $app->get('/runGraduation/', function () use($app) {
+        try {
+            $hold = $app->db->graduation_hold()
+                ->select('graduation_hold.id,graduation_hold.queryID,graduation_hold.gradDate,b.savedQuery')
+                ->_join('saved_query', 'graduation_hold.queryID = b.id', 'b');
+            $q1 = $hold->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+
+            $q1Array = [];
+            foreach ($q1 as $r1) {
+                $q1Array[] = $r1;
             }
+
+            /**
+             * If the above query has at least one row,
+             * then process the savedQuery.
+             */
+            if (count($q1Array) > 0) {
+                $sq = $app->db->query(_h($r1['savedQuery']));
+                $q2 = $sq->find(function ($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+            }
+            /**
+             * If the savedQuery above is successful,
+             * then graduate the students from the query.
+             */
+            if ($q2) {
+                foreach ($q2 as $r2) {
+                    $prog = $app->db->sacp();
+                    $prog->graduationDate = _h($r1['gradDate']);
+                    $prog->currStatus = 'G';
+                    $prog->statusDate = \Jenssegers\Date\Date::now();
+                    $prog->endDate = \Jenssegers\Date\Date::now();
+                    $prog->where('stuID = ?', _h($r2['stuID']))
+                        ->update();
+
+                    $stal = $app->db->stal()
+                        ->where('stuID = ?', _h($r2['stuID']))->_and_()
+                        ->where('acadProgCode = ?', _h($r2['acadProgCode']))
+                        ->findOne();
+                    $stal->set([
+                            'currentClassLevel' => NULL,
+                            'enrollmentStatus' => 'G',
+                            'acadStanding' => NULL,
+                            'endDate' => _h($r1['gradDate'])
+                        ])
+                        ->update();
+                }
+            }
+            /* Delete records from graduation_hold after above queries have been processed. */
+            $app->db->query("TRUNCATE graduation_hold");
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (ORMException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         }
+    });
+
+    $app->before('POST|PUT|DELETE|OPTIONS', '/purgeErrorLog/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
     $app->get('/purgeErrorLog/', function () use($app) {
-        $now = date('Y-m-d');
-        $app->db->error()
-            ->where('DATE_ADD(error.addDate, INTERVAL 5 DAY) <= ?', $now)
-            ->delete();
+        $now = \Jenssegers\Date\Date::now()->format('Y-m-d');
+        try {
+            $app->db->error()
+                ->where('DATE_ADD(error.addDate, INTERVAL 5 DAY) <= ?', $now)
+                ->delete();
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (ORMException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        }
 
         etsis_logger_error_log_purge();
     });
 
+    $app->before('POST|PUT|DELETE|OPTIONS', '/purgeSavedQuery/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
+
     $app->get('/purgeSavedQuery/', function () use($app) {
-        $now = date('Y-m-d');
-        $app->db->saved_query()
-            ->where('DATE_ADD(saved_query.createdDate, INTERVAL 30 DAY) <= ?', $now)
-            ->_and_()
-            ->where('saved_query.purgeQuery = "1"')
-            ->delete();
+        $now = \Jenssegers\Date\Date::now()->format('Y-m-d');
+        try {
+            $app->db->saved_query()
+                ->where('DATE_ADD(saved_query.createdDate, INTERVAL 30 DAY) <= ?', $now)->_and_()
+                ->where('saved_query.purgeQuery = "1"')
+                ->delete();
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (ORMException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        }
+    });
+
+    $app->before('POST|PUT|DELETE|OPTIONS', '/checkStuBalance/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
     });
 
     $app->get('/checkStuBalance/', function () use($app) {
-        $bal = $app->db->query("SELECT pay.stuID,pay.termCode,COALESCE(Fees,0)+COALESCE(Tuition,0) as Fees,COALESCE(SUM(pay.amount),0) AS Payments,COALESCE(Fees,0)+COALESCE(Tuition,0)+COALESCE(SUM(pay.amount),0) AS Balance
+        try {
+            $bal = $app->db->query("SELECT pay.stuID,pay.termCode,COALESCE(Fees,0)+COALESCE(Tuition,0) as Fees,COALESCE(SUM(pay.amount),0) AS Payments,COALESCE(Fees,0)+COALESCE(Tuition,0)+COALESCE(SUM(pay.amount),0) AS Balance
             FROM payment AS pay LEFT JOIN
             (SELECT COALESCE(SUM(y.amount),0)*-1 AS Fees,y.stuID,y.termCode
              FROM stu_acct_fee y
@@ -1001,59 +1014,129 @@ $app->group('/cron', function () use($app, $css, $js, $emailer, $email) {
              GROUP BY a.stuID, a.termCode) stu_tuition
              ON pay.stuID = stu_tuition.stuID AND pay.termCode = stu_tuition.termCode
              GROUP BY pay.stuID,pay.termCode");
-        $q = $bal->find(function ($data) {
-            $array = [];
-            foreach ($data as $d) {
-                $array[] = $d;
+            $q = $bal->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            foreach ($q as $r) {
+                if (_h($r['Balance']) >= 0) {
+                    $result = $app->db->stu_acct_bill();
+                    $result->balanceDue = '0';
+                    $result->where('stuID = ?', _h($r['stuID']))->_and_()
+                        ->where('termCode = ?', _h($r['termCode']))
+                        ->update();
+                } elseif (_h($r['Balance']) < 0) {
+                    $result = $app->db->stu_acct_bill();
+                    $result->balanceDue = '1';
+                    $result->where('stuID = ?', _h($r['stuID']))->_and_()
+                        ->where('termCode = ?', _h($r['termCode']))
+                        ->update();
+                }
             }
-            return $array;
-        });
-        foreach ($q as $r) {
-            if ($r['Balance'] >= 0) {
-                $result = $app->db->stu_acct_bill();
-                $result->balanceDue = '0';
-                $result->where('stuID = ?', $r['stuID'])
-                    ->_and_()
-                    ->where('termCode = ?', $r['termCode'])
-                    ->update();
-            } elseif ($r['Balance'] < 0) {
-                $result = $app->db->stu_acct_bill();
-                $result->balanceDue = '1';
-                $result->where('stuID = ?', $r['stuID'])
-                    ->_and_()
-                    ->where('termCode = ?', $r['termCode'])
-                    ->update();
-            }
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (ORMException $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
         }
     });
 
-    $app->get('/runDBBackup/', function () {
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runDBBackup/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
+
+    $app->get('/runDBBackup/', function () use($app) {
         $dbhost = DB_HOST;
         $dbuser = DB_USER;
         $dbpass = DB_PASS;
         $dbname = DB_NAME;
-        _mkdir('/tmp/' . subdomain_as_directory() . '/backups/');
-        $backupDir = '/tmp/' . subdomain_as_directory() . '/backups/';
-        $backupFile = $backupDir . $dbname . '-' . date("Y-m-d-H-i-s") . '.gz';
-        if (!file_exists($backupFile)) {
-            $command = "mysqldump --opt -h $dbhost -u $dbuser -p$dbpass $dbname | gzip > $backupFile";
-            system($command);
+
+        $dumpSettings = [
+            'no-data' => $app->hook->apply_filter('db_table_no_data', ['']),
+            'compress' => Mysqldump::NONE,
+            'default-character-set' => Mysqldump::UTF8MB4,
+            'add-drop-table' => true,
+            'complete-insert' => false,
+            'extended-insert' => false,
+        ];
+
+        try {
+            $backupDir = $app->config('file.savepath') . 'backups' . DS . 'database' . DS;
+            if (!etsis_file_exists($backupDir, false)) {
+                _mkdir($backupDir);
+            }
+        } catch (\app\src\Core\Exception\IOException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+            return false;
         }
-        $files = glob($backupDir . "*.gz");
+
+        try {
+            $dump = new Mysqldump("mysql:host=$dbhost;dbname=$dbname", "$dbuser", "$dbpass", $dumpSettings);
+            $dump->start($backupDir . DB_NAME . '_dump_' . Jenssegers\Date\Date::now()->format('Y-m-d-H-i') . '.sql');
+        } catch (Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        } catch (\Exception $e) {
+            Cascade::getLogger('system_email')->alert($e->getMessage());
+        }
+
+        $files = glob($backupDir . "*.sql");
         if (is_array($files)) {
             foreach ($files as $file) {
-                if (is_file($file) && time() - filemtime($file) >= 20 * 24 * 3600) { // 20 days
+                if (is_file($file) && time() - file_mod_time($file) >= $app->hook->apply_filter('backup_database', 10 * 24 * 3600)) { // 10 days
                     unlink($file);
                 }
             }
         }
     });
-    
+
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runSiteBackup/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
+
+    $app->get('/runSiteBackup/', function () use($app) {
+        try {
+            $backupDir = $app->config('file.savepath') . 'backups' . DS . 'system' . DS;
+            if (!etsis_file_exists($backupDir, false)) {
+                _mkdir($backupDir);
+            }
+        } catch (\app\src\Core\Exception\IOException $e) {
+            Cascade::getLogger('system_email')->alert(sprintf('IOSTATE[%s]: Forbidden: %s', $e->getCode(), $e->getMessage()));
+        }
+
+        etsis_system_backup(BASE_PATH, $backupDir . 'system_' . Jenssegers\Date\Date::now()->format('Y-m-d-H-i') . '.zip');
+
+        $files = glob($backupDir . "*.zip");
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                if (is_file($file) && time() - file_mod_time($file) >= $app->hook->apply_filter('backup_system', 10 * 24 * 3600)) { // 10 days
+                    unlink($file);
+                }
+            }
+        }
+    });
+
+    $app->before('POST|PUT|DELETE|OPTIONS', '/runNodeQ/', function () use($app) {
+        header('Content-Type: application/json');
+        $app->res->_format('json', 401);
+        exit();
+    });
+
     $app->get('/runNodeQ/', function () {
         etsis_nodeq_login_details();
         etsis_nodeq_reset_password();
         etsis_nodeq_csv_email();
         etsis_nodeq_change_address();
+        etsis_nodeq_send_sms();
+        etsis_nodeq_course_registration();
+        etsis_nodeq_student_email();
     });
 });
 

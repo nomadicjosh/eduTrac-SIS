@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * myeduTrac Course Search View
+ * myetSIS Course Search View
  *  
  * @license GPLv3
  * 
@@ -10,9 +10,8 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
-$app->view->block('myet');
-$flash = new \app\src\Core\etsis_Messages();
+$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->block('myetsis');
 ?>
 
 <script type='text/javascript'>//<![CDATA[ 
@@ -29,9 +28,7 @@ $(window).load(function(){
             $('tr input[type=checkbox]').not(':checked').attr("disabled",false);
         }
     });
-});//]]>  
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 50000);
+});//]]>
 </script>
 
 <div class="col-md-12">
@@ -39,7 +36,7 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
 	<h3 class="glyphicons search"><i></i><?=_t( 'Search Courses' );?></h3>
 	<div class="separator bottom"></div>
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
 	
     <?php $app->hook->do_action('course_reg_message'); ?>
 	
@@ -53,11 +50,11 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
 		</div>
 	<?php } ?>
 	
-	<?php if(student_has_restriction() != false) { ?>
+	<?php if(person_has_restriction() != false) { ?>
 		<div class="widget widget-heading-simple widget-body-white">
 			<div class="widget-body">
 				<div class="alerts alerts-error">
-					<p><?=_t( 'You have a hold on your account which is currently restricting you from registering for a course(s). Please contact the following office(s)/department(s) to inquire about the hold(s) on your account: ' );?><?=student_has_restriction();?></p>
+					<p><?=_t( 'You have a hold on your account which is currently restricting you from registering for a course(s). Please contact the following office(s)/department(s) to inquire about the hold(s) on your account: ' );?><?=person_has_restriction();?></p>
 				</div>
 			</div>
 		</div>
@@ -82,7 +79,9 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
                     <th class="text-center"><?=_t( 'Credits' );?></th>
                     <th class="text-center"><?=_t( 'Location' );?></th>
                     <th class="text-center"><?=_t( 'Info' );?></th>
+                    <?php if(is_user_logged_in()) : ?>
                     <th<?=isRegistrationOpen();?> class="text-center"><?=_t( 'Select' );?></th>
+                    <?php endif; ?>
 				</tr>
 			</thead>
 			<!-- // Table heading END -->
@@ -129,15 +128,15 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
                                 		</tr>
                                 		<tr>
                                 			<td><strong><?=_t( 'Course Fee:' );?></strong></td>
-                                			<td><?=money_format('%i',_h($v['courseFee']));?></td>
+                                			<td><?=money_format('%i',(double)_h($v['courseFee']));?></td>
                                 		</tr>
                                 		<tr>
                                 			<td><strong><?=_t( 'Lab Fee:' );?></strong></td>
-                                			<td><?=money_format('%i',_h($v['labFee']));?></td>
+                                			<td><?=money_format('%i',(double)_h($v['labFee']));?></td>
                                 		</tr>
                                 		<tr>
                                 			<td style="width:100px;"><strong><?=_t( 'Material Fee:' );?></strong></td>
-                                			<td><?=money_format('%i',_h($v['materialFee']));?></td>
+                                			<td><?=money_format('%i',(double)_h($v['materialFee']));?></td>
                                 		</tr>
                                 	</table>
 								</div>
@@ -155,13 +154,15 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
 					</div>
 					<!-- // Modal END -->
                 </td>
+                <?php if(is_user_logged_in()) : ?>
                 <td<?=isRegistrationOpen();?> class="text-center">
                     <?php if(_h($v['termCode']) == _h(get_option('registration_term'))) : ?>
                     <?php if(student_can_register()) : ?>
-                    <?php if(prerequisite(get_persondata('personID'),_h($v['courseSecID']))) : ?>
+                    <?php if(crse_prereq(get_persondata('personID'),_h($v['courseSecID'])) && etsis_prereq_rule(get_persondata('personID'), _h($v['courseID']))) : ?>
                     <input<?=getStuSec(_h($v['courseSecCode']),_h($v['termCode']));?> type="checkbox" name="courseSecID[]" value="<?=_h($v['courseSecID']);?>" />
                     <?php endif; endif; endif; ?>
                 </td>
+                <?php endif; ?>
             </tr>
 			<?php } endif; ?>
 			</tbody>
@@ -170,7 +171,7 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
 		</table>
 		<!-- // Table END -->
 		<hr class="separator" />
-        		
+        <?php if(is_user_logged_in()) : ?>
 		<!-- Form actions -->
 		<div<?=isRegistrationOpen();?> class="form-actions">
 			<input type="hidden" name="regTerm" value="<?=_h(get_option('registration_term'));?>" />
@@ -179,6 +180,7 @@ setTimeout(function() { $(".panel").hide(); }, 50000);
             <?php endif; ?>
 		</div>
 		<!-- // Form actions END -->
+        <?php endif; ?>
 		</div>
 	</div>
 	</form>

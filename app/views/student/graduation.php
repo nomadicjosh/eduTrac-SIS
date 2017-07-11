@@ -13,17 +13,28 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'grad';
-$flash = new \app\src\Core\etsis_Messages();
 ?>
 
 <script type="text/javascript">
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
+$(document).ready(function(){
+  $("#stuID").autocomplete({
+        source: '<?=get_base_url();?>stu/stuLookup/', // The source of the AJAX results
+        minLength: 2, // The minimum amount of characters that must be typed before the autocomplete is triggered
+        focus: function( event, ui ) { // What happens when an autocomplete result is focused on
+            $("#stuID").val( ui.item.value );
+            return false;
+      },
+      select: function ( event, ui ) { // What happens when an autocomplete result is selected
+          $("#stuID").val( ui.item.value );
+          $('#StudentID').val( ui.item.id );
+      }
+  });
+});
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Graduate Student(s)' );?></li>
 </ul>
@@ -31,7 +42,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Graduate Student(s)' );?></h3>
 <div class="innerLR">
 	
-	<?=$flash->showMessage();?>
+	<?=_etsis_flash()->showMessage();?>
 	
 	<?php jstree_sidebar_menu($screen); ?>
 
@@ -56,18 +67,25 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><?=_t( 'Student ID' );?></label>
+							<label class="col-md-3 control-label"><?=_t( 'Student ID/Name' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="studentID" id="studentID" class="form-control" />
+								<input type="text" id="stuID" class="form-control" required />
+                                <input type="hidden" id="StudentID" name="stuID" />
 							</div>
 						</div>
+						
+					</div>
+					<!-- // Column END -->
+                    
+                    <div class="col-md-6">
+                        
 						<!-- // Group END -->
 						<?php if(function_exists('savedquery_module')) : ?>
 						<!-- Group -->
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Saved Query' );?></label>
                             <div class="col-md-8">
-                                <select name="queryID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
+                                <select name="id" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
 							        <option value="">&nbsp;</option>
 							        <?php userQuery(); ?>
 						        </select>

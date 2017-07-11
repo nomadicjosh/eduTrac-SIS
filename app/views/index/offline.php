@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASE_PATH') ) exit('No direct script access allowed');
 /**
- * myeduTrac Offline View
+ * myetSIS Offline View
  *  
  * @license GPLv3
  * 
@@ -10,10 +10,10 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myet/' . _h(get_option('myet_layout')) . '.layout');
-$app->view->block('myet');
-if(_h(get_option('enable_myet_portal')) == 1) {
-    redirect(get_base_url());
+$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->block('myetsis');
+if(_h(get_option('enable_myetsis_portal')) == 1) {
+    etsis_redirect(get_base_url());
 }
 ?>
 
@@ -28,7 +28,7 @@ if(_h(get_option('enable_myet_portal')) == 1) {
 						<div class="col-md-12">
 							<h5 class="strong"><?=_t( 'Offline' );?></h5>
 							<div class="separator bottom"></div>
-                            <section class="panel error-panel"><div class="alerts alerts-info"><?=nl2br(_h(get_option('myet_offline_message')));?></div></section>
+                            <section class="panel error-panel"><div class="alerts alerts-info"><?=nl2br(_h(get_option('myetsis_offline_message')));?></div></section>
 						</div>
 					</div>
 				</div>

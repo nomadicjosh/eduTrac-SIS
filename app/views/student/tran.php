@@ -13,34 +13,29 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'tran';
-$flash = new \app\src\Core\etsis_Messages();
 $templates_header = get_templates_header(APP_PATH . 'views/student/templates/transcript/');
 ?>
 
 <script type="text/javascript">
-    jQuery(document).ready(function() {
-    jQuery('#stuID').live('change', function(event) {
-        $.ajax({
-            type    : 'POST',
-            url     : '<?=get_base_url();?>sect/stuLookup/',
-            dataType: 'json',
-            data    : $('#validateSubmitForm').serialize(),
-            cache: false,
-            success: function( data ) {
-                   for(var id in data) {        
-                          $(id).val( data[id] );
-                   }
-            }
-        });
-    });
+$(document).ready(function(){
+  $("#stuID").autocomplete({
+        source: '<?=get_base_url();?>sect/stuLookup/', // The source of the AJAX results
+        minLength: 2, // The minimum amount of characters that must be typed before the autocomplete is triggered
+        focus: function( event, ui ) { // What happens when an autocomplete result is focused on
+            $("#stuID").val( ui.item.value );
+            return false;
+      },
+      select: function ( event, ui ) { // What happens when an autocomplete result is selected
+          $("#stuID").val( ui.item.value );
+          $('#StudentID').val( ui.item.id );
+      }
+  });
 });
-$(".panel").show();
-setTimeout(function() { $(".panel").hide(); }, 10000);
 </script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
-	<li><a href="<?=get_base_url();?>dashboard/<?=bm();?>" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
+	<li><a href="<?=get_base_url();?>dashboard/" class="glyphicons dashboard"><i></i> <?=_t( 'Dashboard' );?></a></li>
 	<li class="divider"></li>
 	<li><?=_t( 'Transcript' );?></li>
 </ul>
@@ -48,7 +43,7 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 <h3><?=_t( 'Transcript' );?></h3>
 <div class="innerLR">
     
-    <?=$flash->showMessage();?>
+    <?=_etsis_flash()->showMessage();?>
     
     <?php jstree_sidebar_menu($screen); ?>
 
@@ -73,10 +68,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Student ID' );?></label>
+							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Student ID/Name' );?></label>
 							<div class="col-md-8">
-								<input type="text" name="stuID" id="stuID" class="form-control" required />
-                                <input type="text" id="stuName" readonly="readonly" class="form-control text-center" />
+								<input type="text" id="stuID" class="form-control" required />
+                                <input type="hidden" id="StudentID" name="stuID"/>
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -91,7 +86,10 @@ setTimeout(function() { $(".panel").hide(); }, 10000);
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Tran Type' );?></label>
 							<div class="col-md-8">
-						        <?=acad_level_select(null,null,'required');?>
+                                <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php table_dropdown('aclv',null,'code','code','name'); ?>
+                                </select>
 							</div>
 						</div>
 						<!-- // Group END -->

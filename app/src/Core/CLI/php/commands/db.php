@@ -43,14 +43,35 @@ class Db_Command extends ETSIS_CLI_Command
     {
         if (!empty($assoc_args['dir'])) {
             $dir = rtrim($assoc_args['dir'], '/');
-            $filename = $dir . '/' . date("Y-m-d") . strtotime(date('h:m:s')) . '_etsis-backup.sql';
+            $filename = $dir . '/' . date("Y-m-d") . strtotime(date('h:m:s')) . '_etsis-dump.sql';
         } else {
-            $filename = date("Y-m-d") . strtotime(date('h:m:s')) . '_etsis-backup.sql';
+            $filename = date("Y-m-d") . strtotime(date('h:m:s')) . '_etsis-dump.sql';
+        }
+        
+        if (!isset($assoc_args['no-data'])) {
+            $no_data = [''];
+        } else {
+            $no_data = true;
+        }
+        
+        if (!isset($assoc_args['no-create-info'])) {
+            $data_only = false;
+        } else {
+            $data_only = true;
         }
 
         try {
+            $dumpSettings = [
+                'no-data' => $no_data,
+                'no-create-info' => $data_only,
+                'compress' => Mysqldump::NONE,
+                'default-character-set' => Mysqldump::UTF8MB4,
+                'add-drop-table' => true,
+                'complete-insert' => false,
+                'extended-insert' => false,
+            ];
             ETSIS_CLI::line('Starting export process...');
-            $this->db = new Mysqldump('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
+            $this->db = new Mysqldump('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, $dumpSettings);
             ETSIS_CLI::line(sprintf('Writing to file "%s"', $filename));
             $this->db->start($filename);
             ETSIS_CLI::success('Database export is complete.');
@@ -70,9 +91,9 @@ class Db_Command extends ETSIS_CLI_Command
     public function optimize()
     {
         try {
-            $this->pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"]);
+            $this->pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'"]);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->pdo->query('SET CHARACTER SET utf8');
+            $this->pdo->query("SET CHARACTER SET 'utf8mb4'");
         } catch (PDOException $e) {
             ETSIS_CLI::error(sprintf('"%s"', $e->getMessage()));
         }
@@ -99,9 +120,9 @@ class Db_Command extends ETSIS_CLI_Command
     public function tables()
     {
         try {
-            $this->pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"]);
+            $this->pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'"]);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->pdo->query('SET CHARACTER SET utf8');
+            $this->pdo->query("SET CHARACTER SET 'utf8mb4'");
         } catch (PDOException $e) {
             ETSIS_CLI::error(sprintf('"%s"', $e->getMessage()));
         }
