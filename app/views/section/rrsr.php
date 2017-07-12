@@ -49,6 +49,13 @@ $screen = 'rgn';
     <form class="form-horizontal margin-none register" action="<?= get_base_url(); ?>sect/rgn/rrsr/" id="validateSubmitForm" method="post" autocomplete="off">
         <!-- Widget -->
         <div class="widget widget-heading-simple widget-body-gray <?= (has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10'; ?>">
+            
+            <?php if(count($rrsr) > 0) : ?>
+                <a href="#test" data-toggle="modal" class="btn btn-inverse pull-right"><i class="fa fa-caret-square-o-right"></i></a>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+            <?php endif; ?>
+                
             <div class="widget-body">
                 
                 <div class="tab-pane">
@@ -100,7 +107,7 @@ $screen = 'rgn';
                         </td>
                         <td>
                             <?php if (++$i === $numItems) { ?>
-                            <a id="addrow"<?=gids();?> href="javascript:;" title="Add a row" class="btn btn-inverse"><i class="fa fa-plus"></i></a>
+                            <a id="addrow" href="javascript:;" title="Add a row" class="btn btn-inverse"><i class="fa fa-plus"></i></a>
                             <?php } ?>
                             <a href="#rrsr_<?= _h($v->id); ?>" data-toggle="modal" class="btn btn-danger"><i class="fa fa-trash-o"></i></a>
                             <!-- Modal -->
@@ -145,7 +152,7 @@ $screen = 'rgn';
                             <textarea style="resize: none;height:8em;" name="value[]" class="form-control" required></textarea>
                         </td>
                         <td>
-                            <a id="addrow"<?=gids();?> href="javascript:;" title="Add a row" class="btn btn-inverse"><i class="fa fa-plus"></i></a>
+                            <a id="addrow" href="javascript:;" title="Add a row" class="btn btn-inverse"><i class="fa fa-plus"></i></a>
                         </td>
                     </tr>
                     </tbody>
@@ -168,6 +175,70 @@ $screen = 'rgn';
         </div>
         <!-- // Widget END -->
     </form>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="test">
+        <form class="form-horizontal margin-none" action="<?=get_base_url();?>sect/rgn/rrsr/test/" id="validateSubmitForm" method="post" autocomplete="off">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal heading -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title"><?=_t( 'Test Registration Rule' );?></h3>
+                </div>
+                <!-- // Modal heading END -->
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <!-- Column -->
+					<div class="col-md-12">
+					
+						<!-- Group -->
+						<div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Student' );?></label>
+							<div class="col-md-8">
+								<select name="stuID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php foreach($stu as $s) : ?>
+                                    <option value="<?=_escape($s->stuID);?>"><?=get_name(_escape($s->stuID));?></option>
+                                    <?php endforeach; ?>
+                                </select>
+							</div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Rule' );?></label>
+							<div class="col-md-8">
+								<select name="rule" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
+                                    <option value="">&nbsp;</option>
+                                    <?php foreach($rrsr as $rule) : $desc = get_rule_by_code(_escape($rule->rule)); ?>
+                                    <option value="<?=_escape($rule->rule);?>">(<?=_escape($rule->rule);?>) <?=_escape($desc->description);?></option>
+                                    <?php endforeach; ?>
+                                </select>
+							</div>
+						</div>
+						<!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+                </div>
+                <!-- // Modal body END -->
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"><i></i><?=_t( 'Submit' );?></button>
+                    <a href="#" class="btn btn-default" data-dismiss="modal"><?=_t( 'Close' );?></a>
+                </div>
+                <!-- // Modal footer END -->
+            </div>
+        </div>
+        </form>
+    </div>
+    <!-- // Modal END -->
 
 </div>	
 
