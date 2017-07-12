@@ -747,15 +747,15 @@ $app->group('/stu', function() use ($app, $css, $js) {
             try {
                 $term = $app->db->term()
                     ->where('termCode = ?', $app->req->post['termCode'])
-                    ->findOnbe();
+                    ->findOne();
 
                 $detail = $app->db->stac();
                 $detail->courseID = $app->req->post['courseID'];
-                $detail->courseSecID = _h($stac->courseSecID);
+                $detail->courseSecID = _h($stac->courseSecID) != '' ? _h($stac->courseSecID) : NULL;
                 $detail->courseCode = $app->req->post['courseCode'];
-                $detail->courseSecCode = _h($stac->courseSecCode);
-                $detail->sectionNumber = $app->req->post['sectionNumber'];
-                $detail->courseSection = _h($stac->courseSection);
+                $detail->courseSecCode = _h($stac->courseSecCode) != '' ? _h($stac->courseSecCode) : NULL;
+                $detail->sectionNumber = $app->req->post['sectionNumber'] != '' ? $app->req->post['sectionNumber'] : NULL;
+                $detail->courseSection = _h($stac->courseSection) != '' ? _h($stac->courseSection) : NULL;
                 $detail->termCode = $app->req->post['termCode'];
                 $detail->reportingTerm = _h($term->reportingTerm);
                 $detail->subjectCode = $app->req->post['subjectCode'];
@@ -772,7 +772,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 $detail->endDate = ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL);
                 if (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= _h($term->termStartDate) && $date > _h($term->dropAddEndDate)) {
                     $detail->compCred = '0.0';
-                    $detail->gradePoints = acadCredGradePoints($app->req->post['grade'], '0.0');
+                    $detail->gradePoints = calculate_grade_points($app->req->post['grade'], '0.0');
                     $detail->statusTime = $time;
                     if (empty($app->req->post['grade'])) {
                         $detail->grade = "W";
@@ -780,13 +780,13 @@ $app->group('/stu', function() use ($app, $css, $js) {
                         $detail->grade = $app->req->post['grade'];
                     }
                 } else {
-                    if (acadCredGradePoints($app->req->post['grade'], $app->req->post['attCred']) > 0) {
+                    if (calculate_grade_points($app->req->post['grade'], $app->req->post['attCred']) > 0) {
                         $compCred = $app->req->post['attCred'];
                     } else {
                         $compCred = '0';
                     }
                     $detail->compCred = $compCred;
-                    $detail->gradePoints = acadCredGradePoints($app->req->post['grade'], $app->req->post['attCred']);
+                    $detail->gradePoints = calculate_grade_points($app->req->post['grade'], $app->req->post['attCred']);
                     $detail->grade = $app->req->post['grade'];
                 }
                 $detail->where('id = ?', $id);
@@ -946,6 +946,8 @@ $app->group('/stu', function() use ($app, $css, $js) {
             etsis_register_style('form');
             etsis_register_script('select');
             etsis_register_script('select2');
+            etsis_register_script('datepicker');
+            etsis_register_script('timepicker');
 
             $app->view->display('student/sacd', [
                 'title' => get_name(_h((int) $stac->stuID)),
