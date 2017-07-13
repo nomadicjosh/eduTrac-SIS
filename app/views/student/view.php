@@ -15,18 +15,8 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $stu = get_student(_h($prog[0]['stuID']));
-$list = '"'.implode('","', tagList()).'"';
+$tags = "{tag: '".implode("'},{tag: '", tagList())."'}";
 ?>
-
-<script type="text/javascript">
-$(function() {
-<?php if(strlen($list) >= 3) : ?>
-	$("#select2_5").select2({tags:[<?=$list;?>]});
-<?php else : ?>
-	$("#select2_5").select2({tags:[]});
-<?php endif; ?>
-});
-</script>
 
 <ul class="breadcrumb">
     <li><?=_t( 'You are here');?></li>
@@ -119,7 +109,7 @@ $(function() {
 					<div class="form-group">
                         <label class="col-md-3 control-label"><?=_t( 'Tags' );?> <a href="#tags" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 						<div class="col-md-8">
-							<input id="select2_5" style="width:100%;" type="hidden"<?=sio();?> name="tags" value="<?=_h($prog[0]['tags']);?>" />
+                            <input type="hidden" id="input-tags"<?=sio();?> name="tags" value="<?=_h($prog[0]['tags']);?>" />
 						</div>
 					</div>
 					<!-- // Group END -->
@@ -217,5 +207,40 @@ $(function() {
 </div>  
         
         </div>
+        
+<script src="<?=get_base_url();?>static/assets/components/modules/querybuilder/selectize/js/standalone/selectize.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+$('#input-tags').selectize({
+    plugins: ['remove_button'],
+    delimiter: ',',
+    persist: false,
+    maxItems: null,
+    valueField: 'tag',
+    labelField: 'tag',
+    searchField: ['tag'],
+    options: [
+        <?=$tags;?>
+    ],
+    render: {
+        item: function(item, escape) {
+            return '<div>' +
+                (item.tag ? '<span class="tag">' + escape(item.tag) + '</span>' : '') +
+            '</div>';
+        },
+        option: function(item, escape) {
+            var caption = item.tag ? item.tag : null;
+            return '<div>' +
+                (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+            '</div>';
+        }
+    },
+    create: function(input) {
+        return {
+            tag: input
+        };
+    }
+});
+</script>
+
         <!-- // Content END -->
 <?php $app->view->stop(); ?>

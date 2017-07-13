@@ -228,6 +228,7 @@ $app->group('/nae', function () use($app) {
          */ else {
 
             etsis_register_style('form');
+            etsis_register_style('selectize');
             etsis_register_style('gridforms');
             etsis_register_script('datepicker');
             etsis_register_script('select');
@@ -526,6 +527,7 @@ $app->group('/nae', function () use($app) {
         }
 
         etsis_register_style('form');
+        etsis_register_style('selectize');
         etsis_register_style('gridforms');
         etsis_register_script('datepicker');
         etsis_register_script('select2');

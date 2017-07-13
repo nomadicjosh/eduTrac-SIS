@@ -214,6 +214,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
          */ else {
 
             etsis_register_style('form');
+            etsis_register_style('selectize');
             etsis_register_style('table');
             etsis_register_script('select');
             etsis_register_script('select2');
@@ -259,6 +260,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 $student = $app->db->student();
                 $student->stuID = $id;
                 $student->status = $app->req->post['status'];
+                $student->tags = $app->req->post['tags'];
                 $student->addDate = \Jenssegers\Date\Date::now();
                 $student->approvedBy = get_persondata('personID');
                 $student->save();
@@ -412,6 +414,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
          */ else {
 
             etsis_register_style('form');
+            etsis_register_style('selectize');
             etsis_register_script('select');
             etsis_register_script('select2');
             etsis_register_script('datepicker');

@@ -651,6 +651,7 @@ $app->asset->registerStyleCollection('querybuilder', [
 $app->asset->registerStyleCollection('elFinder', ['elfinder/css/elfinder.min.css', 'elfinder/css/theme.css']);
 $app->asset->registerStyleCollection('jquery-ui', ['jquery-ui/jquery-ui.min.css']);
 $app->asset->registerStyleCollection('bootstrap-datepicker', ['datepicker/bootstrap-datetimepicker.min.css']);
+$app->asset->registerStyleCollection('selectize', ['querybuilder/selectize/css/selectize.default.css']);
 
 $app->asset->registerScriptCollection('gridforms', ['admin/gridforms/gridforms.js']);
 $app->asset->registerScriptCollection('select', ['admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js', 'admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js']);

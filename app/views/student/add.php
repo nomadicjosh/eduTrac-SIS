@@ -13,6 +13,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $antGradDate = date("05/d/y",strtotime("+"._h($student[0]['comp_months'])." months"));
+$tags = "{tag: '".implode("'},{tag: '", tagList())."'}";
 ?>
 
 <script type="text/javascript">
@@ -204,6 +205,15 @@ jQuery(document).ready(function() {
                         
                         <!-- Group -->
                         <div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Tags' );?></label>
+                            <div class="col-md-8">
+                                <input id="input-tags" type="hidden" name="tags" value="<?=(_h($app->req->post['tags']) != '' ? _h($app->req->post['tags']) : '');?>" />
+                            </div>
+                        </div>
+                        <!-- // Group END -->
+                        
+                        <!-- Group -->
+                        <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Grad Date' );?></label>
                             <div class="col-md-8">
                                 <input type="text" name="antGradDate" class="form-control" value="<?=$antGradDate;?>" readonly required />
@@ -255,5 +265,40 @@ jQuery(document).ready(function() {
 </div>	
 		
 		</div>
+        
+<script src="<?=get_base_url();?>static/assets/components/modules/querybuilder/selectize/js/standalone/selectize.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+$('#input-tags').selectize({
+    plugins: ['remove_button'],
+    delimiter: ',',
+    persist: false,
+    maxItems: null,
+    valueField: 'tag',
+    labelField: 'tag',
+    searchField: ['tag'],
+    options: [
+        <?=$tags;?>
+    ],
+    render: {
+        item: function(item, escape) {
+            return '<div>' +
+                (item.tag ? '<span class="tag">' + escape(item.tag) + '</span>' : '') +
+            '</div>';
+        },
+        option: function(item, escape) {
+            var caption = item.tag ? item.tag : null;
+            return '<div>' +
+                (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+            '</div>';
+        }
+    },
+    create: function(input) {
+        return {
+            tag: input
+        };
+    }
+});
+</script>
+
 		<!-- // Content END -->
 <?php $app->view->stop(); ?>
