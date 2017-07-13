@@ -70,6 +70,7 @@ location /sis {
 ## Resources.
 
 * Take eduTrac SIS for a test drive by checking out the full featured [demo](http://demo.etsis.us/).
+* Check out the [Youtube channel](https://www.youtube.com/channel/UC0Xg37nDDHh-_9bzCAUz6HQ/videos?view=0&sort=dd&shelf_id=0) for tips on using eduTrac SIS.
 * [Online User's Manual](https://www.edutracsis.com/): everything you need to get eduTrac SIS installed and setup.
 * Bug fixing: contribute by helping to squash [bugs](https://github.com/parkerj/eduTrac-SIS/issues)
 * Handbook: majority of the classes, functions, methods and hooks are documented in the [developer's handbook](https://developer.edutracsis.com); contribute to it or use it to write plugins for the community.
