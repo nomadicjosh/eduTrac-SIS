@@ -3059,14 +3059,25 @@ $app->group('/form', function () use($app) {
 
             try {
                 $stld = $app->db->query(
-                        "SELECT sttr.stuID FROM $rlde->file"
-                        . " INNER JOIN term ON sttr.termCode = term.termCode"
-                        . " WHERE sttr.stuID = ?"
-                        . " AND sttr.termCode = ?"
-                        . " AND $rlde->rule", [$app->req->post['stuID'], $app->req->post['termCode']]
-                    )
-                    ->findOne();
-                if (_escape($stld->stuID) <> $app->req->post['stuID']) {
+                    "SELECT sttr.stuID FROM $rlde->file"
+                    . " INNER JOIN term ON sttr.termCode = term.termCode"
+                    . " WHERE sttr.termCode = ?"
+                    . " AND $rlde->rule", [$app->req->post['termCode']]
+                );
+
+                $q = $stld->find(function ($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+                $a = [];
+                foreach ($q as $row) {
+                    $a[] = _escape($row['stuID']);
+                }
+
+                if (!in_array($app->req->post['stuID'], $a)) {
                     _etsis_flash()->error(sprintf(_t('<strong>%s</strong> did not pass the <strong>%s</strong> rule for the <strong>%s</strong> term.'), get_name($app->req->post['stuID']), _escape($rlde->description), $app->req->post['termCode']), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'stld' . '/');
                 } else {
                     _etsis_flash()->success(sprintf(_t('<strong>%s</strong> passed the <strong>%s</strong> rule for the <strong>%s</strong> term.'), get_name($app->req->post['stuID']), _escape($rlde->description), $app->req->post['termCode']), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'stld' . '/');
@@ -3348,16 +3359,27 @@ $app->group('/form', function () use($app) {
             $rlde = Node::table('rlde')->where('code', '=', $app->req->post['rule'])->find();
             try {
                 $clas = $app->db->query(
-                        "SELECT v_scrd.stuID FROM $rlde->file"
-                        . " INNER JOIN stal ON v_scrd.stuID = stal.stuID AND v_scrd.acadLevel = stal.acadLevelCode"
-                        . " WHERE v_scrd.stuID = ?"
-                        . " AND v_scrd.acadLevel = ?"
-                        . " AND $rlde->rule"
-                        . " AND (stal.endDate IS NULL"
-                        . " OR stal.endDate <= '0000-00-00')", [$app->req->post['stuID'], $app->req->post['acadLevelCode']]
-                    )
-                    ->findOne();
-                if (_escape($clas->stuID) <> $app->req->post['stuID']) {
+                    "SELECT v_scrd.stuID FROM $rlde->file"
+                    . " INNER JOIN stal ON v_scrd.stuID = stal.stuID AND v_scrd.acadLevel = stal.acadLevelCode"
+                    . " WHERE v_scrd.acadLevel = ?"
+                    . " AND $rlde->rule"
+                    . " AND (stal.endDate IS NULL"
+                    . " OR stal.endDate <= '0000-00-00')", [$app->req->post['acadLevelCode']]
+                );
+
+                $q = $clas->find(function ($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+                $a = [];
+                foreach ($q as $row) {
+                    $a[] = _escape($row['stuID']);
+                }
+
+                if (!in_array($app->req->post['stuID'], $a)) {
                     _etsis_flash()->error(sprintf(_t('<strong>%s</strong> did not pass the <strong>%s</strong> rule.'), get_name($app->req->post['stuID']), _escape($rlde->description)), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'clvr' . '/');
                 } else {
                     _etsis_flash()->success(sprintf(_t('<strong>%s</strong> passed the <strong>%s</strong> rule.'), get_name($app->req->post['stuID']), _escape($rlde->description)), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'clvr' . '/');
@@ -3521,13 +3543,24 @@ $app->group('/form', function () use($app) {
             $aclv = $app->db->aclv()->findOne($id);
             try {
                 $alst = $app->db->query(
-                        "SELECT v_scrd.stuID FROM $rlde->file"
-                        . " WHERE v_scrd.stuID = ?"
-                        . " AND v_scrd.acadLevel = ?"
-                        . " AND $rlde->rule", [$app->req->post['stuID'], _escape($aclv->code)]
-                    )
-                    ->findOne();
-                if (_escape($alst->stuID) <> $app->req->post['stuID']) {
+                    "SELECT v_scrd.stuID FROM $rlde->file"
+                    . " WHERE v_scrd.acadLevel = ?"
+                    . " AND $rlde->rule", [_escape($aclv->code)]
+                );
+
+                $q = $alst->find(function ($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+                $a = [];
+                foreach ($q as $row) {
+                    $a[] = _escape($row['stuID']);
+                }
+
+                if (!in_array($app->req->post['stuID'], $a)) {
                     _etsis_flash()->error(sprintf(_t('<strong>%s</strong> did not pass the <strong>%s</strong> rule for the <strong>%s</strong> academic level.'), get_name($app->req->post['stuID']), _escape($rlde->description), _escape($aclv->code)), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'alst' . '/');
                 } else {
                     _etsis_flash()->success(sprintf(_t('<strong>%s</strong> passed the <strong>%s</strong> rule for the <strong>%s</strong> academic level.'), get_name($app->req->post['stuID']), _escape($rlde->description), _escape($aclv->code)), get_base_url() . 'form/aclv' . '/' . $id . '/' . 'alst' . '/');

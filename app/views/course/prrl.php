@@ -256,9 +256,6 @@ var options = {
     },
     stal: {
       en: 'Student Academic Level'
-    },
-    v_scrd: {
-      en: 'Student Credits'
     }
   },
 
@@ -454,39 +451,6 @@ var options = {
     label: 'Cum GPA',
     type: 'double',
     optgroup: 'stal',
-    validation: {
-      min: 0,
-      step: 0.01
-    }
-  },
-  /*
-   * Student Creds
-   */
-  {
-    id: 'v_scrd.attempted',
-    label: 'Total Attempted Credits',
-    type: 'double',
-    optgroup: 'v_scrd',
-    validation: {
-      min: 0,
-      step: 0.01
-    }
-  },
-  {
-    id: 'v_scrd.completed',
-    label: 'Total Completed Credits',
-    type: 'double',
-    optgroup: 'v_scrd',
-    validation: {
-      min: 0,
-      step: 0.01
-    }
-  },
-  {
-    id: 'v_scrd.points',
-    label: 'Total Grade Points',
-    type: 'double',
-    optgroup: 'v_scrd',
     validation: {
       min: 0,
       step: 0.01

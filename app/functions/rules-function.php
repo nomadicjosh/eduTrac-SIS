@@ -26,7 +26,7 @@ try {
      * @since 6.3.0
      */
     Node::dispense('rlde');
-    
+
     /**
      * Creates alst node if it does not exist.
      * 
@@ -562,13 +562,24 @@ function etsis_alst_rule($stuID, $level)
             $rlde = get_rule_by_code(_escape($alst->rule));
             try {
                 $aclv = $app->db->query(
-                        "SELECT v_scrd.stuID FROM $rlde->file"
-                        . " WHERE v_scrd.stuID = ?"
-                        . " AND v_scrd.acadLevel = ?"
-                        . " AND $rlde->rule", [$stuID, _escape($alst->level)]
-                    )
-                    ->findOne();
-                if (_escape($aclv->stuID) == $stuID) {
+                    "SELECT v_scrd.stuID FROM $rlde->file"
+                    . " WHERE v_scrd.acadLevel = ?"
+                    . " AND $rlde->rule", [_escape($alst->level)]
+                );
+
+                $q = $aclv->find(function ($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+                $a = [];
+                foreach ($q as $row) {
+                    $a[] = _escape($row['stuID']);
+                }
+
+                if (in_array($stuID, $a)) {
                     return _escape($alst->value);
                 }
             } catch (NotFoundException $e) {
@@ -612,14 +623,25 @@ function etsis_stld_rule($stuID, $creds, $level, $term)
                 $rlde = get_rule_by_code($stld->rule);
                 try {
                     $load = $app->db->query(
-                            "SELECT sttr.stuID FROM $rlde->file"
-                            . " INNER JOIN term ON sttr.termCode = term.termCode"
-                            . " WHERE sttr.stuID = ?"
-                            . " AND sttr.termCode = ?"
-                            . " AND $rlde->rule", [$stuID, $term]
-                        )
-                        ->findOne();
-                    if (_escape($load->stuID) == $stuID) {
+                        "SELECT sttr.stuID FROM $rlde->file"
+                        . " INNER JOIN term ON sttr.termCode = term.termCode"
+                        . " WHERE sttr.termCode = ?"
+                        . " AND $rlde->rule", [$term]
+                    );
+
+                    $q = $load->find(function ($data) {
+                        $array = [];
+                        foreach ($data as $d) {
+                            $array[] = $d;
+                        }
+                        return $array;
+                    });
+                    $a = [];
+                    foreach ($q as $row) {
+                        $a[] = _escape($row['stuID']);
+                    }
+
+                    if (in_array($stuID, $a)) {
                         return _escape($stld->value);
                     }
                 } catch (NotFoundException $e) {
@@ -658,16 +680,27 @@ function etsis_clvr_rule($stuID, $level)
             $rlde = get_rule_by_code(_escape($clvr->rule));
             try {
                 $clas = $app->db->query(
-                        "SELECT v_scrd.stuID FROM $rlde->file"
-                        . " INNER JOIN stal ON v_scrd.stuID = stal.stuID AND v_scrd.acadLevel = stal.acadLevelCode"
-                        . " WHERE v_scrd.stuID = ?"
-                        . " AND v_scrd.acadLevel = ?"
-                        . " AND $rlde->rule"
-                        . " AND (stal.endDate IS NULL"
-                        . " OR stal.endDate <= '0000-00-00')", [$stuID, _escape($clvr->level)]
-                    )
-                    ->findOne();
-                if (_escape($clas->stuID) == $stuID) {
+                    "SELECT v_scrd.stuID FROM $rlde->file"
+                    . " INNER JOIN stal ON v_scrd.stuID = stal.stuID AND v_scrd.acadLevel = stal.acadLevelCode"
+                    . " WHERE v_scrd.acadLevel = ?"
+                    . " AND $rlde->rule"
+                    . " AND (stal.endDate IS NULL"
+                    . " OR stal.endDate <= '0000-00-00')", [_escape($clvr->level)]
+                );
+
+                $q = $clas->find(function ($data) {
+                    $array = [];
+                    foreach ($data as $d) {
+                        $array[] = $d;
+                    }
+                    return $array;
+                });
+                $a = [];
+                foreach ($q as $row) {
+                    $a[] = _escape($row['stuID']);
+                }
+
+                if (in_array($stuID, $a)) {
                     return _escape($clvr->value);
                 }
             } catch (NotFoundException $e) {

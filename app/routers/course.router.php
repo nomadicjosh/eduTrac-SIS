@@ -296,15 +296,24 @@ $app->group('/crse', function() use ($app) {
             $crse = get_course($id);
             $rule = _escape($crse->rule);
             $prrl = $app->db->query(
-                    "SELECT v_sacp.stuID FROM v_sacp"
-                    . " INNER JOIN stal ON v_sacp.stuID = stal.stuID AND v_sacp.prog = stal.acadProgCode"
-                    . " INNER JOIN v_scrd ON v_sacp.stuID = v_scrd.stuID AND v_sacp.prog = v_scrd.prog"
-                    . " WHERE v_sacp.stuID = ?"
-                    . " AND $rule", [$app->req->post['stuID']]
-                )
-                ->findOne();
+                "SELECT v_sacp.stuID FROM v_sacp"
+                . " INNER JOIN stal ON v_sacp.stuID = stal.stuID AND v_sacp.prog = stal.acadProgCode"
+                . " WHERE $rule"
+            );
 
-            if (_escape($prrl->stuID) <> $app->req->post['stuID']) {
+            $q = $prrl->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            $a = [];
+            foreach ($q as $row) {
+                $a[] = _escape($row['stuID']);
+            }
+
+            if (!in_array($app->req->post['stuID'], $a)) {
                 $dept = get_department(_escape($crse->deptCode));
 
                 $message = _escape($crse->printText);
