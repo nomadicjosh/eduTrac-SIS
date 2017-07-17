@@ -63,7 +63,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                     <div data-row-span="4">
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Unique ID' );?></label>
-                            <input type="text" value="<?=(_h($nae[0]['altID']) != '' ? _h($nae[0]['altID']) : _h($nae[0]['personID']));?>" readonly />
+                            <input type="text" value="<?=get_alt_id(_h($nae[0]['personID']));?>" readonly />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Username' );?></label>
