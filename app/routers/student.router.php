@@ -1108,13 +1108,13 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     ->where('id = ?', $app->req->post['stalID'])
                     ->findOne();
                 $stal->set([
-                        'acadLevelCode' => $app->req->post['acadLevelCode'],
-                        'currentClassLevel' => $app->req->post['currentClassLevel'],
-                        'enrollmentStatus' => $app->req->post['enrollmentStatus'],
-                        'gpa' => $app->req->post['gpa'],
-                        'startTerm' => $app->req->post['startTerm'],
-                        'startDate' => $app->req->post['startDate'],
-                        'endDate' => ($app->req->post['endDate'] == '' ? NULL : $app->req->post['endDate'])
+                        'acadLevelCode' => $app->req->post['acadLevelCode'] == 'NULL' ? NULL : $app->req->post['acadLevelCode'],
+                        'currentClassLevel' => $app->req->post['currentClassLevel'] == 'NULL' ? NULL : $app->req->post['currentClassLevel'],
+                        'enrollmentStatus' => $app->req->post['enrollmentStatus'] == 'NULL' ? NULL : $app->req->post['enrollmentStatus'],
+                        'gpa' => $app->req->post['gpa'] <= 0 ? 0 : $app->req->post['gpa'],
+                        'startTerm' => $app->req->post['startTerm'] == 'NULL' ? NULL : $app->req->post['startTerm'],
+                        'startDate' => $app->req->post['startDate'] <= '0000-00-00' || $app->req->post['startDate'] == '' ? NULL : $app->req->post['startDate'],
+                        'endDate' => $app->req->post['endDate'] <= '0000-00-00' || $app->req->post['endDate'] == '' ? NULL : $app->req->post['endDate']
                     ])
                     ->update();
 

@@ -140,6 +140,8 @@ $tags = "{tag: '".implode("'},{tag: '", tagList())."'}";
                 
                 <div class="separator line bottom"></div>
                 
+                <hr class="separator" />
+                
                 <!-- Form actions -->
                 <div class="form-actions">
                     <button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
