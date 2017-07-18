@@ -7,37 +7,34 @@
  * /       /
  */
 
-namespace Twilio\Rest\Video\V1;
+namespace Twilio\Rest\Video\V1\Room;
 
 use Twilio\Options;
 use Twilio\Values;
 
-abstract class RecordingOptions {
+abstract class RoomRecordingOptions {
     /**
      * @param string $status The status
      * @param string $sourceSid The source_sid
-     * @param string $groupingSid The grouping_sid
      * @param \DateTime $dateCreatedAfter The date_created_after
      * @param \DateTime $dateCreatedBefore The date_created_before
-     * @return ReadRecordingOptions Options builder
+     * @return ReadRoomRecordingOptions Options builder
      */
-    public static function read($status = Values::NONE, $sourceSid = Values::NONE, $groupingSid = Values::NONE, $dateCreatedAfter = Values::NONE, $dateCreatedBefore = Values::NONE) {
-        return new ReadRecordingOptions($status, $sourceSid, $groupingSid, $dateCreatedAfter, $dateCreatedBefore);
+    public static function read($status = Values::NONE, $sourceSid = Values::NONE, $dateCreatedAfter = Values::NONE, $dateCreatedBefore = Values::NONE) {
+        return new ReadRoomRecordingOptions($status, $sourceSid, $dateCreatedAfter, $dateCreatedBefore);
     }
 }
 
-class ReadRecordingOptions extends Options {
+class ReadRoomRecordingOptions extends Options {
     /**
      * @param string $status The status
      * @param string $sourceSid The source_sid
-     * @param string $groupingSid The grouping_sid
      * @param \DateTime $dateCreatedAfter The date_created_after
      * @param \DateTime $dateCreatedBefore The date_created_before
      */
-    public function __construct($status = Values::NONE, $sourceSid = Values::NONE, $groupingSid = Values::NONE, $dateCreatedAfter = Values::NONE, $dateCreatedBefore = Values::NONE) {
+    public function __construct($status = Values::NONE, $sourceSid = Values::NONE, $dateCreatedAfter = Values::NONE, $dateCreatedBefore = Values::NONE) {
         $this->options['status'] = $status;
         $this->options['sourceSid'] = $sourceSid;
-        $this->options['groupingSid'] = $groupingSid;
         $this->options['dateCreatedAfter'] = $dateCreatedAfter;
         $this->options['dateCreatedBefore'] = $dateCreatedBefore;
     }
@@ -61,17 +58,6 @@ class ReadRecordingOptions extends Options {
      */
     public function setSourceSid($sourceSid) {
         $this->options['sourceSid'] = $sourceSid;
-        return $this;
-    }
-
-    /**
-     * The grouping_sid
-     * 
-     * @param string $groupingSid The grouping_sid
-     * @return $this Fluent Builder
-     */
-    public function setGroupingSid($groupingSid) {
-        $this->options['groupingSid'] = $groupingSid;
         return $this;
     }
 
@@ -109,6 +95,6 @@ class ReadRecordingOptions extends Options {
                 $options[] = "$key=$value";
             }
         }
-        return '[Twilio.Video.V1.ReadRecordingOptions ' . implode(' ', $options) . ']';
+        return '[Twilio.Video.V1.ReadRoomRecordingOptions ' . implode(' ', $options) . ']';
     }
 }
