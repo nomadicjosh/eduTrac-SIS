@@ -158,7 +158,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('action', 'string', ['limit' => 60])
                 ->addColumn('process', 'string', ['limit' => 191])
                 ->addColumn('record', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
-                ->addColumn('uname', 'string', ['null' =>true, 'limit' => 191])
+                ->addColumn('uname', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('created_at', 'datetime', [])
                 ->addColumn('expires_at', 'datetime', [])
                 ->create();
@@ -289,10 +289,10 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('subject', 'string', ['limit' => 191])
                 ->addColumn('from_name', 'string', ['limit' => 191])
                 ->addColumn('from_email', 'string', ['limit' => 191])
-                ->addColumn('html', 'string', ['limit' => MysqlAdapter::TEXT_LONG])
-                ->addColumn('text', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
-                ->addColumn('footer', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
-                ->addColumn('attachment', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('html', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('text', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('footer', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('attachment', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('status', 'enum', ['default' => 'ready', 'values' => ['ready', 'processing', 'paused', 'sent']])
                 ->addColumn('sendstart', 'datetime', ['null' => true])
                 ->addColumn('sendfinish', 'datetime', ['null' => true])
@@ -309,7 +309,7 @@ class InitialSchema extends AbstractMigration
                 ->addForeignKey('deptCode', 'department', 'deptCode', ['constraint' => 'campaign_deptCode', 'delete' => 'SET_NULL', 'update' => 'CASCADE'])
                 ->create();
         endif;
-        
+
         if (!$this->hasTable('campaign_list')) :
             $table = $this->table('campaign_list', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
@@ -827,7 +827,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('type', 'integer', ['limit' => 10])
                 ->addColumn('time', 'integer', ['limit' => 10])
-                ->addColumn('string', 'string', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('string', 'text', ['limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('file', 'string', ['limit' => 191])
                 ->addColumn('line', 'integer', ['limit' => 10])
                 ->addColumn('addDate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -963,7 +963,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('gl_acct_number', 'string', ['limit' => 191])
                 ->addColumn('gl_acct_name', 'string', ['limit' => 191])
                 ->addColumn('gl_acct_type', 'string', ['limit' => 191])
-                ->addColumn('gl_acct_memo', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('gl_acct_memo', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addIndex(['gl_acct_number'], ['unique' => true])
                 ->create();
         endif;
@@ -976,7 +976,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('gl_jentry_date', 'date', [])
                 ->addColumn('gl_jentry_manual_id', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('gl_jentry_title', 'string', ['null' => true, 'limit' => 191])
-                ->addColumn('gl_jentry_description', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('gl_jentry_description', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('gl_jentry_personID', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->create();
         endif;
@@ -989,7 +989,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('jeID', 'integer', ['null' => true])
                 ->addColumn('accountID', 'integer', ['null' => true])
                 ->addColumn('gl_trans_date', 'date', ['null' => true])
-                ->addColumn('gl_trans_memo', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('gl_trans_memo', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('gl_trans_debit', 'decimal', ['precision' => 10, 'scale' => 2, 'null' => true])
                 ->addColumn('gl_trans_credit', 'decimal', ['precision' => 10, 'scale' => 2, 'null' => true])
                 ->addForeignKey('jeID', 'gl_journal_entry', 'jeID', ['constraint' => 'gl_transaction_jeID', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
@@ -1156,7 +1156,7 @@ class InitialSchema extends AbstractMigration
             $this->execute("INSERT INTO `job_status` VALUES(7, 'TTQ', 'Temp Three Quarter Time');");
             $this->execute("INSERT INTO `job_status` VALUES(8, 'THT', 'Temp Half Time');");
         endif;
-        
+
         if (!$this->hasTable('last_login')) :
             $table = $this->table('last_login', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
             $table
@@ -1173,8 +1173,8 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('id', 'integer', ['identity' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('code', 'string', ['limit' => 191])
                 ->addColumn('name', 'string', ['limit' => 191])
-                ->addColumn('description', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
-                ->addColumn('rule', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('description', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('rule', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('created', 'datetime', [])
                 ->addColumn('owner', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
@@ -1219,7 +1219,7 @@ class InitialSchema extends AbstractMigration
             $table
                 ->addColumn('id', 'integer', ['identity' => true, 'limit' => 11])
                 ->addColumn('link_title', 'string', ['limit' => 191])
-                ->addColumn('link_src', 'string', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('link_src', 'text', ['limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('status', 'enum', ['values' => ['active', 'inactive']])
                 ->addColumn('sort', 'integer', ['limit' => MysqlAdapter::INT_TINY])
                 ->create();
@@ -1332,7 +1332,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('addDate', 'date', [])
                 ->addColumn('addedBy', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
-                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'pay_grade_addedBy','delete' => 'CASCADE', 'update' => 'CASCADE'])
+                ->addForeignKey('addedBy', 'staff', 'staffID', ['constraint' => 'pay_grade_addedBy', 'delete' => 'CASCADE', 'update' => 'CASCADE'])
                 ->create();
 
             $this->execute("INSERT INTO `pay_grade` VALUES(1, '24', '40000.00', '44999.00', '$NOW', 1, '$NOW');");
@@ -1496,7 +1496,7 @@ class InitialSchema extends AbstractMigration
             $this->execute("INSERT INTO `permission` VALUES(250, 'manage_business_rules', 'Manage Business Rules');");
             $this->execute("INSERT INTO `permission` VALUES(251, 'override_rule', 'Override Rule');");
         endif;
-        
+
         // Migration for table restriction => perc
         if (!$this->hasTable('perc')) :
             $table = $this->table('perc', ['id' => false, 'primary_key' => 'id', 'encoding' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']);
@@ -1537,14 +1537,14 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('gender', 'enum', ['values' => ['M', 'F']])
                 ->addColumn('emergency_contact', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('emergency_contact_phone', 'string', ['null' => true, 'limit' => 60])
-                ->addColumn('photo', 'string', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('photo', 'text', ['null' => true, 'limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('password', 'string', ['limit' => 191])
                 ->addColumn('status', 'enum', ['default' => 'A', 'values' => ['A', 'I']])
                 ->addColumn('tags', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('auth_token', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('approvedDate', 'datetime', [])
                 ->addColumn('approvedBy', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('LastLogin', 'datetime', ['null' => true, ])
+                ->addColumn('LastLogin', 'datetime', ['null' => true,])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
                 ->addIndex(['uname'], ['unique' => true])
                 ->addIndex(['personType'])
@@ -2273,7 +2273,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => MysqlAdapter::INT_REGULAR])
                 ->addColumn('name', 'string', ['limit' => 191])
                 ->addColumn('description', 'string', ['null' => true, 'limit' => 191])
-                ->addColumn('content', 'string', ['limit' => MysqlAdapter::TEXT_LONG])
+                ->addColumn('content', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
                 ->addColumn('owner', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('deptCode', 'char', ['null' => true, 'limit' => 22])
                 ->addColumn('addDate', 'date', [])
@@ -2346,7 +2346,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('sid', 'integer', ['limit' => MysqlAdapter::INT_BIG])
                 ->addColumn('source', 'string', ['limit' => 191])
                 ->addColumn('medium', 'string', ['limit' => 191])
-                ->addColumn('url', 'string', ['limit' => MysqlAdapter::TEXT_REGULAR])
+                ->addColumn('url', 'text', ['limit' => MysqlAdapter::TEXT_REGULAR])
                 ->addColumn('clicked', 'integer', ['limit' => MysqlAdapter::INT_REGULAR])
                 ->addColumn('addDate', 'datetime', [])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
@@ -2454,7 +2454,7 @@ class InitialSchema extends AbstractMigration
                     ORDER BY sttr.stuID;"
             );
         endif;
-        
+
         if (!$this->hasTable('v_rgn')) :
             $this->execute(
                 "CREATE VIEW v_rgn AS
@@ -2468,7 +2468,7 @@ class InitialSchema extends AbstractMigration
                         courseSecID"
             );
         endif;
-        
+
         if (!$this->hasTable('v_sacp')) :
             $this->execute(
                 "CREATE VIEW v_sacp AS
