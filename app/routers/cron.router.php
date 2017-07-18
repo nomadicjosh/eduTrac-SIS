@@ -495,7 +495,8 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                 . " LEFT JOIN person ON stal.stuID  = person.personID"
                 . " LEFT JOIN clas ON stal.currentClassLevel = clas.code"
                 . " WHERE stal.acadStanding = 'PROB'"
-                . " AND stal.endDate IS NULL";
+                . " AND stal.endDate IS NULL"
+                . " GROUP BY stal.stuID, stal.acadStanding";
 
             $filename = \app\src\ID::string(10) . ".csv";
             $csv = new \app\src\CSVEmail(DB_HOST, DB_NAME, DB_USER, DB_PASS);
@@ -783,7 +784,8 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                 LEFT JOIN sttr ON stac.stuID = sttr.stuID 
                 WHERE stac.termCode = sttr.termCode 
                 AND stac.acadLevelCode = sttr.acadLevelCode 
-                GROUP BY stac.stuID,stac.termCode,stac.acadLevelCode");
+                GROUP BY stac.stuID,stac.termCode,stac.acadLevelCode 
+                HAVING SUM(stac.gradePoints) > 0");
             $q = $terms->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -825,9 +827,9 @@ $app->group('/cron', function () use($app, $emailer, $email) {
     $app->get('/updateSTAL/', function () use($app) {
         try {
             $spro = $app->db->sacp()
-                ->select('sacp.stuID,acad_program.acadLevelCode')
+                ->select('sacp.stuID,sacp.acadProgCode,acad_program.acadLevelCode')
                 ->_join('acad_program', 'sacp.acadProgCode = acad_program.acadProgCode')
-                ->where('sacp.currStatus = "A"');
+                ->whereIn('sacp.currStatus',['A','G','W']);
             $q = $spro->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -837,30 +839,54 @@ $app->group('/cron', function () use($app, $emailer, $email) {
             });
 
             foreach ($q as $r) {
-                $scrd = $app->db->v_scrd()
-                    ->select('gpa,enrollmentStatus,term')
+                $term = $app->db->sttr()
+                    ->select('sttr.termCode,term.termStartDate')
+                    ->_join('term','sttr.termCode = term.termCode')
+                    ->_join('stal','sttr.stuID = stal.stuID AND sttr.acadLevelCode = stal.acadLevelCode')
+                    ->_join('sacp','stal.acadProgCode = sacp.acadProgCode')
                     ->where('stuID = ?', _h($r['stuID']))->_and_()
-                    ->where('acadLevel = ?', _h($r['acadLevelCode']))
+                    ->where('acadLevelCode = ?', _h($r['acadLevelCode']))->_and_()
+                    ->whereIn('sacp.currStatus',['A','G','W'])
+                    ->groupBy('stal.stuID,stal.acadProgCode,stal.acadLevelCode')
+                    ->orderBy('created', 'ASC')
                     ->findOne();
 
-                $term = $app->db->stac()
-                    ->select('term.termStartDate')
-                    ->_join('term', 'stac.termCode = term.termCode')
-                    ->where('stuID = ?', _h($r['stuID']))
-                    ->orderBy('stac.addDate', 'DESC')
+                $status = $app->db->sttr()
+                    ->select('stuLoad')
+                    ->where('stuID = ?', _h($r['stuID']))->_and_()
+                    ->where('acadLevelCode = ?', _h($r['acadLevelCode']))
+                    ->orderBy('created', 'DESC')
+                    ->findOne();
+
+                $gpa = $app->db->stac()
+                    ->select('SUM(stac.gradePoints)/SUM(stac.attCred) AS gpa')
+                    ->where('stac.stuID = ?', _h($r['stuID']))->_and_()
+                    ->where('stac.acadLevelCode = ?', _h($r['acadLevelCode']))
+                    ->findOne();
+
+                $sacp = $app->db->sacp()
+                    ->select('sacp.currStatus,IFNULL(sacp.graduationDate,sacp.endDate) AS EndDate')
+                    ->_join('acad_program', 'sacp.acadProgCode = acad_program.acadProgCode')
+                    ->where('sacp.stuID = ?', _h($r['stuID']))->_and_()
+                    ->where('acad_program.acadLevelCode = ?', _h($r['acadLevelCode']))->_and_()
+                    ->whereIn('sacp.currStatus', ['A', 'G', 'W'])
+                    ->groupBy('acad_program.acadLevelCode,acad_program.acadProgCode')
                     ->findOne();
 
                 $stal = $app->db->stal();
                 $stal->set([
-                        'currentClassLevel' => etsis_clvr_rule(_h($r['stuID']), _h($r['acadLevelCode'])),
-                        'enrollmentStatus' => _h($scrd->enrollmentStatus),
-                        'acadStanding' => etsis_alst_rule(_h($r['stuID']), _h($r['acadLevelCode'])),
-                        'gpa' => _h($scrd->gpa),
-                        'startTerm' => _h($scrd->term),
-                        'startDate' => _h($term->termStartDate)
+                        'currentClassLevel' => etsis_clvr_rule(_h($r['stuID']), _h($r['acadLevelCode'])) != '' ? etsis_clvr_rule(_h($r['stuID']), _h($r['acadLevelCode'])) : NULL,
+                        'enrollmentStatus' => _h($sacp->currStatus) <> 'A' ? _h($sacp->currStatus) : _h($status->stuLoad),
+                        'acadStanding' => etsis_alst_rule(_h($r['stuID']), _h($r['acadLevelCode'])) != '' ? etsis_alst_rule(_h($r['stuID']), _h($r['acadLevelCode'])) : NULL,
+                        'gpa' => _h($gpa->gpa),
+                        'startTerm' => _h($term->termCode) != '' ? _h($term->termCode) : NULL,
+                        'startDate' => _h($term->termStartDate) != '' ? _h($term->termStartDate) : NULL,
+                        'endDate' => _h($sacp->EndDate) != NULL ? _h($sacp->EndDate) : NULL
                     ])
                     ->where('stuID = ?', _h($r['stuID']))->_and_()
-                    ->where('acadLevelCode = ?', _h($r['acadLevelCode']))
+                    ->where('acadLevelCode = ?', _h($r['acadLevelCode']))->_and_()
+                    ->where('acadProgCode = ?', _h($r['acadProgCode']))
+                    ->groupBy('stuID, acadProgCode, acadLevelCode')
                     ->update();
             }
         } catch (NotFoundException $e) {
