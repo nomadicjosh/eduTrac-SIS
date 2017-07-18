@@ -458,11 +458,17 @@ function etsis_nodeq_student_email()
                 $from = get_person_by('email', _h($r->from));
                 $to = get_person_by('personID', _h($r->to));
                 $message = process_email_html(_escape($r->message), _h($r->subject));
-                $headers[] = sprintf("From: %s <auto-reply@%s>", _h(get_option('institution_name')), get_domain_name());
-                $headers[] = sprintf("Reply-to: %s", get_name(_h($from->personID)) . ' <' . _h($from->email) . '>');
+                $headers[] = sprintf("From: %s", _h($from->email) != '' ? _h($from->email) : 'no-reply@' . get_domain_name());
+                if (_h($r->cc) != '') {
+                    $headers[] = sprintf("Cc: %s", _h($r->cc));
+                }
+                if (_h($r->bcc) != '') {
+                    $headers[] = sprintf("Bcc: %s", _h($r->bcc));
+                }
+                $headers[] = sprintf("Reply-to: %s", _h($from->email));
 
                 try {
-                    _etsis_email()->etsisMail(_h($to->email), _h($r->subject), $message, $headers, [_h($r->attachment)]);
+                    _etsis_email()->etsisMail(_h($to->email), _h($r->subject), $message, $headers, _h($r->attachment) != '' ? [_h($r->attachment)] : []);
                 } catch (phpmailerException $e) {
                     Cascade::getLogger('system_email')->alert(sprintf('PHPMAILER[%s]: %s', $e->getCode(), $e->getMessage()));
                 } catch (Exception $e) {
@@ -474,8 +480,9 @@ function etsis_nodeq_student_email()
                 $upd->save();
 
                 if (++$i === $numItems) {
-                    //Delete attachment from server.
-                    unlink(_h($r->attachment));
+                    if (file_exists(_h($r->attachment))) {
+                        unlink(_h($r->attachment));
+                    }
                     //If we reach the last item, send user a desktop notification.
                     etsis_push_notify('Student email.', 'Email sent.');
                 }

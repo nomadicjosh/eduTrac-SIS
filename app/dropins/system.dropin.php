@@ -11,6 +11,11 @@ try {
     if (!Validate::table('php_encryption')->exists()) {
         Node::dispense('php_encryption');
     }
+    
+    $email = Node::table('student_email');
+    if(!in_array('cc', $email->fields())) {
+        $email->addFields(['cc' => 'string', 'bcc' => 'string']);
+    }
 } catch (NodeQException $e) {
     Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: Unable to create Node: %s', $e->getCode(), $e->getMessage()));
 } catch (Exception $e) {
