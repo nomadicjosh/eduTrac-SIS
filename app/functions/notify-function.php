@@ -74,6 +74,7 @@ function etsis_desktop_notify($title, $message, $hide = 'true')
                         width: \"400px\",
                         type: \"notice\",
                         shadow: true,
+                        auto_display: true,
                         hide: $hide,
                         delay: 200000,
                         desktop: {
@@ -110,7 +111,8 @@ function etsis_push_notify($title, $message)
     $notification = (new Notification())
         ->setTitle($title)
         ->setBody($message)
-        ->setIcon(BASE_PATH . 'static/assets/imgages/icon-success.png');
+        ->setIcon(BASE_PATH . 'static/assets/images/icon-success.png')
+        ->addOption('sound', $app->hook->apply_filter('desktop_push_notify_sound', 'Submarine'));
 
     // Send it
     return $app->hook->apply_filter('push_notify', $notifier->send($notification));
