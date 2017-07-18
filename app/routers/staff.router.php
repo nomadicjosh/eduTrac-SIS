@@ -307,6 +307,7 @@ $app->group('/staff', function () use($app) {
          */ else {
 
             etsis_register_style('form');
+            etsis_register_style('selectize');
             etsis_register_script('select');
             etsis_register_script('select2');
 
@@ -441,6 +442,7 @@ $app->group('/staff', function () use($app) {
          */ else {
 
             etsis_register_style('form');
+            etsis_register_style('selectize');
             etsis_register_script('select');
             etsis_register_script('select2');
             etsis_register_script('datepicker');

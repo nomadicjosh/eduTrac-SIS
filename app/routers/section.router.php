@@ -977,6 +977,21 @@ $app->group('/sect', function() use ($app) {
             Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()));
         }
 
+        try {
+            $stu = $app->db->student()
+                ->where('status = "A"')
+                ->find();
+        } catch (NotFoundException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (ORMException $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error($e->getMessage());
+            _etsis_flash()->error(_etsis_flash()->notice(409));
+        }
+
         etsis_register_style('form');
         etsis_register_style('table');
         etsis_register_script('select');
@@ -984,9 +999,58 @@ $app->group('/sect', function() use ($app) {
 
         $app->view->display('section/rrsr', [
             'title' => 'Registration Restriction Rule (RRSR)',
-            'rrsr' => $rrsr
+            'rrsr' => $rrsr,
+            'stu' => $stu
             ]
         );
+    });
+
+    /**
+     * Before route check.
+     */
+    $app->before('POST', '/rgn/rrsr/test/', function() {
+        if (!hasPermission('manage_business_rules')) {
+            _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+            exit();
+        }
+    });
+
+    $app->post('/rgn/rrsr/test/', function () use($app) {
+        try {
+            $rlde = get_rule_by_code($app->req->post['rule']);
+            $rule = Node::table('rrsr')->where('rule', '=', $app->req->post['rule'])->find();
+            try {
+                $db = $app->db->{_h($rlde->file)}()
+                    ->where('perc.personID = ?', $app->req->post['stuID'])->_and_()
+                    ->where("$rlde->rule")
+                    ->findOne();
+                $dept = get_department(_h($rlde->dept));
+                if (false != $db) {
+                    $message = _escape($rule->value);
+                    $message = str_replace('{name}', get_name($app->req->post['stuID']), $message);
+                    $message = str_replace('{stuID}', get_alt_id($app->req->post['stuID']), $message);
+                    $message = str_replace('{deptName}', _h($dept->deptName), $message);
+                    $message = str_replace('{deptEmail}', _h($dept->deptEmail), $message);
+                    $message = str_replace('{deptPhone}', _h($dept->deptPhone), $message);
+                    _etsis_flash()->error($message, $app->req->server['HTTP_REFERER']);
+                } else {
+                    _etsis_flash()->success(sprintf(_t('<strong>%s</strong> passes the <strong>%s</strong> rule.'), get_name($app->req->post['stuID']), _escape($rlde->description)), $app->req->server['HTTP_REFERER']);
+                }
+            } catch (NotFoundException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+            } catch (ORMException $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+            } catch (Exception $e) {
+                Cascade::getLogger('error')->error($e->getMessage());
+                _etsis_flash()->error(_etsis_flash()->notice(409), $app->req->server['HTTP_REFERER']);
+            }
+        } catch (NodeQException $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()), $app->req->server['HTTP_REFERER']);
+        } catch (Exception $e) {
+            Cascade::getLogger('error')->error(sprintf('NODEQSTATE[%s]: %s', $e->getCode(), $e->getMessage()), $app->req->server['HTTP_REFERER']);
+        }
     });
 
     /**

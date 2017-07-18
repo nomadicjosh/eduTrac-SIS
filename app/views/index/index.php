@@ -18,6 +18,7 @@ $app->view->block('myetsis');
 <script type="text/javascript">
 tinymce.init({
 	selector: "textarea",
+    height: '400',
 	plugins: [
 		"advlist autolink lists link image charmap print preview anchor",
 		"searchreplace visualblocks code fullscreen",

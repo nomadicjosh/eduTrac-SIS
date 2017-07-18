@@ -59,7 +59,7 @@ $stu = get_student(_h($sacd->stuID));
 							</div>
 							
 							<div class="col-md-2">
-                                <input type="text" name="sectionNumber" value="<?=_h($sacd->sectionNumber);?>" class="form-control" required/>
+                                <input type="text" name="sectionNumber" value="<?=_h($sacd->sectionNumber);?>" class="form-control" <?=_h($sacd->creditType) == 'TR' ? 'readonly required' : '';?>/>
                             </div>
 						</div>
 						<!-- // Group END -->

@@ -651,6 +651,7 @@ $app->asset->registerStyleCollection('querybuilder', [
 $app->asset->registerStyleCollection('elFinder', ['elfinder/css/elfinder.min.css', 'elfinder/css/theme.css']);
 $app->asset->registerStyleCollection('jquery-ui', ['jquery-ui/jquery-ui.min.css']);
 $app->asset->registerStyleCollection('bootstrap-datepicker', ['datepicker/bootstrap-datetimepicker.min.css']);
+$app->asset->registerStyleCollection('selectize', ['querybuilder/selectize/css/selectize.default.css']);
 
 $app->asset->registerScriptCollection('gridforms', ['admin/gridforms/gridforms.js']);
 $app->asset->registerScriptCollection('select', ['admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js', 'admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js']);
@@ -673,10 +674,12 @@ $app->asset->registerScriptCollection('highcharts', ['admin/Highcharts/highchart
 $app->asset->registerScriptCollection('dashboard', ['admin/Highcharts/highcharts-conf.js']);
 $app->asset->registerScriptCollection('opened', ['admin/Highcharts/campaign-opened.js']);
 $app->asset->registerScriptCollection('clicked', ['admin/Highcharts/campaign-clicked.js']);
+$app->asset->registerScriptCollection('attendance', ['admin/Highcharts/attendance.js']);
 $app->asset->registerScriptCollection('bootstrap-datepicker', ['admin/datepicker/bootstrap-datetimepicker.min.js', 'admin/datepicker/custom.js']);
 $app->asset->registerScriptCollection('jquery-ui', ['jquery-ui/jquery-ui.min.js']);
 $app->asset->registerScriptCollection('momentjs', ['momentjs/moment.js']);
 $app->asset->registerScriptCollection('elFinder', ['elfinder/js/elfinder.full.js', 'elfinder/js/tinymce.plugin.js']);
+$app->asset->registerScriptCollection('checked', ['admin/forms/elements/fuelux-checkbox/fuelux-checkbox.js', 'admin/forms/elements/fuelux-radio/fuelux-radio.js']);
 
 require( APP_PATH . 'functions' . DS . 'global-function.php' );
 require( APP_PATH . 'functions' . DS . 'notify-function.php' );

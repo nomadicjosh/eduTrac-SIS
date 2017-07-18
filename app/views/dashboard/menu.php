@@ -306,24 +306,30 @@
                                     <ul>
                                         <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_41"><a<?=($screen === 'mysect') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/courses/"><?=_t( 'My Course Sections' );?></a></li>
                                         <?php if(_mf('gradebook_module')) : ?>
+                                        <?php if($sect && _he('access_grading_screen')) : ?>
+                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_110"><a<?=($screen === 'attend') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/attendance/"><?=_t( 'Attendance' );?></a></li>
+                                        <?php if(does_attendance_exist(_h($sect[0]['courseSecID']), ['P','A','T']) > 0) : ?>
+                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_111"><a<?=($screen === 'attrep') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/attendance-report/"><?=_t( 'Attendance Report' );?></a></li>
+                                        <?php endif; ?>
+                                        <?php endif; ?>
                                         <?php if($sect && $screen !== 'vsect' && $screen !== 'csect' && _he('access_gradebook')) : ?>
-                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_42"><a<?=($screen === 'addassign') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/add-assignment/<?=_h($sect[0]['courseSecID']);?>/"><?=_t( 'Add Assignment' );?></a></li>
+                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_42"><a<?=($screen === 'addassign') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/add-assignment/"><?=_t( 'Add Assignment' );?></a></li>
                                         <?php if($sect && $screen !== 'vsect' && $screen !== 'csect') : ?>
                                         <?php if(assignmentExist(_h($sect[0]['courseSecID'])) && _he('access_gradebook')) : ?>
-                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_43"><a<?=($screen === 'assigns') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/assignments/<?=_h($sect[0]['courseSecID']);?>/"><?=_t( 'Assignments' );?></a></li>
+                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_43"><a<?=($screen === 'assigns') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/assignments/"><?=_t( 'Assignments' );?></a></li>
                                         <?php endif; ?>
                                         <?php endif; ?>
                                         <?php endif; ?>
                                         <?php if($sect && $screen !== 'vsect' && $screen !== 'csect') : ?>
                                         <?php if(gradebookExist(_h($sect[0]['courseSecID'])) && _he('access_gradebook')) : ?>
-                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_44"><a<?=($screen === 'gradebook') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/gradebook/<?=_h($sect[0]['courseSecID']);?>/"><?=_t( 'Gradebook' );?></a></li>
+                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_44"><a<?=($screen === 'gradebook') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/gradebook/"><?=_t( 'Gradebook' );?></a></li>
                                         <?php endif; ?>
                                         <?php endif; ?>
                                         <?php endif; ?>
                                         <?php if($sect && $screen !== 'vsect' && $screen !== 'csect') : ?>
                                         <?php if(studentsExist(_h($sect[0]['courseSecID']))) : ?>
-                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_45"><a<?=($screen === 'email') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/students/<?=_h($sect[0]['courseSecID']);?>/"><?=_t( 'Email Students' );?></a></li>
-                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_46"><a<?=($screen === 'fgrade') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/final-grade/<?=_h($sect[0]['courseSecID']);?>/"><?=_t( 'Final Grades' );?></a></li>
+                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_45"><a<?=($screen === 'email') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/students/"><?=_t( 'Email Students' );?></a></li>
+                                        <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_46"><a<?=($screen === 'fgrade') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/final-grade/"><?=_t( 'Final Grades' );?></a></li>
                                         <?php endif; ?>
                                         <?php endif; ?>
                                     </ul>

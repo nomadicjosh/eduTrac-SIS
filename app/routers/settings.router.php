@@ -71,7 +71,7 @@ $app->match('GET|POST', '/registration/', function () use($app) {
         $options = [
             'open_registration', 'current_term_code', 'number_of_courses',
             'account_balance', 'open_terms', 'registration_term',
-            'reg_instructions','open_webreg_date'
+            'reg_instructions', 'open_webreg_date'
         ];
 
         foreach ($options as $option_name) {
@@ -226,6 +226,34 @@ $app->match('GET|POST', '/sms/', function () use($app) {
         'title' => 'Twilio Settings'
         ]
     );
+});
+
+$app->before('POST', '/sms/test/', function() {
+    if (!is_user_logged_in()) {
+        _etsis_flash()->error(_t('401 - Error: Unauthorized.'), get_base_url() . 'login' . '/');
+        exit();
+    }
+    if (!hasPermission('edit_settings')) {
+        _etsis_flash()->error(_t('403 - Error: Forbidden.'), get_base_url() . 'dashboard' . '/');
+        exit();
+    }
+});
+
+$app->post('/sms/test/', function () use($app) {
+    try {
+        $client = new Twilio\Rest\Client(get_option('twilio_account_sid'), get_option('twilio_auth_token'));
+        $client->messages->create(
+            $app->req->post['to'], // Text this number
+            [
+            'from' => get_option('twilio_phone_number'), // From a valid Twilio number
+            'body' => $app->req->post['message']
+            ]
+        );
+        _etsis_flash()->success(_t('Text message has been sent.'), get_base_url() . 'sms' . '/');
+    } catch (Twilio\Exceptions\RestException $ex) {
+        \Cascade\Cascade::getLogger('error')->error($ex->getMessage());
+        _etsis_flash()->error($ex->getMessage(), get_base_url() . 'sms' . '/');
+    }
 });
 
 $app->setError(function() use($app) {

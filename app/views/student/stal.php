@@ -61,7 +61,7 @@ $stu = get_student(_h($stal->stuID));
                             <label class="col-md-3 control-label"><?=_t( 'Academic Level' );?></label>
                             <div class="col-md-8">
                                 <select name="acadLevelCode"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
-									<option value="">&nbsp;</option>
+									<option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('aclv', null, 'code', 'code', 'name', _h($stal->acadLevelCode)); ?>
 	                        	</select>
                             </div>
@@ -73,7 +73,7 @@ $stu = get_student(_h($stal->stuID));
                             <label class="col-md-3 control-label"><?=_t( 'Classification' );?></label>
                             <div class="col-md-8">
                                 <select name="currentClassLevel"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
-									<option value="">&nbsp;</option>
+									<option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('clas', null, 'code', 'code', 'name', _h($stal->currentClassLevel)); ?>
 	                        	</select>
                             </div>
@@ -85,13 +85,14 @@ $stu = get_student(_h($stal->stuID));
                             <label class="col-md-3 control-label"><?=_t( 'Enrollment Status' );?></label>
                             <div class="col-md-8">
                             	<select name="enrollmentStatus"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
-									<option value="">&nbsp;</option>
+									<option value="NULL">&nbsp;</option>
                                     <option value="L"<?=selected('L',_h($stal->enrollmentStatus,false));?>><?=_t('(L) Less Than Half Time');?></option>
                                     <option value="H"<?=selected('H',_h($stal->enrollmentStatus,false));?>><?=_t('(H) Half Time');?></option>
                                     <option value="Q"<?=selected('Q',_h($stal->enrollmentStatus,false));?>><?=_t('(Q) Quarter Time');?></option>
                                     <option value="F"<?=selected('F',_h($stal->enrollmentStatus,false));?>><?=_t('(F) Full Time');?></option>
                                     <option value="O"<?=selected('O',_h($stal->enrollmentStatus,false));?>><?=_t('(O) Overload');?></option>
                                     <option value="G"<?=selected('G',_h($stal->enrollmentStatus,false));?>><?=_t('(G) Graduated');?></option>
+                                    <option value="W"<?=selected('W',_h($stal->enrollmentStatus,false));?>><?=_t('(W) Withdrawn');?></option>
 	                        	</select>
                             </div>
                         </div>
@@ -117,7 +118,7 @@ $stu = get_student(_h($stal->stuID));
                             <label class="col-md-3 control-label"><?=_t( 'Start Term' );?></label>
                             <div class="col-md-8">
                             	<select name="startTerm"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
-									<option value="">&nbsp;</option>
+									<option value="NULL">&nbsp;</option>
                             		<?php table_dropdown('term', 'termCode <> "NULL"', 'termCode', 'termCode', 'termName',_h($stal->startTerm)); ?>
                             	</select>
                             </div>

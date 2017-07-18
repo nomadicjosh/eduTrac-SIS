@@ -106,15 +106,24 @@ function etsis_prereq_rule($stuID, $crseID)
         $rule = _escape($crse->rule);
         if ($rule != null) {
             $prrl = $app->db->query(
-                    "SELECT v_sacp.stuID FROM v_sacp"
-                    . " INNER JOIN stal ON v_sacp.stuID = stal.stuID AND v_sacp.prog = stal.acadProgCode"
-                    . " INNER JOIN v_scrd ON v_sacp.stuID = v_scrd.stuID AND v_sacp.prog = v_scrd.prog"
-                    . " WHERE v_sacp.stuID = ?"
-                    . " AND $rule", [$stuID]
-                )
-                ->findOne();
+                "SELECT v_sacp.stuID FROM v_sacp"
+                . " INNER JOIN stal ON v_sacp.stuID = stal.stuID AND v_sacp.prog = stal.acadProgCode"
+                . " WHERE $rule"
+            );
 
-            if (_h($prrl->stuID) <> $stuID) {
+            $q = $prrl->find(function ($data) {
+                $array = [];
+                foreach ($data as $d) {
+                    $array[] = $d;
+                }
+                return $array;
+            });
+            $a = [];
+            foreach ($q as $row) {
+                $a[] = _escape($row['stuID']);
+            }
+
+            if (!in_array($stuID, $a)) {
                 return false;
             }
         }

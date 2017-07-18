@@ -35,6 +35,11 @@ $screen = 'setting';
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
+            
+            <?php if(_h(get_option('twilio_phone_number')) != '') : ?>
+                <a href="#test" data-toggle="modal" class="btn btn-inverse pull-right"><i class="fa fa-caret-square-o-right"></i></a>
+                <div class="breakline">&nbsp;</div>
+            <?php endif; ?>
 		
 			<!-- Widget heading -->
 			<div class="widget-head">
@@ -175,6 +180,62 @@ $screen = 'setting';
 	        </div>
       	</div>
     </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="test">
+        <form class="form-horizontal margin-none" action="<?=get_base_url();?>sms/test/" id="validateSubmitForm" method="post" autocomplete="off">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal heading -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title"><?=_t( 'Send Test SMS' );?></h3>
+                </div>
+                <!-- // Modal heading END -->
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <!-- Column -->
+					<div class="col-md-12">
+					
+						<!-- Group -->
+						<div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( "Recipient's Number" );?></label>
+							<div class="col-md-8">
+								<input type="text" name="to" class="form-control" required/>
+							</div>
+						</div>
+						<!-- // Group END -->
+                        
+                        <!-- Group -->
+						<div class="form-group">
+                            <label class="col-md-3 control-label"><?=_t( 'Message' );?></label>
+							<div class="col-md-8">
+                                <textarea name="message" class="form-control" placeholder="Write your text message . . ." required></textarea>
+							</div>
+						</div>
+						<!-- // Group END -->
+						
+					</div>
+					<!-- // Column END -->
+                </div>
+                <!-- // Modal body END -->
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <div class="breakline">&nbsp;</div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"><i></i><?=_t( 'Submit' );?></button>
+                    <a href="#" class="btn btn-default" data-dismiss="modal"><?=_t( 'Close' );?></a>
+                </div>
+                <!-- // Modal footer END -->
+            </div>
+        </div>
+        </form>
+    </div>
+    <!-- // Modal END -->
 	
 </div>	
 		

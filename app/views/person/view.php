@@ -15,18 +15,8 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'vnae';
-$list = '"'.implode('","', get_nae_tags()).'"';
+$tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
 ?>
-
-<script type="text/javascript">
-$(function() {
-<?php if(strlen($list) >= 3) : ?>
-	$("#select2_5").select2({tags:[<?=$list;?>]});
-<?php else : ?>
-	$("#select2_5").select2({tags:[]});
-<?php endif; ?>
-});
-</script>
 
 <ul class="breadcrumb">
 	<li><?=_t( 'You are here' );?></li>
@@ -73,7 +63,7 @@ $(function() {
                     <div data-row-span="4">
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Unique ID' );?></label>
-                            <input type="text" value="<?=(_h($nae[0]['altID']) != '' ? _h($nae[0]['altID']) : _h($nae[0]['personID']));?>" readonly />
+                            <input type="text" value="<?=get_alt_id(_h($nae[0]['personID']));?>" readonly />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Username' );?></label>
@@ -252,7 +242,7 @@ $(function() {
                         </div>
                         <div data-field-span="1">
                             <label><?= _t("Tags"); ?></label>
-                            <input id="select2_5" style="width:100%;" type="hidden" name="tags" value="<?=$nae[0]['tags'];?>" />
+                            <input type="hidden" id="input-tags" name="tags" value="<?=_h($nae[0]['tags']);?>" />
                         </div>
                     </div>
                 </fieldset>
@@ -368,5 +358,40 @@ $(function() {
 </div>	
 		
 		</div>
+
+<script src="<?=get_base_url();?>static/assets/components/modules/querybuilder/selectize/js/standalone/selectize.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+$('#input-tags').selectize({
+    plugins: ['remove_button'],
+    delimiter: ',',
+    persist: false,
+    maxItems: null,
+    valueField: 'tag',
+    labelField: 'tag',
+    searchField: ['tag'],
+    options: [
+        <?=$tags;?>
+    ],
+    render: {
+        item: function(item, escape) {
+            return '<div>' +
+                (item.tag ? '<span class="tag">' + escape(item.tag) + '</span>' : '') +
+            '</div>';
+        },
+        option: function(item, escape) {
+            var caption = item.tag ? item.tag : null;
+            return '<div>' +
+                (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+            '</div>';
+        }
+    },
+    create: function(input) {
+        return {
+            tag: input
+        };
+    }
+});
+</script>
+
 		<!-- // Content END -->
 <?php $app->view->stop(); ?>

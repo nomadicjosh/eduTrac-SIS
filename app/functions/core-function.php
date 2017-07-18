@@ -1606,7 +1606,8 @@ function get_screen($screen)
         'TCRE' => 'crse/tcre',
         'RLDE' => 'rlde',
         'ACLV' => 'form/aclv',
-        'MRKT' => 'mrkt'
+        'MRKT' => 'mrkt',
+        'REST' => 'form/rest'
     ];
     return $acronym[$screen];
 }
