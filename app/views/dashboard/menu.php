@@ -308,7 +308,9 @@
                                         <?php if(_mf('gradebook_module')) : ?>
                                         <?php if($sect && _he('access_grading_screen')) : ?>
                                         <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_110"><a<?=($screen === 'attend') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/attendance/"><?=_t( 'Attendance' );?></a></li>
+                                        <?php if(does_attendance_exist(_h($sect[0]['courseSecID']), ['P','A','T']) > 0) : ?>
                                         <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_111"><a<?=($screen === 'attrep') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/attendance-report/"><?=_t( 'Attendance Report' );?></a></li>
+                                        <?php endif; ?>
                                         <?php endif; ?>
                                         <?php if($sect && $screen !== 'vsect' && $screen !== 'csect' && _he('access_gradebook')) : ?>
                                         <li data-jstree='{"icon":"glyphicon glyphicon-file"}' id="shtml_42"><a<?=($screen === 'addassign') ? ' class="jstree-clicked"' : '';?> href="<?=get_base_url();?>sect/<?=_h($sect[0]['courseSecID']);?>/add-assignment/"><?=_t( 'Add Assignment' );?></a></li>
