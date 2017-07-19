@@ -788,7 +788,8 @@ $app->group('/cron', function () use($app, $emailer, $email) {
                 AND stac.creditType = 'I' 
                 AND grade_scale.count_in_gpa = '1' 
                 AND (stac.grade IS NOT NULL OR stac.grade <> '') 
-                GROUP BY stac.stuID,stac.termCode,stac.acadLevelCode");
+                GROUP BY stac.stuID,stac.termCode,stac.acadLevelCode 
+                HAVING COALESCE(SUM(stac.gradePoints),0) > 0");
             $q = $terms->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
