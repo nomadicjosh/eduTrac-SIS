@@ -837,7 +837,7 @@ function dashboard_course_count()
         $count = $app->db->course()
             ->where('course.currStatus = "A"')->_and_()
             ->where('course.endDate IS NULL')->_or_()
-            ->whereLte('course.endDate','0000-00-00')
+            ->whereLte('course.endDate', '0000-00-00')
             ->count('course.courseID');
 
         $crseCount = '<div class="col-md-4">';
@@ -872,7 +872,7 @@ function dashboard_acadProg_count()
         $count = $app->db->acad_program()
             ->where('acad_program.currStatus = "A"')->_and_()
             ->where('acad_program.endDate IS NULL')->_or_()
-            ->whereLte('acad_program.endDate','0000-00-00')
+            ->whereLte('acad_program.endDate', '0000-00-00')
             ->count('acad_program.id');
 
         $progCount = '<div class="col-md-4">';
@@ -1839,7 +1839,7 @@ function etsis_enqueue_script()
 function etsis_dev_mode()
 {
     if (APP_ENV === 'DEV') {
-        echo '<div class="alert dismissable alert-danger center sticky">'._t('Your system is currently in DEV mode. Please remember to set your system back to PROD mode after testing. When PROD mode is set, this warning message will disappear.').'</div>';
+        echo '<div class="alert dismissable alert-danger center sticky">' . _t('Your system is currently in DEV mode. Please remember to set your system back to PROD mode after testing. When PROD mode is set, this warning message will disappear.') . '</div>';
     }
 }
 $app->hook->add_action('etsis_dashboard_head', 'head_release_meta', 5);
@@ -1864,7 +1864,6 @@ $app->hook->add_action('post_rgn_stu_crse_reg', 'create_update_sttr_record', 5, 
 $app->hook->add_action('post_brgn_stu_crse_reg', 'create_update_sttr_record', 5, 1);
 $app->hook->add_action('dashboard_admin_notices', 'etsis_dev_mode', 5);
 $app->hook->add_action('myetsis_admin_notices', 'etsis_dev_mode', 5);
-$app->hook->add_action('stu_acct_rule', 'etsis_reg_btrl_rule', 5, 3);
 $app->hook->add_action('execute_webreg_check', 'web_reg_check', 5);
 $app->hook->add_filter('the_myetsis_page_content', 'etsis_autop');
 $app->hook->add_filter('the_myetsis_page_content', 'parsecode_unautop');
