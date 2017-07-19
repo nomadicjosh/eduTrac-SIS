@@ -267,6 +267,8 @@ function web_reg_check()
                 $options->meta_value = 1;
                 $options->where('meta_key = "open_registration"')
                     ->update();
+                
+                etsis_cache_flush_namespace('option');
             }
         }
 
@@ -276,6 +278,8 @@ function web_reg_check()
                 $options->meta_value = 0;
                 $options->where('meta_key = "open_registration"')
                     ->update();
+                
+                etsis_cache_flush_namespace('option');
             }
         }
     } catch (NotFoundException $e) {
