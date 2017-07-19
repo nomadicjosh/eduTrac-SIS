@@ -400,6 +400,10 @@ class etsis_Email
 
         $msg = process_email_html($message, _t(" Account Login Details"));
         $headers[] = sprintf("From: %s <auto-reply@%s>", _t('myetSIS::') . _h(get_option('institution_name')), get_domain_name());
+        if(!function_exists('etsis_smtp')) {
+            $headers[] = 'Content-Type: text/html; charset="UTF-8"';
+            $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
+        }
 
         try {
             $this->etsisMail(_h($nae->email), _h(get_option('institution_name')) . _t(":: Account Login Details"), $msg, $headers);
@@ -436,6 +440,10 @@ class etsis_Email
 
         $msg = process_email_html($message, _t("Application for Admissions"));
         $headers[] = sprintf("From: %s <auto-reply@%s>", _t('myetSIS::') . _h(get_option('institution_name')), get_domain_name());
+        if(!function_exists('etsis_smtp')) {
+            $headers[] = 'Content-Type: text/html; charset="UTF-8"';
+            $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
+        }
 
         try {
             $this->etsisMail(_h(get_option('admissions_email')), _t("Application for Admissions"), $msg, $headers);
@@ -467,7 +475,8 @@ class etsis_Email
         $message .= _t("<p>This is a receipt for the following student's registration.</p>");
         $message .= sprintf(_t('<p><strong>Student Name:</strong> %s</p>'), concat_ws(', ', _h($nae->lname), _h($nae->fname)));
         $message .= sprintf(_t('<p><strong>Student ID:</strong> %s</p>'), get_alt_id($id));
-        $message .= sprintf(_t('<p><strong>Courses:</strong> %s</p>'), str_replace(',', ', ', $courses));
+        $message .= _t('<p><strong>Courses:</strong><br />');
+        $message .= sprintf(_t('%s</p>'), str_replace(',', '<br />', $courses));
         $message .= _t("<p>Click on the link below and log into your account in order to verify this student's registration.</p>");
         $message .= sprintf(_t('<p><a href="%s">%s</a></p>'), $redirect_to, $redirect_to);
         $message .= '______________________________________________________<br />';
@@ -476,6 +485,10 @@ class etsis_Email
 
         $msg = process_email_html($message, _t("Course Registration"));
         $headers[] = sprintf("From: %s <auto-reply@%s>", _h(get_option('institution_name')), get_domain_name());
+        if(!function_exists('etsis_smtp')) {
+            $headers[] = 'Content-Type: text/html; charset="UTF-8"';
+            $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
+        }
 
         try {
             $this->etsisMail(_h($nae->email), _t('Course Registration'), $msg, $headers);
