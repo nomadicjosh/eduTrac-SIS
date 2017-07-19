@@ -776,16 +776,20 @@ $app->group('/cron', function () use($app, $emailer, $email) {
     $app->get('/updateSTTR/', function () use($app) {
         try {
             $terms = $app->db->query("SELECT 
-                    SUM(stac.attCred) AS stacAttCreds,SUM(stac.compCred) AS stacCompCreds,
-                    stac.stuID,stac.termCode,stac.acadLevelCode,SUM(stac.gradePoints) AS stacPoints,
+                    COALESCE(SUM(stac.attCred),0) AS stacAttCreds,COALESCE(SUM(stac.compCred),0) AS stacCompCreds,
+                    stac.stuID,stac.termCode,stac.acadLevelCode,COALESCE(SUM(stac.gradePoints),0) AS stacPoints,
                     sttr.attCred AS sttrAttCreds,sttr.gradePoints AS sttrPoints,
                     sttr.gpa 
                 FROM stac 
                 LEFT JOIN sttr ON stac.stuID = sttr.stuID 
+                LEFT JOIN grade_scale ON stac.grade = grade_scale.grade 
                 WHERE stac.termCode = sttr.termCode 
                 AND stac.acadLevelCode = sttr.acadLevelCode 
+                AND stac.creditType = 'I' 
+                AND grade_scale.count_in_gpa = '1' 
+                AND (stac.grade IS NOT NULL OR stac.grade <> '') 
                 GROUP BY stac.stuID,stac.termCode,stac.acadLevelCode 
-                HAVING SUM(stac.gradePoints) > 0");
+                HAVING COALESCE(SUM(stac.gradePoints),0) > 0");
             $q = $terms->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -860,8 +864,12 @@ $app->group('/cron', function () use($app, $emailer, $email) {
 
                 $gpa = $app->db->stac()
                     ->select('SUM(stac.gradePoints)/SUM(stac.attCred) AS gpa')
+                    ->_join('grade_scale','stac.grade = grade_scale.grade')
+                    ->where('grade_scale.count_in_gpa = "1"')->_and_()
                     ->where('stac.stuID = ?', _h($r['stuID']))->_and_()
+                    ->where('(stac.grade IS NOT NULL OR stac.grade <> "")')->_and_()
                     ->where('stac.acadLevelCode = ?', _h($r['acadLevelCode']))
+                    ->groupBy('stac.stuID,stac.acadLevelCode')
                     ->findOne();
 
                 $sacp = $app->db->sacp()

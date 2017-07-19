@@ -54,6 +54,10 @@ function etsis_nodeq_login_details()
                 $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
                 $message = process_email_html($message, _t("myetSIS Login Details"));
                 $headers[] = sprintf("From: %s <auto-reply@%s>", _t('myetSIS :: ') . _h(get_option('institution_name')), get_domain_name());
+                if (!function_exists('etsis_smtp')) {
+                    $headers[] = 'Content-Type: text/html; charset="UTF-8"';
+                    $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
+                }
 
                 try {
                     _etsis_email()->etsisMail(_h($r->email), _t("myetSIS Login Details"), $message, $headers);
@@ -119,6 +123,10 @@ function etsis_nodeq_reset_password()
                 $message = str_replace('#password#', _h($r->password), $message);
                 $message = process_email_html($message, _t('Reset Password'));
                 $headers[] = sprintf("From: %s <auto-reply@%s>", $from, get_domain_name());
+                if (!function_exists('etsis_smtp')) {
+                    $headers[] = 'Content-Type: text/html; charset="UTF-8"';
+                    $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
+                }
 
                 try {
                     _etsis_email()->etsisMail(_h($r->email), _t('Reset Password'), $message, $headers);
@@ -172,6 +180,10 @@ function etsis_nodeq_csv_email()
             foreach ($sql as $r) {
                 $message = process_email_html(_escape($r->message), _h($r->subject));
                 $headers[] = sprintf("From: %s <auto-reply@%s>", _h(get_option('institution_name')), get_domain_name());
+                if (!function_exists('etsis_smtp')) {
+                    $headers[] = 'Content-Type: text/html; charset="UTF-8"';
+                    $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
+                }
 
                 $attachment = $app->config('file.savepath') . _h($r->filename);
 
@@ -248,6 +260,10 @@ function etsis_nodeq_change_address()
                 $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
                 $message = process_email_html($message, _t('Change of Address Request'));
                 $headers[] = sprintf("From: %s <auto-reply@%s>", _t('myetSIS :: ') . _h(get_option('institution_name')), get_domain_name());
+                if (!function_exists('etsis_smtp')) {
+                    $headers[] = 'Content-Type: text/html; charset="UTF-8"';
+                    $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
+                }
 
                 try {
                     _etsis_email()->etsisMail(_h(get_option('contact_email')), _t('Change of Address Request'), $message, $headers);
@@ -317,6 +333,10 @@ function etsis_nodeq_acceptance_letter()
                 $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
                 $message = process_email_html($message, _h(get_option('institution_name')) . ' ' . _t('Decision Notification'));
                 $headers[] = sprintf("From: %s <auto-reply@%s>", _h(get_option('institution_name')), get_domain_name());
+                if (!function_exists('etsis_smtp')) {
+                    $headers[] = 'Content-Type: text/html; charset="UTF-8"';
+                    $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
+                }
 
                 try {
                     _etsis_email()->etsisMail(_h(get_option('contact_email')), _h(get_option('institution_name')) . ' ' . _t('Decision Notification'), $message, $headers);
@@ -466,6 +486,10 @@ function etsis_nodeq_student_email()
                     $headers[] = sprintf("Bcc: %s", _h($r->bcc));
                 }
                 $headers[] = sprintf("Reply-to: %s", _h($from->email));
+                if (!function_exists('etsis_smtp')) {
+                    $headers[] = 'Content-Type: text/html; charset="UTF-8"';
+                    $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
+                }
 
                 try {
                     _etsis_email()->etsisMail(_h($to->email), _h($r->subject), $message, $headers, _h($r->attachment) != '' ? [_h($r->attachment)] : []);

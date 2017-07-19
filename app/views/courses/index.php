@@ -34,7 +34,6 @@ $(window).load(function(){
 <div class="col-md-12">
 
 	<h3 class="glyphicons search"><i></i><?=_t( 'Search Courses' );?></h3>
-	<div class="separator bottom"></div>
 	
 	<?=_etsis_flash()->showMessage();?>
 	
@@ -184,6 +183,8 @@ $(window).load(function(){
 		</div>
 	</div>
 	</form>
+    
+    <div class="separator bottom" style="margin-bottom:15em;"></div>
 
 </div>
 	</div>
