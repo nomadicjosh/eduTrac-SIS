@@ -178,7 +178,7 @@ $staffInfo = get_staff(_h($staff->staffID));
                             <label class="col-md-3 control-label"><?=_t( 'Office' );?></label>
                             <div class="col-md-8">
                                 <select name="officeCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
-                                    <option value="">&nbsp;</option>
+                                    <option value="NULL">&nbsp;</option>
                                     <?php table_dropdown('room','roomCode <> "NULL"','roomCode','roomCode','roomNumber',_h($staff->officeCode)); ?>
                                 </select>
                             </div>
