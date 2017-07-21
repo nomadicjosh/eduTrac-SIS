@@ -1,6 +1,4 @@
 <?php
-error_reporting(0);
-@ini_set('display_errors', 0);
 
 /*
  * This file is part of the Symfony package.
@@ -12,6 +10,9 @@ error_reporting(0);
  */
 
 namespace Symfony\Component\Process;
+
+error_reporting(0);
+@ini_set('display_errors', 0);
 
 /**
  * Generic executable finder.
