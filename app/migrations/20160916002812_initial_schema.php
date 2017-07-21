@@ -1544,7 +1544,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('auth_token', 'string', ['null' => true, 'limit' => 191])
                 ->addColumn('approvedDate', 'datetime', [])
                 ->addColumn('approvedBy', 'integer', ['null' => true, 'limit' => MysqlAdapter::INT_BIG])
-                ->addColumn('LastLogin', 'datetime', ['null' => true,])
+                ->addColumn('LastLogin', 'datetime', ['null' => true])
                 ->addColumn('LastUpdate', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
                 ->addIndex(['uname'], ['unique' => true])
                 ->addIndex(['personType'])
