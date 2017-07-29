@@ -2,6 +2,32 @@ twilio-php Changelog
 ====================
 
 
+[2017-07-27] Version 5.13.0
+----------------------------
+This release adds Beta and Preview products to main artifact.
+
+Previously, Beta and Preview products were only included in the `alpha`
+artifact. They are now being included in the main artifact to ease product
+discoverability and the collective operational overhead of maintaining multiple
+artifacts per library.
+
+**Api**
+- Remove unused `encryption_type` property on Recordings *(breaking change)*
+- Update `status` enum for Messages to include 'accepted'
+
+**Messaging**
+- Fix incorrectly typed capabilities property for PhoneNumbers.
+
+**Notify**
+- Add `ToBinding` optional parameter on Notifications resource creation. Accepted values are json strings.
+
+**Preview**
+- Add `sms_application_sid` to HostedNumberOrders.
+
+**Taskrouter**
+- Fully support conference functionality in reservations.
+
+
 [2017-07-13] Version 5.12.1
 ---------------------------
 - This release drops official support for PHP 5.3 and PHP 5.4, which were EOL'd
