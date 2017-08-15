@@ -268,7 +268,6 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 $sacp = $app->db->sacp();
                 $sacp->stuID = $id;
                 $sacp->acadProgCode = _trim($app->req->post['acadProgCode']);
-                $sacp->acadLevelCode = _trim($app->req->post['acadLevelCode']);
                 $sacp->currStatus = 'A';
                 $sacp->statusDate = \Jenssegers\Date\Date::now();
                 $sacp->startDate = $app->req->post['startDate'];
