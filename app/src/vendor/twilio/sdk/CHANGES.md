@@ -1,6 +1,97 @@
 twilio-php Changelog
 ====================
 
+[2017-09-28] Version 5.15.0
+----------------------------
+**Library**
+- Add warnings when trying to import/use objects from legacy versions of the library.
+
+**Chat**
+- Make member accessible through identity
+- Make channel subresources accessible by channel unique name
+- Set get list 'max_page_size' parameter to 100
+- Add service instance webhook retry configuration
+- Add media message capability
+- Make `body` an optional parameter on Message creation. *(breaking change)*
+
+**Notify**
+- `data`, `apn`, `gcm`, `fcm`, `sms` parameters in `Notifications` create resource now accept objects instead of strings. Passing manually stringified json objects will continue to work.
+
+**Taskrouter**
+- Add new query ability by TaskChannelSid or TaskChannelUniqueName
+- Move Events, Worker, Workers endpoint over to CPR
+- Add new RealTime and Cumulative Statistics endpoints
+
+**Video**
+- Create should allow an array of video_codecs.
+- Add video_codecs as a property of room to make it externally visible.
+
+
+[2017-09-15] Version 5.14.1
+----------------------------
+**Api**
+- Add `sip_registration` property on SIP Domains
+- Add new video and market usage category keys
+
+
+[2017-09-01] Version 5.14.0
+----------------------------
+**TwiML**
+- Add classes for all TwiML verbs.
+
+[2017-09-01] Version 5.13.4
+----------------------------
+**Sync**
+- Add support for Streams
+
+**Wireless**
+- Added DataSessions sub-resource to Sims.
+
+
+[2017-08-25] Version 5.13.3
+----------------------------
+**Library**
+- Add `lastRequest` and `lastResponse` properties to `CurlClient` to help debugging.
+
+**Api**
+- Update `status` enum for Recordings to include 'failed'
+- Add `errorCode` property on Recordings
+
+**Chat**
+- Add mutable parameters for channel, members and messages
+
+**Video**
+- New `media_region` parameter when creating a room, which controls which region media will be served out of.
+
+
+[2017-08-18] Version 5.13.2
+----------------------------
+**Api**
+- Add VoiceReceiveMode {'voice', 'fax'} option to IncomingPhoneNumber UPDATE requests
+
+**Chat**
+- Add channel message media information
+- Add service instance message media information
+
+**Preview**
+- Removed 'email' from bulk_exports configuration api [bi]. No migration plan needed because api has not been used yet.
+- Add DeployedDevices.
+
+**Sync**
+- Add support for Service Instance unique names
+
+
+[2017-08-10] Version 5.13.1
+----------------------------
+**Api**
+- Add New wireless usage keys added
+- Add `auto_correct_address` param for Addresses create and update
+- Add ChatGrant to Grants and deprecate IpMessagingGrant
+
+**Video**
+- Add `video_codec` enum and `video_codecs` parameter, which can be set to either `VP8` or `H264` during room creation.
+- Restrict recordings page size to 100
+
 
 [2017-07-27] Version 5.13.0
 ----------------------------

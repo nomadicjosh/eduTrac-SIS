@@ -68,6 +68,10 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
             'Gettext\\Languages\\' => 18,
             'Gettext\\' => 8,
         ),
+        'E' => 
+        array (
+            'Egulias\\EmailValidator\\' => 23,
+        ),
         'D' => 
         array (
             'Desarrolla2\\Test\\Cache\\' => 23,
@@ -193,6 +197,10 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
         array (
             0 => __DIR__ . '/..' . '/gettext/gettext/src',
         ),
+        'Egulias\\EmailValidator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/egulias/email-validator/EmailValidator',
+        ),
         'Desarrolla2\\Test\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/desarrolla2/cache/test',
@@ -276,6 +284,13 @@ class ComposerStaticInit374b9a16d4a8b9a796cd8fa04b1d5379
             'Httpful' => 
             array (
                 0 => __DIR__ . '/..' . '/nategood/httpful/src',
+            ),
+        ),
+        'D' => 
+        array (
+            'Doctrine\\Common\\Lexer\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/lexer/lib',
             ),
         ),
     );

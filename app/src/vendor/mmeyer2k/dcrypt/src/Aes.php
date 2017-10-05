@@ -50,7 +50,7 @@ class Aes extends Cryptobase
     
     /**
      * This string is used when hashing to ensure cross compatibility between
-     * dcrypt\mcrypt and dcrypt\aes*.
+     * dcrypt\mcrypt and dcrypt\aes.
      */
     const RIJNDA = 'rijndael-128';
 
@@ -59,9 +59,9 @@ class Aes extends Cryptobase
      * 
      * @param string $cyphertext Cyphertext to decrypt
      * @param string $password   Password that should be used to decrypt input data
-     * @param int    $cost       Number of HMAC iterations to perform on key
+     * @param int    $cost       Number of extra HMAC iterations to perform on key
      * 
-     * @return string|boolean Returns false on checksum validation failure
+     * @return string
      */
     public static function decrypt($cyphertext, $password, $cost = 0)
     {
@@ -92,7 +92,7 @@ class Aes extends Cryptobase
      * 
      * @param string $plaintext Plaintext string to encrypt.
      * @param string $password  Password used to encrypt data.
-     * @param int    $cost      Number of HMAC iterations to perform on key
+     * @param int    $cost      Number of extra HMAC iterations to perform on key
      * 
      * @return string 
      */
@@ -106,6 +106,11 @@ class Aes extends Cryptobase
 
         // Encrypt the plaintext
         $message = \openssl_encrypt($plaintext, static::CIPHER, $key, 1, $iv);
+        
+        // If message could not be encrypted then throw an exception
+        if ($message === false) {
+            throw new \exception('Could not encrypt the data.');
+        }
 
         // Create the cypher text prefix (iv + checksum)
         $prefix = $iv . self::checksum($message, $iv, $key, self::RIJNDA, self::mode());

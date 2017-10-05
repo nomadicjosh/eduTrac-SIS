@@ -1,4 +1,4 @@
-dcrypt
+:closed_lock_with_key:dcrypt
 ======
 [![Build Status](https://travis-ci.org/mmeyer2k/dcrypt.png)](https://travis-ci.org/mmeyer2k/dcrypt)
 [![Code Coverage](https://scrutinizer-ci.com/g/mmeyer2k/dcrypt/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/mmeyer2k/dcrypt/?branch=master)
@@ -8,7 +8,7 @@ dcrypt
 [![Latest Stable Version](https://poser.pugx.org/mmeyer2k/dcrypt/version)](https://packagist.org/packages/mmeyer2k/dcrypt)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/c48adefc-874e-4d14-88dc-05f7f407f968/mini.png)](https://insight.sensiolabs.com/projects/c48adefc-874e-4d14-88dc-05f7f407f968)
 
-A petite library of essential encryption functions for PHP (5.3 - 7.0).
+A petite library of essential encryption functions for PHP (5.3 - 7.1).
 
 - [Install](#install)
 - [Features](#features)
@@ -87,6 +87,8 @@ Supported (and tested) hash algos: all!
 
 **NOTE**: PHP's libmcrypt has fallen out of favor due to its stale codebase and inability to use AES-NI. Only use `\Dcrypt\Mcrypt` if there is a strong need. In nearly all cases `\Dcrypt\Aes` (which uses OpenSSL) is preferred.
 
+**NOTE**: Mcrypt module is removed in PHP 7.1+.
+
 ### Iterative HMAC Key Hardening
 To reduce the effectiveness of brute-force cracking on your encrypted blobs, you can provide an integer `$cost` parameter
 in your encryption/decryption calls. This integer will cause dcrypt to perform `$cost` number of extra HMAC operations on the key before passing it off to the underlying encryption system.
@@ -102,7 +104,7 @@ $plaintext = \Dcrypt\Aes::decrypt($encrypted, $password, 10000);
 
 ### Tamper Protection
 By default, `\Dcrypt\Aes`, `\Dcrypt\AesCtr` and `\Dcrypt\Mcrypt` will throw an `InvalidArgumentException` 
-if upon decryption if the supplied checksum is not valid.
+*before* decryption if the supplied checksum is not valid.
 ```php
 try {
   $decrypted = \Dcrypt\Aes::decrypt($badInput, $password);
@@ -203,4 +205,4 @@ $iv = \Dcrypt\Random::bytes(8); # get 8 random bytes
 1. Dcrypt is built entirely with static functions. If you are using the `new` keyword on any Dcrypt classes, you are doing it wrong!
 
 # API Documentation
-The latest API documentation can be found [here](https://apigen.ci/github/mmeyer2k/dcrypt/namespace-Dcrypt.html).
+The latest API documentation can be found [here](https://mmeyer2k.github.io/dcrypt/).

@@ -186,6 +186,14 @@ abstract class AdapterWrapper implements AdapterInterface, WrapperInterface
     /**
      * {@inheritdoc}
      */
+    public function bulkinsert(Table $table, $rows)
+    {
+        $this->getAdapter()->bulkinsert($table, $rows);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function fetchRow($sql)
     {
         return $this->getAdapter()->fetchRow($sql);
@@ -356,6 +364,14 @@ abstract class AdapterWrapper implements AdapterInterface, WrapperInterface
     /**
      * {@inheritdoc}
      */
+    public function truncateTable($tableName)
+    {
+        $this->getAdapter()->truncateTable($tableName);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getColumns($tableName)
     {
         return $this->getAdapter()->getColumns($tableName);
@@ -495,6 +511,22 @@ abstract class AdapterWrapper implements AdapterInterface, WrapperInterface
     public function dropDatabase($name)
     {
         $this->getAdapter()->dropDatabase($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createSchema($schemaName = 'public')
+    {
+        $this->getAdapter()->createSchema($schemaName);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function dropSchema($schemaName)
+    {
+        $this->getAdapter()->dropSchema($schemaName);
     }
 
     /**
