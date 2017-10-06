@@ -12,7 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$antGradDate = date("05/d/y",strtotime("+"._h($student[0]['comp_months'])." months"));
+$antGradDate = date("05/d/y",strtotime("+"._escape($student[0]['comp_months'])." months"));
 $tags = "{tag: '".implode("'},{tag: '", tagList())."'}";
 ?>
 
@@ -50,7 +50,7 @@ jQuery(document).ready(function() {
     <?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/add/<?=_h($student[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/add/<?=_escape($student[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -72,7 +72,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Student Name' );?></label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" readonly value="<?=get_name(_h($student[0]['personID']));?>" />
+                                <input type="text" class="form-control" readonly value="<?=get_name(_escape($student[0]['personID']));?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -83,7 +83,7 @@ jQuery(document).ready(function() {
 							<div class="col-md-8">
 								<select id="prog" name="acadProgCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
-                            		<?php table_dropdown('acad_program', null, 'acadProgCode', 'acadProgCode', 'acadProgTitle', _h($student[0]['acadProgCode'])); ?>
+                            		<?php table_dropdown('acad_program', null, 'acadProgCode', 'acadProgCode', 'acadProgTitle', _escape($student[0]['acadProgCode'])); ?>
                             	</select>
 							</div>
 						</div>
@@ -93,7 +93,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Program Title' );?></label>
                             <div class="col-md-8">
-                                <input type="text" id="acadProgTitle" readonly class="form-control" value="<?=_h($student[0]['acadProgTitle']);?>" />
+                                <input type="text" id="acadProgTitle" readonly class="form-control" value="<?=_escape($student[0]['acadProgTitle']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -102,7 +102,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Major' );?></label>
                             <div class="col-md-8">
-                                <input type="text" id="majorName" readonly class="form-control" value="<?=_h($student[0]['majorName']);?>" />
+                                <input type="text" id="majorName" readonly class="form-control" value="<?=_escape($student[0]['majorName']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -111,7 +111,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Location' );?></label>
                             <div class="col-md-8">
-                                <input type="text" id="locationName" readonly class="form-control" value="<?=_h($student[0]['locationName']);?>" />
+                                <input type="text" id="locationName" readonly class="form-control" value="<?=_escape($student[0]['locationName']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -120,7 +120,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'School' );?></label>
                             <div class="col-md-8">
-                                <input type="text" id="schoolName" readonly class="form-control" value="<?=_h($student[0]['schoolName']);?>" />
+                                <input type="text" id="schoolName" readonly class="form-control" value="<?=_escape($student[0]['schoolName']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -143,7 +143,7 @@ jQuery(document).ready(function() {
                             <div class="col-md-8">
                                 <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('aclv',null,'code','code','name',_h($student[0]['acadLevelCode'])); ?>
+                                    <?php table_dropdown('aclv',null,'code','code','name',_escape($student[0]['acadLevelCode'])); ?>
                                 </select>
                             </div>
                         </div>
@@ -159,7 +159,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Start Term' );?></label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" value="<?=_h($student[0]['startTerm']);?>" readonly/>
+                                <input type="text" class="form-control" value="<?=_escape($student[0]['startTerm']);?>" readonly/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -207,7 +207,7 @@ jQuery(document).ready(function() {
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Tags' );?></label>
                             <div class="col-md-8">
-                                <input id="input-tags" type="hidden" name="tags" value="<?=(_h($app->req->post['tags']) != '' ? _h($app->req->post['tags']) : '');?>" />
+                                <input id="input-tags" type="hidden" name="tags" value="<?=(_escape($app->req->post['tags']) != '' ? _escape($app->req->post['tags']) : '');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->

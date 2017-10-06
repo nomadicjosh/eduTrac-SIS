@@ -12,7 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$stu = get_student(_h($stal->stuID));
+$stu = get_student(_escape($stal->stuID));
 ?>
 
 <ul class="breadcrumb">
@@ -21,21 +21,21 @@ $stu = get_student(_h($stal->stuID));
     <li class="divider"></li>
     <li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/sacp/<?=_h($stal->sacpID);?>/" class="glyphicons coins"><i></i> <?=_h($stal->acadProgCode);?> <?=_t( 'Academic Program' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/sacp/<?=_escape($stal->sacpID);?>/" class="glyphicons coins"><i></i> <?=_escape($stal->acadProgCode);?> <?=_t( 'Academic Program' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'Student Academic Level (STAL)' );?></li>
 </ul>
 
 <div class="innerLR">
 
-	<?php get_stu_header(_h($stal->stuID)); ?>
+	<?php get_stu_header(_escape($stal->stuID)); ?>
     
     <div class="separator line bottom"></div>
     
     <?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacp/<?=_h($stal->sacpID);?>/stal/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacp/<?=_escape($stal->sacpID);?>/stal/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -51,7 +51,7 @@ $stu = get_student(_h($stal->stuID));
 						<div class="form-group">
 							<label class="col-md-3 control-label"><?=_t( 'Program' );?></label>
 							<div class="col-md-8">
-								<input type="text" readonly value="<?=_h($stal->acadProgCode);?> - <?=_h($stal->acadProgTitle);?>" class="form-control" />
+								<input type="text" readonly value="<?=_escape($stal->acadProgCode);?> - <?=_escape($stal->acadProgTitle);?>" class="form-control" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -62,7 +62,7 @@ $stu = get_student(_h($stal->stuID));
                             <div class="col-md-8">
                                 <select name="acadLevelCode"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('aclv', null, 'code', 'code', 'name', _h($stal->acadLevelCode)); ?>
+                                    <?php table_dropdown('aclv', null, 'code', 'code', 'name', _escape($stal->acadLevelCode)); ?>
 	                        	</select>
                             </div>
                         </div>
@@ -74,7 +74,7 @@ $stu = get_student(_h($stal->stuID));
                             <div class="col-md-8">
                                 <select name="currentClassLevel"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('clas', null, 'code', 'code', 'name', _h($stal->currentClassLevel)); ?>
+                                    <?php table_dropdown('clas', null, 'code', 'code', 'name', _escape($stal->currentClassLevel)); ?>
 	                        	</select>
                             </div>
                         </div>
@@ -86,13 +86,13 @@ $stu = get_student(_h($stal->stuID));
                             <div class="col-md-8">
                             	<select name="enrollmentStatus"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="NULL">&nbsp;</option>
-                                    <option value="L"<?=selected('L',_h($stal->enrollmentStatus,false));?>><?=_t('(L) Less Than Half Time');?></option>
-                                    <option value="H"<?=selected('H',_h($stal->enrollmentStatus,false));?>><?=_t('(H) Half Time');?></option>
-                                    <option value="Q"<?=selected('Q',_h($stal->enrollmentStatus,false));?>><?=_t('(Q) Quarter Time');?></option>
-                                    <option value="F"<?=selected('F',_h($stal->enrollmentStatus,false));?>><?=_t('(F) Full Time');?></option>
-                                    <option value="O"<?=selected('O',_h($stal->enrollmentStatus,false));?>><?=_t('(O) Overload');?></option>
-                                    <option value="G"<?=selected('G',_h($stal->enrollmentStatus,false));?>><?=_t('(G) Graduated');?></option>
-                                    <option value="W"<?=selected('W',_h($stal->enrollmentStatus,false));?>><?=_t('(W) Withdrawn');?></option>
+                                    <option value="L"<?=selected('L',_escape($stal->enrollmentStatus,false));?>><?=_t('(L) Less Than Half Time');?></option>
+                                    <option value="H"<?=selected('H',_escape($stal->enrollmentStatus,false));?>><?=_t('(H) Half Time');?></option>
+                                    <option value="Q"<?=selected('Q',_escape($stal->enrollmentStatus,false));?>><?=_t('(Q) Quarter Time');?></option>
+                                    <option value="F"<?=selected('F',_escape($stal->enrollmentStatus,false));?>><?=_t('(F) Full Time');?></option>
+                                    <option value="O"<?=selected('O',_escape($stal->enrollmentStatus,false));?>><?=_t('(O) Overload');?></option>
+                                    <option value="G"<?=selected('G',_escape($stal->enrollmentStatus,false));?>><?=_t('(G) Graduated');?></option>
+                                    <option value="W"<?=selected('W',_escape($stal->enrollmentStatus,false));?>><?=_t('(W) Withdrawn');?></option>
 	                        	</select>
                             </div>
                         </div>
@@ -108,7 +108,7 @@ $stu = get_student(_h($stal->stuID));
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'GPA' );?></label>
                             <div class="col-md-8">
-                                <input class="form-control"<?=sio();?> name="gpa" value="<?=_h(number_format($stal->gpa,6));?>" type="text" required/>
+                                <input class="form-control"<?=sio();?> name="gpa" value="<?=_escape(number_format($stal->gpa,6));?>" type="text" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -119,7 +119,7 @@ $stu = get_student(_h($stal->stuID));
                             <div class="col-md-8">
                             	<select name="startTerm"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="NULL">&nbsp;</option>
-                            		<?php table_dropdown('term', 'termCode <> "NULL"', 'termCode', 'termCode', 'termName',_h($stal->startTerm)); ?>
+                            		<?php table_dropdown('term', 'termCode <> "NULL"', 'termCode', 'termCode', 'termName',_escape($stal->startTerm)); ?>
                             	</select>
                             </div>
                         </div>
@@ -130,14 +130,14 @@ $stu = get_student(_h($stal->stuID));
                             <label class="col-md-3 control-label"><?=_t( 'Start/End Date' );?></label>
                             <div class="col-md-4">
                             	<div class="input-group date" id="datepicker6">
-                                    <input class="form-control"<?=sio();?> name="startDate" value="<?=_h($stal->startDate);?>" type="text" required/>
+                                    <input class="form-control"<?=sio();?> name="startDate" value="<?=_escape($stal->startDate);?>" type="text" required/>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
                             
                             <div class="col-md-4">
                                 <div class="input-group date" id="datepicker7">
-                                    <input class="form-control"<?=sio();?> name="endDate" value="<?=_h($stal->endDate);?>" type="text" />
+                                    <input class="form-control"<?=sio();?> name="endDate" value="<?=_escape($stal->endDate);?>" type="text" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
@@ -153,10 +153,10 @@ $stu = get_student(_h($stal->stuID));
 				
 				<!-- Form actions -->
 				<div class="form-actions">
-                    <input name="stalID" value="<?=_h($stal->stalID);?>" type="hidden" />
-                    <input name="stuID" value="<?=_h($stal->stuID);?>" type="hidden" />
+                    <input name="stalID" value="<?=_escape($stal->stalID);?>" type="hidden" />
+                    <input name="stuID" value="<?=_escape($stal->stuID);?>" type="hidden" />
 					<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/sacp/<?=_h($stal->sacpID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/sacp/<?=_escape($stal->sacpID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

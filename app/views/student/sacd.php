@@ -12,7 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$stu = get_student(_h($sacd->stuID));
+$stu = get_student(_escape($sacd->stuID));
 ?>
 
 <ul class="breadcrumb">
@@ -21,7 +21,7 @@ $stu = get_student(_h($sacd->stuID));
     <li class="divider"></li>
     <li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/" class="glyphicons coins"><i></i> <?=_t( 'Academic Credits' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/stac/<?=_escape($stu->stuID);?>/" class="glyphicons coins"><i></i> <?=_t( 'Academic Credits' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'View Academic Credits (SACD)' );?></li>
 </ul>
@@ -35,7 +35,7 @@ $stu = get_student(_h($sacd->stuID));
     <?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacd/<?=_h($sacd->id);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/sacd/<?=_escape($sacd->id);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -49,17 +49,17 @@ $stu = get_student(_h($sacd->stuID));
 						
 						<!-- Group -->
 						<div class="form-group">
-							<label class="col-md-3 control-label"><?=_t( 'CRSE ID/Name/Sec' );?> <a href="<?=get_base_url();?>crse/<?=_h($sacd->courseID);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+							<label class="col-md-3 control-label"><?=_t( 'CRSE ID/Name/Sec' );?> <a href="<?=get_base_url();?>crse/<?=_escape($sacd->courseID);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
 							<div class="col-md-3">
-								<input type="text" name="courseID" value="<?=_h($sacd->courseID);?>" class="form-control" required/>
+								<input type="text" name="courseID" value="<?=_escape($sacd->courseID);?>" class="form-control" required/>
 							</div>
 							
 							<div class="col-md-3">
-								<input type="text" name="courseCode" value="<?=_h($sacd->courseCode);?>" class="form-control" required/>
+								<input type="text" name="courseCode" value="<?=_escape($sacd->courseCode);?>" class="form-control" required/>
 							</div>
 							
 							<div class="col-md-2">
-                                <input type="text" name="sectionNumber" value="<?=_h($sacd->sectionNumber);?>" class="form-control" <?=_h($sacd->creditType) == 'TR' ? 'readonly required' : '';?>/>
+                                <input type="text" name="sectionNumber" value="<?=_escape($sacd->sectionNumber);?>" class="form-control" <?=_escape($sacd->creditType) == 'TR' ? 'readonly required' : '';?>/>
                             </div>
 						</div>
 						<!-- // Group END -->
@@ -68,7 +68,7 @@ $stu = get_student(_h($sacd->stuID));
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Short Title' );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="shortTitle" value="<?=_h($sacd->shortTitle);?>" class="form-control" required/>
+                                <input type="text" name="shortTitle" value="<?=_escape($sacd->shortTitle);?>" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -77,7 +77,7 @@ $stu = get_student(_h($sacd->stuID));
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Long Title' );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="longTitle" value="<?=_h($sacd->longTitle);?>" class="form-control" required/>
+                                <input type="text" name="longTitle" value="<?=_escape($sacd->longTitle);?>" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -88,7 +88,7 @@ $stu = get_student(_h($sacd->stuID));
                             <div class="col-md-8">
                             	<select name="subjectCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
-                                    <?php table_dropdown('subject', 'subjectCode <> "NULL"', 'subjectCode', 'subjectCode', 'subjectName', _h($sacd->subjectCode)); ?>
+                                    <?php table_dropdown('subject', 'subjectCode <> "NULL"', 'subjectCode', 'subjectCode', 'subjectName', _escape($sacd->subjectCode)); ?>
 	                        	</select>
                             </div>
                         </div>
@@ -100,13 +100,13 @@ $stu = get_student(_h($sacd->stuID));
                             <div class="col-md-4">
                                 <select name="acadLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php table_dropdown('aclv',null,'code','code','name',_h($sacd->acadLevelCode)); ?>
+                                    <?php table_dropdown('aclv',null,'code','code','name',_escape($sacd->acadLevelCode)); ?>
                                 </select>
                             </div>
                             <div class="col-md-4">
                                 <select name="courseLevelCode" id="courseLevelCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
-	                        		<?php table_dropdown('crlv', null, 'code', 'code', 'name', _h($sacd->courseLevelCode)); ?>
+	                        		<?php table_dropdown('crlv', null, 'code', 'code', 'name', _escape($sacd->courseLevelCode)); ?>
 	                        	</select>
                             </div>
                         </div>
@@ -118,7 +118,7 @@ $stu = get_student(_h($sacd->stuID));
                             <div class="col-md-8">
                             	<select name="deptCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
-                            		<?php table_dropdown('department', 'deptTypeCode = "acad" AND deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName',_h($sacd->deptCode)); ?>
+                            		<?php table_dropdown('department', 'deptTypeCode = "acad" AND deptCode <> "NULL"', 'deptCode', 'deptCode', 'deptName',_escape($sacd->deptCode)); ?>
                             	</select>
                             </div>
                         </div>
@@ -130,8 +130,8 @@ $stu = get_student(_h($sacd->stuID));
                             <div class="col-md-8">
                             	<select name="creditType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
-	                        		<option value="I"<?=selected("I",_h($sacd->creditType),false);?>><?=_t( 'I Institutional' );?></option>
-	                        		<option value="TR"<?=selected("TR",_h($sacd->creditType),false);?>><?=_t( 'TR Transfer' );?></option>
+	                        		<option value="I"<?=selected("I",_escape($sacd->creditType),false);?>><?=_t( 'I Institutional' );?></option>
+	                        		<option value="TR"<?=selected("TR",_escape($sacd->creditType),false);?>><?=_t( 'TR Transfer' );?></option>
 	                        	</select>
                             </div>
                         </div>
@@ -148,14 +148,14 @@ $stu = get_student(_h($sacd->stuID));
                             <label class="col-md-3 control-label"><?=_t( 'Start/End Date' );?></label>
                             <div class="col-md-4">
                             	<div class="input-group date" id="datepicker6">
-                                    <input class="form-control" name="startDate"<?=sio();?> value="<?=_h($sacd->startDate);?>" type="text" required/>
+                                    <input class="form-control" name="startDate"<?=sio();?> value="<?=_escape($sacd->startDate);?>" type="text" required/>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
                             
                             <div class="col-md-4">
                                 <div class="input-group date" id="datepicker7">
-                                    <input class="form-control" name="endDate"<?=sio();?> value="<?=_h($sacd->endDate);?>" type="text" required/>
+                                    <input class="form-control" name="endDate"<?=sio();?> value="<?=_escape($sacd->endDate);?>" type="text" required/>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
@@ -168,12 +168,12 @@ $stu = get_student(_h($sacd->stuID));
                             <div class="col-md-4">
                             	<select name="termCode" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
 									<option value="">&nbsp;</option>
-                            		<?php table_dropdown('term', 'termCode <> "NULL"', 'termCode', 'termCode', 'termName',_h($sacd->termCode)); ?>
+                            		<?php table_dropdown('term', 'termCode <> "NULL"', 'termCode', 'termCode', 'termName',_escape($sacd->termCode)); ?>
                             	</select>
                             </div>
                             
                             <div class="col-md-4">
-                                <input type="text" readonly name="reportingTerm" value="<?=_h($sacd->reportingTerm);?>" class="form-control" required />
+                                <input type="text" readonly name="reportingTerm" value="<?=_escape($sacd->reportingTerm);?>" class="form-control" required />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -182,10 +182,10 @@ $stu = get_student(_h($sacd->stuID));
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Att/Comp Cred' );?></label>
                             <div class="col-md-4">
-                                <input type="text" name="attCred"<?=sio();?> value="<?=_h(number_format($sacd->attCred,6));?>" class="form-control" required/>
+                                <input type="text" name="attCred"<?=sio();?> value="<?=_escape(number_format($sacd->attCred,6));?>" class="form-control" required/>
                             </div>
                             <div class="col-md-4">
-                                <input type="text" name="compCred"<?=sio();?> value="<?=_h(number_format($sacd->compCred,6));?>" class="form-control" required/>
+                                <input type="text" name="compCred"<?=sio();?> value="<?=_escape(number_format($sacd->compCred,6));?>" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -194,11 +194,11 @@ $stu = get_student(_h($sacd->stuID));
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Grade/Grd Pts' );?></label>
                             <div class="col-md-4">
-                                <input type="text" name="grade"<?=sio();?> value="<?=_h($sacd->grade);?>" class="form-control" />
+                                <input type="text" name="grade"<?=sio();?> value="<?=_escape($sacd->grade);?>" class="form-control" />
                             </div>
                             
                             <div class="col-md-4">
-                                <input type="text" name="gradePoints"<?=sio();?> value="<?=_h(number_format($sacd->gradePoints,6));?>" class="form-control" required/>
+                                <input type="text" name="gradePoints"<?=sio();?> value="<?=_escape(number_format($sacd->gradePoints,6));?>" class="form-control" required/>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -207,7 +207,7 @@ $stu = get_student(_h($sacd->stuID));
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Status' );?></label>
                             <div class="col-md-8">
-                                <?=stcs_status_select(_h($sacd->status));?>
+                                <?=stcs_status_select(_escape($sacd->status));?>
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -217,14 +217,14 @@ $stu = get_student(_h($sacd->stuID));
                             <label class="col-md-3 control-label"><?=_t( 'Status Date/Time' );?></label>
                             <div class="col-md-4">
                                 <div class="input-group date" id="datepicker8">
-                                    <input class="form-control" name="statusDate"<?=sio();?> value="<?=_h($sacd->statusDate);?>" type="text" required/>
+                                    <input class="form-control" name="statusDate"<?=sio();?> value="<?=_escape($sacd->statusDate);?>" type="text" required/>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </div>
                             
                             <div class="col-md-4">
                                 <div class="input-group bootstrap-timepicker">
-                                    <input id="timepicker10" type="text" <?=sio();?> class="form-control" value="<?=_h($sacd->statusTime);?>" required />
+                                    <input id="timepicker10" type="text" <?=sio();?> class="form-control" value="<?=_escape($sacd->statusTime);?>" required />
                                     <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
                                 </div>
                             </div>
@@ -241,7 +241,7 @@ $stu = get_student(_h($sacd->stuID));
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/stac/<?=_escape($stu->stuID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

@@ -27,10 +27,10 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
 	<li><?=_t( 'View Person' );?></li>
 </ul>
 
-<h3 class="hidden-print"><?=_t( 'Person:' );?> <?=_h($nae[0]['lname']);?>, <?=_h($nae[0]['fname']);?>
+<h3 class="hidden-print"><?=_t( 'Person:' );?> <?=_escape($nae[0]['lname']);?>, <?=_escape($nae[0]['fname']);?>
     <?php if($appl->personID <= 0) : ?>
     <span data-toggle="tooltip" data-original-title="Create Application" data-placement="top">
-        <a<?=hl('applications','access_application_screen');?> href="<?=get_base_url();?>appl/add/<?=_h($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-archive"></i></a>
+        <a<?=hl('applications','access_application_screen');?> href="<?=get_base_url();?>appl/add/<?=_escape($nae[0]['personID']);?>/" class="btn btn-primary"><i class="fa fa-archive"></i></a>
     </span>
     <?php endif; ?>
 </h3>
@@ -41,7 +41,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
     <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none grid-form" action="<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none grid-form" action="<?=get_base_url();?>nae/<?=_escape($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-white <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -63,15 +63,15 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                     <div data-row-span="4">
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Unique ID' );?></label>
-                            <input type="text" value="<?=get_alt_id(_h($nae[0]['personID']));?>" readonly />
+                            <input type="text" value="<?=get_alt_id(_escape($nae[0]['personID']));?>" readonly />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Username' );?></label>
-                            <input type="text" value="<?=_h($nae[0]['uname']);?>" readonly />
+                            <input type="text" value="<?=_escape($nae[0]['uname']);?>" readonly />
                         </div>
                         <div data-field-span="1">
                             <label><font color="red">*</font> <?=_t( 'Person Type' );?> <a href="#myModal" class="hidden-print" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
-                            <?=person_type_select(_h($nae[0]['personType']));?>
+                            <?=person_type_select(_escape($nae[0]['personType']));?>
                         </div>
                         <div data-field-span="1">
                             <label><?=_t( 'Prefix' );?></label>
@@ -89,19 +89,19 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                     <div data-row-span="4">
                         <div data-field-span="1">
                             <label><font color="red">*</font> <?=_t( 'First Name' );?></label>
-                            <input type="text" name="fname"<?=pio();?> value="<?=_h($nae[0]['fname']);?>" required />
+                            <input type="text" name="fname"<?=pio();?> value="<?=_escape($nae[0]['fname']);?>" required />
                         </div>
                         <div data-field-span="1">
                             <label><font color="red">*</font> <?=_t( 'Last Name' );?></label>
-                            <input type="text" name="lname"<?=pio();?> value="<?=_h($nae[0]['lname']);?>" required />
+                            <input type="text" name="lname"<?=pio();?> value="<?=_escape($nae[0]['lname']);?>" required />
                         </div>
                         <div data-field-span="1">
                             <label><?=_t( 'Middle Initial' );?></label>
-                            <input type="text" name="mname"<?=pio();?> value="<?=_h($nae[0]['mname']);?>" />
+                            <input type="text" name="mname"<?=pio();?> value="<?=_escape($nae[0]['mname']);?>" />
                         </div>
                         <div data-field-span="1">
                             <label><?=_t( 'Social Security #' );?></label>
-                            <input type="text" name="ssn"<?=pio();?> value="<?=(_h((int)$nae[0]['ssn']) > 0 ? _h((int)$nae[0]['ssn']) : '');?>" />
+                            <input type="text" name="ssn"<?=pio();?> value="<?=(_escape((int)$nae[0]['ssn']) > 0 ? _escape((int)$nae[0]['ssn']) : '');?>" />
                         </div>
                     </div>
                     
@@ -109,7 +109,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                         <div data-field-span="1">
                             <label><?=_t( 'Date of Birth' );?></label>
                             <div class="input-group date col-md-8" id="datepicker6">
-                                <input class="form-control" name="dob"<?=pio();?> type="text" value="<?=(_h($nae[0]['dob']) > '0000-00-00' ? _h($nae[0]['dob']) : '');?>" />
+                                <input class="form-control" name="dob"<?=pio();?> type="text" value="<?=(_escape($nae[0]['dob']) > '0000-00-00' ? _escape($nae[0]['dob']) : '');?>" />
                                 <span class="input-group-addon"><i class="fa fa-th"></i></span>
                             </div>
                         </div>
@@ -133,18 +133,18 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                             <label><?=_t( 'Ethnicity?' );?></label>
                             <select name="ethnicity"<?=pio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                 <option value="">&nbsp;</option>
-                                <option value="White, Non-Hispanic"<?=selected('White, Non-Hispanic',_h($nae[0]['ethnicity']),false);?>><?=_t( 'White, Non-Hispanic' );?></option>
-                                <option value="Black, Non-Hispanic"<?=selected('Black, Non-Hispanic',_h($nae[0]['ethnicity']),false);?>><?=_t( 'Black, Non-Hispanic' );?></option>
-                                <option value="Hispanic"<?=selected('Hispanic',_h($nae[0]['ethnicity']),false);?>><?=_t( 'Hispanic' );?></option>
-                                <option value="Native American"<?=selected('Native American',_h($nae[0]['ethnicity']),false);?>><?=_t( 'Native American' );?></option>
-                                <option value="Native Alaskan"<?=selected('Native Alaskan',_h($nae[0]['ethnicity']),false);?>><?=_t( 'Native Alaskan' );?></option>
-                                <option value="Pacific Islander"<?=selected('Pacific Islander',_h($nae[0]['ethnicity']),false);?>><?=_t( 'Pacific Islander' );?></option>
-                                <option value="Asian"<?=selected('Asian',_h($nae[0]['ethnicity']),false);?>><?=_t( 'Asian' );?></option>
-                                <option value="Indian"<?=selected('Indian',_h($nae[0]['ethnicity']),false);?>><?=_t( 'Indian' );?></option>
-                                <option value="Middle Eastern"<?=selected('Middle Eastern',_h($nae[0]['ethnicity']),false);?>><?=_t( 'Middle Eastern' );?></option>
-                                <option value="African"<?=selected('African',_h($nae[0]['ethnicity']),false);?>><?=_t( 'African' );?></option>
-                                <option value="Mixed Race"<?=selected('Mixed Race',_h($nae[0]['ethnicity']),false);?>><?=_t( 'Mixed Race' );?></option>
-                                <option value="Other"<?=selected('Other',_h($nae[0]['ethnicity']),false);?>><?=_t( 'Other' );?></option>
+                                <option value="White, Non-Hispanic"<?=selected('White, Non-Hispanic',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'White, Non-Hispanic' );?></option>
+                                <option value="Black, Non-Hispanic"<?=selected('Black, Non-Hispanic',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'Black, Non-Hispanic' );?></option>
+                                <option value="Hispanic"<?=selected('Hispanic',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'Hispanic' );?></option>
+                                <option value="Native American"<?=selected('Native American',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'Native American' );?></option>
+                                <option value="Native Alaskan"<?=selected('Native Alaskan',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'Native Alaskan' );?></option>
+                                <option value="Pacific Islander"<?=selected('Pacific Islander',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'Pacific Islander' );?></option>
+                                <option value="Asian"<?=selected('Asian',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'Asian' );?></option>
+                                <option value="Indian"<?=selected('Indian',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'Indian' );?></option>
+                                <option value="Middle Eastern"<?=selected('Middle Eastern',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'Middle Eastern' );?></option>
+                                <option value="African"<?=selected('African',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'African' );?></option>
+                                <option value="Mixed Race"<?=selected('Mixed Race',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'Mixed Race' );?></option>
+                                <option value="Other"<?=selected('Other',_escape($nae[0]['ethnicity']),false);?>><?=_t( 'Other' );?></option>
                             </select>
                         </div>
                     </div>
@@ -156,11 +156,11 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                         <div data-row-span="2">
                             <div data-field-span="1">
                                 <label><?=_t( "Emergency Contact's Name" );?></label>
-                                <input type="text" name="emergency_contact"<?=pio();?> value="<?=_h($nae[0]['emergency_contact']);?>" />
+                                <input type="text" name="emergency_contact"<?=pio();?> value="<?=_escape($nae[0]['emergency_contact']);?>" />
                             </div>
                             <div data-field-span="1">
                                 <label><?=_t( "Emergency Contact's Phone" );?></label>
-                                <input type="text" name="emergency_contact_phone"<?=pio();?> value="<?=_h($nae[0]['emergency_contact_phone']);?>" />
+                                <input type="text" name="emergency_contact_phone"<?=pio();?> value="<?=_escape($nae[0]['emergency_contact_phone']);?>" />
                             </div>
                         </div>
                     </fieldset>
@@ -172,40 +172,40 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                     <legend><?=_t( 'Mailing Address & Contact Details' );?></legend>
                     <div data-row-span="2">
                         <div data-field-span="1" class="readonly">
-                            <label><?=_t( 'Address1' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/adsu/<?=_h($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
-                            <input type="text" readonly value="<?=_h($addr[0]['address1']);?>" required />
+                            <label><?=_t( 'Address1' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/adsu/<?=_escape($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <input type="text" readonly value="<?=_escape($addr[0]['address1']);?>" required />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Address2' );?></label>
-                            <input type="text" readonly value="<?=_h($addr[0]['address2']);?>" />
+                            <input type="text" readonly value="<?=_escape($addr[0]['address2']);?>" />
                         </div>
                     </div>
                     <div data-row-span="4">
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'City' );?></label>
-                            <input type="text" readonly value="<?=_h($addr[0]['city']);?>" />
+                            <input type="text" readonly value="<?=_escape($addr[0]['city']);?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'State' );?></label>
-                            <input type="text" readonly value="<?=_h($addr[0]['state']);?>" />
+                            <input type="text" readonly value="<?=_escape($addr[0]['state']);?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Zip/Postal Code' );?></label>
-                            <input type="text" readonly value="<?=_h($addr[0]['zip']);?>" />
+                            <input type="text" readonly value="<?=_escape($addr[0]['zip']);?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Country' );?></label>
-                            <input type="text" readonly value="<?=_h($addr[0]['country']);?>" />
+                            <input type="text" readonly value="<?=_escape($addr[0]['country']);?>" />
                         </div>
                     </div>
                     <div data-row-span="2">
                         <div data-field-span="1">
                             <label><font color="red">*</font> <?=_t( 'Preferred Email' );?></label>
-                            <input type="email" name="email"<?=pio();?> value="<?=_h($nae[0]['email']);?>" required />
+                            <input type="email" name="email"<?=pio();?> value="<?=_escape($nae[0]['email']);?>" required />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Phone' );?></label>
-                            <input type="text" readonly value="<?=_h($addr[0]['phone1']);?>" />
+                            <input type="text" readonly value="<?=_escape($addr[0]['phone1']);?>" />
                         </div>
                     </div>
                 </fieldset>
@@ -216,13 +216,13 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                     <legend><?=_t( 'User Role, Permission & PERC' );?></legend>
                     <div data-row-span="3">
                         <div<?=ae('access_user_role_screen');?> data-field-span="1" class="readonly">
-                            <label><?=_t( 'Role' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/role/<?=_h($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <label><?=_t( 'Role' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/role/<?=_escape($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                         </div>
                         <div<?=ae('access_user_permission_screen');?> data-field-span="1" class="readonly">
-                            <label><?=_t( 'Permission' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/perms/<?=_h($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <label><?=_t( 'Permission' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/perms/<?=_escape($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                         </div>
                         <div<?=ae('access_person_screen');?> data-field-span="1" class="readonly">
-                            <label><?=_t( 'PERC' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/perc/<?=_h($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <label><?=_t( 'PERC' );?> <a class="hidden-print" href="<?=get_base_url();?>nae/perc/<?=_escape($nae[0]['personID']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                         </div>
                     </div>
                 </fieldset>
@@ -236,13 +236,13 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                             <label><font color="red">*</font> <?=_t( 'Status' );?> <a class="hidden-print" href="#status" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
                             <select name="status" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true"<?=pio();?> required>
                                 <option value="">&nbsp;</option>
-                                <option value="A"<?=selected('A',_h($nae[0]['status']),false);?>><?=_t( 'Active' );?></option>
-                                <option value="I"<?=selected('I',_h($nae[0]['status']),false);?>><?=_t( 'Inactive' );?></option>
+                                <option value="A"<?=selected('A',_escape($nae[0]['status']),false);?>><?=_t( 'Active' );?></option>
+                                <option value="I"<?=selected('I',_escape($nae[0]['status']),false);?>><?=_t( 'Inactive' );?></option>
                             </select>
                         </div>
                         <div data-field-span="1">
                             <label><?= _t("Tags"); ?></label>
-                            <input type="hidden" id="input-tags" name="tags" value="<?=_h($nae[0]['tags']);?>" />
+                            <input type="hidden" id="input-tags" name="tags" value="<?=_escape($nae[0]['tags']);?>" />
                         </div>
                     </div>
                 </fieldset>
@@ -258,7 +258,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                      * 
                      * @since 6.3.0
                      */
-                    $app->hook->do_action('bottom_nae_view_form'); 
+                    $app->hook->do_action('bottom_nae_view_form', $nae); 
                 ?>
                 
                 <fieldset>
@@ -266,19 +266,19 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                     <div data-row-span="4">
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Approved Date' );?></label>
-                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($nae[0]['approvedDate']))->format('D, M d, o');?>" />
+                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_escape($nae[0]['approvedDate']))->format('D, M d, o');?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Approved By' );?></label>
-                            <input type="text" readonly value="<?=get_name(_h($nae[0]['approvedBy']));?>" />
+                            <input type="text" readonly value="<?=get_name(_escape($nae[0]['approvedBy']));?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Last Login' );?></label>
-                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($login->loginTimeStamp))->format('D, M d, o @ h:i A');?>" />
+                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_escape($login->loginTimeStamp))->format('D, M d, o @ h:i A');?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Last Update' );?></label>
-                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($nae[0]['LastUpdate']))->format('D, M d, o @ h:i A');?>" />
+                            <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_escape($nae[0]['LastUpdate']))->format('D, M d, o @ h:i A');?>" />
                         </div>
                     </div>
                 </fieldset>
@@ -343,7 +343,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
 				<!-- Form actions -->
 				<div class="form-actions hidden-print">
 					<button type="submit"<?=pids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button"<?=ae('reset_person_password');?> class="btn btn-icon btn-primary glyphicons refresh" onclick="window.location='<?=get_base_url();?>nae/resetPassword/<?=_h($nae[0]['personID']);?>'"><i></i><?=_t( 'Reset Password' );?></button>
+					<button type="button"<?=ae('reset_person_password');?> class="btn btn-icon btn-primary glyphicons refresh" onclick="window.location='<?=get_base_url();?>nae/resetPassword/<?=_escape($nae[0]['personID']);?>'"><i></i><?=_t( 'Reset Password' );?></button>
                     <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->

@@ -29,7 +29,7 @@ document.getElementById(element_id).value += text;
     <li class="divider"></li>
     <li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_escape($stu->stuID);?>/" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'Student Hiatus (SHIS)' );?></li>
 </ul>
@@ -45,16 +45,16 @@ document.getElementById(element_id).value += text;
     <!-- Tabs Heading -->
     <div class="tabsbar">
         <ul>
-            <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-            <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-            <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-            <li class="glyphicons history tab-stacked active"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/" data-toggle="tab"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+            <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_escape($stu->stuID);?>/"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+            <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_escape($stu->stuID);?>/"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+            <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_escape($stu->stuID);?>/"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+            <li class="glyphicons history tab-stacked active"><a href="<?=get_base_url();?>stu/shis/<?=_escape($stu->stuID);?>/" data-toggle="tab"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
         </ul>
     </div>
     <!-- // Tabs Heading END -->
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/shis/<?=_escape($stu->stuID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Table -->
 		<table class="table table-striped table-responsive swipe-horizontal table-primary">
@@ -79,23 +79,23 @@ document.getElementById(element_id).value += text;
 					<td style="width:300px;">
 						<select name="code[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                             <option value="">&nbsp;</option>
-                            <option value="W"<?=selected('W',_h($v['code']),false);?>><?=_t( 'Withdrawal' );?></option>
-                            <option value="LOA"<?=selected('LOA',_h($v['code']),false);?>><?=_t( 'Leave of Absence' );?></option>
-                            <option value="SA"<?=selected('SA',_h($v['code']),false);?>><?=_t( 'Study Abroad' );?></option>
-                            <option value="ILLN"<?=selected('ILLN',_h($v['code']),false);?>><?=_t( 'Illness' );?></option>
-                            <option value="DISM"<?=selected('DISM',_h($v['code']),false);?>><?=_t( 'Dismissal' );?></option>
+                            <option value="W"<?=selected('W',_escape($v['code']),false);?>><?=_t( 'Withdrawal' );?></option>
+                            <option value="LOA"<?=selected('LOA',_escape($v['code']),false);?>><?=_t( 'Leave of Absence' );?></option>
+                            <option value="SA"<?=selected('SA',_escape($v['code']),false);?>><?=_t( 'Study Abroad' );?></option>
+                            <option value="ILLN"<?=selected('ILLN',_escape($v['code']),false);?>><?=_t( 'Illness' );?></option>
+                            <option value="DISM"<?=selected('DISM',_escape($v['code']),false);?>><?=_t( 'Dismissal' );?></option>
                         </select>
 					</td>
 					<td style="width:160px;">
-						<div class="input-group date" id="datepicker6<?=_h($v['id']);?>">
-                            <input type="text" name="startDate[]" class="form-control" value="<?=_h($v['startDate']);?>" required/>
+						<div class="input-group date" id="datepicker6<?=_escape($v['id']);?>">
+                            <input type="text" name="startDate[]" class="form-control" value="<?=_escape($v['startDate']);?>" required/>
                             <span class="input-group-addon"><i class="fa fa-th"></i></span>
                         </div>
 					</td>
 					<td style="width:160px;">
-						<div class="input-group date" id="datepicker7<?=_h($v['id']);?>">
-                            <?php if(_h($v['endDate']) != '0000-00-00') : ?>
-                            <input type="text" name="endDate[]" class="form-control" value="<?=_h($v['endDate']);?>" />
+						<div class="input-group date" id="datepicker7<?=_escape($v['id']);?>">
+                            <?php if(_escape($v['endDate']) != '0000-00-00') : ?>
+                            <input type="text" name="endDate[]" class="form-control" value="<?=_escape($v['endDate']);?>" />
                             <?php else : ?>
                             <input type="text" name="endDate[]" class="form-control" />
                             <?php endif; ?>
@@ -103,9 +103,9 @@ document.getElementById(element_id).value += text;
                         </div>
 					</td>
 					<td class="text-center">
-						<button type="button" title="Comment" class="btn <?=(_h($v['Comment']) == 'empty' ? 'btn-primary' : 'btn-danger');?>" data-toggle="modal" data-target="#comments-<?=_h($v['id']);?>"><i class="fa fa-comment"></i></button>
+						<button type="button" title="Comment" class="btn <?=(_escape($v['Comment']) == 'empty' ? 'btn-primary' : 'btn-danger');?>" data-toggle="modal" data-target="#comments-<?=_escape($v['id']);?>"><i class="fa fa-comment"></i></button>
 						<!-- Modal -->
-						<div class="modal fade" id="comments-<?=_h($v['id']);?>">
+						<div class="modal fade" id="comments-<?=_escape($v['id']);?>">
 							
 							<div class="modal-dialog">
 								<div class="modal-content">
@@ -119,8 +119,8 @@ document.getElementById(element_id).value += text;
 									
 									<!-- Modal body -->
 									<div class="modal-body">
-										<textarea id="<?=_h($v['id']);?>" class="form-control" name="comment[]" rows="5" data-height="auto"><?=_h($v['comment']);?></textarea>
-                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=\Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','<?=_h($v['id']);?>'); return false;" />
+										<textarea id="<?=_escape($v['id']);?>" class="form-control" name="comment[]" rows="5" data-height="auto"><?=_escape($v['comment']);?></textarea>
+                                        <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=\Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','<?=_escape($v['id']);?>'); return false;" />
 									</div>
 									<!-- // Modal body END -->
 									
@@ -132,14 +132,14 @@ document.getElementById(element_id).value += text;
 						
 								</div>
 							</div>
-							<input type="hidden" name="id[]" value="<?=_h($v['id']);?>" />
+							<input type="hidden" name="id[]" value="<?=_escape($v['id']);?>" />
 						</div>
 						<!-- // Modal END -->
 					</td>
 					<td class="text-center">
-						<button type="button" title="Delete" class="btn bt-sm" data-toggle="modal" data-target="#delete-<?=_h($v['id']);?>"><i class="fa fa-trash-o"></i></button>
+						<button type="button" title="Delete" class="btn bt-sm" data-toggle="modal" data-target="#delete-<?=_escape($v['id']);?>"><i class="fa fa-trash-o"></i></button>
 						<!-- Modal -->
-						<div class="modal fade" id="delete-<?=_h($v['id']);?>">
+						<div class="modal fade" id="delete-<?=_escape($v['id']);?>">
 							
 							<div class="modal-dialog">
 								<div class="modal-content">
@@ -147,7 +147,7 @@ document.getElementById(element_id).value += text;
 									<!-- Modal heading -->
 									<div class="modal-header">
 										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-										<h3 class="modal-title"><?=_h($v['Code']);?></h3>
+										<h3 class="modal-title"><?=_escape($v['Code']);?></h3>
 									</div>
 									<!-- // Modal heading END -->
 									
@@ -159,7 +159,7 @@ document.getElementById(element_id).value += text;
 									
 									<!-- Modal footer -->
 									<div class="modal-footer">
-										<a href="<?=get_base_url();?>stu/deleteSHIS/<?=_h($v['id']);?>" class="btn btn-default"><?=_t( 'Delete' );?></a>
+										<a href="<?=get_base_url();?>stu/deleteSHIS/<?=_escape($v['id']);?>" class="btn btn-default"><?=_t( 'Delete' );?></a>
 										<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Close' );?></a> 
 									</div>
 									<!-- // Modal footer END -->
@@ -181,7 +181,7 @@ document.getElementById(element_id).value += text;
 		
 		<!-- Form actions -->
 		<div class="form-actions">
-		    <?php if(_h($shis[0]['stuID']) != '') : ?>
+		    <?php if(_escape($shis[0]['stuID']) != '') : ?>
 			<button type="submit"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
 			<?php endif; ?>
 			<button type="button"<?=sids();?> class="btn btn-icon btn-primary glyphicons circle_plus" data-toggle="modal" data-target="#md-ajax"><i></i><?=_t( 'Add' );?></button>
@@ -194,7 +194,7 @@ document.getElementById(element_id).value += text;
 	
 	<!-- Modal -->
 	<div class="modal fade" id="md-ajax">
-		<form class="form-horizontal" data-collabel="3" data-alignlabel="left" action="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal" data-collabel="3" data-alignlabel="left" action="<?=get_base_url();?>stu/shis/<?=_escape($stu->stuID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 	
@@ -253,7 +253,7 @@ document.getElementById(element_id).value += text;
 				
 				<!-- Modal footer -->
 				<div class="modal-footer">
-                    <input type="hidden" name="stuID" value="<?=_h($stu->stuID);?>" />
+                    <input type="hidden" name="stuID" value="<?=_escape($stu->stuID);?>" />
                     <input type="hidden" name="addDate" value="<?=\Jenssegers\Date\Date::now()->format('Y-m-d');?>" />
                     <input type="hidden" name="addedBy" value="<?=get_persondata('personID');?>" />
 					<button type="submit" class="btn btn-default"><?=_t( 'Submit' );?></button>

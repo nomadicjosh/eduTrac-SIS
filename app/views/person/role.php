@@ -22,12 +22,12 @@ $screen = 'prole';
 	<li class="divider"></li>
 	<li><a href="<?=get_base_url();?>nae/" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
 	<li class="divider"></li>
-    <li><a href="<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/" class="glyphicons vcard"><i></i> <?=get_name(_h($nae[0]['personID']));?></a></li>
+    <li><a href="<?=get_base_url();?>nae/<?=_escape($nae[0]['personID']);?>/" class="glyphicons vcard"><i></i> <?=get_name(_escape($nae[0]['personID']));?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Manage Person Role' );?></li>
 </ul>
 
-<h3><?=get_name(_h($nae[0]['personID']));?>: <?=_t( 'ID#' );?> <?=(_h($nae[0]['altID']) != '' ? _h($nae[0]['altID']) : _h($nae[0]['personID']));?></h3>
+<h3><?=get_name(_escape($nae[0]['personID']));?>: <?=_t( 'ID#' );?> <?=(_escape($nae[0]['altID']) != '' ? _escape($nae[0]['altID']) : _escape($nae[0]['personID']));?></h3>
 <div class="innerLR">
     
     <?=_etsis_flash()->showMessage();?>
@@ -35,7 +35,7 @@ $screen = 'prole';
     <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>nae/role/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>nae/role/<?=_escape($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -58,17 +58,17 @@ $screen = 'prole';
 					<!-- Table body -->
 					<tbody>
 						<?php 
-						$roleACL = new \app\src\ACL(_h((int)$nae[0]['personID']));
+						$roleACL = new \app\src\ACL(_escape((int)$nae[0]['personID']));
 							$role = $roleACL->getAllRoles('full');
 							foreach ($role as $k => $v) {
-								echo '<tr><td>'._h($v['Name']).'</td>';
+								echo '<tr><td>'._escape($v['Name']).'</td>';
 								
-								echo "<td class=\"center\"><input type=\"radio\" name=\"role_" . _h($v['ID']) . "\" id=\"role_" . _h($v['ID']) . "_1\" value=\"1\"";
-    							if ($roleACL->userHasRole(_h($v['ID']))) { echo " checked=\"checked\""; }
+								echo "<td class=\"center\"><input type=\"radio\" name=\"role_" . _escape($v['ID']) . "\" id=\"role_" . _escape($v['ID']) . "_1\" value=\"1\"";
+    							if ($roleACL->userHasRole(_escape($v['ID']))) { echo " checked=\"checked\""; }
     							echo " /></td>";
 								 
-								echo "<td class=\"center\"><input type=\"radio\" name=\"role_" . _h($v['ID']) . "\" id=\"role_" . _h($v['ID']) . "_0\" value=\"0\"";
-    							if (!$roleACL->userHasRole(_h($v['ID']))) { echo " checked=\"checked\""; }
+								echo "<td class=\"center\"><input type=\"radio\" name=\"role_" . _escape($v['ID']) . "\" id=\"role_" . _escape($v['ID']) . "_0\" value=\"0\"";
+    							if (!$roleACL->userHasRole(_escape($v['ID']))) { echo " checked=\"checked\""; }
     							echo " /></td></tr>";
 							}
 						?>

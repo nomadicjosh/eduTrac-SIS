@@ -12,7 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$stu = get_student(_h($stu));
+$stu = get_student(_escape($stu));
 ?>
 
 <ul class="breadcrumb">
@@ -21,14 +21,14 @@ $stu = get_student(_h($stu));
 	<li class="divider"></li>
 	<li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_escape($stu->stuID);?>/" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Student Terms Summary (STRS)' );?></li>
 </ul>
 
 <div class="innerLR">
     
-    <?php get_stu_header(_h($stu->stuID)); ?>
+    <?php get_stu_header(_escape($stu->stuID)); ?>
     
     <div class="separator line bottom"></div>
 
@@ -38,10 +38,10 @@ $stu = get_student(_h($stu));
         <!-- Tabs Heading -->
         <div class="tabsbar">
             <ul>
-                <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-                <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-                <li class="glyphicons tags tab-stacked active"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/" data-toggle="tab"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-                <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+                <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_escape($stu->stuID);?>/"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+                <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_escape($stu->stuID);?>/"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+                <li class="glyphicons tags tab-stacked active"><a href="<?=get_base_url();?>stu/sttr/<?=_escape($stu->stuID);?>/" data-toggle="tab"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+                <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_escape($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
             </ul>
         </div>
         <!-- // Tabs Heading END -->
@@ -71,15 +71,15 @@ $stu = get_student(_h($stu));
 				<tbody>
 				<?php if($sttr != '') : foreach($sttr as $k => $v) { ?>
                 <tr class="gradeX">
-                    <td class="text-center"><?=_h($v['termCode']);?></td>
-                    <td class="text-center"><?=_h($v['attCred']);?></td>
-                    <td class="text-center"><?=_h($v['compCred']);?></td>
-                    <td class="text-center"><?=_h($v['gradePoints']);?></td>
-                    <td class="text-center"><?=_h($v['stuLoad']);?></td>
-                    <td class="text-center"><?=_h($v['acadLevelCode']);?></td>
-                    <td class="text-center"><?=_h($v['gpa']);?></td>
-                    <td class="text-center"><?=_h($v['termStartDate']);?></td>
-                    <td class="text-center"><?=_h($v['termEndDate']);?></td>
+                    <td class="text-center"><?=_escape($v['termCode']);?></td>
+                    <td class="text-center"><?=_escape($v['attCred']);?></td>
+                    <td class="text-center"><?=_escape($v['compCred']);?></td>
+                    <td class="text-center"><?=_escape($v['gradePoints']);?></td>
+                    <td class="text-center"><?=_escape($v['stuLoad']);?></td>
+                    <td class="text-center"><?=_escape($v['acadLevelCode']);?></td>
+                    <td class="text-center"><?=_escape($v['gpa']);?></td>
+                    <td class="text-center"><?=_escape($v['termStartDate']);?></td>
+                    <td class="text-center"><?=_escape($v['termEndDate']);?></td>
                 </tr>
 				<?php } endif; ?>
 				</tbody>
@@ -95,7 +95,7 @@ $stu = get_student(_h($stu));
             
             <!-- Form actions -->
             <div class="form-actions">
-                <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
+                <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>stu/<?=_escape($stu->stuID);?>/'"><i></i><?=_t( 'Cancel' );?></button>
             </div>
             <!-- // Form actions END -->
 			

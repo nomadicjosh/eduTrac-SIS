@@ -177,18 +177,18 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                             <label><?= _t('Ethnicity?'); ?></label>
                             <select name="ethnicity"<?= pio(); ?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                 <option value="">&nbsp;</option>
-                                <option value="White, Non-Hispanic"<?= selected('White, Non-Hispanic', _h($app->req->post['ethnicity']), false); ?>><?= _t('White, Non-Hispanic'); ?></option>
-                                <option value="Black, Non-Hispanic"<?= selected('Black, Non-Hispanic', _h($app->req->post['ethnicity']), false); ?>><?= _t('Black, Non-Hispanic'); ?></option>
-                                <option value="Hispanic"<?= selected('Hispanic', _h($app->req->post['ethnicity']), false); ?>><?= _t('Hispanic'); ?></option>
-                                <option value="Native American"<?= selected('Native American', _h($app->req->post['ethnicity']), false); ?>><?= _t('Native American'); ?></option>
-                                <option value="Native Alaskan"<?= selected('Native Alaskan', _h($app->req->post['ethnicity']), false); ?>><?= _t('Native Alaskan'); ?></option>
-                                <option value="Pacific Islander"<?= selected('Pacific Islander', _h($app->req->post['ethnicity']), false); ?>><?= _t('Pacific Islander'); ?></option>
-                                <option value="Asian"<?= selected('Asian', _h($app->req->post['ethnicity']), false); ?>><?= _t('Asian'); ?></option>
-                                <option value="Indian"<?= selected('Indian', _h($app->req->post['ethnicity']), false); ?>><?= _t('Indian'); ?></option>
-                                <option value="Middle Eastern"<?= selected('Middle Eastern', _h($app->req->post['ethnicity']), false); ?>><?= _t('Middle Eastern'); ?></option>
-                                <option value="African"<?= selected('African', _h($app->req->post['ethnicity']), false); ?>><?= _t('African'); ?></option>
-                                <option value="Mixed Race"<?= selected('Mixed Race', _h($app->req->post['ethnicity']), false); ?>><?= _t('Mixed Race'); ?></option>
-                                <option value="Other"<?= selected('Other', _h($app->req->post['ethnicity']), false); ?>><?= _t('Other'); ?></option>
+                                <option value="White, Non-Hispanic"<?= selected('White, Non-Hispanic', _escape($app->req->post['ethnicity']), false); ?>><?= _t('White, Non-Hispanic'); ?></option>
+                                <option value="Black, Non-Hispanic"<?= selected('Black, Non-Hispanic', _escape($app->req->post['ethnicity']), false); ?>><?= _t('Black, Non-Hispanic'); ?></option>
+                                <option value="Hispanic"<?= selected('Hispanic', _escape($app->req->post['ethnicity']), false); ?>><?= _t('Hispanic'); ?></option>
+                                <option value="Native American"<?= selected('Native American', _escape($app->req->post['ethnicity']), false); ?>><?= _t('Native American'); ?></option>
+                                <option value="Native Alaskan"<?= selected('Native Alaskan', _escape($app->req->post['ethnicity']), false); ?>><?= _t('Native Alaskan'); ?></option>
+                                <option value="Pacific Islander"<?= selected('Pacific Islander', _escape($app->req->post['ethnicity']), false); ?>><?= _t('Pacific Islander'); ?></option>
+                                <option value="Asian"<?= selected('Asian', _escape($app->req->post['ethnicity']), false); ?>><?= _t('Asian'); ?></option>
+                                <option value="Indian"<?= selected('Indian', _escape($app->req->post['ethnicity']), false); ?>><?= _t('Indian'); ?></option>
+                                <option value="Middle Eastern"<?= selected('Middle Eastern', _escape($app->req->post['ethnicity']), false); ?>><?= _t('Middle Eastern'); ?></option>
+                                <option value="African"<?= selected('African', _escape($app->req->post['ethnicity']), false); ?>><?= _t('African'); ?></option>
+                                <option value="Mixed Race"<?= selected('Mixed Race', _escape($app->req->post['ethnicity']), false); ?>><?= _t('Mixed Race'); ?></option>
+                                <option value="Other"<?= selected('Other', _escape($app->req->post['ethnicity']), false); ?>><?= _t('Other'); ?></option>
                             </select>
                         </div>
                     </div>
@@ -200,11 +200,11 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                         <div data-row-span="2">
                             <div data-field-span="1">
                                 <label><?= _t("Emergency Contact's Name"); ?></label>
-                                <input type="text" name="emergency_contact" value="<?= _h($app->req->post['emergency_contact']); ?>" />
+                                <input type="text" name="emergency_contact" value="<?= _escape($app->req->post['emergency_contact']); ?>" />
                             </div>
                             <div data-field-span="1">
                                 <label><?= _t("Emergency Contact's Phone"); ?></label>
-                                <input type="text" name="emergency_contact_phone" value="<?= _h($app->req->post['emergency_contact_phone']); ?>" />
+                                <input type="text" name="emergency_contact_phone" value="<?= _escape($app->req->post['emergency_contact_phone']); ?>" />
                             </div>
                         </div>
                     </div>
@@ -217,17 +217,17 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                     <div data-row-span="2">
                         <div data-field-span="1">
                             <label><font color="red">*</font> <?= _t('Address1'); ?></label>
-                            <input type="text" name="address1" value="<?= _h($app->req->post['address1']); ?>" required />
+                            <input type="text" name="address1" value="<?= _escape($app->req->post['address1']); ?>" required />
                         </div>
                         <div data-field-span="1">
                             <label><?= _t('Address2'); ?></label>
-                            <input type="text" name="address2" value="<?= _h($app->req->post['address2']); ?>" />
+                            <input type="text" name="address2" value="<?= _escape($app->req->post['address2']); ?>" />
                         </div>
                     </div>
                     <div data-row-span="4">
                         <div data-field-span="1">
                             <label><font color="red">*</font> <?= _t('City'); ?></label>
-                            <input type="text" name="city" value="<?= _h($app->req->post['city']); ?>" required/>
+                            <input type="text" name="city" value="<?= _escape($app->req->post['city']); ?>" required/>
                         </div>
                         <div data-field-span="1">
                             <label><?= _t('State'); ?></label>
@@ -238,7 +238,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                         </div>
                         <div data-field-span="1">
                             <label><?= _t('Zip/Postal Code'); ?></label>
-                            <input type="text" name="zip" value="<?= _h($app->req->post['zip']); ?>" />
+                            <input type="text" name="zip" value="<?= _escape($app->req->post['zip']); ?>" />
                         </div>
                         <div data-field-span="1">
                             <label><?= _t('Country'); ?></label>
@@ -251,11 +251,11 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                     <div data-row-span="2">
                         <div data-field-span="1">
                             <label><font color="red">*</font> <?= _t('Preferred Email'); ?></label>
-                            <input type="email" name="email" value="<?= _h($app->req->post['email']); ?>" required />
+                            <input type="email" name="email" value="<?= _escape($app->req->post['email']); ?>" required />
                         </div>
                         <div data-field-span="1">
                             <label><?= _t('Phone'); ?></label>
-                            <input type="text" name="phone" value="<?= _h($app->req->post['phone']); ?>" />
+                            <input type="text" name="phone" value="<?= _escape($app->req->post['phone']); ?>" />
                         </div>
                     </div>
                 </fieldset>
@@ -267,7 +267,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                     <div data-row-span="3">
                         <div data-field-span="1">
                             <label><?= _t("Tags"); ?></label>
-                            <input type="hidden" id="input-tags" name="tags" value="<?=(_h($app->req->post['tags']) != '' ? _h($app->req->post['tags']) : '');?>" />
+                            <input type="hidden" id="input-tags" name="tags" value="<?=(_escape($app->req->post['tags']) != '' ? _escape($app->req->post['tags']) : '');?>" />
                         </div>
                         <div data-field-span="1">
                             <label><?= _t("Person Role"); ?></label>

@@ -40,7 +40,7 @@ jQuery(document).ready(function() {
 	<li class="divider"></li>
 	<li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/" class="glyphicons user"><i></i> <?=get_name(_h($stu->stuID));?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_escape($stu->stuID);?>/" class="glyphicons user"><i></i> <?=get_name(_escape($stu->stuID));?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Add Student Program' );?></li>
 </ul>
@@ -54,7 +54,7 @@ jQuery(document).ready(function() {
     <?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/add-prog/<?=_h($stu->stuID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>stu/add-prog/<?=_escape($stu->stuID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">

@@ -13,7 +13,7 @@ $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
 $screen = 'staff';
-$staffInfo = get_staff(_h($staff->staffID));
+$staffInfo = get_staff(_escape($staff->staffID));
 $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
 ?>
 
@@ -32,8 +32,8 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
     <div class="relativeWrap">
         <div class="widget">
             <div class="widget-head">
-                <h4 class="heading glyphicons user"><i></i><?=get_name(_h($staffInfo->staffID));?></h4>
-                <a href="<?=get_base_url();?>staff/<?=_h($staffInfo->staffID);?>/" class="heading pull-right"><?=(_h($staffInfo->altID) != '' ? _h($staffInfo->altID) : _h($staffInfo->staffID));?></a>
+                <h4 class="heading glyphicons user"><i></i><?=get_name(_escape($staffInfo->staffID));?></h4>
+                <a href="<?=get_base_url();?>staff/<?=_escape($staffInfo->staffID);?>/" class="heading pull-right"><?=(_escape($staffInfo->altID) != '' ? _escape($staffInfo->altID) : _escape($staffInfo->staffID));?></a>
             </div>
             <div class="widget-body">
                 <!-- 3 Column Grid / One Third -->
@@ -41,31 +41,31 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                     
                     <!-- One Third Column -->
                     <div class="col-md-1">
-                        <?=get_school_photo(_h($staffInfo->staffID), _h($staffInfo->email), '90');?>
+                        <?=get_school_photo(_escape($staffInfo->staffID), _escape($staffInfo->email), '90');?>
                     </div>
                     <!-- // One Third Column END -->
     
                     <!-- One Third Column -->
                     <div class="col-md-3">
-                        <p><?=_h($staffInfo->address1);?> <?=_h($staffInfo->address2);?></p>
-                        <p><?=_h($staffInfo->city);?> <?=_h($staffInfo->state);?> <?=_h($staffInfo->zip);?></p>
-                        <p><strong><?=_t( 'Phone:' );?></strong> <?=_h($staffInfo->phone1);?></p>
+                        <p><?=_escape($staffInfo->address1);?> <?=_escape($staffInfo->address2);?></p>
+                        <p><?=_escape($staffInfo->city);?> <?=_escape($staffInfo->state);?> <?=_escape($staffInfo->zip);?></p>
+                        <p><strong><?=_t( 'Phone:' );?></strong> <?=_escape($staffInfo->phone1);?></p>
                     </div>
                     <!-- // One Third Column END -->
                     
                     <!-- One Third Column -->
                     <div class="col-md-4">
-                    	<p><strong><?=_t( 'Title:' );?></strong> <?=_h($staffInfo->title);?></p>
-                    	<p><strong><?=_t( 'Dept:' );?></strong> <?=_h($staffInfo->deptName);?></p>
-                    	<p><strong><?=_t( 'Office:' );?></strong> <?=_h($staffInfo->officeCode);?></p>
+                    	<p><strong><?=_t( 'Title:' );?></strong> <?=_escape($staffInfo->title);?></p>
+                    	<p><strong><?=_t( 'Dept:' );?></strong> <?=_escape($staffInfo->deptName);?></p>
+                    	<p><strong><?=_t( 'Office:' );?></strong> <?=_escape($staffInfo->officeCode);?></p>
                     </div>
                     <!-- // One Third Column END -->
                     
                     <!-- One Third Column -->
                     <div class="col-md-3">
-                        <p><strong><?=_t( 'Office Phone:' );?></strong> <?=_h($staffInfo->office_phone);?></p>
-                        <p><strong><?=_t( 'Email:' );?></strong> <a href="mailto:<?=_h($staffInfo->email);?>"><?=_h($staffInfo->email);?></a></p>
-                        <p><strong><?=_t( 'Status:' );?></strong> <?=_h($staffInfo->staffStatus);?></p>
+                        <p><strong><?=_t( 'Office Phone:' );?></strong> <?=_escape($staffInfo->office_phone);?></p>
+                        <p><strong><?=_t( 'Email:' );?></strong> <a href="mailto:<?=_escape($staffInfo->email);?>"><?=_escape($staffInfo->email);?></a></p>
+                        <p><strong><?=_t( 'Status:' );?></strong> <?=_escape($staffInfo->staffStatus);?></p>
                     </div>
                     <!-- // One Third Column END -->
                     
@@ -83,7 +83,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
     <?php jstree_sidebar_menu($screen); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>staff/<?=_h($staff->staffID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>staff/<?=_escape($staff->staffID);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -97,10 +97,10 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li<?=ae('access_human_resources');?> class="glyphicons user"><a href="<?=get_base_url();?>hr/<?=_h($staff->staffID);?>/"><i></i> <?=get_name(_h($staff->staffID));?></a></li>
-                    <li class="glyphicons nameplate active"><a href="<?=get_base_url();?>staff/<?=_h($staff->staffID);?>/" data-toggle="tab"><i></i> <?=_t( 'Staff Record' );?></a></li>
-                    <li<?=ae('access_human_resources');?> class="glyphicons folder_open tab-stacked"><a href="<?=get_base_url();?>hr/positions/<?=_h($staff->staffID);?>/"><i></i> <?=_t( 'View Positions' );?></a></li>
-                    <li<?=ae('access_human_resources');?> class="glyphicons circle_plus tab-stacked"><a href="<?=get_base_url();?>hr/add/<?=_h($staff->staffID);?>/"><i></i> <span><?=_t( 'Add Position' );?></span></a></li>
+                    <li<?=ae('access_human_resources');?> class="glyphicons user"><a href="<?=get_base_url();?>hr/<?=_escape($staff->staffID);?>/"><i></i> <?=get_name(_escape($staff->staffID));?></a></li>
+                    <li class="glyphicons nameplate active"><a href="<?=get_base_url();?>staff/<?=_escape($staff->staffID);?>/" data-toggle="tab"><i></i> <?=_t( 'Staff Record' );?></a></li>
+                    <li<?=ae('access_human_resources');?> class="glyphicons folder_open tab-stacked"><a href="<?=get_base_url();?>hr/positions/<?=_escape($staff->staffID);?>/"><i></i> <?=_t( 'View Positions' );?></a></li>
+                    <li<?=ae('access_human_resources');?> class="glyphicons circle_plus tab-stacked"><a href="<?=get_base_url();?>hr/add/<?=_escape($staff->staffID);?>/"><i></i> <span><?=_t( 'Add Position' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -116,8 +116,8 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="address"><?=_t( 'Address' );?></label>
                             <div class="col-md-8">
-                                <input class="form-control col-md-3" type="text" readonly value="<?=_h($addr[0]['address1']);?> <?=_h($addr[0]['address2']);?>" />
-                                <input class="form-control col-md-3" type="text" readonly value="<?=_h($addr[0]['city']);?> <?=_h($addr[0]['state']);?> <?=_h($addr[0]['zip']);?>" />
+                                <input class="form-control col-md-3" type="text" readonly value="<?=_escape($addr[0]['address1']);?> <?=_escape($addr[0]['address2']);?>" />
+                                <input class="form-control col-md-3" type="text" readonly value="<?=_escape($addr[0]['city']);?> <?=_escape($addr[0]['state']);?> <?=_escape($addr[0]['zip']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -126,7 +126,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Title' );?></label>
                             <div class="col-md-8">
-                                <input type="text" readonly class="form-control" value="<?=getStaffJobTitle(_h($staff->staffID));?>" />
+                                <input type="text" readonly class="form-control" value="<?=getStaffJobTitle(_escape($staff->staffID));?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -137,7 +137,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                             <div class="col-md-8">
                                 <select name="buildingCode"<?=staio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('building','buildingCode <> "NULL"','buildingCode','buildingCode','buildingName',_h($staff->buildingCode)); ?>
+                                    <?php table_dropdown('building','buildingCode <> "NULL"','buildingCode','buildingCode','buildingName',_escape($staff->buildingCode)); ?>
                                 </select>
                             </div>
                         </div>
@@ -149,7 +149,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                             <div class="col-md-8">
                                 <select name="officeCode"<?=staio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('room','roomCode <> "NULL"','roomCode','roomCode','roomNumber',_h($staff->officeCode)); ?>
+                                    <?php table_dropdown('room','roomCode <> "NULL"','roomCode','roomCode','roomNumber',_escape($staff->officeCode)); ?>
                                 </select>
                             </div>
                         </div>
@@ -159,7 +159,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Office Phone' );?></label>
                             <div class="col-md-8">
-                                <input type="text" name="office_phone"<?=staio();?> class="form-control" value="<?=_h($staff->office_phone);?>" />
+                                <input type="text" name="office_phone"<?=staio();?> class="form-control" value="<?=_escape($staff->office_phone);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -170,7 +170,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                             <div class="col-md-8">
                                 <select name="schoolCode"<?=staio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">
                                     <option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('school','schoolCode <> "NULL"','schoolCode','schoolCode','schoolName',_h($staff->schoolCode)); ?>
+                                    <?php table_dropdown('school','schoolCode <> "NULL"','schoolCode','schoolCode','schoolName',_escape($staff->schoolCode)); ?>
                                 </select>
                             </div>
                         </div>
@@ -182,7 +182,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                             <div class="col-md-8">
                                 <select name="deptCode"<?=staio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" requied>
                                     <option value="NULL">&nbsp;</option>
-                                    <?php table_dropdown('department','deptCode <> "NULL"','deptCode','deptCode','deptName',_h($staff->deptCode)); ?>
+                                    <?php table_dropdown('department','deptCode <> "NULL"','deptCode','deptCode','deptName',_escape($staff->deptCode)); ?>
                                 </select>
                             </div>
                         </div>
@@ -200,8 +200,8 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                             <div class="col-md-8">
                                 <select name="status"<?=staio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="A"<?=selected('A',_h($staff->status),false);?>><?=_t( 'A Active' );?></option>
-                                    <option value="I"<?=selected('I',_h($staff->status),false);?>><?=_t( 'I Inactive' );?></option>
+                                    <option value="A"<?=selected('A',_escape($staff->status),false);?>><?=_t( 'A Active' );?></option>
+                                    <option value="I"<?=selected('I',_escape($staff->status),false);?>><?=_t( 'I Inactive' );?></option>
                                 </select>
                             </div>
                         </div>
@@ -211,7 +211,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Tags' );?></label>
                             <div class="col-md-8">
-                                <input type="hidden" id="input-tags" name="tags" value="<?=_h($staff->tags);?>" />
+                                <input type="hidden" id="input-tags" name="tags" value="<?=_escape($staff->tags);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -220,7 +220,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Email' );?></label>
                             <div class="col-md-8">
-                                <input type="text" readonly class="form-control" value="<?=_h($addr[0]['email']);?>" />
+                                <input type="text" readonly class="form-control" value="<?=_escape($addr[0]['email']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -229,7 +229,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Add Date' );?></label>
                             <div class="col-md-8">
-                                <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($staff->addDate))->format('D, M d, o');?>" class="form-control" />
+                                <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_escape($staff->addDate))->format('D, M d, o');?>" class="form-control" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -238,7 +238,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Approved By' );?></label>
                             <div class="col-md-8">
-                                <input type="text" readonly value="<?=get_name(_h($staff->approvedBy));?>" class="form-control" />
+                                <input type="text" readonly value="<?=get_name(_escape($staff->approvedBy));?>" class="form-control" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -247,7 +247,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Last Update' );?></label>
                             <div class="col-md-8">
-                                <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_h($staff->LastUpdate))->format('D, M d, o @ h:i A');?>" class="form-control" />
+                                <input type="text" readonly value="<?=\Jenssegers\Date\Date::parse(_escape($staff->LastUpdate))->format('D, M d, o @ h:i A');?>" class="form-control" />
                             </div>
                         </div>
                         <!-- // Group END -->

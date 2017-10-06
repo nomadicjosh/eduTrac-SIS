@@ -30,12 +30,12 @@ document.getElementById(element_id).value += text;
     <li class="divider"></li>
     <li><a href="<?=get_base_url();?>nae/" class="glyphicons search"><i></i> <?=_t( 'Person Lookup' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=_h($nae[0]['personID']);?>/" class="glyphicons user"><i></i> <?=get_name(_h($nae[0]['personID']));?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_escape($nae[0]['personID']);?>/" class="glyphicons user"><i></i> <?=get_name(_escape($nae[0]['personID']));?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'Person Restriction (PERC)' );?></li>
 </ul>
 
-<h3><?=get_name(_h($nae[0]['personID']));?>: <?=_t( 'ID#' );?> <?=(_h($nae[0]['altID']) != '' ? _h($nae[0]['altID']) : _h($nae[0]['personID']));?></h3>
+<h3><?=get_name(_escape($nae[0]['personID']));?>: <?=_t( 'ID#' );?> <?=(_escape($nae[0]['altID']) != '' ? _escape($nae[0]['altID']) : _escape($nae[0]['personID']));?></h3>
 <div class="innerLR">
     
     <?=_etsis_flash()->showMessage();?>
@@ -43,7 +43,7 @@ document.getElementById(element_id).value += text;
     <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>nae/perc/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>nae/perc/<?=_escape($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
         
         <!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -74,27 +74,27 @@ document.getElementById(element_id).value += text;
                             <td style="width:300px;">
                                 <select name="code[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?=table_dropdown('rest', null, 'code', 'code', 'description',_h($v['code']));?>
+                                    <?=table_dropdown('rest', null, 'code', 'code', 'description',_escape($v['code']));?>
                                 </select>
                             </td>
-                            <td style="width:80px;"><input type="text" name="severity[]" class="form-control text-center" value="<?=_h($v['severity']);?>" parsley-type="digits" parsley-maxlength="2" /></td>
+                            <td style="width:80px;"><input type="text" name="severity[]" class="form-control text-center" value="<?=_escape($v['severity']);?>" parsley-type="digits" parsley-maxlength="2" /></td>
                             <td style="width:160px;">
-                                <div class="input-group date" id="datepicker6<?=_h($v['id']);?>">
-                                    <input type="text" name="startDate[]" class="form-control" value="<?=_h($v['startDate']);?>" required/>
+                                <div class="input-group date" id="datepicker6<?=_escape($v['id']);?>">
+                                    <input type="text" name="startDate[]" class="form-control" value="<?=_escape($v['startDate']);?>" required/>
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </td>
                             <td style="width:160px;">
-                                <div class="input-group date" id="datepicker7<?=_h($v['id']);?>">
-                                    <input type="text" name="endDate[]" class="form-control" value="<?=(_h($v['endDate']) != '' ? _h($v['endDate']) : NULL);?>" />
+                                <div class="input-group date" id="datepicker7<?=_escape($v['id']);?>">
+                                    <input type="text" name="endDate[]" class="form-control" value="<?=(_escape($v['endDate']) != '' ? _escape($v['endDate']) : NULL);?>" />
                                     <span class="input-group-addon"><i class="fa fa-th"></i></span>
                                 </div>
                             </td>
-                            <td><input type="text" readonly class="form-control text-center" value="<?=_h($v['deptCode']);?>" /></td>
+                            <td><input type="text" readonly class="form-control text-center" value="<?=_escape($v['deptCode']);?>" /></td>
                             <td class="text-center">
-                                <button type="button" title="Comment" class="btn <?=(_h($v['Comment']) == 'empty' ? 'btn-primary' : 'btn-danger');?>" data-toggle="modal" data-target="#comments-<?=_h($v['id']);?>"><i class="fa fa-comment"></i></button>
+                                <button type="button" title="Comment" class="btn <?=(_escape($v['Comment']) == 'empty' ? 'btn-primary' : 'btn-danger');?>" data-toggle="modal" data-target="#comments-<?=_escape($v['id']);?>"><i class="fa fa-comment"></i></button>
                                 <!-- Modal -->
-                                <div class="modal fade" id="comments-<?=_h($v['id']);?>">
+                                <div class="modal fade" id="comments-<?=_escape($v['id']);?>">
 
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -108,8 +108,8 @@ document.getElementById(element_id).value += text;
 
                                             <!-- Modal body -->
                                             <div class="modal-body">
-                                                <textarea id="<?=_h($v['id']);?>" class="form-control" name="comment[]" rows="5" data-height="auto" parsley-required="true"><?=_h($v['comment']);?></textarea>
-                                                <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=\Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','<?=_h($v['id']);?>'); return false;" />
+                                                <textarea id="<?=_escape($v['id']);?>" class="form-control" name="comment[]" rows="5" data-height="auto" parsley-required="true"><?=_escape($v['comment']);?></textarea>
+                                                <input type="button" class="btn btn-default" value="Insert Timestamp" onclick="addMsg('<?=\Jenssegers\Date\Date::now()->format('D, M d, o @ h:i A');?> <?=get_name(get_persondata('personID'));?>','<?=_escape($v['id']);?>'); return false;" />
                                             </div>
                                             <!-- // Modal body END -->
 
@@ -121,7 +121,7 @@ document.getElementById(element_id).value += text;
 
                                         </div>
                                     </div>
-                                    <input type="hidden" name="id[]" value="<?=_h($v['id']);?>" />
+                                    <input type="hidden" name="id[]" value="<?=_escape($v['id']);?>" />
                                 </div>
                                 <!-- // Modal END -->
                             </td>
@@ -137,11 +137,11 @@ document.getElementById(element_id).value += text;
 
                 <!-- Form actions -->
                 <div class="form-actions">
-                    <?php if(_h($nae[0]['personID']) != '') : ?>
+                    <?php if(_escape($nae[0]['personID']) != '') : ?>
                     <button type="submit"<?=pids();?> class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
                     <?php endif; ?>
                     <button type="button"<?=pids();?> class="btn btn-icon btn-primary glyphicons circle_plus" data-toggle="modal" data-target="#md-ajax"><i></i><?=_t( 'Add' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/<?=_escape($nae[0]['personID']);?>/'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>
                 <!-- // Form actions END -->
             </div>
@@ -152,7 +152,7 @@ document.getElementById(element_id).value += text;
 	
 	<!-- Modal -->
 	<div class="modal fade" id="md-ajax">
-		<form class="form-horizontal" data-collabel="3" data-alignlabel="left" action="<?=get_base_url();?>nae/perc/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+		<form class="form-horizontal" data-collabel="3" data-alignlabel="left" action="<?=get_base_url();?>nae/perc/<?=_escape($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		<div class="modal-dialog">
 			<div class="modal-content">
 	
@@ -214,7 +214,7 @@ document.getElementById(element_id).value += text;
 				
 				<!-- Modal footer -->
 				<div class="modal-footer">
-					<input type="hidden" name="personID" value="<?=_h($nae[0]['personID']);?>" />
+					<input type="hidden" name="personID" value="<?=_escape($nae[0]['personID']);?>" />
                     <input type="hidden" name="addDate" value="<?=\Jenssegers\Date\Date::now()->format('Y-m-d');?>" />
                     <input type="hidden" name="addedBy" value="<?=get_persondata('personID');?>" />
 					<button type="submit" class="btn btn-default"><?=_t( 'Submit' );?></button>

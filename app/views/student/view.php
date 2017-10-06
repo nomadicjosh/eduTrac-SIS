@@ -14,7 +14,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$stu = get_student(_h($prog[0]['stuID']));
+$stu = get_student(_escape($prog[0]['stuID']));
 $tags = "{tag: '".implode("'},{tag: '", tagList())."'}";
 ?>
 
@@ -24,12 +24,12 @@ $tags = "{tag: '".implode("'},{tag: '", tagList())."'}";
     <li class="divider"></li>
     <li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><?=get_name(_h($stu->stuID));?> <?=_t( '(SPRO)' );?></li>
+    <li><?=get_name(_escape($stu->stuID));?> <?=_t( '(SPRO)' );?></li>
 </ul>
 
 <div class="innerLR">
     
-    <?php get_stu_header(_h($stu->stuID)); ?>
+    <?php get_stu_header(_escape($stu->stuID)); ?>
     
     <div class="separator line bottom"></div>
     
@@ -44,10 +44,10 @@ $tags = "{tag: '".implode("'},{tag: '", tagList())."'}";
             <!-- Tabs Heading -->
             <div class="tabsbar">
                 <ul>
-                    <li class="glyphicons user active"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/" data-toggle="tab"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-                    <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-                    <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-                    <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+                    <li class="glyphicons user active"><a href="<?=get_base_url();?>stu/<?=_escape($stu->stuID);?>/" data-toggle="tab"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+                    <li class="glyphicons package"><a href="<?=get_base_url();?>stu/stac/<?=_escape($stu->stuID);?>/"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+                    <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_escape($stu->stuID);?>/"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+                    <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_escape($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->
@@ -79,12 +79,12 @@ $tags = "{tag: '".implode("'},{tag: '", tagList())."'}";
                             <tbody>
                             <?php if($prog != '') : foreach($prog as $k => $v) { ?>
                             <tr class="gradeX">
-                                <td class="text-center"><a href="<?=get_base_url();?>stu/sacp/<?=_h($v['id']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></td>
-                                <td><input class="form-control center" type="text" readonly value="<?=_h($v['acadProgCode']);?>" /></td>
-                                <td><input class="form-control center" type="text" readonly value="<?=_h($v['progAcadLevel']);?>" /></td>
-                                <td><input class="form-control center" type="text" readonly value="<?=_h($v['currStatus']);?>" /></td>
-                                <td><input class="form-control center" type="text" readonly value="<?=_h($v['statusDate']);?>" /></td>
-                                <td><input class="form-control center" type="text" readonly value="<?=_h($admit->admitStatus);?>" /></td>
+                                <td class="text-center"><a href="<?=get_base_url();?>stu/sacp/<?=_escape($v['id']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></td>
+                                <td><input class="form-control center" type="text" readonly value="<?=_escape($v['acadProgCode']);?>" /></td>
+                                <td><input class="form-control center" type="text" readonly value="<?=_escape($v['progAcadLevel']);?>" /></td>
+                                <td><input class="form-control center" type="text" readonly value="<?=_escape($v['currStatus']);?>" /></td>
+                                <td><input class="form-control center" type="text" readonly value="<?=_escape($v['statusDate']);?>" /></td>
+                                <td><input class="form-control center" type="text" readonly value="<?=_escape($admit->admitStatus);?>" /></td>
                             </tr>
                             <?php } endif; ?>
                             </tbody>
@@ -109,7 +109,7 @@ $tags = "{tag: '".implode("'},{tag: '", tagList())."'}";
 					<div class="form-group">
                         <label class="col-md-3 control-label"><?=_t( 'Tags' );?> <a href="#tags" data-toggle="modal"><img src="<?=get_base_url();?>static/common/theme/images/help.png" /></a></label>
 						<div class="col-md-8">
-                            <input type="hidden" id="input-tags"<?=sio();?> name="tags" value="<?=_h($prog[0]['tags']);?>" />
+                            <input type="hidden" id="input-tags"<?=sio();?> name="tags" value="<?=_escape($prog[0]['tags']);?>" />
 						</div>
 					</div>
 					<!-- // Group END -->
@@ -126,8 +126,8 @@ $tags = "{tag: '".implode("'},{tag: '", tagList())."'}";
                         <div class="col-md-8">
                             <select name="status"<?=sio();?> class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                 <option value="">&nbsp;</option>
-                                <option value="A"<?=selected('A',_h($stu->stuStatus),false);?>><?=_t( 'Active' );?></option>
-                                <option value="I"<?=selected('I',_h($stu->stuStatus),false);?>><?=_t( 'Inactive' );?></option>
+                                <option value="A"<?=selected('A',_escape($stu->stuStatus),false);?>><?=_t( 'Active' );?></option>
+                                <option value="I"<?=selected('I',_escape($stu->stuStatus),false);?>><?=_t( 'Inactive' );?></option>
                             </select>
                         </div>
                     </div>
