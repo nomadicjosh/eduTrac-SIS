@@ -14,7 +14,7 @@ function url($route)
 
 /**
  * Renders any unwarranted special characters to HTML entities.
- * 
+ *
  * @since 1.0.0
  * @param string $str
  * @return mixed
@@ -97,7 +97,7 @@ function remoteFileExists($url)
 
 /**
  * Return the file extension of the given filename.
- * 
+ *
  * @param  string $filename
  * @return string
  * @since   1.0.0
@@ -137,11 +137,11 @@ function safe_truncate($string, $length, $append = '...')
 
 /**
  * Special function for files including
- * 
+ *
  * @param string $file
  * @param bool $once
  * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
- * 
+ *
  * @return bool
  * @since 1.0.0
  */
@@ -164,11 +164,11 @@ function _require($file, $once = false, $show_errors = true)
 
 /**
  * Special function for files including
- * 
+ *
  * @param string $file
  * @param bool $once
  * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
- * 
+ *
  * @return bool
  * @since 1.0.0
  */
@@ -191,10 +191,10 @@ function _include($file, $once = false, $show_errors = true)
 
 /**
  * Special function for files including
- * 
+ *
  * @param string $file
  * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
- * 
+ *
  * @return bool
  * @since 1.0.0
  */
@@ -205,10 +205,10 @@ function _require_once($file, $show_errors = true)
 
 /**
  * Special function for files including
- * 
+ *
  * @param string $file
  * @param bool|Closure $show_errors If bool error will be processed, if Closure - only Closure will be called
- * 
+ *
  * @return bool
  * @since 1.0.0
  */
@@ -219,7 +219,7 @@ function _include_once($file, $show_errors = true)
 
 /**
  * Validate email.
- * 
+ *
  * @param string $email
  * @return string (ok, empty, bad email).
  * @since 1.0.0
@@ -236,7 +236,7 @@ function validate_email($email)
 
 /**
  * Formats date to be stored in MySQL database.
- * 
+ *
  * @return string
  * @since 1.0.0
  */
@@ -250,7 +250,7 @@ function formatDate($date)
 
 /**
  * Removes all whitespace.
- * 
+ *
  * @param string $str
  * @return mixed
  * @since 1.0.0
@@ -262,7 +262,7 @@ function _trim($str)
 
 /**
  * Function used to create a slug associated to an "ugly" string.
- * 
+ *
  * @param string $string the string to transform.
  * @return string the resulting slug.
  * @since 1.0.0
@@ -307,7 +307,7 @@ function getFilesize($file, $digits = 2)
 
 /**
  * Redirects to another page.
- * 
+ *
  * @param string $location The path to redirect to
  * @param int $status Status code to use
  * @return bool False if $location is not set
@@ -323,10 +323,10 @@ if (!function_exists('hash_equals')) {
 
     /**
      * Timing attack safe string comparison
-     * 
+     *
      * Compares two strings using the same time whether they're equal or not.
      * This function should be used to mitigate timing attacks; for instance, when testing crypt() password hashes.
-     * 
+     *
      * @param string $known_string The string of known length to compare against
      * @param string $user_string The user-supplied string
      * @return boolean Returns TRUE when the two strings are equal, FALSE otherwise.
@@ -3446,7 +3446,7 @@ function kses_hook($t, &$C, &$S)
 
 /**
  * Concatenation with separator.
- * 
+ *
  * @since 1.0.8
  * @param string $separator Delimeter to used between strings.
  * @param type $string1 Left string.
