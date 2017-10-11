@@ -136,11 +136,7 @@ $screen = 'addr';
                         <div data-field-span="1">
                             <label><?=_t( 'End Date' );?></label>
                             <div class="input-group date col-md-8" id="datepicker7">
-                                <?php if($addr[0]['endDate'] == NULL || $addr[0]['endDate'] == '0000-00-00') { ?>
-                                <input name="endDate"<?=aio();?> type="text" />
-                                <?php } else { ?>
-                                <input name="endDate"<?=aio();?> type="text" value="<?=_escape($addr[0]['endDate']);?>" />
-                                <?php } ?>
+                                <input name="endDate"<?=aio();?> type="text" value="<?=if_not_null($addr[0]['endDate']);?>" />
                                 <span class="input-group-addon"><i class="fa fa-th"></i></span>
                             </div>
                         </div>

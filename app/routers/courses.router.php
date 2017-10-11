@@ -302,7 +302,7 @@ $app->group('/courses', function() use ($app, $css, $js) {
                     $stac->courseLevelCode = _escape($sect->courseLevelCode);
                     $stac->creditType = _escape($sect->creditType);
                     $stac->startDate = _escape($sect->startDate);
-                    $stac->endDate = (_escape($sect->endDate) != '' ? _escape($sect->endDate) : NULL);
+                    $stac->endDate = if_null(_escape($sect->endDate));
                     $stac->addedBy = get_persondata('personID');
                     $stac->addDate = Jenssegers\Date\Date::now();
                     $stac->save();

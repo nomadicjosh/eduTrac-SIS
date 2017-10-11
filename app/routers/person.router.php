@@ -95,9 +95,22 @@ $app->group('/nae', function () use($app) {
         if ($app->req->isPost()) {
             try {
                 $nae = $app->db->person();
-                foreach (_filter_input_array(INPUT_POST) as $k => $v) {
-                    $nae->$k = $v;
-                }
+                $nae->altID = if_null($app->req->post['altID']);
+                $nae->personType = $app->req->post['personType'];
+                $nae->prefix = $app->req->post['prefix'];
+                $nae->fname = $app->req->post['fname'];
+                $nae->lname = $app->req->post['lname'];
+                $nae->mname = $app->req->post['mname'];
+                $nae->email = $app->req->post['email'];
+                $nae->ssn = $app->req->post['ssn'];
+                $nae->veteran = $app->req->post['veteran'];
+                $nae->ethnicity = $app->req->post['ethnicity'];
+                $nae->dob = if_null($app->req->post['dob']);
+                $nae->gender = $app->req->post['gender'];
+                $nae->emergency_contact = $app->req->post['emergency_contact'];
+                $nae->emergency_contact_phone = $app->req->post['emergency_contact_phone'];
+                $nae->status = $app->req->post['status'];
+                $nae->tags = if_null($app->req->post['tags']);
                 $nae->where('personID = ?', (int) $id);
 
                 /**
@@ -170,8 +183,7 @@ $app->group('/nae', function () use($app) {
                 ->where('addressType = "P"')->_and_()
                 ->where('addressStatus = "C"')->_and_()
                 ->where('personID = ?', (int) $id)->_and_()
-                ->where('endDate IS NULL')->_or_()
-                ->whereLte('endDate', '0000-00-00');
+                ->where('endDate IS NULL');
 
             $q = $addr->find(function ($data) {
                 $array = [];
@@ -216,7 +228,7 @@ $app->group('/nae', function () use($app) {
             ]);
         } /**
          * If data is zero, 404 not found.
-         */ elseif (_h($sql[0]['personID']) <= 0) {
+         */ elseif (_escape($sql[0]['personID']) <= 0) {
 
             $app->view->display('error/404', [
                 'title' => '404 Error'
@@ -236,7 +248,7 @@ $app->group('/nae', function () use($app) {
             etsis_register_script('gridforms');
 
             $app->view->display('person/view', [
-                'title' => get_name(_h($sql[0]['personID'])),
+                'title' => get_name(_escape($sql[0]['personID'])),
                 'nae' => $sql,
                 'addr' => $q,
                 'staff' => $staff,
@@ -269,7 +281,7 @@ $app->group('/nae', function () use($app) {
                                 'code' => $app->req->post['code'][$i],
                                 'severity' => $app->req->post['severity'][$i],
                                 'startDate' => $app->req->post['startDate'][$i],
-                                'endDate' => ($app->req->post['endDate'][$i] != '' ? $app->req->post['endDate'][$i] : NULL),
+                                'endDate' => if_null($app->req->post['endDate'][$i]),
                                 'comment' => $app->req->post['comment'][$i]
                             ])
                             ->where('personID = ?', $id)->_and_()
@@ -357,7 +369,7 @@ $app->group('/nae', function () use($app) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (_h($q1[0]['personID']) <= 0) {
+         */ elseif (_escape($q1[0]['personID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -412,7 +424,7 @@ $app->group('/nae', function () use($app) {
 
                 $nae = $app->db->person();
                 $nae->uname = $app->req->post['uname'];
-                $nae->altID = $app->req->post['altID'];
+                $nae->altID = if_null($app->req->post['altID']);
                 $nae->personType = $app->req->post['personType'];
                 $nae->prefix = $app->req->post['prefix'];
                 $nae->fname = $app->req->post['fname'];
@@ -422,12 +434,12 @@ $app->group('/nae', function () use($app) {
                 $nae->ssn = $app->req->post['ssn'];
                 $nae->veteran = $app->req->post['veteran'];
                 $nae->ethnicity = $app->req->post['ethnicity'];
-                $nae->dob = $app->req->post['dob'];
+                $nae->dob = if_null($app->req->post['dob']);
                 $nae->gender = $app->req->post['gender'];
                 $nae->emergency_contact = $app->req->post['emergency_contact'];
                 $nae->emergency_contact_phone = $app->req->post['emergency_contact_phone'];
                 $nae->status = "A";
-                $nae->tags = $app->req->post['tags'] != '' ? $app->req->post['tags'] : NULL;
+                $nae->tags = if_null($app->req->post['tags']);
                 $nae->approvedBy = get_persondata('personID');
                 $nae->approvedDate = \Jenssegers\Date\Date::now();
                 $nae->password = etsis_hash_password($password);
@@ -471,6 +483,7 @@ $app->group('/nae', function () use($app) {
                 $addr->addressStatus = "C";
                 $addr->startDate = \Jenssegers\Date\Date::now();
                 $addr->addDate = \Jenssegers\Date\Date::now();
+                $addr->endDate = NULL;
                 $addr->addedBy = get_persondata('personID');
                 $addr->phone1 = $app->req->post['phone'];
                 $addr->email1 = $app->req->post['email'];
@@ -593,7 +606,7 @@ $app->group('/nae', function () use($app) {
             ]);
         } /**
          * If data is zero, 404 not found.
-         */ elseif (_h($q[0]['personID']) <= 0) {
+         */ elseif (_escape($q[0]['personID']) <= 0) {
 
             $app->view->display('error/404', [
                 'title' => '404 Error'
@@ -656,7 +669,7 @@ $app->group('/nae', function () use($app) {
         if ($app->req->isPost()) {
             try {
                 $addr = $app->db->address();
-                $addr->personID = (int) _h($sql[0]['personID']);
+                $addr->personID = (int) _escape($sql[0]['personID']);
                 $addr->address1 = $app->req->post['address1'];
                 $addr->address2 = $app->req->post['address2'];
                 $addr->city = $app->req->post['city'];
@@ -665,7 +678,7 @@ $app->group('/nae', function () use($app) {
                 $addr->country = $app->req->post['country'];
                 $addr->addressType = $app->req->post['addressType'];
                 $addr->startDate = $app->req->post['startDate'];
-                $addr->endDate = ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL);
+                $addr->endDate = if_null($app->req->post['endDate']);
                 $addr->addressStatus = $app->req->post['addressStatus'];
                 $addr->phone1 = $app->req->post['phone1'];
                 $addr->phone2 = $app->req->post['phone2'];
@@ -680,7 +693,7 @@ $app->group('/nae', function () use($app) {
                 $addr->save();
 
                 $_id = $addr->lastInsertId();
-                etsis_logger_activity_log_write('New Record', 'Address', get_name(_h($sql[0]['personID'])), get_persondata('uname'));
+                etsis_logger_activity_log_write('New Record', 'Address', get_name(_escape($sql[0]['personID'])), get_persondata('uname'));
                 etsis_cache_delete($id, 'stu');
                 etsis_cache_delete($id, 'person');
                 _etsis_flash()->success(_etsis_flash()->notice(200), get_base_url() . 'nae/addr' . '/' . (int) $_id . '/');
@@ -716,7 +729,7 @@ $app->group('/nae', function () use($app) {
             ]);
         } /**
          * If data is zero, 404 not found.
-         */ elseif (_h($sql[0]['personID']) <= 0) {
+         */ elseif (_escape($sql[0]['personID']) <= 0) {
 
             $app->view->display('error/404', [
                 'title' => '404 Error'
@@ -766,7 +779,7 @@ $app->group('/nae', function () use($app) {
             });
 
             $person = $app->db->person()
-                ->where('personID = ?', (int) _h($q[0]['personID']));
+                ->where('personID = ?', (int) _escape($q[0]['personID']));
             $sql = $person->find(function ($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -792,9 +805,24 @@ $app->group('/nae', function () use($app) {
         if ($app->req->isPost()) {
             try {
                 $addr = $app->db->address();
-                foreach ($app->req->post as $k => $v) {
-                    $addr->$k = $v;
-                }
+                $addr->address1 = $app->req->post['address1'];
+                $addr->address2 = $app->req->post['address2'];
+                $addr->city = $app->req->post['city'];
+                $addr->state = $app->req->post['state'];
+                $addr->zip = $app->req->post['zip'];
+                $addr->country = $app->req->post['country'];
+                $addr->addressType = $app->req->post['addressType'];
+                $addr->startDate = $app->req->post['startDate'];
+                $addr->endDate = if_null($app->req->post['endDate']);
+                $addr->addressStatus = $app->req->post['addressStatus'];
+                $addr->phone1 = $app->req->post['phone1'];
+                $addr->phone2 = $app->req->post['phone2'];
+                $addr->ext1 = $app->req->post['ext1'];
+                $addr->ext2 = $app->req->post['ext2'];
+                $addr->phoneType1 = $app->req->post['phoneType1'];
+                $addr->phoneType2 = $app->req->post['phoneType2'];
+                $addr->email1 = $app->req->post['email1'];
+                $addr->email2 = $app->req->post['email2'];
                 $addr->where('id = ?', (int) $id);
                 $addr->update();
 
@@ -834,7 +862,7 @@ $app->group('/nae', function () use($app) {
             ]);
         } /**
          * If data is zero, 404 not found.
-         */ elseif (_h($q[0]['id']) <= 0) {
+         */ elseif (_escape($q[0]['id']) <= 0) {
 
             $app->view->display('error/404', [
                 'title' => '404 Error'
@@ -853,7 +881,7 @@ $app->group('/nae', function () use($app) {
             etsis_register_script('gridforms');
 
             $app->view->display('person/addr', [
-                'title' => get_name(_h($q[0]['personID'])),
+                'title' => get_name(_escape($q[0]['personID'])),
                 'addr' => $q,
                 'nae' => $sql,
                 'staff' => $staff
@@ -948,7 +976,7 @@ $app->group('/nae', function () use($app) {
             ]);
         } /**
          * If data is zero, 404 not found.
-         */ elseif (_h($sql[0]['personID']) <= 0) {
+         */ elseif (_escape($sql[0]['personID']) <= 0) {
 
             $app->view->display('error/404', [
                 'title' => '404 Error'
@@ -1053,7 +1081,7 @@ $app->group('/nae', function () use($app) {
             ]);
         } /**
          * If data is zero, 404 not found.
-         */ elseif (_h($sql[0]['personID']) <= 0) {
+         */ elseif (_escape($sql[0]['personID']) <= 0) {
 
             $app->view->display('error/404', [
                 'title' => '404 Error'
@@ -1114,12 +1142,12 @@ $app->group('/nae', function () use($app) {
         try {
             Node::dispense('reset_password');
             $node = Node::table('reset_password');
-            $node->uname = (string) _h($person->uname);
-            $node->email = (string) _h($person->email);
-            $node->name = (string) get_name(_h($person->personID));
-            $node->personid = (int) _h($person->personID);
-            $node->fname = (string) _h($person->fname);
-            $node->lname = (string) _h($person->lname);
+            $node->uname = (string) _escape($person->uname);
+            $node->email = (string) _escape($person->email);
+            $node->name = (string) get_name(_escape($person->personID));
+            $node->personid = (int) _escape($person->personID);
+            $node->fname = (string) _escape($person->fname);
+            $node->lname = (string) _escape($person->lname);
             $node->password = (string) $pass;
             $node->sent = (int) 0;
             $node->save();
@@ -1144,10 +1172,10 @@ $app->group('/nae', function () use($app) {
             $pass = [];
             $pass['pass'] = $pass;
             $pass['personID'] = (int) $id;
-            $pass['uname'] = _h($person->uname);
-            $pass['fname'] = _h($person->fname);
-            $pass['lname'] = _h($person->lname);
-            $pass['email'] = _h($person->email);
+            $pass['uname'] = _escape($person->uname);
+            $pass['fname'] = _escape($person->fname);
+            $pass['lname'] = _escape($person->lname);
+            $pass['email'] = _escape($person->email);
             /**
              * Fires after successful reset of person's password.
              *

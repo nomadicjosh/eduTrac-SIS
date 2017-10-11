@@ -109,7 +109,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_nae_tags())."'}";
                         <div data-field-span="1">
                             <label><?=_t( 'Date of Birth' );?></label>
                             <div class="input-group date col-md-8" id="datepicker6">
-                                <input class="form-control" name="dob"<?=pio();?> type="text" value="<?=(_escape($nae[0]['dob']) > '0000-00-00' ? _escape($nae[0]['dob']) : '');?>" />
+                                <input class="form-control" name="dob"<?=pio();?> type="text" value="<?=if_not_null($nae[0]['dob']);?>" />
                                 <span class="input-group-addon"><i class="fa fa-th"></i></span>
                             </div>
                         </div>
