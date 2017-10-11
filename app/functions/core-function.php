@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
+$app = \Liten\Liten::getInstance();
+
 /**
  * eduTrac SIS Core Functions
  *
@@ -10,10 +12,9 @@ if (!defined('BASE_PATH'))
  * @package eduTrac SIS
  * @author Joshua Parker <joshmac3@icloud.com>
  */
-define('CURRENT_RELEASE', '6.3.0');
+const CURRENT_RELEASE = '6.3';
 define('RELEASE_TAG', trim(_file_get_contents(BASE_PATH . 'RELEASE')));
-
-$app = \Liten\Liten::getInstance();
+define('REQUEST_TIME', $app->req->server['REQUEST_TIME']);
 use League\Event\Event;
 use PHPBenchmark\HtmlView;
 use PHPBenchmark\Monitor;
@@ -896,7 +897,7 @@ function get_layouts_header($layout_dir = '')
 function subdomain_as_directory()
 {
     $app = \Liten\Liten::getInstance();
-    
+
     $subdomain = '';
     $domain_parts = explode('.', $app->req->server['SERVER_NAME']);
     if (count($domain_parts) == 3) {
@@ -1024,7 +1025,7 @@ function is_etsis_exception($object)
  */
 function file_mod_time($file)
 {
-    return filemtime($file);
+    filemtime($file);
 }
 
 /**
@@ -1921,4 +1922,29 @@ function etsis_system_backup($source, $destination)
 function etsis_between($val, $min, $max)
 {
     return ($val - $min) * ($val - $max) <= 0;
+}
+
+/**
+ * Checks if a variable is null. If not null, check if integer or string.
+ * 
+ * @since 6.3.4
+ * @param string|int $var   Variable to check.
+ * @return string|int|null Returns null if empty or a string or an integer.
+ */
+function if_null($var)
+{
+    $_var = ctype_digit($var) ? (int) $var : (string) $var;
+    return $var === '' ? NULL : $_var;
+}
+
+/**
+ * If variable is not null, return it.
+ * 
+ * @since 6.3.4
+ * @param string|int $var   Variable to check.
+ * @return string|int|null Returns false if NULL or a string or an integer.
+ */
+function if_not_null($var)
+{
+    return $var !== NULL ? _escape($var) : false;
 }
