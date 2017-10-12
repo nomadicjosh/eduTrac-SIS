@@ -269,7 +269,7 @@ class etsis_Cache_XCache extends \app\src\Core\Cache\etsis_Abstract_Cache
         echo "<strong>" . _t('Cache Misses:') . "</strong> " . $info['misses'] . "<br />";
         echo "<strong>" . _t('Uptime:') . "</strong> " . null . "<br />";
         echo "<strong>" . _t('Memory Usage:') . "</strong> " . $info['size'] . "<br />";
-        echo "<strong>" . _t('Memory Available:') . "</strong> " . $sma['avail'] . "<br />";
+        echo "<strong>" . _t('Memory Available:') . "</strong> " . $info['avail'] . "<br />";
         echo "</p>";
     }
 

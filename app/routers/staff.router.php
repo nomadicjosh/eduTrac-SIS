@@ -100,7 +100,7 @@ $app->group('/staff', function () use($app) {
 
     $app->match('GET|POST|PATCH|PUT|OPTIONS|DELETE', '/connector/', function () use($app) {
         error_reporting(0);
-        if (_h(get_option('elfinder_driver')) === 'elf_local_driver') :
+        if (_escape(get_option('elfinder_driver')) === 'elf_local_driver') :
             _mkdir($app->config('file.savepath') . get_persondata('uname') . '/');
             $opts = array(
                 // 'debug' => true,
@@ -140,7 +140,7 @@ $app->group('/staff', function () use($app) {
                     array(
                         'driver' => 'S3',
                         'path' => ucfirst(get_persondata('uname')),
-                        'URL' => 'http://' . _h(get_option('amz_s3_bucket')) . '.s3.amazonaws.com/' . ucfirst(get_persondata('uname')) . '/',
+                        'URL' => 'http://' . _escape(get_option('amz_s3_bucket')) . '.s3.amazonaws.com/' . ucfirst(get_persondata('uname')) . '/',
                         'alias' => 'Files',
                         'mimeDetect' => 'mime_content_type',
                         'mimefile' => BASE_PATH . 'app/src/elFinder/mime.types',
@@ -157,11 +157,11 @@ $app->group('/staff', function () use($app) {
                         'uploadDeny' => ['application/x-php'],
                         'uploadOrder' => array('allow', 'deny'),
                         "s3" => array(
-                            "key" => _h(get_option('amz_s3_access_key')),
-                            "secret" => _h(get_option('amz_s3_secret_key')),
+                            "key" => _escape(get_option('amz_s3_access_key')),
+                            "secret" => _escape(get_option('amz_s3_secret_key')),
                             "region" => 'us-east-1'
                         ),
-                        "bucket" => _h(get_option('amz_s3_bucket')),
+                        "bucket" => _escape(get_option('amz_s3_bucket')),
                         "acl" => "public-read"
                     )
                 )
@@ -296,7 +296,7 @@ $app->group('/staff', function () use($app) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (_h($staf->staffID) <= 0) {
+         */ elseif (_escape($staf->staffID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -312,7 +312,7 @@ $app->group('/staff', function () use($app) {
             etsis_register_script('select2');
 
             $app->view->display('staff/view', [
-                'title' => get_name(_h($staf->staffID)),
+                'title' => get_name(_escape($staf->staffID)),
                 'staff' => $staf,
                 'addr' => $q
                 ]
@@ -424,16 +424,16 @@ $app->group('/staff', function () use($app) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (_h($get_person->personID) <= 0) {
+         */ elseif (_escape($get_person->personID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
         /**
          * If staffID already exists, then redirect
          * the user to the staff record.
-         */ elseif (_h($get_staff->staffID) > 0) {
+         */ elseif (_escape($get_staff->staffID) > 0) {
 
-            etsis_redirect(get_base_url() . 'staff' . '/' . _h($get_staff->staffID) . '/');
+            etsis_redirect(get_base_url() . 'staff' . '/' . _escape($get_staff->staffID) . '/');
         }
         /**
          * If we get to this point, the all is well
@@ -448,7 +448,7 @@ $app->group('/staff', function () use($app) {
             etsis_register_script('datepicker');
 
             $app->view->display('staff/add', [
-                'title' => get_name(_h($get_person->personID)),
+                'title' => get_name(_escape($get_person->personID)),
                 'person' => (array) $get_person
                 ]
             );

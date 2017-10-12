@@ -23,12 +23,12 @@ $screen = 'adsu';
     <li class="divider"></li>
     <li><a href="<?=get_base_url();?>nae/" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/" class="glyphicons user"><i></i> <?=get_name(_h($nae[0]['personID']));?></a></li>
+    <li><a href="<?=get_base_url();?>nae/<?=_escape($nae[0]['personID']);?>/" class="glyphicons user"><i></i> <?=get_name(_escape($nae[0]['personID']));?></a></li>
     <li class="divider"></li>
     <li><?=_t( 'Address Summary' );?></li>
 </ul>
 
-<h3><?=get_name(_h((int)$nae[0]['personID']));?> <?=_t( "ID#: " );?> <?=(_h($nae[0]['altID']) != '' ? _h($nae[0]['altID']) : _h($nae[0]['personID']));?></h3>
+<h3><?=get_name(_escape((int)$nae[0]['personID']));?> <?=_t( "ID#: " );?> <?=(_escape($nae[0]['altID']) != '' ? _escape($nae[0]['altID']) : _escape($nae[0]['personID']));?></h3>
 <div class="innerLR">
     
     <?=_etsis_flash()->showMessage();?>
@@ -48,9 +48,9 @@ $screen = 'adsu';
                     
                         <!-- Group -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label" for="address"><?=_t( 'Address' );?> <a href="<?=get_base_url();?>nae/addr/<?=_h($v['id']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
+                            <label class="col-md-3 control-label" for="address"><?=_t( 'Address' );?> <a href="<?=get_base_url();?>nae/addr/<?=_escape($v['id']);?>/"><img src="<?=get_base_url();?>static/common/theme/images/cascade.png" /></a></label>
                             <div class="col-md-8">
-                                <input class="form-control" type="text" readonly value="<?=_h($v['address1']);?> <?=_h($v['address2']);?>" />
+                                <input class="form-control" type="text" readonly value="<?=_escape($v['address1']);?> <?=_escape($v['address2']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -59,13 +59,13 @@ $screen = 'adsu';
                         <div class="form-group">
                         	<label class="col-md-3 control-label">&nbsp;</label>
                             <div class="col-md-3">
-                                <input class="form-control" type="text" readonly value="<?=_h($v['city']);?>" />
+                                <input class="form-control" type="text" readonly value="<?=_escape($v['city']);?>" />
                             </div>
                             <div class="col-md-3">
-                                <input class="form-control" type="text" readonly value="<?=_h($v['state']);?>" />
+                                <input class="form-control" type="text" readonly value="<?=_escape($v['state']);?>" />
                             </div>
                             <div class="col-md-3">
-                                <input class="form-control" type="text" readonly value="<?=_h($v['zip']);?>" />
+                                <input class="form-control" type="text" readonly value="<?=_escape($v['zip']);?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -80,12 +80,12 @@ $screen = 'adsu';
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="status"><?=_t( 'Status' );?></label>
                             <div class="col-md-8">
-                                <input class="form-control" type="text" readonly value="<?=translate_addr_status(_h($v['addressStatus']));?>" />
+                                <input class="form-control" type="text" readonly value="<?=translate_addr_status(_escape($v['addressStatus']));?>" />
                             </div>
                             
                             <label class="col-md-3 control-label" for="type"><?=_t( 'Type' );?></label>
                             <div class="col-md-8">
-                                <input class="form-control" type="text" readonly value="<?=translate_addr_type(_h($v['addressType']));?>" />
+                                <input class="form-control" type="text" readonly value="<?=translate_addr_type(_escape($v['addressType']));?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -100,8 +100,8 @@ $screen = 'adsu';
                 
                 <!-- Form actions -->
                 <div class="form-actions">
-                    <button type="button"<?=aids();?> class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=get_base_url();?>nae/addr-form/<?=_h($nae[0]['personID']);?>/'"><i></i><?=_t( 'Add' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button"<?=aids();?> class="btn btn-icon btn-primary glyphicons circle_ok" onclick="window.location='<?=get_base_url();?>nae/addr-form/<?=_escape($nae[0]['personID']);?>/'"><i></i><?=_t( 'Add' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/<?=_escape($nae[0]['personID']);?>/'"><i></i><?=_t( 'Cancel' );?></button>
                 </div>
                 <!-- // Form actions END -->
 

@@ -24,13 +24,13 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
 	<li><?=_t( 'Add Staff' );?></li>
 </ul>
 
-<h3><?=_t( 'Add Staff' );?> - <?=get_name(_h($person['personID']));?></h3>
+<h3><?=_t( 'Add Staff' );?> - <?=get_name(_escape($person['personID']));?></h3>
 <div class="innerLR">
     
     <?=_etsis_flash()->showMessage();?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>staff/add/<?=_h($person['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>staff/add/<?=_escape($person['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray">
@@ -52,7 +52,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
 						<div class="form-group">
 							<label class="col-md-3 control-label"><font color="red">*</font> <?=_t( 'Staff' );?></label>
 							<div class="col-md-8">
-								<input type="text" readonly class="form-control" value="<?=get_name(_h($person['personID']));?> - <?=_h($person['personID']);?>" />
+								<input type="text" readonly class="form-control" value="<?=get_name(_escape($person['personID']));?> - <?=_escape($person['personID']);?>" />
 							</div>
 						</div>
 						<!-- // Group END -->
@@ -75,8 +75,8 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                             <div class="col-md-8">
                                 <select name="staffType" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <option value="FAC"<?=selected('FAC',_h($person['personType']),false);?>><?=_t( 'Faculty' );?></option>
-                                    <option value="STA"<?=selected('STA',_h($person['personType']),false);?>><?=_t( 'Staff' );?></option>
+                                    <option value="FAC"<?=selected('FAC',_escape($person['personType']),false);?>><?=_t( 'Faculty' );?></option>
+                                    <option value="STA"<?=selected('STA',_escape($person['personType']),false);?>><?=_t( 'Staff' );?></option>
                                 </select>
                             </div>
                         </div>
@@ -88,7 +88,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                             <div class="col-md-8">
                                 <select name="supervisorID" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>
                                     <option value="">&nbsp;</option>
-                                    <?php supervisor(_h($person['personID']), $app->req->post['supervisorID'] != '' ? $app->req->post['supervisorID'] : ''); ?>
+                                    <?php supervisor(_escape($person['personID']), $app->req->post['supervisorID'] != '' ? $app->req->post['supervisorID'] : ''); ?>
                                 </select>
                             </div>
                         </div>
@@ -222,7 +222,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Tags' );?></label>
                             <div class="col-md-8">
-                                <input type="hidden" id="input-tags" name="tags" value="<?=(_h($app->req->post['tags']) != '' ? _h($app->req->post['tags']) : '');?>" />
+                                <input type="hidden" id="input-tags" name="tags" value="<?=(_escape($app->req->post['tags']) != '' ? _escape($app->req->post['tags']) : '');?>" />
                             </div>
                         </div>
                         <!-- // Group END -->
@@ -231,7 +231,7 @@ $tags = "{tag: '".implode("'},{tag: '", get_staff_tags())."'}";
                         <div class="form-group">
                             <label class="col-md-3 control-label"><?=_t( 'Approved By' );?></label>
                             <div class="col-md-8">
-                                <input type="text" readonly value="<?=get_name(_h(get_persondata('personID')));?>" class="form-control" required />
+                                <input type="text" readonly value="<?=get_name(_escape(get_persondata('personID')));?>" class="form-control" required />
                             </div>
                         </div>
                         <!-- // Group END -->

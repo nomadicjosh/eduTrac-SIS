@@ -22,12 +22,12 @@ $screen = 'pperm';
 	<li class="divider"></li>
 	<li><a href="<?=get_base_url();?>nae/" class="glyphicons search"><i></i> <?=_t( 'Person Lookup' );?></a></li>
 	<li class="divider"></li>
-    <li><a href="<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/" class="glyphicons vcard"><i></i> <?=get_name(_h($nae[0]['personID']));?></a></li>
+    <li><a href="<?=get_base_url();?>nae/<?=_escape($nae[0]['personID']);?>/" class="glyphicons vcard"><i></i> <?=get_name(_escape($nae[0]['personID']));?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Manage Person Permissions' );?></li>
 </ul>
 
-<h3><?=get_name(_h($nae[0]['personID']));?>: <?=_t( 'ID#' );?> <?=(_h($nae[0]['altID']) != '' ? _h($nae[0]['altID']) : _h($nae[0]['personID']));?></h3>
+<h3><?=get_name(_escape($nae[0]['personID']));?>: <?=_t( 'ID#' );?> <?=(_escape($nae[0]['altID']) != '' ? _escape($nae[0]['altID']) : _escape($nae[0]['personID']));?></h3>
 <div class="innerLR">
     
     <?=_etsis_flash()->showMessage();?>
@@ -35,7 +35,7 @@ $screen = 'pperm';
     <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none" action="<?=get_base_url();?>nae/perms/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none" action="<?=get_base_url();?>nae/perms/<?=_escape($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-gray <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -56,7 +56,7 @@ $screen = 'pperm';
 				
 					<!-- Table body -->
 					<tbody>
-						<?php personPerm(_h($nae[0]['personID'])); ?>
+						<?php personPerm(_escape($nae[0]['personID'])); ?>
 					</tbody>
 					<!-- // Table body END -->
 		
@@ -68,7 +68,7 @@ $screen = 'pperm';
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/'"><i></i><?=_t( 'Cancel' );?></button>
+					<button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/<?=_escape($nae[0]['personID']);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

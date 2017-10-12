@@ -23,14 +23,14 @@ $screen = 'addr';
 	<li class="divider"></li>
 	<li><a href="<?=get_base_url();?>nae/" class="glyphicons search"><i></i> <?=_t( 'Search Person' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>nae/<?=_h($nae[0]['personID']);?>/" class="glyphicons user"><i></i> <?=get_name((int)_h($nae[0]['personID']));?></a></li>
+    <li><a href="<?=get_base_url();?>nae/<?=_escape($nae[0]['personID']);?>/" class="glyphicons user"><i></i> <?=get_name((int)_escape($nae[0]['personID']));?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>nae/adsu/<?=_h($nae[0]['personID']);?>/" class="glyphicons vcard"><i></i> <?=_t( 'Address Summary' );?></a></li>
+    <li><a href="<?=get_base_url();?>nae/adsu/<?=_escape($nae[0]['personID']);?>/" class="glyphicons vcard"><i></i> <?=_t( 'Address Summary' );?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Edit Address' );?></li>
 </ul>
 
-<h3><?=get_name((int)_h($nae[0]['personID']));?></h3>
+<h3><?=get_name((int)_escape($nae[0]['personID']));?></h3>
 <div class="innerLR">
     
     <?=_etsis_flash()->showMessage();?>
@@ -38,7 +38,7 @@ $screen = 'addr';
     <?php jstree_sidebar_menu($screen,'','',$nae,$staff); ?>
 
 	<!-- Form -->
-	<form class="form-horizontal margin-none grid-form" action="<?=get_base_url();?>nae/addr-form/<?=_h($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
+	<form class="form-horizontal margin-none grid-form" action="<?=get_base_url();?>nae/addr-form/<?=_escape($nae[0]['personID']);?>/" id="validateSubmitForm" method="post" autocomplete="off">
 		
 		<!-- Widget -->
 		<div class="widget widget-heading-simple widget-body-white <?=($app->hook->has_filter('sidebar_menu')) ? 'col-md-12' : 'col-md-10';?>">
@@ -56,19 +56,19 @@ $screen = 'addr';
                     <div data-row-span="4">
                         <div data-field-span="1" class="readonly">
                             <label><?= _t("Unique ID"); ?></label>
-                            <input type="text" readonly value="<?=(_h($nae[0]['altID']) != '' ? _h($nae[0]['altID']) : _h($nae[0]['personID']));?>" />
+                            <input type="text" readonly value="<?=(_escape($nae[0]['altID']) != '' ? _escape($nae[0]['altID']) : _escape($nae[0]['personID']));?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'First Name' );?></label>
-                            <input type="text" readonly value="<?=_h($nae[0]['fname']);?>" />
+                            <input type="text" readonly value="<?=_escape($nae[0]['fname']);?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Last Name' );?></label>
-                            <input type="text" readonly value="<?=_h($nae[0]['lname']);?>" />
+                            <input type="text" readonly value="<?=_escape($nae[0]['lname']);?>" />
                         </div>
                         <div data-field-span="1" class="readonly">
                             <label><?=_t( 'Middle Initial' );?></label>
-                            <input type="text" readonly value="<?=_h($nae[0]['mname']);?>" />
+                            <input type="text" readonly value="<?=_escape($nae[0]['mname']);?>" />
                         </div>
                     </div>
                 </fieldset>
@@ -190,7 +190,7 @@ $screen = 'addr';
                     <div data-row-span="2">
                         <div data-field-span="1" class="readonly">
                             <label><?= _t("Primary Email"); ?></label>
-                            <input type="email" name="email1" readonly value="<?=_h($nae[0]['email']);?>" />
+                            <input type="email" name="email1" readonly value="<?=_escape($nae[0]['email']);?>" />
                         </div>
                         <div data-field-span="1">
                             <label><?=_t( 'Secondary Email' );?></label>
@@ -220,7 +220,7 @@ $screen = 'addr';
 				<!-- Form actions -->
 				<div class="form-actions">
 					<button type="submit" class="btn btn-icon btn-primary glyphicons circle_ok"><i></i><?=_t( 'Save' );?></button>
-                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/adsu/<?=_h($nae[0]['personID']);?>/'"><i></i><?=_t( 'Cancel' );?></button>
+                    <button type="button" class="btn btn-icon btn-primary glyphicons circle_minus" onclick="window.location='<?=get_base_url();?>nae/adsu/<?=_escape($nae[0]['personID']);?>/'"><i></i><?=_t( 'Cancel' );?></button>
 				</div>
 				<!-- // Form actions END -->
 				

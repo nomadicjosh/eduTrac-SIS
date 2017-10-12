@@ -27,7 +27,7 @@ $pdf = new \app\src\tcpdf\Tcpdf('landscape', PDF_UNIT, PDF_PAGE_FORMAT, true, 'U
 $pdf->SetCreator(PDF_CREATOR);
 
 // set default header data
-$pdf->SetHeaderData('', '', _h($stuInfo[0]['Level']) . ' Transcript', '', '', '');
+$pdf->SetHeaderData('', '', _escape($stuInfo[0]['Level']) . ' Transcript', '', '', '');
 
 // set header and footer fonts
 $pdf->setHeaderFont([ 'freesans', '', PDF_FONT_SIZE_MAIN ]);
@@ -61,19 +61,19 @@ $pdf->setCellMargins(1, 1, 1, 1);
 // MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0, $ishtml=false, $autopadding=true, $maxh=0)
 
 // set some text for student info
-$txt1 = get_name(_h($stuInfo[0]['stuID'])) . "<br />";
-$txt1 .= _h($stuInfo[0]['address1']) . ' ' . _h($stuInfo[0]['address2']) . "<br />";
-$txt1 .= _h($stuInfo[0]['city']) . ' ' . _h($stuInfo[0]['state']) . ' ' . _h($stuInfo[0]['zip']) . "<br />";
+$txt1 = get_name(_escape($stuInfo[0]['stuID'])) . "<br />";
+$txt1 .= _escape($stuInfo[0]['address1']) . ' ' . _escape($stuInfo[0]['address2']) . "<br />";
+$txt1 .= _escape($stuInfo[0]['city']) . ' ' . _escape($stuInfo[0]['state']) . ' ' . _escape($stuInfo[0]['zip']) . "<br />";
 
 // set some text for student info
-$txt2 = _t( 'Student ID: ' ) . (_h($stuInfo[0]['altID']) != '' ? _h($stuInfo[0]['altID']) : _h($stuInfo[0]['stuID'])) . "<br />";
-if(_h($stuInfo[0]['ssn']) > 0) {
-	$txt2 .= _t( 'Social Security #: ' ) . _h($stuInfo[0]['ssn']) . "<br />";
+$txt2 = _t( 'Student ID: ' ) . (_escape($stuInfo[0]['altID']) != '' ? _escape($stuInfo[0]['altID']) : _escape($stuInfo[0]['stuID'])) . "<br />";
+if(_escape($stuInfo[0]['ssn']) > 0) {
+	$txt2 .= _t( 'Social Security #: ' ) . _escape($stuInfo[0]['ssn']) . "<br />";
 } else {
 	$txt2 .= _t( 'Social Security #: ' ) . "<br />";
 }
-if(_h($stuInfo[0]['graduationDate']) > '0000-00-00') {
-	$txt2 .= _t( 'Graduation Date: ' ) . _h($stuInfo[0]['graduationDate']) . "<br />";
+if(_escape($stuInfo[0]['graduationDate']) > '0000-00-00') {
+	$txt2 .= _t( 'Graduation Date: ' ) . _escape($stuInfo[0]['graduationDate']) . "<br />";
 } else {
 	$txt2 .= _t( 'Graduation Date: ' ) . "<br />";
 }
@@ -95,63 +95,63 @@ $table .= '<th><b>'._t( 'Term' ).'</b></th>';
 $table .= '</tr></thead>';
 $table .= '<tbody>';
 
-if(_h($transferGPA[0]['Attempted']) != NULL) {
+if(_escape($transferGPA[0]['Attempted']) != NULL) {
 foreach($transferCourses as $key => $value) {
     $table .= '<tr>';
-    $table .= '<td>'._h($value['CourseName']).' *</td>';
-    $table .= '<td>'._h($value['shortTitle']).'</td>';
-    $table .= '<td>'._h($value['grade']).'</td>';
-    $table .= '<td>'._h($value['attCred']).'</td>';
-    $table .= '<td>'._h($value['compCred']).'</td>';
-    $table .= '<td>'._h($value['gradePoints']).'</td>';
-    $table .= '<td>'._h($value['termCode']).'</td>';
+    $table .= '<td>'._escape($value['CourseName']).' *</td>';
+    $table .= '<td>'._escape($value['shortTitle']).'</td>';
+    $table .= '<td>'._escape($value['grade']).'</td>';
+    $table .= '<td>'._escape($value['attCred']).'</td>';
+    $table .= '<td>'._escape($value['compCred']).'</td>';
+    $table .= '<td>'._escape($value['gradePoints']).'</td>';
+    $table .= '<td>'._escape($value['termCode']).'</td>';
     $table .= '</tr>';
 }
 }
 
-if(_h($transferGPA[0]['Attempted']) != NULL) {
+if(_escape($transferGPA[0]['Attempted']) != NULL) {
 $table .= '<tr>';
 $table .= '<td colspan="3"><b>'._t( 'Transfer Cum. Totals' ).'</b></td>';
-$table .= '<td>CRED.ATT = '._h($transferGPA[0]['Attempted']).'</td>';
-$table .= '<td>CRED.CPT = '._h($transferGPA[0]['Completed']).'</td>';
-$table .= '<td style="width:.13em;">GRD.PTS = '._h($transferGPA[0]['Points']).'</td>';
-$table .= '<td>GPA = '.floor((_h($transferGPA[0]['GPA'])*100))/100 . '</td>';
+$table .= '<td>CRED.ATT = '._escape($transferGPA[0]['Attempted']).'</td>';
+$table .= '<td>CRED.CPT = '._escape($transferGPA[0]['Completed']).'</td>';
+$table .= '<td style="width:.13em;">GRD.PTS = '._escape($transferGPA[0]['Points']).'</td>';
+$table .= '<td>GPA = '.floor((_escape($transferGPA[0]['GPA'])*100))/100 . '</td>';
 $table .= '</tr>';
 }
 
-if(_h($transferGPA[0]['Attempted']) != NULL) {
+if(_escape($transferGPA[0]['Attempted']) != NULL) {
 $table .= '<tr><td>&nbsp;</td></tr>';
 }
 
 foreach($courses as $k => $v) {
      $table .= '<tr>';
-	if(_h($v['creditType']) == 'TR') {
-		$table .= '<td>'._h($v['CourseName']).' *</td>';
+	if(_escape($v['creditType']) == 'TR') {
+		$table .= '<td>'._escape($v['CourseName']).' *</td>';
 	} else {
-		$table .= '<td>'._h($v['CourseName']).'</td>';
+		$table .= '<td>'._escape($v['CourseName']).'</td>';
 	}
-     $table .= '<td>'._h($v['shortTitle']).'</td>';
-     $table .= '<td>'._h($v['grade']).'</td>';
-     $table .= '<td>'._h($v['attCred']).'</td>';
-     $table .= '<td>'._h($v['compCred']).'</td>';
-     $table .= '<td>'._h($v['gradePoints']).'</td>';
-     $table .= '<td>'._h($v['termCode']).'</td>';
+     $table .= '<td>'._escape($v['shortTitle']).'</td>';
+     $table .= '<td>'._escape($v['grade']).'</td>';
+     $table .= '<td>'._escape($v['attCred']).'</td>';
+     $table .= '<td>'._escape($v['compCred']).'</td>';
+     $table .= '<td>'._escape($v['gradePoints']).'</td>';
+     $table .= '<td>'._escape($v['termCode']).'</td>';
      $table .= '</tr>';
 	 /*$table .= '<tr>';
 	 $table .= '<td colspan="3"><b>'._t( 'Term Totals' ).'</b></td>';
-	 $table .= '<td>CRED.ATT = '._h($v['termAttCred']).'</td>';
-	 $table .= '<td>CRED.CPT = '._h($v['termCompCred']).'</td>';
-	 $table .= '<td style="width:.13em;">GRD.PTS = '._h($v['Points']).'</td>';
-	 $table .= '<td>GPA = '.floor((_h($v['termGPA'])*100))/100 . '</td>';
+	 $table .= '<td>CRED.ATT = '._escape($v['termAttCred']).'</td>';
+	 $table .= '<td>CRED.CPT = '._escape($v['termCompCred']).'</td>';
+	 $table .= '<td style="width:.13em;">GRD.PTS = '._escape($v['Points']).'</td>';
+	 $table .= '<td>GPA = '.floor((_escape($v['termGPA'])*100))/100 . '</td>';
 	 $table .= '</tr>';*/
 }
 
 $table .= '<tr>';
 $table .= '<td colspan="3"><b>'._t( 'Cum. Totals' ).'</b></td>';
-$table .= '<td>CRED.ATT = '._h($tranGPA[0]['Attempted']).'</td>';
-$table .= '<td>CRED.CPT = '._h($tranGPA[0]['Completed']).'</td>';
-$table .= '<td style="width:.13em;">GRD.PTS = '._h($tranGPA[0]['Points']).'</td>';
-$table .= '<td>GPA = '.floor((_h($tranGPA[0]['GPA'])*100))/100 . '</td>';
+$table .= '<td>CRED.ATT = '._escape($tranGPA[0]['Attempted']).'</td>';
+$table .= '<td>CRED.CPT = '._escape($tranGPA[0]['Completed']).'</td>';
+$table .= '<td style="width:.13em;">GRD.PTS = '._escape($tranGPA[0]['Points']).'</td>';
+$table .= '<td>GPA = '.floor((_escape($tranGPA[0]['GPA'])*100))/100 . '</td>';
 $table .= '</tr>';
  
 $table .= '</tbody>';
@@ -171,32 +171,32 @@ $footer .= '</tr></thead>';
 
 $footer .= '<tbody>';
 $footer .= '<tr>';
-if(_h($stuInfo[0]['graduationDate']) > '0000-00-00') {
-$footer .= '<td>'._h($stuInfo[0]['degreeCode']).' - ' . _h($stuInfo[0]['degreeName']) . ' Awarded on ' . _h($stuInfo[0]['graduationDate']) . '</td>';
+if(_escape($stuInfo[0]['graduationDate']) > '0000-00-00') {
+$footer .= '<td>'._escape($stuInfo[0]['degreeCode']).' - ' . _escape($stuInfo[0]['degreeName']) . ' Awarded on ' . _escape($stuInfo[0]['graduationDate']) . '</td>';
 } else {
     $footer .= '<td>&nbsp;</td>';
 }
 
-if(_h($stuInfo[0]['majorCode']) != 'NULL') {
-$footer .= '<td>'._h($stuInfo[0]['majorCode']).' - '._h($stuInfo[0]['majorName']).'</td>';
+if(_escape($stuInfo[0]['majorCode']) != 'NULL') {
+$footer .= '<td>'._escape($stuInfo[0]['majorCode']).' - '._escape($stuInfo[0]['majorName']).'</td>';
 } else {
     $footer .= '<td>&nbsp;</td>';
 }
 
-if(_h($stuInfo[0]['minorCode']) != 'NULL') {
-$footer .= '<td>'._h($stuInfo[0]['minorCode']).' - '._h($stuInfo[0]['minorName']).'</td>';
+if(_escape($stuInfo[0]['minorCode']) != 'NULL') {
+$footer .= '<td>'._escape($stuInfo[0]['minorCode']).' - '._escape($stuInfo[0]['minorName']).'</td>';
 } else {
     $footer .= '<td>&nbsp;</td>';
 }
 
-if(_h($stuInfo[0]['specCode']) != 'NULL') {
-$footer .= '<td>'._h($stuInfo[0]['specCode']).' - '._h($stuInfo[0]['specName']).'</td>';
+if(_escape($stuInfo[0]['specCode']) != 'NULL') {
+$footer .= '<td>'._escape($stuInfo[0]['specCode']).' - '._escape($stuInfo[0]['specName']).'</td>';
 } else {
     $footer .= '<td>&nbsp;</td>';
 }
 
-if(_h($stuInfo[0]['ccdCode']) != 'NULL') {
-$footer .= '<td>'._h($stuInfo[0]['ccdCode']).' - '._h($stuInfo[0]['ccdName']).'</td>';
+if(_escape($stuInfo[0]['ccdCode']) != 'NULL') {
+$footer .= '<td>'._escape($stuInfo[0]['ccdCode']).' - '._escape($stuInfo[0]['ccdName']).'</td>';
 } else {
     $footer .= '<td>&nbsp;</td>';
 }

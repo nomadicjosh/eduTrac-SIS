@@ -1318,7 +1318,7 @@ function grading_scale($grade = NULL)
 {
     $app = \Liten\Liten::getInstance();
     try {
-        $select = '<select name="grade[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true" required>' . "\n";
+        $select = '<select name="grade[]" class="selectpicker form-control" data-style="btn-info" data-size="10" data-live-search="true">' . "\n";
         $select .= '<option value="">&nbsp;</option>' . "\n";
         $scale = $app->db->query('SELECT * FROM grade_scale WHERE status = "1"');
         $q = $scale->find(function ($data) {

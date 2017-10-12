@@ -247,10 +247,10 @@ $app->group('/stu', function() use ($app, $css, $js) {
         if ($app->req->isPost()) {
             try {
                 $nae = get_person_by('personID', $id);
-                if (_h($nae->ssn) > 0) {
-                    $pass = str_replace('-', '', _h($nae->ssn));
-                } elseif (_h($nae->dob) != '0000-00-00') {
-                    $pass = str_replace('-', '', _h($nae->dob));
+                if (_escape($nae->ssn) > 0) {
+                    $pass = str_replace('-', '', _escape($nae->ssn));
+                } elseif (_escape($nae->dob) != '0000-00-00') {
+                    $pass = str_replace('-', '', _escape($nae->dob));
                 } else {
                     $pass = 'myaccount';
                 }
@@ -268,7 +268,6 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 $sacp = $app->db->sacp();
                 $sacp->stuID = $id;
                 $sacp->acadProgCode = _trim($app->req->post['acadProgCode']);
-                $sacp->acadLevelCode = _trim($app->req->post['acadLevelCode']);
                 $sacp->currStatus = 'A';
                 $sacp->statusDate = \Jenssegers\Date\Date::now();
                 $sacp->startDate = $app->req->post['startDate'];
@@ -292,31 +291,31 @@ $app->group('/stu', function() use ($app, $css, $js) {
                  */
                 $app->hook->do_action('pre_save_stu', $id);
 
-                if (_h(get_option('send_acceptance_email')) == 1) {
+                if (_escape(get_option('send_acceptance_email')) == 1) {
                     $host = get_domain_name();
-                    $site = _t('myetSIS :: ') . _h(get_option('institution_name'));
+                    $site = _t('myetSIS :: ') . _escape(get_option('institution_name'));
                     $message = _escape(get_option('student_acceptance_letter'));
-                    $message = str_replace('#uname#', _h($nae->uname), $message);
-                    $message = str_replace('#fname#', _h($nae->fname), $message);
-                    $message = str_replace('#lname#', _h($nae->lname), $message);
+                    $message = str_replace('#uname#', _escape($nae->uname), $message);
+                    $message = str_replace('#fname#', _escape($nae->fname), $message);
+                    $message = str_replace('#lname#', _escape($nae->lname), $message);
                     $message = str_replace('#name#', get_name($id), $message);
                     $message = str_replace('#id#', $id, $message);
-                    $message = str_replace('#email#', _h($nae->email), $message);
+                    $message = str_replace('#email#', _escape($nae->email), $message);
                     $message = str_replace('#sacp#', _trim($app->req->post['acadProgCode']), $message);
                     $message = str_replace('#acadlevel#', _trim($app->req->post['acadLevelCode']), $message);
-                    $message = str_replace('#degree#', _trim(_h($degree->degreeCode)), $message);
-                    $message = str_replace('#startterm#', _h($appl->startTerm), $message);
-                    $message = str_replace('#adminemail#', _h(get_option('system_email')), $message);
+                    $message = str_replace('#degree#', _trim(_escape($degree->degreeCode)), $message);
+                    $message = str_replace('#startterm#', _escape($appl->startTerm), $message);
+                    $message = str_replace('#adminemail#', _escape(get_option('system_email')), $message);
                     $message = str_replace('#url#', get_base_url(), $message);
-                    $message = str_replace('#helpdesk#', _h(get_option('help_desk')), $message);
-                    $message = str_replace('#currentterm#', _h(get_option('current_term_code')), $message);
-                    $message = str_replace('#instname#', _h(get_option('institution_name')), $message);
-                    $message = str_replace('#mailaddr#', _h(get_option('mailing_address')), $message);
+                    $message = str_replace('#helpdesk#', _escape(get_option('help_desk')), $message);
+                    $message = str_replace('#currentterm#', _escape(get_option('current_term_code')), $message);
+                    $message = str_replace('#instname#', _escape(get_option('institution_name')), $message);
+                    $message = str_replace('#mailaddr#', _escape(get_option('mailing_address')), $message);
                     $message = process_email_html($message, _t("Student Acceptance Letter"));
 
                     $headers[] = sprintf("From: %s <auto-reply@%s>", $site, $host);
                     try {
-                        _etsis_email()->etsisMail(_h($nae->email), _t("Student Acceptance Letter"), $message, $headers);
+                        _etsis_email()->etsisMail(_escape($nae->email), _t("Student Acceptance Letter"), $message, $headers);
                     } catch (phpmailerException $e) {
                         Cascade::getLogger('error')->error($e->getMessage());
                         _etsis_flash()->error($e->getMessage());
@@ -613,7 +612,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                         $shis->set([
                                 'code' => $app->req->post['code'][$i],
                                 'startDate' => $app->req->post['startDate'][$i],
-                                'endDate' => ($app->req->post['endDate'][$i] != '' ? $app->req->post['endDate'][$i] : NULL),
+                                'endDate' => if_null($app->req->post['endDate'][$i]),
                                 'comment' => $app->req->post['comment'][$i]
                             ])
                             ->where('stuID = ?', $id)->_and_()
@@ -658,7 +657,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 	id,stuID,code,startDate,endDate,comment 
                     FROM hiatus 
                     WHERE stuID = ? 
-                    ORDER BY id DESC", [_h($spro->stuID)]
+                    ORDER BY id DESC", [_escape($spro->stuID)]
             );
 
             $q = $shis->find(function($data) {
@@ -697,7 +696,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (_h($spro->stuID) <= 0) {
+         */ elseif (_escape($spro->stuID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -754,13 +753,13 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
                 $detail = $app->db->stac();
                 $detail->courseID = $app->req->post['courseID'];
-                $detail->courseSecID = _h($stac->courseSecID) != '' ? _h($stac->courseSecID) : NULL;
+                $detail->courseSecID = _escape($stac->courseSecID) != '' ? _escape($stac->courseSecID) : NULL;
                 $detail->courseCode = $app->req->post['courseCode'];
-                $detail->courseSecCode = _h($stac->courseSecCode) != '' ? _h($stac->courseSecCode) : NULL;
+                $detail->courseSecCode = _escape($stac->courseSecCode) != '' ? _escape($stac->courseSecCode) : NULL;
                 $detail->sectionNumber = $app->req->post['sectionNumber'] != '' ? $app->req->post['sectionNumber'] : NULL;
-                $detail->courseSection = _h($stac->courseSection) != '' ? _h($stac->courseSection) : NULL;
+                $detail->courseSection = _escape($stac->courseSection) != '' ? _escape($stac->courseSection) : NULL;
                 $detail->termCode = $app->req->post['termCode'];
-                $detail->reportingTerm = _h($term->reportingTerm);
+                $detail->reportingTerm = _escape($term->reportingTerm);
                 $detail->subjectCode = $app->req->post['subjectCode'];
                 $detail->deptCode = $app->req->post['deptCode'];
                 $detail->shortTitle = $app->req->post['shortTitle'];
@@ -772,8 +771,8 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 $detail->courseLevelCode = $app->req->post['courseLevelCode'];
                 $detail->creditType = $app->req->post['creditType'];
                 $detail->startDate = $app->req->post['startDate'];
-                $detail->endDate = ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL);
-                if (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= _h($term->termStartDate) && $date > _h($term->dropAddEndDate)) {
+                $detail->endDate = if_null($app->req->post['endDate']);
+                if (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= _escape($term->termStartDate) && $date > _escape($term->dropAddEndDate)) {
                     $detail->compCred = '0.0';
                     $detail->gradePoints = calculate_grade_points($app->req->post['grade'], '0.0');
                     $detail->statusTime = $time;
@@ -790,7 +789,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     }
                     $detail->compCred = $compCred;
                     $detail->gradePoints = calculate_grade_points($app->req->post['grade'], $app->req->post['attCred']);
-                    $detail->grade = $app->req->post['grade'];
+                    $detail->grade = if_null($app->req->post['grade']);
                 }
                 $detail->where('id = ?', $id);
 
@@ -799,29 +798,29 @@ $app->group('/stu', function() use ($app, $css, $js) {
                  * primary term start date, then delete all student course sec as well as 
                  * student acad cred records.
                  */
-                if (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date < _h($term->termStartDate)) {
+                if (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date < _escape($term->termStartDate)) {
                     $q = $app->db->stcs()
-                        ->where('stuID = ?', _h((int) $stac->stuID))->_and_()
-                        ->where('courseSection = ?', _h($stac->courseSection))
+                        ->where('stuID = ?', _escape((int) $stac->stuID))->_and_()
+                        ->where('courseSection = ?', _escape($stac->courseSection))
                         ->delete();
                     $q = $app->db->stac()->where('id = ?', $id)->delete();
 
                     if (function_exists('financial_module')) {
-                        $q = $app->db->stu_acct_fee()->where('stuID = ?', $stac->stuID)->_and_()->where('description = ?', _h($stac->courseSection))->delete();
+                        $q = $app->db->stu_acct_fee()->where('stuID = ?', $stac->stuID)->_and_()->where('description = ?', _escape($stac->courseSection))->delete();
                         /**
                          * Begin Updating tuition totals.
                          */
-                        $total = qt('course_sec', 'courseFee', 'courseSection = "' . _h($stac->courseSection) . '"') + qt('course_sec', 'labFee', 'courseSection = "' . _h($stac->courseSection) . '"') + qt('course_sec', 'materialFee', 'courseSection = "' . _h($stac->courseSection) . '"');
-                        $stuTuition = $app->db->stu_acct_tuition()->where('stuID = ? AND termCode = ?', [_h($stac->stuID), $app->req->post['termCode']])->findOne();
+                        $total = qt('course_sec', 'courseFee', 'courseSection = "' . _escape($stac->courseSection) . '"') + qt('course_sec', 'labFee', 'courseSection = "' . _escape($stac->courseSection) . '"') + qt('course_sec', 'materialFee', 'courseSection = "' . _escape($stac->courseSection) . '"');
+                        $stuTuition = $app->db->stu_acct_tuition()->where('stuID = ? AND termCode = ?', [_escape($stac->stuID), $app->req->post['termCode']])->findOne();
                         $q = $app->db->stu_acct_tuition();
                         $q->total = bcsub($stuTuition->total, $total);
-                        $q->where('stuID = ?', _h((int) $stac->stuID))->_and_()->where('termCode = ?', $app->req->post['termCode'])->update();
+                        $q->where('stuID = ?', _escape((int) $stac->stuID))->_and_()->where('termCode = ?', $app->req->post['termCode'])->update();
                         /**
                          * End updating tuition totals.
                          */
                     }
 
-                    etsis_redirect(get_base_url() . 'stu/stac' . '/' . _h((int) $stac->stuID) . '/');
+                    etsis_redirect(get_base_url() . 'stu/stac' . '/' . _escape((int) $stac->stuID) . '/');
                     exit();
                 }
                 /**
@@ -829,28 +828,28 @@ $app->group('/stu', function() use ($app, $css, $js) {
                  * primary term start date, and today's date is less than the term's drop/add 
                  * end date, then delete all student course sec as well as student acad cred 
                  * records.
-                 */ elseif (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= _h($term->termStartDate) && $date < _h($term->dropAddEndDate)) {
+                 */ elseif (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= _escape($term->termStartDate) && $date < _escape($term->dropAddEndDate)) {
                     $q = $app->db->stcs()
-                        ->where('stuID = ?', _h((int) $stac->stuID))->_and_()
-                        ->where('courseSection = ?', _h($stac->courseSection))
+                        ->where('stuID = ?', _escape((int) $stac->stuID))->_and_()
+                        ->where('courseSection = ?', _escape($stac->courseSection))
                         ->delete();
                     $q = $app->db->stac()->where('id = ?', $id)->delete();
 
                     if (function_exists('financial_module')) {
-                        $q = $app->db->stu_acct_fee()->where('stuID = ?', _h((int) $stac->stuID))->_and_()->where('description = ?', _h($stac->courseSection))->delete();
+                        $q = $app->db->stu_acct_fee()->where('stuID = ?', _escape((int) $stac->stuID))->_and_()->where('description = ?', _escape($stac->courseSection))->delete();
                         /**
                          * Begin Updating tuition totals.
                          */
-                        $total = qt('course_sec', 'courseFee', 'courseSection = "' . _h($stac->courseSection) . '"') + qt('course_sec', 'labFee', 'courseSection = "' . _h($stac->courseSection) . '"') + qt('course_sec', 'materialFee', 'courseSection = "' . _h($stac->courseSection) . '"');
+                        $total = qt('course_sec', 'courseFee', 'courseSection = "' . _escape($stac->courseSection) . '"') + qt('course_sec', 'labFee', 'courseSection = "' . _escape($stac->courseSection) . '"') + qt('course_sec', 'materialFee', 'courseSection = "' . _escape($stac->courseSection) . '"');
                         $q = $app->db->stu_acct_tuition();
                         $q->total = bcsub($q->total, $total);
-                        $q->where('stuID = ?', _h((int) $stac->stuID))->_and_()->where('termCode = ?', $app->req->post['termCode'])->update();
+                        $q->where('stuID = ?', _escape((int) $stac->stuID))->_and_()->where('termCode = ?', $app->req->post['termCode'])->update();
                         /**
                          * End updating tuition totals.
                          */
                     }
 
-                    etsis_redirect(get_base_url() . 'stu/stac' . '/' . _h((int) $stac->stuID) . '/');
+                    etsis_redirect(get_base_url() . 'stu/stac' . '/' . _escape((int) $stac->stuID) . '/');
                     exit();
                 }
                 /**
@@ -858,7 +857,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                  * primary term start date, and today's date is greater than the term's drop/add 
                  * end date, then update student course sec record with a 'W' status and update  
                  * student acad record with a 'W' grade and 0.0 completed credits.
-                 */ elseif (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= _h($term->termStartDate) && $date > _h($term->dropAddEndDate)) {
+                 */ elseif (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= _escape($term->termStartDate) && $date > _escape($term->dropAddEndDate)) {
                     $q = $app->db->stcs();
                     $q->courseSecCode = $app->req->post['courseSecCode'];
                     $q->termCode = $app->req->post['termCode'];
@@ -866,7 +865,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     $q->status = $app->req->post['status'];
                     $q->statusDate = \Jenssegers\Date\Date::now();
                     $q->statusTime = $time;
-                    $q->where('stuID = ?', _h((int) $stac->stuID))->_and_()
+                    $q->where('stuID = ?', _escape((int) $stac->stuID))->_and_()
                         ->where('id = ?', $app->req->post['courseSecID'])
                         ->update();
                     $detail->update();
@@ -883,7 +882,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     $q->status = $app->req->post['status'];
                     $q->statusDate = $app->req->post['statusDate'];
                     $q->statusTime = $app->req->post['statusTime'];
-                    $q->where('stuID = ?', _h((int) $stac->stuID))->_and_()
+                    $q->where('stuID = ?', _escape((int) $stac->stuID))->_and_()
                         ->where('id = ?', $app->req->post['courseSecID'])
                         ->update();
                     $detail->update();
@@ -953,7 +952,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             etsis_register_script('timepicker');
 
             $app->view->display('student/sacd', [
-                'title' => get_name(_h((int) $stac->stuID)),
+                'title' => get_name(_escape((int) $stac->stuID)),
                 'sacd' => $stac
                 ]
             );
@@ -994,10 +993,10 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
                     $stal = $app->db->stal()
                         ->where('stuID = ?', $app->req->post['stuID'])->_and_()
-                        ->where('acadProgCode = ?', _h($_sacp->acadProgCode))
+                        ->where('acadProgCode = ?', _escape($_sacp->acadProgCode))
                         ->findOne();
                     $stal->set([
-                            'endDate' => ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL)
+                            'endDate' => if_null($app->req->post['endDate'])
                         ])
                         ->update();
                 }
@@ -1079,7 +1078,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             etsis_register_script('datepicker');
 
             $app->view->display('student/sacp', [
-                'title' => get_name(_h($q[0]['stuID'])),
+                'title' => get_name(_escape($q[0]['stuID'])),
                 'sacp' => $q
                 ]
             );
@@ -1114,7 +1113,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                         'gpa' => $app->req->post['gpa'] <= 0 ? 0 : $app->req->post['gpa'],
                         'startTerm' => $app->req->post['startTerm'] == 'NULL' ? NULL : $app->req->post['startTerm'],
                         'startDate' => $app->req->post['startDate'] <= '0000-00-00' || $app->req->post['startDate'] == '' ? NULL : $app->req->post['startDate'],
-                        'endDate' => $app->req->post['endDate'] <= '0000-00-00' || $app->req->post['endDate'] == '' ? NULL : $app->req->post['endDate']
+                        'endDate' => if_null($app->req->post['endDate'])
                     ])
                     ->update();
 
@@ -1170,7 +1169,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (_h($stal->sacpID) <= 0) {
+         */ elseif (_escape($stal->sacpID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1186,7 +1185,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             etsis_register_script('datepicker');
 
             $app->view->display('student/stal', [
-                'title' => get_name(_h($stal->stuID)),
+                'title' => get_name(_escape($stal->stuID)),
                 'stal' => $stal
                 ]
             );
@@ -1227,7 +1226,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     'currStatus' => $app->req->post['currStatus'],
                     'statusDate' => \Jenssegers\Date\Date::now(),
                     'startDate' => $app->req->post['startDate'],
-                    'endDate' => ($app->req->post['endDate'] != '' ? $app->req->post['endDate'] : NULL),
+                    'endDate' => if_null($app->req->post['endDate']),
                     'approvedBy' => get_persondata('personID'),
                     'antGradDate' => $app->req->post['antGradDate'],
                     'advisorID' => $app->req->post['advisorID'],
@@ -1239,7 +1238,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     $al->insert([
                         'stuID' => $id,
                         'acadProgCode' => _trim($app->req->post['acadProgCode']),
-                        'acadLevelCode' => _h($prog->acadLevelCode)
+                        'acadLevelCode' => _escape($prog->acadLevelCode)
                     ]);
                 }
 
@@ -1288,7 +1287,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (_h($spro->stuID) <= 0) {
+         */ elseif (_escape($spro->stuID) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1343,7 +1342,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                         ->update();
                     $stal = $app->db->stal()
                         ->where('stuID = ?', $app->req->post['studentID'])->_and_()
-                        ->where('acadProgCode = ?', _h($grad->acadProgCode))
+                        ->where('acadProgCode = ?', _escape($grad->acadProgCode))
                         ->findOne();
                     $stal->set([
                             'currentClassLevel' => NULL,
@@ -1586,7 +1585,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             etsis_redirect(get_base_url() . 'profile' . '/');
         }
 
-        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+        if (_escape(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
             etsis_redirect(get_base_url() . 'offline' . '/');
         }
     });
@@ -1616,7 +1615,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             etsis_redirect(get_base_url() . 'profile' . '/');
         }
 
-        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+        if (_escape(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
             etsis_redirect(get_base_url() . 'offline' . '/');
         }
     });
@@ -1676,7 +1675,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             etsis_redirect(get_base_url() . 'profile' . '/');
         }
 
-        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+        if (_escape(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
             etsis_redirect(get_base_url() . 'offline' . '/');
         }
     });
@@ -1741,7 +1740,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
         }
         /**
          * If data is zero, 404 not found.
-         */ elseif (_h($q[0]['courseSecID']) <= 0) {
+         */ elseif (_escape($q[0]['courseSecID']) <= 0) {
 
             $app->view->display('error/404', ['title' => '404 Error']);
         }
@@ -1773,7 +1772,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             etsis_redirect(get_base_url() . 'profile' . '/');
         }
 
-        if (_h(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
+        if (_escape(get_option('enable_myetsis_portal')) == 0 && !hasPermission('edit_myetsis_css')) {
             etsis_redirect(get_base_url() . 'offline' . '/');
         }
     });
@@ -1970,8 +1969,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 ->_join('school', 'a.schoolCode = d.schoolCode', 'd')
                 ->where('a.acadProgCode = ?', $app->req->post['acadProgCode'])->_and_()
                 ->where('a.currStatus = "A"')->_and_()
-                ->where('a.endDate IS NULL')->_or_()
-                ->whereLte('a.endDate', '0000-00-00');
+                ->where('a.endDate IS NULL');
             $q = $prog->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -2025,9 +2023,9 @@ $app->group('/stu', function() use ($app, $css, $js) {
             $items = [];
             foreach ($stu as $x) {
                 $option = array(
-                    'id' => _h($x->stuID),
-                    'label' => get_name(_h($x->stuID)),
-                    'value' => get_name(_h($x->stuID))
+                    'id' => _escape($x->stuID),
+                    'label' => get_name(_escape($x->stuID)),
+                    'value' => get_name(_escape($x->stuID))
                 );
                 $items[] = $option;
             }

@@ -10,7 +10,7 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->extend('_layouts/myetsis/' . _escape(get_option('myetsis_layout')) . '.layout');
 $app->view->block('myetsis');
 $stu = get_student(get_persondata('personID'));
 ?>
@@ -44,10 +44,10 @@ $stu = get_student(get_persondata('personID'));
 			<tbody>
 			<?php if($term!= '') : foreach($term as $k => $v) { ?>
             <tr class="gradeX">
-                <td class="text-center"><?=_h($v['termCode']);?></td>
-                <td class="text-center"><?=_h($v['Courses']);?></td>
+                <td class="text-center"><?=_escape($v['termCode']);?></td>
+                <td class="text-center"><?=_escape($v['Courses']);?></td>
                 <td class="text-center">
-                	<a href="<?=get_base_url();?>stu/schedule/<?=_h($v['id']);?>/" title="View" class="btn btn-primary"><i class="fa fa-calendar"></i></a>
+                	<a href="<?=get_base_url();?>stu/schedule/<?=_escape($v['id']);?>/" title="View" class="btn btn-primary"><i class="fa fa-calendar"></i></a>
 				</td>
             </tr>
 			<?php } endif; ?>

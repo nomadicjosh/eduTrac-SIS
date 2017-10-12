@@ -51,9 +51,7 @@ $screen = 'vsect';
                     <li class="glyphicons circle_info active"><a href="<?=get_base_url();?>sect/addnl/<?=_h($sect->courseSecID);?>/" data-toggle="tab"><i></i> <?=_t( 'Additional Info' );?></a></li>
                     <li class="glyphicons more_items tab-stacked"><a href="<?=get_base_url();?>sect/soff/<?=_h($sect->courseSecID);?>/"><i></i> <?=_t( 'Offering Info' );?></a></li>
                     <li<?=ml('financial_module');?> class="glyphicons money tab-stacked"><a href="<?=get_base_url();?>sect/sbill/<?=_h($sect->courseSecID);?>/"><i></i> <?=_t( 'Billing Info' );?></a></li>
-                    <?php if($sect->roomCode != '') : ?>
                     <li<?=ml('booking_module');?> class="glyphicons calendar tab-stacked"><a href="<?=get_base_url();?>sect/sbook/<?=_h($sect->courseSecID);?>/"><i></i> <span><?=_t( 'Booking Info' );?></span></a></li>
-                    <?php endif; ?>
                 </ul>
             </div>
             <!-- // Tabs Heading END -->

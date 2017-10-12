@@ -72,10 +72,10 @@ $screen = 'nae';
 				<tbody>
 				<?php if($search != '') : foreach($search as $k => $v) { ?>
                 <tr class="gradeX">
-                	<td class="text-center"><?=get_school_photo(_h($v['personID']), _h($v['email']), 48, 'avatar-frame');?></td>
-                    <td class="text-center"><?=(_h($v['altID']) != '' ? _h($v['altID']) : _h($v['personID']));?></td>
-                    <td class="text-center"><?=_h($v['lname']);?></td>
-                    <td class="text-center"><?=_h($v['fname']);?></td>
+                	<td class="text-center"><?=get_school_photo(_escape($v['personID']), _escape($v['email']), 48, 'avatar-frame');?></td>
+                    <td class="text-center"><?=(_escape($v['altID']) != '' ? _escape($v['altID']) : _escape($v['personID']));?></td>
+                    <td class="text-center"><?=_escape($v['lname']);?></td>
+                    <td class="text-center"><?=_escape($v['fname']);?></td>
                     <td class="text-center">
                         <div class="btn-group dropup">
                             <button class="btn btn-default btn-xs" type="button"><?=_t( 'Actions' );?></button>
@@ -84,23 +84,23 @@ $screen = 'nae';
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' );?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>nae/<?=_h($v['personID']);?>/"><?=_t( 'View' );?></a></li>
+                                <li><a href="<?=get_base_url();?>nae/<?=_escape($v['personID']);?>/"><?=_t( 'View' );?></a></li>
                                                                                         
-                                <?php if(!isset($_COOKIE['SWITCH_USERBACK']) && _h($v['personID']) != get_persondata('personID')) : ?>
-                                <li<?=ae('login_as_user');?>><a href="<?=get_base_url();?>switchUserTo/<?=_h($v['personID']);?>/"><?=_t( 'Switch to User' );?></a></li>
+                                <?php if(!isset($_COOKIE['SWITCH_USERBACK']) && _escape($v['personID']) != get_persondata('personID')) : ?>
+                                <li<?=ae('login_as_user');?>><a href="<?=get_base_url();?>switchUserTo/<?=_escape($v['personID']);?>/"><?=_t( 'Switch to User' );?></a></li>
                                 <?php endif; ?>
                                 
                                 <?php if($v['staffID'] <= 0) : ?>
-                                <li<?=ae('create_staff_record');?>><a href="<?=get_base_url();?>staff/add/<?=_h($v['personID']);?>/"><?=_t( 'Create Staff Record' );?></a></li>
+                                <li<?=ae('create_staff_record');?>><a href="<?=get_base_url();?>staff/add/<?=_escape($v['personID']);?>/"><?=_t( 'Create Staff Record' );?></a></li>
                                 <?php endif; ?>
                                 
                                 <?php if($v['ApplicantID'] <= 0) : ?>
-                                <li<?=hl('applications','access_application_screen');?>><a href="<?=get_base_url();?>appl/add/<?=_h($v['personID']);?>/"><?=_t( 'Create Application' );?></a></li>
+                                <li<?=hl('applications','access_application_screen');?>><a href="<?=get_base_url();?>appl/add/<?=_escape($v['personID']);?>/"><?=_t( 'Create Application' );?></a></li>
                                 <?php endif; ?>
                                 
-                                <li<?=ae('access_user_role_screen');?>><a href="<?=get_base_url();?>nae/role/<?=_h($v['personID']);?>/"><?=_t( 'Role' );?></a></li>
+                                <li<?=ae('access_user_role_screen');?>><a href="<?=get_base_url();?>nae/role/<?=_escape($v['personID']);?>/"><?=_t( 'Role' );?></a></li>
                                 
-                                <li<?=ae('access_user_permission_screen');?>><a href="<?=get_base_url();?>nae/perms/<?=_h($v['personID']);?>/"><?=_t( 'Permissions' );?></a></li>
+                                <li<?=ae('access_user_permission_screen');?>><a href="<?=get_base_url();?>nae/perms/<?=_escape($v['personID']);?>/"><?=_t( 'Permissions' );?></a></li>
                             </ul>
                         </div>
                     </td>

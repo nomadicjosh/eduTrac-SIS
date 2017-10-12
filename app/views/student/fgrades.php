@@ -10,7 +10,7 @@
  */
 
 $app = \Liten\Liten::getInstance();
-$app->view->extend('_layouts/myetsis/' . _h(get_option('myetsis_layout')) . '.layout');
+$app->view->extend('_layouts/myetsis/' . _escape(get_option('myetsis_layout')) . '.layout');
 $app->view->block('myetsis');
 $stu = get_student(get_persondata('personID'));
 ?>
@@ -45,10 +45,10 @@ $stu = get_student(get_persondata('personID'));
 				<tbody>
 				<?php if($grades != '') : foreach($grades as $k => $v) { ?>
                 <tr class="gradeX">
-                	<td class="text-center"><?=_h($v['termCode']);?></td>
-                    <td class="text-center"><?=_h($v['courseSecCode']);?></td>
-                    <td class="text-center"><?=_h($v['secShortTitle']);?></td>
-                    <td class="text-center"><?=_h($v['grade']);?></td>
+                	<td class="text-center"><?=_escape($v['termCode']);?></td>
+                    <td class="text-center"><?=_escape($v['courseSecCode']);?></td>
+                    <td class="text-center"><?=_escape($v['secShortTitle']);?></td>
+                    <td class="text-center"><?=_escape($v['grade']);?></td>
                 </tr>
 				<?php } endif; ?>
 				</tbody>

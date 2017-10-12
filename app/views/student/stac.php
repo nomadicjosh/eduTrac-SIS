@@ -12,7 +12,7 @@
 $app = \Liten\Liten::getInstance();
 $app->view->extend('_layouts/dashboard');
 $app->view->block('dashboard');
-$stu = get_student(_h($stu));
+$stu = get_student(_escape($stu));
 ?>
 
 <ul class="breadcrumb">
@@ -21,14 +21,14 @@ $stu = get_student(_h($stu));
 	<li class="divider"></li>
 	<li><a href="<?=get_base_url();?>stu/" class="glyphicons search"><i></i> <?=_t( 'Search Student' );?></a></li>
     <li class="divider"></li>
-    <li><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
+    <li><a href="<?=get_base_url();?>stu/<?=_escape($stu->stuID);?>/" class="glyphicons user"><i></i> <?=_t( 'Student Profile' );?></a></li>
     <li class="divider"></li>
 	<li><?=_t( 'Student Academic Credits (STAC)' );?></li>
 </ul>
 
 <div class="innerLR">
 	
-	<?php get_stu_header(_h($stu->stuID)); ?>
+	<?php get_stu_header(_escape($stu->stuID)); ?>
     
     <div class="separator line bottom"></div>
     
@@ -40,10 +40,10 @@ $stu = get_student(_h($stu));
         <!-- Tabs Heading -->
         <div class="tabsbar">
             <ul>
-                <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
-                <li class="glyphicons package active"><a href="<?=get_base_url();?>stu/stac/<?=_h($stu->stuID);?>/" data-toggle="tab"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
-                <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_h($stu->stuID);?>/"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
-                <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_h($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
+                <li class="glyphicons user"><a href="<?=get_base_url();?>stu/<?=_escape($stu->stuID);?>/"><i></i> <?=_t( 'Student Profile (SPRO)' );?></a></li>
+                <li class="glyphicons package active"><a href="<?=get_base_url();?>stu/stac/<?=_escape($stu->stuID);?>/" data-toggle="tab"><i></i> <?=_t( 'Student Academic Credits (STAC)' );?></a></li>
+                <li class="glyphicons tags tab-stacked"><a href="<?=get_base_url();?>stu/sttr/<?=_escape($stu->stuID);?>/"><i></i> <?=_t( 'Student Terms (STTR)' );?></a></li>
+                <li class="glyphicons history tab-stacked"><a href="<?=get_base_url();?>stu/shis/<?=_escape($stu->stuID);?>/"><i></i> <span><?=_t( 'Student Hiatus (SHIS)' );?></span></a></li>
             </ul>
         </div>
         <!-- // Tabs Heading END -->
@@ -72,13 +72,13 @@ $stu = get_student(_h($stu));
 				<tbody>
 				<?php if($stac != '') : foreach($stac as $k => $v) { ?>
                 <tr class="gradeX">
-                    <td class="text-center"><?=_h($v['courseCode']);?></td>
-                    <td class="text-center"><?=_h($v['shortTitle']);?></td>
-                    <td class="text-center"><?=_h($v['status']);?></td>
-                    <td class="text-center"><?=_h($v['attCred']);?></td>
-                    <td class="text-center"><?=_h($v['ceu']);?></td>
-                    <td class="text-center"><?=_h($v['termCode']);?></td>
-                    <td class="text-center"><?=_h($v['grade']);?></td>
+                    <td class="text-center"><?=_escape($v['courseCode']);?></td>
+                    <td class="text-center"><?=_escape($v['shortTitle']);?></td>
+                    <td class="text-center"><?=_escape($v['status']);?></td>
+                    <td class="text-center"><?=_escape($v['attCred']);?></td>
+                    <td class="text-center"><?=_escape($v['ceu']);?></td>
+                    <td class="text-center"><?=_escape($v['termCode']);?></td>
+                    <td class="text-center"><?=_escape($v['grade']);?></td>
                     <td class="text-center">
                     	<div class="btn-group dropup">
                             <button class="btn btn-default btn-xs" type="button"><?=_t( 'Actions' ); ?></button>
@@ -87,8 +87,8 @@ $stu = get_student(_h($stu));
                                 <span class="sr-only"><?=_t( 'Toggle Dropdown' ); ?></span>
                             </button>
                             <ul role="menu" class="dropdown-menu dropup-text pull-right">
-                                <li><a href="<?=get_base_url();?>stu/sacd/<?=_h($v['id']);?>/"><?=_t( 'View (SACD)' ); ?></a></li>
-                                <li<?=ae('delete_student');?>><a href="#modal<?=_h($v['id']);?>" data-toggle="modal"><?=_t( 'Delete' ); ?></a></li>
+                                <li><a href="<?=get_base_url();?>stu/sacd/<?=_escape($v['id']);?>/"><?=_t( 'View (SACD)' ); ?></a></li>
+                                <li<?=ae('delete_student');?>><a href="#modal<?=_escape($v['id']);?>" data-toggle="modal"><?=_t( 'Delete' ); ?></a></li>
                             </ul>
                         </div>
                     </td>
@@ -114,16 +114,16 @@ $stu = get_student(_h($stu));
 	<!-- // Widget END -->
 	<?php if($stac != '') : foreach($stac as $k => $v) { ?>
 	<!-- Modal -->
-	<div class="modal fade" id="modal<?=_h($v['id']);?>">
+	<div class="modal fade" id="modal<?=_escape($v['id']);?>">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal heading -->
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<?php if(_h($v['courseSection']) == '') : ?>
-					<h3 class="modal-title"><?=_t( 'Transfer Credit' );?> - <?=_h($v['courseCode']);?></h3>
+					<?php if(_escape($v['courseSection']) == '') : ?>
+					<h3 class="modal-title"><?=_t( 'Transfer Credit' );?> - <?=_escape($v['courseCode']);?></h3>
 					<?php else : ?>
-				    <h3 class="modal-title"><?=_h($v['courseSection']);?></h3>
+				    <h3 class="modal-title"><?=_escape($v['courseSection']);?></h3>
 				    <?php endif; ?>
 				</div>
 				<!-- // Modal heading END -->
@@ -134,7 +134,7 @@ $stu = get_student(_h($stu));
 				<!-- // Modal body END -->
 				<!-- Modal footer -->
 				<div class="modal-footer">
-					<a href="<?=get_base_url();?>stu/deleteSTAC/<?=_h($v['id']);?>/" class="btn btn-default"><?=_t( 'Delete' );?></a>
+					<a href="<?=get_base_url();?>stu/deleteSTAC/<?=_escape($v['id']);?>/" class="btn btn-default"><?=_t( 'Delete' );?></a>
 					<a href="#" class="btn btn-primary" data-dismiss="modal"><?=_t( 'Cancel' );?></a> 
 				</div>
 				<!-- // Modal footer END -->

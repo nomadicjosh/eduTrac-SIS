@@ -11,6 +11,7 @@ namespace Twilio\Rest\IpMessaging\V2\Service\Channel;
 
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -38,17 +39,20 @@ class MessageList extends ListResource {
     /**
      * Create a new MessageInstance
      * 
-     * @param string $body The body
      * @param array|Options $options Optional Arguments
      * @return MessageInstance Newly created MessageInstance
      */
-    public function create($body, $options = array()) {
+    public function create($options = array()) {
         $options = new Values($options);
 
         $data = Values::of(array(
-            'Body' => $body,
             'From' => $options['from'],
             'Attributes' => $options['attributes'],
+            'DateCreated' => Serialize::iso8601DateTime($options['dateCreated']),
+            'DateUpdated' => Serialize::iso8601DateTime($options['dateUpdated']),
+            'LastUpdatedBy' => $options['lastUpdatedBy'],
+            'Body' => $options['body'],
+            'MediaSid' => $options['mediaSid'],
         ));
 
         $payload = $this->version->create(
