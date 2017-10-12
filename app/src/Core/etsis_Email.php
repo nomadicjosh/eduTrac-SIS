@@ -37,7 +37,7 @@ class etsis_Email
      *
      * @since 6.3.0
      * @param string $to
-     *            Recipient's email address.
+     *            Array or comma-separated list of email addresses to send message.
      * @param string $subject
      *            Subject of the email.
      * @param mixed $message
@@ -48,7 +48,7 @@ class etsis_Email
      *            Attachments to be sent with the email.
      * @return mixed
      */
-    public function etsisMail($to, $subject, $message, $headers = '', $attachments = array())
+    public function etsisMail($to, $subject, $message, $headers = '', $attachments = [])
     {
         $charset = 'UTF-8';
 
@@ -65,6 +65,9 @@ class etsis_Email
 
         if (isset($atts['to'])) {
             $to = $atts['to'];
+        }
+        if (!is_array($to)) {
+            $to = explode(',', $to);
         }
         if (isset($atts['subject'])) {
             $subject = $atts['subject'];
@@ -104,10 +107,10 @@ class etsis_Email
                     if (strpos($header, ':') === false) {
                         if (false !== stripos($header, 'boundary=')) {
                             $parts = preg_split('/boundary=/i', trim($header));
-                            $boundary = trim(str_replace(array(
+                            $boundary = trim(str_replace([
                                 "'",
                                 '"'
-                                    ), '', $parts[1]));
+                                    ], '', $parts[1]));
                         }
                         continue;
                     }
@@ -140,16 +143,16 @@ class etsis_Email
                                 list ($type, $charset_content) = explode(';', $content);
                                 $content_type = trim($type);
                                 if (false !== stripos($charset_content, 'charset=')) {
-                                    $charset = trim(str_replace(array(
+                                    $charset = trim(str_replace([
                                         'charset=',
                                         '"'
-                                            ), '', $charset_content));
+                                            ], '', $charset_content));
                                 } elseif (false !== stripos($charset_content, 'boundary=')) {
-                                    $boundary = trim(str_replace(array(
+                                    $boundary = trim(str_replace([
                                         'BOUNDARY=',
                                         'boundary=',
                                         '"'
-                                            ), '', $charset_content));
+                                            ], '', $charset_content));
                                     $charset = '';
                                 }
                                 // Avoid setting an empty $content_type.
@@ -213,11 +216,6 @@ class etsis_Email
          *            Name associated with the "from" email address.
          */
         $this->mailer->FromName = $this->app->hook->apply_filter('etsis_mail_from_name', $from_name);
-
-        // Set destination addresses
-        if (!is_array($to)) {
-            $to = explode(',', $to);
-        }
 
         foreach ((array) $to as $recipient) {
             try {
@@ -400,7 +398,7 @@ class etsis_Email
 
         $msg = process_email_html($message, _t(" Account Login Details"));
         $headers[] = sprintf("From: %s <auto-reply@%s>", _t('myetSIS::') . _h(get_option('institution_name')), get_domain_name());
-        if(!function_exists('etsis_smtp')) {
+        if (!function_exists('etsis_smtp')) {
             $headers[] = 'Content-Type: text/html; charset="UTF-8"';
             $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
         }
@@ -440,7 +438,7 @@ class etsis_Email
 
         $msg = process_email_html($message, _t("Application for Admissions"));
         $headers[] = sprintf("From: %s <auto-reply@%s>", _t('myetSIS::') . _h(get_option('institution_name')), get_domain_name());
-        if(!function_exists('etsis_smtp')) {
+        if (!function_exists('etsis_smtp')) {
             $headers[] = 'Content-Type: text/html; charset="UTF-8"';
             $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
         }
@@ -485,7 +483,7 @@ class etsis_Email
 
         $msg = process_email_html($message, _t("Course Registration"));
         $headers[] = sprintf("From: %s <auto-reply@%s>", _h(get_option('institution_name')), get_domain_name());
-        if(!function_exists('etsis_smtp')) {
+        if (!function_exists('etsis_smtp')) {
             $headers[] = 'Content-Type: text/html; charset="UTF-8"';
             $headers[] = sprintf("X-Mailer: eduTrac SIS %s", RELEASE_TAG);
         }
@@ -523,7 +521,7 @@ class etsis_Email
      *            Attachments to be sent with the email.
      * @return mixed
      */
-    public function etsis_mail($to, $subject, $message, $headers = '', $attachments = array())
+    public function etsis_mail($to, $subject, $message, $headers = '', $attachments = [])
     {
         _deprecated_class_method(__METHOD__, '6.3.0', 'etsisMail');
 
