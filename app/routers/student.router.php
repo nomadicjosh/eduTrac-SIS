@@ -710,6 +710,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             etsis_register_style('table');
             etsis_register_script('select');
             etsis_register_script('select2');
+            etsis_register_script('datepicker');
             etsis_register_script('datatables');
 
             $app->view->display('student/shis', [
