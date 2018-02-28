@@ -87,7 +87,7 @@ class InitialSchema extends AbstractMigration
                 ->addColumn('id', 'integer', ['signed' => true, 'identity' => true, 'limit' => 11])
                 ->addColumn('code', 'char', ['limit' => 22])
                 ->addColumn('name', 'string', ['limit' => 80])
-                ->addColumn('grsc', 'string', ['limit' => 6])
+                ->addColumn('grsc', 'string', ['null' => true, 'limit' => 6])
                 ->addColumn('ht_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '6.0'])
                 ->addColumn('ft_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '12.0'])
                 ->addColumn('ovr_creds', 'decimal', ['signed' => true, 'precision' => 4, 'scale' => 1, 'default' => '24.0'])
