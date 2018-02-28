@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('BASE_PATH'))
     exit('No direct script access allowed');
 use app\src\Core\Exception\NotFoundException;
@@ -15,7 +16,7 @@ use Cascade\Cascade;
  * @package     eduTrac SIS
  * @author      Joshua Parker <joshmac3@icloud.com>
  */
-$css = [ 'css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
+$css = ['css/admin/module.admin.page.form_elements.min.css', 'css/admin/module.admin.page.tables.min.css'];
 $js = [
     'components/modules/admin/forms/elements/bootstrap-select/assets/lib/js/bootstrap-select.js?v=v2.1.0',
     'components/modules/admin/forms/elements/bootstrap-select/assets/custom/js/bootstrap-select.init.js?v=v2.1.0',
@@ -56,15 +57,15 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 $post = $app->req->post['spro'];
 
                 $spro = $app->db->student()
-                    ->setTableAlias('a')
-                    ->select('a.stuID,b.lname,b.fname,b.email')
-                    ->_join('person', 'a.stuID = b.personID', 'b')
-                    ->whereLike('CONCAT(b.fname," ",b.lname)', "%$post%")->_or_()
-                    ->whereLike('CONCAT(b.lname," ",b.fname)', "%$post%")->_or_()
-                    ->whereLike('CONCAT(b.lname,", ",b.fname)', "%$post%")->_or_()
-                    ->whereLike('b.altID', "%$post%")->_or_()
-                    ->whereLike('b.uname', "%$post%")->_or_()
-                    ->whereLike('a.stuID', "%$post%");
+                        ->setTableAlias('a')
+                        ->select('a.stuID,b.lname,b.fname,b.email')
+                        ->_join('person', 'a.stuID = b.personID', 'b')
+                        ->whereLike('CONCAT(b.fname," ",b.lname)', "%$post%")->_or_()
+                        ->whereLike('CONCAT(b.lname," ",b.fname)', "%$post%")->_or_()
+                        ->whereLike('CONCAT(b.lname,", ",b.fname)', "%$post%")->_or_()
+                        ->whereLike('b.altID', "%$post%")->_or_()
+                        ->whereLike('b.uname', "%$post%")->_or_()
+                        ->whereLike('a.stuID', "%$post%");
 
                 $q = $spro->find(function($data) {
                     $array = [];
@@ -94,7 +95,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
         $app->view->display('student/index', [
             'title' => 'Student Lookup',
             'search' => $q
-            ]
+                ]
         );
     });
 
@@ -145,12 +146,12 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
         try {
             $spro = $app->db->student()
-                ->where('stuID', $id)
-                ->findOne();
+                    ->where('stuID', $id)
+                    ->findOne();
 
             $admit = $app->db->application()
-                ->where('personID = ?', (int) $id)
-                ->findOne();
+                    ->where('personID = ?', (int) $id)
+                    ->findOne();
 
             $prog = $app->db->query("SELECT 
                     sacp.id,sacp.stuID,sacp.acadProgCode,sacp.currStatus,
@@ -223,7 +224,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 'title' => get_name($id),
                 'prog' => $q,
                 'admit' => $admit
-                ]
+                    ]
             );
         }
     });
@@ -328,14 +329,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
                  * @since 6.1.07
                  */
                 $spro = $app->db->student()
-                    ->setTableAlias('spro')
-                    ->select('spro.*, nae.*, addr.*')
-                    ->_join('person', 'spro.stuID = nae.personID', 'nae')
-                    ->_join('address', 'spro.stuID = addr.personID', 'addr')
-                    ->where('spro.stuID = ?', $id)->_and_()
-                    ->where('addr.addressType = "P"')->_and_()
-                    ->where('addr.addressStatus = "C"')
-                    ->findOne();
+                        ->setTableAlias('spro')
+                        ->select('spro.*, nae.*, addr.*')
+                        ->_join('person', 'spro.stuID = nae.personID', 'nae')
+                        ->_join('address', 'spro.stuID = addr.personID', 'addr')
+                        ->where('spro.stuID = ?', $id)->_and_()
+                        ->where('addr.addressType = "P"')->_and_()
+                        ->where('addr.addressStatus = "C"')
+                        ->findOne();
                 /**
                  * Fires after new student record has been created.
                  * 
@@ -360,18 +361,18 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
         try {
             $stu = $app->db->acad_program()
-                ->setTableAlias('a')
-                ->select('a.id,a.acadProgCode,a.acadProgTitle')
-                ->select('a.acadLevelCode,b.majorName,c.locationName')
-                ->select('d.schoolName,e.personID,e.startTerm,aclv.comp_months')
-                ->_join('major', 'a.majorCode = b.majorCode', 'b')
-                ->_join('location', 'a.locationCode = c.locationCode', 'c')
-                ->_join('school', 'a.schoolCode = d.schoolCode', 'd')
-                ->_join('application', 'a.acadProgCode = e.acadProgCode', 'e')
-                ->_join('student', 'e.personID = f.stuID', 'f')
-                ->_join('aclv', 'a.acadLevelCode = aclv.code')
-                ->where('e.personID = ?', $id)->_and_()
-                ->whereNull('f.stuID');
+                    ->setTableAlias('a')
+                    ->select('a.id,a.acadProgCode,a.acadProgTitle')
+                    ->select('a.acadLevelCode,b.majorName,c.locationName')
+                    ->select('d.schoolName,e.personID,e.startTerm,aclv.comp_months')
+                    ->_join('major', 'a.majorCode = b.majorCode', 'b')
+                    ->_join('location', 'a.locationCode = c.locationCode', 'c')
+                    ->_join('school', 'a.schoolCode = d.schoolCode', 'd')
+                    ->_join('application', 'a.acadProgCode = e.acadProgCode', 'e')
+                    ->_join('student', 'e.personID = f.stuID', 'f')
+                    ->_join('aclv', 'a.acadLevelCode = aclv.code')
+                    ->where('e.personID = ?', $id)->_and_()
+                    ->whereNull('f.stuID');
 
             $q = $stu->find(function($data) {
                 $array = [];
@@ -421,7 +422,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             $app->view->display('student/add', [
                 'title' => 'Create Student Record',
                 'student' => $q
-                ]
+                    ]
             );
         }
     });
@@ -443,11 +444,11 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
         try {
             $stac = $app->db->stac()
-                ->select('id,stuID,attCred,ceu')
-                ->select('status,termCode,courseCode')
-                ->select('shortTitle,grade,courseSection')
-                ->where('stuID = ?', $id)
-                ->groupBy('courseCode,termCode');
+                    ->select('id,stuID,attCred,ceu')
+                    ->select('status,termCode,courseCode')
+                    ->select('shortTitle,grade,courseSection')
+                    ->where('stuID = ?', $id)
+                    ->groupBy('courseCode,termCode');
 
             $q = $stac->find(function($data) {
                 $array = [];
@@ -499,7 +500,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 'title' => get_name($id),
                 'stac' => $q,
                 'stu' => $id
-                ]
+                    ]
             );
         }
     });
@@ -521,14 +522,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
         try {
             $sttr = $app->db->sttr()
-                ->select('sttr.termCode,sttr.acadLevelCode,sttr.attCred,sttr.compCred')
-                ->select('sttr.stuID,sttr.gradePoints,sttr.gpa,sttr.stuLoad')
-                ->select('b.termStartDate,b.termEndDate')
-                ->_join('term', 'sttr.termCode = b.termCode', 'b')
-                ->_join('stcs', 'sttr.termCode = c.termCode AND sttr.stuID = c.stuID', 'c')
-                ->where('sttr.stuID = ?', $id)
-                ->groupBy('sttr.termCode, sttr.stuID')
-                ->orderBy('sttr.termCode', 'ASC');
+                    ->select('sttr.termCode,sttr.acadLevelCode,sttr.attCred,sttr.compCred')
+                    ->select('sttr.stuID,sttr.gradePoints,sttr.gpa,sttr.stuLoad')
+                    ->select('b.termStartDate,b.termEndDate')
+                    ->_join('term', 'sttr.termCode = b.termCode', 'b')
+                    ->_join('stcs', 'sttr.termCode = c.termCode AND sttr.stuID = c.stuID', 'c')
+                    ->where('sttr.stuID = ?', $id)
+                    ->groupBy('sttr.termCode, sttr.stuID')
+                    ->orderBy('sttr.termCode', 'ASC');
 
             $q = $sttr->find(function($data) {
                 $array = [];
@@ -580,7 +581,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 'title' => get_name($id),
                 'sttr' => $q,
                 'stu' => $id
-                ]
+                    ]
             );
         }
     });
@@ -610,23 +611,28 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     while ($i < $size) {
                         $shis = $app->db->hiatus();
                         $shis->set([
-                                'code' => $app->req->post['code'][$i],
-                                'startDate' => $app->req->post['startDate'][$i],
-                                'endDate' => if_null($app->req->post['endDate'][$i]),
-                                'comment' => $app->req->post['comment'][$i]
-                            ])
-                            ->where('stuID = ?', $id)->_and_()
-                            ->where('id = ?', $app->req->post['id'][$i])
-                            ->update();
+                                    'code' => $app->req->post['code'][$i],
+                                    'startDate' => $app->req->post['startDate'][$i],
+                                    'endDate' => if_null($app->req->post['endDate'][$i]),
+                                    'comment' => $app->req->post['comment'][$i]
+                                ])
+                                ->where('stuID = ?', $id)->_and_()
+                                ->where('id = ?', $app->req->post['id'][$i])
+                                ->update();
                         ++$i;
                     }
                     etsis_logger_activity_log_write('Update Record', 'Student Hiatus', get_name($id), get_persondata('uname'));
                 } else {
                     $shis = $app->db->hiatus();
-                    foreach (_filter_input_array(INPUT_POST) as $k => $v) {
-                        $shis->$k = $v;
-                    }
-                    $shis->save();
+                    $shis->insert([
+                        'stuID' => $app->req->post['stuID'],
+                        'code' => $app->req->post['code'],
+                        'startDate' => $app->req->post['startDate'],
+                        'endDate' => if_null($app->req->post['endDate']),
+                        'comment' => if_null($app->req->post['comment']),
+                        'addDate' => $app->req->post['addDate'],
+                        'addedBy' => $app->req->post['addedBy']
+                    ]);
                     etsis_logger_activity_log_write('New Record', 'Student Hiatus (SHIS)', get_name($id), get_persondata('uname'));
                 }
                 etsis_cache_delete($id, 'stu');
@@ -717,7 +723,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 'title' => get_name($id),
                 'shis' => $q,
                 'stu' => $spro
-                ]
+                    ]
             );
         }
     });
@@ -740,8 +746,8 @@ $app->group('/stu', function() use ($app, $css, $js) {
     $app->match('GET|POST', '/sacd/(\d+)/', function ($id) use($app) {
 
         $stac = $app->db->stac()
-            ->where('id = ?', (int) $id)
-            ->findOne();
+                ->where('id = ?', (int) $id)
+                ->findOne();
 
         $date = \Jenssegers\Date\Date::now()->format("Y-m-d");
         $time = \Jenssegers\Date\Date::now()->format("h:m A");
@@ -749,8 +755,8 @@ $app->group('/stu', function() use ($app, $css, $js) {
         if ($app->req->isPost()) {
             try {
                 $term = $app->db->term()
-                    ->where('termCode = ?', $app->req->post['termCode'])
-                    ->findOne();
+                        ->where('termCode = ?', $app->req->post['termCode'])
+                        ->findOne();
 
                 $detail = $app->db->stac();
                 $detail->courseID = $app->req->post['courseID'];
@@ -801,9 +807,9 @@ $app->group('/stu', function() use ($app, $css, $js) {
                  */
                 if (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date < _escape($term->termStartDate)) {
                     $q = $app->db->stcs()
-                        ->where('stuID = ?', _escape((int) $stac->stuID))->_and_()
-                        ->where('courseSection = ?', _escape($stac->courseSection))
-                        ->delete();
+                            ->where('stuID = ?', _escape((int) $stac->stuID))->_and_()
+                            ->where('courseSection = ?', _escape($stac->courseSection))
+                            ->delete();
                     $q = $app->db->stac()->where('id = ?', $id)->delete();
 
                     if (function_exists('financial_module')) {
@@ -831,9 +837,9 @@ $app->group('/stu', function() use ($app, $css, $js) {
                  * records.
                  */ elseif (($app->req->post['status'] == 'W' || $app->req->post['status'] == 'D') && $date >= _escape($term->termStartDate) && $date < _escape($term->dropAddEndDate)) {
                     $q = $app->db->stcs()
-                        ->where('stuID = ?', _escape((int) $stac->stuID))->_and_()
-                        ->where('courseSection = ?', _escape($stac->courseSection))
-                        ->delete();
+                            ->where('stuID = ?', _escape((int) $stac->stuID))->_and_()
+                            ->where('courseSection = ?', _escape($stac->courseSection))
+                            ->delete();
                     $q = $app->db->stac()->where('id = ?', $id)->delete();
 
                     if (function_exists('financial_module')) {
@@ -867,8 +873,8 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     $q->statusDate = \Jenssegers\Date\Date::now();
                     $q->statusTime = $time;
                     $q->where('stuID = ?', _escape((int) $stac->stuID))->_and_()
-                        ->where('id = ?', $app->req->post['courseSecID'])
-                        ->update();
+                            ->where('id = ?', $app->req->post['courseSecID'])
+                            ->update();
                     $detail->update();
                 }
                 /**
@@ -884,18 +890,18 @@ $app->group('/stu', function() use ($app, $css, $js) {
                     $q->statusDate = $app->req->post['statusDate'];
                     $q->statusTime = $app->req->post['statusTime'];
                     $q->where('stuID = ?', _escape((int) $stac->stuID))->_and_()
-                        ->where('id = ?', $app->req->post['courseSecID'])
-                        ->update();
+                            ->where('id = ?', $app->req->post['courseSecID'])
+                            ->update();
                     $detail->update();
                 }
                 /**
                  * @since 6.1.08
                  */
                 $sacd = $app->db->stac()
-                    ->select('stac.*,nae.uname,nae.fname,nae.lname,nae.email')
-                    ->_join('person', 'stac.stuID = nae.personID', 'nae')
-                    ->where('stac.id = ?', $id)
-                    ->findOne();
+                        ->select('stac.*,nae.uname,nae.fname,nae.lname,nae.email')
+                        ->_join('person', 'stac.stuID = nae.personID', 'nae')
+                        ->where('stac.id = ?', $id)
+                        ->findOne();
                 /**
                  * Triggers after SACD record is updated.
                  * 
@@ -955,7 +961,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             $app->view->display('student/sacd', [
                 'title' => get_name(_escape((int) $stac->stuID)),
                 'sacd' => $stac
-                ]
+                    ]
             );
         }
     });
@@ -987,19 +993,19 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
                 if ($app->req->post['currStatus'] == 'C' || $app->req->post['currStatus'] == 'W') {
                     $_sacp = $app->db->sacp()
-                        ->select('acadProgCode')
-                        ->where('stuID = ?', $app->req->post['stuID'])->_and_()
-                        ->where('id = ?', $id)
-                        ->findOne();
+                            ->select('acadProgCode')
+                            ->where('stuID = ?', $app->req->post['stuID'])->_and_()
+                            ->where('id = ?', $id)
+                            ->findOne();
 
                     $stal = $app->db->stal()
-                        ->where('stuID = ?', $app->req->post['stuID'])->_and_()
-                        ->where('acadProgCode = ?', _escape($_sacp->acadProgCode))
-                        ->findOne();
+                            ->where('stuID = ?', $app->req->post['stuID'])->_and_()
+                            ->where('acadProgCode = ?', _escape($_sacp->acadProgCode))
+                            ->findOne();
                     $stal->set([
-                            'endDate' => if_null($app->req->post['endDate'])
-                        ])
-                        ->update();
+                                'endDate' => if_null($app->req->post['endDate'])
+                            ])
+                            ->update();
                 }
 
                 etsis_logger_activity_log_write('Update Record', 'Student Acad Program (SACP)', get_name($app->req->post['stuID']), get_persondata('uname'));
@@ -1018,15 +1024,15 @@ $app->group('/stu', function() use ($app, $css, $js) {
         }
         try {
             $sacp = $app->db->acad_program()
-                ->setTableAlias('a')
-                ->select('a.acadProgCode,a.schoolCode,a.acadLevelCode,sacp.id')
-                ->select('sacp.eligible_to_graduate,sacp.graduationDate,sacp.antGradDate')
-                ->select('sacp.stuID,sacp.advisorID,sacp.catYearCode,sacp.currStatus')
-                ->select('sacp.statusDate,sacp.startDate,sacp.endDate,sacp.comments')
-                ->select('sacp.approvedBy,sacp.LastUpdate,c.schoolName')
-                ->_join('sacp', 'a.acadProgCode = sacp.acadProgCode')
-                ->_join('school', 'a.schoolCode = c.schoolCode', 'c')
-                ->where('sacp.id = ?', $id);
+                    ->setTableAlias('a')
+                    ->select('a.acadProgCode,a.schoolCode,a.acadLevelCode,sacp.id')
+                    ->select('sacp.eligible_to_graduate,sacp.graduationDate,sacp.antGradDate')
+                    ->select('sacp.stuID,sacp.advisorID,sacp.catYearCode,sacp.currStatus')
+                    ->select('sacp.statusDate,sacp.startDate,sacp.endDate,sacp.comments')
+                    ->select('sacp.approvedBy,sacp.LastUpdate,c.schoolName')
+                    ->_join('sacp', 'a.acadProgCode = sacp.acadProgCode')
+                    ->_join('school', 'a.schoolCode = c.schoolCode', 'c')
+                    ->where('sacp.id = ?', $id);
             $q = $sacp->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1081,7 +1087,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             $app->view->display('student/sacp', [
                 'title' => get_name(_escape($q[0]['stuID'])),
                 'sacp' => $q
-                ]
+                    ]
             );
         }
     });
@@ -1105,18 +1111,18 @@ $app->group('/stu', function() use ($app, $css, $js) {
         if ($app->req->isPost()) {
             try {
                 $stal = $app->db->stal()
-                    ->where('id = ?', $app->req->post['stalID'])
-                    ->findOne();
+                        ->where('id = ?', $app->req->post['stalID'])
+                        ->findOne();
                 $stal->set([
-                        'acadLevelCode' => $app->req->post['acadLevelCode'] == 'NULL' ? NULL : $app->req->post['acadLevelCode'],
-                        'currentClassLevel' => $app->req->post['currentClassLevel'] == 'NULL' ? NULL : $app->req->post['currentClassLevel'],
-                        'enrollmentStatus' => $app->req->post['enrollmentStatus'] == 'NULL' ? NULL : $app->req->post['enrollmentStatus'],
-                        'gpa' => $app->req->post['gpa'] <= 0 ? 0 : $app->req->post['gpa'],
-                        'startTerm' => $app->req->post['startTerm'] == 'NULL' ? NULL : $app->req->post['startTerm'],
-                        'startDate' => $app->req->post['startDate'] <= '0000-00-00' || $app->req->post['startDate'] == '' ? NULL : $app->req->post['startDate'],
-                        'endDate' => if_null($app->req->post['endDate'])
-                    ])
-                    ->update();
+                            'acadLevelCode' => $app->req->post['acadLevelCode'] == 'NULL' ? NULL : $app->req->post['acadLevelCode'],
+                            'currentClassLevel' => $app->req->post['currentClassLevel'] == 'NULL' ? NULL : $app->req->post['currentClassLevel'],
+                            'enrollmentStatus' => $app->req->post['enrollmentStatus'] == 'NULL' ? NULL : $app->req->post['enrollmentStatus'],
+                            'gpa' => $app->req->post['gpa'] <= 0 ? 0 : $app->req->post['gpa'],
+                            'startTerm' => $app->req->post['startTerm'] == 'NULL' ? NULL : $app->req->post['startTerm'],
+                            'startDate' => $app->req->post['startDate'] <= '0000-00-00' || $app->req->post['startDate'] == '' ? NULL : $app->req->post['startDate'],
+                            'endDate' => if_null($app->req->post['endDate'])
+                        ])
+                        ->update();
 
                 etsis_logger_activity_log_write('Update Record', 'Student Academic Level (STAL)', get_name($app->req->post['stuID']), get_persondata('uname'));
                 _etsis_flash()->success(_etsis_flash()->notice(200), $app->req->server['HTTP_REFERER']);
@@ -1134,13 +1140,13 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
         try {
             $stal = $app->db->sacp()
-                ->select('sacp.id AS sacpID,sacp.stuID,stal.id AS stalID,stal.acadProgCode')
-                ->select('stal.acadLevelCode,stal.currentClassLevel,stal.enrollmentStatus')
-                ->select('stal.gpa,stal.startTerm,stal.startDate,stal.endDate,acad_program.acadProgTitle')
-                ->_join('stal', 'sacp.stuID = stal.stuID AND sacp.acadProgCode = stal.acadProgCode')
-                ->_join('acad_program', 'sacp.acadProgCode = acad_program.acadProgCode')
-                ->where('sacp.id = ?', $id)
-                ->findOne();
+                    ->select('sacp.id AS sacpID,sacp.stuID,stal.id AS stalID,stal.acadProgCode')
+                    ->select('stal.acadLevelCode,stal.currentClassLevel,stal.enrollmentStatus')
+                    ->select('stal.gpa,stal.startTerm,stal.startDate,stal.endDate,acad_program.acadProgTitle')
+                    ->_join('stal', 'sacp.stuID = stal.stuID AND sacp.acadProgCode = stal.acadProgCode')
+                    ->_join('acad_program', 'sacp.acadProgCode = acad_program.acadProgCode')
+                    ->where('sacp.id = ?', $id)
+                    ->findOne();
         } catch (NotFoundException $e) {
             Cascade::getLogger('error')->error($e->getMessage());
             _etsis_flash()->error(_etsis_flash()->notice(409));
@@ -1188,7 +1194,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             $app->view->display('student/stal', [
                 'title' => get_name(_escape($stal->stuID)),
                 'stal' => $stal
-                ]
+                    ]
             );
         }
     });
@@ -1212,13 +1218,13 @@ $app->group('/stu', function() use ($app, $css, $js) {
         if ($app->req->isPost()) {
             try {
                 $prog = $app->db->acad_program()
-                    ->where('acadProgCode = ?', $app->req->post['acadProgCode'])
-                    ->findOne();
+                        ->where('acadProgCode = ?', $app->req->post['acadProgCode'])
+                        ->findOne();
 
                 $stal = $app->db->stal()
-                    ->where('stuID = ?', $id)->_and_()
-                    ->where('acadProgCode = ?', $app->req->post['acadProgCode'])
-                    ->count('id');
+                        ->where('stuID = ?', $id)->_and_()
+                        ->where('acadProgCode = ?', $app->req->post['acadProgCode'])
+                        ->count('id');
 
                 $sacp = $app->db->sacp();
                 $sacp->insert([
@@ -1305,7 +1311,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             $app->view->display('student/add-prog', [
                 'title' => get_name($id),
                 'stu' => $spro
-                ]
+                    ]
             );
         }
     });
@@ -1330,28 +1336,28 @@ $app->group('/stu', function() use ($app, $css, $js) {
             try {
                 if (!empty($app->req->post['studentID'])) {
                     $grad = $app->db->sacp()
-                        ->where('stuID = ?', $app->req->post['studentID'])->_and_()
-                        ->where('eligible_to_graduate = "1"')->_and_()
-                        ->where('currStatus = "A"')
-                        ->findOne();
+                            ->where('stuID = ?', $app->req->post['studentID'])->_and_()
+                            ->where('eligible_to_graduate = "1"')->_and_()
+                            ->where('currStatus = "A"')
+                            ->findOne();
                     $grad->set([
-                            'statusDate' => \Jenssegers\Date\Date::now(),
-                            'endDate' => \Jenssegers\Date\Date::now(),
-                            'currStatus' => 'G',
-                            'graduationDate' => $app->req->post['gradDate']
-                        ])
-                        ->update();
+                                'statusDate' => \Jenssegers\Date\Date::now(),
+                                'endDate' => \Jenssegers\Date\Date::now(),
+                                'currStatus' => 'G',
+                                'graduationDate' => $app->req->post['gradDate']
+                            ])
+                            ->update();
                     $stal = $app->db->stal()
-                        ->where('stuID = ?', $app->req->post['studentID'])->_and_()
-                        ->where('acadProgCode = ?', _escape($grad->acadProgCode))
-                        ->findOne();
+                            ->where('stuID = ?', $app->req->post['studentID'])->_and_()
+                            ->where('acadProgCode = ?', _escape($grad->acadProgCode))
+                            ->findOne();
                     $stal->set([
-                            'currentClassLevel' => NULL,
-                            'enrollmentStatus' => 'G',
-                            'acadStanding' => NULL,
-                            'endDate' => $app->req->post['gradDate']
-                        ])
-                        ->update();
+                                'currentClassLevel' => NULL,
+                                'enrollmentStatus' => 'G',
+                                'acadStanding' => NULL,
+                                'endDate' => $app->req->post['gradDate']
+                            ])
+                            ->update();
                 } else {
                     $grad = $app->db->graduation_hold();
                     $grad->insert([
@@ -1382,7 +1388,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
         $app->view->display('student/graduation', [
             'title' => 'Graduation'
-            ]
+                ]
         );
     });
 
@@ -1414,7 +1420,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
         $app->view->display('student/tran', [
             'title' => 'Transcript'
-            ]
+                ]
         );
     });
 
@@ -1422,28 +1428,28 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
         try {
             $tranInfo = $app->db->stac()
-                ->select('CASE stac.acadLevelCode WHEN "UG" THEN "Undergraduate" WHEN "GR" THEN "Graduate" '
-                    . 'WHEN "Phd" THEN "Doctorate" WHEN "CE" THEN "Continuing Education" WHEN "CTF" THEN "Certificate" '
-                    . 'WHEN "DIP" THEN "Diploma" WHEN "PR" THEN "Professional" ELSE "Non-Degree" END AS "Level"')
-                ->select('stac.stuID,b.address1,b.address2,b.city,b.state')
-                ->select('b.zip,c.altID,c.ssn,c.dob,sacp.graduationDate,f.degreeCode')
-                ->select('f.degreeName,g.majorCode,g.majorName,h.minorCode')
-                ->select('h.minorName,i.specCode,i.specName,j.ccdCode,j.ccdName')
-                ->_join('address', 'stac.stuID = b.personID', 'b')
-                ->_join('person', 'stac.stuID = c.personID', 'c')
-                ->_join('sacp', 'stac.stuID = sacp.stuID')
-                ->_join('acad_program', 'sacp.acadProgCode = e.acadProgCode', 'e')
-                ->_join('degree', 'e.degreeCode = f.degreeCode', 'f')
-                ->_join('major', 'e.majorCode = g.majorCode', 'g')
-                ->_join('minor', 'e.minorCode = h.minorCode', 'h')
-                ->_join('specialization', 'e.specCode = i.specCode', 'i')
-                ->_join('ccd', 'e.ccdCode = j.ccdCode', 'j')
-                ->where('stac.stuID = ?', $id)->_and_()
-                ->where('stac.acadLevelCode = ?', $level)->_and_()
-                ->where('b.addressStatus = "C"')->_and_()
-                ->where('b.addressType = "P"')->_and_()
-                ->where('e.acadLevelCode = ?', $level)->_and_()
-                ->where('(sacp.currStatus = "A" OR sacp.currStatus = "G")');
+                    ->select('CASE stac.acadLevelCode WHEN "UG" THEN "Undergraduate" WHEN "GR" THEN "Graduate" '
+                            . 'WHEN "Phd" THEN "Doctorate" WHEN "CE" THEN "Continuing Education" WHEN "CTF" THEN "Certificate" '
+                            . 'WHEN "DIP" THEN "Diploma" WHEN "PR" THEN "Professional" ELSE "Non-Degree" END AS "Level"')
+                    ->select('stac.stuID,b.address1,b.address2,b.city,b.state')
+                    ->select('b.zip,c.altID,c.ssn,c.dob,sacp.graduationDate,f.degreeCode')
+                    ->select('f.degreeName,g.majorCode,g.majorName,h.minorCode')
+                    ->select('h.minorName,i.specCode,i.specName,j.ccdCode,j.ccdName')
+                    ->_join('address', 'stac.stuID = b.personID', 'b')
+                    ->_join('person', 'stac.stuID = c.personID', 'c')
+                    ->_join('sacp', 'stac.stuID = sacp.stuID')
+                    ->_join('acad_program', 'sacp.acadProgCode = e.acadProgCode', 'e')
+                    ->_join('degree', 'e.degreeCode = f.degreeCode', 'f')
+                    ->_join('major', 'e.majorCode = g.majorCode', 'g')
+                    ->_join('minor', 'e.minorCode = h.minorCode', 'h')
+                    ->_join('specialization', 'e.specCode = i.specCode', 'i')
+                    ->_join('ccd', 'e.ccdCode = j.ccdCode', 'j')
+                    ->where('stac.stuID = ?', $id)->_and_()
+                    ->where('stac.acadLevelCode = ?', $level)->_and_()
+                    ->where('b.addressStatus = "C"')->_and_()
+                    ->where('b.addressType = "P"')->_and_()
+                    ->where('e.acadLevelCode = ?', $level)->_and_()
+                    ->where('(sacp.currStatus = "A" OR sacp.currStatus = "G")');
             $info = $tranInfo->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1473,15 +1479,15 @@ $app->group('/stu', function() use ($app, $css, $js) {
             });
 
             $tranGPA = $app->db->stac()
-                ->select('SUM(stac.attCred) as Attempted')
-                ->select('SUM(stac.compCred) as Completed')
-                ->select('SUM(stac.gradePoints) as Points')
-                ->select('SUM(stac.gradePoints)/SUM(stac.attCred) as GPA')
-                ->where('stac.stuID = ?', $id)->_and_()
-                ->where('stac.acadLevelCode = ?', $level)->_and_()
-                ->whereNotNull('stac.grade')->_and_()
-                ->where('stac.creditType = "I"')
-                ->groupBy('stac.stuID');
+                    ->select('SUM(stac.attCred) as Attempted')
+                    ->select('SUM(stac.compCred) as Completed')
+                    ->select('SUM(stac.gradePoints) as Points')
+                    ->select('SUM(stac.gradePoints)/SUM(stac.attCred) as GPA')
+                    ->where('stac.stuID = ?', $id)->_and_()
+                    ->where('stac.acadLevelCode = ?', $level)->_and_()
+                    ->whereNotNull('stac.grade')->_and_()
+                    ->where('stac.creditType = "I"')
+                    ->groupBy('stac.stuID');
             $gpa = $tranGPA->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1507,15 +1513,15 @@ $app->group('/stu', function() use ($app, $css, $js) {
             });
 
             $transferGPA = $app->db->stac()
-                ->select('SUM(stac.attCred) as Attempted')
-                ->select('SUM(stac.compCred) as Completed')
-                ->select('SUM(stac.gradePoints) as Points')
-                ->select('SUM(stac.gradePoints)/SUM(stac.attCred) as GPA')
-                ->where('stac.stuID = ?', $id)->_and_()
-                ->where('stac.acadLevelCode = ?', $level)->_and_()
-                ->whereNotNull('stac.grade')->_and_()
-                ->where('stac.creditType = "TR"')
-                ->groupBy('stac.stuID');
+                    ->select('SUM(stac.attCred) as Attempted')
+                    ->select('SUM(stac.compCred) as Completed')
+                    ->select('SUM(stac.gradePoints) as Points')
+                    ->select('SUM(stac.gradePoints)/SUM(stac.attCred) as GPA')
+                    ->where('stac.stuID = ?', $id)->_and_()
+                    ->where('stac.acadLevelCode = ?', $level)->_and_()
+                    ->whereNotNull('stac.grade')->_and_()
+                    ->where('stac.creditType = "TR"')
+                    ->groupBy('stac.stuID');
             $transGPA = $transferGPA->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1569,7 +1575,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 'tranGPA' => $gpa,
                 'transferGPA' => $transGPA,
                 'transferCourses' => $transCRSE
-                ]
+                    ]
             );
         }
     });
@@ -1593,14 +1599,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
     $app->get('/timetable/', function () use($app) {
 
-        $css = [ 'css/fullcalendar/fullcalendar.css'];
-        $js = [ 'components/modules/fullcalendar/fullcalendar.js'];
+        $css = ['css/fullcalendar/fullcalendar.css'];
+        $js = ['components/modules/fullcalendar/fullcalendar.js'];
 
         $app->view->display('student/timetable', [
             'title' => 'Timetable',
             'cssArray' => $css,
             'jsArray' => $js
-            ]
+                ]
         );
     });
 
@@ -1623,7 +1629,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
     $app->get('/terms/', function () use($app) {
 
-        $css = [ 'css/admin/module.admin.page.alt.tables.min.css'];
+        $css = ['css/admin/module.admin.page.alt.tables.min.css'];
         $js = [
             'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
             'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
@@ -1632,11 +1638,11 @@ $app->group('/stu', function() use ($app, $css, $js) {
         ];
         try {
             $terms = $app->db->stac()
-                ->select('stac.stuID,stac.termCode,COUNT(stac.termCode) AS Courses,term.id')
-                ->_join('term', 'stac.termCode = term.termCode')
-                ->where('stac.stuID = ?', get_persondata('personID'))
-                ->groupBy('stac.termCode')
-                ->orderBy('stac.termCode', 'DESC');
+                    ->select('stac.stuID,stac.termCode,COUNT(stac.termCode) AS Courses,term.id')
+                    ->_join('term', 'stac.termCode = term.termCode')
+                    ->where('stac.stuID = ?', get_persondata('personID'))
+                    ->groupBy('stac.termCode')
+                    ->orderBy('stac.termCode', 'DESC');
             $q = $terms->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1660,7 +1666,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             'cssArray' => $css,
             'jsArray' => $js,
             'term' => $q
-            ]
+                ]
         );
     });
 
@@ -1683,7 +1689,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
     $app->get('/schedule/(\d+)/', function ($id) use($app) {
 
-        $css = [ 'css/admin/module.admin.page.alt.tables.min.css'];
+        $css = ['css/admin/module.admin.page.alt.tables.min.css'];
         $js = [
             'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
             'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
@@ -1693,18 +1699,18 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
         try {
             $terms = $app->db->course_sec()
-                ->setTableAlias('a')
-                ->select('a.courseSecID,a.courseSecCode,a.secShortTitle,a.startTime,a.termCode')
-                ->select('a.endTime,a.dotw,a.facID,b.buildingName,c.roomNumber,stac.stuID')
-                ->_join('building', 'a.buildingCode = b.buildingCode', 'b')
-                ->_join('room', 'a.roomCode = c.roomCode', 'c')
-                ->_join('stac', 'a.courseSection= stac.courseSection AND a.termCode = stac.termCode')
-                ->_join('term', 'a.termCode = term.termCode')
-                ->where('term.id = ?', $id)->_and_()
-                ->where('stac.stuID = ?', get_persondata('personID'))->_and_()
-                ->whereIn('stac.status', ['A', 'N'])
-                ->groupBy('stac.stuID,stac.courseSection')
-                ->orderBy('stac.id');
+                    ->setTableAlias('a')
+                    ->select('a.courseSecID,a.courseSecCode,a.secShortTitle,a.startTime,a.termCode')
+                    ->select('a.endTime,a.dotw,a.facID,b.buildingName,c.roomNumber,stac.stuID')
+                    ->_join('building', 'a.buildingCode = b.buildingCode', 'b')
+                    ->_join('room', 'a.roomCode = c.roomCode', 'c')
+                    ->_join('stac', 'a.courseSection= stac.courseSection AND a.termCode = stac.termCode')
+                    ->_join('term', 'a.termCode = term.termCode')
+                    ->where('term.id = ?', $id)->_and_()
+                    ->where('stac.stuID = ?', get_persondata('personID'))->_and_()
+                    ->whereIn('stac.status', ['A', 'N'])
+                    ->groupBy('stac.stuID,stac.courseSection')
+                    ->orderBy('stac.id');
             $q = $terms->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1756,7 +1762,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
                 'cssArray' => $css,
                 'jsArray' => $js,
                 'schedule' => $q
-                ]
+                    ]
             );
         }
     });
@@ -1780,7 +1786,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
     $app->get('/final-grades/', function () use($app) {
 
-        $css = [ 'css/admin/module.admin.page.alt.tables.min.css'];
+        $css = ['css/admin/module.admin.page.alt.tables.min.css'];
         $js = [
             'components/modules/admin/tables/datatables/assets/lib/js/jquery.dataTables.min.js?v=v2.1.0',
             'components/modules/admin/tables/datatables/assets/lib/extras/TableTools/media/js/TableTools.min.js?v=v2.1.0',
@@ -1790,13 +1796,13 @@ $app->group('/stu', function() use ($app, $css, $js) {
 
         try {
             $final = $app->db->stac()
-                ->setTableAlias('a')
-                ->select('a.stuID,a.grade,a.termCode')
-                ->select('b.courseSecCode,b.secShortTitle')
-                ->_join('course_sec', 'a.courseSecID = b.courseSecID', 'b')
-                ->where('a.stuID = ?', get_persondata('personID'))
-                ->groupBy('a.termCode,a.courseSecCode')
-                ->orderBy('a.termCode', 'DESC');
+                    ->setTableAlias('a')
+                    ->select('a.stuID,a.grade,a.termCode')
+                    ->select('b.courseSecCode,b.secShortTitle')
+                    ->_join('course_sec', 'a.courseSecID = b.courseSecID', 'b')
+                    ->where('a.stuID = ?', get_persondata('personID'))
+                    ->groupBy('a.termCode,a.courseSecCode')
+                    ->orderBy('a.termCode', 'DESC');
             $q = $final->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1820,7 +1826,7 @@ $app->group('/stu', function() use ($app, $css, $js) {
             'cssArray' => $css,
             'jsArray' => $js,
             'grades' => $q
-            ]
+                ]
         );
     });
 
@@ -1906,14 +1912,14 @@ $app->group('/stu', function() use ($app, $css, $js) {
     $app->get('/getEvents/', function () use($app) {
         try {
             $meta = $app->db->event_meta()
-                ->setTableAlias('a')
-                ->select('a.*,b.roomCode,c.buildingCode,e.bgcolor')
-                ->_join('room', 'a.roomCode = b.roomCode', 'b')
-                ->_join('building', 'b.buildingCode = c.buildingCode', 'c')
-                ->_join('event', 'a.eventID = d.eventID', 'd')
-                ->_join('event_category', 'd.catID = e.catID', 'e')
-                ->_join('stac', 'd.termCode = f.termCode AND d.title = f.courseSecCode', 'f')
-                ->where('f.stuID = ?', get_persondata('personID'));
+                    ->setTableAlias('a')
+                    ->select('a.*,b.roomCode,c.buildingCode,e.bgcolor')
+                    ->_join('room', 'a.roomCode = b.roomCode', 'b')
+                    ->_join('building', 'b.buildingCode = c.buildingCode', 'c')
+                    ->_join('event', 'a.eventID = d.eventID', 'd')
+                    ->_join('event_category', 'd.catID = e.catID', 'e')
+                    ->_join('stac', 'd.termCode = f.termCode AND d.title = f.courseSecCode', 'f')
+                    ->where('f.stuID = ?', get_persondata('personID'));
             $q = $meta->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -1962,15 +1968,15 @@ $app->group('/stu', function() use ($app, $css, $js) {
     $app->post('/progLookup/', function () use($app) {
         try {
             $prog = $app->db->acad_program()
-                ->setTableAlias('a')
-                ->select('a.acadProgTitle,a.acadLevelCode,a.schoolCode')
-                ->select('b.majorName,c.locationName,d.schoolName')
-                ->_join('major', 'a.majorCode = b.majorCode', 'b')
-                ->_join('location', 'a.locationCode = c.locationCode', 'c')
-                ->_join('school', 'a.schoolCode = d.schoolCode', 'd')
-                ->where('a.acadProgCode = ?', $app->req->post['acadProgCode'])->_and_()
-                ->where('a.currStatus = "A"')->_and_()
-                ->where('a.endDate IS NULL');
+                    ->setTableAlias('a')
+                    ->select('a.acadProgTitle,a.acadLevelCode,a.schoolCode')
+                    ->select('b.majorName,c.locationName,d.schoolName')
+                    ->_join('major', 'a.majorCode = b.majorCode', 'b')
+                    ->_join('location', 'a.locationCode = c.locationCode', 'c')
+                    ->_join('school', 'a.schoolCode = d.schoolCode', 'd')
+                    ->where('a.acadProgCode = ?', $app->req->post['acadProgCode'])->_and_()
+                    ->where('a.currStatus = "A"')->_and_()
+                    ->where('a.endDate IS NULL');
             $q = $prog->find(function($data) {
                 $array = [];
                 foreach ($data as $d) {
@@ -2012,15 +2018,15 @@ $app->group('/stu', function() use ($app, $css, $js) {
         try {
             $term = $app->req->get['term'];
             $stu = $app->db->student()
-                ->select('student.stuID,person.altID,person.fname,person.lname')
-                ->_join('person', 'student.stuID = person.personID')
-                ->whereLike('student.stuID', "%" . $term . "%")->_or_()
-                ->whereLike('person.altID', "%" . $term . "%")->_or_()
-                ->whereLike('person.fname', "%" . $term . "%")->_or_()
-                ->whereLike('person.lname', "%" . $term . "%")->_or_()
-                ->whereLike('CONCAT(person.lname,", ",person.fname)', "%" . $term . "%")->_or_()
-                ->whereLike('CONCAT(person.fname," ",person.lname)', "%" . $term . "%")
-                ->find();
+                    ->select('student.stuID,person.altID,person.fname,person.lname')
+                    ->_join('person', 'student.stuID = person.personID')
+                    ->whereLike('student.stuID', "%" . $term . "%")->_or_()
+                    ->whereLike('person.altID', "%" . $term . "%")->_or_()
+                    ->whereLike('person.fname', "%" . $term . "%")->_or_()
+                    ->whereLike('person.lname', "%" . $term . "%")->_or_()
+                    ->whereLike('CONCAT(person.lname,", ",person.fname)', "%" . $term . "%")->_or_()
+                    ->whereLike('CONCAT(person.fname," ",person.lname)', "%" . $term . "%")
+                    ->find();
             $items = [];
             foreach ($stu as $x) {
                 $option = array(
